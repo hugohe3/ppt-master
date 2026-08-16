@@ -16,7 +16,29 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Context-first understanding for provided assets**: Do not visually scan `images/`. First infer identity, role, and crop / focus needs from source position and surrounding prose, captions / alt / titles, filename, user notes / confirmed `image_notes`, existing resource records, and CSV geometry. Inspect only one specific image when a remaining ambiguity would change selection, factual identity, page role, crop safety, or focal placement. Never inspect for inspiration, bulk-open the folder, or infer external facts / provenance from pixels. Record the result in §VIII. Leave an optional unresolved asset unused; route an unresolved must-use asset through failure recovery.
 
-**Default — one coherent sheet for compatible same-family spots (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference and use separate sheets for incompatible shapes. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
+**Default — one coherent sheet for compatible same-family spots or lettering elements (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots or stable decorative-lettering elements can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference. For lettering, also record every exact string, set the sheet to `text_policy: embedded`, and keep authoritative title/chrome wording outside the sheet. Use separate sheets for incompatible shapes or treatments. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
+
+**Mandatory — materialize proactive lettering**: When confirmed image usage
+retains `ai`, the effective acquisition path has a callable Path A/B, and the
+complete page roster contains a suitable display string anywhere in the deck,
+collect the compatible set once before writing §VIII. Eligibility turns on two
+questions only — is the wording stable, and would an artistic treatment
+communicate better than native type. Page role, length, line count, and kind of
+noun never filter candidates; treat cover hooks, chapter words, place or product
+names, dish or exhibit names, years, hero numbers, pull quotes, and motif words
+as examples rather than the allowed set. Use one ordinary `ai` row
+for a single mark, or the sheet/element rows under §4.3 for several compatible
+marks, and record every exact character sequence; do not leave the choice as an
+`image_notes` or §IX suggestion only. A two-character mark, a multi-word phrase,
+and a two-line lockup are equally eligible; never trim a phrase toward one or two
+characters to look more like a wordmark. Eligibility is wide but use stays
+selective: build one small coherent set rather than lettering every heading. A
+planned wordmark and an editable page
+title coexist: the asset carries the display layer while subtitle, chrome, and
+body remain native text. A confirmed `none`, explicit no-AI
+instruction, editable-only hook, or Offline Manual path does not activate this
+proactive rule; an explicit user-required lettering asset still follows the
+ordinary resource contract.
 
 **Mandatory — image-treatment path scan, not a quota**: Per selected image choose `none` (unchanged), `native` (SVG crop/clip, transform, opacity, frame/depth, overlap), or `prepared derivative` (separate pixel blur/tone or cutout/registered layers); `none` is valid.
 
@@ -69,4 +91,4 @@ References describe visual intent: AI uses subject + intent + composition withou
 
 Choose narrative intent before dimensions, then apply the already-read [`image-layout-spec.md`](./image-layout-spec.md) to the actual page region. Techniques needing a cutout, blurred crop, or desaturated copy require that prepared asset. Write `Crop Policy: no-crop` whenever cropping could remove required pixels, labels, evidence, identity, or edge content; screenshots, charts, certificates/contracts, dense diagrams, logos, and product markings are common triggers rather than an exhaustive list. Otherwise write `Crop Policy: adaptive`: Executor may use complete display or a focal-safe crop, and the value never commands cropping.
 
-Judge `text_policy` per AI row using [`image-generator.md`](./image-generator.md) §5.3; paper figures, academic schematics, panel comparisons, and data-axis graphics are positive triggers for reconsidering an all-`none` plan. Step 5 dispatches pending `ai` / `slice` rows to Image_Generator and pending `web` rows to Image_Searcher.
+Judge `text_policy` per AI row using [`image-generator.md`](./image-generator.md) §5.3; paper figures, academic schematics, panel comparisons, data-axis graphics, and stable decorative lettering are positive triggers for reconsidering an all-`none` plan. Step 5 dispatches pending `ai` / `slice` rows to Image_Generator and pending `web` rows to Image_Searcher.

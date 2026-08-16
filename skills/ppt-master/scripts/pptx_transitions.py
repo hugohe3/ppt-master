@@ -2431,8 +2431,11 @@ def validate_generated_transition_xml(
                     for child in (list(primary) if primary is not None else [])
                     if child.tag != _qn(PML_NS, "sndAc")
                 ]
-                if not effect_children:
-                    errors.append("generated transition has no visual effect child")
+                if len(effect_children) != 1:
+                    errors.append(
+                        "generated transition must contain exactly one visual "
+                        f"effect child; found {len(effect_children)}"
+                    )
                 else:
                     for name, value in expected_attrs.items():
                         if effect_children[0].get(name) != str(value):

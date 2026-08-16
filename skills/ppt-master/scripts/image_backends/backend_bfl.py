@@ -34,6 +34,7 @@ from image_backends.backend_common import (
     download_image,
     http_error,
     is_rate_limit_error,
+    normalize_image_size,
     poll_json,
     require_api_key,
     resolve_output_path,
@@ -57,16 +58,41 @@ MODEL_ENDPOINTS = {
 
 ASPECT_RATIO_TO_DIMENSIONS = {
     "1:1": (1024, 1024),
-    "2:3": (1024, 1536),
-    "3:2": (1536, 1024),
-    "3:4": (1024, 1365),
-    "4:3": (1365, 1024),
+    "2:3": (960, 1440),
+    "3:2": (1440, 960),
+    "3:4": (1056, 1408),
+    "4:3": (1408, 1056),
     "4:5": (1024, 1280),
     "5:4": (1280, 1024),
-    "9:16": (1024, 1820),
-    "16:9": (1820, 1024),
-    "21:9": (2048, 878),
+    "9:16": (576, 1024),
+    "16:9": (1024, 576),
+    "21:9": (1344, 576),
 }
+
+
+def _resolve_request_options(
+    aspect_ratio: str,
+    image_size: str,
+    model: str,
+) -> tuple[str, str]:
+    """Validate request options and return the normalized model and endpoint."""
+    if aspect_ratio not in VALID_ASPECT_RATIOS:
+        raise ValueError(
+            f"Unsupported aspect ratio '{aspect_ratio}' for BFL backend. "
+            f"Supported: {VALID_ASPECT_RATIOS}"
+        )
+    normalized_model = model.strip().lower()
+    endpoint = MODEL_ENDPOINTS.get(normalized_model)
+    if not endpoint:
+        supported = sorted(MODEL_ENDPOINTS)
+        raise ValueError(f"Unsupported BFL model '{model}'. Supported: {supported}")
+    normalized_size = normalize_image_size(image_size)
+    if normalized_size != "1K":
+        raise ValueError(
+            f"BFL model '{normalized_model}' does not expose the unified image_size preset; "
+            f"only the default '1K' is supported, got '{image_size}'."
+        )
+    return normalized_model, endpoint
 
 
 def _submit_request(url: str, headers: dict, payload: dict) -> dict:
@@ -82,19 +108,11 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
     """Generate one image with the Black Forest Labs backend."""
-    del image_size  # BFL quality is primarily controlled by model choice.
-
-    if aspect_ratio not in VALID_ASPECT_RATIOS:
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for BFL backend. "
-            f"Supported: {VALID_ASPECT_RATIOS}"
-        )
-
-    normalized_model = model.strip().lower()
-    endpoint = MODEL_ENDPOINTS.get(normalized_model)
-    if not endpoint:
-        supported = sorted(MODEL_ENDPOINTS)
-        raise ValueError(f"Unsupported BFL model '{model}'. Supported: {supported}")
+    normalized_model, endpoint = _resolve_request_options(
+        aspect_ratio,
+        image_size,
+        model,
+    )
 
     headers = {
         "x-key": api_key,
@@ -139,7 +157,13 @@ def _generate_image(api_key: str, prompt: str,
         {"x-key": api_key, "accept": "application/json"},
         status_label="status",
         ready_values=["Ready"],
-        failed_values=["Error", "Failed", "Request Moderated", "Content Moderated"],
+        failed_values=[
+            "Error",
+            "Failed",
+            "Task not found",
+            "Request Moderated",
+            "Content Moderated",
+        ],
     )
 
     image_url = ((result_payload.get("result") or {}).get("sample"))
@@ -155,12 +179,13 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the BFL backend."""
+    resolved_model = model or os.environ.get("BFL_MODEL") or DEFAULT_MODEL
+    _resolve_request_options(aspect_ratio, image_size, resolved_model)
     api_key = require_api_key(
         "BFL_API_KEY",
         message="No API key found. Set BFL_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("BFL_BASE_URL") or DEFAULT_BASE_URL
-    resolved_model = model or os.environ.get("BFL_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):

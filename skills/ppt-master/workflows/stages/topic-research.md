@@ -1,5 +1,5 @@
 ---
-description: Generate source-intake stage that fills externally verifiable factual gaps before planning or direct SVG authoring.
+description: Generate source-intake stage that fills factual gaps and retains adopted webpage text evidence before planning or direct SVG authoring.
 ---
 
 # Topic Research Stage
@@ -9,13 +9,15 @@ description: Generate source-intake stage that fills externally verifiable factu
 > consumes the same output. Run immediately for topic-only input, or after
 > supplied material is converted and read when it leaves planning-critical
 > factual gaps. Output is a research supplement plus stable fact provenance for
-> project import.
+> project import; its retained webpage URLs are imported as text evidence in
+> the active Generate profile's project-initialization handoff.
 
-This stage supplies facts needed to build the requested deck. It does not select,
-download, or generate images. Default Generate resolves image selection in the
-final Strategist plan and acquires AI / web / slice assets after confirmation;
-Quick Generate resolves and acquires them later in its resource-preparation
-phase without adding a confirmation gate.
+This stage supplies facts needed to build the requested deck and preserves the
+webpages actually adopted during that research. It makes no deck image
+selection and performs no independent image search or generation. During the
+handoff, `project_manager.py import-sources` converts each retained URL, archives
+its Markdown as text evidence, and retains remote inline-image links without
+downloading them. Those links are not an initial image pool.
 
 ## When to Run
 
@@ -67,11 +69,11 @@ confirmation stage.
 | Actor | Contract |
 |---|---|
 | Main agent | Supply the topic/outcome, baseline or relevant source paths, declared gaps, output language, two exact unused output paths, and this stage's absolute path as execution authority; use paths instead of pasting source bodies when possible |
-| Research worker | Read the supplied stage file completely, then follow Steps 2–3 using the brief and declared source paths as its baseline; limit project writes to the two output artifacts; acquire no images and make no deck-planning or design decisions |
+| Research worker | Read the supplied stage file completely, then follow Steps 2–3 using the brief and declared source paths as its baseline; limit project writes to the two output artifacts; perform no independent image search/generation and make no deck-planning, image-selection, or design decisions |
 
 **Hard rule — isolate retrieval, not research**: Raw page content and fetch transcripts stay in the worker context. The 250-word limit applies only to its chat receipt: return `status`, exact artifact paths, covered/unresolved gap counts, external-fact count, and material conflicts. It does not cap or replace the two artifacts. After validation and import, the active content owner reads the complete imported research supplement and fact-provenance JSON into the main context before planning or direct SVG authoring; never use the receipt or validation summary as content.
 
-**Validation**: Before import, the main agent verifies both exact files exist, the Markdown contains `## Research Brief` and `## Sources`, the JSON parses with schema `ppt-master.fact-provenance.v1` and unique sequential IDs, and the two files agree. Return an invalid pair to the research worker for owning-artifact repair; use main-context web research only when isolated execution is unavailable.
+**Validation**: Before import, the main agent verifies both exact files exist, the Markdown contains `## Research Brief` and no source list or URL, the JSON parses with schema `ppt-master.fact-provenance.v1` and unique sequential IDs, and the two files agree. Return an invalid pair to the research worker for owning-artifact repair; use main-context web research only when isolated execution is unavailable.
 
 ---
 
@@ -80,8 +82,12 @@ confirmation stage.
 Use the web search and fetch tools available in the active research context. An isolated worker without them returns `blocked: web-tools-unavailable`. If no usable research context has search/fetch tools, the main agent pauses and asks the user for authoritative URLs covering the declared gaps, then fetches each with:
 
 ```bash
-uvx ppt-master web-to-md <URL>
+uvx ppt-master web-to-md <URL> \
+  -o projects/<research_slug>_web_sources/<source_slug>.md --no-images
 ```
+
+Preserve the resulting Markdown and conversion profile for research. Remote
+inline-image links remain in the Markdown; no image files are downloaded.
 
 | Phase | Action |
 |---|---|
@@ -96,6 +102,11 @@ uvx ppt-master web-to-md <URL>
 | 3 | Reputable reporting or analysis when primary evidence is unavailable |
 | Avoid | Unsourced reposts, unverifiable summaries, and stock-aggregator pages |
 
+**Retained webpage boundary**: Record a page URL only in the matching fact's
+`source_url`, and only when it materially supports that retained fact. Do not
+retain a page merely because its images may be useful, and do not add unopened
+search results or pages found through a separate image-search pass.
+
 **Stop condition**: stop when every declared gap has enough sourced evidence for
 the active content owner to decide whether and how to include it. Do not expand
 into unrelated overview / history / outlook sections merely to make the
@@ -107,16 +118,14 @@ research look complete.
 
 Write two artifacts under `projects/`:
 
-> `projects/` 指项目工作区根（`PPT_MASTER_PROJECTS` 环境变量指定的目录，或默认 `<cwd>/projects/`）。
-
 | Artifact | Path |
 |---|---|
 | Research supplement | `projects/<research_slug>.md` |
 | Fact provenance | `projects/<research_slug>.facts.json` |
 
-**Hard rule — location and preservation**: write both files under `projects/`, never the repository root. Do not overwrite an existing user file; choose a new research stem instead. This stage creates no image folder.
+**Hard rule — location and preservation**: write both files under `projects/`, never the repository root. Do not overwrite an existing user file; choose a new research stem instead. Do not create a research-image manifest or download embedded images.
 
-Begin the research Markdown with a compact `## Research Brief` containing the supplied-material baseline, declared gaps, audience / intent already known, and requested outcome. Organize the body by gap, include concrete facts only, flag material conflicts, and end with `## Sources` listing every URL used.
+Begin the research Markdown with a compact `## Research Brief` containing the supplied-material baseline, declared gaps, audience / intent already known, and requested outcome. Organize the body by gap, include concrete facts only, flag material conflicts, and cite claims by `fact_id`. Do not add `## Sources` or URLs; the facts JSON is the only URL authority.
 
 Write every externally sourced claim that may enter the deck to `<research_slug>.facts.json` with a stable sequential ID, especially quantitative, date, ranking, attribution, and named-entity claims. Do not include user-supplied claims or invented scenario values. When no external claim is retained, write the schema with an empty `facts` array.
 
@@ -143,25 +152,42 @@ IDs are immutable within the file. Correct a claim under the same ID; never reus
 
 ## Hand-off
 
-Import the research supplement and provenance alongside any user-supplied
-sources through the active profile's source intake:
+After project initialization, import the research pair and user-supplied
+sources. `project_manager.py` reads unique `source_url` values from the v1 facts
+JSON automatically; do not repeat those URLs in the command or Markdown.
 
 ```bash
-uvx ppt-master project import-sources projects/<project_name> [<source_paths...>] projects/<research_slug>.md projects/<research_slug>.facts.json --move
+uvx ppt-master project import-sources \
+  projects/<project_name> [<source_paths...>] \
+  projects/<research_slug>.md projects/<research_slug>.facts.json
 ```
 
-The imported pair remains evidence-facing context, not a locked presentation
-contract. Default Generate has Strategist read both files completely before
-confirmation and use them to select the content, page roster, and image resource
-plan. Quick Generate has the current agent read both completely before its
-active-context content, design, and resource decisions.
+For retained URLs, `project_manager.py` invokes the webpage converter in
+text-only mode and fails the import when any registered URL cannot be archived.
+It never copies page images into `<project>/images/`. A URL explicitly supplied
+as initial material keeps normal source-import behavior even when a later fact
+cites it; text-only mode applies only to URLs auto-expanded from the facts JSON.
+
+Only after normal web-image providers, ranked thumbnail pages, and materially
+different queries fail may an image owner with visual capability open one
+relevant retained page, choose one inline-image URL, download it with the
+existing `image_search.py --from-url`, and inspect it. Try another only after
+rejection; never bulk-download a page. Without vision, skip this fallback.
+
+The imported research pair remains the compact evidence-facing content
+authority, not a locked presentation contract. Default Generate has Strategist
+read both files completely before confirmation and use them with the imported
+source inventory to select the content, page roster, and image resource plan.
+Quick Generate has the current agent do the same before its active-context
+content, design, and resource decisions. Reopen an imported webpage Markdown
+only for missing factual detail or the post-exhaustion single-image fallback.
 
 ```markdown
 ## ✅ Topic Research Complete
 - [x] Research execution: <isolated worker | main-context fallback>
 - [x] Research supplement: `projects/<research_slug>.md` (N declared gaps covered)
 - [x] Fact provenance: `projects/<research_slug>.facts.json` (N external facts)
-- [x] Artifact contract validated: `## Research Brief`, `## Sources`, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
-- [x] No images acquired inside this factual-research stage
-- [ ] **Next**: Default returns to [`generate-pptx`](../generate-pptx.md) Step 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2. Import all source artifacts, then fully read the imported research pair before planning or direct SVG authoring
+- [x] Artifact contract validated: `## Research Brief`, no Markdown source list, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
+- [x] Retained webpage URLs: N unique `source_url` values in the facts JSON; no page images downloaded
+- [ ] **Next**: Default returns to [`generate-pptx`](../generate-pptx.md) Step 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2. Import the source artifacts plus research pair, then fully read the imported pair before planning or direct SVG authoring
 ```

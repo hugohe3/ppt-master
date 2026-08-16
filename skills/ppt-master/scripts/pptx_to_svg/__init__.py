@@ -1,7 +1,8 @@
-"""PPTX -> SVG semantic converter (reverse of svg_to_pptx).
+"""PPTX -> SVG semantic importer for declared reversible subsets.
 
 Reads OOXML (DrawingML) directly from a .pptx zip archive and emits SVG with
-shape-level fidelity: <p:sp prst="rect"> -> <rect>, <p:txBody> -> <text>, etc.
+shape-level fidelity plus explicit native-marker reconstruction where the
+source fits a closed project-owned contract.
 
 Public entry: convert_pptx_to_svg().
 """

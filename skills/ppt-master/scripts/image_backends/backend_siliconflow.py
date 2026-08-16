@@ -5,7 +5,7 @@ SiliconFlow image generation backend.
 Configuration keys:
   SILICONFLOW_API_KEY   (required)
   SILICONFLOW_BASE_URL  (optional)
-  SILICONFLOW_MODEL     (optional)
+  SILICONFLOW_MODEL     (optional; Qwen/Qwen-Image only)
 """
 
 import sys
@@ -43,53 +43,29 @@ from image_backends.backend_common import (
 
 DEFAULT_ENDPOINT = "https://api.siliconflow.cn/v1/images/generations"
 DEFAULT_MODEL = "Qwen/Qwen-Image"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 ASPECT_RATIO_SIZE_MAP = {
-    "512px": {
-        "1:1": "1024x1024",
-        "2:3": "1056x1584",
-        "3:2": "1584x1056",
-        "3:4": "1140x1472",
-        "4:3": "1472x1140",
-        "4:5": "1140x1425",
-        "5:4": "1425x1140",
-        "9:16": "928x1664",
-        "16:9": "1664x928",
-    },
     "1K": {
         "1:1": "1328x1328",
         "2:3": "1056x1584",
         "3:2": "1584x1056",
         "3:4": "1140x1472",
         "4:3": "1472x1140",
-        "4:5": "1140x1425",
-        "5:4": "1425x1140",
         "9:16": "928x1664",
         "16:9": "1664x928",
     },
-    "2K": {
-        "1:1": "2048x2048",
-        "2:3": "1536x2048",
-        "3:2": "2048x1536",
-        "3:4": "1536x2048",
-        "4:3": "2048x1536",
-        "4:5": "1638x2048",
-        "5:4": "2048x1638",
-        "9:16": "1152x2048",
-        "16:9": "2048x1152",
-    },
-    "4K": {
-        "1:1": "2048x2048",
-        "2:3": "1536x2048",
-        "3:2": "2048x1536",
-        "3:4": "1536x2048",
-        "4:3": "2048x1536",
-        "4:5": "1638x2048",
-        "5:4": "2048x1638",
-        "9:16": "1152x2048",
-        "16:9": "2048x1152",
-    },
 }
+
+
+def _validate_model(model: str) -> str:
+    """Limit the backend to the Qwen-Image contract implemented below."""
+    resolved = model.strip()
+    if resolved not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported SiliconFlow model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    return resolved
 
 
 def _resolve_url(base_url: str) -> str:
@@ -103,9 +79,16 @@ def _resolve_url(base_url: str) -> str:
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
-    size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
+    sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
+    if sizes is None:
+        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for SiliconFlow backend. "
+            f"Qwen/Qwen-Image supports these logical sizes: {supported_sizes}."
+        )
+    size = sizes.get(aspect_ratio)
     if not size:
-        supported = sorted(ASPECT_RATIO_SIZE_MAP["1K"])
+        supported = sorted(sizes)
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for SiliconFlow backend. "
             f"Supported: {supported}"
@@ -118,6 +101,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the SiliconFlow backend."""
+    model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size)
     url = _resolve_url(base_url)
     headers = {
@@ -160,12 +144,15 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the SiliconFlow backend."""
+    resolved_model = model or os.environ.get("SILICONFLOW_MODEL") or DEFAULT_MODEL
+    _validate_model(resolved_model)
+    normalized_size = normalize_image_size(image_size)
+    _resolve_size(aspect_ratio, normalized_size)
     api_key = require_api_key(
         "SILICONFLOW_API_KEY",
         message="No API key found. Set SILICONFLOW_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("SILICONFLOW_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("SILICONFLOW_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
@@ -174,7 +161,7 @@ def generate(prompt: str,
                 api_key=api_key,
                 prompt=prompt,
                 aspect_ratio=aspect_ratio,
-                image_size=image_size,
+                image_size=normalized_size,
                 output_dir=output_dir,
                 filename=filename,
                 model=resolved_model,

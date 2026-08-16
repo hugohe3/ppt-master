@@ -129,6 +129,7 @@ def parse_results(payload: dict) -> list[AssetCandidate]:
                 width=int(info.get("width") or 0),
                 height=int(info.get("height") or 0),
                 download_url=download_url,
+                preview_url=(info.get("thumburl") or "").strip(),
                 author=_ext_value(extmetadata, "Artist"),
                 raw=page,
             )
@@ -180,6 +181,7 @@ def search(
             "gsrlimit": search_limit,
             "prop": "imageinfo",
             "iiprop": "url|size|extmetadata|mime",
+            "iiurlwidth": 1024,
             "iiextmetadatafilter": (
                 "LicenseShortName|License|LicenseUrl|Artist"
             ),

@@ -75,6 +75,8 @@ def print_usage() -> None:
     print("                                  requires the complete declared page roster.")
     print("  --json                         Write a machine-readable quality report")
     print("  --json-output <path>           Override the JSON report path")
+    print("  --export                       Write a plain-text quality report")
+    print("  --output <path>                Override the plain-text report path")
     print("  --quick-generate               Validate lockless flat Quick Generate SVGs;")
     print("                                  ignore design_spec.md and spec_lock.md.")
     print("  --template-mode               Validate a template workspace's templates/ directory:")

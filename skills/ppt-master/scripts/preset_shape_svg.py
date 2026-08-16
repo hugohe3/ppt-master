@@ -124,6 +124,13 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("miter", "round", "bevel"),
     )
     render_parser.add_argument(
+        "--filter-id",
+        help=(
+            "Optional local SVG filter id for one registered native shadow or "
+            "glow; the complete page must define it in direct <defs>."
+        ),
+    )
+    render_parser.add_argument(
         "--adjust",
         action="append",
         default=[],
@@ -183,6 +190,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             element_id=args.element_id,
             name=args.name,
             style=style,
+            filter_id=args.filter_id,
         )
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)

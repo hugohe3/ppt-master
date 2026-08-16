@@ -11,6 +11,7 @@ Output structure (default --inheritance-mode both):
     <output_dir>/
         svg/                    layered machine input: masters/layouts/slides
         svg-flat/               self-contained visual preview slides
+        animations.json         normalized transition/object-motion sidecar
         <media_subdir>/         (default: assets/)
             image1.png
             image2.png
@@ -18,8 +19,9 @@ Output structure (default --inheritance-mode both):
 
 If -o is omitted, writes alongside the source file as <pptx_stem>_pptx_to_svg/.
 
-This is the reverse of svg_to_pptx.py: it reads OOXML directly and emits
-shape-level SVG without going through PowerPoint or PDF rendering.
+This is the semantic import counterpart to svg_to_pptx.py: it reads OOXML
+directly and emits declared SVG/native-marker subsets without claiming an
+arbitrary lossless PPTX round trip.
 """
 
 from __future__ import annotations
@@ -38,6 +40,14 @@ from pptx_to_svg import convert_pptx_to_svg
 from pptx_to_svg.converter import ConvertOptions
 
 configure_utf8_stdio()
+
+
+def _diagnostic_preview(message: str, limit: int = 240) -> str:
+    """Return one compact CLI preview while the report retains full detail."""
+    compact = " ".join(message.split())
+    if len(compact) <= limit:
+        return compact
+    return compact[: limit - 3].rstrip() + "..."
 
 
 def _reconstruction_only_graphics(result: object) -> list[tuple[int, str]]:
@@ -163,7 +173,8 @@ def main() -> int:
             if shape:
                 location = f"{location}, {shape}" if location else shape
             print(
-                f"  {location or 'package'}: {item.code}: {item.message}",
+                f"  {location or 'package'}: {item.code}: "
+                f"{_diagnostic_preview(item.message)}",
                 file=sys.stderr,
             )
         if len(result.diagnostics) > 20:
@@ -188,6 +199,7 @@ def main() -> int:
                 file=sys.stderr,
             )
     print(f"Output: {output_dir}")
+    print(f"Animation config: {output_dir / 'animations.json'}")
     print(f"Conversion report: {output_dir / 'conversion-report.json'}")
     return 0
 

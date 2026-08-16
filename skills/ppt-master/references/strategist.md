@@ -58,7 +58,7 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 | Reference | Preserve the selected direction or role; adapt its realization to context. |
 | Permission / default | An allowed candidate/source boundary or preference; Strategist may leave it unused, with no quota. |
 
-**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Fact research may precede confirmation; AI/web/slice follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
+**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and text-only import of its retained webpages may precede confirmation; their image links are only a post-search fallback. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
 
 Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording may strengthen only the named property into the appropriate Literal or Semantic requirement. Accepting an AI recommendation keeps the field's default type; it does not promote a Reference or Permission into a Literal requirement.
 
@@ -222,7 +222,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 - User/template typography is authoritative. Repeat fixed stacks with `typography.fixed: true` in every direction; never vary them for diversity. Keep the three directions distinguishable as full bundles; reasonable font repetition is non-blocking, with no extra font round.
 - Every Stage-2 direction carries `heading` / `body` `primary`, `css`, and positive `body_size`; add `english` only when the deck's main language is not English.
-- Use concrete, target-installed PowerPoint faces. The Confirm UI font catalog supplies additional manual dropdown choices, not a recommendation whitelist.
+- Resolve the delivery target under [`shared-standards-core.md`](./shared-standards-core.md) §4.1, then use concrete, target-installed/approved PowerPoint faces. The Confirm UI font catalog supplies additional manual dropdown choices, not a recommendation whitelist.
 - Keep stacks to four families or fewer. A brand/web face may lead only after user-confirmed target installation/approved install; PPT Master does not embed fonts. Otherwise export a safe face and keep the unavailable face as Design Spec reference.
 - Avoid near-equivalent role splits such as YaHei↔PingFang, SimSun↔Songti, Arial↔Helvetica↔Segoe UI, or Times New Roman↔Times. Counterparts may aid SVG/browser preview; CSS tails are not deterministic PowerPoint fallbacks.
 - Choose by locked style and vary the axis: serif×sans, Kai/FangSong×hei, hei×song, double-serif, display×neutral, same-family weight, or sans+mono. These are recall seeds, not presets.
@@ -279,13 +279,25 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 |---|---|---|
 | `none` | No images | Data reports or process documentation whose visual burden is fully served by charts / native SVG |
 | `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
-| `ai` | AI-generated | Custom illustrations, backgrounds, metaphors, or a coherent spot family are needed |
-| `web` | Web-sourced | Real-world editorial or stock-style reference imagery is needed |
+| `ai` | AI-generated | Invented or deliberately stylized illustrations, backgrounds, metaphors, or a coherent spot family are needed |
+| `web` | Web-sourced | A named or evidence-bearing real-world subject must appear as itself |
 | `placeholder` | Deferred | The image is required but will be supplied later |
 
 **Current inventory**: If `images/` is non-empty, run `uvx ppt-master analyze-images <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Default — evidence before synthesis (may override when explicit source constraints or the communication intent require another permitted source)**: Prefer `provided` when supplied assets already carry authority. Propose `web` when the actual appearance of an externally verifiable subject is material; propose `ai` when custom expression matters more than documentary identity. Mixed sources may serve different page roles. This is a source-fit decision, not an image quota. The three Stage-2 style directions never settle it: a rendering candidate resolves how imagery looks, never whether an externally verifiable subject must appear as itself.
+
+**Mandatory — proactive decorative-lettering scan**: Before each Stage-2
+`recommend.image_usage`, treat a configured `IMAGE_BACKEND` or host-native image
+generator as callable; Offline Manual, web, and vision-only access do not
+qualify. If callable and the planned roster contains an exact stable string
+suited to illustrative lettering anywhere in the deck — page role, length, and
+kind of noun never filter candidates — include `ai` plus its role in
+`image_notes.value` without waiting for a request. Never invent or rewrite copy
+to trigger it. Explicit no-AI or editable-only requirements win. Execution
+follows [`image-generator.md`](./image-generator.md) §7.
+
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
@@ -309,6 +321,7 @@ user/template requirements bind.
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
+| AI decorative lettering asset | Any stable display string in the deck — cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): when compatible, plan one unplaced AI Illustration Sheet plus one transparent `slice` row per used lettering element; record every exact string, and keep subtitle/chrome/body as native text. A display wordmark and an editable page title may coexist |
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
 

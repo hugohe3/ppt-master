@@ -98,7 +98,7 @@ PowerPoint 意图
 | 已物化的合并形状结果 | `shape_boolean_svg.py` 输出的普通 `<path>`；“拆分”返回多个同级 path | 每个返回 path 对应一个带 `a:custGeom` 的 `p:sp` | `Native-normalized`；回导为最终自由形状几何，不保留可重放的操作历史 | 接受受支持的闭合几何，或字体 face 可精确解析的隐式从左到右水平直接文本；文本会转为字形几何，第一个 source 决定样式与顺序，且不输出 clip、mask 或显式 fill rule |
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
 | 折线 | `<polyline>` | 开放自定义几何 | `Native-normalized` | points 使用与其他生成几何相同的有限、已登记语法 |
-| PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，由该组承载 preset 意图与基础 paint，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 质检与导出动态重渲染 registry；规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
+| PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，承载 preset 意图与基础 paint，可选直接引用一个已登记的阴影/发光 filter，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp`，最多一个原生效果写入 `p:spPr/a:effectLst` | preset 身份与 adjustment 可以经导入/导出保留；效果遵循下方共享保真度行 | 质检与导出动态重渲染 registry；创作型 preset 的 filter 引用仅适用于 shape，规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
 | 导入的预设形状 | 含隐藏原生 carrier、可见 preview 证据与新鲜度 metadata 的 expanded 导入/往返组 | payload 合法且未改变时重新接入 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
 | 动作按钮形状 | compact authored `actionButton*` preset 组 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
 | 组 | `<g>` | `p:grpSp`，或对特殊 carrier 执行文档化的 flatten/collapse | 分组内容可重建为 `<g>` | 结构 atom 与 placeholder 合同优先于普通分组 |
@@ -130,7 +130,7 @@ PowerPoint 意图
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
 | 文本阴影或发光 | 受支持 filter/effect 合同 | 一个原生外阴影或发光 | `Approximate` | 仅支持一个已登记效果图；实质效果需复核 |
-| WordArt、文本变形或沿路径文本 | 无已登记主路线映射 | 不生成原生 WordArt | `Bake-required` 或使用普通文本/几何重建 | 浏览器可渲染不代表 PowerPoint 受支持 |
+| WordArt、文本变形或沿路径文本 | 装饰文字使用已准备的图片资产，或用普通 `<text>` 作为可编辑兜底 | 图片或普通文字；不新建原生 WordArt | 源保留型原生路线为 `Direct preservation`；其他路线需要 `Bake-required` 或使用受支持载体重建 | 不登记任何生成 SVG 的 WordArt / 变形 / 路径文字属性；浏览器可渲染不代表 PowerPoint 受支持 |
 
 ## 5. PowerPoint 图片功能
 
@@ -208,6 +208,7 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 | LaTeX 输入档位 | 规范 marker 源不写外层定界符；也接受一对完整的 `$...$`、`$$...$$`、`\(...\)` 或 `\[...\]` | 锁定的 Microsoft 365 2606 / Mac 16.110 档位中所有明确点名的输入，以及 2605 / 16.109 mhchem 档位，均编译为可编辑 OMML | 档位锁定到这些 Microsoft 文档版本；产出的 OMML 仍保持 PowerPoint 2010+ 包目标。仓库验证覆盖编译器、OMML 与包结构，不等同于完整的 Microsoft 365 UI 认证 | 保留文档明确规定的原生归一化；未知或明确不支持的输入直接失败，不把 LaTeX 字面量漏进页面 |
 | 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m > m:oMathPara > m:oMath` 的 PowerPoint 文本 shape | 见输入档位行 | 矩阵、多行推导等独立高结构公式使用块级合同 |
 | 可编辑行内公式 | 普通文本 run 中的叶子 `<tspan data-pptx-inline-formula="规范 LaTeX body">preview text</tspan>` | 同一 DrawingML `a:p` 保留前后 run，并插入 `a14:m > m:oMath` | 见输入档位行 | 只允许非空直接预览文本；禁止子元素、`x/y/dx/dy`、结构化 placeholder / Master / Layout 归属、保留的导入 `txBody` 或原生替换祖先 |
+| PPTX 公式反向导入 | 通过校验的 `m:oMathPara` 变为块级 marker；通过校验的 `m:oMath` 与前后 run 一起保留为行内 marker | 再导出时把规范化 LaTeX 编译回可编辑 OMML | 对 PPT Master 自有封闭 OMML 词汇为 `Native-normalized` | 无法恢复原 LaTeX 写法；未知第三方 OMML 在 tolerant 模式下产生 `formula-not-reconstructed`、可读文本，并在无 relationship 时以不透明 `txBody` 保留 |
 | 浏览器 / 实时预览 | 块级 marker 内的普通 SVG 子元素，或行内 marker 的直接文本 | 写入原生公式时只丢弃已登记预览 | 原始 LaTeX 不能直接在 SVG 中渲染 | 预览必须表达同一公式；它不是 PPTX 兜底 |
 | 公式字体 | 块级 payload 样式，或行内文本 run 的计算样式 | 公式继承字号与可见纯色填充，并使用项目文本语言和 Cambria Math；局部 `\color` / `\textcolor` 作用域会覆盖可选中文字 run 与结构控制符的继承填充，`\boldsymbol` / `\bm` 也会设置结构控制字形的样式 | PowerPoint 2010+ OMML | 高结构或多行数学内容仍使用块级形式 |
 | 非 PowerPoint 客户端播放 | 同一类原生 marker；没有图片分支 | 不附加兼容兜底 | Keynote、WPS、LibreOffice 等客户端不在公式合同内 | 不宣称跨客户端显示或编辑能力 |
@@ -216,7 +217,8 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 `formula_manifest.json`、公式 PNG、media relationship 或作为图片的
 `mc:Fallback`。块级 JSON 和行内 `data-pptx-inline-formula` 的值是原生公式源；
 SVG 预览内容只负责让导出前的作者页面保持可见。
-编译仅支持前向生成；PPT Master 不把 OMML 反向 build-down 为 LaTeX。
+`pptx_to_svg.py` 只对通过同一封闭校验器的 OMML 执行窄反向导入，产出的是
+规范化 LaTeX，而不是作者原始写法；它不宣称任意 Office Math 转换。
 可执行闭合集与锁定的 Microsoft 来源修订记录在 `formula_profile.py`；Microsoft
 文档中开放式的 “etc.” 不会把未披露的 relation alias 自动纳入本合同。
 
@@ -228,8 +230,8 @@ SVG 预览内容只负责让导出前的作者页面保持可见。
 | PowerPoint 功能 | 项目中的所有者 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 演讲者备注 | `notes/<slide>.md` sidecar | Notes Slide part 与 relationship | `Sidecar/package` | 备注不是 SVG 文本，不影响页面几何 |
-| 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package` | 未知效果或非法时长失败；不默默 fallback 到 `fade` |
-| 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为 shape target 锚点 | 静态结构层与占位符不可动画 |
+| 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package`；PPTX 回导把当前注册表内的精确切换重建到 `animations.json` | 未知效果或不精确 carrier 会失败或保留诊断；不默默 fallback 到 `fade` |
+| 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；PPTX 回导把当前注册表内具有精确时长的记录重建到 sidecar | target 与可选 trigger shape 必须唯一映射；高级/build/media timing 保留诊断或直接保留 |
 | 旁白音频 | `audio/` 资产加 recorded-narration 导出选项 | media relationship、audio carrier 与 timing | `Sidecar/package` | 必须校验资产、Slide 关联与时序 |
 | 幻灯片自动换页 | 显式 transition timing 或旁白派生时长 | `advTm`/换页行为 | `Sidecar/package` | 单击驱动动画与录制旁白不兼容 |
 | 整体对象超链接 | 标准 SVG `<a href="...">` 包裹一个可见元素或组 | 每个可点击叶子上的 `p:cNvPr/a:hlinkClick`，共用一个 relationship | 受支持外链与 deck 内目标为 `Native-stable`；PPTX 回导重建 anchor | 多对象卡片 / 按钮的间隙也要可点时，需显式加入背景形状 |
@@ -277,6 +279,8 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
+| 当前注册表内受支持的页面切换 | 规范 `animations.json` 记录，包含有效选项、精确时长、可选自动换页与受支持 WAV 声音 |
+| 受支持的精确时长对象动画序列 | 规范 `animations.json` group 记录，包含效果/选项、顺序、触发、时长、相对延迟与可选 `trigger_shape` |
 | 不支持的 graphic frame 或 SmartArt | 显式 preview、placeholder 或 unsupported 状态 |
 
 这是语义投影，不是语法往返。只有 Create Template mirror 可把来源包中已验证的 Master/Layout 事实保留到新工作区；普通视觉导入不会从 Slide 外观推断可复用拓扑。
@@ -293,7 +297,12 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 不支持的 Slide 或 part 背景 | 省略该背景，继续当前页面/part | 在第一个违规点停止 | warning 标识所属 part |
 | 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级容错 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
 
-每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
+每次成功转换都会写入 `<output>/conversion-report.json` 和以 `none` 为
+基线切换的规范 `<output>/animations.json`。报告记录运行模式、Slide 与
+warning 数量、归属产物、稳定原因码、源错误消息、采用的 fallback、包 part，
+以及可用时的 Slide 序号和 shape id/name/kind。未知或不精确的切换 carrier
+会保留明确的 `transition-not-reconstructed` 诊断。因此，容错导入不是静默
+吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
 
 ## 13. 校验职责
 

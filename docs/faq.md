@@ -10,7 +10,7 @@ Almost anything: **PDF**, **DOCX**, **PPTX**, **EPUB**, **HTML**, **LaTeX**, **R
 
 ## Q: Can I generate a deck with just a topic, no source materials?
 
-Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The Generate PPTX route will run its **topic-research stage** to gather the factual baseline and provenance needed for planning. If you provide partial material, the same stage may fill only the factual gaps required by your requested outcome unless you ask for a source-only result. Images are selected during Strategist planning and acquired only after final confirmation.
+Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The Generate PPTX route will run its **topic-research stage** to gather the factual baseline and provenance needed for planning. If you provide partial material, the same stage may fill only the factual gaps required by your requested outcome unless you ask for a source-only result. Adopted webpages are imported as text-only evidence; their images are considered only as a one-at-a-time fallback after normal image search fails.
 
 Quality depends on what's on the open web. If you already have specialized material (papers, internal docs), giving those files to the AI directly produces better results than web research alone.
 
@@ -162,7 +162,11 @@ documented Microsoft 365 2606 / Mac 16.110 LaTeX profile and 2605 / 16.109
 mhchem profile: symbols, structures, environments, macros, chemistry, local
 formula colors, and the documented native normalizations. Unknown and
 explicitly unsupported input fails closed instead of appearing as raw LaTeX.
-PPT Master does not implement reverse OMML-to-LaTeX build-down.
+For PPTX import, the same closed OMML validator supports a narrow reverse path:
+PPT Master-owned block and inline math becomes canonical formula markers with
+visible SVG previews. This recovers normalized semantics, not the author's
+original LaTeX spelling and not arbitrary third-party OMML. Unknown OMML is
+reported and retained as readable/opaque fallback in tolerant mode.
 
 The generated OMML retains the PowerPoint 2010+ package target, and the
 executable source profile is pinned to the Microsoft documentation versions
@@ -193,6 +197,9 @@ animation is **off by default**—a page appears as a whole instead of having
 elements auto-cascade in one by one. Both are controlled by `svg_to_pptx.py`
 flags: `-t/--transition` for page-level and `-a/--animation` for element-level.
 The object registry includes entrance, emphasis, motion-path, and exit effects.
+`pptx_to_svg.py` also reconstructs exact current-registry page transitions and
+finite exact-duration object-animation rows into `animations.json`;
+unsupported source timing remains an explicit diagnostic.
 
 ```bash
 uvx ppt-master svg-to-pptx <project> -t push       # different transition

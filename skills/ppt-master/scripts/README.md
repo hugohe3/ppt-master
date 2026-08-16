@@ -205,8 +205,12 @@ uvx ppt-master preset-shape-svg render rightArrow --id process-arrow --frame 120
 The helper never writes a page or project file. Select one exact semantic
 stock-shape match, inspect the emitted fragment, and insert it into the
 hand-authored SVG with the normal patch workflow. Its project-authored output
-is one compact atomic `<g>` with direct registry-generated visible paths;
-quality check and export rerender the registry instead of relying on a hidden
+is one compact atomic `<g>` with direct registry-generated visible paths. When
+one effect is justified, optional `--filter-id softShadow` references one
+existing direct page-level filter under the shared shadow/glow contract and
+applies it once to a shape preset. Connector presets do not accept that option.
+The helper does not create the filter definition.
+Quality check and export rerender the registry instead of relying on a hidden
 carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
 are not rewritten into this authored form. Keep ordinary rectangles, ellipses,
@@ -286,6 +290,18 @@ Template `page_layouts` records authoring-input provenance, `pptx_masters` / `pp
 
 Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete root Master identity must be replaced by a new workspace created through [`create-template`](../workflows/create-template.md). Generate new structured SVG pages from that workspace; do not upgrade the existing PPTX/SVG in place. Explicit flat free-design/Brand-only/Style-only projects intentionally omit root Master identity.
 
+`pptx_to_svg.py` also writes a canonical `animations.json` whose default
+transition is `none`. Page transitions produced by the current native
+transition registry are read back with their effective options, exact duration,
+automatic advance, and optional embedded WAV sound. Source transition XML
+outside that closed writer/read-back contract remains diagnosed rather than
+being normalized by guesswork.
+Finite object-animation rows from the current writer are also projected when
+their registry effect, effective options, pane order, trigger, exact duration,
+relative delay, and top-level SVG group target all read back exactly. Advanced
+timing, build/media trees, duration-less native rows, and unmapped targets stay
+diagnosed/direct-preserve.
+
 `pptx_to_svg.py` annotates verified text-grid tables and conservative chart data with `data-pptx-replace-with` beside the visible SVG fallback and places the payload in `<metadata type="application/json">`; the parent claim selects the chart or table schema. Imported table/chart groups under this contract carry `data-pptx-import-source="pptx"`, whether active or fallback-only. Table import covers exact physical row/grid topology, canonical rectangular merges, safe solid/no-fill per-side borders, plain multi-paragraph cells, and a closed run-rich paragraph schema. Each rich run requires `text` and may use only `bold`, `italic`, `underline`, `strike`, `color`, `font_size`, one `font_family`, `lang`, and `alt_lang`. A merge must use the exact `rowSpan` / `gridSpan` / `hMerge` / `vMerge` physical topology with empty merge slaves. Presentation-only source run XML without a non-empty `effectLst` / `effectDag` normalizes; a table-cell run effect disables native replacement and adds a blocking effect diagnostic. Relationship-bearing text, extensions, line breaks, fields, tabs, bullets, broken text topology, unsafe border XML, non-solid fills, and other merge encodings remain fallback-only. For table style `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}`, the normalized SVG fallback resolves `wholeTbl`, `firstRow`, horizontal banding, theme colors/fonts, and direct cell/run overrides; other built-in/custom style families are not implied.
 
 Supported parsed column/bar/line/area, pie/doughnut, scatter, and bubble charts without a baked preview receive a deterministic readable fallback marked `data-pptx-fallback-kind="normalized"`. The importer additionally activates verified column/line/area combo charts, canonical OHLC stock charts, area charts with numeric date axes, verified scatter/bubble charts whose two value axes fit the closed `axes.x` / `axes.y` contract, radar charts, safe `of_pie` `serLines`, axis/title/legend normalization, and validated bar/column gap/overlap cases. Combo plots may retain independent primary/secondary category caches and workbook ranges. Both the category/value and XY contracts retain kind/position/visibility/label position/number format/min/max/major unit/reverse/major gridlines for native read-back. Scatter import derives effective `scatter_style` from uniform per-series line/marker/smooth state. The normalized XY fallback consumes only the two major-gridline flags; the C4/C5 additions do not expand the normalized renderer. `gapWidth` is accepted only as an integer in `0..500` and `overlap` only as an integer in `-100..100`; both normalize in native output, while malformed or out-of-range values fail closed. Safe common series paint forms and theme scheme colors are resolved; unknown series paint/style XML outside the explicit normalization boundaries still fails closed. Safe stock series style may pass the structural gate, but stock series, `hiLowLines`, and up-down bar local styling can still normalize under the data-object-first contract. The PowerPoint-native replacement remains allowed to normalize unmodeled no-fill/alpha/line/marker details and reports the route-level loss risk. Chart title/legend/axis titles and supported data-label flags are retained when the current schema can represent them. Fallback-only objects keep rendered SVG content or a baked chart preview and carry `data-pptx-replacement-status`, which validation and `--native-charts-and-tables` export report as a warning. An active marker without a renderer keeps `data-pptx-fallback-kind="placeholder"`; default export keeps the reconstruction-only placeholder and the native Chart/Table opt-in may still reconstruct it.
@@ -313,8 +329,12 @@ uvx ppt-master analyze-images <project_path>/images
 Generated-deck formulas do not use an image command. Author a native formula
 marker in the page SVG; `svg_to_pptx.py` compiles its LaTeX metadata to editable
 PowerPoint OMML. Forward compilation covers the explicitly documented Microsoft
-365 LaTeX and mhchem input profiles and fails closed outside them; it does not
-implement OMML-to-LaTeX build-down. The retained `latex_render.py` utility is
+365 LaTeX and mhchem input profiles and fails closed outside them.
+`pptx_to_svg.py` also reconstructs PPT Master-owned, validator-clean OMML into
+canonical block/inline formula markers with visible linear SVG previews. This
+is a closed-vocabulary reverse import, not arbitrary third-party
+OMML-to-LaTeX conversion; unknown OMML is reported and kept opaque in tolerant
+mode. The retained `latex_render.py` utility is
 standalone legacy rasterization only and is not connected to either Generate
 profile.
 

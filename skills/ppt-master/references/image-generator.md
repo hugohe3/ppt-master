@@ -2,7 +2,7 @@
 
 # Image_Generator Reference Manual
 
-Role definition for the **AI image generation path**: convert each active `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration sheets.
+Role definition for the **AI image generation path**: convert each active `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration and decorative-lettering sheets.
 
 **Trigger**: the Default Generate resource list contains `Acquire Via: ai` or `slice`, or Quick Generate has resolved a required AI/sliced image in active context. Load only when at least one such resource exists.
 
@@ -24,7 +24,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 | `text_policy` | Use |
 |---|---|
 | `none` | No text inside the image |
-| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered keywords, or figure-internal labels |
+| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered words or phrases, or figure-internal labels |
 
 **Hard rule — only what's actually hard**:
 
@@ -185,7 +185,7 @@ Use for: founder profile, speaker bio, testimonial page, or executive intro, inc
 
 **Primitive C — typographic hero (the text *is* the image)**
 
-> The image's central content is one large text element — a short headline, big number, or single word — rendered as art and carrying dominant visual weight. Keep any supporting visual (small icon, geometric anchor, accent line) clearly subordinate. Give the letterforms enough breathing room for readability, adjusting scale and spacing to the actual text and container.
+> The image's central content is one large text element — a single word, a phrase, a headline, a big number, or a short multi-line lockup — rendered as art and carrying dominant visual weight. Keep any supporting visual (small icon, geometric anchor, accent line) clearly subordinate. Give the letterforms enough breathing room for readability, adjusting scale and spacing to the actual text and container.
 
 Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D).
 
@@ -248,21 +248,29 @@ Example opening for a triptych hero:
 
 **When uncertain about field conventions**: read `sources/` before drafting the prompt.
 
-### 4.3 Illustration sheets — one generation, many spot elements
+### 4.3 Illustration sheets — one generation, many spot or lettering elements
 
-An illustration sheet can produce several small **spot illustrations** in one generation and preserve closely matched rendering, deck-color treatment, and line quality before slicing.
+An Illustration Sheet can produce several small **spot illustrations** or
+**decorative lettering elements** in one generation and preserve closely
+matched rendering, deck-color treatment, and finish before slicing. A lettering
+sheet is the batch form of stable Layer 1 artwork; it does not turn page copy
+into an image.
 
-**Default — one sheet for a compatible spot family (may override when separate generation serves the assets better)**: Prefer a sheet when several elements share similar proportions, detail, quality, and semantic precision. Generate elements separately when those needs differ materially; quantity alone neither requires nor forbids a sheet. A single hero/local image stays with the normal one-row-per-image flow (§4.1).
+**Default — one sheet for a compatible asset family (may override when separate generation serves the assets better)**: Prefer a sheet when several spots or lettering elements share similar proportions, detail, quality, and semantic precision. Generate elements separately when those needs differ materially; quantity alone neither requires nor forbids a sheet. A single hero/local image or standalone artistic word stays with the normal one-row-per-image flow (§4.1).
 
-**Hard rule**: a spot sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
+**Hard rule**: a sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
 
-**Sheet prompt convention** (one manifest item, `page_role: local`, `text_policy: none`, `image_size` chosen from final placement size):
+**Sheet prompt convention** (one manifest item, `page_role: local`,
+`image_size` chosen from final placement size; spot sheets use
+`text_policy: none`, lettering sheets use `text_policy: embedded`):
 
 - Choose the sheet `aspect_ratio` and `--grid` from the target element shape. Do not default every sheet to `1:1` + a symmetric grid.
 - Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
-- State the intended cell shape in the prompt: compact square object, tall portrait element, or wide landscape vignette. Do not let the model shrink every subject into a centered square sticker.
-- One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box.
-- Shared `deck_rendering` + `color_scheme` as always. NO text, labels, or numbers anywhere (§5.1, §5.3).
+- State the intended cell shape in the prompt: compact square object, tall portrait element, wide landscape vignette, or wide lettering mark. Do not let the model shrink every subject into a centered square sticker.
+- One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box. Gutters are part of that same flat ground; keep paper grain, halftone, vignette, and every other texture inside the elements, never over the background.
+- Shared `deck_rendering` + `color_scheme` as always.
+- **Spot sheet**: apply the §5.3 `none` cue; include no text, labels, or numbers.
+- **Lettering sheet**: put exactly one named stable string in each cell as the only text, quote every complete character sequence literally in the prompt, and describe one shared artistic treatment. Keep each mark isolated on the flat key background with no scene, title copy, labels, watermark, mockup surface, or unrequested symbols.
 
 **Cell geometry is designed, not assumed.** `slice_images.py --grid RxC` cuts rows first and columns second. The cell ratio is:
 
@@ -277,12 +285,13 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 | Compact objects / badges | `1:1` sheet | `2x2`, `2x3`, or `3x3` |
 | Tall side accents / upright objects | wide or square sheet | `1xN`, or any `MxN` whose cells are portrait |
 | Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
+| Decorative words, phrases, or multi-line lettering lockups | wide sheet | `Nx1`, or any `MxN` whose cells fit the planned string shapes |
 
 If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
 
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists in the active placeable-resource authority: `spec_lock.md images` in Default Generate or the current agent's prepared resource decision in Quick Generate. Default Generate keeps both row kinds in §VIII under [`strategist-image.md`](./strategist-image.md); Quick Generate resolves the same distinction in active context and its operational manifest without creating planning artifacts:
 
-- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: landscape footer-vignette spot set`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
+- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: landscape footer-vignette spot set`, or `decorative lettering set: exact strings = ...`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
 - **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in the active placeable-resource authority, normally with `crop=no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (the preparation pass re-runs `analyze_images.py`). Each row carries an owner-resolved layout recommendation; SVG authoring may realize it as a direct cutout or inside an appropriate container while preserving the resource and crop/content constraints.
 
 For traceability, add optional `slice_grid` and `slice_names` fields to the sheet item in `image_prompts.json` after choosing the geometry. `image_gen.py` validates, preserves, and displays these metadata fields; it does not run the separate slicing command.
@@ -296,13 +305,13 @@ uvx ppt-master slice-images <project>/images/illus_sheet.png --grid 2x3 \
 
 **Three constraints that decide whether it looks good**:
 
-1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend.
-2. **Clean grid, or it cuts ugly.** State the exact row/column structure and cell shape so the model does not invent a square matrix; `--trim` absorbs smaller placement variance. Do not generate several sheets or read them back merely to choose a favorite; re-roll only when user/live-preview feedback exposes an unusable slice.
+1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend. Texture over the ground defeats the key, so request grain or halftone only inside the elements. `slice_images.py` warns when an element keeps opaque corners after `--alpha` or when `--trim` removed nothing; both mean the key did not take. Regenerate the sheet with a clean ground, or rerun with an explicit `--bg` and a larger `--tolerance`, before placing the element on a non-background surface.
+2. **Clean grid, or it cuts ugly.** State the exact row/column structure and cell shape so the model does not invent a square matrix; `--trim` absorbs smaller placement variance. For lettering, a wrong/missing character, extra copy, fused cells, or scene background makes the parent sheet unusable. Do not generate several sheets or read them back merely to choose a favorite; re-roll only when user/live-preview feedback exposes an unusable slice, then slice the replacement sheet again.
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
-**Reference — sliced-asset placement is not a constraint**: A transparent slice may remain an unboxed cutout or enter a card, evidence frame, label, panel, or other suitable container. The owner-resolved layout text is an expression recommendation; SVG authoring owns the actual geometry and treatment while preserving the resource role and crop/content constraints.
+**Reference — sliced-asset placement is not a constraint**: A transparent slice may remain an unboxed cutout or enter a card, evidence frame, label, panel, or other suitable container. Decorative-lettering slices may combine with shapes or other slices, while ordinary titles/subtitles remain separate SVG text. The owner-resolved layout text is an expression recommendation; SVG authoring owns the actual geometry and treatment while preserving the resource role and crop/content constraints.
 
-**Through-line — one family, many roles.** A spot sheet pays off more when the same motif family also drives the cover and section dividers. A large cover / divider anchor is not a giant sheet cell—generate it as its own `hero_page` image sharing the sheet's `deck_rendering`, `color_scheme`, and subject world. Plan this only when the deck leans into illustration, never as a quota.
+**Through-line — one family, many roles.** A sheet pays off more when its visual family recurs coherently: an illustration sheet may share a motif world with cover/divider anchors, while a lettering sheet can supply the deck's small set of matching artistic hooks. A large cover/divider scene is not a giant sheet cell—generate it as its own `hero_page` image sharing the sheet's `deck_rendering` and `color_scheme`. Plan either relationship only when it serves the deck, never as a quota.
 
 ---
 
@@ -483,12 +492,12 @@ Layer 1 text is rasterized into the artwork — once generated it cannot be edit
 
 | Text | Layer |
 |---|---|
-| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered word or phrase, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
 | Authoritative titles, page chrome, body copy, captions, data values — anything that must stay exact, searchable, editable, or may be reworded | Layer 2 (SVG) |
 
 Generation is non-deterministic on every backend, but **do not pre-judge by script or length** — never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a particular script or a long string "won't render". Decide where text lives by the editability rule above, not by guessed rendering ability. Name the exact characters to bake literally in the prompt; do not re-read the generated image to verify them.
 
-**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word, a stat lettering, a figure-internal label.
+**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word or phrase, a stat lettering, a figure-internal label. String length never decides this; a multi-word phrase or two-line lockup qualifies exactly as a single word does.
 
 **Push to SVG overlay instead**: page chrome, captions, data values, or any copy that must stay exact or editable. When the headline must remain editable, switch to **Primitive D (atmospheric backdrop)** and overlay it as SVG text.
 
@@ -586,6 +595,13 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
+**Callable-generator test for proactive planning**: Path A counts when
+`IMAGE_BACKEND` is configured; Path B counts when the current host exposes a
+native image-generation tool. Offline Manual alone, web search, and a
+vision-only tool do not count. This predicate allows Strategist/Quick to add
+decorative-lettering resources proactively; it never overrides an explicit or
+confirmed image-source/path choice.
+
 **Quick Generate selection**: an explicit user instruction for `api`, `host-native`, or `manual` retained in active context wins. When the user did not specify a path, select `auto` and run the A → B → C chain without asking or creating a planning artifact.
 
 **Default Generate selection — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path, Generate Step 4 records the effective choice as `auto`; that explicit durable value uses the automatic A → B → C chain. A missing/blank/unknown project value is not an implicit API authorization:
@@ -619,7 +635,7 @@ The CLI validates the file behind every `Generated` row before skipping it, iter
 |---|---|---|---|
 | `--manifest` | - | Path to `image_prompts.json` | — |
 | `--concurrency` | - | Max concurrent requests; halves on rate-limit, min 1 | `IMAGE_CONCURRENCY` env or `3` |
-| `--image_size` | - | Default size (`512px`/`1K`/`2K`/`4K`); per-item `image_size` wins | `1K` |
+| `--image_size` | - | Default size (`512px`/`1K`/`2K`/`4K`); per-item `image_size` wins | Backend default; see `--list-backends` |
 | `--output` | `-o` | Output directory | Manifest's parent dir |
 | `--backend` | `-b` | Override `IMAGE_BACKEND` for this run | env |
 | `--model` | `-m` | Default model; per-item `model` wins | Backend default |

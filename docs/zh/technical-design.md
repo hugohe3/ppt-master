@@ -435,8 +435,10 @@ Cambria Math；编译器自己的局部颜色以及 `\boldsymbol` / `\bm` 的控
 结构控制符，而普通文字粗斜体或数学字母样式只覆盖对应的继承 run 属性。封闭的 Microsoft 365 档位表进入同一个 parser 与共享 AST，再由同一个 emitter
 生成并按结构校验块级和行内路径共同使用的窄 OMML 词汇。前向编译器覆盖锁定版本的
 Microsoft 365 LaTeX 与 mhchem 文档中所有明确点名的输入及原生归一化；未知、明确不支持、
-非法或超出资源上限的输入都会直接失败，PPT Master 不把 OMML 反向 build-down 为
-LaTeX。矩阵、多行推导等高结构表达仍使用块级形式。两种形式都保留普通 SVG 预览，
+非法或超出资源上限的输入都会直接失败。PPTX 导入器只对通过同一校验器的项目自有
+OMML 词汇执行更窄的反向过程，生成带可见 SVG 预览的规范块级 / 行内公式 marker，
+而不恢复作者原始 LaTeX 写法。未知第三方 OMML 保持有诊断的可读 / 不透明 fallback，
+不冒充原生重建。矩阵、多行推导等高结构表达仍使用块级形式。两种形式都保留普通 SVG 预览，
 因为原始 LaTeX 本身不能在 SVG 中显示。生成包仍以 PowerPoint 2010+ 为目标，可执行
 档位锁定到所述 Microsoft 365 文档版本；仓库验证覆盖编译器、OMML 与包结构，不等同于
 完整的 Microsoft 365 UI 显示 / 编辑认证。不生成公式 PNG、media relationship，也不为
@@ -511,7 +513,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 **快速生成把规划职责合并到当前 Agent。** 来源转换、事实缺口研究和资源准备仍按需运行。当前 Agent 在上下文中自动选择内容、页面清单、mode、visual style 和资源需求；把图片、图标、定性 Structure、原生形状、图表 / 表格、公式与纯字体 / 几何作为完整载体菜单进行一次判断；准备实际选中的用户提供 / 来源抽取 / AI / 网络 / 切片图片、图标及其必要操作 manifest 或来源记录，随后手写 SVG 与所需原生公式 marker；不进入 Strategist、Confirm UI、`design_spec.md`、`spec_lock.md`，也不创建替代规划产物。这些决策在上下文丢失后无法恢复。
 因此同一 Agent 可以顺序承担多个创作阶段，但阶段权责不会合并；Checker、Exporter 与运行记录器仍是独立的确定性工具。
 
-**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证精选项目图标池。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
+**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实并识别最终采用的网页：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐。项目初始化后，`project_manager.py import-sources` 从 v1 事实 JSON 读取保留 URL，并把网页 Markdown 归档为纯文字证据；远程图片链接只在常规搜图失败后作为一次一张的兜底。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。独立的 AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证精选项目图标池。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
 
 **项目中已备好的材料就是边界。** 默认流程中，图片和其他声明型资源须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 是 Strategist 已同步精选内置图标池的索引，既不分配具体页面，也不是穷尽式执行白名单。Executor 按页从已备图标中选择。快速生成以当前上下文中的资源决策及其项目级文件 / manifest 代替该规划投影，不写通用资源清单或逐页分配；当前 Agent 可以在手写 SVG 前获取并准备这些资源。其他目录中的文件不构成使用许可。缺料必须回到所属备料步骤；SVG 创作阶段不得静默换料。
 
