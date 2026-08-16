@@ -1073,7 +1073,7 @@
       "max_tokens": 1250
     },
     "stage.generate.executor.image": {
-      "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary.",
+      "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary. Ceiling raised after BUDGET_LOAD_SET reported 13167 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-image.md",
@@ -1081,7 +1081,7 @@
         "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 13000
+      "max_tokens": 15000
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",
@@ -1527,12 +1527,12 @@
       "prefix_counts": {
         "P1": 13,
         "P2": 10,
-        "P3": 23,
-        "M1": 11,
+        "P3": 24,
+        "M1": 12,
         "M2": 9,
         "M3": 7,
         "A1": 4,
-        "A2": 3,
+        "A2": 4,
         "A3": 3,
         "C1": 1,
         "C2": 2,

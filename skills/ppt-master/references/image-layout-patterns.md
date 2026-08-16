@@ -17,9 +17,9 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 
 | Group | Responsibility | Families | Entries |
 |---|---|---|---:|
-| `P` · Primary Structures | Define the page skeleton | `P1` Single Visual · `P2` Image as Canvas · `P3` Multi-Visual | 46 |
-| `M` · Modifier Layers | Add crop/reveal, tone/focus, or framing/placement/depth treatment to an existing skeleton | `M1` Reveal/Crop/Registration · `M2` Tone/Focus/Contrast · `M3` Framing/Placement/Depth | 27 |
-| `A` · Asset-Dependent Treatments | Require a prepared composite, cutout, or registered derivative | `A1` Composite/Appearance · `A2` Subject Layers · `A3` Registered Derivatives | 10 |
+| `P` · Primary Structures | Define the page skeleton | `P1` Single Visual · `P2` Image as Canvas · `P3` Multi-Visual | 47 |
+| `M` · Modifier Layers | Add crop/reveal, tone/focus, or framing/placement/depth treatment to an existing skeleton | `M1` Reveal/Crop/Registration · `M2` Tone/Focus/Contrast · `M3` Framing/Placement/Depth | 28 |
+| `A` · Asset-Dependent Treatments | Require a prepared composite, cutout, or registered derivative | `A1` Composite/Appearance · `A2` Subject Layers · `A3` Registered Derivatives | 11 |
 | `C` · Cross-Page Continuity | Sustain a visual relationship across slides | `C1` Persistent State · `C2` Camera Continuity · `C3` Matched Framing | 4 |
 
 | Mechanism, not generic “mask” | Owner |
@@ -42,11 +42,12 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 |---|---|
 | Quiet, direct evidence | `#P1-11` negative space, `#P1-12` framed figure, `#P3-04` small multiples, `#P3-03` comparison |
 | One visual should become the page canvas | `#P2-01`–`#P2-10` native overlays |
-| One source should span unusual geometry | `#M1-10` one picture, `#M1-11` addressable pictures, `#A3-01` sharp subject over receded copy |
-| Several visuals should read as one system | `#P3-05` grid, `#P3-14` mosaic with text cell, `#P3-20` tessellation, `#P3-21` split tiling, `#P3-22` curve array, `#P3-23` depth row |
+| One source should span unusual geometry | `#M1-10` one picture, `#M1-11` addressable pictures, `#M1-12` glyph-shaped picture, `#A3-01` sharp subject over receded copy |
+| Several visuals should read as one system | `#P3-05` grid, `#P3-14` mosaic with text cell, `#P3-20` tessellation, `#P3-21` split tiling, `#P3-22` curve array, `#P3-23` depth row, `#P3-24` curved photo wall |
 | A foreground needs an opening or reveal | `#M1-06` true hole, `#M1-07` cut scrim, `#M1-08` background-registered fill, `#M1-05` text subtraction |
 | Text needs contrast without discarding the visual | `#M2-01` directional scrim, `#M2-05` spotlight, `#A3-02` prepared frosted panel, `#M2-09` grid scrim |
 | A subject should cross or re-layer around native content | `#A2-02` frame breakout or `#A2-03` registered reconstruction group |
+| A screenshot or interface needs a credible physical carrier | `#A2-04` registered device or frame mockup |
 | A cover, divider, or promotional page needs image-led structure | `#P1-01`, `#P1-04`, `#P1-13`, or `#P3-15`–`#P3-19` |
 | Consecutive pages should share one visual world | `#C1-01` persistent state, `#C2-01` pan, `#C2-02` push/pull, or `#C3-01` matched framing |
 
@@ -112,6 +113,7 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 - **#P3-21 · Split tiling** — fragment one parent contour into interlocking cells, each holding a different image as an independent object.
 - **#P3-22 · Containers arrayed along a curve** — distribute containers consistently along an arc, wave, or ring; keep image orientation intentional.
 - **#P3-23 · Embracing arc row** — create depth with a center-weighted scale and vertical-offset rhythm while keeping the objects two-dimensional.
+- **#P3-24 · Curved panoramic photo wall** — bow a multi-row lattice of same-treatment photo cells along one shared cylindrical curve: row edges follow common arcs, cell height and side-edge slant grow from the center outward as precomputed 2D clip contours, gutters stay even along the lattice, and every cell remains an independent upright clipped picture — never a shear/skew transform; optionally recede or omit the central columns when a native title should own the calm center.
 
 ---
 
@@ -130,6 +132,7 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 - **#M1-09 · Deliberately misregistered fragments** — separate same-source fragments and break their alignment intentionally for torn, misprint, or glitch language.
 - **#M1-10 · One image across detached shapes** — export one native picture with disjoint clip subpaths so one continuous scene spans every shape.
 - **#M1-11 · Same-source addressable crops** — export several independent native pictures that share an exact source coordinate system; follow [`executor-image.md`](./executor-image.md) §1.
+- **#M1-12 · Glyph-shaped picture** — fill letterforms with an image. Default to the editable native text picture fill in [`svg-effects.md`](./svg-effects.md) §6.3, which keeps the string as text; only when the page needs a true picture object — one continuous photo reading through several glyphs, or a glyph contour treated like other clipped pictures — materialize a stable short string (year, hero number, motif word) through [`native-shape-authoring.md`](./native-shape-authoring.md) §6 and clip one picture to that geometry. Rewordable copy never takes the materialized form; `#M1-05` remains the subtraction variant behind glyph-shaped holes.
 
 The following three patterns are topologically different and are not interchangeable:
 
@@ -179,6 +182,7 @@ The following three patterns are topologically different and are not interchange
 - **#A2-01 · Transparent illustration or cutout** — use a prepared RGBA asset and preserve its open silhouette; compose it freely or repeat it as planned page chrome.
 - **#A2-02 · Subject breaking out of a container** — register a prepared foreground subject across its frame boundary.
 - **#A2-03 · Registered reconstruction group** — align a clean base with one or more prepared transparent midground/subject/foreground layers in one coordinate system. Draw each member at its required z-order. Give every full-canvas member the same `x`, `y`, `width`, `height`, and aspect mapping; never trim or independently crop it. Several padded-bbox-disjoint objects may share one prepared plate while remaining separate nested-SVG picture crops.
+- **#A2-04 · Registered device or frame mockup** — seat a screenshot or flat artwork beneath a prepared transparent device/frame asset at its exact registered screen region; the frame keeps its RGBA silhouette on top and both remain independent picture objects, so the content stays replaceable.
 
 ### 5.3 A3 · Registered Derivatives
 
@@ -234,6 +238,10 @@ If motion is enabled, [`animations.md`](./animations.md) owns its implementation
 | One selected region needs explanation | Use `#P2-03` for an outline and caption on one picture; use `#P2-04` when a second same-source picture must magnify the region |
 | Several sources should read as one object | `#P3-21` + restrained `#M3-01`, or `#P3-20` + a native text/color cell |
 | Several mixed-ratio photos need one visual rhythm | Use `#P3-06` + `#M1-01` + `#M2-01`; repeat equal-size parallelogram carriers on one horizontal `vector` with fixed positive advance and alternating transverse offsets, fill-crop each upright bitmap, overlay each carrier with a same-contour directional gradient, and keep labels native |
+| Many same-kind photos need one ceremonial fan or arc | `#P3-22` + `#M1-01`; repeat one equal-width slanted strip contour along the arc with fixed angular advance and constant gutters, clip one upright photo into each strip as its own picture, and keep every crop focal-safe |
+| A many-photo montage should read as one immersive curved wall | `#P3-24` + `#M1-02` + optional `#M2-08`; derive every cell contour from one cylindrical mapping — curved top/bottom edges on shared row arcs, straight slanted sides, even gutters — keep each bitmap upright inside its precomputed clip with no shear/skew transform, and fade or omit the central columns when the native title should own the calm center |
+| A photo surface should read as folded or louvered | `#M1-11` + `#M2-03`; cut one source into equal-width registered strips and alternate a subtly darker and lighter wash per strip so the seams read as folds, keeping each strip an addressable picture |
+| Mixed evidence tiles should read as one bento field | `#P3-12` + `#P3-14` + `#P2-05`; pack rounded cells sharing one corner radius and gap rhythm, mix image cells with native KPI/text cells, and let one oversized cell anchor the hierarchy |
 | One continuous scene should span detached shapes | `#M1-10` + optional `#M3-05`; combine `#P1-08` for a triangular image-and-copy split, and keep one-picture topology |
 | Same-source windows must remain independent | `#M1-11`; add `#C2-01` or `#C2-02` only when consecutive pages use the relationship |
 | A prepared subject should re-layer over its source | `#A2-03`; keep the base and cutout registered, and insert a native middle layer only when it has a distinct job |
@@ -241,7 +249,7 @@ If motion is enabled, [`animations.md`](./animations.md) owns its implementation
 | A visual argument should build across pages | `#C1-01` + `#P2-01` or `#P2-05`; keep the underlying source and frame stable |
 | Technical figure needs explanation | `#P1-12` + `#P2-07` / `#P2-03`; use `#P2-04` only when a second cropped detail is useful, and keep explanatory labels native |
 
-**Registration boundary**: registration-dependent effects succeed only when their declared coordinate relationship remains exact. Preserve registration for `#M1-10`, `#A2-02`, `#A3-01`, `#M1-08`, `#A2-03`, `#A3-02`, `#A3-03`, and `#M1-11`; `#M1-09` is the intentional exception.
+**Registration boundary**: registration-dependent effects succeed only when their declared coordinate relationship remains exact. Preserve registration for `#M1-10`, `#A2-02`, `#A3-01`, `#M1-08`, `#A2-03`, `#A2-04`, `#A3-02`, `#A3-03`, and `#M1-11`; `#M1-09` is the intentional exception.
 
 **Source-correspondence boundary**: `#P2-04` reuses one exact source but intentionally changes the detail crop, scale, and placement; preserve the selected-region correspondence instead of forcing page-space registration.
 
