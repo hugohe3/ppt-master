@@ -256,7 +256,7 @@ matched rendering, deck-color treatment, and finish before slicing. A lettering
 sheet is the batch form of stable Layer 1 artwork; it does not turn page copy
 into an image.
 
-**Default — one sheet for a compatible asset family (may override when separate generation serves the assets better)**: Prefer a sheet when several spots or lettering elements share similar proportions, detail, quality, and semantic precision. Generate elements separately when those needs differ materially; quantity alone neither requires nor forbids a sheet. A single hero/local image or standalone artistic word stays with the normal one-row-per-image flow (§4.1).
+**Default — one sheet per compatible asset family (may override when separate generation serves the assets better)**: For lettering, partition planned marks by one artistic treatment first: batch each treatment's compatible marks into one sheet, use separate sheets for different treatments, and split one treatment only when proportions, detail, quality, or semantic precision differ materially. Apply the same compatibility test to spot illustrations. Quantity alone neither requires nor forbids a sheet; a single hero/local image or standalone artistic word stays with the normal one-row-per-image flow (§4.1).
 
 **Hard rule**: a sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
 
@@ -265,7 +265,7 @@ into an image.
 `text_policy: none`, lettering sheets use `text_policy: embedded`):
 
 - Choose the sheet `aspect_ratio` and `--grid` from the target element shape. Do not default every sheet to `1:1` + a symmetric grid.
-- Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
+- Lay the elements out in an explicit logical **R×C placement grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated. The grid is never drawn: gutters are uninterrupted key background, with no visible cells, panels, divider lines, borders, frames, or alternate gutter color.
 - State the intended cell shape in the prompt: compact square object, tall portrait element, wide landscape vignette, or wide lettering mark. Do not let the model shrink every subject into a centered square sticker.
 - One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box. Gutters are part of that same flat ground; keep paper grain, halftone, vignette, and every other texture inside the elements, never over the background.
 - Shared `deck_rendering` + `color_scheme` as always.
@@ -287,7 +287,7 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 | Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
 | Decorative words, phrases, or multi-line lettering lockups | wide sheet | `Nx1`, or any `MxN` whose cells fit the planned string shapes |
 
-If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
+Within one treatment, create separate sheets per shape family when mixed shapes cannot share a grid with enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
 
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists in the active placeable-resource authority: `spec_lock.md images` in Default Generate or the current agent's prepared resource decision in Quick Generate. Default Generate keeps both row kinds in §VIII under [`strategist-image.md`](./strategist-image.md); Quick Generate resolves the same distinction in active context and its operational manifest without creating planning artifacts:
 
@@ -296,17 +296,17 @@ If one deck needs mixed shapes, create separate sheets per shape family unless o
 
 For traceability, add optional `slice_grid` and `slice_names` fields to the sheet item in `image_prompts.json` after choosing the geometry. `image_gen.py` validates, preserves, and displays these metadata fields; it does not run the separate slicing command.
 
-**Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`. With `--alpha` they become transparent elements suitable for direct cutout placement or for composition inside a card, evidence frame, label, or other container. Recommended flags: `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop each cell so imprecise placement inside a cell doesn't leave lopsided margins), `--alpha` (knock the flat background out to transparency so an element can sit on any slide color or container):
+**Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`. With `--alpha` they become transparent elements suitable for direct cutout placement or for composition inside a card, evidence frame, label, or other container. Use `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop), `--alpha` (key out the flat ground), and `--strict-alpha` (write nothing when deterministic keying checks find an incomplete cut):
 
 ```bash
 python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
-    --names team,product,customer,growth,risk,vision --trim --alpha
+    --names team,product,customer,growth,risk,vision --trim --alpha --strict-alpha
 ```
 
 **Three constraints that decide whether it looks good**:
 
-1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend. Texture over the ground defeats the key, so request grain or halftone only inside the elements. `slice_images.py` warns when an element keeps opaque corners after `--alpha` or when `--trim` removed nothing; both mean the key did not take. Regenerate the sheet with a clean ground, or rerun with an explicit `--bg` and a larger `--tolerance`, before placing the element on a non-background surface.
-2. **Clean grid, or it cuts ugly.** State the exact row/column structure and cell shape so the model does not invent a square matrix; `--trim` absorbs smaller placement variance. For lettering, a wrong/missing character, extra copy, fused cells, or scene background makes the parent sheet unusable. Do not generate several sheets or read them back merely to choose a favorite; re-roll only when user/live-preview feedback exposes an unusable slice, then slice the replacement sheet again.
+1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend. Texture over the ground defeats the key, so request grain or halftone only inside the elements. In the generation workflow, `--strict-alpha` stops before writing when an element keeps opaque corners or `--trim` removes nothing. Regenerate with a clean ground, or rerun with an explicit `--bg`, suitable `--tolerance`, and `--inset` only when a drawn outer gutter is isolated from every element.
+2. **Clean invisible grid, or it cuts ugly.** State the exact row/column structure and cell shape without asking the model to draw the grid; `--trim` absorbs smaller placement variance. For lettering, a wrong/missing character, extra copy, fused cells, or scene background makes the parent sheet unusable. Do not generate several sheets or read them back merely to choose a favorite; re-roll only after strict keying failure or user/live-preview feedback exposes an unusable slice, then slice the replacement sheet again.
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
 **Reference — sliced-asset placement is not a constraint**: A transparent slice may remain an unboxed cutout or enter a card, evidence frame, label, panel, or other suitable container. Decorative-lettering slices may combine with shapes or other slices, while ordinary titles/subtitles remain separate SVG text. The owner-resolved layout text is an expression recommendation; SVG authoring owns the actual geometry and treatment while preserving the resource role and crop/content constraints.
