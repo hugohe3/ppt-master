@@ -51,8 +51,8 @@ request does not explicitly select Quick.
 🚧 **GATE**: The user has provided a topic / desired outcome and any available initial material.
 
 > **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately,
-> then use its factual supplement as source content; Step 2 reads retained
-> webpage URLs from the facts JSON and imports them as text evidence.
+> then use its research pair as source content; Step 2 imports that pair without
+> expanding the facts JSON's webpage URLs.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -87,8 +87,8 @@ After reading direct and converted content, assess factual sufficiency:
 
 **Sufficiency test**: research only to avoid inventing, omitting, or leaving
 unsupported a factual claim the requested outcome requires; file presence or
-length is irrelevant. It records the needed facts and adopted webpages. Step 2
-imports those webpages as text-only evidence; Step 5
+length is irrelevant. It records the needed facts and adopted webpage URLs in
+the research pair. Step 2 fetches no adopted page; Step 5
 acquires only Strategist-selected independent AI / web / slice assets after
 final confirmation.
 
@@ -106,7 +106,7 @@ final confirmation.
 > Browser-based live preview cannot render EMF (will show blank) — this is expected;
 > the PPTX output is the source of truth.
 
-**✅ Checkpoint — Confirm source content, retained webpage inputs, and any factual supplement are ready, proceed to Step 2.**
+**✅ Checkpoint — Confirm source content and any factual supplement/provenance pair are ready, proceed to Step 2.**
 
 ---
 
@@ -158,9 +158,8 @@ Import source content (choose based on the situation):
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
 When Topic Research ran, include only its research pair. `project_manager.py`
-reads the facts JSON's unique `source_url` values, archives each page in
-text-only mode, and fails incomplete source reconciliation. It does not add page
-images to `<project>/images/`.
+imports the facts JSON as an ordinary file and never expands its `source_url`
+values, so project initialization fetches no adopted page.
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
@@ -532,7 +531,7 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > **Default — bounded multimodal web thumbnail selection**: when either the current agent or an available isolated reviewer can inspect images, add `--save-candidates` to the single or batch web command. Author explicit `query_variants` for materially different official translations, spellings, aliases, or Chinese names; the tool aggregates and deduplicates them, then saves only the first ranked page (8 previews by default), writes `candidates/<stem>/review_sheet.jpg`, marks the batch row `Needs-Selection`, and downloads no original. Run [`web-image-review`](stages/web-image-review.md): dispatch exactly one isolated reviewer for all current sheets when supported, passing only each row's locked Reference/Crop Policy plus candidate sidecar/sheet paths; otherwise the active image owner reads that stage and reviews locally. Only a stage-selected passing candidate may be used with `--promote` to download one original and write provenance (pass the same `--batch images/image_queries.json` to reconcile its row to `Sourced`). If none passes and `has_more_candidates` is true, advance that row to `next_candidate_page` before changing the query. Only after the pool is exhausted may the row receive materially different query variants and return to `Pending`. When no available context has vision, omit `--save-candidates`: best-only mode may download only a strict metadata-verified candidate, records `selection_method: metadata-ranked`, and otherwise stops at `Needs-Manual` without claiming visual confirmation.
 
-> **Retained-page fallback**: only after that normal search is exhausted, a vision-capable image owner may open one relevant research page and test one inline-image URL at a time with `--from-url`. Never use retained pages as the initial pool or bulk-download them; without vision, skip this fallback.
+> **Adopted-page fallback**: only after that normal search is exhausted, a vision-capable image owner may follow [`topic-research`](stages/topic-research.md) § Hand-off to fetch one relevant `source_url` as a Markdown + companion-image source package, review it, and copy only accepted files into `<project>/images/`. Never auto-expand facts URLs or promote the whole package; without vision, skip this fallback.
 
 > **Default — short provider query (may override for a complete entity name or necessary disambiguation)**: keep §VIII `Reference` as the locked subject/focal/crop intent and author a separate concrete `image_queries.json.query`. Search/review never rewrites the Design Spec or lock to fit a candidate.
 
