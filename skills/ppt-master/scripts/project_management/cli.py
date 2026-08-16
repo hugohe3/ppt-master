@@ -218,33 +218,6 @@ def _has_usable_import(summary: dict[str, list[str]]) -> bool:
     )
 
 
-def _research_source_urls(path: Path) -> list[str]:
-    """Return unique source URLs from a v1 topic-research provenance file."""
-    if not path.is_file() or not path.name.endswith(".facts.json"):
-        return []
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise RuntimeError(f"Fact provenance is unreadable: {path} ({exc})") from exc
-    if not isinstance(payload, dict):
-        raise RuntimeError(f"Fact provenance must be a JSON object: {path}")
-    if payload.get("schema") != "ppt-master.fact-provenance.v1":
-        return []
-    facts = payload.get("facts")
-    if not isinstance(facts, list):
-        raise RuntimeError(f"Fact provenance facts must be an array: {path}")
-    urls: list[str] = []
-    for index, fact in enumerate(facts):
-        if not isinstance(fact, dict) or not is_url(str(fact.get("source_url", ""))):
-            raise RuntimeError(
-                f"Fact provenance facts[{index}] has no valid source_url: {path}"
-            )
-        url = fact["source_url"]
-        if url not in urls:
-            urls.append(url)
-    return urls
-
-
 class ProjectManager:
     """Create, inspect, validate, and populate project folders."""
 
@@ -479,14 +452,11 @@ class ProjectManager:
         self,
         url: str,
         markdown_path: Path,
-        *,
-        download_images: bool = True,
     ) -> None:
         route = build_conversion_command(
             url,
             markdown_path,
             forced_type="web",
-            extra_args=[] if download_images else ["--no-images"],
         )
         self._run_tool(route.command)
 
@@ -794,9 +764,6 @@ class ProjectManager:
             "assets": [],
             "images": [],
             "analysis": [],
-            "research_sources_expected": [],
-            "research_sources_imported": [],
-            "research_sources_failed": [],
             "notes": [],
             "skipped": [],
         }
@@ -823,20 +790,6 @@ class ProjectManager:
                 continue
             expanded_items.append(item)
 
-        research_urls: list[str] = []
-        for item in expanded_items:
-            if is_url(item):
-                continue
-            for url in _research_source_urls(Path(item).expanduser()):
-                if url not in research_urls:
-                    research_urls.append(url)
-        summary["research_sources_expected"] = research_urls.copy()
-        explicit_urls = {item for item in expanded_items if is_url(item)}
-        expanded_items.extend(url for url in research_urls if url not in explicit_urls)
-        research_url_set = set(research_urls)
-        text_only_research_urls = research_url_set - explicit_urls
-        imported_research_urls: set[str] = set()
-
         explicit_markdown_stems = {
             Path(item).stem
             for item in expanded_items
@@ -852,11 +805,7 @@ class ProjectManager:
                     sources_dir / f"{derive_url_basename(item)}.md"
                 )
                 try:
-                    self._import_url(
-                        item,
-                        markdown_path,
-                        download_images=item not in text_only_research_urls,
-                    )
+                    self._import_url(item, markdown_path)
                 except Exception as exc:  # pragma: no cover - summary path
                     archived = self._archive_url_record(sources_dir, item)
                     summary["url_records"].append(str(archived))
@@ -871,10 +820,7 @@ class ProjectManager:
                     continue
 
                 summary["markdown"].append(str(markdown_path))
-                if item in research_url_set:
-                    imported_research_urls.add(item)
-                if item not in text_only_research_urls:
-                    self._propagate_companion_image_assets(markdown_path, project_dir)
+                self._propagate_companion_image_assets(markdown_path, project_dir)
                 continue
 
             source_path = Path(item)
@@ -1053,13 +999,6 @@ class ProjectManager:
                 summary["markdown"].append(str(markdown_path))
             else:
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
-
-        summary["research_sources_imported"] = [
-            url for url in research_urls if url in imported_research_urls
-        ]
-        summary["research_sources_failed"] = [
-            url for url in research_urls if url not in imported_research_urls
-        ]
 
         # Cleanup: only a projects-local source directory may be removed after
         # its files move into the target project. Every other location is copied
@@ -1259,16 +1198,9 @@ def main(argv: list[str] | None = None) -> int:
                 move=args.move,
                 copy=args.copy,
             )
-            has_usable_import = _has_usable_import(summary)
-            import_complete = has_usable_import and not summary["research_sources_failed"]
+            import_complete = _has_usable_import(summary)
             if import_complete:
                 print(f"[OK] Imported sources into: {args.project_path}")
-            elif has_usable_import:
-                print(
-                    f"[ERROR] Topic-research source import is incomplete: "
-                    f"{args.project_path}",
-                    file=sys.stderr,
-                )
             else:
                 print(
                     f"[ERROR] No usable sources imported into: {args.project_path}",
@@ -1298,11 +1230,6 @@ def main(argv: list[str] | None = None) -> int:
                 print("\nAnalysis artifacts:")
                 for item in summary["analysis"]:
                     print(f"  - {item}")
-            if summary["research_sources_expected"]:
-                print("\nTopic-research source reconciliation:")
-                print(f"  expected: {len(summary['research_sources_expected'])}")
-                print(f"  imported: {len(summary['research_sources_imported'])}")
-                print(f"  failed: {len(summary['research_sources_failed'])}")
             if summary["notes"]:
                 print("\nNotes:")
                 for item in summary["notes"]:
