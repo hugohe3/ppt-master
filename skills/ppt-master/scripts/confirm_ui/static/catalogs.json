@@ -1440,11 +1440,15 @@
   "image_ai_path": [
     {
       "id": "auto",
-      "label": "Automatic Path A → Path B → Offline Manual",
-      "label_zh": "自动选择",
-      "label_zh_tw": "自動選擇",
-      "label_en": "Automatic Path A → Path B → Offline Manual",
-      "label_ja": "自動選択（Path A → Path B → オフライン手動）"
+      "label": "Automatic Path A → Path B",
+      "label_zh": "自动生成（接口 → 宿主工具）",
+      "label_zh_tw": "自動生成（API → 宿主工具）",
+      "label_en": "Automatic Path A → Path B",
+      "label_ja": "自動生成（Path A → Path B）",
+      "desc_zh": "两条自动路径都不可用或失败时暂停，由你选择修复后重试、手动生成或取消受影响的 AI 图；不会自动转为手动。",
+      "desc_zh_tw": "兩條自動路徑都不可用或失敗時暫停，由你選擇修復後重試、手動生成或取消受影響的 AI 圖；不會自動轉為手動。",
+      "desc_en": "If both automated paths are unavailable or fail, pause for your choice: repair and retry, generate manually, or cancel the affected AI images. Manual is never assumed.",
+      "desc_ja": "両方の自動経路が利用不能または失敗した場合は停止し、修復後の再試行、手動生成、影響を受けたAI画像の取り消しから選択します。手動へ自動移行しません。"
     },
     {
       "id": "api",
@@ -1477,10 +1481,10 @@
       "label_zh_tw": "離線手動",
       "label_en": "Offline Manual",
       "label_ja": "オフライン手動",
-      "desc_zh": "机制：写入图片提示词文件；用户在外部生成后放入项目图片目录。",
-      "desc_zh_tw": "機制：寫入圖片提示詞檔案；使用者在外部生成後放入專案圖片目錄。",
-      "desc_en": "Prompts written to images/image_prompts.json; user generates externally and places files in project/images/.",
-      "desc_ja": "images/image_prompts.jsonにプロンプトを書き出し、ユーザーが外部で生成した画像をproject/images/に配置する方式。"
+      "desc_zh": "写入图片提示词；你在外部生成并放入项目图片目录。必需图片齐全并验证前不允许导出。",
+      "desc_zh_tw": "寫入圖片提示詞；你在外部生成並放入專案圖片目錄。必要圖片齊全並驗證前不允許匯出。",
+      "desc_en": "Prompts are written for external generation and placement in project/images/. Export stays blocked until every required file is present and validated.",
+      "desc_ja": "外部生成用のプロンプトを書き出し、画像をproject/images/に配置します。必要な全ファイルの配置と検証が済むまでエクスポートできません。"
     }
   ],
   "generation_mode": [

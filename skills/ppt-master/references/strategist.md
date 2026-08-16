@@ -287,7 +287,9 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 
 **Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or keyed stock-provider credentials never justifies `none` or deletion of a planned web-compatible role. Web search retains zero-config providers; an explicit generation-only requirement follows the normal Offline Manual boundary.
 
-**Default — visual grounding before `none` (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression matters more than documentary identity, and include it proactively when a callable generator can materially improve a planned visual job. Treat `none` as a positive whole-deck conclusion. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
+**Mandatory — no AI capability preflight**: When `recommend.image_usage` includes `ai`, preserve an explicit user path instruction; otherwise recommend `auto`. Do not inspect backend configuration, check host-tool availability, or probe a provider during planning. Generate Step 5 execution is the first capability check.
+
+**Default — visual grounding before `none` (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression materially improves a planned visual job. Treat `none` as a positive whole-deck conclusion. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
 
 **Mandatory — assess proactive decorative lettering without making eligibility
 an automatic source trigger**: Before each Stage-2 `recommend.image_usage`,
@@ -296,10 +298,8 @@ artistic treatment could communicate better than native type. Page role,
 character count, word count, line count, and kind of noun never filter
 candidates: a complete long or
 multi-line title is as eligible as a short mark. Never invent, rewrite,
-shorten, or split copy to make generation easier. Treat a configured
-`IMAGE_BACKEND` or host-native image generator as callable; Offline Manual,
-web, and vision-only access do not qualify for proactive materialization. An
-eligible string is one possible AI visual job, not a mechanical reason to add
+shorten, or split copy to make generation easier. An eligible string is one
+possible AI visual job, not a mechanical reason to add
 `ai`. The second eligibility question already decides whether lettering
 strengthens communication: when its answer is yes, lettering may be the sole
 intended AI job and may support an AI recommendation stated in
@@ -308,7 +308,7 @@ valid. The absence of another AI-image job never forces lettering. Explicit
 no-AI or editable-only requirements win. Execution follows
 [`image-generator.md`](./image-generator.md) §7.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and generation is callable. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and invented or stylized expression serves it. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
