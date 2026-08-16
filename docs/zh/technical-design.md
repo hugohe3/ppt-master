@@ -190,7 +190,7 @@ Executor 角色逐页生成演示文稿的视觉内容，输出为 SVG 文件。
 **第三阶段：工程化转换**
 后处理脚本将受支持的 SVG 向量元素转换为 DrawingML。文本和向量形状会保持为 PowerPoint 原生对象——可点击、可编辑、可改样式；位图资源则复制为 PPT picture media，而不是把整页压平成一张图片。
 
-`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在一次有效上下文中自动完成其余的内容、页结构、mode、visual style 与资源决策；图片、图标、定性 Structure、原生形状、图表 / 表格、公式和纯字体 / 几何都进入同一轮载体判断。随后仍按共享 SVG 规范创作，执行已选能力所需的准备，通过一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。它不写替代计划或可续接的设计历史；上下文丢失后重新运行 Quick。
+`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在一次有效上下文中自动完成其余的内容、页结构、mode、visual style 与资源决策；图片、透明插图 / 艺术字资源、图标、定性 Structure、原生形状、图表 / 表格、公式和纯字体 / 几何都进入同一轮载体判断，每页可以组合其中任意合适的子集。随后仍按共享 SVG 规范创作，执行已选能力所需的准备，通过一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。它不写替代计划或可续接的设计历史；上下文丢失后重新运行 Quick。
 
 ---
 
@@ -513,7 +513,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 **快速生成把规划职责合并到当前 Agent。** 来源转换、事实缺口研究和资源准备仍按需运行。当前 Agent 在上下文中自动选择内容、页面清单、mode、visual style 和资源需求；把图片、图标、定性 Structure、原生形状、图表 / 表格、公式与纯字体 / 几何作为完整载体菜单进行一次判断；准备实际选中的用户提供 / 来源抽取 / AI / 网络 / 切片图片、图标及其必要操作 manifest 或来源记录，随后手写 SVG 与所需原生公式 marker；不进入 Strategist、Confirm UI、`design_spec.md`、`spec_lock.md`，也不创建替代规划产物。这些决策在上下文丢失后无法恢复。
 因此同一 Agent 可以顺序承担多个创作阶段，但阶段权责不会合并；Checker、Exporter 与运行记录器仍是独立的确定性工具。
 
-**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实并识别最终采用的网页：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐。项目初始化后，`project_manager.py import-sources` 从 v1 事实 JSON 读取保留 URL，并把网页 Markdown 归档为纯文字证据；远程图片链接只在常规搜图失败后作为一次一张的兜底。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。独立的 AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证精选项目图标池。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
+**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实并识别最终采用的网页：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐。项目初始化后，`project_manager.py import-sources` 只把研究 / 来源记录对当作普通文件导入，不展开 v1 事实 JSON 里的 `source_url`。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。独立的 AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。常规搜图穷尽后，图片负责人可以按需获取一个相关网页的 Markdown 与伴随图片资源包，审阅后只把选中的文件提升到运行时图池。Strategist 还会在编写最终方案时解析、同步并验证精选项目图标池。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
 
 **项目中已备好的材料就是边界。** 默认流程中，图片和其他声明型资源须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 是 Strategist 已同步精选内置图标池的索引，既不分配具体页面，也不是穷尽式执行白名单。Executor 按页从已备图标中选择。快速生成以当前上下文中的资源决策及其项目级文件 / manifest 代替该规划投影，不写通用资源清单或逐页分配；当前 Agent 可以在手写 SVG 前获取并准备这些资源。其他目录中的文件不构成使用许可。缺料必须回到所属备料步骤；SVG 创作阶段不得静默换料。
 
@@ -537,7 +537,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 
 **图片执行路径以 Design Spec 为权威。** UI 或聊天中的最终确认都先固化为 `design_spec.md §I` 的 `AI Image Acquisition Path`；Image_Generator 根据该值选择 API、host-native 或 manual，不能在执行阶段重新决定。`image_gen.py --manifest` 只属于 API Path A。当前 CLI 仍保留一个读取 UI `result.json` 的防误调用 guard，用于在该文件明确记录 `host-native` / `manual` 时阻止误跑 Path A；它不是权威来源，不覆盖 chat-only，也不能替代 Design Spec 的路线判断。这是当前代码与上游权威链尚未闭合的实现差异，不能当作正常消费路径。
 
-**相关小插画适合时共用一张 sheet。** 多个同风格小插画在 cell 形状、细节、质量和语义需求兼容时，可以使用一个 AI illustration sheet 行再通过 `slice` 行派生元素；不兼容时可独立生成。选择 sheet 路径后，`slice_images.py` 把它切成具名透明元素，这些派生文件进入 `images/`，随后重跑 `analyze_images.py`，让 Executor 看到真实尺寸。
+**每个兼容视觉家族尽量共用一张 sheet。** AI sheet 准备的是透明插图或艺术字元素，而不是完整页面。一个家族可以同时包含重复使用的标题 / 四角装饰、大型视觉锚点、辅助人物和点缀元素；轮廓与视觉重量可以不同，只在 cell 几何、细节、质量或语义需求冲突时拆分。SVG 可以在任何合适的页面上把这些切片与背景、原生形状、可编辑文字、照片、其他切片和艺术字组合起来，同一元素也可以跨页复用。艺术字仍按视觉身份分组，默认采用克制的字形内生表达，只有用户明确要求或确认了强表现 / 艺术字加插画组合方向才提高强度或加入外部元素。每张 sheet 使用一个有效通道不主导元素色彩的显式纯红、纯绿或纯蓝键，并把同一 HEX 传给 `slice_images.py --bg`；chroma 路径会去除键色污染并恢复效果的半透明度，随后 `--strict-alpha` 在写入派生文件前拒绝任何未透明的 cell 边界或越界效果。成功切出的透明元素进入 `images/`，随后重跑 `analyze_images.py` 刷新尺寸。
 
 **Executor 前必须进入终态。** 需要获取的资源行必须落到 `Generated`、`Sourced` 或 `Needs-Manual`；`Pending` 和 `Failed` 不能漏进 Executor。`Needs-Manual` 可以作为已知占位 / 依赖继续进入 SVG 生成，但 Step 7 会在最终导出前重新检查必需文件是否已经存在。
 

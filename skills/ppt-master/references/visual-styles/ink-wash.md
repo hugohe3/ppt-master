@@ -34,4 +34,4 @@ New-Chinese ink-wash — a rice-paper field, vast literati whitespace, restraine
 
 ## 6. Illustration propensity
 
-**supportive** — a single brush mark or seal can anchor a page, but stillness and whitespace lead; use very few, very quiet. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — brush, seal, or painted illustration elements can anchor or frame a page while stillness and whitespace lead. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

@@ -34,4 +34,4 @@ Bloomberg / Economist news-infographic — publication-grade information density
 
 ## 6. Illustration propensity
 
-**sparse** — charts, sidebars, and data density carry the page; decorative spots undercut the serious data-publication tone. With no user steer, default to none. If the user explicitly asks, keep them minimal and journalistic. `image_usage: none` writes no illustration rows.
+**sparse** — charts, sidebars, and evidence lead. Use illustration selectively for orientation, narrative framing, or emphasis without obscuring values or source authority; form and scale follow the page job. An explicit user request wins either way, and `image_usage: none` writes no illustration rows.

@@ -14,11 +14,12 @@ Two optional cleanups address the realities of cropping a raster sheet:
            placement inside a cell does not leave lopsided margins.
   --alpha  knock the (flat) sheet background out to transparency, so an element
            can sit on a differently-colored slide without a visible box.
-Both need a background color; it is auto-sampled from each cell's border unless
-you pass --bg. Keying only works on a genuinely flat ground, so each element is
-checked afterwards and a warning is printed when the background clearly did not
-key out. See references/image-generator.md section 4.3 for the sheet contract
-that keeps the ground flat.
+Both need a background color; it is auto-sampled from the dominant flat field
+unless you pass --bg. Keying only works on a genuinely flat ground, so each
+element is checked before writing. --strict-alpha turns an incomplete key into
+an error with no output files. An explicit pure red, green, or blue key also
+recovers clean RGB and partial alpha for antialiasing, shadows, and glows. See
+references/image-generator.md section 4.3 for the sheet contract.
 
 Usage:
     python3 scripts/slice_images.py <sheet_image> --grid RxC [options]
@@ -26,7 +27,8 @@ Usage:
 Examples:
     python3 scripts/slice_images.py projects/demo/images/illus_sheet.png --grid 2x3
     python3 scripts/slice_images.py projects/demo/images/illus_sheet.png --grid 2x3 \
-        --names team,product,customer,growth,risk,vision --trim --alpha
+        --names team,product,customer,growth,risk,vision --trim --alpha \
+        --bg "#00FF00" --strict-alpha
     python3 scripts/slice_images.py projects/demo/images/illus_sheet.png --grid 1x4 \
         --prefix spot_ --bg "#F8F9FA" --alpha
 
@@ -37,6 +39,7 @@ Dependencies:
 import argparse
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 from statistics import median
 from typing import Optional
@@ -45,12 +48,19 @@ from console_encoding import configure_utf8_stdio
 
 configure_utf8_stdio()
 
-from PIL import Image, ImageChops, ImageFilter
+from PIL import (
+    Image,
+    ImageChops,
+    ImageFilter,
+    ImageMath,
+)
 
 _GRID_RE = re.compile(r"^\s*(\d+)\s*[xX×]\s*(\d+)\s*$")
+_BG_BUCKET_SIZE = 16
 _BG_SAMPLE_BORDER = 2
+_BG_SAMPLE_MAX_SIDE = 256
 _DEFAULT_FEATHER = 4
-_CORNER_OPAQUE_ALPHA = 32
+_BOUNDARY_OPAQUE_ALPHA = 32
 
 
 def _log(msg: str) -> None:
@@ -86,9 +96,8 @@ def _safe_basename(name: str) -> str:
     return base
 
 
-def _sample_bg(cell: Image.Image) -> tuple[int, int, int]:
-    """Estimate the flat background color from a cell's border ring."""
-    rgb = cell.convert("RGB")
+def _sample_border_bg(rgb: Image.Image) -> tuple[int, int, int]:
+    """Estimate a background candidate from a cell's border ring."""
     w, h = rgb.size
     border = max(1, min(_BG_SAMPLE_BORDER, w, h))
     px = rgb.load()
@@ -113,11 +122,165 @@ def _sample_bg(cell: Image.Image) -> tuple[int, int, int]:
     return tuple(round(median(channel)) for channel in zip(*pixels))  # type: ignore[return-value]
 
 
+def _sample_pixels(rgb: Image.Image) -> list[tuple[int, int, int]]:
+    """Return a bounded RGB sample for background-candidate scoring."""
+    sample = rgb.copy()
+    sample.thumbnail(
+        (_BG_SAMPLE_MAX_SIDE, _BG_SAMPLE_MAX_SIDE),
+        Image.Resampling.NEAREST,
+    )
+    raw = sample.tobytes()
+    return list(zip(raw[0::3], raw[1::3], raw[2::3]))
+
+
+def _dominant_bg_candidate(
+    pixels: list[tuple[int, int, int]],
+) -> tuple[int, int, int]:
+    """Estimate the dominant flat field from quantized sampled pixels."""
+    buckets = Counter(
+        tuple(channel // _BG_BUCKET_SIZE for channel in pixel)
+        for pixel in pixels
+    )
+    dominant_bucket = buckets.most_common(1)[0][0]
+    members = [
+        pixel
+        for pixel in pixels
+        if tuple(channel // _BG_BUCKET_SIZE for channel in pixel) == dominant_bucket
+    ]
+    return tuple(round(median(channel)) for channel in zip(*members))  # type: ignore[return-value]
+
+
+def _background_coverage(
+    pixels: list[tuple[int, int, int]],
+    candidate: tuple[int, int, int],
+    tolerance: int,
+) -> int:
+    """Count sampled pixels close enough to a background candidate."""
+    return sum(
+        max(abs(pixel[index] - candidate[index]) for index in range(3)) <= tolerance
+        for pixel in pixels
+    )
+
+
+def _sample_bg(cell: Image.Image, tolerance: int) -> tuple[int, int, int]:
+    """Choose the background candidate that covers most of the cell."""
+    rgb = cell.convert("RGB")
+    pixels = _sample_pixels(rgb)
+    candidates = (
+        _sample_border_bg(rgb),
+        _dominant_bg_candidate(pixels),
+    )
+    return max(
+        candidates,
+        key=lambda candidate: _background_coverage(pixels, candidate, tolerance),
+    )
+
+
 def _max_channel_difference(cell: Image.Image, bg: tuple[int, int, int]) -> Image.Image:
     """Return the maximum absolute RGB channel difference from the background."""
     diff = ImageChops.difference(cell.convert("RGB"), Image.new("RGB", cell.size, bg))
     red, green, blue = diff.split()
     return ImageChops.lighter(ImageChops.lighter(red, green), blue)
+
+
+def _pure_chroma_channel(bg: tuple[int, int, int]) -> Optional[int]:
+    """Return the active channel for an exact pure RGB key, if any."""
+    if bg.count(255) != 1 or bg.count(0) != 2:
+        return None
+    return bg.index(255)
+
+
+def _channel_alpha(channel: Image.Image, bg_value: int) -> Image.Image:
+    """Return the minimum alpha that can explain one channel over a key."""
+    lut = []
+    for value in range(256):
+        if value > bg_value:
+            denominator = 255 - bg_value
+            alpha = 255 if denominator == 0 else round(
+                (value - bg_value) * 255 / denominator
+            )
+        elif value < bg_value:
+            alpha = 255 if bg_value == 0 else round(
+                (bg_value - value) * 255 / bg_value
+            )
+        else:
+            alpha = 0
+        lut.append(alpha)
+    return channel.point(lut)
+
+
+def _chroma_alpha(rgb: Image.Image, bg: tuple[int, int, int]) -> Image.Image:
+    """Recover foreground opacity for a pure single-channel chroma key.
+
+    A non-key-dominant pixel is treated as opaque foreground. A key-dominant
+    pixel uses color-to-alpha recovery, which preserves soft shadows, glows,
+    and antialiased edges without making an ordinary solid foreground color
+    unnecessarily translucent.
+    """
+    channels = rgb.split()
+    channel_alphas = [
+        _channel_alpha(channel, bg_value)
+        for channel, bg_value in zip(channels, bg)
+    ]
+    raw_alpha = ImageChops.lighter(
+        ImageChops.lighter(channel_alphas[0], channel_alphas[1]),
+        channel_alphas[2],
+    )
+    key_index = _pure_chroma_channel(bg)
+    if key_index is None:
+        return raw_alpha
+
+    other_channels = [
+        channel for index, channel in enumerate(channels) if index != key_index
+    ]
+    key_excess = ImageChops.subtract(
+        channels[key_index],
+        ImageChops.lighter(other_channels[0], other_channels[1]),
+    )
+    key_dominance = key_excess.point(lambda value: 255 if value > 0 else 0)
+    opaque = Image.new("L", rgb.size, 255)
+    return Image.composite(raw_alpha, opaque, key_dominance)
+
+
+def _decontaminate_channel(
+    channel: Image.Image,
+    alpha: Image.Image,
+    bg_value: int,
+) -> Image.Image:
+    """Remove a composited key channel while supporting Pillow 9 through 12."""
+    if hasattr(ImageMath, "lambda_eval"):
+        return ImageMath.lambda_eval(
+            lambda op: op["convert"](
+                bg_value
+                + (op["channel"] - bg_value)
+                * 255
+                / op["max"](op["alpha"], 1),
+                "L",
+            ),
+            channel=channel,
+            alpha=alpha,
+        )
+    return ImageMath.eval(  # type: ignore[attr-defined]
+        "convert(bg + (channel - bg) * 255 / max(alpha, 1), 'L')",
+        channel=channel,
+        alpha=alpha,
+        bg=bg_value,
+    )
+
+
+def _decontaminate_rgb(
+    rgb: Image.Image,
+    alpha: Image.Image,
+    bg: tuple[int, int, int],
+) -> Image.Image:
+    """Recover foreground RGB values from a composited pure chroma key."""
+    return Image.merge(
+        "RGB",
+        tuple(
+            _decontaminate_channel(channel, alpha, bg_value)
+            for channel, bg_value in zip(rgb.split(), bg)
+        ),
+    )
 
 
 def _soft_mask_from_diff(diff: Image.Image, tolerance: int) -> Image.Image:
@@ -143,13 +306,20 @@ def _content_masks(
     cell: Image.Image,
     bg: tuple[int, int, int],
     tolerance: int,
-) -> tuple[Image.Image, Image.Image]:
-    """Build binary trim and soft alpha masks from the same color distance."""
-    diff = _max_channel_difference(cell, bg)
+) -> tuple[Image.Image, Image.Image, Optional[Image.Image]]:
+    """Build trim/alpha masks and optional chroma-decontaminated RGB."""
+    rgb = cell.convert("RGB")
+    diff = _max_channel_difference(rgb, bg)
     trim_mask = diff.point(lambda p: 255 if p > tolerance else 0)
-    alpha_mask = _soft_mask_from_diff(diff, tolerance)
-    alpha_mask = alpha_mask.filter(ImageFilter.MinFilter(3))
-    return trim_mask, alpha_mask
+    tolerance_gate = _soft_mask_from_diff(diff, tolerance)
+    if _pure_chroma_channel(bg) is not None:
+        chroma_alpha = _chroma_alpha(rgb, bg)
+        alpha_mask = ImageChops.multiply(chroma_alpha, tolerance_gate)
+        keyed_rgb = _decontaminate_rgb(rgb, chroma_alpha, bg)
+        return trim_mask, alpha_mask, keyed_rgb
+
+    alpha_mask = tolerance_gate.filter(ImageFilter.MinFilter(3))
+    return trim_mask, alpha_mask, None
 
 
 def _keying_findings(
@@ -164,10 +334,10 @@ def _keying_findings(
 ) -> list[str]:
     """Report objective signs that the flat-background key did not take.
 
-    Two deterministic symptoms: a cut element whose corners are still opaque,
-    and a ``--trim`` that removed nothing because the mask found content along
-    every edge. Both mean the sampled background did not match the real ground
-    (a textured or multi-color ground is the usual cause).
+    Two deterministic symptoms: a cut element whose cell boundary is still
+    opaque, and content that reaches any cell edge. Both violate the clear-key
+    gutter required by the sheet contract, usually because the ground is not
+    flat or an element/effect crossed its cell boundary.
     """
     findings: list[str] = []
     hex_bg = "#{:02X}{:02X}{:02X}".format(*cell_bg)
@@ -175,26 +345,59 @@ def _keying_findings(
     if alpha and alpha_mask is not None:
         px = alpha_mask.load()
         width, height = alpha_mask.size
-        corners = (
-            px[0, 0], px[width - 1, 0],
-            px[0, height - 1], px[width - 1, height - 1],
+        border = max(1, min(_BG_SAMPLE_BORDER, width, height))
+        boundary = []
+        for y in range(border):
+            boundary.extend(px[x, y] for x in range(width))
+        for y in range(max(border, height - border), height):
+            boundary.extend(px[x, y] for x in range(width))
+        for y in range(border, max(border, height - border)):
+            boundary.extend(px[x, y] for x in range(border))
+            boundary.extend(
+                px[x, y] for x in range(max(border, width - border), width)
+            )
+        opaque = sum(
+            1 for value in boundary if value > _BOUNDARY_OPAQUE_ALPHA
         )
-        opaque = sum(1 for value in corners if value > _CORNER_OPAQUE_ALPHA)
         if opaque:
             findings.append(
-                f"{label}: {opaque}/4 corners stayed opaque after --alpha "
+                f"{label}: {opaque}/{len(boundary)} boundary pixels stayed opaque "
+                f"after --alpha "
                 f"(sampled background {hex_bg})"
             )
 
     if trim:
         cell_width, cell_height = cell_size
-        if bbox[2] - bbox[0] >= cell_width and bbox[3] - bbox[1] >= cell_height:
+        touched_edges = []
+        if bbox[0] <= 0:
+            touched_edges.append("left")
+        if bbox[1] <= 0:
+            touched_edges.append("top")
+        if bbox[2] >= cell_width:
+            touched_edges.append("right")
+        if bbox[3] >= cell_height:
+            touched_edges.append("bottom")
+        if touched_edges:
             findings.append(
-                f"{label}: --trim removed nothing, so content reaches every cell edge "
+                f"{label}: content reaches the {'/'.join(touched_edges)} cell edge(s) "
                 f"(sampled background {hex_bg})"
             )
 
     return findings
+
+
+def _log_keying_findings(findings: list[str]) -> None:
+    """Report incomplete flat-background keying."""
+    _log("\n[WARN] Alpha extraction is incomplete — the key field or cell")
+    _log("       isolation failed:")
+    for finding in findings:
+        _log(f"       - {finding}")
+    _log("       Fix: regenerate with one genuinely flat ground and keep every "
+         "element/effect")
+    _log("       inside its cell with a clear key-only gutter, or rerun with an "
+         "explicit")
+    _log("       --bg <hex> and a larger --tolerance; use --inset when a drawn "
+         "outer gutter is isolated from every element.")
 
 
 def slice_sheet(
@@ -208,6 +411,7 @@ def slice_sheet(
     inset: float = 0.0,
     trim: bool = False,
     alpha: bool = False,
+    strict_alpha: bool = False,
     bg: Optional[tuple[int, int, int]] = None,
     tolerance: int = 18,
 ) -> list[Path]:
@@ -218,6 +422,8 @@ def slice_sheet(
     automated run never silently drops cells. Each name must be a bare filename.
     """
     total_cells = rows * cols
+    if strict_alpha and not alpha:
+        raise ValueError("strict_alpha requires alpha=True")
     if names is not None and len(names) != total_cells:
         raise ValueError(
             f"--names has {len(names)} entries but the {rows}x{cols} grid has "
@@ -247,6 +453,7 @@ def slice_sheet(
 
     stem = sheet_path.stem
     name_prefix = _safe_basename(prefix) if prefix else f"{stem}_"
+    prepared: list[tuple[int, int, Image.Image, Path]] = []
     written: list[Path] = []
     findings: list[str] = []
 
@@ -264,10 +471,13 @@ def slice_sheet(
 
             trim_mask: Optional[Image.Image] = None
             alpha_mask: Optional[Image.Image] = None
+            keyed_rgb: Optional[Image.Image] = None
             bbox = None
             if trim or alpha:
-                cell_bg = bg if bg is not None else _sample_bg(cell)
-                trim_mask, alpha_mask = _content_masks(cell, cell_bg, tolerance)
+                cell_bg = bg if bg is not None else _sample_bg(cell, tolerance)
+                trim_mask, alpha_mask, keyed_rgb = _content_masks(
+                    cell, cell_bg, tolerance
+                )
                 bbox = trim_mask.getbbox()
                 if bbox is None:
                     raise ValueError(f"cell ({r},{c}) is all background; no element was sliced")
@@ -279,8 +489,12 @@ def slice_sheet(
             if trim and trim_mask is not None and alpha_mask is not None and bbox is not None:
                 cell = cell.crop(bbox)
                 alpha_mask = alpha_mask.crop(bbox)
+                if keyed_rgb is not None:
+                    keyed_rgb = keyed_rgb.crop(bbox)
 
             if alpha and alpha_mask is not None:
+                if keyed_rgb is not None:
+                    cell = keyed_rgb.convert("RGBA")
                 cell.putalpha(alpha_mask)
 
             if safe_names:
@@ -290,24 +504,24 @@ def slice_sheet(
             else:
                 out_name = f"{name_prefix}{idx + 1:02d}.png"
             out_path = output_dir / out_name
-            cell.save(out_path)
-            written.append(out_path)
-            _log(f"[OK] cell ({r},{c}) -> {out_path.name}  ({cell.width}x{cell.height})")
+            prepared.append((r, c, cell, out_path))
             idx += 1
+
+    if findings:
+        _log_keying_findings(findings)
+        if strict_alpha:
+            raise ValueError(
+                "strict alpha validation found incomplete background keying; "
+                "no output files were written"
+            )
+
+    for r, c, cell, out_path in prepared:
+        cell.save(out_path)
+        written.append(out_path)
+        _log(f"[OK] cell ({r},{c}) -> {out_path.name}  ({cell.width}x{cell.height})")
 
     if len(written) != total_cells:
         raise ValueError(f"sliced {len(written)} elements but expected {total_cells}")
-
-    if findings:
-        _log("\n[WARN] Background keying looks incomplete — the cut element(s) may")
-        _log("       still carry a visible box on a differently-colored slide:")
-        for finding in findings:
-            _log(f"       - {finding}")
-        _log("       Fix: regenerate the sheet with one genuinely flat ground "
-             "(no grain, halftone, or")
-        _log("       vignette over the background, gutters included), or rerun with "
-             "an explicit")
-        _log("       --bg <hex> and a larger --tolerance.")
 
     return written
 
@@ -320,7 +534,8 @@ def build_parser() -> argparse.ArgumentParser:
         epilog="""Examples:
   python3 scripts/slice_images.py projects/demo/images/illus_sheet.png --grid 2x3
   python3 scripts/slice_images.py projects/demo/images/illus_sheet.png --grid 2x3 \\
-      --names team,product,customer,growth,risk,vision --trim --alpha
+      --names team,product,customer,growth,risk,vision --trim --alpha \\
+      --bg "#00FF00" --strict-alpha
 """,
     )
     parser.add_argument("sheet", help="Path to the generated illustration sheet image")
@@ -351,8 +566,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Make the (flat) background transparent in each element",
     )
     parser.add_argument(
+        "--strict-alpha", action="store_true",
+        help="Fail without writing outputs when --alpha validation finds incomplete keying",
+    )
+    parser.add_argument(
         "--bg", default=None,
-        help="Background hex color for --trim/--alpha (default: auto-sample cell border)",
+        help="Background hex color for --trim/--alpha; an exact pure red/green/blue "
+             "key enables despill and soft-alpha recovery (default: auto-sample)",
     )
     parser.add_argument(
         "--tolerance", type=int, default=18,
@@ -385,6 +605,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not 0 <= args.tolerance <= 255:
         print("[ERROR] --tolerance must be in [0, 255]", file=sys.stderr)
         return 1
+    if args.strict_alpha and not args.alpha:
+        print("[ERROR] --strict-alpha requires --alpha", file=sys.stderr)
+        return 1
 
     names = [n.strip() for n in args.names.split(",") if n.strip()] if args.names else None
     output_dir = Path(args.output) if args.output else sheet_path.parent
@@ -393,7 +616,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         written = slice_sheet(
             sheet_path, rows, cols, output_dir,
             names=names, prefix=args.prefix, inset=args.inset,
-            trim=args.trim, alpha=args.alpha, bg=bg, tolerance=args.tolerance,
+            trim=args.trim, alpha=args.alpha, strict_alpha=args.strict_alpha,
+            bg=bg, tolerance=args.tolerance,
         )
     except (OSError, ValueError) as exc:
         print(f"[ERROR] Slicing failed: {exc}", file=sys.stderr)

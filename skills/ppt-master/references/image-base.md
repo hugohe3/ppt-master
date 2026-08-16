@@ -49,6 +49,7 @@ Choosing `none` is valid. Never bake a native treatment into a derivative.
 | `A1-01` / `A1-04` | Existing prepared composite or host/AI path; `image_treat.py` does not blend |
 | `A2-01` | Existing/host-prepared RGBA or flat-key AI/slice asset; when source-scene registration is required, use `A2-02` / `A2-03` + [`image-generator.md`](./image-generator.md) §4.4 |
 | `A2-02` / `A2-03` | [`image-generator.md`](./image-generator.md) §4.4 registered layers |
+| `A2-04` | Existing/host-prepared transparent frame or device asset via the `A2-01` paths, plus an existing content picture registered beneath it; no automatic derivative |
 | `A3-01` | Original/subject plus registered `image_treat.py` blur/tone/desaturate derivative |
 | `A3-02` | Registered full-canvas `image_treat.py` blur derivative; crop panels natively |
 | `A3-03` | `image_treat.py` desaturated base plus existing/§4.4 color subject layer |
@@ -90,7 +91,7 @@ After all rows reach terminal status:
 - Each derivative has its distinct file and usable parent; web provenance is copied in `image_sources.json`
 - Every `slice` row has a generated element file, or is marked `Needs-Manual` because its parent sheet is not available
 - No `Pending`, `Failed`, or `Needs-Selection` rows remain
-- `image_prompts.json` exists when ≥1 ai row processed; every entry has `status ∈ {Generated, Needs-Manual}` (no `Pending` or `Failed` remaining)
+- `image_prompts.json` exists when ≥1 active ai row remains; every entry has `status ∈ {Generated, Needs-Manual}` (no `Pending` or `Failed` remaining)
 - `image_sources.json` exists when ≥1 web row processed; every entry has `license_tier ∈ {no-attribution, attribution-required, manual}` (`manual` = a user-supplied `--from-url` replacement)
 
 > `Needs-Manual` is terminal for acquisition, not export readiness. A later
@@ -105,11 +106,11 @@ After all rows reach terminal status:
 
 ## 6. Failure Handling
 
-**Hard rule — automatic exhaustion before blocking**: acquisition failures MUST NOT open an interactive choice or stop while an untried permitted strategy remains.
+**Hard rule — automatic exhaustion before blocking**: acquisition failures MUST NOT open an interactive choice or stop while an untried permitted strategy remains. After exhaustion, follow the owning path's decision policy; Default AI generation uses `image-generator.md` §7's three-outcome recovery gate instead of assuming manual fulfillment.
 
 1. Run the selected path's initial strategy
 2. On recoverable failure (network, no candidates, license rejection, rate limit), continue through materially different strategies that remain inside that path's confirmed permissions; never loop an already exhausted strategy
-3. When the path-specific query variants/ranked pages/provider/license-stage or backend/retry strategy is exhausted, set `Status: Needs-Manual`, log the reason in conversation, and continue
+3. When the path-specific query variants/ranked pages/provider/license-stage or backend/retry strategy is exhausted, follow its owning terminal rule. Web may set `Status: Needs-Manual`; Default AI rows remain `Failed` while its recovery decision or retry is unresolved, and only confirmed manual fulfillment sets `Needs-Manual`; Quick removes exhausted automated AI/dependent-slice jobs through `image-generator.md` §7's declared no-AI replan, while an explicitly selected manual path may set `Needs-Manual`
 4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.md` paste-ready blocks for ai rows; refresh via `image_gen.py --render-md` if stale), and where to place generated files (`project/images/<filename>`). After supply/replacement, validate the file and reconcile the owning row plus manifest to its usable status. For `slice` rows, list the parent sheet filename and target element names; the user places the sheet, then the agent reruns `slice_images.py`.
 
 **Quick Generate export gate**: exhaust allowed automation without asking; stop
@@ -117,7 +118,7 @@ before `--quick-generate` when a required row is not both backed by its
 validated file/provenance and in a usable status. Preview/file presence alone
 never bypasses `Needs-Selection` or `Needs-Manual`.
 
-`Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §7 Offline Manual Mode.
+`Needs-Manual` is also the entry status for **Offline Manual Mode**. Default uses it only when final Stage 2 or the runtime recovery decision explicitly confirmed `manual`; Quick uses it only when the active-context instruction explicitly selected `manual`. Neither profile checks configuration or probes a provider during planning; automated capability is resolved only during [`image-generator.md`](./image-generator.md) §7 execution.
 
 Path-specific retry policies (provider chain, backend chain) live in the path's own reference.
 

@@ -35,10 +35,11 @@ Generate checks `design_spec.md §I / AI Image Acquisition Path` before manifest
 mode: only `api` / `auto` permits Path A; a missing or unknown value fails
 closed and returns to Step 4 recovery. Quick Generate has no Design Spec: use
 the explicit active-context path when supplied, otherwise `auto` selects the
-A → B → C chain defined in
-[`image-generator.md`](../../references/image-generator.md) §7 without asking.
-In either profile, `host-native` uses the host image tool directly and `manual`
-uses the read-only Markdown sidecar.
+A → B chain defined in
+[`image-generator.md`](../../references/image-generator.md) §7 without asking;
+exhausted automation triggers Quick's no-AI replan rather than Offline Manual.
+In either profile, `host-native` uses the host image tool directly and an
+explicit `manual` choice uses the read-only Markdown sidecar.
 
 ```bash
 uvx ppt-master image-gen "A modern futuristic workspace"
@@ -152,8 +153,9 @@ Create a non-destructive PNG derivative from one bitmap already prepared under
 `<project_path>/images/`. Use this only when a slide needs a baked bitmap effect;
 crop, mask, rotation, mirror, opacity, shadow, scrim, outline, and overlap remain
 native SVG/PPT treatments. This tool does not perform semantic background
-removal: use `slice_images.py --alpha` for flat-color keys, an already prepared
-RGBA asset or the active host image editor for a standalone cutout, and
+removal: use `slice_images.py --alpha --bg <key> --strict-alpha` for flat-color
+keys (a pure red/green/blue key also recovers soft alpha and removes spill), an
+already prepared RGBA asset or the active host image editor for a standalone cutout, and
 [`image-generator.md`](../../references/image-generator.md) §4.4 only for
 registered subject/base layers.
 

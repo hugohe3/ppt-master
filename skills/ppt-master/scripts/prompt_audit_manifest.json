@@ -33,7 +33,7 @@
     "skills/ppt-master/references/native-data-interface.md": 6750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
     "skills/ppt-master/references/strategist.md": 18000,
-    "skills/ppt-master/references/strategist-image.md": 2750,
+    "skills/ppt-master/references/strategist-image.md": 3250,
     "skills/ppt-master/references/strategist-template.md": 3000,
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
@@ -357,7 +357,7 @@
       "max_tokens": 135000
     },
     "route.generate.quick-generate.web-image": {
-      "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
+      "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution. Ceiling raised after BUDGET_LOAD_SET reported 115146 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -366,7 +366,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 115000
+      "max_tokens": 130000
     },
     "route.generate.quick-generate.visualization": {
       "description": "Quick Generate with bounded Chart/Table recall, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar.",
@@ -617,7 +617,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 19000
+      "max_tokens": 21000
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -761,7 +761,7 @@
       "max_tokens": 74000
     },
     "stage.generate.image.ai-two-types": {
-      "description": "Incremental AI-image role with the selected preset or exact custom rendering bases and two selected local types.",
+      "description": "Incremental AI-image role with the selected preset or exact custom rendering bases and two selected local types. Ceiling raised after BUDGET_LOAD_SET reported 26216 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/image-base.md",
@@ -792,7 +792,7 @@
           "registry": "image-type-templates"
         }
       ],
-      "max_tokens": 26000
+      "max_tokens": 29000
     },
     "stage.generate.image.web": {
       "description": "Incremental web-image acquisition role. Ceiling raised after BUDGET_LOAD_SET reported 9341 tokens.",
@@ -1073,7 +1073,7 @@
       "max_tokens": 1250
     },
     "stage.generate.executor.image": {
-      "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary.",
+      "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary. Ceiling raised after BUDGET_LOAD_SET reported 13167 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-image.md",
@@ -1081,7 +1081,7 @@
         "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 13000
+      "max_tokens": 15000
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",
@@ -1527,12 +1527,12 @@
       "prefix_counts": {
         "P1": 13,
         "P2": 10,
-        "P3": 23,
-        "M1": 11,
+        "P3": 24,
+        "M1": 12,
         "M2": 9,
         "M3": 7,
         "A1": 4,
-        "A2": 3,
+        "A2": 4,
         "A3": 3,
         "C1": 1,
         "C2": 2,

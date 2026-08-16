@@ -12,33 +12,38 @@ Always-on Stage-2 rendering-candidate extension plus confirmed image elaboration
 
 Before Stage 2, construct rendering candidates independently of the proposed source set. After confirmation, map the confirmed source set through [`strategist.md`](./strategist.md) §h and honor explicit `image_notes` roles; this module never adds a source. The confirmed non-`none` set is an allowed acquisition boundary, not coverage: use a suitable subset and leave irrelevant sources unused. Explicit must-use sources, assets, or page roles remain required. Asset inventory and judgment determine unconfirmed count, subject, placement, and composition without substituting an unconfirmed source.
 
-For illustration, apply this precedence: confirmed `none` → explicit user intent → the locked visual style's `Illus.` propensity (`core` / `supportive` / `sparse`) → none. Propensity controls the lean, not the source or a page quota. When illustration is active, prefer one coherent motif family across hero/section anchors and local spots, but only when the confirmed assets can form that family.
+For illustration, confirmed `none` stops and explicit user intent wins. Otherwise the locked visual style's `Illus.` propensity (`core` / `supportive` / `sparse`) tunes centrality and recurrence after the per-page composition scan; it never restricts eligible page types, element scale, or carrier combinations. When illustration is active, prefer one coherent family that can serve the actual page jobs, including recurring title/corner chrome, dominant anchors, supporting figures, and accents.
 
 **Context-first understanding for provided assets**: Do not visually scan `images/`. First infer identity, role, and crop / focus needs from source position and surrounding prose, captions / alt / titles, filename, user notes / confirmed `image_notes`, existing resource records, and CSV geometry. Inspect only one specific image when a remaining ambiguity would change selection, factual identity, page role, crop safety, or focal placement. Never inspect for inspiration, bulk-open the folder, or infer external facts / provenance from pixels. Record the result in §VIII. Leave an optional unresolved asset unused; route an unresolved must-use asset through failure recovery.
 
-**Default — one coherent sheet for compatible same-family spots or lettering elements (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots or stable decorative-lettering elements can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference. For lettering, also record every exact string, set the sheet to `text_policy: embedded`, and keep authoritative title/chrome wording outside the sheet. Use separate sheets for incompatible shapes or treatments. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
+**Default — one coherent sheet per compatible visual family (may override when aspect, detail, quality, or semantic needs differ)**: group AI illustration elements or exact lettering strings by shared visual identity rather than an identical effect recipe; compatible elements share a sheet and split only when their geometry, detail, quality, or semantics conflict. For each sheet, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`, and one element row may serve several §IX pages. State each element's communication job, placement/reuse relationship, relative visual weight, energy, family, and shape without prescribing an effect stack. Use glyph-native expression by default; record a lettering-plus-illustration lockup only when the user explicitly requests it or the confirmed direction requires it. Lettering sheets use `text_policy: embedded`; the asset may carry the complete display title, while any required searchable, selectable, or outline-visible title remains an ordinary separate native text frame. [`image-generator.md`](./image-generator.md) §§4.3 and 5.3 own the controlled-default/high-expression boundary, artistic authorship, grid, key field, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
 
-**Mandatory — materialize proactive lettering**: When confirmed image usage
-retains `ai`, the effective acquisition path has a callable Path A/B, and the
-complete page roster contains a suitable display string anywhere in the deck,
-collect the compatible set once before writing §VIII. Eligibility turns on two
-questions only — is the wording stable, and would an artistic treatment
-communicate better than native type. Page role, length, line count, and kind of
-noun never filter candidates; treat cover hooks, chapter words, place or product
-names, dish or exhibit names, years, hero numbers, pull quotes, and motif words
-as examples rather than the allowed set. Use one ordinary `ai` row
-for a single mark, or the sheet/element rows under §4.3 for several compatible
-marks, and record every exact character sequence; do not leave the choice as an
-`image_notes` or §IX suggestion only. A two-character mark, a multi-word phrase,
-and a two-line lockup are equally eligible; never trim a phrase toward one or two
-characters to look more like a wordmark. Eligibility is wide but use stays
-selective: build one small coherent set rather than lettering every heading. A
-planned wordmark and an editable page
-title coexist: the asset carries the display layer while subtitle, chrome, and
-body remain native text. A confirmed `none`, explicit no-AI
-instruction, editable-only hook, or Offline Manual path does not activate this
-proactive rule; an explicit user-required lettering asset still follows the
-ordinary resource contract.
+**Mandatory — evaluate decorative lettering under the two-question gate**:
+When confirmed image usage retains `ai`, scan the complete page roster once
+before writing §VIII. Confirmed `ai` is a Permission, not coverage: never create
+lettering merely to justify the AI source or because no other AI-image job was
+found. Eligibility turns on two questions only—is the wording stable, and would
+an artistic treatment communicate better than native type. When either answer
+is no, create no lettering row and keep the wording as native editable text.
+Page role, character count, word count, line count, and kind of noun never
+filter candidates; a complete long title, multi-word phrase, and multi-line
+lockup are as eligible as a short mark. Preserve each full exact character
+sequence as one intended mark when its hierarchy belongs to the art; never
+trim, rewrite, or split it merely to ease generation. When both answers are
+yes, the second answer already establishes the communication benefit; do not
+add another eligibility test. Eligibility is wide, but deck-wide use stays
+selective: choose a coherent set rather than lettering every heading; this
+limits coverage, not eligibility. Adopt the selected marks under the confirmed
+natural-language image intent, then materialize every adopted choice as one
+ordinary `ai` row or as the §4.3 sheet/element rows rather than leaving it as a
+planning suggestion. Use has no coverage quota. An asset may carry the
+complete long or multi-line title as its display layer. Keep an ordinary native
+title/subtitle in a separate text frame wherever the page needs a searchable,
+selectable, or outline-visible heading. Chrome and body remain native text. A
+confirmed `none`, explicit no-AI instruction,
+editable-only hook, or Offline Manual path does not activate this proactive
+rule; an explicit user-required lettering asset still follows the ordinary
+resource contract.
 
 **Mandatory — image-treatment path scan, not a quota**: Per selected image choose `none` (unchanged), `native` (SVG crop/clip, transform, opacity, frame/depth, overlap), or `prepared derivative` (separate pixel blur/tone or cutout/registered layers); `none` is valid.
 

@@ -34,4 +34,4 @@ Layered paper-craft — scissor-cut shapes stacked in tactile layers, soft shado
 
 ## 6. Illustration propensity
 
-**core** — layered cut-paper elements *are* the style, and the slicer's transparent cutouts match it natively; with no user steer, default to recommending a coherent spot-illustration family. Default *lean* only — heaviness and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**core** — layered cut-paper elements *are* the style, and transparent slices match it natively; with no user steer, default to recommending a coherent composable illustration family. Default *lean* only — role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

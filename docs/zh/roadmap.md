@@ -52,7 +52,7 @@
 | 3D 模型、OLE 对象 | 暂不考虑 | 两者都要求打开文件的机器装有宿主程序或较新版 Office，否则退化成一张静态预览图——正是本项目有意规避的跨渲染器问题。手动插入只要几秒。来源 deck 中已有的对象原样保留 |
 | 墨迹与摄像头对象（Cameo） | 暂不考虑 | 手绘批注与实时摄像头对象属于演示现场的表面，不是生成的设计内容，且都依赖较新版 Office。来源 deck 中已有的此类 part 经源保留路线作为未改动的包结构透传 |
 
-**插图**有意不列进这张表。它是复合结果——一张图片、一段 SVG，或一组形状——而不是第七种载体；把它与「图片」并列，会重新引入这套分层正要消除的维度混淆。
+**插图**有意不列进这张表。它是可组合结果——一张图片、透明切片、一段 SVG，或一组形状——而不是第七种载体；它可以与页面上其他合适载体共同构图，把它与「图片」并列反而会重新引入这套分层正要消除的维度混淆。
 
 ### 第二层 — 构图系统
 
@@ -60,6 +60,7 @@
 |---|---|---|
 | 背景 | 系统化 | 纯色与渐变页面背景导出为 PowerPoint 原生底色；图片背景属信号驱动 |
 | 层级与分组 | 系统化 | 显式 z-order 与分组契约，含 registered base / subject 图层对 |
+| 插图构成 | 系统化 | 按页面规划为统一的元素家族；生图能力可用时，可在色键图纸中批量生成兼容素材、严格透明切片，再作为固定标题 / 四角装饰复用，或重组为主体锚点、辅助形象与点缀，并与文字、形状、照片、艺术字共同构图 |
 | 网格、对齐、留白 | 系统化 | 共享构图合同，加由每种视觉风格各自承载的构图几何词汇 |
 | 配色 | 系统化 | 声明的 HEX 是具名语义角色的真值来源；可复用角色锚点跨页保持稳定，仍可使用情境派生色与稀疏页内点缀 |
 | 字体 | 系统化 | 每个结构角色一个跨页字号锚点，单次出现可在 `±2px` 内受限调整；稀疏非结构 Hero/Display 另有例外 |
@@ -103,7 +104,7 @@
 
 明确在做或下一步要做，不承诺时间窗口。
 
-- **在真实 deck 上校准新落地的体系** — 多 deck 合并 intake、材料发散度、插画体系、结构化模板创作均已上线；它们现在需要的是真实使用信号，而不是更多机制。不预先加机械阈值或配额。
+- **在真实 deck 上校准新落地的体系** — 多 deck 合并 intake、材料发散度、可组合插画体系、结构化模板创作均已上线；它们现在需要的是真实使用信号，而不是更多机制。不预先加机械阈值或配额。
 - **Prompt 精简** — 在不降质量的前提下压缩各角色 prompt 的 token 占用、提升缓存命中率，带来间接的成本 / 速度改善。与「纯速度优化」的边界见下方「明确不做」。
 
 ---
@@ -126,9 +127,9 @@
 | 2026-03 | **原生 PPTX 路线成形** — SVG → DrawingML 链路可用；图表 / 版式模板索引上线 |
 | 2026-04 | **管线规模化** — 仅凭主题生成、70 个图表模板 + 三套图标库、`spec_lock` 跨页一致性契约、逐元素动画与旁白 / 视频导出 |
 | 2026-05 | **可视化编辑 + AI 图片体系化** — Live Preview 确定性原位编辑（基于 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85)）、从 PPTX 创建模板工作区、rendering × palette × type 图片体系、旧版栅格 LaTeX 渲染器 |
-| 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/ZhaoZuohong) 的 [PR #155](https://github.com/hugohe3/ppt-master/pull/155)） |
+| 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、可组合插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/hugohe3/ppt-master/pull/155)） |
 | 2026-07 | **定位章程 + 原生母版 / 版式 + token 效率**（[v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)）— 三段式分步确认 UI、真 `p:sldMaster` / `p:sldLayout` 导出、`--native-charts-and-tables` opt-in、动效导出加固、图表模板库压缩 |
-| 2026-08 | **模板库 + 页面图重建 + 原生公式与链接**（[v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0)、[v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)、[v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0)）— brand / style / layout 工作区库、可视化按信息模型拆分且结构改为组合语法、Codex 支持的 `image-to-pptx` profile、带原生动画音效的视频交付、三条可编辑整体设计方向、可编辑 OMML 公式、原生超链接创作，以及四层能力覆盖地图 |
+| 2026-08 | **模板库 + 页面图重建 + 原生公式与链接 + AI 图像成为构图系统**（[v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0)、[v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)、[v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0)、[v4.8.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.8.0)）— brand / style / layout 工作区库、可视化按信息模型拆分且结构改为组合语法、Codex 支持的 `image-to-pptx` profile、带原生动画音效的视频交付、三条可编辑整体设计方向、覆盖 Microsoft 365 文档化 profile 的可编辑 OMML 公式、原生超链接创作、可跨页复用的 AI 插画元素族与装饰艺术字、按任务决定来源并隔离审阅缩略图的配图路径、转场与对象动画的反向导入，以及四层能力覆盖地图 |
 
 ---
 

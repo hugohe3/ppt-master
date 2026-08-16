@@ -52,7 +52,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | 3D models, OLE objects | Not planned | Both need the host application or a recent Office build on the opening machine and fall back to a still preview elsewhere — the cross-renderer problem this project avoids by design. Inserting one by hand takes seconds. Objects already present in a source deck are preserved unchanged |
 | Ink & camera feeds (Cameo) | Not planned | Hand-drawn annotation and live camera objects are presenter-session surfaces rather than generated design content, and both depend on recent Office builds. Such parts already present in a source deck pass through source-preserving routes as untouched package structure |
 
-*Illustration* is deliberately absent from this table. It is a composite result — an image, an SVG, or a group of shapes — not a seventh carrier, and listing it beside *Images* would reintroduce the category confusion this layering removes.
+*Illustration* is deliberately absent from this table. It is a composable result—an image, transparent slice, SVG, or group of shapes—not a seventh carrier. It may combine with any other suitable page carrier; listing it beside *Images* would reintroduce the category confusion this layering removes.
 
 ### Layer 2 — Composition
 
@@ -60,6 +60,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 |---|---|---|
 | Background | Systematized | Solid and gradient page backgrounds export as PowerPoint-native slide backgrounds; the picture case is signal-driven |
 | Layering & grouping | Systematized | Explicit z-order and group contracts, including registered base/subject layer pairs |
+| Illustration composition | Systematized | Planned per page as a coherent element family; when generation is available, compatible assets may be batch-generated on keyed sheets, strictly alpha-sliced, then reused as fixed title/corner chrome or recomposed as anchors, supporting figures, and accents alongside text, shapes, photos, and lettering |
 | Grid, alignment, whitespace | Systematized | Shared composition contract plus composition-geometry vocabulary carried by each visual style |
 | Palette | Systematized | Declared HEX values are the truth source for named semantic roles; reusable role anchors stay stable deck-wide, while contextual derivatives and sparse page-local accents remain available |
 | Typography | Systematized | One deck-wide size anchor per structural role, with bounded `±2px` per-occurrence adjustment and a sparse non-structural Hero/Display exception |
@@ -103,7 +104,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 
 Actively underway or up next — no committed timeline.
 
-- **Calibrate the recently landed systems on real decks** — multi-deck intake, the material-divergence field, the spot-illustration system, and structured template creation have all shipped; what they need now is real-usage signal, not more mechanism. No pre-emptive thresholds or quotas.
+- **Calibrate the recently landed systems on real decks** — multi-deck intake, the material-divergence field, the composable-illustration system, and structured template creation have all shipped; what they need now is real-usage signal, not more mechanism. No pre-emptive thresholds or quotas.
 - **Prompt slimming** — compress per-role prompt token footprint and improve cache hit rate without sacrificing quality. This is the indirect cost/speed lever; the boundary with quality-sacrificing speedups is drawn under Non-goals.
 
 ---
@@ -126,9 +127,9 @@ One line per month. Full detail lives in the [release notes](https://github.com/
 | 2026-03 | **Native PPTX route takes shape** — the SVG → DrawingML chain becomes usable; chart/layout template indexes ship |
 | 2026-04 | **Pipeline at scale** — topic-only generation, 70 chart templates + three icon libraries, the `spec_lock` cross-page consistency contract, per-element animation and narration/video export |
 | 2026-05 | **Visual editing + AI-image systematization** — Live Preview with deterministic in-place editing (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)), template workspaces from PPTX, the rendering × palette × type image system, and the legacy raster LaTeX renderer |
-| 2026-06 | **Mode & visual-style dual catalogs + intake expansion** — 5 narrative modes × 18 visual styles (+ `custom`), content-faithful beautify profile, multi-deck intake, spot-illustration pipeline, web-image quality gates, source-conversion fidelity gains (caption recognition from [@suay1113](https://github.com/suay1113)'s [PR #191](https://github.com/hugohe3/ppt-master/pull/191), hyperlink preservation distilled from [@ZhaoZuohong](https://github.com/ZhaoZuohong)'s [PR #155](https://github.com/hugohe3/ppt-master/pull/155)) |
+| 2026-06 | **Mode & visual-style dual catalogs + intake expansion** — 5 narrative modes × 18 visual styles (+ `custom`), content-faithful beautify profile, multi-deck intake, composable-illustration pipeline, web-image quality gates, source-conversion fidelity gains (caption recognition from [@suay1113](https://github.com/suay1113)'s [PR #191](https://github.com/hugohe3/ppt-master/pull/191), hyperlink preservation distilled from [@ZhaoZuohong](https://github.com/ZhaoZuohong)'s [PR #155](https://github.com/hugohe3/ppt-master/pull/155)) |
 | 2026-07 | **Positioning charter + native masters & layouts + token efficiency** ([v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)) — three-pass staged confirmation UI, real `p:sldMaster` / `p:sldLayout` export, `--native-charts-and-tables` opt-in, motion-export hardening, chart template library compacted |
-| 2026-08 | **Template library + page-image reconstruction + native math and links** ([v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0), [v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0), [v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0)) — brand / style / layout workspace library, visualizations split by information model with structure as a composition grammar, the Codex-supported `image-to-pptx` profile, video delivery carrying native animation sound, three editable whole-solution design directions, editable OMML formulas, native hyperlink authoring, and the four-layer coverage map |
+| 2026-08 | **Template library + page-image reconstruction + native math and links + AI imagery as composition** ([v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0), [v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0), [v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0), [v4.8.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.8.0)) — brand / style / layout workspace library, visualizations split by information model with structure as a composition grammar, the Codex-supported `image-to-pptx` profile, video delivery carrying native animation sound, three editable whole-solution design directions, editable OMML formulas across the documented Microsoft 365 profile, native hyperlink authoring, composable AI illustration families and decorative lettering, task-driven image sourcing with isolated thumbnail review, transition and object-animation reverse import, and the four-layer coverage map |
 
 ---
 

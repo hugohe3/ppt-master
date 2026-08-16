@@ -58,7 +58,7 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 | Reference | Preserve the selected direction or role; adapt its realization to context. |
 | Permission / default | An allowed candidate/source boundary or preference; Strategist may leave it unused, with no quota. |
 
-**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and text-only import of its retained webpages may precede confirmation; their image links are only a post-search fallback. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
+**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and import of its two-artifact research pair may precede confirmation; facts URLs are not auto-expanded. Only after normal image search fails may one adopted webpage become a reviewable Markdown + companion-image source package, with accepted files promoted individually. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
 
 Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording may strengthen only the named property into the appropriate Literal or Semantic requirement. Accepting an AI recommendation keeps the field's default type; it does not promote a Reference or Permission into a Literal requirement.
 
@@ -279,25 +279,36 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 |---|---|---|
 | `none` | No images | Data reports or process documentation whose visual burden is fully served by charts / native SVG |
 | `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
-| `ai` | AI-generated | Invented or deliberately stylized illustrations, backgrounds, metaphors, or a coherent spot family are needed |
+| `ai` | AI-generated | Invented or deliberately stylized scenes, illustrations, backgrounds, metaphors, decorative lettering, or another generated visual treatment is needed |
 | `web` | Web-sourced | A named or evidence-bearing real-world subject must appear as itself |
 | `placeholder` | Deferred | The image is required but will be supplied later |
 
 **Current inventory**: If `images/` is non-empty, run `uvx ppt-master analyze-images <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
 
-**Default — evidence before synthesis (may override when explicit source constraints or the communication intent require another permitted source)**: Prefer `provided` when supplied assets already carry authority. Propose `web` when the actual appearance of an externally verifiable subject is material; propose `ai` when custom expression matters more than documentary identity. Mixed sources may serve different page roles. This is a source-fit decision, not an image quota. The three Stage-2 style directions never settle it: a rendering candidate resolves how imagery looks, never whether an externally verifiable subject must appear as itself.
+**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or keyed stock-provider credentials never justifies `none` or deletion of a planned web-compatible role. Web search retains zero-config providers; an explicit generation-only requirement follows the normal Offline Manual boundary.
 
-**Mandatory — proactive decorative-lettering scan**: Before each Stage-2
-`recommend.image_usage`, treat a configured `IMAGE_BACKEND` or host-native image
-generator as callable; Offline Manual, web, and vision-only access do not
-qualify. If callable and the planned roster contains an exact stable string
-suited to illustrative lettering anywhere in the deck — page role, length, and
-kind of noun never filter candidates — include `ai` plus its role in
-`image_notes.value` without waiting for a request. Never invent or rewrite copy
-to trigger it. Explicit no-AI or editable-only requirements win. Execution
-follows [`image-generator.md`](./image-generator.md) §7.
+**Mandatory — no AI capability preflight**: When `recommend.image_usage` includes `ai`, preserve an explicit user path instruction; otherwise recommend `auto`. Do not inspect backend configuration, check host-tool availability, or probe a provider during planning. Generate Step 5 execution is the first capability check.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Default — visual grounding before `none` (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression materially improves a planned visual job. Treat `none` as a positive whole-deck conclusion. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
+
+**Mandatory — assess proactive decorative lettering without making eligibility
+an automatic source trigger**: Before each Stage-2 `recommend.image_usage`,
+scan the complete planned roster for exact stable display strings whose
+artistic treatment could communicate better than native type. Page role,
+character count, word count, line count, and kind of noun never filter
+candidates: a complete long or
+multi-line title is as eligible as a short mark. Never invent, rewrite,
+shorten, or split copy to make generation easier. An eligible string is one
+possible AI visual job, not a mechanical reason to add
+`ai`. The second eligibility question already decides whether lettering
+strengthens communication: when its answer is yes, lettering may be the sole
+intended AI job and may support an AI recommendation stated in
+`image_notes.value`; when either answer is no, native editable text remains
+valid. The absence of another AI-image job never forces lettering. Explicit
+no-AI or editable-only requirements win. Execution follows
+[`image-generator.md`](./image-generator.md) §7.
+
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and invented or stylized expression serves it. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
@@ -316,12 +327,15 @@ implementation parameters. Executor may adapt/decline the
 two non-literal suggestions while preserving content and intent; explicit
 user/template requirements bind.
 
+**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Select only what improves communication and composition; outside explicit requirements, no carrier is mandatory or mutually exclusive.
+
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
+| Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent illustration elements by compatible family, record fixed reuse or adaptive variation in their §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
-| AI decorative lettering asset | Any stable display string in the deck — cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): when compatible, plan one unplaced AI Illustration Sheet plus one transparent `slice` row per used lettering element; record every exact string, and keep subtitle/chrome/body as native text. A display wordmark and an editable page title may coexist |
+| AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks by visual family, state their role/context/relative visual weight/energy without fixing an effect recipe, plan one unplaced AI Illustration Sheet per family plus one transparent `slice` row per used mark, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
 
@@ -458,15 +472,16 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
 
-**Default — define one cross-page visual motif when it can carry identity or
+**Default — define a cross-page visual motif system when it can carry identity or
 meaning (may omit when restraint serves the deck better)**: after the complete
-§IX roster and planned visual resources are known, choose or inherit one reusable
-page-scale geometry or material gesture—such as a directional contour, opening,
-line lattice, or oversized numeral. Fold its recognizable invariant and allowed
-variation (scale, crop, density, position, content interaction) into the
-existing §III `Theme`, and mention it only in §IX `Layout` blocks that use it.
-Vary it by page role instead of copying one ornament; create no motif field or
-lock row. This is a continuity Reference, not a decoration quota.
+§IX roster and planned visual resources are known, choose or inherit a reusable
+motif or coherent element family—such as title/corner ornaments, a directional
+contour, opening, line lattice, or oversized numeral.
+Fold its invariant and reuse mode into §III `Theme`: exact repetition is valid
+for deliberate recurring chrome, while page-specific motifs may vary scale,
+crop, density, position, and content interaction. Mention it only in §IX
+`Layout` blocks that use it; create no motif field or lock row. This is a
+continuity Reference, not a decoration quota.
 
 On PPT 16:9, start from a 1200×640 safe area with 40px outer margins, then adapt to content. Template workspaces may supply different geometry; when active, [`strategist-template.md`](./strategist-template.md) owns precedence.
 

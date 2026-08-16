@@ -92,7 +92,7 @@ Prepare source facts before initialization:
 
 | Input | Action |
 |---|---|
-| Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement, fact-provenance JSON, and adopted webpage inputs for import |
+| Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement plus fact-provenance JSON; adopted webpage URLs remain inside that pair and are not import inputs |
 | One or more PNG / JPEG / WebP files representing page frames under Image to PPTX | Do not call `source_to_md.py`; normalize single-page files and multi-frame contact sheets into the canonical ordered frame roster through that profile, then import the originals below |
 | PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as a plain-text table source |
@@ -121,9 +121,9 @@ After reading every direct and converted source, assess factual sufficiency:
 **Sufficiency test**: research only when the requested outcome would otherwise
 require inventing, omitting, or leaving unsupported an externally verifiable
 claim. File presence or length does not establish sufficiency. Research records
-the needed facts and adopted webpages. Those pages import as text-only evidence;
-independent AI / web / slice acquisition remains part of the
-resource preparation below.
+the needed facts and adopted webpage URLs in its research pair. Project
+initialization fetches none of those pages; independent AI / web / slice
+acquisition remains part of the resource preparation below.
 
 **Conditional video-delivery context**: when the intended use is recorded,
 self-running, or video-directed—or an explicit final/literal narration script
@@ -184,9 +184,11 @@ uvx ppt-master project import-sources \
   [projects/<research_slug>.md projects/<research_slug>.facts.json]
 ```
 
-The facts JSON owns retained URLs. `project_manager.py` imports them
-automatically in text-only mode and fails incomplete reconciliation; do not
-repeat URLs or add page images to `<project>/images/`.
+The facts JSON is the sole URL authority, not a download queue.
+`project_manager.py` imports it as an ordinary file and never expands its
+`source_url` values. If normal web-image search is exhausted, follow
+[`topic-research`](../stages/topic-research.md) § Hand-off to fetch one relevant
+webpage package, review it, and copy only accepted images into the runtime pool.
 
 Only inputs already under the repository's `projects/` tree move into the
 target project; every external path is copied and remains untouched. Use
@@ -276,9 +278,9 @@ the roster after the whole-roster check:
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
 - for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
-- when useful, one transient deck-level visual motif with an identity or
-  communication job, a recognizable invariant, and deliberate variation across
-  applicable page roles; omit it when restraint serves the deck better;
+- when useful, a transient deck-level visual motif system with an identity or
+  communication job, a recognizable invariant, and a reuse mode: fixed chrome,
+  adaptive variation, or both; omit it when restraint serves the deck better;
 - the resource decisions needed for immediate preparation. Required operational
   image manifests may carry filenames, page relationship, status, and
   generation/crop/focal cues, but do not create a general resource roster or an
@@ -326,12 +328,16 @@ the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
 because Quick is expected to be faster is not.
 
-**Mandatory — proactive AI decorative lettering**: Apply
-[`image-generator.md`](../../references/image-generator.md) §7's
-callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
-Path A and a host-native image-generation tool is Path B; Offline Manual, web
-search, or vision-only access does not qualify. When Path A/B is callable and
-the user has not forbidden AI, scan the frozen roster for display strings
+**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Outside explicit requirements, no carrier is mandatory or mutually exclusive; choose the combination that makes the page coherent and visually resolved.
+
+**Hard rule**: Credentials do not decide image need or the initial carrier plan. Do not inspect backend configuration or probe a provider before planning. Web acquisition retains zero-config providers; actual AI generation capability is resolved only during resource preparation, where the declared Quick no-AI replan below owns automated exhaustion.
+
+**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. Prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
+
+**Default — prepare a composable illustration family when it strengthens the deck (may omit when no page benefits)**: Resolve the family before SVG authoring. Elements may repeat unchanged as title/corner chrome or vary as dominant anchors, supporting figures, and accents on any suitable page. Batch compatible elements through Illustration Sheets, split only for geometry/detail/quality conflicts, and keep final page composition in SVG under [`image-generator.md`](../../references/image-generator.md) §4.3.
+
+**Mandatory — proactive AI decorative lettering**: When the user has not
+forbidden AI, scan the frozen roster for display strings
 anywhere in the deck. Exactly two questions decide eligibility: is that wording
 stable, and would an artistic treatment communicate better than native type?
 Page role, string length, line count, and kind of noun never filter candidates —
@@ -347,20 +353,26 @@ keep a native title wherever the page needs a searchable, selectable, or
 outline-visible heading, with the lettering as its display layer.
 If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
-item for a single mark or batch several compatible marks through one
-Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
-native. A prepared wordmark and an editable title are not mutually exclusive:
+item for a single mark or group several marks by compatible visual family and
+batch each family through its own Illustration Sheet and transparent slices.
+Give the model the marks' role, placement/background relationship, relative
+visual weight, and energy; apply `image-generator.md` §5.3's
+controlled-default/high-expression boundary. Split a family
+only when its cell geometry or quality needs conflict, and keep ordinary
+title/chrome copy native. A prepared wordmark
+and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
 and body stay native text, so a wish to keep that wording editable is answered
-by the native layer rather than by dropping the lettering. Skip a scanned hook
-only when the user forbade AI or no generator is callable; do not add another
-disqualifier. Offline Manual
-alone does not trigger this proactive path; explicit user-required lettering
-still follows the normal resource contract.
+by the native layer rather than by dropping the lettering. AI permission is not
+coverage: never invent or alter copy, or create lettering merely
+to justify AI usage. Once an existing string passes both eligibility questions,
+skip it only when the user forbade AI; do not add another disqualifier. Actual
+generation capability is resolved during resource preparation, not eligibility.
 
 | Communication job | Available carrier |
 |---|---|
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
+| Reusable title/corner decoration, a dominant illustrated anchor, supporting figure, or accent strengthens one or more page compositions | A coherent AI illustration family prepared as transparent `slice` assets and combined freely with other carriers |
 | A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
 | Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
@@ -415,9 +427,15 @@ Prepare only the resource paths needed by the decided pages:
 | Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
-| Illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha`, and place only the resulting transparent element files; a lettering sheet names every exact stable string and contains no scene or page chrome |
+| Composable illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut; one illustration element may serve several pages, while a lettering sheet names every exact stable string and contains no scene or page chrome |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
+
+**Hard rule — planned slice closure**: Every placeable-element sheet carries `slice_grid` plus comma-separated `slice_names` in `image_prompts.json`. Deterministically enumerate those basenames and require every `images/<name>.png` after an exit-0 `slice_images.py --strict-alpha` run before SVG authoring; a `Generated` parent sheet never satisfies its named outputs. A nonzero slice run returns the parent to image preparation: correct only an evidenced key/tolerance mismatch, then enlarge cells or split incompatible shape families and regenerate when content reaches a cell edge. Repeating the same failing grid is not recovery. An explicitly selected manual path retains the marker, sets the affected item to `Needs-Manual` with `last_error`, and blocks Quick SVG/export until every named output is supplied and validated. Exhausted automated AI generation or dependent slicing instead follows the no-AI replan below; never retain an unresolved AI/slice row merely to continue.
+
+**Validation**: Before §3, verify every required file-backed resource has a usable terminal state and every `slice_names` basename resolves to its real PNG output. Any missing name resumes the owning acquisition/slicing step; it cannot be deferred to the final SVG checker.
+
+**Quick exhausted-automation no-AI replan**: Follow [`image-generator.md`](../../references/image-generator.md) §7 when an automated AI path or its required dependent slicing is exhausted: ask no path question, enter no manual fallback, remove the affected AI jobs and stale manifest entries, preserve their communication content with native editable text/SVG or already prepared non-AI assets, and continue the same run. An explicitly selected `manual` path remains subject to the file-readiness gate. To retain AI imagery after automated failure, repair the generation capability and start a new Quick run.
 
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
@@ -437,8 +455,9 @@ strategy.
 Every required file-backed resource must reach a usable terminal state before
 its page. Web `Needs-Selection` blocks until one thumbnail is promoted or the
 bounded ranked pages and materially different query variants are exhausted;
-only then may a vision-capable owner test one retained-page image URL at a time
-with `--from-url`; never bulk-download or use those pages as the initial pool.
+only then may a vision-capable owner fetch one adopted-page source package,
+review its companion images, and promote only accepted files; never auto-expand
+facts URLs or use those packages as the initial pool.
 `Needs-Manual` blocks even when an unverified file exists. With no visual
 capability, only the strict metadata-ranked web path may reach `Sourced`, and
 its provenance must say `selection_method: metadata-ranked` rather than imply
@@ -576,9 +595,10 @@ under [`shared-standards-core.md`](../../references/shared-standards-core.md)
 order. Use P01 as the visual-system calibration baseline and continue
 directly through the remaining pages without a first-page checker or
 confirmation stop. When a motif was
-resolved, reuse it selectively and vary scale, crop, density, position, or
-content interaction instead of cloning one ornament. Keep this choice only in
-active context; create no planning artifact or approval stop. After every page
+resolved, follow its reuse mode: exact repetition is valid for deliberate
+title/corner chrome, while adaptive motifs may vary scale, crop, density,
+position, or content interaction. Keep this choice only in active context;
+create no planning artifact or approval stop. After every page
 exists, run the one final checker below. Apply other supporting tools and
 stages only when their capability is actually needed.
 
@@ -676,9 +696,12 @@ or lock.
 
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
-- [x] Every page considered the complete visual-carrier menu without a coverage quota
+- [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
+- [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
+- [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
+- [x] Every exhausted automated AI job was replanned under the declared no-AI rule, with its filename, attempted path, concrete error, and replacement carrier retained for final disclosure; N/A when no such replan occurred
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
 - [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
 - [x] Resolved SVG pages and their project-local references exist
@@ -688,5 +711,5 @@ or lock.
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used
+- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used. For every no-AI replan, report the affected AI job, attempted path, concrete error, replacement carrier, and that retaining AI imagery requires repairing generation capability and starting a new Quick run
 ```

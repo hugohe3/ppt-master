@@ -33,7 +33,7 @@ and filter/clip contracts.
 | **Needs-Selection** | Web search produced one bounded thumbnail-only candidate page; no original or provenance exists yet | Step 5 reviews/promotes one candidate, advances to `next_candidate_page`, or after pool exhaustion materially changes the query and returns the row to `Pending`; Executor must never consume this intermediate state |
 | **Generated** | AI/slice output exists | Reference from `../images/`; manifest records govern attribution. An `Illustration Sheet` stays in §VIII only as an unplaced slice source |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7 for the attribution contract) |
-| **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, or `Sourced` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
+| **Needs-Manual** | The owning source path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, or `Sourced` first. Quick automated AI exhaustion never creates this status: [`image-generator.md`](./image-generator.md) §7 removes the affected AI/dependent-slice jobs through its declared no-AI replan. For a retained manual `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
 | **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
 
@@ -48,7 +48,7 @@ and filter/clip contracts.
 2. Prepare project-local resources before SVG authoring:
    - user → materialize the explicit source under project/images/ → Existing
    - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §3 before ordinary `Acquire Via` dispatch
-   - Pending / Failed + ai  → Image_Generator runs image_gen.py     → Generated
+   - Pending / Failed + ai  → Image_Generator executes the selected path → Generated, Default recovery decision, or Quick no-AI replan
    - Pending / Failed + web + vision → Image_Searcher saves at most 8 ranked previews → Needs-Selection → promote one original or fetch the next page → Sourced / Needs-Manual
    - Pending / Failed + web without vision → Image_Searcher accepts only a strict metadata-ranked best-only candidate and records that method → Sourced or Needs-Manual
    - Pending + slice → after parent AI sheet is Generated, slice_images.py cuts element files → Generated
