@@ -61,7 +61,7 @@ never compete with it.
 5. **No speculative execution** — Do not prepare later-phase artifacts before their owning step.
 6. **Deterministic routing** — Do not add a route-choice question when [`routing.md`](workflows/routing.md) resolves the request. If a route prerequisite is missing, state it and stop that route.
 7. **Owning-source recovery** — On failure, repair or regenerate the owning source artifact and resume from the route's declared pointer. Do not silently downgrade a required artifact.
-8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD. The Skill root is the directory that contains `SKILL.md`, and the host provides its path when loading the Skill; if that path cannot be determined, ask the user — never guess it via file search.
+8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD. The Skill root is the directory containing `SKILL.md`; the host supplies its path. If it cannot be determined, ask the user — never guess it via file search.
 
 ## Global Communication Rules
 
