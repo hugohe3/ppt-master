@@ -330,18 +330,14 @@ because Quick is expected to be faster is not.
 
 **Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Outside explicit requirements, no carrier is mandatory or mutually exclusive; choose the combination that makes the page coherent and visually resolved.
 
-**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or Pexels/Pixabay keys never justifies a zero-image result or deletion of a web-compatible role. Web acquisition retains zero-config providers; when no generator is callable, use web for compatible real-world roles while explicit generation-only requirements follow the normal Offline Manual boundary.
+**Hard rule**: Credentials do not decide image need or the initial carrier plan. Do not inspect backend configuration or probe a provider before planning. Web acquisition retains zero-config providers; actual AI generation capability is resolved only during resource preparation, where the declared Quick no-AI replan below owns automated exhaustion.
 
-**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. When a generator is callable, prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
+**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. Prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
 
 **Default — prepare a composable illustration family when it strengthens the deck (may omit when no page benefits)**: Resolve the family before SVG authoring. Elements may repeat unchanged as title/corner chrome or vary as dominant anchors, supporting figures, and accents on any suitable page. Batch compatible elements through Illustration Sheets, split only for geometry/detail/quality conflicts, and keep final page composition in SVG under [`image-generator.md`](../../references/image-generator.md) §4.3.
 
-**Mandatory — proactive AI decorative lettering**: Apply
-[`image-generator.md`](../../references/image-generator.md) §7's
-callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
-Path A and a host-native image-generation tool is Path B; Offline Manual, web
-search, or vision-only access does not qualify. When Path A/B is callable and
-the user has not forbidden AI, scan the frozen roster for display strings
+**Mandatory — proactive AI decorative lettering**: When the user has not
+forbidden AI, scan the frozen roster for display strings
 anywhere in the deck. Exactly two questions decide eligibility: is that wording
 stable, and would an artistic treatment communicate better than native type?
 Page role, string length, line count, and kind of noun never filter candidates —
@@ -367,13 +363,11 @@ title/chrome copy native. A prepared wordmark
 and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
 and body stay native text, so a wish to keep that wording editable is answered
-by the native layer rather than by dropping the lettering. Callable AI is a
-Permission, not coverage: never invent or alter copy, or create lettering merely
+by the native layer rather than by dropping the lettering. AI permission is not
+coverage: never invent or alter copy, or create lettering merely
 to justify AI usage. Once an existing string passes both eligibility questions,
-skip it only when the user forbade AI or no generator is callable; do not add
-another disqualifier. Offline Manual
-alone does not trigger this proactive path; explicit user-required lettering
-still follows the normal resource contract.
+skip it only when the user forbade AI; do not add another disqualifier. Actual
+generation capability is resolved during resource preparation, not eligibility.
 
 | Communication job | Available carrier |
 |---|---|
@@ -437,9 +431,11 @@ Prepare only the resource paths needed by the decided pages:
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
-**Hard rule — planned slice closure**: Every placeable-element sheet carries `slice_grid` plus comma-separated `slice_names` in `image_prompts.json`. Deterministically enumerate those basenames and require every `images/<name>.png` after an exit-0 `slice_images.py --strict-alpha` run before SVG authoring; a `Generated` parent sheet never satisfies its named outputs. A nonzero slice run returns the parent to image preparation: correct only an evidenced key/tolerance mismatch, then enlarge cells or split incompatible shape families and regenerate when content reaches a cell edge. Repeating the same failing grid is not recovery. If the declared automatic path remains exhausted, retain the marker, set the affected item to `Needs-Manual` with `last_error`, and block Quick SVG/export until every named output is supplied and validated. Never erase the marker, drop its planned page jobs, or treat missing slices as an optional visual omission merely to continue.
+**Hard rule — planned slice closure**: Every placeable-element sheet carries `slice_grid` plus comma-separated `slice_names` in `image_prompts.json`. Deterministically enumerate those basenames and require every `images/<name>.png` after an exit-0 `slice_images.py --strict-alpha` run before SVG authoring; a `Generated` parent sheet never satisfies its named outputs. A nonzero slice run returns the parent to image preparation: correct only an evidenced key/tolerance mismatch, then enlarge cells or split incompatible shape families and regenerate when content reaches a cell edge. Repeating the same failing grid is not recovery. An explicitly selected manual path retains the marker, sets the affected item to `Needs-Manual` with `last_error`, and blocks Quick SVG/export until every named output is supplied and validated. Exhausted automated AI generation or dependent slicing instead follows the no-AI replan below; never retain an unresolved AI/slice row merely to continue.
 
 **Validation**: Before §3, verify every required file-backed resource has a usable terminal state and every `slice_names` basename resolves to its real PNG output. Any missing name resumes the owning acquisition/slicing step; it cannot be deferred to the final SVG checker.
+
+**Quick exhausted-automation no-AI replan**: Follow [`image-generator.md`](../../references/image-generator.md) §7 when an automated AI path or its required dependent slicing is exhausted: ask no path question, enter no manual fallback, remove the affected AI jobs and stale manifest entries, preserve their communication content with native editable text/SVG or already prepared non-AI assets, and continue the same run. An explicitly selected `manual` path remains subject to the file-readiness gate. To retain AI imagery after automated failure, repair the generation capability and start a new Quick run.
 
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
@@ -705,6 +701,7 @@ or lock.
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
+- [x] Every exhausted automated AI job was replanned under the declared no-AI rule, with its filename, attempted path, concrete error, and replacement carrier retained for final disclosure; N/A when no such replan occurred
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
 - [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
 - [x] Resolved SVG pages and their project-local references exist
@@ -714,5 +711,5 @@ or lock.
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used
+- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used. For every no-AI replan, report the affected AI job, attempted path, concrete error, replacement carrier, and that retaining AI imagery requires repairing generation capability and starting a new Quick run
 ```

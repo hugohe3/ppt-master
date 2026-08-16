@@ -357,7 +357,7 @@
       "max_tokens": 135000
     },
     "route.generate.quick-generate.web-image": {
-      "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
+      "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution. Ceiling raised after BUDGET_LOAD_SET reported 115146 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -366,7 +366,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 115000
+      "max_tokens": 130000
     },
     "route.generate.quick-generate.visualization": {
       "description": "Quick Generate with bounded Chart/Table recall, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar.",

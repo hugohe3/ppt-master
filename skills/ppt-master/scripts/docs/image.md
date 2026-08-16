@@ -34,10 +34,11 @@ Generate checks `design_spec.md §I / AI Image Acquisition Path` before manifest
 mode: only `api` / `auto` permits Path A; a missing or unknown value fails
 closed and returns to Step 4 recovery. Quick Generate has no Design Spec: use
 the explicit active-context path when supplied, otherwise `auto` selects the
-A → B → C chain defined in
-[`image-generator.md`](../../references/image-generator.md) §7 without asking.
-In either profile, `host-native` uses the host image tool directly and `manual`
-uses the read-only Markdown sidecar.
+A → B chain defined in
+[`image-generator.md`](../../references/image-generator.md) §7 without asking;
+exhausted automation triggers Quick's no-AI replan rather than Offline Manual.
+In either profile, `host-native` uses the host image tool directly and an
+explicit `manual` choice uses the read-only Markdown sidecar.
 
 ```bash
 python3 scripts/image_gen.py "A modern futuristic workspace"

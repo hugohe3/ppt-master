@@ -599,31 +599,26 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 
 | Trigger | Mode | Mechanism |
 |---|---|---|
-| **Default** — `IMAGE_BACKEND` configured | **Path A**: `image_gen.py --manifest` | One command runs the whole manifest with concurrency; status writes back per item |
-| `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
-| **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
+| `api` / `auto` permits Path A and `IMAGE_BACKEND` is configured | **Path A**: `image_gen.py --manifest` | One command runs the whole manifest with concurrency; status writes back per item |
+| `host-native` / `auto` permits Path B and the host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
+| Default confirmed `manual`, or Quick explicitly selected `manual` | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
-**Callable-generator test for proactive planning**: Path A counts when
-`IMAGE_BACKEND` is configured; Path B counts when the current host exposes a
-native image-generation tool. Offline Manual alone, web search, and a
-vision-only tool do not count. This predicate allows Strategist/Quick to add
-decorative-lettering resources proactively; it never overrides an explicit or
-confirmed image-source/path choice.
+**Planning boundary**: Strategist and Quick decide AI visual jobs from communication need, not current backend configuration. Do not inspect configuration or probe a provider before planning. Resolve actual Path A/B capability only when this section executes the selected path.
 
-**Quick Generate selection**: an explicit user instruction for `api`, `host-native`, or `manual` retained in active context wins. When the user did not specify a path, select `auto` and run the A → B → C chain without asking or creating a planning artifact.
+**Quick Generate selection**: an explicit user instruction for `api`, `host-native`, or `manual` retained in active context wins. When the user did not specify a path, select `auto` and try Path A → Path B without asking or creating a planning artifact. If an automated path exhausts, apply the Quick no-AI replan below; Offline Manual is entered only from an explicit `manual` instruction.
 
-**Default Generate selection — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path, Generate Step 4 records the effective choice as `auto`; that explicit durable value uses the automatic A → B → C chain. A missing/blank/unknown project value is not an implicit API authorization:
+**Default Generate selection — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path, Generate Step 4 records the effective choice as `auto`; in Default, `auto` authorizes Path A → Path B only and never pre-authorizes Offline Manual. A missing/blank/unknown project value is not an implicit API or manual-generation authorization:
 
 0. **Confirmed override (wins)** — honor `AI Image Acquisition Path` from `design_spec.md §I`. Generate Step 4 already consumed the final confirmation into that durable artifact; do not reopen `result.json` here. If the recorded choice is set and not `auto`, honor it directly, **even when it contradicts `IMAGE_BACKEND`**:
    - `api` → **Path A** (`image_gen.py --manifest`).
    - `host-native` → **Path B** (host's native image tool) — skip A and do **not** run `image_gen.py --manifest`, *even if `IMAGE_BACKEND` is configured*.
    - `manual` → **Offline Manual** (write prompts, render the Markdown sidecar, hand off; do **not** run `image_gen.py --manifest`).
-   If an explicitly chosen path is unavailable or still fails after its retry, mark the affected row `Needs-Manual`; do not switch to another automated provider. Only when the Design Spec records `auto` does the automatic chain decide. A legacy project missing this Design Spec row returns to Step 4 recovery to consume persisted confirmation once and record it; Image_Generator does not inspect the confirmation channel itself.
+   If an explicitly chosen automated path is unavailable or still fails after its retry, do not switch provider or presume manual fulfillment; enter the Default recovery decision below. Only when the Design Spec records `auto` may both automated paths be attempted. A legacy project missing this Design Spec row returns to Step 4 recovery to consume persisted confirmation once and record it; Image_Generator does not inspect the confirmation channel itself.
 1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
 2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
-3. **Fall to C (Offline Manual)** — if B is also unavailable (no host-native tool) or fails, write prompts to `images/image_prompts.json` and hand off to the user.
+3. **Resolve exhausted automation** — Default enters the recovery decision below; Quick applies the no-AI replan below.
 
-**Hard rule**: this step is execution, not re-decision. Default Generate uses the path locked in Strategist Step 4 h. Quick Generate uses the explicit active-context instruction or `auto`. Never present an interactive choice here.
+**Hard rule**: normal execution does not reopen path selection. The only Default exception is the one recovery decision after the confirmed automated path or `auto`'s A → B sequence is actually unavailable/exhausted. Quick uses its explicit active-context instruction or automated path, then applies its declared no-AI replan without asking when automation exhausts.
 
 > All three modes share one output contract: file at `project/images/<filename>`. Step 6 SVG references are mode-agnostic.
 
@@ -700,14 +695,14 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 ### Offline Manual Mode (C's third implementation mode)
 
-**Trigger**: the automatic chain reaches this point after both Path A and Path B fail or are unavailable, the user explicitly confirmed `manual`, or an explicitly confirmed automated path still fails after its own retry.
+**Trigger**: Default reaches this mode only after the user confirmed `manual` in final Stage 2 or at the exhausted-automation recovery decision. Quick reaches it only through an explicit `manual` instruction.
 
-**Workflow** (no user prompting; system enters this mode automatically):
+**Workflow** (manual fulfillment is already authorized; do not ask again inside acquisition):
 
 1. Verify `images/image_prompts.json` was written
 2. Set `status: "Needs-Manual"` on every affected item per [`image-base.md`](./image-base.md) §6
 3. Apply the mode boundary:
-   - Default Generate: continue to Step 6; Executor draws a dashed placeholder and Step 7 verifies the supplied file
+   - Default Generate: continue to Step 6; Executor draws a dashed placeholder, but Step 7 blocks every export command until the supplied file is validated and the placeholder is replaced
    - Quick Generate: retain the prompt and `Needs-Manual` status, and block direct export until every required supplied file is validated and its row is reconciled to `Generated`
 4. Print one consolidated handoff to the user:
    - Filenames awaiting manual generation
@@ -717,23 +712,36 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 **User-initiated**: When Strategist Step 4 captured `manual` in Default Generate, or the user explicitly requested `manual` in the Quick Generate active context, Path A is skipped from the start.
 
+#### Default Exhausted-Automation Decision
+
+When required AI rows remain unresolved after Default's confirmed automated path or `auto`'s eligible A → B sequence, keep them `Failed` and pause once with one consolidated list of filenames, prompts, attempted paths, and concrete errors. Ask the user to choose exactly one outcome:
+
+1. **Repair and retry** — wait for the user to repair the named key, balance, endpoint, or host capability, then rerun only the same confirmed path; for `auto`, rerun the repaired eligible path and retain the A → B permission. If it fails again, return to this same decision with the new error.
+2. **Generate manually** — update `design_spec.md §I` to `AI Image Acquisition Path: manual` as the newer explicit override, mark the affected rows `Needs-Manual`, render the handoff above, and continue authoring only up to the Step 7 image-readiness gate.
+3. **Cancel affected AI images** — return to Generate Step 4 as a post-confirmation override; remove the affected `ai` / dependent `slice` rows and revise their §IX page jobs plus lock rows to native editable text/SVG or already-confirmed non-AI sources. If no AI rows remain, set the path to `not applicable` and remove the AI Image Strategy subsection. Never introduce a new image source or silently drop required communication content.
+
+Do not create `Needs-Manual` state in Default before manual fulfillment is explicitly confirmed.
+
 > Default Generate tolerates `Needs-Manual` rows through authoring and resumes
-> at Step 7. Quick Generate preserves the same operational manifest and handoff
-> but does not run `--quick-generate` while a required row still says
+> at Step 7. An explicitly manual Quick run preserves the same operational
+> manifest and handoff but does not run `--quick-generate` while a required row still says
 > `Needs-Manual`. If the original active context remains available, validate a
 > later supplied file and update it to `Generated`; otherwise start a clean
 > Quick run rather than treating the manifest as a resumable design record.
+
+#### Quick Exhausted-Automation No-AI Replan
+
+When an automated AI path or required dependent slicing remains unresolved after its allowed attempts in Quick, do not ask the user and do not enter Offline Manual. Retain the affected filename, attempted path, concrete error, and replacement carrier in active context for the final Quick completion report; remove the affected `ai` row plus dependent `slice` rows from the active resource plan and remove the corresponding manifest item. Re-render `images/image_prompts.md` when other AI items remain; when none remain, remove both `images/image_prompts.json` and `images/image_prompts.md` so no stale failed row survives the replan. Preserve the communication job with native editable text/SVG or already prepared non-AI assets and continue the same run. Do not introduce another image source merely to replace the failed AI job. If the user still wants AI imagery, they must repair the generation capability and start a new Quick run.
 
 #### AI-specific Failure Handling (extends image-base.md §6)
 
 When the path is `auto` and Path A's backend fails twice in a row:
 
 1. Do not halt. Automatically attempt to fall back to **Path B (Host-Native Tool)**.
-2. If Path B also fails or is unavailable, mark the row `Needs-Manual`.
-3. Report to user: filename, prompt used, error message.
-4. Fall through to **Offline Manual Mode** above.
+2. If Path B also fails or is unavailable, Default enters the three-outcome decision above without changing the row to `Needs-Manual`; Quick applies the no-AI replan above.
+3. Report the filename, prompt used, and error message through the owning outcome.
 
-When `api` or `host-native` was explicitly confirmed, failure or unavailability does not authorize an automated provider switch. Retry the confirmed path once; if it still fails, mark the row `Needs-Manual`, report the filename/prompt/error, and use the manual handoff above.
+When `api` or `host-native` was explicitly confirmed, failure or unavailability does not authorize an automated provider switch. Retry the confirmed path once; if it still fails, Default enters the decision above, while Quick applies the no-AI replan above.
 
 > If the alternate platform watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py`.
 
@@ -742,8 +750,8 @@ When `api` or `host-native` was explicitly confirmed, failure or unavailability 
 **Hard rule**:
 
 - Do not claim an image is generated without an actual file at the expected path
-- `Needs-Manual` is set only when `manual` was confirmed or the selected automated recovery path was attempted and failed — not as a way to skip work that automation could have done
-- Status transitions are evidence-driven: a file at the expected path permits `Generated`; an exhausted recovery path permits `Needs-Manual`
+- `Needs-Manual` is set only when manual fulfillment was confirmed in Default or explicitly selected in Quick — not as a way to skip work that automation could have done
+- Status transitions are evidence-driven: a file at the expected path permits `Generated`; exhausted Default automation remains `Failed` until a retry succeeds or the user chooses manual or cancellation; exhausted Quick AI rows are removed only through the declared no-AI replan
 
 ---
 
