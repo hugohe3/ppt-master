@@ -39,10 +39,10 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 | Rendering | One-liner | Best for |
 |---|---|---|
-| [`watercolor`](./watercolor.md) | Painterly soft edges, color bleeding | Lifestyle / travel / brand story |
+| [`watercolor`](./watercolor.md) | Painterly soft edges, color bleeding | Illustrative lifestyle / travel story / brand story |
 | [`warm-scene`](./warm-scene.md) | Golden-hour cinematic warmth | Personal growth / origin story |
 | [`screen-print`](./screen-print.md) | Halftone poster art, 2-5 flat colors | Cultural / media / cinematic covers |
-| [`vintage-poster`](./vintage-poster.md) | Mid-century modern poster, halftone + paper grain | Cultural / brand heritage / hospitality / anniversaries |
+| [`vintage-poster`](./vintage-poster.md) | Mid-century modern poster, halftone + paper grain | Cultural retrospective / brand heritage / historic hospitality identity / anniversaries |
 
 ### 1.4 Specialty
 
@@ -75,9 +75,9 @@ Write `image_rendering_references` only when the confirmed custom direction actu
 
 ---
 
-## 2. Auto-selection table — `design_spec` → rendering
+## 2. Selection recall — confirmed style + image job → rendering
 
-Match `design_spec.md d` (mode + `visual_style`) against this table. First match wins. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`. (When the locked `visual_style` names a paired rendering, prefer that for aesthetic alignment.)
+**Reference — not a constraint**: Resolve the direction's intended image jobs and visual style before using this table. A topic keyword alone never selects the deck-wide rendering or turns a named real-world subject into an AI row. Travel planning and other documentary work keeps verifiable places in `provided` / `web`; its AI rendering applies only to complementary invented or deliberately stylized roles. Choose the strongest task-and-style match. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`. When the visual style names a paired rendering, prefer that for aesthetic alignment only when the intended image jobs still fit.
 
 | `d. Style` signal | Recommended rendering | Alternates |
 |---|---|---|
@@ -95,7 +95,7 @@ Match `design_spec.md d` (mode + `visual_style`) against this table. First match
 | Finance / data journalism / 财经 | `editorial` or `digital-dashboard` | `vector-illustration` |
 | Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo`, `paper-cut` |
 | Cultural / media / opinion / cinematic | `screen-print`, `vintage-poster` | `editorial`, `warm-scene` |
-| Brand heritage / hospitality / 老字号 / 周年 | `vintage-poster` | `screen-print`, `editorial` |
+| Brand heritage / historic hospitality identity / 老字号 / 周年 | `vintage-poster` | `screen-print`, `editorial` |
 | Gaming / retro / 8-bit / 复古 | `pixel-art` | `vintage-poster` |
 | Environment / wellness / 环保 / 户外 | `nature` | `watercolor`, `paper-cut` |
 | Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
