@@ -279,7 +279,7 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 |---|---|---|
 | `none` | No images | Data reports or process documentation whose visual burden is fully served by charts / native SVG |
 | `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
-| `ai` | AI-generated | Invented or deliberately stylized illustrations, backgrounds, metaphors, or a coherent spot family are needed |
+| `ai` | AI-generated | Invented or deliberately stylized illustrations, backgrounds, metaphors, or a coherent composable illustration family are needed |
 | `web` | Web-sourced | A named or evidence-bearing real-world subject must appear as itself |
 | `placeholder` | Deferred | The image is required but will be supplied later |
 
@@ -318,9 +318,12 @@ implementation parameters. Executor may adapt/decline the
 two non-literal suggestions while preserving content and intent; explicit
 user/template requirements bind.
 
+**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Select only what improves communication and composition; outside explicit requirements, no carrier is mandatory or mutually exclusive.
+
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
+| Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent illustration elements by compatible family, record fixed reuse or adaptive variation in their §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
 | AI decorative lettering asset | Any stable display string in the deck — cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): group exact strings by compatible visual family, state their role/context/relative visual weight/energy without fixing an effect recipe, plan one unplaced AI Illustration Sheet per family plus one transparent `slice` row per used mark, and keep subtitle/chrome/body as native text. A display wordmark and an editable page title may coexist |
@@ -460,15 +463,16 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
 
-**Default — define one cross-page visual motif when it can carry identity or
+**Default — define a cross-page visual motif system when it can carry identity or
 meaning (may omit when restraint serves the deck better)**: after the complete
-§IX roster and planned visual resources are known, choose or inherit one reusable
-page-scale geometry or material gesture—such as a directional contour, opening,
-line lattice, or oversized numeral. Fold its recognizable invariant and allowed
-variation (scale, crop, density, position, content interaction) into the
-existing §III `Theme`, and mention it only in §IX `Layout` blocks that use it.
-Vary it by page role instead of copying one ornament; create no motif field or
-lock row. This is a continuity Reference, not a decoration quota.
+§IX roster and planned visual resources are known, choose or inherit a reusable
+motif or coherent element family—such as title/corner ornaments, a directional
+contour, opening, line lattice, or oversized numeral.
+Fold its invariant and reuse mode into §III `Theme`: exact repetition is valid
+for deliberate recurring chrome, while page-specific motifs may vary scale,
+crop, density, position, and content interaction. Mention it only in §IX
+`Layout` blocks that use it; create no motif field or lock row. This is a
+continuity Reference, not a decoration quota.
 
 On PPT 16:9, start from a 1200×640 safe area with 40px outer margins, then adapt to content. Template workspaces may supply different geometry; when active, [`strategist-template.md`](./strategist-template.md) owns precedence.
 

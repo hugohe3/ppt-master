@@ -14,7 +14,7 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 > The **`visual_style` value is only ever a first-column `id`** (`swiss-minimal`, `editorial`, …). The "Paired rendering" column lists **image-rendering** names (`flat`, `minimalist-swiss`, `digital-dashboard`, …) — never treat one of those as the `visual_style`. Default records rendering under confirmation h; Quick keeps the selected rendering only in active context and any required image manifest.
 >
-> The **`Illus.`** column is each style's spot-illustration propensity — `core` (illustration is intrinsic to the look), `supportive` (use where it lifts, restrained), or `sparse` (the style's lead visual competes; default off). It sets the **default lean** only, for when the user gives no steer: an explicit user request to use / skip illustrations overrides it either way, and `image_usage: none` always writes no illustration rows. Full per-style rule in each file's §6.
+> The **`Illus.`** column is each style's illustration propensity — `core` (illustration is intrinsic to the look), `supportive` (illustration can share the composition), or `sparse` (use selectively so the style's lead visual remains clear). It tunes centrality and recurrence, never eligible page types, element scale, or carrier combinations. An explicit user request to use / skip illustrations overrides it either way, and `image_usage: none` always writes no illustration rows. Full per-style rule in each file's §6.
 
 ### 1.1 Corporate / product
 
