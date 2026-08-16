@@ -102,16 +102,18 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 | Layer | Owns |
 |---|---|
 | User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
-| Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its adopted webpage text evidence; decide the approved content, resources, keys, identity anchors, and exact page roster; record optional capability/expression recommendations; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
+| Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster; record optional capability/expression recommendations; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
 | Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize them through geometry, composition, hierarchy, and treatment. Fields explicitly labeled `suggestion` or Reference are preferred expression rather than binding selections: Executor may adapt or decline them when content and explicit constraints remain intact. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
 
 **Preparation timing**: In the default pipeline, topic research and import of
-its retained webpage text evidence may run before final confirmation.
-Those imports are text-only; their image links are a post-search fallback, not
-initial inventory. AI / web / slice acquisition runs only from the
+its two-artifact research pair may run before final confirmation. Facts JSON
+URLs are not auto-expanded. AI / web / slice acquisition runs only from the
 completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation
-and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling
-execute Strategist-owned preparation; they are not independent decision owners.
+and before Executor. Only after normal image search fails may one relevant
+adopted page become a Markdown + companion-image source package; review it and
+promote accepted files individually, never the whole package. Image_Generator,
+Image_Searcher, and icon-sync tooling execute Strategist-owned preparation;
+they are not independent decision owners.
 
 **Post-motion sound exception**: optional transition/object sound is not a
 page-authoring ingredient and never enters Strategist planning,
