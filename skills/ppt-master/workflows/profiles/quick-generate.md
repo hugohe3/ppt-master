@@ -328,6 +328,10 @@ the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
 because Quick is expected to be faster is not.
 
+**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or Pexels/Pixabay keys never justifies a zero-image result or deletion of a web-compatible role. Web acquisition retains zero-config providers; when no generator is callable, use web for compatible real-world roles while explicit generation-only requirements follow the normal Offline Manual boundary.
+
+**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. When a generator is callable, prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job. This is a semantic decision, not an image-count quota.
+
 **Mandatory — proactive AI decorative lettering**: Apply
 [`image-generator.md`](../../references/image-generator.md) §7's
 callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
@@ -682,6 +686,7 @@ or lock.
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
+- [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource

@@ -285,7 +285,9 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 
 **Current inventory**: If `images/` is non-empty, run `python3 scripts/analyze_images.py <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
 
-**Default — evidence before synthesis (may override when explicit source constraints or the communication intent require another permitted source)**: Prefer `provided` when supplied assets already carry authority. Propose `web` when the actual appearance of an externally verifiable subject is material; propose `ai` when custom expression matters more than documentary identity. Mixed sources may serve different page roles. This is a source-fit decision, not an image quota. The three Stage-2 style directions never settle it: a rendering candidate resolves how imagery looks, never whether an externally verifiable subject must appear as itself.
+**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or keyed stock-provider credentials never justifies `none` or deletion of a planned web-compatible role. Web search retains zero-config providers; an explicit generation-only requirement follows the normal Offline Manual boundary.
+
+**Default — visual grounding before `none` (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression matters more than documentary identity, and include it proactively when a callable generator can materially improve a planned visual job. Treat `none` as a positive whole-deck conclusion. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
 
 **Mandatory — proactive decorative-lettering scan**: Before each Stage-2
 `recommend.image_usage`, treat a configured `IMAGE_BACKEND` or host-native image
@@ -297,7 +299,7 @@ kind of noun never filter candidates — include `ai` plus its role in
 to trigger it. Explicit no-AI or editable-only requirements win. Execution
 follows [`image-generator.md`](./image-generator.md) §7.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and generation is callable. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
