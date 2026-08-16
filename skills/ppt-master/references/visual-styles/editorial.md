@@ -36,4 +36,4 @@ Magazine-grade hierarchy. Columns, hairline rules, a serif / sans interplay, str
 
 ## 6. Illustration propensity
 
-**supportive** — editorial spot illustrations beside articles are classic here; use them where they lift a section or break text density, kept restrained. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — editorial illustration elements can anchor, frame, pace, or clarify a page while typography and evidence retain authority. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

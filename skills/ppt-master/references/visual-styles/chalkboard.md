@@ -34,4 +34,4 @@ Classroom chalkboard — a dark slate field, soft chalk-stroke line work, powder
 
 ## 6. Illustration propensity
 
-**core** — chalk-drawn marks and doodles are the classroom aesthetic; with no user steer, default to recommending a coherent spot-illustration family. Default *lean* only — heaviness and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**core** — chalk-drawn marks and doodles are the classroom aesthetic; with no user steer, default to recommending a coherent composable illustration family. Default *lean* only — role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

@@ -35,4 +35,4 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 
 ## 6. Illustration propensity
 
-**sparse** — glow accents and geometric precision lead, and raster spots tend to read as clip-art against the dark UI. With no user steer, default to none. If the user explicitly asks, prefer restrained geometric marks over illustrated characters. `image_usage: none` writes no illustration rows.
+**sparse** — glow accents and geometric precision lead. Use illustration selectively as a focal or supporting layer that belongs to the dark-tech system rather than generic clip-art; form and scale follow the page job. An explicit user request wins either way, and `image_usage: none` writes no illustration rows.

@@ -36,4 +36,4 @@ Photo-led editorial — large full-bleed photography dominates the page, text po
 
 ## 6. Illustration propensity
 
-**sparse** — photography *is* the visual; illustration competes with the hero image. With no user steer, default to none. If the user explicitly asks, keep them to tiny captional marks that never rival the photo. `image_usage: none` writes no illustration rows.
+**sparse** — photography leads. Use illustration selectively when it frames, connects, or extends the photographic composition without displacing factual or visual authority; form and scale follow the page job. An explicit user request wins either way, and `image_usage: none` writes no illustration rows.

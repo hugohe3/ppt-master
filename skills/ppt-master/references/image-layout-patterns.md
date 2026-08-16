@@ -68,7 +68,7 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 - **#P1-10 · Slim image strip with large type** — place a narrow image strip beside oversized horizontal type.
 - **#P1-11 · Negative-space dominant** — keep the visual and copy compact so whitespace carries hierarchy.
 - **#P1-12 · Framed figure with caption** — float one image in whitespace with a restrained frame and native caption.
-- **#P1-13 · Illustration as layout field** — let a large illustration or cutout set the page rhythm; place copy in its calm regions.
+- **#P1-13 · Illustration as layout field** — let one or more transparent illustration elements, alone or combined with native shapes or images, set the page rhythm; place copy in the resulting calm regions.
 
 ### 3.2 P2 · Image as Canvas with Native Overlay
 
@@ -176,7 +176,7 @@ The following three patterns are topologically different and are not interchange
 
 ### 5.2 A2 · Subject and Cutout Layers
 
-- **#A2-01 · Transparent sticker or cutout** — use a prepared RGBA asset and preserve its open silhouette.
+- **#A2-01 · Transparent illustration or cutout** — use a prepared RGBA asset and preserve its open silhouette; compose it freely or repeat it as planned page chrome.
 - **#A2-02 · Subject breaking out of a container** — register a prepared foreground subject across its frame boundary.
 - **#A2-03 · Registered reconstruction group** — align a clean base with one or more prepared transparent midground/subject/foreground layers in one coordinate system. Draw each member at its required z-order. Give every full-canvas member the same `x`, `y`, `width`, `height`, and aspect mapping; never trim or independently crop it. Several padded-bbox-disjoint objects may share one prepared plate while remaining separate nested-SVG picture crops.
 

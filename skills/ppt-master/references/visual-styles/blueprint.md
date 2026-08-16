@@ -35,4 +35,4 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 
 ## 6. Illustration propensity
 
-**supportive** — but note the natural illustration here is hand-drawn **SVG schematic line-work / annotated marks**, not raster spot sheets; reach for line diagrams over decorative cutouts. If raster spots are used at all, keep them schematic, sparse, and secondary to the SVG line work. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — the natural illustration language is schematic line-work, annotated marks, and blueprint-aligned transparent elements, whether authored in SVG or generated and sliced. Choose the carrier that composes cleanly with the page. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

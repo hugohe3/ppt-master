@@ -36,4 +36,4 @@ Strict Swiss-grid discipline. Modular grid, sharp geometry, aggressive whitespac
 
 ## 6. Illustration propensity
 
-**sparse** — the whitespace and grid *are* the design; decorative spots compete with that restraint, so with no user steer, default to none. If the user explicitly asks, use them — but stay austere: very few, very light, never crowding the negative space. `image_usage: none` writes no illustration rows.
+**sparse** — whitespace and grid lead. Use illustration selectively when it sharpens hierarchy or creates a deliberate counterpoint without eroding negative space; scale and placement follow the page composition. An explicit user request wins either way, and `image_usage: none` writes no illustration rows.

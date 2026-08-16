@@ -278,9 +278,9 @@ the roster after the whole-roster check:
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
 - for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
-- when useful, one transient deck-level visual motif with an identity or
-  communication job, a recognizable invariant, and deliberate variation across
-  applicable page roles; omit it when restraint serves the deck better;
+- when useful, a transient deck-level visual motif system with an identity or
+  communication job, a recognizable invariant, and a reuse mode: fixed chrome,
+  adaptive variation, or both; omit it when restraint serves the deck better;
 - the resource decisions needed for immediate preparation. Required operational
   image manifests may carry filenames, page relationship, status, and
   generation/crop/focal cues, but do not create a general resource roster or an
@@ -328,9 +328,13 @@ the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
 because Quick is expected to be faster is not.
 
+**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Outside explicit requirements, no carrier is mandatory or mutually exclusive; choose the combination that makes the page coherent and visually resolved.
+
 **Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or Pexels/Pixabay keys never justifies a zero-image result or deletion of a web-compatible role. Web acquisition retains zero-config providers; when no generator is callable, use web for compatible real-world roles while explicit generation-only requirements follow the normal Offline Manual boundary.
 
-**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. When a generator is callable, prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job. This is a semantic decision, not an image-count quota.
+**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. When a generator is callable, prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
+
+**Default — prepare a composable illustration family when it strengthens the deck (may omit when no page benefits)**: Resolve the family before SVG authoring. Elements may repeat unchanged as title/corner chrome or vary as dominant anchors, supporting figures, and accents on any suitable page. Batch compatible elements through Illustration Sheets, split only for geometry/detail/quality conflicts, and keep final page composition in SVG under [`image-generator.md`](../../references/image-generator.md) §4.3.
 
 **Mandatory — proactive AI decorative lettering**: Apply
 [`image-generator.md`](../../references/image-generator.md) §7's
@@ -372,6 +376,7 @@ still follows the normal resource contract.
 | Communication job | Available carrier |
 |---|---|
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
+| Reusable title/corner decoration, a dominant illustrated anchor, supporting figure, or accent strengthens one or more page compositions | A coherent AI illustration family prepared as transparent `slice` assets and combined freely with other carriers |
 | A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
 | Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
@@ -426,7 +431,7 @@ Prepare only the resource paths needed by the decided pages:
 | Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
-| Illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut; a lettering sheet names every exact stable string and contains no scene or page chrome |
+| Composable illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut; one illustration element may serve several pages, while a lettering sheet names every exact stable string and contains no scene or page chrome |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
@@ -588,9 +593,10 @@ under [`shared-standards-core.md`](../../references/shared-standards-core.md)
 order. Use P01 as the visual-system calibration baseline and continue
 directly through the remaining pages without a first-page checker or
 confirmation stop. When a motif was
-resolved, reuse it selectively and vary scale, crop, density, position, or
-content interaction instead of cloning one ornament. Keep this choice only in
-active context; create no planning artifact or approval stop. After every page
+resolved, follow its reuse mode: exact repetition is valid for deliberate
+title/corner chrome, while adaptive motifs may vary scale, crop, density,
+position, or content interaction. Keep this choice only in active context;
+create no planning artifact or approval stop. After every page
 exists, run the one final checker below. Apply other supporting tools and
 stages only when their capability is actually needed.
 
@@ -688,7 +694,7 @@ or lock.
 
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
-- [x] Every page considered the complete visual-carrier menu without a coverage quota
+- [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
