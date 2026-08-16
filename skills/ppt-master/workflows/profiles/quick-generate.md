@@ -435,6 +435,10 @@ Prepare only the resource paths needed by the decided pages:
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
+**Hard rule — planned slice closure**: Every placeable-element sheet carries `slice_grid` plus comma-separated `slice_names` in `image_prompts.json`. Deterministically enumerate those basenames and require every `images/<name>.png` after an exit-0 `slice_images.py --strict-alpha` run before SVG authoring; a `Generated` parent sheet never satisfies its named outputs. A nonzero slice run returns the parent to image preparation: correct only an evidenced key/tolerance mismatch, then enlarge cells or split incompatible shape families and regenerate when content reaches a cell edge. Repeating the same failing grid is not recovery. If the declared automatic path remains exhausted, retain the marker, set the affected item to `Needs-Manual` with `last_error`, and block Quick SVG/export until every named output is supplied and validated. Never erase the marker, drop its planned page jobs, or treat missing slices as an optional visual omission merely to continue.
+
+**Validation**: Before §3, verify every required file-backed resource has a usable terminal state and every `slice_names` basename resolves to its real PNG output. Any missing name resumes the owning acquisition/slicing step; it cannot be deferred to the final SVG checker.
+
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
 authoring follows `executor-image.md`'s narrow placement inspection: inspect only
@@ -696,6 +700,7 @@ or lock.
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
+- [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
