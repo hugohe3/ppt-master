@@ -2,7 +2,7 @@
 
 # Image_Generator Reference Manual
 
-Role definition for the **AI image generation path**: convert each active `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration and decorative-lettering sheets.
+Role definition for the **AI image generation path**: convert each active `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration, illustrated-icon, and decorative-lettering sheets.
 
 **Trigger**: the Default Generate resource list contains `Acquire Via: ai` or `slice`, or Quick Generate has resolved a required AI/sliced image in active context. Load only when at least one such resource exists.
 
@@ -248,17 +248,18 @@ Example opening for a triptych hero:
 
 **When uncertain about field conventions**: read `sources/` before drafting the prompt.
 
-### 4.3 Illustration sheets — one generation, many composable illustration or lettering elements
+### 4.3 Illustration sheets — one generation, many composable illustration, illustrated-icon, or lettering elements
 
-An Illustration Sheet produces compatible transparent **illustration elements**
-or **decorative lettering elements** with matched rendering, deck-color
-treatment, and finish before slicing. Elements may differ in subject,
-silhouette, visual weight, and page job, then combine with backgrounds, native
-shapes, text, photos, other slices, or lettering on any suitable page. The sheet
-generates assets; SVG authors the page composition. A lettering sheet remains
-stable Layer 1 artwork and does not turn page copy into an image.
+An Illustration Sheet produces compatible transparent **illustration elements**,
+**illustrated-icon elements**, or **decorative lettering elements** with matched
+rendering, deck-color treatment, and finish before slicing. Elements may differ
+in subject, silhouette, visual weight, and page job, then combine with
+backgrounds, native shapes, text, photos, other slices, or lettering on any
+suitable page. The sheet generates assets; SVG authors the page composition. A
+lettering sheet remains stable Layer 1 artwork and does not turn page copy into
+an image.
 
-**Default — one sheet per compatible visual family (may override when separate generation serves the assets better)**: Group illustration elements or planned marks by a coherent visual identity, not an identical effect recipe. A family may vary subject, silhouette, material, lighting, intensity, and intended visual weight; recurring title/corner ornaments, dominant anchors, supporting figures, and small accents are examples rather than required roles. Split only when cell geometry, detail, quality, or semantic precision materially conflicts. Quantity alone neither requires nor forbids a sheet: a single transparent element may use a keyed `1x1` sheet, while a full-canvas or nontransparent image stays on the normal one-row path (§4.1).
+**Default — batch compatible elements when it helps consistency (may split when separate generation serves them better)**: Group elements that benefit from one coherent generation context. For illustrated icons, plan the cues that are actually useful and normally generate compatible cues together. For decorative lettering, use compatible letterform character and artistic treatment as grouping signals. Split whenever style, geometry, detail, quality, or semantic precision benefits. A single transparent element may use a keyed `1x1` sheet, while a full-canvas or nontransparent image stays on the normal one-row path (§4.1).
 
 **Hard rule**: a sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
 
@@ -271,8 +272,8 @@ stable Layer 1 artwork and does not turn page copy into an image.
 - State the intended cell shape in the prompt: compact square object, tall portrait element, wide landscape vignette, or wide lettering mark. Do not let the model shrink every subject into a centered square sticker.
 - One **flat single-color chroma-key background** across the whole sheet. Choose and state one pure single-channel key (`#00FF00`, `#0000FF`, or `#FF0000`) whose active color does not dominate any element or supporting effect; it is a technical key, not part of the deck palette. Use that same untouched color in every gutter, keep it out of reflections and color spill, and keep paper grain, halftone, vignette, and every other texture inside the elements, never over the background.
 - Shared `deck_rendering` + `color_scheme` as always.
-- **Illustration sheet**: name each intended element and its page or recurring-reuse job; apply the §5.3 `none` cue and include no text, labels, or numbers.
-- **Lettering sheet**: put exactly one named stable string in each cell as the only text and quote every complete character sequence literally in the prompt. Give the shared visual family, communication role, placement/background relationship, relative visual weight, and intended energy, then follow §5.3's controlled artistic-authorship default. Keep artistry inside the glyph through its silhouette, stroke structure, material, texture, depth, and contour-bound light/shadow. Do not add literal topic motifs, scene fragments, icons, detached ribbons, particles, or other surrounding illustrations unless the approved treatment explicitly requests a lettering-plus-illustration lockup. Keep each complete mark and any approved glyph-bound effect inside its cell with clear key-only padding; include no scene, unrelated copy, labels, watermark, or mockup surface.
+- **Illustration / illustrated-icon sheet**: name each intended element and its page or recurring-reuse job; for an illustrated icon, also state the compact semantic cue it must preserve at intended placement size. Apply the §5.3 `none` cue and include no text, labels, or numbers.
+- **Lettering sheet**: put exactly one named stable string in each cell as the only text and quote every complete character sequence literally in the prompt. Describe the compatible letterform character and artistic treatment shared by the group, then give its communication role, placement/background relationship, relative visual weight, and intended energy. Follow §5.3's controlled artistic-authorship default. Keep artistry inside the glyph through its silhouette, stroke structure, material, texture, depth, and contour-bound light/shadow. Do not add literal topic motifs, scene fragments, icons, detached ribbons, particles, or other surrounding illustrations unless the approved treatment explicitly requests a lettering-plus-illustration lockup. Keep each complete mark and any approved glyph-bound effect inside its cell with clear key-only padding; include no scene, unrelated copy, labels, watermark, or mockup surface.
 - **Delivery floor, not an aesthetic ceiling**: when the chosen lettering treatment or its supporting effects need more footprint, enlarge the cell, change the grid, or use a larger/separate sheet. Do not weaken an approved treatment merely to fit a convenient crop; this geometry rule never raises the expression level selected under §5.3.
 
 **Cell geometry is designed, not assumed.** `slice_images.py --grid RxC` cuts rows first and columns second. The cell ratio is:
@@ -285,18 +286,18 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 
 | Target element shape | Sheet plan | Slice grid |
 |---|---|---|
-| Compact objects / badges | `1:1` sheet | `2x2`, `2x3`, or `3x3` |
+| Compact objects / badges / illustrated icons | `1:1` sheet | `2x2`, `2x3`, or `3x3` |
 | Tall side accents / upright objects | wide or square sheet | `1xN`, or any `MxN` whose cells are portrait |
 | Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
 | Large page anchors / dominant cutouts | dedicated sheet matching the silhouette | `1x1` |
 | Decorative words, phrases, or multi-line lettering lockups | wide sheet | `Nx1`, or any `MxN` whose cells fit the planned string shapes |
 
-Within one visual family, create separate sheets per shape family when mixed shapes cannot share a grid with enough room. Keep the family coherent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet or prescribing the same effect stack.
+Within one visual family, create separate sheets per shape family when mixed shapes cannot share a grid with enough room. Keep the family coherent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet or prescribing the same effect stack. Lettering groups may also split when their letterform character or treatment would interfere with one another; font name alone does not decide.
 
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists in the active placeable-resource authority: `spec_lock.md images` in Default Generate or the current agent's prepared resource decision in Quick Generate. Default Generate keeps both row kinds in §VIII under [`strategist-image.md`](./strategist-image.md); Quick Generate resolves the same distinction in active context and its operational manifest without creating planning artifacts:
 
-- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: reusable title/corner illustration family`, or `decorative lettering set: exact strings = ...`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
-- **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in the active placeable-resource authority, normally with `crop=no-crop` (a tight-trimmed transparent element should be fit, not cover-cropped). One row may serve several page compositions. Dimensions are filled in after slicing (the preparation pass re-runs `analyze_images.py`). Each row carries an owner-resolved layout recommendation; SVG authoring may realize it as a direct cutout or inside an appropriate container while preserving the resource and crop/content constraints.
+- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: reusable title/corner illustration family`, `illustrated-icon set: cues = ...`, or `decorative lettering set: exact strings = ...`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
+- **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in the active placeable-resource authority, normally with `crop=no-crop` (a tight-trimmed transparent element should be fit, not cover-cropped). Use `Type: Illustrated icon` for a compact semantic cue so downstream treats it as an image asset with an icon-like communication job, never as an SVG library entry. One row may serve several page compositions. Dimensions are filled in after slicing (the preparation pass re-runs `analyze_images.py`). Each row carries an owner-resolved layout recommendation; SVG authoring may realize it as a direct cutout or inside an appropriate container while preserving the resource and crop/content constraints.
 
 For every sheet that will yield placeable elements, add `slice_grid` and `slice_names` to its `image_prompts.json` item when choosing the geometry. The comma-separated safe PNG basenames are the creation-time marker for the complete required output set. `image_gen.py` validates, preserves, and displays these metadata fields; it does not run the separate slicing command.
 
