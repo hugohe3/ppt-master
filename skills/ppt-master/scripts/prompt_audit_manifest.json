@@ -715,7 +715,7 @@
       "max_tokens": 170000
     },
     "stage.generate.executor.flat": {
-      "description": "Incremental flat Executor core with complete visual-construction authorities, the compact mode/style indexes, and a conservative audit envelope for only the locked preset or exact custom references.",
+      "description": "Incremental flat Executor core with complete visual-construction authorities and a conservative audit envelope for only the locked preset or exact custom references; selection indexes remain planning-only.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-base.md",
@@ -723,8 +723,6 @@
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md",
         "skills/ppt-master/references/semantic-svg.md",
-        "skills/ppt-master/references/modes/_index.md",
-        "skills/ppt-master/references/visual-styles/_index.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
           "exclude": [
