@@ -16,6 +16,7 @@ Configuration keys:
   OPENAI_OUTPUT_COMPRESSION  (optional) 0-100, only for jpeg/webp GPT image output
   OPENAI_BACKGROUND          (optional) auto or opaque for gpt-image-2
   OPENAI_MODERATION          (optional) auto or low for GPT image models
+  OPENAI_INPUT_FIDELITY      (optional) high or low for supported GPT image edits
 
 Image editing (image-to-image):
   When image_gen.py passes reference_image=<path> (single-image CLI only,
@@ -82,7 +83,8 @@ LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE = {
     "21:9": "1792x1024",   # closest wide format
 }
 
-# GPT Image 1/1.5/mini officially support only square, landscape, portrait, or auto.
+# Legacy GPT Image models and chatgpt-image-latest support only square,
+# landscape, portrait, or auto.
 GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE = {
     "1:1":  "1024x1024",
     "16:9": "1536x1024",
@@ -176,6 +178,7 @@ OPENAI_QUALITY_VALUES = {
 }
 GPT_IMAGE_BACKGROUNDS = {"auto", "opaque", "transparent"}
 GPT_IMAGE_MODERATION_VALUES = {"auto", "low"}
+GPT_IMAGE_INPUT_FIDELITY_VALUES = {"high", "low"}
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 # Signals to image_gen.py that this backend can accept a reference_image
@@ -195,7 +198,11 @@ def _normalized_model(model: str) -> str:
 
 
 def _is_gpt_image_model(model: str) -> bool:
-    return _normalized_model(model).startswith("gpt-image-")
+    normalized = _normalized_model(model)
+    return (
+        normalized.startswith("gpt-image-")
+        or normalized == "chatgpt-image-latest"
+    )
 
 
 def _is_gpt_image_2(model: str) -> bool:
@@ -316,6 +323,26 @@ def _gpt_image_options(model: str) -> tuple[dict, str]:
     return options, output_ext
 
 
+def _read_input_fidelity(model: str) -> str | None:
+    """Read input fidelity for GPT Image edit requests."""
+    input_fidelity = _read_env_choice(
+        "OPENAI_INPUT_FIDELITY",
+        GPT_IMAGE_INPUT_FIDELITY_VALUES,
+    )
+    if input_fidelity is None:
+        return None
+    if _is_gpt_image_2(model):
+        raise ValueError(
+            "gpt-image-2 always uses high input fidelity and does not accept "
+            "OPENAI_INPUT_FIDELITY. Remove this setting."
+        )
+    if not _is_gpt_image_model(model):
+        raise ValueError(
+            f"{model} does not support OPENAI_INPUT_FIDELITY in this backend."
+        )
+    return input_fidelity
+
+
 def _image_generations_url(base_url: str | None) -> str:
     base = (base_url or DEFAULT_BASE_URL).rstrip("/")
     if base.endswith("/images/generations"):
@@ -390,6 +417,8 @@ def _validate_request_options(
         _read_quality(image_size, model)
     if _is_gpt_image_model(model):
         _gpt_image_options(model)
+    if editing:
+        _read_input_fidelity(model)
     _apply_response_format({}, model)
 
 
@@ -569,6 +598,9 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     if _is_gpt_image_model(model):
         gpt_options, output_ext = _gpt_image_options(model)
         request.update(gpt_options)
+    input_fidelity = _read_input_fidelity(model)
+    if input_fidelity is not None:
+        request["input_fidelity"] = input_fidelity
     _apply_response_format(request, model)
 
     mode_label = f"Proxy: {base_url}" if base_url else "OpenAI API"
@@ -596,6 +628,8 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
         print(f"  Background:   {request['background']}")
     if request.get("moderation"):
         print(f"  Moderation:   {request['moderation']}")
+    if request.get("input_fidelity"):
+        print(f"  Input Fidelity: {request['input_fidelity']}")
     print()
 
     start_time = time.time()
