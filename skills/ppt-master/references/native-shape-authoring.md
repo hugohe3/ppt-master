@@ -19,7 +19,7 @@ names). This is authoring-time capability discovery, never a Strategist task or
 Design Spec field. Rerun only after context invalidation or a registry change.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list
+uvx ppt-master preset-shape-svg list
 ```
 
 Choose from that full inventory by page job. Use `list --search` only to narrow
