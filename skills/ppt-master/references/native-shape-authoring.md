@@ -12,6 +12,20 @@ only when those constructions fail. Neither helper writes a page. The preset
 helper does not create the shape's own `p:txBody`; keep visible text outside the
 atomic fragment.
 
+**Mandatory — complete registry discovery at authoring entry**: before the
+first newly authored page or template contour in each valid context, run the
+following command unfiltered and retain its complete output (currently 187
+names). This is authoring-time capability discovery, never a Strategist task or
+Design Spec field. Rerun only after context invalidation or a registry change.
+
+```bash
+python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list
+```
+
+Choose from that full inventory by page job. Use `list --search` only to narrow
+the already-read inventory and `describe <name>` only after identifying a
+candidate; neither replaces the complete initial read.
+
 ## 1. Contour Selection and Materialization Gate
 
 **Hard rule — contour before encoding**: choose the page-fit contour from the
@@ -45,10 +59,10 @@ rerun the helper whenever its geometry, paint, or filter reference changes.
 
 ## 2. Semantic Preset Candidate Guide
 
-Use the table below as a high-frequency entry, not a whitelist: match the
-page's visual intent to a candidate contour before settling on a neutral
-rectangle / ellipse or a freeform path. Search the registry when the job calls
-for a more specific contour rather than letting authoring convenience decide.
+Use the table below as semantic navigation, not a shortlist: match the page's
+visual intent against the complete inventory already loaded above before
+settling on a neutral rectangle / ellipse or a freeform path. Do not let the
+examples or authoring convenience hide a more specific registered contour.
 
 "Automatic" means the Executor independently applies this semantic decision
 gate before drawing a new object. It does not scan existing SVG, classify
@@ -65,7 +79,7 @@ paths or contours, or upgrade ordinary SVG during export.
 | Standalone math symbol | `mathPlus`, `mathMinus`, `mathMultiply`, `mathDivide`, `mathEqual`, `mathNotEqual` | Use only when the symbol itself is a diagram shape; simple notation remains text, while non-trivial inline or block mathematics follows [`native-formula.md`](./native-formula.md). |
 | Literal Office symbol | `heart`, `sun`, `moon`, `lightningBolt`, `gear6`, `gear9` | Never replace an icon required by `spec_lock.icons`. |
 
-Use registry search for a less common literal shape:
+Narrow and inspect candidates from the already-loaded inventory:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --search arrow
@@ -278,9 +292,9 @@ freshness contract.
 
 **Trigger**: Current page construction has two or more supported shape/text operands
 whose faithful result calls for PowerPoint-style Union, Combine, Fragment,
-Intersect, or Subtract. A §IX `Native shape suggestion` is a semantic candidate,
-not a prerequisite or tool command; Executor may adopt, adapt, or decline it
-from the actual content and explicit user/template constraints.
+Intersect, or Subtract. Executor decides this directly from the actual content,
+complete native inventory, and explicit user/template constraints; no upstream
+suggestion or planning field is required.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \

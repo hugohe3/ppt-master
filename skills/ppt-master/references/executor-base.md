@@ -186,11 +186,10 @@ materialize that contour with Boolean semantics, and use freeform last. Block
 arrows, chevrons, banners / ribbons, callouts, flowchart nodes, stars, and other
 Office symbols use `preset_shape_svg.py`, not plain paths or fake rectangles.
 
-§IX `Native shape suggestion` records a semantic opportunity, not a literal
-tool command. Decide from the actual page construction which page-fit native
-contour and simplest exact authoring form, independent compound construction,
-Boolean result, or necessary freeform best realizes it; a different
-implementation is valid when it preserves the intended object and content.
+Before the first page, complete [`native-shape-authoring.md`](./native-shape-authoring.md)'s
+unfiltered full-registry discovery. Decide every page-fit contour and its
+simplest exact authoring form directly from the page content and visual system;
+no Design Spec capability suggestion or material inventory gates this choice.
 
 **Mandatory — independent per-page compound-shape decision**: after the
 Structure result and any applicable topology resolve, decide whether two or more

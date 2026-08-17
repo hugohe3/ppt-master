@@ -58,7 +58,7 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 | Reference | Preserve the selected direction or role; adapt its realization to context. |
 | Permission / default | An allowed candidate/source boundary or preference; Strategist may leave it unused, with no quota. |
 
-**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and import of its two-artifact research pair may precede confirmation; facts URLs are not auto-expanded. Only after normal image search fails may one adopted webpage become a reviewable Markdown + companion-image source package, with accepted files promoted individually. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
+**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, semantic relationships, prepared resources/paths, Chart/Table and structured-template routing references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and import of its two-artifact research pair may precede confirmation; facts URLs are not auto-expanded. Only after normal image search fails may one adopted webpage become a reviewable Markdown + companion-image source package, with accepted files promoted individually. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Locally callable native construction is an Executor capability—not a resource or planning output. Executor owns its discovery and selection plus geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
 
 Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording may strengthen only the named property into the appropriate Literal or Semantic requirement. Accepting an AI recommendation keeps the field's default type; it does not promote a Reference or Permission into a Literal requirement.
 
@@ -348,18 +348,19 @@ The module owns AI rendering alternatives, acquisition paths, resource rows, pro
 
 **Per-page capability recall**: Before §IX, consider this menu without a usage
 quota. Use existing fields for semantic intent; omit unused lines and
-implementation parameters. Executor may adapt/decline the
-two non-literal suggestions while preserving content and intent; explicit
-user/template requirements bind.
+implementation parameters. Executor may adapt/decline a `Motion suggestion`
+while preserving content and intent; explicit user/template requirements bind.
 
-**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Select only what improves communication and composition; outside explicit requirements, no carrier is mandatory or mutually exclusive.
+**Hard rule — native construction stays downstream**: record the page's
+semantic relationships and any prepared resource roles; add no native-
+construction recommendation. Executor independently discovers and selects local
+construction from the actual page content and visual system.
 
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, compact illustrated-icon cues, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent elements by compatible family, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
-| Native shape system / Merge Shapes | A page field, outline carrier, visual nesting, literal Office symbol, stock bent/curved contour, or compound silhouette/cutout/overlap region strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic geometry jobs and relationship; identify independent atom roles, a candidate preset/Connector family, or Boolean operation/operands only where useful |
 | AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks when useful, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
@@ -426,19 +427,6 @@ Correct failed selections by recall; `no-template-match` never enters `page_visu
 | --- | --- | --- | --- |
 | P03 | chart | line_chart | Compare the source metrics over time |
 ```
-
-**Native-geometry candidate detail**: Add `Native shape suggestion` when a
-page-level field, boundary, direction, reveal, visual nesting, literal stock
-shape, or stock bent/curved Connector contour may strengthen the page. Describe
-the semantic jobs and whether atoms should remain independent, not coordinates,
-an exact preset key, endpoint/site metadata, or attachment promises. Only when
-one contour, cutout, common region, or meaningful fragmentation is intended,
-name the candidate Union / Combine / Fragment / Intersect / Subtract operation,
-semantic operands, and result.
-Executor still decides the exact page-fit native contour and authoring form,
-independent compound construction, Boolean result, or necessary freeform under
-its native-shape branch; the recommendation never creates a §VII row or lock
-field.
 
 ### Speaker Notes Requirements
 
