@@ -64,7 +64,7 @@ ownership.
 
 | Mode | Output structure contract |
 |---|---|
-| `standard` / `fidelity` | Author project-canonical SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. For every new contour, use an editable basic primitive, then an exact compact authored preset, then a Boolean result; use freeform only when those cannot express it faithfully. |
+| `standard` / `fidelity` | Author project-canonical SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. Build new geometry from editable primitives and exact compact presets as independent atoms; materialize a Boolean result only where one contour requires it, and use freeform last. |
 | `mirror` | Materialize a new workspace from the validated source graph one-to-one: keep the Master/Layout identities and parentage, slide assignments, placeholder type/index/bounds, and supported visual/native-object facts that are actually present. Edit the authoring IR; materialization may rehydrate converter-supported native payload only for unchanged source refs. Mechanical normalization maps fixed-layer source groups into the direct atoms required by the current explicit SVG contract while preserving ownership, paint order, and appearance; it must not invent missing facts or semantically redesign the graph. |
 
 Every page remains a complete standalone SVG preview.
@@ -83,8 +83,9 @@ bundle into an authored template. `mirror` instead preserves the supported
 expanded lossless source representation. The exact syntax and validation
 contract remain owned by
 [`shared-standards-core.md`](./shared-standards-core.md) and the native-shape reference.
-When one preset is insufficient, apply the same reference's Boolean gate before
-hand-authoring a freeform.
+When one preset is insufficient, apply the same reference's compound-page gate:
+keep faithful atoms independent unless one contour requires Boolean
+materialization, then use freeform only if neither construction succeeds.
 
 **Hard rule — complete mirror graph**: Preserve every supported source Layout represented by the validated import,
 including Layouts unused by source Slides. Emit one complete source-page
@@ -375,7 +376,7 @@ template.
 |---|---|---|
 | Lossless import SVG | Native-payload backing | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity. Keep it immutable and resolve it only through validated source refs. |
 | Authoring IR bundle | Editable template-creation source | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. Models read `authoring_summary.json`; tools read `authoring_manifest.json` for source paths and initial hashes. |
-| `standard` / `fidelity` output | Newly authored contract | Use editable basic primitives directly, `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches, and `shape_boolean_svg.py` for compound closed contours before allowing a necessary freeform. Paint comes from the confirmed brief / `design_spec.md`. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
+| `standard` / `fidelity` output | Newly authored contract | Use editable basic primitives directly and `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches. Keep faithful atoms independently composed when one contour is unnecessary; use `shape_boolean_svg.py` only where one compound closed contour must become an object, then allow a necessary freeform only if neither construction is faithful. Paint comes from the confirmed brief / `design_spec.md`. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
 | `mirror` output | Materialized preserved contract | Preserve currently supported imported metadata on unchanged Slide-local/slot refs, use the edited SVG fallback otherwise, and normalize fixed structural layers into semantic atoms. Strip IR-only source refs from final templates. |
 
 **Validation**: Mirror does not silently use stale metadata. Materialization
@@ -384,7 +385,8 @@ hash before reusing native payload. If an imported object cannot use the
 converter's supported native metadata after normalization, keep its current SVG fallback and report the
 limitation. For exact registered preset matches, `standard` / `fidelity`
 regenerate the compact helper group instead of transplanting opaque source
-payload; otherwise they apply the Boolean/freeform fallback gate above.
+payload; otherwise they keep faithful atoms independently composed unless one
+contour requires the Boolean gate, with necessary freeform last.
 `data-pptx-replace-with` remains reserved for optional PowerPoint-native
 Chart/Table replacement markers.
 
