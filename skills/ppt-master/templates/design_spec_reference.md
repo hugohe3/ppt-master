@@ -113,19 +113,12 @@ Use these exact subsections and field shapes:
 
 ## V. Layout Principles
 
-### Page Structure
+### Deck-wide Direction
 
-- **Header area**: <rule>
-- **Content area**: <rule>
-- **Footer area**: <rule>
-
-### Spacing Specification
-
-| Element | Current Project |
-| --- | --- |
-| Safe margin | <value> |
-| Content block gap | <value> |
-| Icon-text gap | <value> |
+- **Hierarchy direction**: <how attention should move across a typical page>
+- **Composition tendency**: <non-binding macro direction; no coordinates or authoring method>
+- **Cross-page continuity**: <what may recur or vary across the roster>
+- **Spacing posture**: <dense, open, or variable behavior by page rhythm; no fixed gaps>
 
 ## VI. Icon Usage Specification
 
@@ -196,7 +189,7 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 #### Slide 01 - <page name>
 
 - **Audience move**: <audience state before → after>
-- **Layout**: <composition; include the chosen prototype when template-active>
+- **Layout**: <non-binding macro composition, hierarchy, and visual focus; include the chosen prototype when template-active>
 - **Title**: <preferred page title>
 - **Core message**: <one governing assertion>
 - **Content**: <complete intended on-slide content and hierarchy>
@@ -220,17 +213,16 @@ When an explicit final/literal narration script will become notes or generated
 audio, make §X `Content` name that source and say `preserve verbatim`; keep the
 full segmented script in `notes/total.md`, not in §IX or this Design Spec.
 
-Append either or both optional lines only when the capability earns a place;
-never write an empty or `none` placeholder:
+Append the optional line only when the capability earns a place; never write an
+empty or `none` placeholder:
 
 ```markdown
-- **Native shape suggestion**: <semantic page/object geometry jobs plus independent atom roles, candidate preset/Connector family, or Boolean operation/operand roles as applicable>
 - **Motion suggestion**: <communication job plus desired page-entry or reveal relationship/order>
 ```
 
-Add `Mathematical content` whenever a Slide needs a mathematical expression preserved exactly. Store the expression body as valid LaTeX without `$...$`, `$$...$$`, `\(...\)`, or `\[...\]` source delimiters; the field does not classify inline versus structural use. This is content authority for [`native-formula.md`](../references/native-formula.md), not a formula policy, marker, or implementation request; Executor chooses ordinary text, inline native math, or block native math. Add `Visualization` / `Images` when a Slide consumes §VII/§VIII or uses a page-local visual model. Name every value-driven geometry, qualitative relationship, cell grid, and child visual here; only independent Chart/Table entries use object keys. Describe qualitative order, linkage, hierarchy, grouping, contrast, overlap, and reading path freely—not as a model name or grammar enum. §IX may choose a custom Chart/Table fallback. Add `Native shape suggestion` only when a page-level shape system, preset, stock Connector, or compound silhouette/cutout/intersection/fragment may help; name semantic geometry jobs and relationships plus independent atom roles, a candidate family, or Boolean operands as applicable, never implementation geometry or keys. Executor chooses the primitive, preset, independent compound construction, Boolean result, or necessary freeform. Add `Motion suggestion` whenever transition/reveal advice strengthens communication, regardless of the Custom Animations outcome; state purpose and semantic order/relationship, not registry keys, options, timing, ids, or coverage. The suggestion never activates animation execution by itself, creates content, or binds implementation. Describe required visible image states in `Layout` / `Images` only for an explicit motion requirement or an enabled Custom Animations outcome. Add keyed `Native-ready` only for independent data charts or pure text-grid tables, `Fact IDs` for sourced claims, and `Data class: scenario` for invented demo values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition; apply the same split to `Closing impact` only when the deck genuinely resolves. Roster/order/content stay authoritative. §VIII image layout is non-empty free prose with optional library ids; §VII Chart/Table rows are references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
+Add `Mathematical content` whenever a Slide needs a mathematical expression preserved exactly. Store the expression body as valid LaTeX without `$...$`, `$$...$$`, `\(...\)`, or `\[...\]` source delimiters; the field does not classify inline versus structural use. This is content authority for [`native-formula.md`](../references/native-formula.md), not a formula policy, marker, or implementation request; Executor chooses ordinary text, inline native math, or block native math. Add `Visualization` / `Images` when a Slide consumes §VII/§VIII or uses a page-local visual model. Name every value-driven geometry, qualitative relationship, cell grid, and child visual here; only independent Chart/Table entries use object keys. Describe qualitative order, linkage, hierarchy, grouping, contrast, overlap, and reading path freely—not as a model name or grammar enum. §IX may choose a custom Chart/Table fallback. Native construction creates no Design Spec field; Executor discovers and selects it independently during realization. Add `Motion suggestion` whenever transition/reveal advice strengthens communication, regardless of the Custom Animations outcome; state purpose and semantic order/relationship, not registry keys, options, timing, ids, or coverage. The suggestion never activates animation execution by itself, creates content, or binds implementation. Describe required visible image states in `Layout` / `Images` only for an explicit motion requirement or an enabled Custom Animations outcome. Add keyed `Native-ready` only for independent data charts or pure text-grid tables, `Fact IDs` for sourced claims, and `Data class: scenario` for invented demo values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition; apply the same split to `Closing impact` only when the deck genuinely resolves. Roster/order/content stay authoritative. §V/§IX layout, cover/closing composition, capability, motif, §VIII image-layout, and §VII Chart/Table directions remain References unless an explicit user/template/resource constraint promotes the named property; Executor considers each and may adopt, adapt, or decline it without upstream repair. Executor owns final geometry, hierarchy, treatment, and sparse local garnish.
 
-For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
+For free-design pages, describe `Layout` through relationships, hierarchy, visual focus, and optional macro region/span suggestions; do not prescribe element-level `x`, `y`, `width`, or `height`, fixed gaps, or an authoring method. Executor owns the final page composition and may depart from the recommendation while preserving its semantic job. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
 
 ---
 

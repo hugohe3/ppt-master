@@ -55,10 +55,10 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 | Literal requirement | Preserve the exact contracted value, pixels, wording, or topology. |
 | Semantic requirement | Preserve facts, relationships, intent, prohibitions, and completeness; expression may change. |
 | Identity anchor | Keep recurring identity stable without creating an exhaustive allowlist. |
-| Reference | Preserve the selected direction or role; adapt its realization to context. |
+| Reference | Consider the suggested direction or role; adopt, adapt, or decline it while preserving semantic and binding requirements. |
 | Permission / default | An allowed candidate/source boundary or preference; Strategist may leave it unused, with no quota. |
 
-**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, resources, page-local visualization/Layout references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans. Topic research and import of its two-artifact research pair may precede confirmation; facts URLs are not auto-expanded. Only after normal image search fails may one adopted webpage become a reviewable Markdown + companion-image source package, with accepted files promoted individually. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Executor owns geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; References flex realization, never selection.
+**Authority chain — materials → Strategist preparation → realization.** User inputs set materials/acquisition bounds. Strategist owns sufficiency, gap-filling, and selection: roster/content, semantic relationships, prepared resources/paths, structured-template routing references, fonts, palette anchors, the icon library/stroke plus curated project pool, and crop bans; it owns optional Chart/Table construction-reference recommendations without locking their realization. It may recommend macro composition, visual focus, and cross-page continuity as Reference, but selects no element geometry or local authoring method. Topic research and import of its two-artifact research pair may precede confirmation; facts URLs are not auto-expanded. Only after normal image search fails may one adopted webpage become a reviewable Markdown + companion-image source package, with accepted files promoted individually. Independent AI/web/slice acquisition follows final confirmation plus completed §VIII/lock; icons are synced/validated during authoring without page assignment. Before Executor, each resource has a path and terminal/`Needs-Manual` state. Locally callable native construction is an Executor capability—not a resource or planning output. Executor owns its discovery and selection plus final geometry, composition, hierarchy, spacing, treatment, and per-page choice among prepared icons; it never searches, generates, syncs, invents, or substitutes resources. Missing material/reselection returns upstream. Specificity defines freedom; a Reference may be adopted, adapted, or declined without changing a binding selection.
 
 Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording may strengthen only the named property into the appropriate Literal or Semantic requirement. Accepting an AI recommendation keeps the field's default type; it does not promote a Reference or Permission into a Literal requirement.
 
@@ -348,18 +348,23 @@ The module owns AI rendering alternatives, acquisition paths, resource rows, pro
 
 **Per-page capability recall**: Before §IX, consider this menu without a usage
 quota. Use existing fields for semantic intent; omit unused lines and
-implementation parameters. Executor may adapt/decline the
-two non-literal suggestions while preserving content and intent; explicit
-user/template requirements bind.
+implementation parameters. Executor may adapt/decline a `Motion suggestion`
+while preserving content and intent; explicit user/template requirements bind.
 
-**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Select only what improves communication and composition; outside explicit requirements, no carrier is mandatory or mutually exclusive.
+**Hard rule — native construction stays downstream**: record the page's
+semantic relationships, prepared resource roles, and any useful macro
+composition or visual-system recommendation. Do not inventory or bind a preset,
+primitive, Connector, Boolean/freeform operation, coordinates, or other local
+authoring method as the construction plan. A technique may appear only as
+optional inspiration inside a macro Reference; Executor independently
+discovers and selects construction from the actual page content and visual
+system.
 
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, compact illustrated-icon cues, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent elements by compatible family, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
-| Native shape system / Merge Shapes | A page field, outline carrier, visual nesting, literal Office symbol, stock bent/curved contour, or compound silhouette/cutout/overlap region strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic geometry jobs and relationship; identify independent atom roles, a candidate preset/Connector family, or Boolean operation/operands only where useful |
 | AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks when useful, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
@@ -427,18 +432,6 @@ Correct failed selections by recall; `no-template-match` never enters `page_visu
 | P03 | chart | line_chart | Compare the source metrics over time |
 ```
 
-**Native-geometry candidate detail**: Add `Native shape suggestion` when a
-page-level field, boundary, direction, reveal, visual nesting, literal stock
-shape, or stock bent/curved Connector contour may strengthen the page. Describe
-the semantic jobs and whether atoms should remain independent, not coordinates,
-an exact preset key, endpoint/site metadata, or attachment promises. Only when
-one contour, cutout, common region, or meaningful fragmentation is intended,
-name the candidate Union / Combine / Fragment / Intersect / Subtract operation,
-semantic operands, and result.
-Executor still decides the exact basic primitive, preset, independent compound
-construction, Boolean result, or necessary freeform under its native-shape branch; the recommendation never
-creates a §VII row or lock field.
-
 ### Speaker Notes Requirements
 
 Resolve the effective Speaker Notes outcome from the latest explicit user
@@ -486,35 +479,31 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 
 ## 4. Layout Pattern Library
 
-**Proportion follows information weight, not preset ratios.** Choose or combine the smallest structure that expresses the relationship; break the grid for a genuine `breathing` page. Repeating symmetric card grids is a failure mode.
+**Reference — not a constraint**: use these patterns as macro recommendation vocabulary. Proportion follows information weight, not preset ratios. Recommend or combine the smallest direction that expresses the relationship; Executor may adopt, adapt, or decline it after reading the actual page content and visual system. Repeating symmetric card grids without a page job is a failure mode.
 
 | Content relationship | Useful starting structure |
 |---|---|
 | One focal claim | centered single column, negative space, or full-bleed + floating text |
 | Equal comparison | symmetric split or a true matrix |
-| Dominant evidence + takeaway | asymmetric split, typically 3:7 or 2:8 |
+| Dominant evidence + takeaway | asymmetric split with one dominant field |
 | Parallel sequence | three-column, process line, or Z-pattern |
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
 
-**Default — define a cross-page visual motif system when it can carry identity or
-meaning (may omit when restraint serves the deck better)**: after the complete
-§IX roster and planned visual resources are known, choose or inherit a reusable
-motif or coherent element family—such as title/corner ornaments, a directional
-contour, opening, line lattice, or oversized numeral.
-Fold its invariant and reuse mode into §III `Theme`: exact repetition is valid
-for deliberate recurring chrome, while page-specific motifs may vary scale,
-crop, density, position, and content interaction. Mention it only in §IX
-`Layout` blocks that use it; create no motif field or lock row. This is a
-continuity Reference, not a decoration quota.
-
-On PPT 16:9, start from a 1200×640 safe area with 40px outer margins, then adapt to content. Template workspaces may supply different geometry; when active, [`strategist-template.md`](./strategist-template.md) owns precedence.
+**Reference — not a constraint**: after the complete §IX roster and planned
+visual resources are known, recommend a cross-page motif or coherent element
+family when it can carry identity or meaning—such as title/corner ornaments, a
+directional contour, opening, line lattice, or oversized numeral. Record its
+continuity job and possible reuse mode in §III `Theme`; mention it only in §IX
+`Layout` blocks that benefit. Executor may adopt, adapt, or decline it and owns
+its geometry and construction. Create no motif field or lock row, and impose no
+decoration quota.
 
 ---
 
 ## 5. Template Flexibility Principle
 
-Free-design patterns are starting points, not quotas. Adjust composition, spacing, and role sizes to the confirmed reading mode, page rhythm, and content. When a template workspace is active, do not reinterpret its reuse contract here; load [`strategist-template.md`](./strategist-template.md).
+**Reference — not a constraint**: free-design patterns are starting points, not quotas. Recommend a macro direction from the confirmed reading mode, page rhythm, and content; Executor owns exact composition and spacing within locked typography anchors. When a template workspace is active, do not reinterpret its reuse contract here; load [`strategist-template.md`](./strategist-template.md).
 
 ## 6. Workflow & Deliverables
 
@@ -555,7 +544,7 @@ final Stage 2 `false`, explicit objects-off, or explicit all-motion-off; only th
 includes transitions.
 
 1. With Generate Step 4's retained complete final-confirmation state, read `${SKILL_DIR}/templates/design_spec_reference.md`.
-2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching final Stage 2 proactive value → workflow default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, exact mathematical content when applicable, capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/visualization patterns remain References unless promoted.
+2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching final Stage 2 proactive value → workflow default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, exact mathematical content when applicable, capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/visualization patterns remain References unless promoted, so Executor may adopt, adapt, or decline them without upstream repair while preserving their semantic jobs and all binding constraints.
 3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before entering an enabled refine-spec review or authoring `spec_lock.md`.
 4. If enabled, run [`refine-spec`](../workflows/stages/refine-spec.md) after Gate 1; edit only that Design Spec and create no lock before explicit approval.
 5. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create the lock once or resynchronize stale derived state from the approved Design Spec and context. Retain identity/refinements and stable roles/routing; omit unnamed page-local values, do not reopen evidence, and make no new recommendation.
@@ -587,10 +576,10 @@ includes transitions.
    - **Custom behavior is concise and executable**: For confirmed `custom` mode or visual style, project one resolved `mode_behavior` / `visual_style_behavior` sentence or short paragraph. When the direction actually combines or borrows catalog entries, also project the exact, comma-separated `mode_references` / `visual_style_references`; omit the field for a genuinely novel direction and never fabricate a nearby reference. Preserve the confirmed direction, reference locked role names such as `colors.primary` when needed, and omit selection history, contradictions, precedence explanations, or other Design Spec provenance. Executor reads these fields from the retained lock and loads every referenced catalog entry once per valid context.
    - **page_rhythm is mandatory**: Based on the page list in §IX Content Outline, assign each page one of `anchor` / `dense` / `breathing`. This is what breaks the uniform "every page is a card grid" feel. New locks may not omit the section; consumer omission behavior is owned by [`executor-base.md`](executor-base.md) §2.1.
    - **Fact IDs and scenario labels are mandatory when applicable**: Read any `sources/*.facts.json`. For each §IX page, list the stable IDs actually used; never cite an ID whose claim is absent from the page. Mark invented KPIs/targets/internal ratios as `Data class: scenario` and state which values are scenario data. Executor carries external sources into notes/footnotes and renders a visible scenario label for scenario figures.
-   - **Mandatory — whole-roster rhythm check**: During the same §IX composition, compare neighbors and section arcs to judge whether chapter entries visibly reset, extended same-density runs are intentional, extended same-carrier or same-topology runs form an intentional semantic sub-arc, repeated dominant geometry carries a continuity job, any qualifying §6.1 visible-state sequence preserves a recognizable mental map while making its next semantic change legible, each section follows a mode-fitting progression—including framework → explanation/evidence → judgment/action when it serves the objective—and the final arc resolves the communication objective before a genuine ending lowers information load. Repair the existing roster, `Layout`, and `page_rhythm` choices in place. This is judgment, not quota; preserve intentional continuity, legitimately all-`dense` material, and 1:1/literal order. Do not invent filler pages to manufacture rhythm; a `breathing` page marks a meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and must stand alone. Create no field, lock row, artifact, or second review/execution pass.
-   - **Cover impact is mandatory**: In `design_spec.md §IX`, give `P01` one concrete hook from the source's strongest claim, metaphor, number, moment, or conflict plus a recommended composition. The hook binds; Executor may adapt the composition to prepared assets and explicit constraints. With no suitable image, recommend a native-SVG hook instead of a generic title treatment. Beautify / template-fill preservation paths are exempt.
+   - **Mandatory — whole-roster rhythm check**: During the same §IX composition, compare neighbors and section arcs to judge whether chapter entries visibly reset, extended same-density runs are intentional, extended same-carrier or same-topology runs form an intentional semantic sub-arc, repeated dominant geometry carries a continuity job, any qualifying §6.1 visible-state sequence preserves a recognizable mental map while making its next semantic change legible, each section follows a mode-fitting progression—including framework → explanation/evidence → judgment/action when it serves the objective—and the final arc resolves the communication objective before a genuine ending lowers information load. Repair the existing roster, `Layout` recommendations, and `page_rhythm` choices in place. This is judgment, not quota; preserve intentional continuity, legitimately all-`dense` material, and 1:1/literal order. Do not invent filler pages to manufacture rhythm; a `breathing` page marks a meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and must stand alone. Create no field, lock row, artifact, or second review/execution pass.
+   - **Cover impact is mandatory**: In `design_spec.md §IX`, give `P01` one concrete hook from the source's strongest claim, metaphor, number, moment, or conflict plus a recommended composition. The hook binds; Executor may adopt, adapt, or decline the composition while preserving the hook and explicit constraints. With no suitable image, recommend a native-SVG hook instead of a generic title treatment. Beautify / template-fill preservation paths are exempt.
    - **Cover rhythm lock**: `P01` remains `anchor`. Default away from generic content-page templates; a card grid, agenda, or equal-weight columns remains valid when content, user direction, or the template makes it the clearest cover.
-   - **Closing impact (only when the deck closes)**: For a genuine conclusion / CTA / final takeaway, name the binding takeaway plus a recommended composition; Executor may adapt the latter. Do not default to an information-empty "Thank you", contact-only slide, or cover reprise; an explicit contact/event CTA may serve the purpose. **Do NOT invent a closing page to satisfy this**. Preservation paths are exempt.
+   - **Closing impact (only when the deck closes)**: For a genuine conclusion / CTA / final takeaway, name the binding takeaway plus a recommended composition; Executor may adopt, adapt, or decline the latter while preserving the takeaway and explicit constraints. Do not default to an information-empty "Thank you", contact-only slide, or cover reprise; an explicit contact/event CTA may serve the purpose. **Do NOT invent a closing page to satisfy this**. Preservation paths are exempt.
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
