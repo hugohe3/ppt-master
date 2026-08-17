@@ -260,6 +260,14 @@ stable Layer 1 artwork, not page copy converted to an image.
 
 **Hard rule**: a sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
 
+**Hard rule — separable treatment before keying**: when the intended slice
+excludes a supporting surface, choose a treatment whose complete visible
+geometry can stand alone against the key field. Engraved, etched, debossed,
+inlaid, bas-relief, or other surface-dependent treatments are valid only when
+that carrier belongs in the intended slice; otherwise choose a genuinely
+freestanding treatment. Never define a carrier as necessary to the treatment
+and ask the same prompt to remove it.
+
 **Sheet prompt convention** — one `page_role: local` manifest item; choose
 `image_size` from final placement size. Spot sheets use `text_policy: none`;
 lettering sheets use `text_policy: embedded`:
@@ -463,7 +471,7 @@ Defaulting an entire `ai` resource list to `none` because "SVG can always overla
 
 **Forbidden — text that may be reworded**: any word that may later change belongs in Layer 2, not Layer 1. Layer 1 is for stable visual identifiers and designed lettering that is part of the image itself.
 
-**Default — controlled, deck-aligned artistic authorship (may override when the user explicitly requests high expression or confirms a strongly expressive direction)**: For decorative lettering, give the model the exact intended string, communication role, placement/background relationship, deck identity, relative visual weight, and desired energy. The resolved rendering, semantic colors, mood, and page hierarchy define the envelope. Without the stated override, keep expression controlled and glyph-native: carry identity through the glyph silhouette, stroke construction, internal material/texture, contour-bound depth/light, and letterform composition; do not translate the topic into literal illustrations or detached decoration around the word. A lettering-plus-illustration lockup is a separate treatment and requires an explicit user request or confirmed design direction. Within the chosen treatment, let the model decide and combine—or omit—the calligraphic gesture, material, dimensionality, texture, lighting, internal hierarchy, and composition; such terms are possibility space, not an effect recipe. Do not flatten the art merely to simplify extraction: §4.3's key field, clear padding, and cell isolation protect delivery without raising the chosen intensity. When fit is uncertain, use the lower effect density; never infer high expression or external motifs from the topic, place, or wording alone. Keep a multi-line lockup as one element when its hierarchy is part of the art.
+**Default — controlled, deck-aligned artistic authorship (may override when the user explicitly requests high expression or confirms a strongly expressive direction)**: For decorative lettering, give the model the exact intended string, communication role, placement/background relationship, deck identity, relative visual weight, and desired energy. The resolved rendering, semantic colors, mood, and page hierarchy define the envelope. Without the stated override, keep expression controlled and glyph-native: carry identity through the glyph silhouette, stroke construction, internal material/texture, contour-bound depth/light, and letterform composition; do not translate the topic into literal illustrations or detached decoration around the word. A lettering-plus-illustration lockup is a separate treatment and requires an explicit user request or confirmed design direction. Within the chosen treatment, let the model decide and combine—or omit—the calligraphic gesture, material, dimensionality, texture, lighting, internal hierarchy, and composition; such terms are possibility space, not an effect recipe. Do not flatten the art merely to simplify extraction: §4.3's separable-treatment gate, key field, clear padding, and cell isolation protect delivery without raising the chosen intensity. When fit is uncertain, use the lower effect density; never infer high expression or external motifs from the topic, place, or wording alone. Keep a multi-line lockup as one element when its hierarchy is part of the art.
 
 **Font choice for in-image text — free description, with the deck typography as one optional reference**
 
