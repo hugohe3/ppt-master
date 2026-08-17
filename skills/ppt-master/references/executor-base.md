@@ -167,7 +167,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Resolve the page-scale move from `spec_lock.md`: a preset uses that selected style's §1 `Composition geometry`; `custom` executes `visual_style_behavior` first, then uses §1 geometry only from exact `visual_style_references` that the behavior assigns a shape or composition job. Other bases contribute only their assigned job, and an unreferenced novel custom follows its behavior alone. Before defaulting to stacked rounded-rect cards or uniform equal columns, use that resolved geometry to stage the page's primary zone. Card grids are one option among many, not the house layout.
 - **Default — realize the planned motif system's reuse mode (may omit where it has no page job)**: when §III `Theme` names a cross-page motif or element family, exact repetition is valid for deliberate title/corner chrome; adaptive elements may vary scale, crop, density, position, and content interaction by page role. Preserve the named invariant, apply it only where it supports hierarchy or continuity, and do not invent a competing recurring identity.
 - **Inherited containers**: preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Selected Chart/Table reference adaptation is owned by [`executor-visualization.md`](./executor-visualization.md); preview effects never override project styling or structural roles.
-- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first seek a basic primitive, one exact preset, or a clear Boolean result. Only when none can faithfully express the relationship should one page-specific polygon/path replace a stack of generic arrows.
+- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first compose faithful primitives and exact presets as one page geometry system; use a Boolean only when the contour itself must merge, open, or fragment. Only when neither construction works should one page-specific polygon/path replace a stack of generic arrows.
 - **Reference — create depth with restraint**: use rhythm, spacing, typography, accent bars, and subtle tints before shadows. Reserve lift for a few genuinely floating elements; keep peer grids, dividers, and ordinary body containers flat. When material layering itself is part of the resolved visual style, follow that style's hierarchy instead of flattening its body planes.
 - **Phased generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Apply every triggered information-model branch while drawing. **MUST embed one object-scoped plot-area marker** per §IX-named or Quick-promoted value-driven chart object under [`executor-chart.md`](./executor-chart.md) §2; coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)). Write every `<object-key>=yes` native marker plus JSON metadata atomically under [`native-data-interface.md`](./native-data-interface.md) §2. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG; when justified, one registered [`svg-effects.md`](./svg-effects.md) §6.4 shadow/glow stays on the helper-authored shape). **First-page gate (Mandatory)**: after completing the first page, run `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page --json` directly without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
@@ -177,10 +177,10 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 ### 3.0 Native Shape Selection
 
 **Use the highest-level native construction that faithfully expresses the
-object.** Basic primitives already export as editable PowerPoint shapes. For
-anything beyond them, an exact Office preset is the default; when no single
-preset suffices but closed operands can express the result, materialize a
-Merge Shapes Boolean result. Hand-authored freeform geometry is the final
+page and each atom.** Basic primitives and exact Office presets already export
+as editable PowerPoint shapes; compose them independently when one contour is
+unnecessary. Materialize a Merge Shapes Boolean result only for contour
+semantics that independent atoms cannot express. Hand-authored freeform is the final
 fallback, not the first drawing convenience. Block arrows, chevrons, banners /
 ribbons, callouts, flowchart nodes, stars, and other Office symbols should be
 **authored as presets** via `preset_shape_svg.py`, not redrawn as plain
@@ -190,9 +190,34 @@ object.
 
 §IX `Native shape suggestion` records a semantic opportunity, not a literal
 tool command. Decide from the actual page construction whether a basic
-primitive, preset, Boolean result, or necessary freeform best realizes it; a
+primitive, preset, independent compound construction, Boolean result, or necessary freeform best realizes it; a
 different implementation is valid when it preserves the intended object and
 content.
+
+**Compound-shape check (automatic, not a quota)**: after structure resolves and
+before drawing, test whether a page-level native geometry system would organize
+the background, zones, hierarchy, or reading path better than a uniform card
+grid. If yes, build it through [`native-shape-authoring.md`](./native-shape-authoring.md)
+§2.1; otherwise keep the simpler composition. There is no per-page or per-deck
+coverage target and no required explanation for declining it.
+
+**Default — do not use rectangles as the universal carrier (may use when a
+neutral field is the best fit)**: before drawing another `<rect>` / rounded
+`<rect>` container, test whether the content job calls for a more expressive
+preset, outline contour, or compound geometry. Choose one coherent shape
+language for the page; do not assign unrelated novelty shapes item by item.
+
+**Default — give floating text a geometric owner when useful (may omit when
+typography and negative space already establish deliberate hierarchy)**: before
+leaving a key or repeated text cluster unbounded, consider a native outline,
+frame, arc, bracket, band, spine, or other content-fit carrier. `fill="none"`
+with a visible stroke is a first-class option and does not imply a filled card.
+
+**Reference — use visual nesting for depth**: a larger field may contain or be
+crossed by an inset contour, secondary surface, badge, port, or focal shape.
+Keep these as independently editable siblings in the ordinary semantic group;
+visual containment never authorizes placing content inside an atomic preset
+fragment or merging shapes that do not require one contour.
 
 | Decision | Action |
 |---|---|
@@ -200,14 +225,16 @@ content.
 | Straight relationship / divider / leader | Use `<line>`; add a registered marker only when direction is meaningful. |
 | Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
 | Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
+| Text/content zone needs containment or emphasis without a filled surface | Use a faithful primitive or exact preset with `fill="none"` and a visible stroke; keep text and other content independent. |
+| Two or more native shapes should form one page-level geometry system | Follow [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1: compose faithful primitives and presets as independent siblings first, then materialize only contours that require Boolean semantics. |
 | Supported closed-shape / resolvable-text operands need union, cutout, overlap, symmetric difference, or fragmentation | Use `shape_boolean_svg.py` when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
-| Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, one preset, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
+| Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, exact presets, their independent composition, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
 | Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 
 **Hard rule — freeform is the last construction tier**: before hand-authoring a
-stock-looking `<path>` / `<polygon>`, complete the primitive → exact preset →
-Boolean-result decision order above. A freeform is permitted only when those
+stock-looking `<path>` / `<polygon>`, complete the primitive / exact-preset atom
+→ independent composition → required Boolean-result decision order above. A freeform is permitted only when those
 tiers cannot faithfully express the object; avoiding a helper or drawing the
 browser-visible contour faster is not a valid exception. Data-defined geometry
 and a genuinely locked organic / hand-drawn contour satisfy the exception by

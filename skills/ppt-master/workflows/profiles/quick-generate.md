@@ -381,7 +381,7 @@ generation capability is resolved during resource preparation, not eligibility.
 | Reusable title/corner decoration, a dominant illustrated anchor, supporting figure, or accent strengthens one or more page compositions | A coherent AI illustration family prepared as transparent `slice` assets and combined freely with other carriers |
 | A compact semantic cue clarifies a category, process, KPI, state, or navigation item | Prepared project-local SVG/emoji icon, an illustrated-icon `slice`, or a coherent combination |
 | A real company, product, service, or social brand must appear as itself | Prepare the exact brand mark from `simple-icons` or supplied project assets as needed; it is not a user-facing library choice |
-| Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
+| Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic primitives and exact Office presets, independently composed when possible; Boolean only for required contour semantics; necessary freeform last |
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
