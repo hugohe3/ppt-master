@@ -78,19 +78,12 @@
 
 ## V. Layout Principles
 
-### Page Structure
+### Deck-wide Direction
 
-- **Header area**: [fill]
-- **Content area**: [fill]
-- **Footer area**: [fill]
-
-### Spacing Specification
-
-| Element | Current Project |
-| --- | --- |
-| Safe margin | [fill] |
-| Content block gap | [fill] |
-| Icon-text gap | [fill] |
+- **Hierarchy direction**: [fill]
+- **Composition tendency**: [fill]
+- **Cross-page continuity**: [fill]
+- **Spacing posture**: [fill]
 
 ## VI. Icon Usage Specification
 
@@ -110,7 +103,7 @@
 #### Slide 01 - [fill]
 
 - **Audience move**: [fill]
-- **Layout**: [fill]
+- **Layout**: [non-binding macro composition direction]
 - **Title**: [fill]
 - **Core message**: [fill]
 - **Content**: [fill]

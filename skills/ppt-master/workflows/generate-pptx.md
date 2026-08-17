@@ -569,6 +569,16 @@ Workflow:
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
 
+Read the Executor role core before applying its context policy:
+
+```
+Read references/executor-base.md                  # REQUIRED: flat/shared execution core
+```
+
+**Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
+
+**Scheduled lock re-read (Default Generate only)**: when another page follows, re-read `spec_lock.md` once after P05/P10/P15/… per [`executor-base.md`](../references/executor-base.md) §2.1.
+
 **Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
 
 **Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
@@ -577,29 +587,23 @@ Workflow:
 `notes/total.md` once before P01 and design each visible state/semantic group
 around its exact segment; never edit or pad it.
 
-**Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
-
-**Scheduled lock re-read (Default Generate only)**: when another page follows, re-read `spec_lock.md` once after P05/P10/P15/… per [`executor-base.md`](../references/executor-base.md) §2.1.
-
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
-Read the execution references for this deck's locked `mode` + `visual_style`
-(from `spec_lock.md`). Load this fixed required block directly as one batch:
+Read the exact execution references named by this deck's retained
+`spec_lock.md`; do not reopen the planning indexes. Load the remaining fixed
+construction block plus the resolved mode/style detail files as one batch:
 ```
-Read references/executor-base.md                  # REQUIRED: flat/shared execution core
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
 Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
 Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
-Read references/modes/_index.md
-Read references/visual-styles/_index.md
 Read references/modes/<resolved-id>.md             # one preset id, or each `mode_references` id
 Read references/visual-styles/<resolved-id>.md     # one preset id, or each `visual_style_references` id
 ```
 
 Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual Job Router active during page authoring; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
-> Read only the always-on references above plus the conditionally triggered modules below. The indexes provide routing information, not permission to open siblings. A preset reads its one locked file. For `custom`, read only the exact bases named by optional `mode_references` / `visual_style_references`, then synthesize them under the corresponding behavior. If absent, treat the direction as genuinely novel and read no preset file. Do not infer adjacent bases, glob a catalog, or blend unselected identities.
+> Read only the role core, always-on construction references, exact locked detail files, and conditionally triggered modules below. The selection indexes remain planning-only. A preset reads its one locked file. For `custom`, read only the exact bases named by optional `mode_references` / `visual_style_references`, then synthesize them under the corresponding behavior. If absent, treat the direction as genuinely novel and read no preset file. Do not infer adjacent bases, glob a catalog, or blend unselected identities.
 
 | Deterministic trigger | Additional references |
 |---|---|
@@ -652,7 +656,7 @@ sidecars, or guessed family paths.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Treat §IX `Native shape suggestion` as a candidate, not a command: inspect the actual page construction, then follow [`native-shape-authoring.md`](../references/native-shape-authoring.md) — compose editable primitives and exact Office presets as independent atoms when possible, materialize a Merge Shapes Boolean result only where contour semantics require it, and use necessary freeform last. Diagram relationships follow the same Shape-first gate; do not infer a preset from contour similarity.
+Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Native shapes are Executor-local authoring capabilities, not planned resources: follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), load its complete current preset inventory before the first page, choose page-fit contours before their authoring forms, keep exact native atoms independent when possible, materialize a Merge Shapes Boolean result only where contour semantics require it, and use necessary freeform last. Diagram relationships follow the same Shape-first gate; do not infer a preset from contour similarity.
 
 **Motion-ready image composition**: Only when an explicit user motion
 instruction, the effective Custom Animations outcome in `design_spec.md §I` is

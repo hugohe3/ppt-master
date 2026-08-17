@@ -49,10 +49,9 @@ Combine atoms as needed; never force a named business model. Numbers used only a
 
 **Hard rule — realization enters the construction gate**: Decide whether each
 role is implicit/direct content or drawn geometry. Every drawn field, spine,
-node carrier, or edge uses the first faithful tier under
-[`native-shape-authoring.md`](./native-shape-authoring.md) §§1–2.1: primitive /
-exact-preset atoms → independent compound system → required Boolean result →
-necessary freeform. Text styling/rules cannot replace
+node carrier, or edge follows [`native-shape-authoring.md`](./native-shape-authoring.md)
+§§1–2.1: contour before encoding → simplest exact native form → independent
+compound → required Boolean → necessary freeform. Text styling cannot replace
 required geometry; implicit/direct roles need no container. Decoration cannot
 invent a relationship.
 
@@ -94,7 +93,7 @@ inapplicable operations; implicit/direct roles remain container-free.
 | Attachment | Labels/evidence belong to the correct node, edge, or region |
 | Removal | Without color/effects/icons/garnish, placement still communicates |
 | Fidelity | All required units, qualifiers, values, and caveats remain |
-| Construction | Drawn fields/spines/node carriers/edges pass §2; implicit/direct roles need no carrier; freeform follows failed primitive/preset/independent-compound/Boolean tiers |
+| Construction | Drawn roles pass §2; implicit/direct roles need no carrier; freeform follows failed exact-native/independent-compound/Boolean routes |
 | Composition | Every used contact, void, overlap, cutout, occlusion, or canvas-edge crossing maps to an atom/role or remains removable garnish; none obscures ownership or reading path |
 
 Load Chart/Table branches independently for embedded objects. Keep one dominant reading path while allowing secondary atoms whose ownership stays clear.
