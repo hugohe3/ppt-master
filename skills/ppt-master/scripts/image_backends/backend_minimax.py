@@ -33,6 +33,7 @@ import requests
 from image_backends.backend_common import (
     MAX_RETRIES,
     detect_image_extension,
+    download_image,
     http_error,
     is_permanent_error,
     is_rate_limit_error,
@@ -47,6 +48,11 @@ from image_backends.backend_common import (
 DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/image_generation"
 DEFAULT_MODEL = "image-01"
 SUPPORTED_MODELS = {DEFAULT_MODEL}
+
+# Request the documented default response format. The API returns hosted links
+# in `data.image_urls` for "url" and inline strings in `data.image_base64` for
+# "base64"; both shapes are handled when the response is parsed.
+DEFAULT_RESPONSE_FORMAT = "url"
 
 # International fallback: set MINIMAX_BASE_URL=https://api.minimax.io if needed
 
@@ -131,11 +137,20 @@ def _resolve_dimensions(aspect_ratio: str, image_size: str) -> tuple[int, int]:
 
 
 def _extract_image_bytes(payload: dict) -> bytes | None:
-    """Extract image bytes from a MiniMax response payload."""
+    """Extract inline base64 image bytes from a MiniMax response payload."""
     data = payload.get("data") or {}
     image_base64 = data.get("image_base64") or []
     if image_base64:
         return base64.b64decode(image_base64[0])
+    return None
+
+
+def _extract_image_url(payload: dict) -> str | None:
+    """Extract the first hosted image URL from a MiniMax response payload."""
+    data = payload.get("data") or {}
+    image_urls = data.get("image_urls") or []
+    if image_urls:
+        return image_urls[0]
     return None
 
 
@@ -157,7 +172,7 @@ def _generate_image(api_key: str, prompt: str,
         "prompt": prompt,
         "width": width,
         "height": height,
-        "response_format": "base64",
+        "response_format": DEFAULT_RESPONSE_FORMAT,
         "n": 1,
     }
 
@@ -182,12 +197,19 @@ def _generate_image(api_key: str, prompt: str,
         raise RuntimeError(f"MiniMax image generation failed: {data}")
 
     image_bytes = _extract_image_bytes(data)
-    if not image_bytes:
-        raise RuntimeError(f"MiniMax response missing image data: {data}")
+    if image_bytes:
+        ext = detect_image_extension(image_bytes) or ".jpeg"
+        path = resolve_output_path(prompt, output_dir, filename, ext)
+        return save_image_bytes(image_bytes, path)
 
-    ext = detect_image_extension(image_bytes) or ".jpeg"
-    path = resolve_output_path(prompt, output_dir, filename, ext)
-    return save_image_bytes(image_bytes, path)
+    image_url = _extract_image_url(data)
+    if image_url:
+        # image-01 serves JPEG; save_image_bytes realigns the extension when the
+        # downloaded bytes are a different format.
+        path = resolve_output_path(prompt, output_dir, filename, ".jpeg")
+        return download_image(image_url, path)
+
+    raise RuntimeError(f"MiniMax response missing image data: {data}")
 
 
 def generate(prompt: str,
