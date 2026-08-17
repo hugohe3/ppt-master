@@ -876,8 +876,8 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         and not retried within this run. `Failed` remains retryable and
         non-terminal; the Step 5 gate must resolve it by rerunning this
         manifest or marking the item `Needs-Manual`.
-      - Permanent auth, billing, model, and request errors skip unchanged
-        backend retries but keep the same repairable `Failed` manifest state.
+      - Global auth or billing errors stop new batches; untouched rows remain
+        retryable. Permanent model or request errors fail only their own row.
       - Status is written back to the manifest file after each completion;
         a Ctrl-C in the middle still preserves done items.
       - `Needs-Manual` items are skipped (user processes them externally).
@@ -893,6 +893,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     output_dir = str(manifest_output_dir)
 
     from image_backends.backend_common import (
+        is_global_permanent_error,
         is_permanent_error,
         is_rate_limit_error,
         validate_image_file,
@@ -943,6 +944,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     current = max(1, initial_concurrency)
     state_lock = threading.Lock()
     rate_limit_attempts: dict[int, int] = {}
+    stopped_for_global_error = False
     stopped_for_rate_limit = False
 
     def _one(idx: int):
@@ -987,15 +989,21 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         ok_count += 1
                         print(f"  [OK]   {item['filename']}")
                     elif isinstance(exc, ValueError) or is_permanent_error(exc):
+                        global_error = is_global_permanent_error(exc)
                         item["status"] = STATUS_FAILED
+                        error_scope = "Global" if global_error else "Permanent"
+                        repair_target = (
+                            "backend access" if global_error else "model or request"
+                        )
                         item["last_error"] = (
-                            f"Permanent backend error: {exc}"
+                            f"{error_scope} backend error: {exc}"
                         )[:500]
                         fail_count += 1
+                        if global_error:
+                            stopped_for_global_error = True
                         print(
                             f"  [FAIL] {item['filename']}: {exc} "
-                            "(status=Failed; repair credentials, billing, "
-                            "model, or request before retry)"
+                            f"(status=Failed; repair {repair_target} before retry)"
                         )
                     elif is_rate_limit_error(exc):
                         rate_limited = True
@@ -1038,6 +1046,12 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         )
                     save_manifest(manifest_path, manifest)
 
+        if stopped_for_global_error:
+            print(
+                "\n  Backend authentication or billing requires repair. "
+                "Stopping new batches; untouched items remain retryable.\n"
+            )
+            break
         if stopped_for_rate_limit:
             print(
                 "\n  Persistent rate limit reached the run boundary. "
@@ -1055,9 +1069,10 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         elif queue:
             time.sleep(2)
 
-    run_state = "Stopped" if stopped_for_rate_limit else "Done"
+    stopped_early = stopped_for_global_error or stopped_for_rate_limit
+    run_state = "Stopped" if stopped_early else "Done"
     remaining_note = ""
-    if stopped_for_rate_limit:
+    if stopped_early:
         remaining = sum(
             1 for item in items if item["status"] in RETRYABLE_STATUSES
         )
