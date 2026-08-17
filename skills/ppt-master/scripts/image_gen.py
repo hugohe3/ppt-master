@@ -1269,8 +1269,8 @@ def main() -> None:
         help=(
             "Source image for image-to-image editing (single-image mode only). "
             "When set, the prompt is used as the edit instruction. Only backends "
-            "that support editing accept this (currently: openai). Not valid with "
-            "--manifest / --render-md / --list-backends."
+            "that support editing accept this (currently: gemini, openai). Not "
+            "valid with --manifest / --render-md / --list-backends."
         ),
     )
 
@@ -1398,7 +1398,8 @@ def main() -> None:
         if not getattr(backend, "SUPPORTS_REFERENCE_IMAGE", False):
             print(
                 f"Error: backend '{backend_name}' does not support image editing "
-                "(--reference-image). Use a backend that does (currently: openai)."
+                "(--reference-image). Use a backend that does "
+                "(currently: gemini, openai)."
             )
             sys.exit(1)
         gen_kwargs["reference_image"] = args.reference_image
