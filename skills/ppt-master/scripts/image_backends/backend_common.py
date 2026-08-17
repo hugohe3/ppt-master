@@ -40,14 +40,16 @@ RETRY_BACKOFF = 2
 
 _TRANSIENT_CLIENT_STATUSES = {408, 409, 423, 425, 429}
 _HTTP_ERROR_STATUS = re.compile(r"\(([1-5][0-9]{2})\):")
-_PERMANENT_ERROR_TYPES = {
+_GLOBAL_PERMANENT_ERROR_TYPES = {
     "authenticationerror",
+}
+_ITEM_PERMANENT_ERROR_TYPES = {
     "badrequesterror",
     "notfounderror",
     "permissiondeniederror",
     "unprocessableentityerror",
 }
-_PERMANENT_ERROR_MARKERS = (
+_GLOBAL_PERMANENT_ERROR_MARKERS = (
     "prepayment credits are depleted",
     "prepaid credits are depleted",
     "credits are depleted",
@@ -63,9 +65,19 @@ _PERMANENT_ERROR_MARKERS = (
     "invalid api key",
     "api key not valid",
     "incorrect api key",
+    "no api key found",
+    "missing api key",
+    "api key required",
+    "api key is required",
+    "api key not set",
+    "api key is not set",
+    "api key expired",
+    "expired api key",
     "authentication failed",
     "authentication required",
     "unauthorized",
+)
+_ITEM_PERMANENT_ERROR_MARKERS = (
     "permission denied",
     "forbidden",
     "invalid_argument",
@@ -347,10 +359,29 @@ def _error_status_code(exc: Exception) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def is_global_permanent_error(exc: Exception) -> bool:
+    """Return whether every unchanged request would fail for this backend."""
+    if isinstance(exc, _RetryableBackendError):
+        return False
+
+    status_code = _error_status_code(exc)
+    if status_code in {401, 402}:
+        return True
+
+    error_name = type(exc).__name__.lower()
+    if error_name in _GLOBAL_PERMANENT_ERROR_TYPES:
+        return True
+
+    err_str = str(exc).lower()
+    return any(marker in err_str for marker in _GLOBAL_PERMANENT_ERROR_MARKERS)
+
+
 def is_permanent_error(exc: Exception) -> bool:
     """Return whether retrying the unchanged backend request cannot succeed."""
     if isinstance(exc, _RetryableBackendError):
         return False
+    if is_global_permanent_error(exc):
+        return True
     if isinstance(exc, (FileNotFoundError, NotImplementedError, PermissionError)):
         return True
 
@@ -363,11 +394,11 @@ def is_permanent_error(exc: Exception) -> bool:
         return True
 
     error_name = type(exc).__name__.lower()
-    if error_name in _PERMANENT_ERROR_TYPES:
+    if error_name in _ITEM_PERMANENT_ERROR_TYPES:
         return True
 
     err_str = str(exc).lower()
-    return any(marker in err_str for marker in _PERMANENT_ERROR_MARKERS)
+    return any(marker in err_str for marker in _ITEM_PERMANENT_ERROR_MARKERS)
 
 
 def is_rate_limit_error(exc: Exception) -> bool:
