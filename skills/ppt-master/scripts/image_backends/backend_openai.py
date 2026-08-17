@@ -54,6 +54,7 @@ from image_backends.backend_common import (
     MAX_RETRIES,
     download_image,
     http_error,
+    is_permanent_error,
     is_rate_limit_error,
     normalize_image_size,
     resolve_output_path,
@@ -706,6 +707,8 @@ def generate(prompt: str,
                                    filename, model, base_url)
         except Exception as e:
             last_error = e
+            if is_permanent_error(e):
+                raise
             if attempt < max_retries and is_rate_limit_error(e):
                 delay = retry_delay(attempt, rate_limited=True)
                 print(f"\n  [WARN] Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
