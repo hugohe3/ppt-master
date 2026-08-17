@@ -177,20 +177,38 @@ Record the confirmed visual style and rationale in `design_spec.md` first, inclu
 
 ### f. Icon Usage Confirmation
 
+The base icon style is one single-select identity, not a material whitelist:
+
 | Option | Approach | Suitable Scenarios |
 |--------|----------|-------------------|
 | **A** | Emoji | Casual, playful, social media |
-| **B** | AI-generated | Custom style needed |
-| **C** | Built-in icon library | Professional scenarios (recommended) |
-| **D** | Custom icons | Has brand assets |
+| **B** | Built-in generic icon library | Professional scenarios (recommended) |
+| **C** | Custom project icons | Supplied, template-carried, or imported assets |
+| **D** | No base icons | Illustration, typography, shapes, or data already carry the compact cues |
+
+AI-generated illustrated icons are not a base-style option, add-on, Confirm UI
+field, or result key. Like decorative lettering, they are a downstream image
+carrier that §h and [`strategist-image.md`](./strategist-image.md) may choose
+proactively when AI imagery is appropriate. Their transparent slices stay
+under `images/`; never put them under `icons/`, add them to `icons.inventory`,
+or reference them through `<use data-icon>`.
+
+Base SVG/emoji icons and illustrated-icon slices may be combined when the page
+benefits, as long as the overall visual treatment remains coherent. Real brand
+marks remain identity assets rather than another stylistic library.
 
 The built-in icon library contains multiple stylistic libraries plus a brand-logo library:
 
 See [`../templates/icons/README.md`](../templates/icons/README.md) for the current library inventory, counts, prefixes, and SVG placeholder details.
 
-> **Mandatory rules when choosing C**:
+Content-driven brand preparation applies under every base choice: if a real
+company, product, service, or social identity appears and its mark improves
+recognition, prepare the exact supplied or `simple-icons` asset; otherwise do
+not add one. This requires no extra user-facing option.
+
+> **Mandatory rules for bundled SVG resources**:
 >
-> **At the Strategist confirmation stage — decide the library and stroke only; resolve and sync filenames after approval.**
+> **At the Strategist confirmation stage — decide the generic base library and stroke only; resolve generic and content-driven brand filenames after approval.**
 >
 > 1. **Pick at most one primary stylistic library from the four bundled choices** — when generic icons are needed, read the source material and choose the one whose visual character best serves the deck:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
@@ -198,7 +216,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >    - **`tabler-outline`** — stroke (line art); airy, refined, lightweight; best for screen-only (thin strokes may be hard to read in print)
 >    - **`phosphor-duotone`** — duotone; main shape + 20% opacity backplate; medium weight, layered, contemporary
 >    - During bundled-library selection, do not select generic icons from more than one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
->    - **`simple-icons` may be selected alone or alongside the primary library**: it is a brand-logo library, not one of the four stylistic choices. Add it only for real company / product / service marks (customer logos, tech-stack icons, social handles), never as a substitute for a missing generic icon.
+>    - **`simple-icons` is never a Confirm UI choice**: it is a brand-logo resource that Strategist prepares only when the actual content needs a real company / product / service mark (customer logos, tech-stack icons, social handles). It may be used with any base selection, including `none`, and never substitutes for a missing generic icon.
 >    - This restriction governs Strategist selection from the bundled catalog, not the prepared project asset pool. User-provided, template-carried, imported, custom, and previously prepared files under `<project_path>/icons/` remain valid material regardless of namespace or visual style.
 > 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`). For heavier presence, switch library instead of going above `3`.
 >
@@ -208,7 +226,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 > 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<keyword>*.svg'`; do not enumerate broad keyword families.
 > 5. **Copy and validate in one batch** — run `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
 > 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
-> 7. Record each synced bundled path with broad suitable scenarios in `design_spec.md` §VI; record the same curated pool, its primary stylistic library, and any stroke-library `stroke_width` in `spec_lock.md icons`. Keep selected `simple-icons/*` ids in the same inventory without treating them as a second stylistic library. The pool is prepared optional material, not a page-use plan, coverage quota, or whitelist over other prepared project-local icons.
+> 7. Record each synced bundled path with broad suitable scenarios in `design_spec.md` §VI; record the same curated pool, its primary stylistic library, and any stroke-library `stroke_width` in `spec_lock.md icons`. Keep actually needed `simple-icons/*` ids in the same inventory without treating them as a second stylistic library or user-facing selection. The pool is prepared optional material, not a page-use plan, coverage quota, or whitelist over other prepared project-local icons.
 >
 > 🚧 **GATE — missing icon = re-pick now**: on non-zero exit, search a missing generic concept only in the chosen stylistic library, or a missing real brand mark in `simple-icons`; re-pick and rerun the final batch until clean. Never carry a missing icon forward or switch among the four stylistic libraries to fill the gap.
 >
@@ -291,6 +309,13 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 
 **Default — visual grounding before `none` (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression materially improves a planned visual job. Treat `none` as a positive whole-deck conclusion. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
 
+**Default — consider proactive illustrated icons without creating another
+confirmation field**: Before each Stage-2 `recommend.image_usage`, consider
+whether compact semantic jobs would communicate better through a coherent
+illustrated cue family. This may support an `ai` recommendation, but it is not
+an automatic source trigger or coverage quota. Resource grouping remains a
+fit-driven decision under [`strategist-image.md`](./strategist-image.md).
+
 **Mandatory — assess proactive decorative lettering without making eligibility
 an automatic source trigger**: Before each Stage-2 `recommend.image_usage`,
 scan the complete planned roster for exact stable display strings whose
@@ -308,7 +333,7 @@ valid. The absence of another AI-image job never forces lettering. Explicit
 no-AI or editable-only requirements win. Execution follows
 [`image-generator.md`](./image-generator.md) §7.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and invented or stylized expression serves it. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration, illustrated-icon, or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and invented or stylized expression serves it. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
@@ -332,10 +357,10 @@ user/template requirements bind.
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
-| Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent illustration elements by compatible family, record fixed reuse or adaptive variation in their §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
+| Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, compact illustrated-icon cues, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent elements by compatible family, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
-| AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks by visual family, state their role/context/relative visual weight/energy without fixing an effect recipe, plan one unplaced AI Illustration Sheet per family plus one transparent `slice` row per used mark, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
+| AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks when useful, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
 
@@ -543,7 +568,7 @@ includes transitions.
 | Canvas, reading mode, and page count | §I records the confirmed input and exact resolved count; §IX contains that many ordered pages. Executor produces exactly one output slide per entry, in order |
 | Mode, visual style, palette, and generated-image rendering | §I and §III record the selected direction as identity anchors; named core roles stay stable while page-local expression remains contextual |
 | Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records Character/upgrade References, resolved heading/body stacks, recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` anchors; never discard a declared role override or re-derive a confirmed anchor |
-| Icons | §VI uses the confirmed library or confirmed no-icon/custom path |
+| Icons | §VI records the confirmed base library/no-icon/custom path and any content-driven `simple-icons` brand marks; illustrated-icon families are planned as AI image resources in §VIII and require no separate confirmation choice |
 | Confirmed image-source set, `image_notes`, and AI strategy | §VIII uses only permitted sources and includes every explicitly required source, asset, or page role; a permitted but unused source needs no row |
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |
 | AI-image acquisition path, generation mode, refine-spec toggle | §I records them as production mechanics; their owning Generate stage consumes the Design Spec |

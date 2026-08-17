@@ -2016,13 +2016,13 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "feb2b322c7ce",
+              "fingerprint": "e267f1759749",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
-              "fingerprint": "9d35b546fb2d",
+              "fingerprint": "ebbb28e8b7e7",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             }
           ]
