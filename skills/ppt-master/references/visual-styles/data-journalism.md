@@ -26,7 +26,7 @@ Bloomberg / Economist news-infographic — publication-grade information density
 
 ## 4. Texture / elevation
 
-- Flat, publication-grade — hairline rules over heavy cards; optional scrim on any image; no glow, no decorative shadow.
+- Flat, publication-grade — when either carries the relationship, favor hairline rules over heavy cards. Flatness governs visual weight, not contour vocabulary; outlined or compound page fields remain compatible. Optional scrim on any image; no glow, no decorative shadow.
 
 ## 5. Paired image-rendering
 

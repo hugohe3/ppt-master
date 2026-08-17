@@ -276,7 +276,7 @@ the roster after the whole-roster check:
 - the canvas, visual direction, wording, intended viewing distance, and effective reading mode: choose `presentation` for distance-first projected or recorded viewing, `balanced` for mixed viewing, or `text` for close content-heavy reading. Take the initial body anchor and sanity band from [`canvas-formats.md`](../../references/canvas-formats.md) § "Typography Scale Start" for the resolved canvas—PPT remains reading-mode-driven, while registered/custom non-PPT canvases use their canvas-derived start—then resolve one concrete typography plan for the delivery target defined by [`shared-standards-core.md`](../../references/shared-standards-core.md) §4.1, never from the authoring host's font inventory, with stable size anchors for title, body, annotation, and every other recurring role the roster uses. When content does not fit, preserve its core message and apply only fitting actions the source/profile invariants permit—restructure, shorten, or split; if none is permitted, surface the unresolved fit instead of shrinking a recurring role. Explicit user, template, fidelity-profile, or resolved-style requirements may call for a deliberate exception;
 - the semantic color roles actually needed by the roster, each with a concrete active-context color anchor, including background/surface, primary/secondary text, dominant/accent, and status roles as applicable. Honor explicit user, installed template/brand, fidelity-profile source-identity, and resolved-style color semantics before deriving only the missing roles that the active profile permits; decide which roles dominate, support, or remain rare, and preserve sufficient contrast for meaning-bearing text. Pair newly authored color-coded states, categories, or relationships with a label, symbol, line, or geometry cue; when fidelity forbids adding one, preserve the source encoding;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
-- for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
+- for each page not bound to literal supplied geometry, a primary visual zone and one compact page-scale geometry job tied to its core message—what geometry must organize, without naming a preset or encoding form; keep it only in the transient roster for §3's authoring-time move. Use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
 - for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
 - when useful, a transient deck-level visual motif system with an identity or
   communication job, a recognizable invariant, and a reuse mode: fixed chrome,
@@ -507,7 +507,8 @@ Reread only after a known file change or context invalidation.
 `Structure=yes` result can apply its qualitative topology grammar.
 `native-shape-authoring.md` independently owns contour selection and compound
 page geometry for both Structure results. Reuse both throughout the valid
-execution context; reread only after a known file change or context invalidation.
+execution context; before P01, complete its unfiltered full-registry discovery,
+then reread only after a known file change or context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
 or more images, after its content and communication move are
@@ -530,7 +531,7 @@ whole-object carrier, and author canonical SVG `<a href>` under
 [`native-hyperlinks.md`](../../references/native-hyperlinks.md). Never guess an
 unknown destination.
 
-Image to PPTX replaces the open image-composition and compound-shape decisions
+Image to PPTX replaces the open image-composition and page-geometry decisions
 for its canonical page frame: preserve the source geometry, restore text
 natively, preserve source-graphic identity through the prepared exact or
 reconstructed asset, and use the active-context registered layer/plate stack
@@ -550,14 +551,18 @@ artifact, spec, lock, manifest, or extra pass.
 This decision is mandatory on every page and cannot be satisfied by the
 capability menu, visualization recall, template geometry, or a later check.
 
-**Mandatory — independent per-page compound-shape decision**: after the
-Structure result and any applicable topology resolve, decide whether two or more
-native shapes would organize the background, zones, hierarchy, or reading path
-better than a simpler composition. This applies to both `no` and `yes`, stays in
-active context, and never changes the Structure result. If yes, use
-[`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1;
-otherwise keep the simpler composition. There is no coverage target or required
-explanation for declining it.
+**Mandatory — independent per-page geometry move**: after the Structure result
+and any applicable topology resolve, but before writing coordinates, resolve one
+page-scale geometry move from the transient geometry job, actual content,
+resolved style, and complete native vocabulary. Compare a deliberate plain /
+neutral construction with
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1's
+composition lenses. Readability alone does not select the simple branch; a plain
+grid or no compound construction remains valid when it is the deliberate best
+fit for the page job. This applies to both `no` and `yes`, stays in active context
+until the page is complete, and never changes the Structure result. Use §2.1
+whenever the move adopts two or more native shapes. There is no coverage target
+or required explanation for a simple result.
 
 | Deterministic trigger | Additional authority |
 |---|---|
@@ -714,7 +719,9 @@ or lock.
 
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
+- [x] The complete native preset registry was read unfiltered before P01
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
+- [x] Every page not bound to literal supplied geometry carried its transient geometry job into an authoring-time page-scale move, and the whole-roster rhythm check confirmed that any extended same-carrier or same-topology run serves an intentional semantic arc
 - [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision
