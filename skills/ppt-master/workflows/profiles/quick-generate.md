@@ -336,6 +336,12 @@ because Quick is expected to be faster is not.
 
 **Default — prepare a composable illustration family when it strengthens the deck (may omit when no page benefits)**: Resolve the family before SVG authoring. Elements may repeat unchanged as title/corner chrome or vary as dominant anchors, supporting figures, and accents on any suitable page. Batch compatible elements through Illustration Sheets, split only for geometry/detail/quality conflicts, and keep final page composition in SVG under [`image-generator.md`](../../references/image-generator.md) §4.3.
 
+**Default — consider AI illustrated icons when they strengthen compact semantic
+cues**: When the user has not forbidden AI, prepare useful cues as transparent
+slices under `images/`. Leave grouping, count, and coexistence with SVG icons
+to the page and deck fit under [`image-generator.md`](../../references/image-generator.md)
+§4.3; apply no coverage quota and never treat the slices as SVG inventory.
+
 **Mandatory — proactive AI decorative lettering**: When the user has not
 forbidden AI, scan the frozen roster for display strings
 anywhere in the deck. Exactly two questions decide eligibility: is that wording
@@ -353,12 +359,12 @@ keep a native title wherever the page needs a searchable, selectable, or
 outline-visible heading, with the lettering as its display layer.
 If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
-item for a single mark or group several marks by compatible visual family and
-batch each family through its own Illustration Sheet and transparent slices.
+item for a single mark or group compatible marks through Illustration Sheets
+and transparent slices. Let the intended character and treatment guide grouping.
 Give the model the marks' role, placement/background relationship, relative
 visual weight, and energy; apply `image-generator.md` §5.3's
-controlled-default/high-expression boundary. Split a family
-only when its cell geometry or quality needs conflict, and keep ordinary
+controlled-default/high-expression boundary. Split when geometry, quality, or
+the intended treatment benefits, and keep ordinary
 title/chrome copy native. A prepared wordmark
 and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
@@ -373,7 +379,8 @@ generation capability is resolved during resource preparation, not eligibility.
 |---|---|
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
 | Reusable title/corner decoration, a dominant illustrated anchor, supporting figure, or accent strengthens one or more page compositions | A coherent AI illustration family prepared as transparent `slice` assets and combined freely with other carriers |
-| A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
+| A compact semantic cue clarifies a category, process, KPI, state, or navigation item | Prepared project-local SVG/emoji icon, an illustrated-icon `slice`, or a coherent combination |
+| A real company, product, service, or social brand must appear as itself | Prepare the exact brand mark from `simple-icons` or supplied project assets as needed; it is not a user-facing library choice |
 | Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
@@ -423,11 +430,11 @@ Prepare only the resource paths needed by the decided pages:
 |---|---|
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
 | Image-to-PPTX reconstruction asset | In Codex, preserve identity graphics through an exact vector, deterministic redraw, sufficient source asset, or reference-based high-resolution reconstruction; keep data graphics native-and-verified or exact. For scene imagery, build the minimum registered clean-base/midground/subject/foreground group; batch padded-bbox-disjoint objects into one shared plate, then split them with grid slicing or independent nested-SVG bbox crops |
-| Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
+| Bundled/custom/brand SVG icon | Follow the [icon library contract](../../templates/icons/README.md), choose at most one coherent primary generic library when generic icons are useful, sync a project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and add `simple-icons` marks only when actual content names the corresponding brand |
 | Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
-| Composable illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut; one illustration element may serve several pages, while a lettering sheet names every exact stable string and contains no scene or page chrome |
+| Composable illustration / illustrated-icon / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut. Slices remain under `images/` and may serve several pages; each lettering sheet still names every exact stable string assigned to it |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
