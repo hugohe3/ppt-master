@@ -106,15 +106,19 @@ owned by the preserve/mirror round-trip contract.
 
 **Trigger**: after the page or prototype's communication / slot job, composition
 anchors, and any applicable topology under
-[`executor-structure.md`](./executor-structure.md) are resolved, use this method
-when two or more native shapes can strengthen its background field, content
-zoning, focal hierarchy, or reading path. This method applies whether the
-per-page Structure result is `no` or `yes`; it never creates a decoration
-requirement.
+[`executor-structure.md`](./executor-structure.md) are resolved, but before
+writing coordinates, resolve the page-scale geometry move that best carries its
+background field, content zoning, focal hierarchy, or reading path. Compare a
+deliberate plain / neutral composition with the useful lenses below. Readability
+of the first workable arrangement does not close this gate; a plain grid or no
+compound construction remains valid when it is the deliberate best fit for the
+page job.
+This applies whether the per-page Structure result is `no` or `yes`; it never
+creates a decoration requirement.
 
 | Pass | Action | Result |
 |---|---|---|
-| Page job | Name the geometric jobs already implied by the resolved page: surface, boundary, direction, reveal, focal mark, shared region, or counterweight. | A small set of functional zones; no shape names yet. |
+| Page job | Name the page-scale geometry move, then the geometric jobs already implied by the resolved page: surface, boundary, direction, reveal, focal mark, shared region, or counterweight. | One composition direction and a small set of functional zones; no shape names yet. |
 | Decompose | Separate visible content from geometric atoms. Identify which atoms need independent movement, paint, or reuse and which contour must become one object. | Editable siblings plus any explicit Boolean operand set. |
 | Select | Choose each atom's contour from its job and the full native vocabulary, then apply §1's simplest exact materialization. | Page-fit native atoms without syntax bias. |
 | Compose | Establish page frame, scale, z-order, and negative space with independent atoms. Keep text, images, icons, data marks, and non-merged accents outside Boolean operands. | One page-level geometry system, not a collection of unrelated decorations. |

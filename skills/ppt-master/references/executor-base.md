@@ -191,14 +191,18 @@ unfiltered full-registry discovery. Decide every page-fit contour and its
 simplest exact authoring form directly from the page content and visual system;
 no Design Spec capability suggestion or material inventory gates this choice.
 
-**Mandatory — independent per-page compound-shape decision**: after the
-Structure result and any applicable topology resolve, decide whether two or more
-native shapes would organize the background, zones, hierarchy, or reading path
-better than a simpler composition. This applies to both `Structure=no` and
-`Structure=yes`, stays in active context, and never changes that result. If yes,
-use [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1; otherwise
-keep the simpler composition. There is no coverage target or required
-explanation for declining it.
+**Mandatory — independent per-page geometry move**: after the Structure result
+and any applicable topology resolve, but before writing coordinates, choose one
+page-scale geometry move from the actual content, visual system, and complete
+native vocabulary. Compare a deliberate plain / neutral construction with
+[`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's page-field,
+outline, nesting, continuity, depth / contrast, and contour-change lenses.
+Readability alone does not select the simple branch; a plain grid or no compound
+construction remains valid when it is the deliberate best fit for the page job.
+This applies to both `Structure=no` and `Structure=yes`, stays in active context
+until the page is complete, and never changes that result. Use §2.1 whenever the
+move adopts two or more native shapes. There is no coverage target or required
+explanation for a simple result.
 
 **Default — do not use rectangles as the universal carrier (may use when a
 neutral field is the best fit)**: before drawing another `<rect>` / rounded
