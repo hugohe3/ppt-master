@@ -33,6 +33,7 @@ from image_backends.backend_common import (
     MAX_RETRIES,
     download_image,
     http_error,
+    is_permanent_error,
     is_rate_limit_error,
     normalize_image_size,
     require_api_key,
@@ -190,6 +191,8 @@ def generate(prompt: str,
             )
         except Exception as exc:
             last_error = exc
+            if is_permanent_error(exc):
+                raise
             if attempt >= max_retries:
                 break
             limited = is_rate_limit_error(exc)

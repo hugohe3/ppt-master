@@ -38,6 +38,72 @@ MAX_RETRIES = 3
 RETRY_BASE_DELAY = 10
 RETRY_BACKOFF = 2
 
+_TRANSIENT_CLIENT_STATUSES = {408, 409, 423, 425, 429}
+_HTTP_ERROR_STATUS = re.compile(r"\(([1-5][0-9]{2})\):")
+_GLOBAL_PERMANENT_ERROR_TYPES = {
+    "authenticationerror",
+}
+_ITEM_PERMANENT_ERROR_TYPES = {
+    "badrequesterror",
+    "notfounderror",
+    "permissiondeniederror",
+    "unprocessableentityerror",
+}
+_GLOBAL_PERMANENT_ERROR_MARKERS = (
+    "prepayment credits are depleted",
+    "prepaid credits are depleted",
+    "credits are depleted",
+    "insufficient credits",
+    "insufficient balance",
+    "insufficient_quota",
+    "exceeded your current quota",
+    "payment required",
+    "billing is not enabled",
+    "billing not enabled",
+    "billing must be enabled",
+    "billing is disabled",
+    "invalid api key",
+    "api key not valid",
+    "incorrect api key",
+    "no api key found",
+    "missing api key",
+    "api key required",
+    "api key is required",
+    "api key not set",
+    "api key is not set",
+    "api key expired",
+    "expired api key",
+    "authentication failed",
+    "authentication required",
+    "unauthorized",
+)
+_ITEM_PERMANENT_ERROR_MARKERS = (
+    "permission denied",
+    "forbidden",
+    "invalid_argument",
+    "invalid argument",
+    "invalid request",
+    "bad request",
+    "failed_precondition",
+    "failed precondition",
+    "invalid image size",
+    "invalid aspect ratio",
+    "unsupported image size",
+    "unsupported aspect ratio",
+    "unsupported model",
+    "model not found",
+    "model does not exist",
+    "content policy",
+    "request moderated",
+    "content moderated",
+    "prompt was rejected",
+    "blocked by safety",
+)
+
+
+class _RetryableBackendError(RuntimeError):
+    """A backend failure whose enclosing operation should be repeated."""
+
 
 def resolve_output_path(prompt: str, output_dir: str = None,
                         filename: str = None, ext: str = ".png") -> str:
@@ -276,8 +342,70 @@ def normalize_image_size(image_size: str) -> str:
     return s
 
 
+def _error_status_code(exc: Exception) -> int | None:
+    """Extract an HTTP-like status code from common SDK exception shapes."""
+    candidates = (
+        getattr(exc, "status_code", None),
+        getattr(exc, "code", None),
+        getattr(getattr(exc, "response", None), "status_code", None),
+    )
+    for value in candidates:
+        if isinstance(value, int) and not isinstance(value, bool):
+            return value
+        if isinstance(value, str) and value.isdigit():
+            return int(value)
+
+    match = _HTTP_ERROR_STATUS.search(str(exc))
+    return int(match.group(1)) if match else None
+
+
+def is_global_permanent_error(exc: Exception) -> bool:
+    """Return whether every unchanged request would fail for this backend."""
+    if isinstance(exc, _RetryableBackendError):
+        return False
+
+    status_code = _error_status_code(exc)
+    if status_code in {401, 402}:
+        return True
+
+    error_name = type(exc).__name__.lower()
+    if error_name in _GLOBAL_PERMANENT_ERROR_TYPES:
+        return True
+
+    err_str = str(exc).lower()
+    return any(marker in err_str for marker in _GLOBAL_PERMANENT_ERROR_MARKERS)
+
+
+def is_permanent_error(exc: Exception) -> bool:
+    """Return whether retrying the unchanged backend request cannot succeed."""
+    if isinstance(exc, _RetryableBackendError):
+        return False
+    if is_global_permanent_error(exc):
+        return True
+    if isinstance(exc, (FileNotFoundError, NotImplementedError, PermissionError)):
+        return True
+
+    status_code = _error_status_code(exc)
+    if (
+        status_code is not None
+        and 400 <= status_code < 500
+        and status_code not in _TRANSIENT_CLIENT_STATUSES
+    ):
+        return True
+
+    error_name = type(exc).__name__.lower()
+    if error_name in _ITEM_PERMANENT_ERROR_TYPES:
+        return True
+
+    err_str = str(exc).lower()
+    return any(marker in err_str for marker in _ITEM_PERMANENT_ERROR_MARKERS)
+
+
 def is_rate_limit_error(exc: Exception) -> bool:
     """Check whether the exception appears to be rate limiting."""
+    if is_permanent_error(exc):
+        return False
+
     err_str = str(exc).lower()
     status_code = getattr(exc, "status_code", None)
     error_code = getattr(exc, "code", None)
@@ -312,8 +440,11 @@ def retry_delay(attempt: int, rate_limited: bool) -> int:
 
 def download_image(url: str, path: str, headers: dict = None, timeout: int = 180) -> str:
     """Download an image URL and save it to disk."""
-    response = requests.get(url, headers=headers or {}, timeout=timeout)
-    response.raise_for_status()
+    try:
+        response = requests.get(url, headers=headers or {}, timeout=timeout)
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        raise _RetryableBackendError(f"Image download failed: {exc}") from exc
     return save_image_bytes(
         response.content,
         path,
