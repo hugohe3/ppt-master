@@ -67,11 +67,11 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 能用 AI 生成配图吗？
 
-可以。PPT Master 内置了图片生成脚本，支持多个供应商（Gemini、OpenAI、FLUX、通义千问、智谱等）。在策略师阶段选择"AI 生图"方案后，流程会根据内容自动生成配图。你也可以使用自己的图片——只需放到项目的 `images/` 目录下即可。
+可以。Agent host 提供原生生图工具时，PPT Master 可直接使用，不需要另配供应商生图 API Key；也可以通过内置 `image_gen.py` 使用已配置的供应商后端。图片方案选择"AI 生图"即可，也可明确要求 Agent 使用自身生图工具。你还可以把自己的图片放到项目的 `images/` 目录下。
 
 ## Q: 没有生图 API Key，还能配图吗？
 
-可以——在策略师的"图片方案"步骤选择"网络图片"。PPT Master 内置了零配置的 `image_search.py`，在 Openverse 和 Wikimedia Commons 中搜索可商用的开放许可图片（无需 API Key）。零配置搜索适合作为兜底：能直接用，但图片质量不稳定，容易出现普通用户上传、构图随意、清晰度一般的素材。
+可以。Agent host 提供原生生图能力时，选择"AI 生图"并要求它使用自身生图工具，不需要供应商生图 API Key。否则可在策略师的"图片方案"步骤选择"网络图片"；PPT Master 内置零配置的 `image_search.py`，在 Openverse 和 Wikimedia Commons 中搜索可商用的开放许可图片。零配置搜索适合作为兜底：能直接用，但图片质量不稳定，容易出现普通用户上传、构图随意、清晰度一般的素材。
 
 如果想要更现代的商业风照片，建议在 `.env` 里设置 `PEXELS_API_KEY` 和/或 `PIXABAY_API_KEY`（都是免费申请）。搜索会自动纳入 Pexels / Pixabay，人物、办公、生活方式、产品和插画类图片质量通常会明显更稳定。两种路径可以在同一份 deck 里混用（比如 hero 图用 AI 生成、团队照片用网络搜索）；如果选中的图片需要署名，Executor 会在该幻灯片自动添加就地小字署名。
 

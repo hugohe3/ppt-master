@@ -338,7 +338,7 @@ Whatever you state explicitly is followed; whatever you leave unspecified the ag
 
 Two paths for non-user images, mixable per image in the same deck:
 
-**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
+**A) AI generation** — use the agent host's native image tool when available, or `image_gen.py` with `IMAGE_BACKEND` plus the provider's `*_API_KEY`. Host-native generation needs no separate provider image API key; ask the agent to use its own image tool. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the configured-provider path. `gpt-image-2` is currently the best default.
 
 **B) Web image search** — `image_search.py`. **Zero-config works**; configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for consistently higher-quality results:
 
