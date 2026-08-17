@@ -699,8 +699,9 @@ preserve deliberate tangent continuity.
 Command identity, relative coordinates, shorthand, arc parameters, and original
 handles are not retained. Geometry needs non-zero bounds. Before authoring a
 freeform, apply [`native-shape-authoring.md`](./native-shape-authoring.md):
-prefer an editable basic primitive, one exact Office preset, or a Boolean
-materialization. Use a closed cubic path only for an organic silhouette those
+prefer editable primitives and exact Office presets, independently composed
+when possible; materialize a Boolean only when one contour requires it. Use a
+closed cubic path only for an organic silhouette those
 cannot express, polygon/closed path for unmatched ribbons/facets, and an open
 path only for a required data curve, custom route, or locked or Quick-resolved
 hand-drawn / organic style. Straight relationships use `<line>`; exact stock bends/curves

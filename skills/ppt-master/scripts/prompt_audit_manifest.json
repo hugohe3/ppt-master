@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 2750,
     "skills/ppt-master/SKILL.md": 1250,
-    "skills/ppt-master/references/executor-base.md": 10000,
+    "skills/ppt-master/references/executor-base.md": 12000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 3500,
     "skills/ppt-master/references/executor-visualization.md": 1250,
@@ -246,7 +246,7 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 92000
+      "max_tokens": 105000
     },
     "route.generate.quick-generate.beautify": {
       "description": "Quick Generate with the shared strict 1:1 Beautify profile.",
@@ -256,7 +256,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 100000
+      "max_tokens": 115000
     },
     "route.generate.quick-generate.image-to-pptx": {
       "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates.",
@@ -302,7 +302,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 94000
+      "max_tokens": 105000
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -313,7 +313,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 94000
+      "max_tokens": 105000
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -977,7 +977,7 @@
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 5000
+      "max_tokens": 6500
     },
     "route.generate.planning-template": {
       "description": "Generate-PPTX planning context after an explicit template workspace is installed.",
@@ -1108,7 +1108,7 @@
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 5000
+      "max_tokens": 6500
     },
     "stage.shared.svg-effects": {
       "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
