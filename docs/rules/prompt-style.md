@@ -102,8 +102,17 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 | Layer | Owns |
 |---|---|
 | User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
-| Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster; record optional capability/expression recommendations; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
-| Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize them through geometry, composition, hierarchy, and treatment. Fields explicitly labeled `suggestion` or Reference are preferred expression rather than binding selections: Executor may adapt or decline them when content and explicit constraints remain intact. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
+| Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster; record only recommendations that affect content, resource preparation, sequencing, or explicit user/template constraints; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
+| Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize them through geometry, composition, hierarchy, and treatment. Discover and invoke local deterministic authoring capabilities without an upstream capability suggestion. Fields explicitly labeled `suggestion` or Reference remain preferred expression rather than binding selections when their owning contract permits adaptation. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
+
+**Hard rule — native shapes are authoring capabilities, not prepared
+resources**: a prepared resource needs a stable project-local file/path before
+realization because page authoring cannot acquire or generate it in place.
+Office presets, SVG primitives, Connectors, Boolean helpers, and necessary
+freeform geometry are locally callable construction capabilities. Strategist
+never selects, inventories, or suggests them, and the Design Spec / lock create
+no native-shape field. Executor discovers the complete current preset registry
+and chooses the page-fit construction during realization.
 
 **Preparation timing**: In the default pipeline, topic research and import of
 its two-artifact research pair may run before final confirmation. Facts JSON

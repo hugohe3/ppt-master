@@ -10,13 +10,14 @@ a test file or public example deck.
 
 The fixture deliberately closes the full planning and execution chain:
 
-- `design_spec.md` carries `Motion suggestion`, `Native shape suggestion`, one
-  current §VIII image row, and `Crop Policy`;
+- `design_spec.md` carries `Motion suggestion`, one current §VIII image row,
+  and `Crop Policy`, with no native-shape planning field;
 - `spec_lock.md` projects that row with optional layout pattern `#M1-11`;
 - both pages reuse one raster through ordinary, ellipse-preset, and custom-path
   independent nested crops;
 - `animations.json` pairs the main crop across adjacent Morph pages;
-- one helper-authored `rightArrow` verifies native preset discovery and export.
+- one complete registry read plus a helper-authored `rightArrow` verifies
+  Executor-local native preset discovery and export.
 
 ```bash
 python3 - <<'PY'
@@ -67,6 +68,10 @@ draw.rectangle((420, 0, 860, 720), fill="#F97316")
 draw.rectangle((860, 0, 1280, 720), fill="#0F172A")
 draw.ellipse((460, 150, 820, 510), fill="#F8FAFC")
 scene.save(images / "scene.png")
+
+preset_inventory = run_tool("preset_shape_svg.py", "list").splitlines()
+assert len(preset_inventory) == 187
+assert "rightArrow" in preset_inventory
 
 preset = run_tool(
     "preset_shape_svg.py",
@@ -139,12 +144,11 @@ preset = (
 #### Slide 01 - Overview
 
 - **Audience move**: See separate source views as one editable image system.
-- **Layout**: Ordinary crop, shaped crop, and one native directional preset.
+- **Layout**: Ordinary crop and shaped detail establish the first visual state.
 - **Title**: Overview crop state
 - **Core message**: One source can support independent native picture objects.
 - **Content**: Show the wide crop and shaped detail together.
 - **Images**: Use `scene.png` for both visible crop objects.
-- **Native shape suggestion**: Use the PowerPoint `rightArrow` preset to indicate continuation.
 - **Motion suggestion**: Continue the primary crop into Slide 02 as one deterministic Morph object.
 
 #### Slide 02 - Detail
