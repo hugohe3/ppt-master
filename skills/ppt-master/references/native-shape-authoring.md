@@ -3,34 +3,38 @@
 # Native Shape Authoring Reference
 
 Use this reference during Executor SVG construction or project-owned canonical
-template maintenance when basic primitives, one standard PowerPoint shape, or
-supported shape/text operands can express the intended object. Prefer, in order:
-editable basic primitives, one exact Office preset per atom, an independent
-composition of those faithful atoms, then a PowerPoint-style Boolean result
-only for contours that must become one object. Hand-authored freeform geometry
-is allowed only when those constructions cannot faithfully express the object.
-Neither helper writes a page. The preset helper does not create the shape's own
-`p:txBody`; keep visible text outside the atomic fragment.
+template maintenance when native contours or supported shape/text operands can
+express the intended object. Choose each contour from its page job before
+deciding how to encode it, then use the simplest exact authoring form. Keep
+faithful atoms independent unless one contour is required; materialize that
+contour with a PowerPoint-style Boolean result, and use hand-authored freeform
+only when those constructions fail. Neither helper writes a page. The preset
+helper does not create the shape's own `p:txBody`; keep visible text outside the
+atomic fragment.
 
-## 1. Selection Gate
+## 1. Contour Selection and Materialization Gate
 
-Apply this decision order before drawing any new geometric contour.
+**Hard rule — contour before encoding**: choose the page-fit contour from the
+intended job and active visual system across the full native vocabulary before
+considering authoring syntax. Rectangle, rounded-rectangle, circle, and ellipse
+contours are not an earlier visual tier merely because SVG has short primitive
+syntax for them. A neutral contour is valid when neutrality is the job; easier
+syntax is never the reason to select it.
 
-> This gate is for picking the **highest-level faithful native construction**.
-> Do not hand-author a freeform merely because an SVG path is convenient.
+After contour selection, use the simplest exact materialization below. Do not
+hand-author a freeform merely because an SVG path is convenient.
 
-| Condition | Action |
+| Selected result | Authoring form |
 |---|---|
-| Plain rectangle, symmetric rounded rectangle, circle, or ellipse | Write the ordinary SVG primitive; the exporter already emits an editable native shape. |
-| A text/content zone needs a visible boundary but not a filled surface | Use a faithful primitive or exact preset with `fill="none"` and a visible stroke; keep its content as independent siblings. |
-| Straight relationship, divider, or leader | Write `<line>`; use a registered marker only when direction is meaningful. |
-| One DrawingML preset exactly expresses the intended object | Run `preset_shape_svg.py render`, then insert its complete stdout fragment into the hand-authored page or canonical template. |
-| A stock `bentConnector*` / `curvedConnector*` contour exactly expresses a bent or curved relationship and endpoint attachment is not required | Run `preset_shape_svg.py render --object-kind connector`; the result is an unconnected native Connector shape. |
-| Two or more faithful primitives / presets form the page construction but do not need one contour | Keep them as independently editable siblings in one ordinary semantic group; use §2.1 to compose the page-level geometry system. |
-| Two or more supported closed-shape / resolvable-text operands require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
-| Basic primitives, exact presets, their independent composition, and Boolean materialization cannot faithfully express the visual meaning or contour | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
-| The shape only resembles a preset | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
+| One exact non-Connector stock contour | Use an ordinary SVG primitive only when the exporter maps it to that same contour; otherwise run `preset_shape_svg.py render` and insert its complete stdout fragment. |
+| A stock `bentConnector*` / `curvedConnector*` contour exactly expresses a bent or curved relationship and endpoint attachment is not required | Run `preset_shape_svg.py render --object-kind connector`; the result is an unconnected native Connector shape. |
+| A straight relationship, divider, or leader | Write `<line>`; use a registered marker only when direction is meaningful. |
+| A selected text/content boundary needs no filled surface | Use its exact authoring form with `fill="none"` and a visible stroke; keep its content as independent siblings. |
+| Two or more selected native contours form the page construction but do not need one contour | Keep them as independently editable siblings in one ordinary semantic group; use §2.1 to compose the page-level geometry system. |
+| Two or more supported closed-shape / resolvable-text operands require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
+| Exact native contours, their independent composition, and Boolean materialization cannot faithfully express the visual meaning or contour | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
+| The shape only resembles a preset | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 
 **Hard rule**: `preset_shape_svg.py` is the only authoring entry for
 `data-pptx-authoring="preset"`. Never add `data-pptx-prst`, frame, adjustment,
@@ -42,9 +46,9 @@ rerun the helper whenever its geometry, paint, or filter reference changes.
 ## 2. Semantic Preset Candidate Guide
 
 Use the table below as a high-frequency entry, not a whitelist: match the
-page's visual intent to a candidate preset *before* defaulting to a plain rect
-or path. A neutral rect remains valid when neutrality is the job; otherwise
-search the registry rather than forgetting the broader preset vocabulary.
+page's visual intent to a candidate contour before settling on a neutral
+rectangle / ellipse or a freeform path. Search the registry when the job calls
+for a more specific contour rather than letting authoring convenience decide.
 
 "Automatic" means the Executor independently applies this semantic decision
 gate before drawing a new object. It does not scan existing SVG, classify
@@ -86,16 +90,19 @@ owned by the preserve/mirror round-trip contract.
 
 ### 2.1 Compound page geometry
 
-**Trigger**: after [`executor-structure.md`](./executor-structure.md) resolves the
-page topology, use this method when two or more native shapes can strengthen its
-background field, content zoning, focal hierarchy, or reading path. This is a
-construction method, not a requirement to decorate every page.
+**Trigger**: after the page or prototype's communication / slot job, composition
+anchors, and any applicable topology under
+[`executor-structure.md`](./executor-structure.md) are resolved, use this method
+when two or more native shapes can strengthen its background field, content
+zoning, focal hierarchy, or reading path. This method applies whether the
+per-page Structure result is `no` or `yes`; it never creates a decoration
+requirement.
 
 | Pass | Action | Result |
 |---|---|---|
 | Page job | Name the geometric jobs already implied by the resolved page: surface, boundary, direction, reveal, focal mark, shared region, or counterweight. | A small set of functional zones; no shape names yet. |
 | Decompose | Separate visible content from geometric atoms. Identify which atoms need independent movement, paint, or reuse and which contour must become one object. | Editable siblings plus any explicit Boolean operand set. |
-| Select | Apply §1 to every atom: primitive first, then one exact preset; use freeform only after faithful preset and Boolean routes fail. | The highest-level faithful native construction per atom. |
+| Select | Choose each atom's contour from its job and the full native vocabulary, then apply §1's simplest exact materialization. | Page-fit native atoms without syntax bias. |
 | Compose | Establish page frame, scale, z-order, and negative space with independent atoms. Keep text, images, icons, data marks, and non-merged accents outside Boolean operands. | One page-level geometry system, not a collection of unrelated decorations. |
 | Materialize | Run the preset helper for each adopted preset. Run the Boolean helper only for contours that require Merge Shapes semantics, then replace those operands with its stdout paths. | Valid authoring SVG ready for native export. |
 
@@ -114,7 +121,7 @@ construction method, not a requirement to decorate every page.
 
 | Required result | Construction |
 |---|---|
-| Stock contour already expresses the job | One exact preset; do not rebuild it from primitives or Boolean operands. |
+| Stock contour already expresses the job | Keep that exact contour and materialize it through §1; do not rebuild it from other shapes or Boolean operands. |
 | Shapes overlap or layer but must remain independently editable | Keep separate primitives / presets in one ordinary semantic group; do not merge them. |
 | One continuous outer silhouette | `union`; use `combine` only for intentional symmetric negative regions. |
 | A true hole, edge cut, or reveal | `subtract`, with the visible body first and cutout operands after it. |
@@ -125,7 +132,7 @@ construction method, not a requirement to decorate every page.
 
 | SVG authoring form | Native PPTX result |
 |---|---|
-| Ordinary `<rect>`, rounded `<rect>`, `<circle>`, `<ellipse>`, or `<line>` | Editable primitive / line shape. |
+| Ordinary `<rect>`, rounded `<rect>`, `<circle>`, `<ellipse>`, or `<line>` | Matching editable preset geometry / line shape. |
 | Complete `preset_shape_svg.py` fragment | One exact `a:prstGeom` shape, or `p:cxnSp` for an authored connector preset. |
 | `shape_boolean_svg.py` result path | Editable `a:custGeom`; the final contour is retained, not replayable Merge Shapes history. |
 | Parent semantic group containing independent atoms and content | A grouped page construction whose child shapes remain separately editable. |

@@ -435,9 +435,10 @@ an exact preset key, endpoint/site metadata, or attachment promises. Only when
 one contour, cutout, common region, or meaningful fragmentation is intended,
 name the candidate Union / Combine / Fragment / Intersect / Subtract operation,
 semantic operands, and result.
-Executor still decides the exact basic primitive, preset, independent compound
-construction, Boolean result, or necessary freeform under its native-shape branch; the recommendation never
-creates a §VII row or lock field.
+Executor still decides the exact page-fit native contour and authoring form,
+independent compound construction, Boolean result, or necessary freeform under
+its native-shape branch; the recommendation never creates a §VII row or lock
+field.
 
 ### Speaker Notes Requirements
 

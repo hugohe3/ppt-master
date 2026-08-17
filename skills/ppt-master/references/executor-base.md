@@ -176,30 +176,30 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 ### 3.0 Native Shape Selection
 
-**Use the highest-level native construction that faithfully expresses the
-page and each atom.** Basic primitives and exact Office presets already export
-as editable PowerPoint shapes; compose them independently when one contour is
-unnecessary. Materialize a Merge Shapes Boolean result only for contour
-semantics that independent atoms cannot express. Hand-authored freeform is the final
-fallback, not the first drawing convenience. Block arrows, chevrons, banners /
-ribbons, callouts, flowchart nodes, stars, and other Office symbols should be
-**authored as presets** via `preset_shape_svg.py`, not redrawn as plain
-`<path>`s or faked with rectangles. Apply the decision gate in
-[`native-shape-authoring.md`](./native-shape-authoring.md) before drawing the
-object.
+**Hard rule — contour before encoding**: choose the page-fit contour from the
+full native vocabulary before its authoring form. Rectangle, rounded-rectangle,
+circle, and ellipse are preset contours even when authored with short SVG
+primitive syntax; never select them because that syntax is easier. After
+selection, use [`native-shape-authoring.md`](./native-shape-authoring.md) §1's
+simplest exact form, keep atoms independent unless one contour is required,
+materialize that contour with Boolean semantics, and use freeform last. Block
+arrows, chevrons, banners / ribbons, callouts, flowchart nodes, stars, and other
+Office symbols use `preset_shape_svg.py`, not plain paths or fake rectangles.
 
 §IX `Native shape suggestion` records a semantic opportunity, not a literal
-tool command. Decide from the actual page construction whether a basic
-primitive, preset, independent compound construction, Boolean result, or necessary freeform best realizes it; a
-different implementation is valid when it preserves the intended object and
-content.
+tool command. Decide from the actual page construction which page-fit native
+contour and simplest exact authoring form, independent compound construction,
+Boolean result, or necessary freeform best realizes it; a different
+implementation is valid when it preserves the intended object and content.
 
-**Compound-shape check (automatic, not a quota)**: after structure resolves and
-before drawing, test whether a page-level native geometry system would organize
-the background, zones, hierarchy, or reading path better than a uniform card
-grid. If yes, build it through [`native-shape-authoring.md`](./native-shape-authoring.md)
-§2.1; otherwise keep the simpler composition. There is no per-page or per-deck
-coverage target and no required explanation for declining it.
+**Mandatory — independent per-page compound-shape decision**: after the
+Structure result and any applicable topology resolve, decide whether two or more
+native shapes would organize the background, zones, hierarchy, or reading path
+better than a simpler composition. This applies to both `Structure=no` and
+`Structure=yes`, stays in active context, and never changes that result. If yes,
+use [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1; otherwise
+keep the simpler composition. There is no coverage target or required
+explanation for declining it.
 
 **Default — do not use rectangles as the universal carrier (may use when a
 neutral field is the best fit)**: before drawing another `<rect>` / rounded
@@ -219,13 +219,12 @@ Keep these as independently editable siblings in the ordinary semantic group;
 visual containment never authorizes placing content inside an atomic preset
 fragment or merging shapes that do not require one contour.
 
-| Decision | Action |
+| Selected result | Authoring form |
 |---|---|
-| Plain rect / symmetric round rect / circle / ellipse | Keep the ordinary SVG primitive; it is already natively editable. |
+| Selected exact non-Connector stock contour | Use ordinary SVG only when the exporter maps it to that same contour; otherwise call `preset_shape_svg.py render` and paste its complete stdout fragment. |
 | Straight relationship / divider / leader | Use `<line>`; add a registered marker only when direction is meaningful. |
-| Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
 | Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
-| Text/content zone needs containment or emphasis without a filled surface | Use a faithful primitive or exact preset with `fill="none"` and a visible stroke; keep text and other content independent. |
+| Selected text/content boundary needs no filled surface | Use its exact authoring form with `fill="none"` and a visible stroke; keep text and other content independent. |
 | Two or more native shapes should form one page-level geometry system | Follow [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1: compose faithful primitives and presets as independent siblings first, then materialize only contours that require Boolean semantics. |
 | Supported closed-shape / resolvable-text operands need union, cutout, overlap, symmetric difference, or fragmentation | Use `shape_boolean_svg.py` when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
@@ -233,12 +232,12 @@ fragment or merging shapes that do not require one contour.
 | Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 
 **Hard rule — freeform is the last construction tier**: before hand-authoring a
-stock-looking `<path>` / `<polygon>`, complete the primitive / exact-preset atom
-→ independent composition → required Boolean-result decision order above. A freeform is permitted only when those
-tiers cannot faithfully express the object; avoiding a helper or drawing the
-browser-visible contour faster is not a valid exception. Data-defined geometry
-and a genuinely locked organic / hand-drawn contour satisfy the exception by
-semantics, not by convenience.
+stock-looking `<path>` / `<polygon>`, complete contour selection, simplest exact
+materialization, independent composition, and the required Boolean-result gate.
+A freeform is permitted only when those routes cannot faithfully express the
+object; avoiding a helper or drawing the browser-visible contour faster is not
+a valid exception. Data-defined geometry and a genuinely locked organic /
+hand-drawn contour satisfy the exception by semantics, not by convenience.
 
 This decision applies only while drawing a new object. A suggestion never
 triggers retrospective scanning, contour classification, or automatic

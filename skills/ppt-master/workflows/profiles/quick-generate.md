@@ -381,7 +381,7 @@ generation capability is resolved during resource preparation, not eligibility.
 | Reusable title/corner decoration, a dominant illustrated anchor, supporting figure, or accent strengthens one or more page compositions | A coherent AI illustration family prepared as transparent `slice` assets and combined freely with other carriers |
 | A compact semantic cue clarifies a category, process, KPI, state, or navigation item | Prepared project-local SVG/emoji icon, an illustrated-icon `slice`, or a coherent combination |
 | A real company, product, service, or social brand must appear as itself | Prepare the exact brand mark from `simple-icons` or supplied project assets as needed; it is not a user-facing library choice |
-| Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic primitives and exact Office presets, independently composed when possible; Boolean only for required contour semantics; necessary freeform last |
+| Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Page-fit contours from the full native vocabulary, then their simplest exact authoring forms; independent composition when possible, required Boolean next, necessary freeform last |
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
@@ -503,9 +503,11 @@ page and reuse throughout the valid execution context:
 `Status: Sourced` image or filename recorded in `image_sources.json`.
 Reread only after a known file change or context invalidation.
 
-`executor-structure.md` is loaded once before all SVG authoring so Quick cannot
-omit shape-composition reasoning. Reuse it throughout the valid execution
-context; reread only after a known file change or context invalidation.
+`executor-structure.md` is loaded once before all SVG authoring so every
+`Structure=yes` result can apply its qualitative topology grammar.
+`native-shape-authoring.md` independently owns contour selection and compound
+page geometry for both Structure results. Reuse both throughout the valid
+execution context; reread only after a known file change or context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
 or more images, after its content and communication move are
@@ -528,12 +530,12 @@ whole-object carrier, and author canonical SVG `<a href>` under
 [`native-hyperlinks.md`](../../references/native-hyperlinks.md). Never guess an
 unknown destination.
 
-Image to PPTX replaces this open composition decision for its canonical page
-frame: preserve the source geometry, restore text natively, preserve
-source-graphic identity through the prepared exact or reconstructed asset, and
-use the active-context registered layer/plate stack for scene imagery. Run the
-ordinary decision only for an additional non-source image whose placement is
-not already fixed by that surface.
+Image to PPTX replaces the open image-composition and compound-shape decisions
+for its canonical page frame: preserve the source geometry, restore text
+natively, preserve source-graphic identity through the prepared exact or
+reconstructed asset, and use the active-context registered layer/plate stack
+for scene imagery. Run either ordinary decision only for additional non-source
+content whose placement or geometry is not already fixed by that surface.
 
 **Mandatory — per-page Structure decision**: after the current page's content
 and communication move are determined, but before choosing any geometry or
@@ -547,6 +549,15 @@ artifact, spec, lock, manifest, or extra pass.
 
 This decision is mandatory on every page and cannot be satisfied by the
 capability menu, visualization recall, template geometry, or a later check.
+
+**Mandatory — independent per-page compound-shape decision**: after the
+Structure result and any applicable topology resolve, decide whether two or more
+native shapes would organize the background, zones, hierarchy, or reading path
+better than a simpler composition. This applies to both `no` and `yes`, stays in
+active context, and never changes the Structure result. If yes, use
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1;
+otherwise keep the simpler composition. There is no coverage target or required
+explanation for declining it.
 
 | Deterministic trigger | Additional authority |
 |---|---|
