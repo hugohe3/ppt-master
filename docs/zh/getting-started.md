@@ -158,7 +158,7 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 | AI 跑偏或漏了步骤 | 让它重新读 `skills/ppt-master/SKILL.md`、`skills/ppt-master/workflows/routing.md` 和已选路线的权威文档。 |
 | 视觉质量不理想 | 换成大上下文 Claude 模型 + `gpt-image-2`——harness 决定下限,模型决定上限。 |
 | 文字溢出或元素重叠 | 重跑那一页,或用实时预览修;详见 [FAQ](./faq.md)。 |
-| 没有生图 API key | 零配置的网络图片搜索仍可作为兜底;见 [FAQ](./faq.md)。 |
+| 没有生图 API key | Agent host 提供原生生图时直接使用,否则零配置网络图片搜索仍可用;见 [FAQ](./faq.md)。 |
 | 动画或部分效果在别的软件里不对 | Microsoft PowerPoint 是动效行为的主要验证目标。Keynote / WPS / LibreOffice 可以打开 `.pptx`，但可能重新映射或省略个别效果或 Start 语义；动效关键交付应在 PowerPoint 中验证。 |
 | 担心长 deck 撑爆上下文 | 生成可走分段模式;详见 [FAQ](./faq.md)。 |
 

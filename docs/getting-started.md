@@ -159,7 +159,7 @@ The [FAQ](./faq.md) is the living troubleshooting reference — continuously upd
 | The AI drifts or forgets a step | Ask it to re-read `skills/ppt-master/SKILL.md`, `skills/ppt-master/workflows/routing.md`, and the selected route authority. |
 | Visual quality disappoints | Switch to a large-context Claude model + `gpt-image-2` — the harness sets the floor, the model sets the ceiling. |
 | Text overflows or elements overlap | Re-run that page, or fix it in live preview; see the [FAQ](./faq.md). |
-| No image-generation API key | Zero-config web search still works as a fallback; see the [FAQ](./faq.md). |
+| No image-generation API key | Use the host's native image tool when available; otherwise zero-config web search still works. See the [FAQ](./faq.md). |
 | Animations or some effects look off in another app | Microsoft PowerPoint is the primary motion-validation target. Keynote / WPS / LibreOffice can open the `.pptx`, but may remap or omit individual effects or Start semantics; validate motion-critical delivery in PowerPoint. |
 | A long deck might blow the context window | Generation can run in split mode; details in the [FAQ](./faq.md). |
 
