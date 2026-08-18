@@ -29,6 +29,12 @@ ALLOWED_FILES = {
     "skills/ppt-master/scripts/check_uvx_migration.py",
     "skills/ppt-master/scripts/check_cli_sync.py",
     ".github/workflows/check-uvx-migration.yml",
+    # Fork-owned CI infrastructure: python3 is intentional on Linux runners
+    # and in the sync command's conflict-pattern documentation.
+    ".github/workflows/sync-upstream.yml",
+    ".github/workflows/auto-tag.yml",
+    ".github/workflows/check-cli-sync.yml",
+    ".opencode/command/sync-upstream.md",
 }
 
 ALLOWED_DIRS = {
