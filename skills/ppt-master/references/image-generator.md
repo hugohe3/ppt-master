@@ -122,7 +122,7 @@ Derive color behavior from the available roles and image context: background / s
 
 For each `Acquire Via: ai` row, use Strategist-owned §VIII/lock by default or the main agent's active-context Quick resource decision. Explicit values remain binding; Quick resolves omissions automatically.
 
-`Layout pattern` is a page-realization preference and is not copied wholesale into the bitmap prompt. Any generation-time subject direction, focal placement, quiet region, or overlay-safety requirement must therefore be present in the row's `Reference`, the matching §IX block, or Quick's active-context visual intent.
+`Layout pattern` is a page-realization preference and is not copied wholesale into the bitmap prompt. When page use depends on stable composition, consume the compact contract already owned by the row's `Reference`, matching §IX block, or Quick active context: subject/quiet zones, boundary or direction, intended overlap/seam, and approximate share only when needed. Do not invent or replace page layout here; return a missing required relationship to its owning decision.
 
 1. **Determine `page_role`** — the owning row's explicit value wins; a blank or omitted value resolves to `local`. In Default Generate, `hero_page` must be Strategist-explicit; in Quick Generate, the main agent may resolve it before acquisition in active context.
 2. **Determine `text_policy`** — the owning row's value wins when set. **Declared-inference fallback for a blank or omitted value**: pick `none` or `embedded` from the row's `Purpose`, `Reference`, and page intent based on whether in-image text serves the page. Long body / data / lists stay in SVG.
@@ -153,7 +153,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Deck color behavior — state the core anchors and any context-justified tonal treatment, e.g. "secondary background #F8F9FA provides the breathing field, primary #1E3A5F carries main forms, accent #D4AF37 marks one emphasis; subtle lighter/darker material transitions remain in the same visual family"].
 [Composition — from the chosen type file or §4.1 no-type prose].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
-[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid when `page_role: hero_page`, or when §VIII `Reference` / §IX `Layout` explicitly plans native labels, hotspots, lenses, or other SVG overlays inside a `local` image region. Otherwise an opaque `local` image reserves no interior overlay space; a transparent illustration slice is generated as an isolated element and composed with other carriers by SVG].
+[Container note — "composed as a {W}x{H}px image for {page_role} use"; when the owned composition contract exists, carry its subject/quiet zones, boundary/direction, overlap/seam, and optional approximate share into the prose. Reserve an SVG-overlay region for `hero_page`, or for a `local` image only when §VIII `Reference` / §IX `Layout` explicitly plans native labels, hotspots, lenses, or other overlays there. Otherwise an opaque `local` image reserves no interior overlay space; generate a transparent illustration slice as an isolated element for SVG composition].
 [Hard rules — see §5].
 ```
 

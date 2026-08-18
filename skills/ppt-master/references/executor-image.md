@@ -47,6 +47,12 @@ only when useful. Compare the resulting candidate with plain/`P`-only placement
 and implement the stronger legal composition. Create no artifact or extra pass,
 and do not reread the branch while its active context remains valid.
 
+**Default — preserve the image job at final size (may override when the planned
+job is texture only)**: Before accepting a narrow band, small placement, or crop,
+keep the subject or relationship named by the image purpose recognizable at its
+final on-slide size. If it collapses into color texture, enlarge or recompose it;
+treat it as texture only when the upstream job permits that role.
+
 **Reference — direction generators, not templates**:
 
 | Generator | Behavior |
@@ -67,7 +73,7 @@ to variety.
 
 **Hard rule — visible-layer timing**: Any crop, lens, scrim, comparison, evidence, or annotation layer required by an adopted motion plan MUST already exist in the final SVG without violating structural contracts. The later stage may regroup ordinary Slide-local content visual-equivalently, but cannot invent or modify missing visible content. If no legal existing unit can serve a non-binding suggestion, simplify it to available units, a page transition, or `none`; an explicit requirement that cannot be represented follows failure recovery.
 
-**Hard rule — narrow visual-inspection scope**: Start with §VIII `Reference` plus dimensions. If one `Existing`/`Sourced` asset still leaves focal-safe crop, overlay contrast, or a quiet region ambiguous, inspect only that asset/review copy for placement. This cannot reopen selection, change identity/must-use, infer provenance, substitute the asset, or invent focus; never routinely read back `Generated` images. If `adaptive` focus stays uncertain, use `meet`; conflicting binding constraints return upstream.
+**Hard rule — narrow visual-inspection scope**: Start with §VIII `Reference` plus dimensions. If one asset still leaves focal-safe crop, overlay contrast, a quiet region, or its planned subject relationship ambiguous, inspect only that asset/review copy once for placement. A `Generated` asset qualifies only when final placement depends on an ambiguity that its owned intent and dimensions cannot resolve; never routinely read generated images. Inspection cannot reopen selection, change identity/must-use, infer provenance, substitute the asset, or invent focus. If `adaptive` focus stays uncertain, use `meet`; conflicting binding constraints return upstream.
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 

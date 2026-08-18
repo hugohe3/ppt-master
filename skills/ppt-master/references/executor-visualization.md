@@ -34,7 +34,7 @@ New `page_visualizations` and Quick selections accept only canonical `chart/<key
 
 **Legacy Structure boundary**: a retired Structure bare key is semantic intent, not a live visualization reference. Do not resolve it to an SVG or load this branch; recover the qualitative relationship from §IX and apply [`executor-structure.md`](./executor-structure.md) when the mandatory per-page Structure decision is yes. If §IX lacks enough meaning, return upstream for Design Spec repair.
 
-Read the resolver-returned SVG once before its first use in the valid active context and reuse that reading until a known file change or context invalidation. Do not manually open indexes or scan family directories during Executor realization; the shared resolver owns live-catalog reads. Selection and bounded recall belong before this branch.
+Read the resolver-returned SVG once before its first use in the valid active context and reuse that reading until a known file change or context invalidation. Do not manually reopen indexes or scan family directories during Executor realization; the planning owner already reviewed the complete live registries, and the shared resolver owns canonical path resolution here.
 
 ---
 

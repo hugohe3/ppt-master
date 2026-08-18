@@ -14,6 +14,9 @@
 # 注意：添加/更新依赖时，请同时更新两个 pyproject.toml 文件
 # （仓库根目录 + skills/ppt-master/），并在两个目录中分别运行 `uv lock`。
 
+# Template registration / 模板注册 (scripts/register_template.py)
+PyYAML>=6.0
+
 # ─────────────────────────────────────────────────────────────
 # SVG to PPTX tool / SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
 # ─────────────────────────────────────────────────────────────
