@@ -563,13 +563,14 @@ capability menu, visualization recall, template geometry, or a later check.
 
 **Mandatory — independent per-page geometry move**: after the Structure result
 and any applicable topology resolve, but before choosing any contour, run the
-page-local `recommend --limit 6` defined by
+page-local direct `recommend --compact --limit 6` invocation defined by
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md) from
-the actual job, then `describe --compact` only serious candidates. Registry
-discovery followed by direct `describe` without `recommend` does not satisfy
-this recall. Apply §2.1 to the transient geometry job, actual content, resolved
-style, and complete native vocabulary before writing coordinates. It owns the
-exact-fit geometry gate, independent relationship / carrier fit,
+the actual job, then invoke `describe --compact` directly only for serious
+candidates. Registry discovery followed by direct `describe` without
+`recommend` does not satisfy this recall. Apply §2.1 to the transient geometry
+job, actual content, resolved style, and complete native vocabulary before
+writing coordinates. It owns the exact-fit geometry gate, independent
+relationship / carrier fit,
 contour-family / exact-result choice, reader effect for a generic or undrawn
 result, running actual-geometry signature, and materialization boundary. A
 primitive remains valid when it wins this comparison; there is no preset quota.
