@@ -244,24 +244,30 @@ use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
 while authoring. Persist no separate template-application artifact. If no
 template was installed, make the same design choices freely.
 
-Before resolving the one-pass design, read the canvas authority and only these
-three choice indexes:
+Before resolving the one-pass design, read this fixed planning-capability batch
+in one pass:
 
 ```
 Read references/canvas-formats.md
+Read references/image-layout-spec.md
+Read references/image-layout-patterns.md
 Read references/modes/_index.md
 Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
+Read templates/icons/README.md
+Read templates/charts/charts_index.json
+Read templates/tables/tables_index.json
 ```
 
-Resolve the best whole solution from the project brief and index summaries,
-freeze its exact mode/style/rendering ids, then read only those selected preset
-files or custom-basis files. A novel custom reads none. Never open detail files
-to compare candidates, glob a catalog, or let an unselected sibling influence
-the decision. Decide whether AI images are useful as a separate source judgment;
-even when the answer is no, retain the chosen rendering direction for visual
-coherence. Keep the chosen mode, style, rendering, and exact bases in active
-context only.
+This batch is the complete capability map for planning, not a usage checklist:
+zero use of any capability remains valid. Resolve the best whole solution from
+the project brief and loaded decision authorities, freeze its exact
+mode/style/rendering ids, then read only those selected detail files or custom
+bases. A novel custom reads none. Never open unselected detail siblings to
+compare candidates, glob a catalog, or let them influence the decision. Decide
+whether AI images are useful as a separate source judgment; even when the
+answer is no, retain the chosen rendering direction for visual coherence. Keep
+the chosen mode, style, rendering, and exact bases in active context only.
 
 **One-pass decision boundary**: resolve only what is needed to author this deck
 in the current context. Do not print a strategy summary, create a planning
@@ -399,29 +405,17 @@ This carrier menu does not satisfy or replace the per-page Structure decision in
 
 Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
-**Visualization recall — optional Chart/Table reference**: When a reusable
-Chart/Table reference would help, run recall with 3–8 English semantic tags.
-Use its default catalog search; add `--family chart|table` only when the page's
-information model is already certain. Do not run recall for qualitative shape
-composition.
-
-```bash
-python3 skills/ppt-master/scripts/visualization_recall.py recall \
-  --page P03 \
-  --tag "time series" \
-  --tag "three metrics" \
-  --tag "direction over time" \
-  --limit 6
-```
-
-Read the result unfiltered and apply
-[`visualization-recall.md`](../../scripts/docs/visualization-recall.md)'s
-low-confidence semantic fallback before retaining `no-template-match`. Choose at most one primary
-Chart/Table `family/key` for a page, validate it with `visualization_recall.py validate`,
-and keep its short purpose only in active context. The reference remains
-flexible: it does not lock final type, geometry, style, or native output.
-Describe an embedded child Chart/Table and every qualitative relationship in
-the page's active decision rather than selecting another primary reference.
+**Mandatory — complete Chart/Table capability review**: Compare every page's
+information model against every `Pick` / `Skip` rule in the two already-loaded
+live registries. The registries expose the possibility space; they are neither
+usage quotas nor whitelists. Do not select a catalog reference for qualitative
+shape composition. Choose at most one primary Chart/Table `family/key` for a
+page, validate it with `visualization_recall.py validate`, and keep its short
+purpose only in active context. Retain `no-template-match` when none fits. The
+reference remains flexible: it does not lock final type, geometry, style, or
+native output. Describe an embedded child Chart/Table and every qualitative
+relationship in the page's active decision rather than selecting another
+primary reference.
 Actual information models determine the loaded execution branches. Give every independent
 Chart/Table a page-local semantic `kebab-case` object key; keep its
 `<object-key>=yes|no` native-ready decision and any promoted chart-verification
@@ -497,12 +491,10 @@ without reading or inventing a nearby preset.
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
 exclusion; Quick loads the shared and conditional execution authorities here
-directly. When any image exists, read once before the first affected
-page and reuse throughout the valid execution context:
-[`executor-image.md`](../../references/executor-image.md),
-[`image-layout-spec.md`](../../references/image-layout-spec.md),
-[`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
-[`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
+directly. Reuse the already-loaded image-layout authorities. When any image
+exists, read once before the first affected page and reuse throughout the valid
+execution context: [`executor-image.md`](../../references/executor-image.md)
+and [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a placed
 `Status: Sourced` image or filename recorded in `image_sources.json`.
 Reread only after a known file change or context invalidation.
@@ -720,7 +712,7 @@ or lock.
 ## ✅ Quick Generate Complete
 
 - [x] All required source/resource preparation is complete
-- [x] One mode and visual style were resolved, and every catalog source actually used was read
+- [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
 - [x] The complete native preset registry was read unfiltered before P01 and consumed during contour selection
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, retained positive fit for any neutral result, and compared its actual topology signature before the next page; repetition served the same semantic relationship or continuity motif

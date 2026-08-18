@@ -16,8 +16,11 @@ Master/Layout systems belong in [`layouts/`](../layouts/).
 `tables` object maps each canonical key to one selection-rule `summary`; keys
 match `<key>.svg`, and `meta.total` matches the canonical SVG roster.
 
-Use [`visualization_recall.py`](../../scripts/visualization_recall.py) for
-bounded Chart/Table or table-only recall. New Default planning writes
+Default Strategist and Quick read this complete compact registry together with
+the Chart registry before planning. They compare every selection rule, then use
+[`visualization_recall.py`](../../scripts/visualization_recall.py) `validate`
+to resolve selected canonical references. Its `recall` mode remains an optional
+diagnostic helper, not the runtime capability gate. Default writes
 `table/<key>` to `page_visualizations`; Quick keeps the selected reference in
 active context.
 
