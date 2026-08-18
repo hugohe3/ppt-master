@@ -198,7 +198,7 @@ Native preset shape authoring (one or more registry-backed fragments on stdout):
 
 ```bash
 python3 scripts/preset_shape_svg.py list --grouped
-python3 scripts/preset_shape_svg.py recommend --role spine --relationship order \
+python3 scripts/preset_shape_svg.py recommend --compact --role spine --relationship order \
   --directionality horizontal --aspect wide --limit 6
 python3 scripts/preset_shape_svg.py describe rightArrow --compact
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
@@ -218,7 +218,10 @@ reasons, intended uses, and misuse boundaries remain page-local in `recommend`
 and `describe` instead of being repeated in the mandatory discovery output.
 `recommend` recalls candidates from page-job criteria; its default `general`
 scope excludes literal-only symbols, flowchart notation, and action controls.
-Its result is neither a whitelist nor an automatic selection. The
+Its result is neither a whitelist nor an automatic selection.
+`recommend --compact` keeps criteria, counts, selection note, and each
+candidate's preset, scope, literal boundary, intent, match reasons, and misuse
+boundaries; plain `recommend` preserves the full payload. The
 `describe --compact` view returns one flat object with semantic boundaries,
 adjustments, connection/text facts, and path count. Plain `describe` preserves
 the full nested geometry/semantics payload. A zero-match recommendation is

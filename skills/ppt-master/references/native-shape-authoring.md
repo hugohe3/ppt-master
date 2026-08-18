@@ -20,16 +20,22 @@ groups, scopes, and one-line intent summaries. This compact index is
 authoring-time capability discovery, never a Strategist task or Design Spec
 field. Rerun only after context invalidation or a registry change.
 
+**Hard rule — direct structured calls**: `${SKILL_DIR}` below is the retained
+absolute Skill root. Invoke each JSON command once per concrete argument set
+and read stdout directly. Do not change CWD, encode executables or flag lists in
+scalar shell strings, batch these calls through shell loops, merge stderr, or
+add a downstream parser when `--compact` exists.
+
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --grouped
+python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" list --grouped
 ```
 
 The plain `list` command remains a compatibility view of exact registry names;
 it does not replace grouped discovery. For each page entering ordinary contour
-selection, run `recommend --limit 6` from the actual page role and applicable
-relationship, direction, aspect, text capacity, scope, or intent terms before
-choosing a contour, then run `describe <name> --compact` on the serious
-candidates. Grouped discovery followed by direct `describe` does not satisfy
+selection, run `recommend --compact --limit 6` from the actual page role and
+applicable relationship, direction, aspect, text capacity, scope, or intent
+terms before choosing a contour, then run `describe <name> --compact` on the
+serious candidates. Grouped discovery followed by direct `describe` does not satisfy
 page-local recall. Those commands supply the full match reasons, intended uses,
 misuse boundaries, adjustments, and key geometry facts omitted from the compact
 entry index. Recommendation is diverse candidate recall, not a whitelist,
@@ -104,7 +110,7 @@ Apply this page-local sequence before drawing:
 | Pass | Action | Result |
 |---|---|---|
 | Job | State what the object must do for the reader before naming a shape. | Page role plus any real relationship, direction, aspect, text load, or literal scope. |
-| Recall | Run `recommend` with the known criteria. Keep the default `general` scope unless the page truly needs `literal`, `flowchart`, or `navigation`. | A group-diverse candidate set with match reasons and misuse boundaries. |
+| Recall | Run `recommend --compact` with the known criteria. Keep the default `general` scope unless the page truly needs `literal`, `flowchart`, or `navigation`. | A group-diverse candidate set with match reasons and misuse boundaries. |
 | Inspect | Run `describe --compact` for candidates whose contour could fit; compare `intent`, `recommended_for`, `avoid_for`, adjustments, text rectangle, and connection sites. | Evidence for choosing or rejecting each serious candidate. |
 | Select | Choose the contour whose inference and visual character fit the page, including a neutral primitive when neutrality is useful. | One page-fit contour; no syntax decision yet. |
 | Encode | Apply §1's materialization gate. | Ordinary SVG primitive, helper-authored preset, Boolean result, or necessary freeform. |
@@ -112,12 +118,12 @@ Apply this page-local sequence before drawing:
 Example recall and inspection commands:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py recommend \
+python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" recommend --compact \
   --role spine --relationship order --directionality horizontal --aspect wide \
   --limit 6
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py describe chevron --compact
+python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" describe chevron --compact
 
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py recommend \
+python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" recommend --compact \
   --scope flowchart --role node --relationship flow --query decision --limit 6
 ```
 

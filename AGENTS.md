@@ -10,7 +10,10 @@ first command. Paths in this file are repository-relative notation only; invoke
 them through those absolute roots, retain the absolute project path returned by
 initialization, and never issue `cd skills/ppt-master` or `cd projects/...`.
 When parsing machine-readable stdout, keep stderr separate and never place
-`2>&1` upstream of a JSON or XML parser.
+`2>&1` upstream of a JSON or XML parser. Invoke each such command once per
+concrete argument set; never encode its executable or flag list in scalar shell
+strings, batch it through a shell loop, or add a downstream parser when the
+command provides a compact view.
 
 ## Project Overview
 

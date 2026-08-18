@@ -9,14 +9,14 @@ page or template.
 Usage:
     python3 scripts/preset_shape_svg.py list [--grouped] [--search QUERY]
     python3 scripts/preset_shape_svg.py describe PRESET [--compact]
-    python3 scripts/preset_shape_svg.py recommend --role ROLE [options]
+    python3 scripts/preset_shape_svg.py recommend --role ROLE [options] [--compact]
     python3 scripts/preset_shape_svg.py render PRESET --id ID --frame X Y W H
     python3 scripts/preset_shape_svg.py render-batch --input FILE_OR_DASH
 
 Examples:
     python3 scripts/preset_shape_svg.py list --grouped
     python3 scripts/preset_shape_svg.py recommend --role spine \
-        --relationship order --directionality horizontal
+        --relationship order --directionality horizontal --compact
     python3 scripts/preset_shape_svg.py describe rightArrow --compact
     python3 scripts/preset_shape_svg.py render rightArrow --id next-step \
         --frame 160 210 320 112 --fill "#2563EB" --stroke none
@@ -172,6 +172,14 @@ def build_parser() -> argparse.ArgumentParser:
         type=_positive_integer,
         default=12,
         help="Maximum returned candidates; default: 12.",
+    )
+    recommend_parser.add_argument(
+        "--compact",
+        action="store_true",
+        help=(
+            "Print a reduced recall view for direct inspection without "
+            "downstream parsing."
+        ),
     )
 
     render_parser = subparsers.add_parser(
@@ -338,7 +346,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.command == "recommend":
-        payload = get_preset_shape_semantics().recommend(
+        full_payload = get_preset_shape_semantics().recommend(
             roles=args.role,
             scope=args.scope,
             relationships=args.relationship,
@@ -348,6 +356,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             visual_weight=args.visual_weight,
             query=args.query,
             limit=args.limit,
+        )
+        payload = (
+            {
+                "criteria": full_payload["criteria"],
+                "candidate_count": full_payload["candidate_count"],
+                "returned_count": full_payload["returned_count"],
+                "selection_note": full_payload["selection_note"],
+                "candidates": [
+                    {
+                        "preset": candidate["preset"],
+                        "scope": candidate["scope"],
+                        "literal_only": candidate["literal_only"],
+                        "intent": candidate["intent"],
+                        "why": candidate["why"],
+                        "avoid_for": candidate["avoid_for"],
+                    }
+                    for candidate in full_payload["candidates"]
+                ],
+            }
+            if args.compact
+            else full_payload
         )
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
