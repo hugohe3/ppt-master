@@ -2,17 +2,21 @@
 """
 PPT Master - Preset Shape SVG Fragment Tool
 
-List DrawingML presets or print compact canonical native-preset SVG groups to
-stdout for manual insertion into a hand-authored page or template.
+Browse and recommend DrawingML presets, or print compact canonical
+native-preset SVG groups to stdout for manual insertion into a hand-authored
+page or template.
 
 Usage:
-    python3 scripts/preset_shape_svg.py list [--search QUERY]
+    python3 scripts/preset_shape_svg.py list [--grouped] [--search QUERY]
     python3 scripts/preset_shape_svg.py describe PRESET
+    python3 scripts/preset_shape_svg.py recommend --role ROLE [options]
     python3 scripts/preset_shape_svg.py render PRESET --id ID --frame X Y W H
     python3 scripts/preset_shape_svg.py render-batch --input FILE_OR_DASH
 
 Examples:
-    python3 scripts/preset_shape_svg.py list --search arrow
+    python3 scripts/preset_shape_svg.py list --grouped
+    python3 scripts/preset_shape_svg.py recommend --role spine \
+        --relationship order --directionality horizontal
     python3 scripts/preset_shape_svg.py describe rightArrow
     python3 scripts/preset_shape_svg.py render rightArrow --id next-step \
         --frame 160 210 320 112 --fill "#2563EB" --stroke none
@@ -32,6 +36,16 @@ from typing import Sequence
 
 from console_encoding import configure_utf8_stdio
 from pptx_shapes import CONNECTOR_PRESET_TYPES, get_preset_registry
+from pptx_shapes.semantics import (
+    SEMANTIC_ASPECTS,
+    SEMANTIC_DIRECTIONALITY,
+    SEMANTIC_RELATIONSHIPS,
+    SEMANTIC_ROLES,
+    SEMANTIC_SCOPES,
+    SEMANTIC_TEXT_CAPACITIES,
+    SEMANTIC_VISUAL_WEIGHTS,
+    get_preset_shape_semantics,
+)
 from pptx_to_svg.preset_authoring import render_preset_shape_fragment
 
 
@@ -73,7 +87,18 @@ def build_parser() -> argparse.ArgumentParser:
     list_parser.add_argument(
         "--search",
         default="",
-        help="Case-insensitive preset-name substring.",
+        help=(
+            "Case-insensitive preset-name substring; grouped output also "
+            "searches semantic text."
+        ),
+    )
+    list_parser.add_argument(
+        "--grouped",
+        action="store_true",
+        help=(
+            "Print a compact Office-category and semantic-group index with "
+            "one-line intent summaries and preset names as JSON."
+        ),
     )
 
     describe_parser = subparsers.add_parser(
@@ -81,6 +106,65 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print preset adjustment and path metadata as JSON.",
     )
     describe_parser.add_argument("preset", help="DrawingML preset name.")
+
+    recommend_parser = subparsers.add_parser(
+        "recommend",
+        help="Recall semantically matched preset candidates as JSON.",
+    )
+    recommend_parser.add_argument(
+        "--role",
+        action="append",
+        required=True,
+        choices=SEMANTIC_ROLES,
+        help="Required page role; repeat to allow multiple roles.",
+    )
+    recommend_parser.add_argument(
+        "--relationship",
+        action="append",
+        default=[],
+        choices=SEMANTIC_RELATIONSHIPS,
+        help="Required relationship fit; repeat to allow alternatives.",
+    )
+    recommend_parser.add_argument(
+        "--scope",
+        choices=("all", *SEMANTIC_SCOPES),
+        default="general",
+        help=(
+            "Semantic scope. The general default excludes literal-only, "
+            "flowchart, and navigation shapes."
+        ),
+    )
+    recommend_parser.add_argument(
+        "--directionality",
+        choices=SEMANTIC_DIRECTIONALITY,
+        help="Required direction or route character.",
+    )
+    recommend_parser.add_argument(
+        "--aspect",
+        choices=SEMANTIC_ASPECTS,
+        help="Required frame tendency; flexible candidates also match.",
+    )
+    recommend_parser.add_argument(
+        "--text-capacity",
+        choices=SEMANTIC_TEXT_CAPACITIES,
+        help="Minimum useful text capacity.",
+    )
+    recommend_parser.add_argument(
+        "--visual-weight",
+        choices=SEMANTIC_VISUAL_WEIGHTS,
+        help="Required visual-weight band.",
+    )
+    recommend_parser.add_argument(
+        "--query",
+        default="",
+        help="Optional English intent terms used to refine the recall set.",
+    )
+    recommend_parser.add_argument(
+        "--limit",
+        type=_positive_integer,
+        default=12,
+        help="Maximum returned candidates; default: 12.",
+    )
 
     render_parser = subparsers.add_parser(
         "render",
@@ -184,6 +268,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     registry = get_preset_registry()
 
     if args.command == "list":
+        if args.grouped:
+            payload = get_preset_shape_semantics().grouped(args.search)
+            if payload["preset_count"] == 0:
+                print(f"No preset semantics match {args.search!r}", file=sys.stderr)
+                return 1
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+            return 0
         query = args.search.casefold().strip()
         names = [
             name for name in registry.names
@@ -210,7 +301,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             "path_count": len(definition.paths),
             "connection_site_count": len(definition.connections),
             "has_text_rectangle": definition.text_rectangle is not None,
+            "semantics": get_preset_shape_semantics().describe(args.preset),
         }
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "recommend":
+        payload = get_preset_shape_semantics().recommend(
+            roles=args.role,
+            scope=args.scope,
+            relationships=args.relationship,
+            directionality=args.directionality,
+            aspect=args.aspect,
+            text_capacity=args.text_capacity,
+            visual_weight=args.visual_weight,
+            query=args.query,
+            limit=args.limit,
+        )
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
 
@@ -258,6 +365,16 @@ def _parse_adjustments(values: Sequence[str]) -> dict[str, str]:
             raise ValueError(f"Duplicate adjustment guide: {name!r}")
         adjustments[name] = formula
     return adjustments
+
+
+def _positive_integer(value: str) -> int:
+    try:
+        number = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("expected a positive integer") from exc
+    if number < 1:
+        raise argparse.ArgumentTypeError("expected a positive integer")
+    return number
 
 
 def _style_from_args(args: argparse.Namespace) -> dict[str, str]:

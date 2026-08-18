@@ -197,7 +197,8 @@ python3 scripts/pptx_delivery_check.py <finished.pptx>
 Native preset shape authoring (one or more registry-backed fragments on stdout):
 
 ```bash
-python3 scripts/preset_shape_svg.py list --search arrow
+python3 scripts/preset_shape_svg.py list --grouped
+python3 scripts/preset_shape_svg.py recommend --role spine --relationship order --directionality horizontal --aspect wide
 python3 scripts/preset_shape_svg.py describe rightArrow
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
 python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
@@ -208,18 +209,35 @@ python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
 JSON
 ```
 
+`list --grouped` is the compact entry index: it organizes the exact 187-name
+registry under the official Office gallery categories, then exposes semantic
+groups, scopes, one-line intent summaries, and grouped preset names. Full match
+reasons, intended uses, and misuse boundaries remain page-local in `recommend`
+and `describe` instead of being repeated in the mandatory discovery output.
+`recommend` recalls candidates from page-job criteria; its default `general`
+scope excludes literal-only symbols, flowchart notation, and action controls.
+Its result is neither a whitelist nor an automatic selection. `describe`
+combines the selected preset's semantic record with its technical geometry
+metadata. A zero-match recommendation is valid JSON with exit code 0 so the
+caller can relax its criteria; a zero-match `list --search` remains a failed
+lookup with exit code 1. Plain `list [--search QUERY]` remains the compatibility
+name view.
+
 The helper never writes a page or project file. Select one exact semantic
 stock-shape match, inspect the emitted fragment, and insert it into the
-hand-authored SVG with the normal patch workflow. Its project-authored output
-is one compact atomic `<g>` with direct registry-generated visible paths. When
-one effect is justified, optional `--filter-id softShadow` references one
-existing direct page-level filter under the shared shadow/glow contract and
-applies it once to a shape preset. Connector presets do not accept that option.
-The helper does not create the filter definition. `render-batch` accepts a
-non-empty JSON array using the snake_case forms of the single-render options;
-it validates every item and duplicate id before printing, so one invalid item
-produces no partial fragment output. The batch remains fragment-only input for
-one current construction, not a page generator or project manifest.
+hand-authored SVG with the normal patch workflow. Semantic discovery does not
+force ordinary rectangles, ellipses, or lines through `render`; use the
+simplest exact authoring form from the native-shape reference. A rendered
+project-owned preset is one compact atomic `<g>` with direct registry-generated
+visible paths. When one effect is justified, optional `--filter-id softShadow`
+references one existing direct page-level filter under the shared shadow/glow
+contract and applies it once to a shape preset. Connector presets do not accept
+that option. The helper does not create the filter definition. `render-batch`
+accepts a non-empty JSON array using the snake_case forms of the single-render
+options; it validates every item and duplicate id before printing, so one
+invalid item produces no partial fragment output. The batch remains
+fragment-only input for one current construction, not a page generator or
+project manifest.
 Quality check and export rerender the registry instead of relying on a hidden
 carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
