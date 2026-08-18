@@ -79,7 +79,7 @@ Gate 4: 依赖清单一致 (check_deps_sync.py)
 
 ### 核心原则
 
-**保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 外零改动。**
+**保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 与 `register_template.py` 外零改动。**
 
 | 冲突类型 | 解决策略 |
 |----------|----------|
@@ -90,6 +90,7 @@ Gate 4: 依赖清单一致 (check_deps_sync.py)
 | `update_repo.py` | 保留 fork 的 uv 功能，合入上游改进 |
 | `skills/ppt-master/scripts/*.py` | **零改动** —— docstring 中 `python3` 残留已知且可接受 |
 | `attribution_guard.py` | **保留 fork 的 `_SKILL_GATE_MARKER`（`uvx ppt-master attribution-guard`）**；合入上游其他改动；合并后必须运行 guard 验证（exit 0） |
+| `register_template.py` | **保留 fork 的 `PPT_MASTER_TEMPLATES_DIR` 库根解析**（env > cwd 检出 > wheel 内置）；合入上游其他改动。uvx wheel 缓存只读，注册必须落到可写检出目录 |
 
 ### 命令转换规则
 
@@ -136,6 +137,8 @@ kebab-case 命名：下划线 `_` → 连字符 `-`，子目录取文件名。�
    ```bash
    python skills/ppt-master/scripts/check_deps_sync.py
    ```
+
+**fork 独有依赖保护**：`pyyaml>=6.0` 是 fork 为 `register-template` 补充的依赖（上游三份清单均无）。合并上游依赖变更时必须保留 pyyaml；`check_deps_sync.py` 只校验三份清单互相一致，合并后需人工确认 pyyaml 仍在三份清单中。
 
 ---
 

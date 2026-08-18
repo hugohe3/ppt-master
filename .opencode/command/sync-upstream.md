@@ -62,6 +62,7 @@ git merge --abort
 | `config.py` | `projects_root()`（`PPT_MASTER_PROJECTS`） |
 | `project_management/paths.py` | `projects_root()` 函数 |
 | `project_manager.py` | `projects_root()` 接入 |
+| `register_template.py` | `PPT_MASTER_TEMPLATES_DIR`（uvx 库根解析：env > cwd 检出 > wheel 内置） |
 
 合并后必须逐文件 grep 验证适配标记仍在（见 Step 4e 门禁 4）。
 
@@ -83,7 +84,7 @@ git merge --abort
 | `*.md` workflow/reference | 接受上游内容，将所有 `python3` → `uvx` |
 | `cli.py` (根 & skills) | 无冲突（上游无此文件）；检查新脚本映射 |
 | `pyproject.toml` | 手动同步依赖；保留 version/tool.uv/tool.setuptools 段 |
-| `skills/ppt-master/scripts/*.py` | **零改动**（跳过 `upstream-sync.md` 中的 `.py` 替换脚本）——**唯一例外：`attribution_guard.py` 的 `_SKILL_GATE_MARKER` 必须保持 `uvx ppt-master attribution-guard`（fork 适配），不得回退为上游的 `python3 scripts/attribution_guard.py`** |
+| `skills/ppt-master/scripts/*.py` | **零改动**（跳过 `upstream-sync.md` 中的 `.py` 替换脚本）——**两个例外：① `attribution_guard.py` 的 `_SKILL_GATE_MARKER` 必须保持 `uvx ppt-master attribution-guard`（fork 适配），不得回退为上游的 `python3 scripts/attribution_guard.py`；② `register_template.py` 的 `PPT_MASTER_TEMPLATES_DIR` 库根解析（fork 适配，uvx wheel 只读缓存下注册必须落到可写检出目录），不得回退为上游的纯 `SKILL_DIR` 相对解析** |
 
 ---
 
@@ -247,7 +248,7 @@ python skills/ppt-master/scripts/check_cli_sync.py
    - 检查 `skills/ppt-master/LICENSE`、`SPONSORS.md`、`SPONSORS_CN.md` 是否存在
    - 检查 `MANIFEST.in`（根 与 `skills/ppt-master/`）是否仍包含 `SKILL.md`/`LICENSE`/`SPONSORS.md`/`SPONSORS_CN.md`（上游若调整文件布局可能导致 wheel 打包缺失）
    - 检查上游是否在 `attribution_guard.py` 中新增了 `_REQUIRED_GATE_FILES`/`_REQUIRED_ATTRIBUTION_FILES` 条目,对应文件必须存在
-4. **fork 适配完整性**：对「fork 修改文件清单」的每个文件 grep 验证其关键适配标记仍在（`PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key`、`projects_root`），任一缺失必须修复后再提交
+4. **fork 适配完整性**：对「fork 修改文件清单」的每个文件 grep 验证其关键适配标记仍在（`PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key`、`projects_root`、`PPT_MASTER_TEMPLATES_DIR`），任一缺失必须修复后再提交
 
 **四项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
@@ -263,6 +264,8 @@ python skills/ppt-master/scripts/check_deps_sync.py
 ```
 
 如果上游 `requirements.txt` 新增/删除了依赖，手动同步到两个 `pyproject.toml` 的 `[project] dependencies` 后重新运行以上命令。
+
+**fork 独有依赖保护**：`pyyaml>=6.0` 是 fork 为 `register-template`（design_spec.md YAML frontmatter 解析）补充的依赖，上游三份清单均无此项。合并上游依赖变更时**必须保留 pyyaml**，不得因上游 requirements.txt 无此条目而删除；`check_deps_sync.py` 只校验三份清单互相一致，不校验上游，因此合并后需人工确认 pyyaml 仍在三份清单中。
 
 ---
 
