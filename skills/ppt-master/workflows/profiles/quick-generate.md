@@ -282,7 +282,7 @@ the roster after the whole-roster check:
 - the canvas, visual direction, wording, intended viewing distance, and effective reading mode: choose `presentation` for distance-first projected or recorded viewing, `balanced` for mixed viewing, or `text` for close content-heavy reading. Take the initial body anchor and sanity band from [`canvas-formats.md`](../../references/canvas-formats.md) § "Typography Scale Start" for the resolved canvas—PPT remains reading-mode-driven, while registered/custom non-PPT canvases use their canvas-derived start—then resolve one concrete typography plan for the delivery target defined by [`shared-standards-core.md`](../../references/shared-standards-core.md) §4.1, never from the authoring host's font inventory, with stable size anchors for title, body, annotation, and every other recurring role the roster uses. When content does not fit, preserve its core message and apply only fitting actions the source/profile invariants permit—restructure, shorten, or split; if none is permitted, surface the unresolved fit instead of shrinking a recurring role. Explicit user, template, fidelity-profile, or resolved-style requirements may call for a deliberate exception;
 - the semantic color roles actually needed by the roster, each with a concrete active-context color anchor, including background/surface, primary/secondary text, dominant/accent, and status roles as applicable. Honor explicit user, installed template/brand, fidelity-profile source-identity, and resolved-style color semantics before deriving only the missing roles that the active profile permits; decide which roles dominate, support, or remain rare, and preserve sufficient contrast for meaning-bearing text. Pair newly authored color-coded states, categories, or relationships with a label, symbol, line, or geometry cue; when fidelity forbids adding one, preserve the source encoding;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
-- for each page not bound to literal supplied geometry, a primary visual zone and one compact page-scale geometry job tied to its core message—what geometry must organize and which semantic relationship it carries, without naming a preset or encoding form; keep it only in the transient roster for §3's authoring-time move;
+- for each page not bound to literal supplied geometry, a primary visual zone and one compact page-scale geometry job tied to its core message—what geometry must organize, without naming a preset or encoding form; keep it only in the transient roster for §3's authoring-time move;
 - for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
 - when useful, a transient deck-level visual motif system with an identity or
   communication job, a recognizable invariant, and a reuse mode: fixed chrome,
@@ -318,15 +318,14 @@ a floating cutout may use `#A2-01`. Finish assets before SVG per
 
 **Mandatory — whole-roster rhythm check**: During the same active-context
 resolution, compare neighbors and section arcs to judge whether chapter entries
-visibly reset, extended same-density runs are intentional, extended same-carrier
-or same-topology runs form an intentional semantic sub-arc, repeated dominant
-geometry carries a continuity job, each section follows a mode-fitting
+visibly reset, extended same-density runs are intentional, extended repetitions
+of one carrier or composition move form an intentional page-job arc, repeated
+dominant geometry carries a continuity job, each section follows a mode-fitting
 progression—including framework → explanation/evidence → judgment/action when
 it serves the objective—and the final arc resolves the communication objective
 before a genuine ending lowers information load. Same section, equal weight or
-density, one style, and prior-page precedent do not establish a semantic
-sub-arc. Repair
-the transient roster, density, and composition choices in place. This is
+density, one style, and prior-page precedent do not establish a page-job arc.
+Repair the transient roster, density, and composition choices in place. This is
 judgment, not quota; preserve intentional continuity, legitimately all-`dense`
 material, and 1:1/literal order. Add no filler page: a `breathing` page marks a
 meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and
@@ -551,8 +550,9 @@ capability menu, visualization recall, template geometry, or a later check.
 and any applicable topology resolve, apply
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1
 to the transient geometry job, actual content, resolved style, and complete
-native vocabulary before writing coordinates. It owns the semantic-before-
-neutral gate, positive fit for a neutral result, running actual-topology
+native vocabulary before writing coordinates. It owns the exact-fit geometry
+gate, independent relationship / carrier fit, contour-family / exact-result
+choice, reader effect for a generic or undrawn result, running actual-geometry
 signature, and materialization boundary. Apply it to both `no` and `yes`; keep
 the current decision in active context and never change the Structure result.
 
@@ -715,7 +715,7 @@ or lock.
 - [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
 - [x] The complete native preset registry was read unfiltered before P01 and consumed during contour selection
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
-- [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, retained positive fit for any neutral result, and compared its actual topology signature before the next page; repetition served the same semantic relationship or continuity motif
+- [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
 - [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision

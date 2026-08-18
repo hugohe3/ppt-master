@@ -35,13 +35,16 @@ considering authoring syntax. Rectangle, rounded-rectangle, circle, and ellipse
 contours are not an earlier visual tier merely because SVG has short primitive
 syntax for them. Easier syntax is never the reason to select a contour.
 
-**Default — semantic native geometry before neutral fallback (may override when
-neutrality itself serves the page)**: Use a relationship-bearing preset or
-compound construction for direction, sequence, membership, hierarchy,
-convergence, reveal, or contrast. Select a neutral contour, grid, or equal-column
-system only when neutrality or equivalence positively serves the page; retain
-that fit in active context. Quick speed, restrained style, readability, equal
-importance, precedent, and shorter syntax are not such a fit.
+**Default — exact page-fit geometry before generic neutrality (may override when
+neutrality itself communicates the page)**: Resolve relationship fit when the
+content carries direction, sequence, membership, hierarchy, convergence, reveal,
+or contrast. Independently resolve page-field / carrier fit from ownership,
+focal hierarchy, boundary strength, and the active deck's edge / opening
+language; `Structure=no` removes only relationship topology. Choose a plain
+primitive, uniform grid, or no drawn carrier only when that lack of inflection
+gives the reader a concrete benefit or avoids a false inference; retain that
+effect in active context. Quick speed, restrained style, readability, equal
+importance, precedent, and shorter syntax alone do not qualify.
 
 **Hard rule — style does not narrow capability**: the active visual system may
 weight contour fit and control paint, stroke, texture, density, and recurrence.
@@ -58,7 +61,7 @@ hand-author a freeform merely because an SVG path is convenient.
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
 | One exact non-Connector stock contour | Use an ordinary SVG primitive only when the exporter maps it to that same contour; otherwise run `preset_shape_svg.py render` and insert its complete stdout fragment. |
 | A stock `bentConnector*` / `curvedConnector*` contour exactly expresses a bent or curved relationship and endpoint attachment is not required | Run `preset_shape_svg.py render --object-kind connector`; the result is an unconnected native Connector shape. |
-| A straight relationship, divider, or leader | Write `<line>`; use a registered marker only when direction is meaningful. |
+| A straight relationship, divider, or leader | Write `<line>`; use a registered marker under [`shared-standards-core.md`](./shared-standards-core.md) §1.1 only when direction is meaningful. |
 | A selected text/content boundary needs no filled surface | Use its exact authoring form with `fill="none"` and a visible stroke; keep its content as independent siblings. |
 | Two or more selected native contours form the page construction but do not need one contour | Keep them as independently editable siblings in one ordinary semantic group; use §2.1 to compose the page-level geometry system. |
 | Two or more supported closed-shape / resolvable-text operands require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
@@ -74,19 +77,18 @@ rerun the helper whenever its geometry, paint, or filter reference changes.
 
 ## 2. Semantic Preset Candidate Guide
 
-Use the table below as semantic navigation, not a shortlist: match the page's
-visual intent against the complete inventory already loaded above before
-settling on a neutral rectangle / ellipse or a freeform path. Do not let the
-examples, selected style, or authoring convenience hide a more specific
-registered contour. A style's composition examples are generative vocabulary,
-not the set of permitted page moves.
+Use this table as navigation, not a shortlist. Match intent against the loaded
+inventory before selecting a neutral primitive or freeform; examples, style,
+and syntax never hide a more specific contour. Style composition examples
+remain vocabulary, not a menu.
 
-"Automatic" means the Executor independently applies this semantic decision
-gate before drawing a new object. It does not scan existing SVG, classify
-paths or contours, or upgrade ordinary SVG during export.
+"Automatic" means the Executor applies this gate before drawing. Export never
+scans or upgrades existing geometry.
 
 | Visual intent | Candidate presets | Boundary |
 |---|---|---|
+| Page field, outline, or content carrier | `rect`, `round*Rect`, `snip*Rect`, `plaque`, `bevel`, `frame`, `halfFrame`, `corner`, `foldedCorner`, `homePlate` | Match edge, corner, and opening behavior to ownership, hierarchy, or deck language; keep `rect` when no inflection helps. |
+| Grouping or ownership boundary | `leftBrace`, `rightBrace`, `bracePair`, `leftBracket`, `rightBracket`, `bracketPair` | Use a brace / bracket when one visible boundary must collect or assign content without becoming a filled card. |
 | Literal geometric body | `triangle`, `diamond`, `pentagon`, `hexagon`, `octagon`, `star5` | Use only when the named geometry itself is the intent. |
 | Solid block direction | `rightArrow`, `leftArrow`, `upArrow`, `downArrow`, `leftRightArrow`, `upDownArrow`, `chevron` | Use `<line>` for a thin straight relationship; do not fake a solid directional object with a stroked path. |
 | Standard flowchart node | `flowChartProcess`, `flowChartDecision`, `flowChartInputOutput`, `flowChartTerminator`, `flowChartDocument` | Use only for an actual flowchart; ordinary content cards remain cards. |
@@ -126,18 +128,19 @@ anchors, and any applicable topology under
 [`executor-structure.md`](./executor-structure.md) are resolved, but before
 writing coordinates, resolve the page-scale geometry move that best carries its
 background field, content zoning, focal hierarchy, or reading path. Apply §1's
-semantic-before-neutral default and compare the useful lenses below. Before
-falling back to stacked rectangles / rounded cards or uniform equal columns,
-use a relationship-bearing construction to stage the primary zone. Readability
-of the first workable arrangement does not close this gate.
+exact-fit decision and compare the useful lenses below. Before repeating stacked
+rectangles / rounded cards or uniform equal columns, compare a page-field,
+outline, nesting, or continuity construction and the relevant contour family's
+exact members. Readability of the first workable arrangement does not close this
+gate.
 This applies whether the per-page Structure result is `no` or `yes`; it never
 creates a decoration requirement.
 
 | Pass | Action | Result |
 |---|---|---|
-| Page job | Name the page-scale geometry move, then the geometric jobs already implied by the resolved page: surface, boundary, direction, reveal, focal mark, shared region, or counterweight. | One composition direction and a small set of functional zones; no shape names yet. |
+| Page job | Name the page-scale geometry move and its jobs: surface, boundary, focal mark, shared region, counterweight, or any source-backed direction / reveal. | One composition direction and a small set of functional zones; no shape names yet. |
 | Decompose | Separate visible content from geometric atoms. Identify which atoms need independent movement, paint, or reuse and which contour must become one object. | Editable siblings plus any explicit Boolean operand set. |
-| Select | Choose each atom's contour from its job and the full native vocabulary, then apply §1's simplest exact materialization; retain the positive page-job fit when the final result is neutral. | Page-fit native atoms without syntax bias. |
+| Select | Choose the contour family, then its exact member from the job, full native vocabulary, and edge / corner / opening behavior; retain the reader effect when the result is generic or undrawn. | Page-fit native atoms without syntax bias. |
 | Compose | Establish page frame, scale, z-order, and negative space with independent atoms. Keep text, images, icons, data marks, and non-merged accents outside Boolean operands. | One page-level geometry system, not a collection of unrelated decorations. |
 | Materialize | Run the preset helper for each adopted preset. Run the Boolean helper only for contours that require Merge Shapes semantics, then replace those operands with its stdout paths. | Valid authoring SVG ready for native export. |
 
@@ -152,12 +155,13 @@ creates a decoration requirement.
 | Depth and contrast | Combine filled, outlined, offset, and negative-space atoms; use Boolean only when the contour itself must change. |
 | Deck language | Reuse a corner, arc, slant, notch, or layering logic with page-fit variation rather than cloning one composition. |
 
-**Default — running deck topology check (may override for literal pages or
+**Default — running deck geometry check (may override for literal pages or
 isolated template prototypes)**: After each generated page, retain
-`relationship → topology → contour vocabulary` and compare it before the next.
-Repeat only for the same semantic relationship or deliberate continuity;
-section, equal weight/density, style, and precedent are insufficient. Create no
-artifact or second pass.
+`page job → composition move → contour / edge language`; append `relationship →
+topology` only for `Structure=yes`, then compare before the next. Repeat only for
+the same page job / relationship or deliberate continuity; section, equal
+weight/density, style, and precedent are insufficient. Create no artifact or
+second pass.
 
 **Boolean decision gate**:
 
