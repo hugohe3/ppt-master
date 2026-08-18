@@ -256,7 +256,9 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="FILE_OR_DASH",
         help=(
             "UTF-8 JSON array of shape objects; use - to read stdin. "
-            "The command prints no fragments when any item is invalid."
+            "Use an 'adjustments' object such as "
+            "{\"adj\": \"val 42000\"}; the command prints no fragments "
+            "when any item is invalid."
         ),
     )
     return parser
@@ -453,7 +455,11 @@ def _render_batch_items(items: Sequence[object]) -> list[str]:
             raise ValueError(f"{label} must be a JSON object")
         unknown = sorted(set(raw_item) - _BATCH_ITEM_FIELDS)
         if unknown:
-            raise ValueError(f"{label} has unsupported fields: {', '.join(unknown)}")
+            supported = ", ".join(sorted(_BATCH_ITEM_FIELDS))
+            raise ValueError(
+                f"{label} has unsupported fields: {', '.join(unknown)}; "
+                f"supported fields: {supported}"
+            )
         missing = [
             name for name in ("preset", "id", "frame")
             if name not in raw_item

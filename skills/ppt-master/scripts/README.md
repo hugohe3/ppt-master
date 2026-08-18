@@ -198,12 +198,14 @@ Native preset shape authoring (one or more registry-backed fragments on stdout):
 
 ```bash
 python3 scripts/preset_shape_svg.py list --grouped
-python3 scripts/preset_shape_svg.py recommend --role spine --relationship order --directionality horizontal --aspect wide
+python3 scripts/preset_shape_svg.py recommend --role spine --relationship order \
+  --directionality horizontal --aspect wide --limit 6
 python3 scripts/preset_shape_svg.py describe rightArrow
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
 python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
 [
-  {"preset":"chevron","id":"step-1","frame":[120,180,220,96],"fill":"#2563EB","stroke":"none"},
+  {"preset":"chevron","id":"step-1","frame":[120,180,220,96],
+   "fill":"#2563EB","stroke":"none","adjustments":{"adj":"val 42000"}},
   {"preset":"leftBrace","id":"group-brace","frame":[380,170,48,240],"fill":"none","stroke":"#111827","stroke_width":3}
 ]
 JSON
@@ -237,7 +239,8 @@ accepts a non-empty JSON array using the snake_case forms of the single-render
 options; it validates every item and duplicate id before printing, so one
 invalid item produces no partial fragment output. The batch remains
 fragment-only input for one current construction, not a page generator or
-project manifest.
+project manifest. `adjustments` is a JSON object keyed by guide name, unlike
+the repeatable single-render `--adjust NAME=FORMULA` option.
 Quality check and export rerender the registry instead of relying on a hidden
 carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
