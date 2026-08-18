@@ -745,6 +745,7 @@ or lock.
 - [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
 - [x] The complete native preset registry was read unfiltered before P01; every page entering ordinary contour selection ran job-derived `recommend` before choosing a contour and described only serious candidates
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
+- [x] The proactive decorative-lettering scan ran before capability resolution; every exact string passing both eligibility questions entered an AI item or lettering sheet/slice job unless the user forbade AI
 - [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
 - [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
