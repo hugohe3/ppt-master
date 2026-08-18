@@ -72,6 +72,7 @@ git merge --abort
 | `python3 skills/ppt-master/scripts/xxx.py` vs `uvx ppt-master xxx` | 保留 uvx 格式 |
 | 上游新增文件中的 `python3` 命令 | 保持原样，Step 4 统一替换 |
 | `AGENTS.md` / `CLAUDE.md` 命令参考 | 接受上游内容后，将 `python3` 替换为 `uvx` |
+| `README.md` / `README_CN.md` | 接受上游内容后，在语言切换行与赞助商 `<details>` 块之间**重新插入 fork 声明块**（`> **Fork notice**` / `> **Fork 声明**），声明赞助商与捐赠信息属于原作者、与本 fork 无关 |
 | `pyproject.toml` 依赖变更 | 手动审查，同步到两个 `pyproject.toml` |
 | `update_repo.py` | 保留 fork 的 uv 功能（`ensure_uv_available`、`uv sync`、`--skip-deps`），合入上游新功能 |
 | `generate_examples_index.py` | 确保内部字符串已替换为 `uvx` |
@@ -249,10 +250,9 @@ python skills/ppt-master/scripts/check_cli_sync.py
    - 检查 `MANIFEST.in`（根 与 `skills/ppt-master/`）是否仍包含 `SKILL.md`/`LICENSE`/`SPONSORS.md`/`SPONSORS_CN.md`（上游若调整文件布局可能导致 wheel 打包缺失）
    - 检查上游是否在 `attribution_guard.py` 中新增了 `_REQUIRED_GATE_FILES`/`_REQUIRED_ATTRIBUTION_FILES` 条目,对应文件必须存在
 4. **fork 适配完整性**：对「fork 修改文件清单」的每个文件 grep 验证其关键适配标记仍在（`PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key`、`projects_root`、`PPT_MASTER_TEMPLATES_DIR`），任一缺失必须修复后再提交
+5. **fork 声明块**：`README.md` 与 `README_CN.md` 在语言切换行之后必须保留 fork 声明块（`Fork notice` / `Fork 声明`），`PYPI_README.md` 顶部引用块必须保留 fork 维护者与赞助归属声明；上游合并覆盖后必须恢复
 
-**四项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
-
----
+**五项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
 ### Step 5: 依赖同步
 

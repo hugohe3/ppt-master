@@ -14,6 +14,8 @@
 
 [English](./README.md) | 中文
 
+> **Fork 声明**：本仓库是 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 的 fork，由 [elvisw](https://github.com/elvisw) 维护，并适配为发布到 PyPI 的 `uvx` 工具。下方赞助商与捐赠信息属于原作者（Hugo He），收益归原项目所有，与本 fork 无关。
+
 <details open>
 <summary>本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
 

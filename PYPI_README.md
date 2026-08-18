@@ -1,6 +1,8 @@
 # ppt-master
 
 > Originated by [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+>
+> This PyPI package is a fork maintained by [elvisw](https://github.com/elvisw), adapted to run as a `uvx` tool. Sponsor and donation information shipped with the package belongs to the original author (Hugo He) and benefits the original project, not this fork.
 
 AI-driven PPT generation CLI — convert documents to editable PowerPoint via SVG pipeline.
 
