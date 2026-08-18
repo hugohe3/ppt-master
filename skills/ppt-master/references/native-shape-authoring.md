@@ -24,7 +24,8 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list
 
 Choose from that full inventory by page job. Use `list --search` only to narrow
 the already-read inventory and `describe <name>` only after identifying a
-candidate; neither replaces the complete initial read.
+candidate; neither replaces the complete initial read. Discovery is prerequisite;
+each page consumes it through §§1–2.1 without a quota.
 
 ## 1. Contour Selection and Materialization Gate
 
@@ -32,8 +33,15 @@ candidate; neither replaces the complete initial read.
 intended job and active visual system across the full native vocabulary before
 considering authoring syntax. Rectangle, rounded-rectangle, circle, and ellipse
 contours are not an earlier visual tier merely because SVG has short primitive
-syntax for them. A neutral contour is valid when neutrality is the job; easier
-syntax is never the reason to select it.
+syntax for them. Easier syntax is never the reason to select a contour.
+
+**Default — semantic native geometry before neutral fallback (may override when
+neutrality itself serves the page)**: Use a relationship-bearing preset or
+compound construction for direction, sequence, membership, hierarchy,
+convergence, reveal, or contrast. Select a neutral contour, grid, or equal-column
+system only when neutrality or equivalence positively serves the page; retain
+that fit in active context. Quick speed, restrained style, readability, equal
+importance, precedent, and shorter syntax are not such a fit.
 
 **Hard rule — style does not narrow capability**: the active visual system may
 weight contour fit and control paint, stroke, texture, density, and recurrence.
@@ -117,11 +125,11 @@ owned by the preserve/mirror round-trip contract.
 anchors, and any applicable topology under
 [`executor-structure.md`](./executor-structure.md) are resolved, but before
 writing coordinates, resolve the page-scale geometry move that best carries its
-background field, content zoning, focal hierarchy, or reading path. Compare a
-deliberate plain / neutral composition with the useful lenses below. Readability
-of the first workable arrangement does not close this gate; a plain grid or no
-compound construction remains valid when it is the deliberate best fit for the
-page job.
+background field, content zoning, focal hierarchy, or reading path. Apply §1's
+semantic-before-neutral default and compare the useful lenses below. Before
+falling back to stacked rectangles / rounded cards or uniform equal columns,
+use a relationship-bearing construction to stage the primary zone. Readability
+of the first workable arrangement does not close this gate.
 This applies whether the per-page Structure result is `no` or `yes`; it never
 creates a decoration requirement.
 
@@ -129,7 +137,7 @@ creates a decoration requirement.
 |---|---|---|
 | Page job | Name the page-scale geometry move, then the geometric jobs already implied by the resolved page: surface, boundary, direction, reveal, focal mark, shared region, or counterweight. | One composition direction and a small set of functional zones; no shape names yet. |
 | Decompose | Separate visible content from geometric atoms. Identify which atoms need independent movement, paint, or reuse and which contour must become one object. | Editable siblings plus any explicit Boolean operand set. |
-| Select | Choose each atom's contour from its job and the full native vocabulary, then apply §1's simplest exact materialization. | Page-fit native atoms without syntax bias. |
+| Select | Choose each atom's contour from its job and the full native vocabulary, then apply §1's simplest exact materialization; retain the positive page-job fit when the final result is neutral. | Page-fit native atoms without syntax bias. |
 | Compose | Establish page frame, scale, z-order, and negative space with independent atoms. Keep text, images, icons, data marks, and non-merged accents outside Boolean operands. | One page-level geometry system, not a collection of unrelated decorations. |
 | Materialize | Run the preset helper for each adopted preset. Run the Boolean helper only for contours that require Merge Shapes semantics, then replace those operands with its stdout paths. | Valid authoring SVG ready for native export. |
 
@@ -143,6 +151,13 @@ creates a decoration requirement.
 | Continuity | Align or overlap independent shapes across zones so geometry reinforces the intended reading path. |
 | Depth and contrast | Combine filled, outlined, offset, and negative-space atoms; use Boolean only when the contour itself must change. |
 | Deck language | Reuse a corner, arc, slant, notch, or layering logic with page-fit variation rather than cloning one composition. |
+
+**Default — running deck topology check (may override for literal pages or
+isolated template prototypes)**: After each generated page, retain
+`relationship → topology → contour vocabulary` and compare it before the next.
+Repeat only for the same semantic relationship or deliberate continuity;
+section, equal weight/density, style, and precedent are insufficient. Create no
+artifact or second pass.
 
 **Boolean decision gate**:
 
@@ -178,11 +193,13 @@ siblings whenever one-object contour semantics are unnecessary.
 
 ## 3. Fragment Generation
 
-Run one command for one selected object. Generated project pages choose the
-object's solid paint from the current page context, using `spec_lock.md` roles as
-reusable anchors rather than an exhaustive palette; `create-template` takes colors
-from the confirmed brief and template `design_spec.md`. Mirror/preserve input
-keeps the source object's paint instead of regenerating this authored form.
+One helper invocation owns one selected object; multiple chosen objects may
+render in one tool round as separate outputs.
+Generated project pages choose each object's solid paint from the current page
+context, using `spec_lock.md` roles as reusable anchors rather than an exhaustive
+palette; `create-template` takes colors from the confirmed brief and template
+`design_spec.md`. Mirror/preserve input keeps the source object's paint instead
+of regenerating this authored form.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
@@ -215,10 +232,9 @@ preset can never be authored as an ordinary `shape`.
 
 **Hard rule — stdout-only exception**: the helper prints one deterministic
 `<g>` fragment. Read that output and insert it with the normal page/template
-`apply_patch` edit. Do not redirect it into `svg_output/`, loop over pages or
-templates, batch shapes, or let it choose layout. The main Agent still authors
-every complete SVG page sequentially and maintains each reusable template
-explicitly.
+`apply_patch` edit. Do not redirect it into `svg_output/`, drive it from a batch
+manifest, loop over pages/templates, or let it choose layout. The main Agent
+still authors each complete SVG page and reusable template explicitly.
 
 ---
 
