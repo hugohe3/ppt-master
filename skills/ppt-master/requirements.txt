@@ -7,6 +7,9 @@
 # Install / 安装方式：
 #   pip install -r requirements.txt
 
+# Template registration / 模板注册 (scripts/register_template.py)
+PyYAML>=6.0
+
 # ─────────────────────────────────────────────────────────────
 # SVG to PPTX tool / SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
 # ─────────────────────────────────────────────────────────────
