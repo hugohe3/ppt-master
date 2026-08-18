@@ -56,10 +56,8 @@
 </p>
 
 <p align="center">
-  <sub>下方的旁白 deck 与画廊示例均生成于 <strong>2026 年 5 月</strong>，模型为 Claude Opus 4.7 + <code>gpt-image-2</code>，每份都是一次性生成、未经精修。</sub>
+  <sub>下方的画廊示例均生成于 <strong>2026 年 5 月</strong>，模型为 Claude Opus 4.7 + <code>gpt-image-2</code>，每份都是一次性生成、未经精修。</sub>
 </p>
-
-<h3 align="center">下载这份<a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">带音频旁白的 <em>Attention Is All You Need</em> 论文精读 deck</a>，在 PowerPoint 里直接放映，每一页都会自己"读"给你听 —— 这只是 PPT Master 能力的冰山一角。</h3>
 
 <table>
   <tr>
@@ -100,10 +98,6 @@
 
 <p align="center">
   <sub>下载任意一份 .pptx 在 PowerPoint 里打开，是感受真实产出水平最快的方式。<br/><a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
-</p>
-
-<p align="center">
-  更多端到端实例：<a href="https://space.bilibili.com/111258938/lists/8144072"><strong>合集·PPT-Master 能力展示</strong></a>（B 站）
 </p>
 
 ---
