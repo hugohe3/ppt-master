@@ -8,7 +8,7 @@ page or template.
 
 Usage:
     python3 scripts/preset_shape_svg.py list [--grouped] [--search QUERY]
-    python3 scripts/preset_shape_svg.py describe PRESET
+    python3 scripts/preset_shape_svg.py describe PRESET [--compact]
     python3 scripts/preset_shape_svg.py recommend --role ROLE [options]
     python3 scripts/preset_shape_svg.py render PRESET --id ID --frame X Y W H
     python3 scripts/preset_shape_svg.py render-batch --input FILE_OR_DASH
@@ -17,7 +17,7 @@ Examples:
     python3 scripts/preset_shape_svg.py list --grouped
     python3 scripts/preset_shape_svg.py recommend --role spine \
         --relationship order --directionality horizontal
-    python3 scripts/preset_shape_svg.py describe rightArrow
+    python3 scripts/preset_shape_svg.py describe rightArrow --compact
     python3 scripts/preset_shape_svg.py render rightArrow --id next-step \
         --frame 160 210 320 112 --fill "#2563EB" --stroke none
     python3 scripts/preset_shape_svg.py render-batch --input shapes.json
@@ -103,9 +103,17 @@ def build_parser() -> argparse.ArgumentParser:
 
     describe_parser = subparsers.add_parser(
         "describe",
-        help="Print preset adjustment and path metadata as JSON.",
+        help="Print preset geometry and semantic metadata as JSON.",
     )
     describe_parser.add_argument("preset", help="DrawingML preset name.")
+    describe_parser.add_argument(
+        "--compact",
+        action="store_true",
+        help=(
+            "Print one flat selection view with semantic boundaries and key "
+            "geometry facts."
+        ),
+    )
 
     recommend_parser = subparsers.add_parser(
         "recommend",
@@ -293,18 +301,39 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"Unknown DrawingML preset: {args.preset!r}", file=sys.stderr)
             return 1
         definition = registry.get(args.preset)
-        payload = {
+        adjustments = [
+            {"name": guide.name, "formula": guide.formula}
+            for guide in definition.adjustments
+        ]
+        connector_preset = definition.name in CONNECTOR_PRESET_TYPES
+        path_count = len(definition.paths)
+        connection_site_count = len(definition.connections)
+        has_text_rectangle = definition.text_rectangle is not None
+        semantics = get_preset_shape_semantics().describe(args.preset)
+        full_payload = {
             "preset": definition.name,
-            "connector_preset": definition.name in CONNECTOR_PRESET_TYPES,
-            "adjustments": [
-                {"name": guide.name, "formula": guide.formula}
-                for guide in definition.adjustments
-            ],
-            "path_count": len(definition.paths),
-            "connection_site_count": len(definition.connections),
-            "has_text_rectangle": definition.text_rectangle is not None,
-            "semantics": get_preset_shape_semantics().describe(args.preset),
+            "connector_preset": connector_preset,
+            "adjustments": adjustments,
+            "path_count": path_count,
+            "connection_site_count": connection_site_count,
+            "has_text_rectangle": has_text_rectangle,
+            "semantics": semantics,
         }
+        payload = (
+            {
+                "preset": definition.name,
+                "intent": semantics["intent"],
+                "recommended_for": semantics["recommended_for"],
+                "avoid_for": semantics["avoid_for"],
+                "adjustments": adjustments,
+                "connector_preset": connector_preset,
+                "path_count": path_count,
+                "connection_site_count": connection_site_count,
+                "has_text_rectangle": has_text_rectangle,
+            }
+            if args.compact
+            else full_payload
+        )
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
 

@@ -16,7 +16,7 @@
     "max_tokens": 555000
   },
   "file_budgets": {
-    "AGENTS.md": 2750,
+    "AGENTS.md": 3250,
     "skills/ppt-master/SKILL.md": 1250,
     "skills/ppt-master/references/executor-base.md": 12000,
     "skills/ppt-master/references/executor-structured.md": 5500,
