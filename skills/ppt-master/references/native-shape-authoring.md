@@ -25,13 +25,16 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --grouped
 ```
 
 The plain `list` command remains a compatibility view of exact registry names;
-it does not replace grouped discovery. For each page, run `recommend` from the
-actual page role and applicable relationship, direction, aspect, text capacity,
-scope, or intent terms, then run `describe <name>` on the serious candidates.
-Those page-local commands supply the full match reasons, intended uses, and
-misuse boundaries omitted from the compact entry index. Recommendation is
-diverse candidate recall, not a whitelist, automatic choice, or shape quota.
-Each page still resolves the final contour through §§1–2.1.
+it does not replace grouped discovery. For each page entering ordinary contour
+selection, run `recommend --limit 6` from the actual page role and applicable
+relationship, direction, aspect, text capacity, scope, or intent terms before
+choosing a contour, then run `describe <name>` on the serious candidates. Grouped
+discovery followed by direct `describe` does not satisfy page-local recall.
+Those commands supply the full match reasons, intended uses, and misuse
+boundaries omitted from the compact entry index. Recommendation is diverse
+candidate recall, not a whitelist, automatic choice, or shape quota; a neutral
+primitive remains valid when it fits best. Each page still resolves the final
+contour through §§1–2.1.
 
 ## 1. Contour Selection and Materialization Gate
 
@@ -110,11 +113,12 @@ Example recall and inspection commands:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py recommend \
-  --role spine --relationship order --directionality horizontal --aspect wide
+  --role spine --relationship order --directionality horizontal --aspect wide \
+  --limit 6
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py describe chevron
 
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py recommend \
-  --scope flowchart --role node --relationship flow --query decision
+  --scope flowchart --role node --relationship flow --query decision --limit 6
 ```
 
 **Hard rule — semantic fit, not name association**: a preset name, topic word,
