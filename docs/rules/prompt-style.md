@@ -105,6 +105,19 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 | Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster; recommend high-level composition, visual focus, and continuity as Reference when useful, without selecting a local authoring capability or element geometry; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
 | Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize them through geometry, composition, hierarchy, and treatment. Discover and invoke local deterministic authoring capabilities without an upstream capability selection. Consider each field explicitly labeled `suggestion` or Reference, then adopt, adapt, or decline it while preserving its semantic job and every binding constraint. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
 
+**Hard rule — capability knowledge precedes selection**: physical file
+boundaries do not imply runtime lazy-loading. A role loads the complete decision
+authorities for every capability it owns before choosing among those
+capabilities; otherwise the load trigger circularly depends on a choice made
+without that capability. Default Strategist's fixed planning bundle covers
+resource/preparation and high-level expression options without local authoring
+parameters. Executor's fixed construction bundle covers locally callable
+authoring options. Quick loads both decision surfaces in its one context. Only
+post-selection mechanics whose trigger is independently observable may remain
+conditional. For example, an actual `ai` / `slice` resource row may trigger
+Image_Generator backend, prompt-assembly, and per-image type details after
+planning; those mechanics are not a missing Strategist capability.
+
 **Hard rule — native shapes are authoring capabilities, not prepared
 resources**: a prepared resource needs a stable project-local file/path before
 realization because page authoring cannot acquire or generate it in place.

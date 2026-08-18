@@ -125,11 +125,11 @@ When authoring §IX, translate every purpose named in `communication_intent` int
 
 Two independent layers, each locks one preset or `custom`. Output: `d. Mode: <mode> + Visual style: <visual_style>`.
 
-> **Top-down custom direction construction.** Author three complete solution intents from the confirmed project contract and source before selecting any catalog basis; do not assemble three apparent solutions from independent mode/style/rendering picks. At that point only the three indexes may be in context. Use their summaries to freeze the exact reference ids for each direction, then read once only the deduplicated union of those referenced detail files and author the final behaviors. Every direction MUST serialize `mode: custom`, `visual_style: custom`, and `image_strategy.rendering: custom`, each with visible, non-empty behavior prose. A custom may use zero, one, or many catalog bases: one may specialize a strong dominant basis, several may divide distinct executable jobs, and a genuinely novel custom uses none. Reference count has no fixed cap and is an outcome, not a target; omit every basis whose contribution the behavior cannot state, and never add a second basis merely to make the result look synthesized. These three projections are the project-specific choices above the conservative fixed catalogs, not a fourth Custom proposal. Never glob a catalog, read an unselected sibling, or write bespoke prose as an enum value.
+> **Top-down custom direction construction.** Author three complete solution intents from the confirmed project contract and source before selecting any catalog basis; do not assemble three apparent solutions from independent mode/style/rendering picks. The fixed planning-capability batch may already be in context, but only the three mode/style/rendering indexes act as basis selectors. Use their summaries to freeze the exact reference ids for each direction, then read once only the deduplicated union of those referenced detail files and author the final behaviors. Every direction MUST serialize `mode: custom`, `visual_style: custom`, and `image_strategy.rendering: custom`, each with visible, non-empty behavior prose. A custom may use zero, one, or many catalog bases: one may specialize a strong dominant basis, several may divide distinct executable jobs, and a genuinely novel custom uses none. Reference count has no fixed cap and is an outcome, not a target; omit every basis whose contribution the behavior cannot state, and never add a second basis merely to make the result look synthesized. These three projections are the project-specific choices above the conservative fixed catalogs, not a fourth Custom proposal. Never glob a catalog, read an unselected sibling, or write bespoke prose as an enum value.
 
 #### Layer 1 — Communication mode
 
-🚧 **GATE**: before choosing a basis, read only [`modes/_index.md`](./modes/_index.md). After the three direction intents exist and their mode reference ids are frozen, read only those exact sibling files once; a novel mode reads none.
+🚧 **GATE**: use the already-loaded [`modes/_index.md`](./modes/_index.md) as the sole mode-basis catalog authority. After the three direction intents exist and their mode reference ids are frozen, read only those exact sibling files once; a novel mode reads none.
 
 The deck's **narrative + persuasion skeleton** — how the argument is organized and advanced. Lock one preset from `pyramid` / `narrative` / `instructional` / `showcase` / `briefing`, or `custom` with behavior.
 
@@ -143,7 +143,7 @@ Record the confirmed mode and rationale in `design_spec.md` first, including eve
 
 #### Layer 2 — Visual style
 
-🚧 **GATE**: before choosing a basis, read only [`visual-styles/_index.md`](./visual-styles/_index.md). After the three direction intents exist and their style reference ids are frozen, read only those exact sibling files once; a novel style reads none.
+🚧 **GATE**: use the already-loaded [`visual-styles/_index.md`](./visual-styles/_index.md) as the sole style-basis catalog authority. After the three direction intents exist and their style reference ids are frozen, read only those exact sibling files once; a novel style reads none.
 
 The deck's **visual aesthetic** — shape language, decoration density, whitespace rhythm, typographic character, texture. Anchors downstream fields e (Color), f (Icon), g (Typography), h (Image). Lock one preset from the catalog, or `custom`.
 
@@ -339,14 +339,25 @@ no-AI or editable-only requirements win. Execution follows
 
 **Always-on decision module; conditional resource extension**:
 
-1. Before authoring Stage-2 directions, read [`strategist-image.md`](./strategist-image.md) plus only [`image-renderings/_index.md`](./image-renderings/_index.md). After the three whole-direction intents exist and their rendering reference ids are frozen, read only those exact sibling files once and author one complete custom rendering inside each direction before deciding whether `recommend.image_usage` includes AI.
-2. Independently derive `recommend.image_usage` from source needs. Confirmed non-`none` sources activate the module's resource-planning sections and the image layout references. Confirmed `none` writes no image rows, but does not erase the three recommendation-only rendering candidates.
+1. Before authoring Stage-2 directions, load the workflow's complete fixed
+   planning-capability batch. It includes this module, the image-layout
+   authorities, all compact choice indexes, the icon-library contract, and the
+   complete Chart/Table registries. After the three whole-direction intents
+   exist and their mode/style/rendering reference ids are frozen, read only
+   those exact detail siblings once and author one complete custom rendering
+   inside each direction before deciding whether `recommend.image_usage`
+   includes AI.
+2. Independently derive `recommend.image_usage` from source needs. Confirmed
+   non-`none` sources activate the module's resource-planning sections.
+   Confirmed `none` writes no image rows, but does not erase the three
+   recommendation-only rendering candidates or the already-loaded composition
+   vocabulary.
 
 The module owns AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
-### Presentation Capability & Visualization Recall (Non-blocking — Strategist recommends, no user confirmation needed)
+### Presentation Capability & Visualization Selection (Non-blocking — Strategist recommends, no user confirmation needed)
 
-**Per-page capability recall**: Before §IX, consider this menu without a usage
+**Per-page capability review**: Before §IX, consider this menu without a usage
 quota. Use existing fields for semantic intent; omit unused lines and
 implementation parameters. Executor may adapt/decline a `Motion suggestion`
 while preserving content and intent; explicit user/template requirements bind.
@@ -362,7 +373,7 @@ system.
 
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
-| Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract plus the conditional image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
+| Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract and image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, compact illustrated-icon cues, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent elements by compatible family, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks when useful, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
@@ -391,23 +402,17 @@ Classify by information model, never source PowerPoint object type:
 | Model | Planning action |
 |---|---|
 | Qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` | Preserve units, relationship, and reading path as free §IX prose; no catalog key |
-| Values/dates/durations determine geometry | Chart; recall is optional |
-| Row header × column header addresses each fact | Table; recall is optional |
+| Values/dates/durations determine geometry | Chart; compare the complete loaded chart registry |
+| Row header × column header addresses each fact | Table; compare the complete loaded table registry |
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
-**Reference — not a constraint**: recall Chart/Table with 3–8 English tags when useful; add `--family chart|table` only when certain. Skip custom objects and qualitative composition.
-
-```bash
-python3 skills/ppt-master/scripts/visualization_recall.py recall \
-  --page P03 \
-  --tag "time series" \
-  --tag "three metrics" \
-  --tag "direction over time" \
-  --limit 6
-```
-
-The command returns a bounded shortlist plus `no-template-match`. Read it unfiltered; `tail` / `head` / `grep` can hide ranked candidates. `confidence` is lexical only. At `high` / `medium`, keep no-match after candidate review. At `low` / `none`, use a fitting candidate directly; otherwise rerun once with `--semantic-fallback` before no-match. Do not open any family index separately.
+**Mandatory — complete Chart/Table capability review**: Before §IX, compare
+every page's information model against every `Pick` / `Skip` rule in the two
+already-loaded live registries. The registries expose the possibility space;
+they are neither usage quotas nor whitelists. Skip custom objects and
+qualitative composition. Retain `no-template-match` when no registered
+reference fits.
 
 **Selection**:
 
@@ -420,7 +425,8 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
   <family>/<key> [<family>/<key> ...]
 ```
 
-Correct failed selections by recall; `no-template-match` never enters `page_visualizations`.
+Correct failed selections by re-reading the complete registries;
+`no-template-match` never enters `page_visualizations`.
 
 **Section VII selection list**: write `Page | Family | Template | Usage` for each `chart|table` reference; Usage is semantic purpose. Omit empty/no-match detail. Qualitative composition stays in §IX; only Layout/Deck owns reusable PowerPoint structure.
 
@@ -465,7 +471,13 @@ Confirmation `d` locks two independent catalog items:
 - **Mode** — narrative skeleton: [`modes/_index.md`](./modes/_index.md) → `pyramid` / `narrative` / `instructional` / `showcase` / `briefing`.
 - **Visual style** — aesthetic: [`visual-styles/_index.md`](./visual-styles/_index.md) → presets + `custom`.
 
-Strategist first reads only the three indexes, freezes the bases for the three whole directions, then reads only the deduplicated referenced detail files before authoring their custom behaviors. Executor reads one locked preset file or the exact references of a selected custom; neither role globs a catalog (see [`generate-pptx`](../workflows/generate-pptx.md) Step 6).
+Strategist first loads the fixed planning-capability batch. For
+mode/style/rendering basis selection it uses only the three corresponding
+indexes, freezes the bases for the three whole directions, then reads only the
+deduplicated referenced detail files before authoring their custom behaviors.
+Executor reads one locked preset file or the exact references of a selected
+custom; neither role globs a detail catalog (see
+[`generate-pptx`](../workflows/generate-pptx.md) Step 6).
 
 ---
 

@@ -4,7 +4,9 @@
 
 Runtime grammar for Slide-local qualitative relationships built from editable shapes; it is not a diagram/template catalog.
 
-**Load**: Quick reads this grammar once before all SVG authoring and reuses it for every per-page decision. Default loads it before realizing the first page whose Structure decision is yes, then reuses it in that execution context.
+**Load**: Default and Quick read this grammar once with their fixed construction
+bundle before all SVG authoring and reuse it for every per-page decision. Loading
+the grammar does not select `Structure=yes` or create a geometry quota.
 
 **Hard rule — no Structure catalog**: never recall or resolve `structure/<key>`. Compose from authoritative content, §IX relationships, the communication move, and the active visual system.
 

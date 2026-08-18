@@ -98,7 +98,7 @@ deprecated compatibility no-op. `--record-usage` writes one derived snapshot
 under `analysis/page-context/`; exact `o200k_base` token counts are optional and
 degrade to `tokens: null` when `tiktoken` is absent. Telemetry may be partial.
 
-Visualization candidate recall:
+Optional visualization-recall diagnostics and canonical validation:
 
 ```bash
 python3 scripts/visualization_recall.py recall --page P03 --tag "time series" --tag "three metrics" --tag "direction over time"

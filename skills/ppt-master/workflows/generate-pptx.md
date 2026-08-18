@@ -258,6 +258,7 @@ arises.
 
 ```
 Read references/strategist.md
+Read references/canvas-formats.md
 ```
 
 Then load only the extra role modules triggered by the current plan:
@@ -266,16 +267,31 @@ Then load only the extra role modules triggered by the current plan:
 |---|---|
 | Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
 | The confirmed Stage-1 `delivery_context` identifies recorded/self-running/video delivery, or input is an explicit final/literal narration script | `references/video-design.md` before the three Stage-2 whole solutions and page roster |
-| The confirmed Stage 2 `image_usage` contains a source other than `none`, or the user supplied an explicit non-`none` image constraint | `references/image-layout-spec.md` + `references/image-layout-patterns.md` before production detail or §VIII |
 
-After Stage 1 and template handoff, load `strategist-image.md` plus only the
-three `_index.md` files. Author the three whole solution intents before mapping
-any component basis. Freeze every referenced mode/style/rendering id from the
-indexes, then read once only the deduplicated union of those exact detail files
-and finish the three custom behaviors. A novel custom reads no detail file.
-Confirmed non-`none` loads the layout references and continues into resource
-planning; confirmed `none` writes no image rows while retaining
-recommendation-only rendering candidates. Only an installed
+After Stage 1 and template handoff, load the fixed planning-capability block
+below in one batch before authoring any Stage-2 whole-solution intent, image
+source recommendation, or page roster:
+
+```
+Read references/strategist-image.md
+Read references/image-layout-spec.md
+Read references/image-layout-patterns.md
+Read references/modes/_index.md
+Read references/visual-styles/_index.md
+Read references/image-renderings/_index.md
+Read templates/icons/README.md
+Read templates/charts/charts_index.json
+Read templates/tables/tables_index.json
+```
+
+This is a capability map, not a usage checklist: retain zero-use outcomes and
+the Strategist/Executor ownership boundary. Author the three whole solution
+intents before mapping any component basis. Freeze every referenced
+mode/style/rendering id from the indexes, then read once only the deduplicated
+union of those exact detail files and finish the three custom behaviors. A novel
+custom reads no detail file. Confirmed non-`none` uses the already-loaded image
+layout references and continues into resource planning; confirmed `none` writes
+no image rows while retaining recommendation-only rendering candidates. Only an installed
 project-local template state loads the template module, and only after Stage 1
 is confirmed; a bare template/style name does not.
 
@@ -363,11 +379,10 @@ or `templates` with at least one server-resolved root.
    it. The server requires this handoff before Stage 2.
 
 2. Only now inspect installed template state and apply
-   `strategist-template.md` when active. Read `strategist-image.md` plus only
-   `modes/_index.md`, `visual-styles/_index.md`, and
-   `image-renderings/_index.md`; author three whole solution intents, freeze
-   their exact component references from those indexes, then read only the
-   referenced detail files and complete the custom projections. Derive the
+   `strategist-template.md` when active. Load the fixed Stage-2 planning-capability
+   block above, author three whole solution intents, freeze their exact component
+   references from its indexes, then read only the referenced detail files and
+   complete the custom projections. Derive the
    remaining production defaults and create
    `confirm_ui/recommendations.stage2.json` without changing Stage 1; declare
    `stage: "stage2"`, then wait for the final confirmation:
@@ -596,6 +611,7 @@ construction block plus the resolved mode/style detail files as one batch:
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
 Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
 Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
+Read references/executor-structure.md              # REQUIRED: qualitative relationship and topology grammar
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
 Read references/modes/<resolved-id>.md             # one preset id, or each `mode_references` id
 Read references/visual-styles/<resolved-id>.md     # one preset id, or each `visual_style_references` id
@@ -610,7 +626,6 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
 | Selected §VII / `page_visualizations` Chart/Table `family/key`, or a legacy `page_charts` row resolving to a live Chart/Table SVG | `executor-visualization.md` + the selected Chart/Table branch |
 | Actual value-driven geometry, including mini/inset charts and sparklines | `executor-chart.md` |
-| Mandatory per-page Structure decision from §IX is `yes` | `executor-structure.md` before any geometry for the first applicable page |
 | Actual row × column fact grid | `executor-table.md` |
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | §IX or current page content contains mathematical notation that may require native math | `native-formula.md` before choosing ordinary text, inline native math, or block native math |
@@ -622,8 +637,9 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 
 No branch is loaded by analogy. For each page, after §IX content/communication
 but before geometry, apply [`executor-base.md`](../references/executor-base.md)'s
-mandatory Structure decision. `no` stays on base; before the first `yes`, read
-`executor-structure.md` completely and reuse it until file/context invalidation.
+mandatory Structure decision with the already-loaded
+`executor-structure.md`. `no` stays on the shared base; `yes` applies that
+grammar without another load gate.
 Create no catalog/lock/artifact. Chart/Table selection neither replaces this
 decision nor locks geometry/native readiness.
 
