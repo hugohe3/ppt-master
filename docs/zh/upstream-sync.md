@@ -87,6 +87,7 @@ Gate 4: 依赖清单一致 (check_deps_sync.py)
 | 上游新增 .md 文件中的 `python3` 命令 | 同化为 `uvx ppt-master <cmd>` |
 | `cli.py` | 无冲突（上游无此文件）；检查新脚本是否已映射 |
 | `pyproject.toml` | 保留 fork 结构（version, tool.uv, tool.setuptools），只同步依赖 |
+| `README.md` / `README_CN.md` | 接受上游内容后，在语言切换行与赞助商 `<details>` 块之间重新插入 fork 声明块（`Fork notice` / `Fork 声明`），声明赞助商与捐赠信息属于原作者、与本 fork 无关 |
 | `update_repo.py` | 保留 fork 的 uv 功能，合入上游改进 |
 | `skills/ppt-master/scripts/*.py` | **零改动** —— docstring 中 `python3` 残留已知且可接受 |
 | `attribution_guard.py` | **保留 fork 的 `_SKILL_GATE_MARKER`（`uvx ppt-master attribution-guard`）**；合入上游其他改动；合并后必须运行 guard 验证（exit 0） |

@@ -14,6 +14,8 @@
 
 English | [中文](./README_CN.md)
 
+> **Fork notice**: This repository is a fork of [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master), maintained by [elvisw](https://github.com/elvisw) and adapted to run as a `uvx` tool published on PyPI. The sponsor and donation information below belongs to the original author (Hugo He) and benefits the original project, not this fork.
+
 <details open>
 <summary>This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a> and other sponsors.</summary>
 
