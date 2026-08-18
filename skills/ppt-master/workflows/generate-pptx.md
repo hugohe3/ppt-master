@@ -863,6 +863,7 @@ Before creating the PPTX, the exporter independently requires the current matchi
 ## ✅ Generate PPTX Complete
 
 - [x] Image readiness gate passed
+- [x] The final carrier receipt was compared with the retained page decisions, and any factual contradiction was repaired without treating counts as quotas
 - [x] Notes split completed when enabled; disabled exports used `--no-notes`
 - [x] `svg_final/` preview completed
 - [x] Native PPTX published and postflight report written

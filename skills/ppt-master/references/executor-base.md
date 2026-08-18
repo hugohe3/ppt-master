@@ -175,6 +175,16 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
   2. **Quality Check Gate**: only after every planned SVG exists, run `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json` directly on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase (conditional)**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity only when the effective Speaker Notes outcome is enabled.
 
+**Mandatory — final carrier-receipt review**: The final checker prints one
+factual `[CARRIERS]` summary and stores per-page detail under
+`files[].info.carrier_receipt`. Compare the summary with the retained page jobs,
+chosen resource roles, and running geometry signatures before export. Counts
+and diversity never create a quota or prove quality; zero use remains valid.
+When the facts contradict an active decision—such as an adopted preset absent
+from output, a primary image reduced to a minor frame, or unrelated jobs
+collapsing to one neutral construction—read only the affected receipt rows,
+repair those pages in one consolidated pass, and rerun the final checker.
+
 ### 3.0 Native Shape Selection
 
 **Hard rule — contour before encoding**: choose the page-fit contour from the

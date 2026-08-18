@@ -42,8 +42,11 @@ or contrast. Independently resolve page-field / carrier fit from ownership,
 focal hierarchy, boundary strength, and the active deck's edge / opening
 language; `Structure=no` removes only relationship topology. Choose a plain
 primitive, uniform grid, or no drawn carrier only when that lack of inflection
-gives the reader a concrete benefit or avoids a false inference; retain that
-effect in active context. Quick speed, restrained style, readability, equal
+gives the reader a concrete benefit or avoids a false inference. Retain that
+reader effect through authoring. Before that neutral result wins, name the
+strongest fitting native / compound alternative and retain why its inflection
+would add no reader benefit, create a false inference, weaken hierarchy, or
+conflict with the page job. Quick speed, restrained style, readability, equal
 importance, precedent, and shorter syntax alone do not qualify.
 
 **Hard rule — style does not narrow capability**: the active visual system may
@@ -72,6 +75,10 @@ hand-author a freeform merely because an SVG path is convenient.
 `data-pptx-authoring="preset"`. Never add `data-pptx-prst`, frame, adjustment,
 or registry path data by hand. Insert the helper's complete compact `<g>` and
 rerun the helper whenever its geometry, paint, or filter reference changes.
+After selecting two or more objects for one current page or template
+construction, use `render-batch --input -` to validate and emit their
+independent fragments in one stdout round; the batch never chooses those
+objects or their composition.
 
 ---
 
@@ -197,8 +204,8 @@ siblings whenever one-object contour semantics are unnecessary.
 
 ## 3. Fragment Generation
 
-One helper invocation owns one selected object; multiple chosen objects may
-render in one tool round as separate outputs.
+`render` emits one selected object. `render-batch` atomically emits multiple
+already-selected objects for one current page or template construction.
 Generated project pages choose each object's solid paint from the current page
 context, using `spec_lock.md` roles as reusable anchors rather than an exhaustive
 palette; `create-template` takes colors from the confirmed brief and template
@@ -234,11 +241,13 @@ Every connector-family preset requires `--object-kind connector`, `--fill none`,
 and a visible stroke. It exports as an unconnected `p:cxnSp`; a connector
 preset can never be authored as an ordinary `shape`.
 
-**Hard rule — stdout-only exception**: the helper prints one deterministic
-`<g>` fragment. Read that output and insert it with the normal page/template
-`apply_patch` edit. Do not redirect it into `svg_output/`, drive it from a batch
-manifest, loop over pages/templates, or let it choose layout. The main Agent
-still authors each complete SVG page and reusable template explicitly.
+**Hard rule — stdout-only exception**: the helper prints one or more
+deterministic `<g>` fragments. Read that output and insert it with the normal
+page/template `apply_patch` edit. A batch JSON array is transient input for
+already-selected objects in the current construction, never a project resource
+or multi-page plan. Do not redirect output into `svg_output/`, loop over
+pages/templates, or let the helper choose layout. The main Agent still authors
+each complete SVG page and reusable template explicitly.
 
 ---
 

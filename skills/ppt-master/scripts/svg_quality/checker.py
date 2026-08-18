@@ -1177,6 +1177,7 @@ class SVGQualityChecker:
                     expected_viewbox_label=expected_viewbox_label,
                 )
                 self._check_legacy_pptx_attributes(root, svg_path, result)
+                self._record_carrier_receipt(root, result)
 
                 # 1a. Validate exact importer transport before compatible
                 # inline geometry is materialized on the shared tree.
@@ -1437,6 +1438,208 @@ class SVGQualityChecker:
                     allow_template_placeholders=self.template_mode,
                 )
             )
+
+    def _record_carrier_receipt(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Record factual visible-carrier use without grading the design."""
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        geometry_tags = (
+            'rect',
+            'circle',
+            'ellipse',
+            'line',
+            'polyline',
+            'polygon',
+            'path',
+        )
+        geometry_counts = Counter({tag: 0 for tag in geometry_tags})
+        preset_names: Counter[str] = Counter()
+        native_objects = Counter({
+            'chart': 0,
+            'table': 0,
+            'formula_block': 0,
+            'formula_inline': 0,
+            'other': 0,
+        })
+        marker_counts = Counter({'start': 0, 'mid': 0, 'end': 0})
+        text_count = 0
+        icon_count = 0
+        page_frame_geometry = 0
+
+        for element in root.iter():
+            if (
+                element is root
+                or self._is_hidden_element(element, parent_by_id)
+                or self._has_non_visual_ancestor(element, root, parent_by_id)
+                or self._has_zero_opacity(element, parent_by_id)
+            ):
+                continue
+
+            tag = _local_name(element)
+            if tag == 'text':
+                text_count += 1
+            elif tag == 'use' and element.get('data-icon') is not None:
+                icon_count += 1
+
+            if element.get(_INLINE_FORMULA_ATTR) is not None:
+                native_objects['formula_inline'] += 1
+            replacement_kind = self._carrier_native_replacement_kind(element)
+            if replacement_kind:
+                key = (
+                    'formula_block'
+                    if replacement_kind == 'formula'
+                    else replacement_kind
+                )
+                native_objects[key if key in native_objects else 'other'] += 1
+
+            preset = (element.get('data-pptx-prst') or '').strip()
+            if preset:
+                preset_names[preset] += 1
+                if self._carrier_page_frame_role(element, root, parent_by_id):
+                    page_frame_geometry += 1
+                continue
+            if tag not in geometry_counts or self._has_preset_ancestor(
+                element,
+                root,
+                parent_by_id,
+            ):
+                continue
+
+            geometry_counts[tag] += 1
+            if self._carrier_page_frame_role(element, root, parent_by_id):
+                page_frame_geometry += 1
+            style_values = (
+                _parse_inline_style(element.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            for position in ('start', 'mid', 'end'):
+                raw_marker = (
+                    style_values.get(f'marker-{position}')
+                    or element.get(f'marker-{position}')
+                    or ''
+                ).strip().lower()
+                if raw_marker and raw_marker != 'none':
+                    marker_counts[position] += 1
+
+        image_receipt = self._carrier_image_receipt(root)
+        result['info']['carrier_receipt'] = {
+            'text_elements': text_count,
+            'images': image_receipt,
+            'icons': icon_count,
+            'geometry': {
+                'svg_elements': dict(geometry_counts),
+                'preset_shapes': sum(preset_names.values()),
+                'preset_names': dict(sorted(preset_names.items())),
+                'page_frame_elements': page_frame_geometry,
+                'marker_uses': dict(marker_counts),
+            },
+            'native_objects': dict(native_objects),
+        }
+
+    @staticmethod
+    def _carrier_native_replacement_kind(element: ET.Element) -> str:
+        """Return one native replacement kind without turning bad data into a check."""
+        if _native_replacement_kind is not None:
+            try:
+                return (_native_replacement_kind(element) or '').strip().lower()
+            except ValueError:
+                pass
+        return (
+            element.get('data-pptx-replace-with')
+            or element.get('data-pptx-native')
+            or ''
+        ).strip().lower()
+
+    @staticmethod
+    def _has_preset_ancestor(
+        element: ET.Element,
+        root: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> bool:
+        """Return whether geometry is only the visible detail of a preset atom."""
+        current = parent_by_id.get(id(element))
+        while current is not None and current is not root:
+            if (current.get('data-pptx-prst') or '').strip():
+                return True
+            current = parent_by_id.get(id(current))
+        return False
+
+    @staticmethod
+    def _carrier_page_frame_role(
+        element: ET.Element,
+        root: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> bool:
+        """Return whether an element belongs to declared page framing."""
+        current: ET.Element | None = element
+        while current is not None:
+            role = (current.get('data-pptx-role') or '').strip().lower()
+            if role in {'background', 'decoration'}:
+                return True
+            if current is root:
+                break
+            current = parent_by_id.get(id(current))
+        return False
+
+    def _carrier_image_receipt(self, root: ET.Element) -> Dict:
+        """Summarize visible image placements and their frame share."""
+        working_root, parent_by_id, images = self._visible_image_elements(root)
+        viewbox = _parse_viewbox_values(working_root.get('viewBox') or '')
+        canvas_area = (
+            abs(viewbox[2] * viewbox[3])
+            if viewbox is not None and viewbox[2] and viewbox[3]
+            else 0.0
+        )
+        frame_shares: List[float] = []
+        filenames = set()
+
+        for image in images:
+            href = image.get('href') or image.get(f'{{{XLINK_NS}}}href') or ''
+            if href.startswith('data:'):
+                filenames.add('(embedded)')
+            elif href:
+                path_name = Path(unquote(urlsplit(href).path)).name
+                filenames.add(path_name or href[:80])
+
+            display_owner = image
+            parent = parent_by_id.get(id(image))
+            if (
+                parent is not None
+                and parent is not working_root
+                and _local_name(parent) == 'svg'
+            ):
+                display_owner = parent
+            try:
+                x = float(display_owner.get('x') or '0')
+                y = float(display_owner.get('y') or '0')
+                width = float(display_owner.get('width') or '0')
+                height = float(display_owner.get('height') or '0')
+            except (TypeError, ValueError):
+                continue
+            if width <= 0 or height <= 0 or canvas_area <= 0:
+                continue
+            transformed = self._transformed_rect_edge_lengths(
+                display_owner,
+                (x, y, width, height),
+                parent_by_id,
+            )
+            if transformed is not None:
+                width, height = transformed
+            frame_shares.append(abs(width * height) / canvas_area)
+
+        return {
+            'placements': len(images),
+            'files': sorted(filenames),
+            'max_frame_share': round(max(frame_shares), 4) if frame_shares else 0.0,
+        }
 
     def _check_fonts(self, content: str, result: Dict):
         """Check font usage.
@@ -6941,6 +7144,7 @@ class SVGQualityChecker:
             f"  [ERROR] With errors: {self.summary['errors']} ({self._percentage(self.summary['errors'])}%)")
 
         self._print_provenance_category_summary()
+        self._print_carrier_receipt_summary()
 
         if self.issue_types:
             print(f"\nIssue categories:")
@@ -6980,6 +7184,119 @@ class SVGQualityChecker:
             )
             print(f"  4. foreignObject: Use <text> + <tspan> for manual line breaks")
             print(f"  5. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
+
+    def _carrier_receipt_summary(self) -> Dict:
+        """Aggregate factual per-page carrier receipts for compact review."""
+        receipts = [
+            result.get('info', {}).get('carrier_receipt')
+            for result in self.results
+            if result.get('info', {}).get('carrier_receipt')
+        ]
+        totals = Counter({
+            'text_elements': 0,
+            'image_placements': 0,
+            'icons': 0,
+            'svg_geometry_elements': 0,
+            'preset_shapes': 0,
+            'page_frame_elements': 0,
+            'marker_uses': 0,
+        })
+        pages_with = Counter({
+            'images': 0,
+            'icons': 0,
+            'presets': 0,
+            'charts': 0,
+            'tables': 0,
+            'formulas': 0,
+        })
+        geometry_counts: Counter[str] = Counter()
+        preset_names: Counter[str] = Counter()
+        native_objects: Counter[str] = Counter()
+        image_frame_shares: List[float] = []
+
+        for receipt in receipts:
+            images = receipt['images']
+            geometry = receipt['geometry']
+            native = receipt['native_objects']
+            totals['text_elements'] += receipt['text_elements']
+            totals['image_placements'] += images['placements']
+            totals['icons'] += receipt['icons']
+            totals['preset_shapes'] += geometry['preset_shapes']
+            totals['page_frame_elements'] += geometry['page_frame_elements']
+            totals['marker_uses'] += sum(geometry['marker_uses'].values())
+            geometry_counts.update(geometry['svg_elements'])
+            preset_names.update(geometry['preset_names'])
+            native_objects.update(native)
+
+            if images['placements']:
+                pages_with['images'] += 1
+                image_frame_shares.append(images['max_frame_share'])
+            if receipt['icons']:
+                pages_with['icons'] += 1
+            if geometry['preset_shapes']:
+                pages_with['presets'] += 1
+            if native.get('chart'):
+                pages_with['charts'] += 1
+            if native.get('table'):
+                pages_with['tables'] += 1
+            if native.get('formula_block') or native.get('formula_inline'):
+                pages_with['formulas'] += 1
+
+        totals['svg_geometry_elements'] = sum(geometry_counts.values())
+        frame_share_range = (
+            [round(min(image_frame_shares), 4), round(max(image_frame_shares), 4)]
+            if image_frame_shares
+            else []
+        )
+        return {
+            'scope': 'informational-not-a-quota',
+            'pages': len(receipts),
+            'totals': dict(totals),
+            'pages_with': dict(pages_with),
+            'geometry_elements': dict(sorted(geometry_counts.items())),
+            'preset_names': dict(sorted(preset_names.items())),
+            'native_objects': dict(sorted(native_objects.items())),
+            'image_page_max_frame_share_range': frame_share_range,
+        }
+
+    def _print_carrier_receipt_summary(self) -> None:
+        """Print a compact actual-use receipt without a score or threshold."""
+        if self.template_mode:
+            return
+        receipt = self._carrier_receipt_summary()
+        if not receipt['pages']:
+            return
+        totals = receipt['totals']
+        native = receipt['native_objects']
+        print("\n[CARRIERS] Actual-use receipt (informational; not a quota)")
+        print(
+            f"  Pages: {receipt['pages']} | text: {totals['text_elements']} | "
+            f"images: {totals['image_placements']} | icons: {totals['icons']}"
+        )
+        print(
+            f"  Geometry: SVG elements {totals['svg_geometry_elements']} | "
+            f"native presets {totals['preset_shapes']} | "
+            f"page-frame elements {totals['page_frame_elements']} | "
+            f"marker uses {totals['marker_uses']}"
+        )
+        print(
+            f"  Native objects: charts {native.get('chart', 0)} | "
+            f"tables {native.get('table', 0)} | formulas "
+            f"{native.get('formula_block', 0) + native.get('formula_inline', 0)}"
+        )
+        presets = receipt['preset_names']
+        preset_text = (
+            ', '.join(f'{name} x{count}' for name, count in presets.items())
+            if presets
+            else '(none)'
+        )
+        print(f"  Presets: {preset_text}")
+        image_range = receipt['image_page_max_frame_share_range']
+        if image_range:
+            print(
+                "  Largest image-frame share on image pages: "
+                f"{image_range[0] * 100:.1f}%–{image_range[1] * 100:.1f}%"
+            )
 
     def _print_provenance_category_summary(self):
         """Print compact JSON-equivalent counts for token-safe gate handling."""
@@ -7386,6 +7703,7 @@ class SVGQualityChecker:
                 },
             },
             'drift': drift,
+            'carrier_receipt': self._carrier_receipt_summary(),
             'project_issues': project_issues,
             'files': self.results,
         }

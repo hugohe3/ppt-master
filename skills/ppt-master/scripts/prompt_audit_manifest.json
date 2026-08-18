@@ -345,14 +345,14 @@
       "max_tokens": 125000
     },
     "route.generate.quick-generate.hyperlink": {
-      "description": "Quick Generate with direct PowerPoint-native external and same-deck hyperlink authoring.",
+      "description": "Quick Generate with direct PowerPoint-native external and same-deck hyperlink authoring. Ceiling raised after BUDGET_LOAD_SET reported 110212 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.executor.hyperlink"
       ],
       "files": [],
-      "max_tokens": 110000
+      "max_tokens": 125000
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types. Ceiling raised after BUDGET_LOAD_SET reported 140175 tokens.",
@@ -976,12 +976,12 @@
       "max_tokens": 1000
     },
     "stage.create-template.authored-preset": {
-      "description": "Conditional native preset and Boolean shape authoring reference for Create Layout/Create Deck.",
+      "description": "Conditional native preset and Boolean shape authoring reference for Create Layout/Create Deck. Ceiling raised after BUDGET_LOAD_SET reported 6618 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 6500
+      "max_tokens": 7500
     },
     "route.generate.planning-template": {
       "description": "Generate-PPTX planning context after an explicit template workspace is installed. Ceiling raised after BUDGET_LOAD_SET reported 119170 tokens.",
@@ -1090,12 +1090,12 @@
       "max_tokens": 1000
     },
     "stage.generate.executor.native-shape": {
-      "description": "Stock PowerPoint shape selection and Boolean materialization authority, always included in Generate Executor contexts.",
+      "description": "Stock PowerPoint shape selection and Boolean materialization authority, always included in Generate Executor contexts. Ceiling raised after BUDGET_LOAD_SET reported 6618 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 6500
+      "max_tokens": 7500
     },
     "stage.shared.svg-effects": {
       "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
