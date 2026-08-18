@@ -1,0 +1,1217 @@
+{
+  "schema": "ppt-master.preset-shape-semantics.v1",
+  "sources": [
+    {
+      "kind": "office-gallery-categories",
+      "url": "https://support.microsoft.com/en-US/Accessibility/powerpoint/use-a-screen-reader-to-insert-and-edit-pictures-and-tables-in-powerpoint",
+      "use": "Office category names"
+    },
+    {
+      "kind": "drawingml-preset-enum",
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.drawing.shapetypevalues?view=openxml-3.0.1",
+      "use": "DrawingML preset names"
+    },
+    {
+      "kind": "powerpoint-shape-enum",
+      "url": "https://learn.microsoft.com/en-us/javascript/api/powerpoint/powerpoint.geometricshapetype?view=powerpoint-js-preview",
+      "use": "Literal shape identity and terminology"
+    },
+    {
+      "kind": "powerpoint-action-buttons",
+      "url": "https://support.microsoft.com/en-us/powerpoint/add-commands-to-your-presentation-with-action-buttons",
+      "use": "Action-button behavior boundary"
+    }
+  ],
+  "office_categories": [
+    {
+      "id": "lines",
+      "label": "Lines",
+      "summary": "Straight, bent, and curved relationship contours."
+    },
+    {
+      "id": "rectangles",
+      "label": "Rectangles",
+      "summary": "Neutral and corner-inflected rectangular carriers."
+    },
+    {
+      "id": "basic-shapes",
+      "label": "Basic Shapes",
+      "summary": "Geometric bodies, boundaries, radial contours, and literal symbols."
+    },
+    {
+      "id": "block-arrows",
+      "label": "Block Arrows",
+      "summary": "Filled directional bodies for sequence, movement, and route emphasis."
+    },
+    {
+      "id": "equation-shapes",
+      "label": "Equation Shapes",
+      "summary": "Literal mathematical operators."
+    },
+    {
+      "id": "flowchart",
+      "label": "Flowchart",
+      "summary": "Conventional flowchart notation for explicit process diagrams."
+    },
+    {
+      "id": "stars-and-banners",
+      "label": "Stars and Banners",
+      "summary": "Emblems, bursts, banners, scrolls, and wave accents."
+    },
+    {
+      "id": "callouts",
+      "label": "Callouts",
+      "summary": "Annotation bodies and leaders that point to another object or region."
+    },
+    {
+      "id": "action-buttons",
+      "label": "Action Buttons",
+      "summary": "Visual navigation-control shapes whose actions must be assigned separately."
+    }
+  ],
+  "groups": [
+    {
+      "id": "straight-lines",
+      "label": "Straight lines and connectors",
+      "office_category": "lines",
+      "scope": "general",
+      "roles": ["edge", "spine", "boundary"],
+      "relationships": ["link", "order", "contrast", "annotation"],
+      "directionality": ["horizontal", "vertical", "diagonal"],
+      "aspects": ["linear"],
+      "text_capacity": "none",
+      "visual_weight": "quiet",
+      "literal_only": false,
+      "recommended_for": [
+        "Direct links, dividers, leaders, and reading-path spines.",
+        "Thin relationships whose meaning comes from endpoints, routing, or an optional marker."
+      ],
+      "avoid_for": [
+        "Do not substitute a line for a filled directional body or content carrier.",
+        "Do not imply endpoint attachment; newly authored connector presets remain unconnected."
+      ],
+      "presets": {
+        "line": {"intent": "Straight line with the default diagonal orientation."},
+        "lineInv": {"intent": "Straight line with the inverse default diagonal orientation."},
+        "straightConnector1": {"intent": "Straight connector contour when connector object identity matters."}
+      }
+    },
+    {
+      "id": "bent-connectors",
+      "label": "Bent connectors",
+      "office_category": "lines",
+      "scope": "general",
+      "roles": ["edge", "spine"],
+      "relationships": ["link", "order", "hierarchy", "flow"],
+      "directionality": ["bent"],
+      "aspects": ["flexible"],
+      "text_capacity": "none",
+      "visual_weight": "quiet",
+      "literal_only": false,
+      "recommended_for": [
+        "Orthogonal routing around content or between aligned zones.",
+        "Relationships whose route needs visible right-angle structure."
+      ],
+      "avoid_for": [
+        "Do not add bends when a straight relationship is clearer.",
+        "Do not use the extra segments as decoration or imply unsupported endpoint attachment."
+      ],
+      "presets": {
+        "bentConnector2": {"intent": "One-bend orthogonal connector."},
+        "bentConnector3": {"intent": "Two-bend orthogonal connector."},
+        "bentConnector4": {"intent": "Three-bend orthogonal connector."},
+        "bentConnector5": {"intent": "Four-bend orthogonal connector for more complex routing."}
+      }
+    },
+    {
+      "id": "curved-connectors",
+      "label": "Curved connectors",
+      "office_category": "lines",
+      "scope": "general",
+      "roles": ["edge", "spine"],
+      "relationships": ["link", "order", "cycle", "flow"],
+      "directionality": ["curved"],
+      "aspects": ["flexible"],
+      "text_capacity": "none",
+      "visual_weight": "quiet",
+      "literal_only": false,
+      "recommended_for": [
+        "Soft rerouting, feedback links, or relationships that must pass around objects.",
+        "Continuous paths where curvature carries meaning."
+      ],
+      "avoid_for": [
+        "Do not curve a direct link merely to make it look less plain.",
+        "Do not imply unsupported endpoint attachment."
+      ],
+      "presets": {
+        "curvedConnector2": {"intent": "Single-curve connector."},
+        "curvedConnector3": {"intent": "Two-segment curved connector."},
+        "curvedConnector4": {"intent": "Three-segment curved connector."},
+        "curvedConnector5": {"intent": "Four-segment curved connector for complex routing."}
+      }
+    },
+    {
+      "id": "neutral-rectangles",
+      "label": "Neutral rectangular carriers",
+      "office_category": "rectangles",
+      "scope": "general",
+      "roles": ["field", "carrier", "node", "label"],
+      "relationships": ["none", "membership", "contrast", "hierarchy"],
+      "directionality": ["none"],
+      "aspects": ["flexible"],
+      "text_capacity": "high",
+      "visual_weight": "quiet",
+      "literal_only": false,
+      "recommended_for": [
+        "Content ownership, stable fields, and nodes that need no directional or symbolic inflection.",
+        "Layouts where the absence of contour meaning is itself useful."
+      ],
+      "avoid_for": [
+        "Do not choose neutrality only because primitive syntax is shorter.",
+        "Do not wrap every text block when spacing already communicates ownership."
+      ],
+      "presets": {
+        "rect": {"intent": "Fully neutral rectangular field or carrier."},
+        "roundRect": {"intent": "Uniformly rounded carrier with a softer, more approachable boundary."}
+      }
+    },
+    {
+      "id": "corner-inflected-rectangles",
+      "label": "Corner-inflected rectangles",
+      "office_category": "rectangles",
+      "scope": "general",
+      "roles": ["field", "carrier", "node", "label"],
+      "relationships": ["membership", "order", "hierarchy", "contrast"],
+      "directionality": ["none", "horizontal", "vertical", "diagonal"],
+      "aspects": ["flexible"],
+      "text_capacity": "high",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Carriers whose rounded or clipped corners mark an entry edge, open edge, or deck-wide contour language.",
+        "Subtle hierarchy without adding arrows or icons."
+      ],
+      "avoid_for": [
+        "Do not scatter corner variants randomly; the changed corners must have a page-level reason.",
+        "Do not let a decorative corner imply direction that the content does not have."
+      ],
+      "presets": {
+        "round1Rect": {"intent": "One rounded corner for a single softened or attached edge."},
+        "round2SameRect": {"intent": "Two rounded corners on one side, creating a clear opening or terminal edge."},
+        "round2DiagRect": {"intent": "Two diagonally opposed rounded corners for reciprocal or diagonal tension."},
+        "snipRoundRect": {"intent": "Mixed clipped and rounded corners for controlled technical contrast."},
+        "snip1Rect": {"intent": "One clipped corner for a single technical or directional cue."},
+        "snip2SameRect": {"intent": "Two clipped corners on one side for an open or connected edge."},
+        "snip2DiagRect": {"intent": "Two diagonally clipped corners for diagonal rhythm or contrast."}
+      }
+    },
+    {
+      "id": "triangular-bodies",
+      "label": "Triangular bodies",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["node", "carrier", "accent", "symbol"],
+      "relationships": ["hierarchy", "order", "contrast", "literal"],
+      "directionality": ["none", "horizontal", "vertical", "diagonal"],
+      "aspects": ["square", "flexible"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Apex, escalation, directional focus, or a literal triangular object.",
+        "Corner anchoring where a diagonal edge materially organizes the page."
+      ],
+      "avoid_for": [
+        "Do not use as a generic card; an apex or diagonal edge creates a strong inference.",
+        "Do not replace a true arrow when movement or endpoint direction is the job."
+      ],
+      "presets": {
+        "triangle": {"intent": "Symmetric triangle for apex, priority, or upward/downward focus."},
+        "rtTriangle": {"intent": "Right triangle for corner anchoring, diagonal split, or literal geometry."}
+      }
+    },
+    {
+      "id": "slanted-quadrilaterals",
+      "label": "Slanted quadrilaterals",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["carrier", "node", "accent"],
+      "relationships": ["order", "contrast", "flow"],
+      "directionality": ["horizontal", "diagonal"],
+      "aspects": ["wide", "flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Motion, transformation, comparison, or a sloped handoff between zones.",
+        "Nodes where the slanted sides reinforce the reading direction."
+      ],
+      "avoid_for": [
+        "Do not use the diamond as a fake flowchart decision outside an actual flowchart.",
+        "Do not use slanted edges on static content with no directional meaning."
+      ],
+      "presets": {
+        "diamond": {"intent": "Four-sided focal node for branching, opposition, or a literal diamond."},
+        "parallelogram": {"intent": "Parallel slants for motion, transfer, or input/output-like movement."},
+        "trapezoid": {"intent": "Symmetric widening or narrowing for expansion, compression, or stage change."},
+        "nonIsoscelesTrapezoid": {"intent": "Asymmetric widening or narrowing for off-axis transition."}
+      }
+    },
+    {
+      "id": "regular-polygons",
+      "label": "Regular polygon bodies",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["carrier", "node", "label", "accent"],
+      "relationships": ["none", "membership", "hierarchy", "contrast"],
+      "directionality": ["none", "radial"],
+      "aspects": ["square"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Compact nodes, numbered stages, badges, or radial systems where side count supports the visual language.",
+        "Focal carriers that need more presence than a circle or rectangle."
+      ],
+      "avoid_for": [
+        "Do not encode a number merely by matching the polygon side count unless readers benefit.",
+        "Do not use many unrelated polygon families on one page."
+      ],
+      "presets": {
+        "pentagon": {"intent": "Five-sided compact node or badge."},
+        "hexagon": {"intent": "Six-sided technical or modular node."},
+        "heptagon": {"intent": "Seven-sided emblematic node with unusual visual rhythm."},
+        "octagon": {"intent": "Eight-sided stop-like or high-presence node."},
+        "decagon": {"intent": "Ten-sided near-circular badge with faceted edges."},
+        "dodecagon": {"intent": "Twelve-sided near-circular badge or radial node."}
+      }
+    },
+    {
+      "id": "organic-carriers",
+      "label": "Organic carriers",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["field", "carrier", "node", "accent"],
+      "relationships": ["membership", "hierarchy", "overlap", "contrast"],
+      "directionality": ["none", "radial"],
+      "aspects": ["flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Soft focal zones, ports, lenses, or organic contrast against angular geometry.",
+        "Overlap and containment when a continuous curved edge improves grouping."
+      ],
+      "avoid_for": [
+        "Do not default to circles for every metric or icon.",
+        "Do not use a teardrop unless its pointed end has a focus or direction."
+      ],
+      "presets": {
+        "ellipse": {"intent": "Continuous oval field, focal lens, or soft node."},
+        "teardrop": {"intent": "Rounded body with one pointed focus for origin, destination, or literal drop imagery."}
+      }
+    },
+    {
+      "id": "ornamental-carriers",
+      "label": "Ornamental carriers",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["carrier", "label", "accent"],
+      "relationships": ["membership", "hierarchy", "contrast"],
+      "directionality": ["none"],
+      "aspects": ["flexible", "wide"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "A single high-emphasis label, title plate, or inset whose edge treatment matches the deck language."
+      ],
+      "avoid_for": [
+        "Do not repeat as ordinary cards; concave corners or beveling create ceremonial emphasis.",
+        "Do not use solely to make a box look less plain."
+      ],
+      "presets": {
+        "plaque": {"intent": "Concave-corner plate for a formal label, title, or emblem."},
+        "bevel": {"intent": "Beveled rectangular body for a raised or inset focal surface."}
+      }
+    },
+    {
+      "id": "radial-contours",
+      "label": "Radial contours and segments",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["field", "spine", "boundary", "accent"],
+      "relationships": ["cycle", "overlap", "membership", "contrast"],
+      "directionality": ["radial", "curved"],
+      "aspects": ["square", "flexible"],
+      "text_capacity": "short",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Cycles, apertures, partial reveals, circular zoning, or a curved page spine.",
+        "Non-quantitative radial structure where the contour itself guides reading."
+      ],
+      "avoid_for": [
+        "Do not imply a measured proportion unless the angle is backed by data.",
+        "Do not imitate a pie or donut chart when a native data chart is required."
+      ],
+      "presets": {
+        "pieWedge": {"intent": "Single circular wedge for a radial anchor or literal sector."},
+        "pie": {"intent": "Circle with an adjustable missing sector for reveal or incomplete-cycle meaning."},
+        "blockArc": {"intent": "Thick curved band for a cycle segment, portal, or curved spine."},
+        "donut": {"intent": "Closed ring for circular containment, focus, or a literal ring."},
+        "chord": {"intent": "Circular segment bounded by an arc and chord for overlap or partial-reveal geometry."},
+        "arc": {"intent": "Open curved contour for a light boundary, trajectory, or partial frame."}
+      }
+    },
+    {
+      "id": "frames-and-corners",
+      "label": "Frames, corners, and edge pieces",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["field", "boundary", "accent"],
+      "relationships": ["membership", "hierarchy", "contrast"],
+      "directionality": ["none", "horizontal", "vertical", "diagonal"],
+      "aspects": ["flexible"],
+      "text_capacity": "none",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Open ownership boundaries, page apertures, edge anchors, and corner-led composition.",
+        "Grouping without turning every content unit into a filled card."
+      ],
+      "avoid_for": [
+        "Do not place a frame around content that already has clear ownership.",
+        "Do not use folded or diagonal details without a matching page-level edge language."
+      ],
+      "presets": {
+        "foldedCorner": {"intent": "Sheet-like carrier or accent with one folded corner."},
+        "frame": {"intent": "Closed rectangular frame for a strong aperture or ownership boundary."},
+        "halfFrame": {"intent": "Partially open frame for directional grouping or an incomplete boundary."},
+        "corner": {"intent": "L-shaped corner piece for edge anchoring or a partial frame."},
+        "diagStripe": {"intent": "Diagonal band for edge emphasis, slanted continuity, or a literal stripe."}
+      }
+    },
+    {
+      "id": "brackets",
+      "label": "Brackets",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["boundary", "callout"],
+      "relationships": ["membership", "annotation", "hierarchy"],
+      "directionality": ["horizontal", "vertical"],
+      "aspects": ["tall", "wide", "flexible"],
+      "text_capacity": "none",
+      "visual_weight": "quiet",
+      "literal_only": false,
+      "recommended_for": [
+        "Collecting adjacent items, marking a range, or assigning a label to one side of a group."
+      ],
+      "avoid_for": [
+        "Do not use when a filled carrier already establishes membership.",
+        "Do not mix bracket directions without a clear ownership side."
+      ],
+      "presets": {
+        "leftBracket": {"intent": "Left-side bracket that collects content to its right."},
+        "rightBracket": {"intent": "Right-side bracket that collects content to its left."},
+        "bracketPair": {"intent": "Paired brackets that enclose a complete range or set."}
+      }
+    },
+    {
+      "id": "braces",
+      "label": "Braces",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["boundary", "callout"],
+      "relationships": ["membership", "annotation", "hierarchy"],
+      "directionality": ["horizontal", "vertical"],
+      "aspects": ["tall", "wide", "flexible"],
+      "text_capacity": "none",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Visible grouping, aggregation, or one-to-many ownership where a bracket is too mechanical."
+      ],
+      "avoid_for": [
+        "Do not use as ornamental punctuation detached from a real group.",
+        "Do not use paired braces when one-sided assignment is the actual relationship."
+      ],
+      "presets": {
+        "leftBrace": {"intent": "Left-side brace that groups or assigns content to its right."},
+        "rightBrace": {"intent": "Right-side brace that groups or assigns content to its left."},
+        "bracePair": {"intent": "Paired braces that enclose a complete set."}
+      }
+    },
+    {
+      "id": "literal-pictograms",
+      "label": "Literal pictograms",
+      "office_category": "basic-shapes",
+      "scope": "literal",
+      "roles": ["symbol", "accent"],
+      "relationships": ["literal"],
+      "directionality": ["none"],
+      "aspects": ["square"],
+      "text_capacity": "none",
+      "visual_weight": "emblematic",
+      "literal_only": true,
+      "recommended_for": [
+        "A concept whose ordinary meaning is exactly the depicted object or symbol."
+      ],
+      "avoid_for": [
+        "Do not select by loose metaphor or keyword association.",
+        "Do not use as a generic visual-energy substitute for real structure."
+      ],
+      "presets": {
+        "cube": {"intent": "Literal cube or compact three-dimensional object."},
+        "can": {"intent": "Literal cylinder, database-like store, or container."},
+        "lightningBolt": {"intent": "Literal lightning, electricity, shock, or sudden-impact symbol.", "avoid_for": ["Do not use for generic tension, urgency, or price change without literal electrical or shock meaning."]},
+        "heart": {"intent": "Literal affection, preference, health-heart, or favorite symbol."},
+        "sun": {"intent": "Literal sun, daylight, heat, or weather symbol."},
+        "moon": {"intent": "Literal moon, night, sleep, or lunar symbol."},
+        "smileyFace": {"intent": "Literal positive-emotion or satisfaction symbol."},
+        "noSmoking": {"intent": "Prohibition symbol with an adjustable slash over a target."},
+        "cloud": {"intent": "Literal cloud, cloud-computing domain, or atmospheric thought field."}
+      }
+    },
+    {
+      "id": "functional-pictograms",
+      "label": "Functional pictograms",
+      "office_category": "basic-shapes",
+      "scope": "literal",
+      "roles": ["symbol", "node", "accent"],
+      "relationships": ["literal", "flow"],
+      "directionality": ["none", "radial"],
+      "aspects": ["square", "tall"],
+      "text_capacity": "none",
+      "visual_weight": "strong",
+      "literal_only": true,
+      "recommended_for": [
+        "Literal mechanism, settings, processing, or filtering concepts."
+      ],
+      "avoid_for": [
+        "Do not use gears as a generic synonym for every process.",
+        "Do not use a funnel unless narrowing, screening, or conversion is the actual relationship."
+      ],
+      "presets": {
+        "gear6": {"intent": "Six-tooth gear for a literal mechanism, settings, or interlocking process."},
+        "gear9": {"intent": "Nine-tooth gear for a denser literal mechanism or system component."},
+        "funnel": {"intent": "Literal filtering, narrowing, qualification, or conversion funnel."}
+      }
+    },
+    {
+      "id": "plus-symbol",
+      "label": "Plus symbol",
+      "office_category": "basic-shapes",
+      "scope": "literal",
+      "roles": ["symbol", "accent", "node"],
+      "relationships": ["literal", "convergence"],
+      "directionality": ["multidirectional"],
+      "aspects": ["square"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": true,
+      "recommended_for": [
+        "Literal addition, inclusion, medical-cross, or combined-value meaning."
+      ],
+      "avoid_for": [
+        "Do not use as a generic decoration between unrelated items.",
+        "Use mathPlus when the page is explicitly mathematical notation."
+      ],
+      "presets": {
+        "plus": {"intent": "Broad plus or cross body for literal addition, inclusion, or cross symbolism."}
+      }
+    },
+    {
+      "id": "corner-tabs",
+      "label": "Corner and edge tabs",
+      "office_category": "basic-shapes",
+      "scope": "general",
+      "roles": ["field", "boundary", "accent"],
+      "relationships": ["membership", "hierarchy", "contrast"],
+      "directionality": ["none", "multidirectional"],
+      "aspects": ["flexible"],
+      "text_capacity": "none",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Four-corner framing, registration marks, or a technical aperture around a focal zone."
+      ],
+      "avoid_for": [
+        "Do not treat the four tabs as independent data points.",
+        "Do not add them when a simpler frame already communicates the boundary."
+      ],
+      "presets": {
+        "cornerTabs": {"intent": "Four triangular corner tabs defining an implied rectangle."},
+        "squareTabs": {"intent": "Four square edge tabs defining an implied rectangle."},
+        "plaqueTabs": {"intent": "Four rounded corner tabs defining an implied rectangle."}
+      }
+    },
+    {
+      "id": "partition-symbols",
+      "label": "Partition symbols",
+      "office_category": "basic-shapes",
+      "scope": "literal",
+      "roles": ["symbol", "node", "accent"],
+      "relationships": ["overlap", "convergence", "literal"],
+      "directionality": ["multidirectional"],
+      "aspects": ["square"],
+      "text_capacity": "none",
+      "visual_weight": "strong",
+      "literal_only": true,
+      "recommended_for": [
+        "A literal four- or six-region partition, intersection, or hub motif."
+      ],
+      "avoid_for": [
+        "Despite their names, these are not charts and carry no data semantics.",
+        "Do not use as a substitute for a native chart or an explained matrix."
+      ],
+      "presets": {
+        "chartX": {"intent": "Rectangle divided diagonally into four triangular regions."},
+        "chartStar": {"intent": "Rectangle divided into six regions by vertical and diagonal lines."},
+        "chartPlus": {"intent": "Rectangle divided into four quarters by vertical and horizontal lines."}
+      }
+    },
+    {
+      "id": "arrow-carriers",
+      "label": "Arrow-shaped carriers",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["carrier", "node", "spine"],
+      "relationships": ["order", "flow", "hierarchy"],
+      "directionality": ["horizontal"],
+      "aspects": ["wide"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Stage bodies, handoffs, and compact process steps whose container and direction are one object."
+      ],
+      "avoid_for": [
+        "Do not use as a generic card; the pointed end asserts flow.",
+        "Do not use when a thin connector between independent nodes is clearer."
+      ],
+      "presets": {
+        "homePlate": {"intent": "Pentagon-like horizontal stage body with one pointed destination edge."},
+        "chevron": {"intent": "Compact V-notched directional stage for repeated sequence or handoff."}
+      }
+    },
+    {
+      "id": "cardinal-arrows",
+      "label": "Cardinal block arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "edge", "accent"],
+      "relationships": ["order", "flow", "hierarchy"],
+      "directionality": ["horizontal", "vertical"],
+      "aspects": ["wide", "tall"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Strong one-way movement, escalation, decline, or a dominant next-step direction."
+      ],
+      "avoid_for": [
+        "Do not use for a neutral link or divider.",
+        "Do not point toward content unless the endpoint relationship is real."
+      ],
+      "presets": {
+        "rightArrow": {"intent": "Strong left-to-right movement or next-step direction.", "directionality": ["horizontal"], "aspects": ["wide"]},
+        "leftArrow": {"intent": "Strong right-to-left movement, return, or reverse direction.", "directionality": ["horizontal"], "aspects": ["wide"]},
+        "upArrow": {"intent": "Strong upward movement, growth, or escalation.", "directionality": ["vertical"], "aspects": ["tall"]},
+        "downArrow": {"intent": "Strong downward movement, decline, or descent.", "directionality": ["vertical"], "aspects": ["tall"]}
+      }
+    },
+    {
+      "id": "stylized-forward-arrows",
+      "label": "Stylized forward arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "accent"],
+      "relationships": ["order", "flow", "contrast"],
+      "directionality": ["horizontal"],
+      "aspects": ["wide"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Forward motion where the tail treatment communicates acceleration, entry, or interlock."
+      ],
+      "avoid_for": [
+        "Do not choose the tail treatment only for novelty.",
+        "Do not use when a plain cardinal arrow already expresses the job."
+      ],
+      "presets": {
+        "stripedRightArrow": {"intent": "Right arrow with tail stripes for acceleration, launch, or staged entry."},
+        "notchedRightArrow": {"intent": "Right arrow with an inward tail notch for interlock or handoff."}
+      }
+    },
+    {
+      "id": "multi-axis-arrows",
+      "label": "Multi-axis arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "node", "accent"],
+      "relationships": ["contrast", "convergence", "flow", "link"],
+      "directionality": ["bidirectional", "multidirectional"],
+      "aspects": ["wide", "tall", "square"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Reciprocity, branching, multi-way movement, or a hub with explicit directional alternatives."
+      ],
+      "avoid_for": [
+        "Do not imply symmetry or available routes that the content does not support.",
+        "Do not use as a generic central decoration."
+      ],
+      "presets": {
+        "leftRightArrow": {"intent": "Horizontal reciprocity or two-way exchange.", "directionality": ["horizontal", "bidirectional"], "aspects": ["wide"]},
+        "upDownArrow": {"intent": "Vertical reciprocity or two-way change.", "directionality": ["vertical", "bidirectional"], "aspects": ["tall"]},
+        "leftUpArrow": {"intent": "Two-route branch toward left and up.", "directionality": ["multidirectional"], "aspects": ["square"]},
+        "leftRightUpArrow": {"intent": "Three-route branch toward left, right, and up.", "directionality": ["multidirectional"], "aspects": ["square"]},
+        "quadArrow": {"intent": "Four-way hub or movement in all cardinal directions.", "directionality": ["multidirectional"], "aspects": ["square"]}
+      }
+    },
+    {
+      "id": "turn-arrows",
+      "label": "Bent and return arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "edge", "accent"],
+      "relationships": ["order", "flow", "cycle"],
+      "directionality": ["bent", "curved"],
+      "aspects": ["flexible", "square"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "A real turn, reroute, reversal, or return within a process path."
+      ],
+      "avoid_for": [
+        "Do not use a turn arrow for generic progress with no change of direction.",
+        "Do not confuse a filled turn body with a thin routed connector."
+      ],
+      "presets": {
+        "bentUpArrow": {"intent": "Sharp right-angle route ending upward.", "directionality": ["bent", "vertical"]},
+        "bentArrow": {"intent": "Rounded right-angle route for a directional turn.", "directionality": ["bent", "horizontal"]},
+        "uturnArrow": {"intent": "Explicit reversal, return, or loop-back path.", "directionality": ["curved", "vertical"]}
+      }
+    },
+    {
+      "id": "circular-arrows",
+      "label": "Circular arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "edge", "accent"],
+      "relationships": ["cycle", "flow", "link"],
+      "directionality": ["radial", "bidirectional"],
+      "aspects": ["square"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Closed-loop processes, recurrence, refresh, or circular exchange."
+      ],
+      "avoid_for": [
+        "Do not imply repetition or reversibility unless it exists.",
+        "Do not use as a decorative halo around unrelated content."
+      ],
+      "presets": {
+        "circularArrow": {"intent": "One-direction circular loop or refresh path.", "directionality": ["radial"]},
+        "leftCircularArrow": {"intent": "Counter-oriented circular loop or return path.", "directionality": ["radial"]},
+        "leftRightCircularArrow": {"intent": "Two-way circular exchange or reversible cycle."}
+      }
+    },
+    {
+      "id": "curved-arrows",
+      "label": "Curved and swoosh arrows",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["spine", "edge", "accent"],
+      "relationships": ["order", "flow", "convergence"],
+      "directionality": ["curved", "horizontal", "vertical"],
+      "aspects": ["wide", "tall", "flexible"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Directional motion that must arc around a focal object or converge from an offset origin."
+      ],
+      "avoid_for": [
+        "Do not add curvature merely to make an arrow more expressive.",
+        "Do not use when the path would falsely imply bypass or convergence."
+      ],
+      "presets": {
+        "curvedRightArrow": {"intent": "Curved path ending to the right.", "directionality": ["curved", "horizontal"], "aspects": ["wide"]},
+        "curvedLeftArrow": {"intent": "Curved path ending to the left.", "directionality": ["curved", "horizontal"], "aspects": ["wide"]},
+        "curvedUpArrow": {"intent": "Curved path ending upward.", "directionality": ["curved", "vertical"], "aspects": ["tall"]},
+        "curvedDownArrow": {"intent": "Curved path ending downward.", "directionality": ["curved", "vertical"], "aspects": ["tall"]},
+        "swooshArrow": {"intent": "Fast tapered sweep for launch, acceleration, or a dynamic handoff.", "directionality": ["curved", "horizontal"], "aspects": ["wide"]}
+      }
+    },
+    {
+      "id": "arrow-callouts",
+      "label": "Arrow callout bodies",
+      "office_category": "block-arrows",
+      "scope": "general",
+      "roles": ["carrier", "callout", "spine"],
+      "relationships": ["annotation", "order", "flow", "contrast"],
+      "directionality": ["horizontal", "vertical", "bidirectional", "multidirectional"],
+      "aspects": ["wide", "tall", "square"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "A short message whose body and directional emphasis must be one strong object."
+      ],
+      "avoid_for": [
+        "Do not use as an ordinary content card.",
+        "Do not point in multiple directions unless the message truly applies to each route."
+      ],
+      "presets": {
+        "leftArrowCallout": {"intent": "Text-bearing callout with strong leftward direction.", "directionality": ["horizontal"], "aspects": ["wide"]},
+        "rightArrowCallout": {"intent": "Text-bearing callout with strong rightward direction.", "directionality": ["horizontal"], "aspects": ["wide"]},
+        "upArrowCallout": {"intent": "Text-bearing callout with strong upward direction.", "directionality": ["vertical"], "aspects": ["tall"]},
+        "downArrowCallout": {"intent": "Text-bearing callout with strong downward direction.", "directionality": ["vertical"], "aspects": ["tall"]},
+        "leftRightArrowCallout": {"intent": "Text-bearing callout for horizontal two-way emphasis.", "directionality": ["horizontal", "bidirectional"], "aspects": ["wide"]},
+        "upDownArrowCallout": {"intent": "Text-bearing callout for vertical two-way emphasis.", "directionality": ["vertical", "bidirectional"], "aspects": ["tall"]},
+        "quadArrowCallout": {"intent": "Text-bearing callout for four-way or hub emphasis.", "directionality": ["multidirectional"], "aspects": ["square"]}
+      }
+    },
+    {
+      "id": "equation-operators",
+      "label": "Equation operators",
+      "office_category": "equation-shapes",
+      "scope": "literal",
+      "roles": ["symbol", "node"],
+      "relationships": ["literal", "convergence", "contrast"],
+      "directionality": ["none", "multidirectional"],
+      "aspects": ["square", "wide"],
+      "text_capacity": "none",
+      "visual_weight": "strong",
+      "literal_only": true,
+      "recommended_for": [
+        "An explicit mathematical or logical operator between operands."
+      ],
+      "avoid_for": [
+        "Do not use equation symbols as generic separators or decorative icons.",
+        "Keep operand order and mathematical meaning unambiguous."
+      ],
+      "presets": {
+        "mathPlus": {"intent": "Mathematical addition operator."},
+        "mathMinus": {"intent": "Mathematical subtraction operator."},
+        "mathMultiply": {"intent": "Mathematical multiplication operator."},
+        "mathDivide": {"intent": "Mathematical division operator."},
+        "mathEqual": {"intent": "Mathematical equality operator."},
+        "mathNotEqual": {"intent": "Mathematical inequality operator."}
+      }
+    },
+    {
+      "id": "flowchart-operations",
+      "label": "Flowchart operations",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow", "order"],
+      "directionality": ["none"],
+      "aspects": ["wide", "flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Exact conventional operation nodes inside an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not use flowchart notation as a decorative card vocabulary.",
+        "Do not substitute one operation symbol for another because its contour looks better."
+      ],
+      "presets": {
+        "flowChartProcess": {"intent": "Standard process or operation step."},
+        "flowChartPredefinedProcess": {"intent": "Named subprocess or predefined operation."},
+        "flowChartAlternateProcess": {"intent": "Alternate process step."},
+        "flowChartPreparation": {"intent": "Preparation or initialization step."},
+        "flowChartManualOperation": {"intent": "Operation performed manually."},
+        "flowChartDelay": {"intent": "Delay or waiting period."}
+      }
+    },
+    {
+      "id": "flowchart-routing",
+      "label": "Flowchart decisions and routing",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow", "link", "convergence"],
+      "directionality": ["none", "multidirectional"],
+      "aspects": ["square", "flexible"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Exact branch, merge, junction, or continuation semantics inside an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not infer routing semantics from appearance alone.",
+        "Do not use these symbols outside a diagram that explains its flow."
+      ],
+      "presets": {
+        "flowChartDecision": {"intent": "Decision or branch point."},
+        "flowChartConnector": {"intent": "On-page continuation connector."},
+        "flowChartOffpageConnector": {"intent": "Continuation to another page or diagram frame."},
+        "flowChartSummingJunction": {"intent": "Summing junction where flows combine."},
+        "flowChartOr": {"intent": "Logical OR junction."},
+        "flowChartCollate": {"intent": "Collate or reconcile inputs into an ordered result."},
+        "flowChartSort": {"intent": "Sort or order operation."},
+        "flowChartExtract": {"intent": "Extract one stream or subset from another."},
+        "flowChartMerge": {"intent": "Merge multiple flow paths into one."}
+      }
+    },
+    {
+      "id": "flowchart-input-output",
+      "label": "Flowchart input and output",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow"],
+      "directionality": ["none", "horizontal"],
+      "aspects": ["wide", "flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Exact data-entry or presentation nodes inside an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not use obsolete media symbols unless the depicted medium is intentional.",
+        "Do not use input/output notation as a general slanted content card."
+      ],
+      "presets": {
+        "flowChartInputOutput": {"intent": "General data input or output."},
+        "flowChartManualInput": {"intent": "Data entered manually."},
+        "flowChartPunchedCard": {"intent": "Punched-card input or a deliberately historical medium."},
+        "flowChartPunchedTape": {"intent": "Punched-tape input or a deliberately historical medium."},
+        "flowChartDisplay": {"intent": "Information shown on a display."}
+      }
+    },
+    {
+      "id": "flowchart-documents",
+      "label": "Flowchart documents",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow", "membership"],
+      "directionality": ["none"],
+      "aspects": ["wide", "flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Document artifacts that enter, leave, or are produced by an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not use the wavy bottom as a generic decorative card edge."
+      ],
+      "presets": {
+        "flowChartDocument": {"intent": "Single document artifact."},
+        "flowChartMultidocument": {"intent": "Multiple document artifacts or a document set."}
+      }
+    },
+    {
+      "id": "flowchart-storage",
+      "label": "Flowchart storage",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow", "membership"],
+      "directionality": ["none"],
+      "aspects": ["wide", "tall", "flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Exact storage-media semantics inside an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not choose a storage symbol by silhouette alone.",
+        "Use historical media shapes only when that distinction matters."
+      ],
+      "presets": {
+        "flowChartInternalStorage": {"intent": "Internal storage or memory."},
+        "flowChartOfflineStorage": {"intent": "Offline storage."},
+        "flowChartOnlineStorage": {"intent": "Online or directly accessible storage."},
+        "flowChartMagneticTape": {"intent": "Sequential-access magnetic tape storage."},
+        "flowChartMagneticDisk": {"intent": "Magnetic disk storage."},
+        "flowChartMagneticDrum": {"intent": "Magnetic drum or direct-access historical storage."}
+      }
+    },
+    {
+      "id": "flowchart-terminator",
+      "label": "Flowchart terminator",
+      "office_category": "flowchart",
+      "scope": "flowchart",
+      "roles": ["node"],
+      "relationships": ["flow", "order"],
+      "directionality": ["none"],
+      "aspects": ["wide"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "Start, end, or terminal state in an actual flowchart."
+      ],
+      "avoid_for": [
+        "Do not use as a generic pill-shaped label when no terminal state is intended."
+      ],
+      "presets": {
+        "flowChartTerminator": {"intent": "Start, end, or terminal state."}
+      }
+    },
+    {
+      "id": "stars",
+      "label": "Stars",
+      "office_category": "stars-and-banners",
+      "scope": "literal",
+      "roles": ["symbol", "accent", "label"],
+      "relationships": ["literal", "hierarchy", "contrast"],
+      "directionality": ["radial"],
+      "aspects": ["square"],
+      "text_capacity": "short",
+      "visual_weight": "emblematic",
+      "literal_only": true,
+      "recommended_for": [
+        "Literal rating, award, sparkle, burst, or one exceptional focal badge."
+      ],
+      "avoid_for": [
+        "Do not use as a routine bullet, card, or unexplained attention device.",
+        "High-point stars carry burst or sparkle energy and are poor text carriers."
+      ],
+      "presets": {
+        "star4": {"intent": "Four-point sparkle or compass-like accent."},
+        "star5": {"intent": "Conventional rating, award, or favorite star."},
+        "star6": {"intent": "Six-point geometric star or literal emblem."},
+        "star7": {"intent": "Seven-point unusual emblem or focal burst."},
+        "star8": {"intent": "Eight-point badge, compass, or controlled burst."},
+        "star10": {"intent": "Ten-point seal-like badge or radial emphasis."},
+        "star12": {"intent": "Twelve-point seal-like badge or radial emphasis."},
+        "star16": {"intent": "Dense burst for exceptional emphasis."},
+        "star24": {"intent": "Very dense sparkle or burst accent."},
+        "star32": {"intent": "Maximum-density sparkle or burst accent."}
+      }
+    },
+    {
+      "id": "irregular-seals",
+      "label": "Irregular seals and explosions",
+      "office_category": "stars-and-banners",
+      "scope": "literal",
+      "roles": ["symbol", "accent", "label"],
+      "relationships": ["literal", "contrast"],
+      "directionality": ["radial"],
+      "aspects": ["square"],
+      "text_capacity": "short",
+      "visual_weight": "emblematic",
+      "literal_only": true,
+      "recommended_for": [
+        "A literal burst, warning, sale seal, or exceptional interruption."
+      ],
+      "avoid_for": [
+        "Do not use for ordinary emphasis or as a recurring section badge.",
+        "Do not place long text inside the irregular contour."
+      ],
+      "presets": {
+        "irregularSeal1": {"intent": "Irregular burst with a coarser explosion edge."},
+        "irregularSeal2": {"intent": "Irregular burst with a denser explosion edge."}
+      }
+    },
+    {
+      "id": "straight-ribbons",
+      "label": "Straight ribbons",
+      "office_category": "stars-and-banners",
+      "scope": "general",
+      "roles": ["label", "carrier", "accent"],
+      "relationships": ["hierarchy", "contrast", "order"],
+      "directionality": ["horizontal", "bidirectional"],
+      "aspects": ["wide"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "One ceremonial title, milestone, award label, or section banner."
+      ],
+      "avoid_for": [
+        "Do not use as a generic content card or repeat on every page.",
+        "Do not imply directional arrows from ribbon tails unless the reading path supports it."
+      ],
+      "presets": {
+        "ribbon": {"intent": "Banner with the center panel raised above its folded ends.", "directionality": ["horizontal"]},
+        "ribbon2": {"intent": "Banner with the center panel lowered below its folded ends.", "directionality": ["horizontal"]},
+        "leftRightRibbon": {"intent": "Straight ribbon with outward left and right tail emphasis."}
+      }
+    },
+    {
+      "id": "curved-ribbons",
+      "label": "Curved ribbons",
+      "office_category": "stars-and-banners",
+      "scope": "general",
+      "roles": ["label", "carrier", "accent"],
+      "relationships": ["hierarchy", "contrast"],
+      "directionality": ["curved", "horizontal"],
+      "aspects": ["wide"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "A single arched title or badge whose curvature is part of the page composition."
+      ],
+      "avoid_for": [
+        "Do not bend ordinary labels for decoration alone.",
+        "Do not use when the curve conflicts with the page's reading axis."
+      ],
+      "presets": {
+        "ellipseRibbon": {"intent": "Curved ribbon arcing upward around a central label."},
+        "ellipseRibbon2": {"intent": "Curved ribbon arcing downward around a central label."}
+      }
+    },
+    {
+      "id": "scrolls",
+      "label": "Scrolls",
+      "office_category": "stars-and-banners",
+      "scope": "literal",
+      "roles": ["label", "carrier", "symbol"],
+      "relationships": ["literal", "hierarchy"],
+      "directionality": ["horizontal", "vertical"],
+      "aspects": ["wide", "tall"],
+      "text_capacity": "medium",
+      "visual_weight": "emblematic",
+      "literal_only": true,
+      "recommended_for": [
+        "A literal scroll, proclamation, archival document, or deliberately historical motif."
+      ],
+      "avoid_for": [
+        "Do not use a scroll as a generic playbook, process card, or long-form content container.",
+        "Do not select it merely because the topic mentions a document."
+      ],
+      "presets": {
+        "verticalScroll": {"intent": "Tall rolled document or vertical historical proclamation.", "directionality": ["vertical"], "aspects": ["tall"]},
+        "horizontalScroll": {"intent": "Wide rolled document or horizontal historical proclamation.", "directionality": ["horizontal"], "aspects": ["wide"]}
+      }
+    },
+    {
+      "id": "waves",
+      "label": "Waves",
+      "office_category": "stars-and-banners",
+      "scope": "literal",
+      "roles": ["accent", "spine", "symbol"],
+      "relationships": ["literal", "flow", "cycle"],
+      "directionality": ["curved", "horizontal"],
+      "aspects": ["wide"],
+      "text_capacity": "none",
+      "visual_weight": "strong",
+      "literal_only": true,
+      "recommended_for": [
+        "Literal wave, oscillation, fluid motion, or one continuous undulating accent."
+      ],
+      "avoid_for": [
+        "Do not use as an arbitrary section divider.",
+        "Do not imply volatility or oscillation unless the content supports it."
+      ],
+      "presets": {
+        "wave": {"intent": "Single undulating band for literal wave or oscillation."},
+        "doubleWave": {"intent": "Double undulating band for stronger ripple or oscillation."}
+      }
+    },
+    {
+      "id": "leader-callouts",
+      "label": "Leader-line callouts",
+      "office_category": "callouts",
+      "scope": "general",
+      "roles": ["callout", "label", "edge"],
+      "relationships": ["annotation", "link"],
+      "directionality": ["callout", "bent"],
+      "aspects": ["flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "moderate",
+      "literal_only": false,
+      "recommended_for": [
+        "A short annotation that must visibly point to one object or region.",
+        "Choose bend count and border/accent treatment from the routing and emphasis need."
+      ],
+      "avoid_for": [
+        "Do not use as a free-standing content card with no target.",
+        "Do not add bends or accent bars that carry no routing or hierarchy purpose."
+      ],
+      "presets": {
+        "callout1": {"intent": "Unbordered callout with a straight leader."},
+        "callout2": {"intent": "Unbordered callout with one bent leader."},
+        "callout3": {"intent": "Unbordered callout with a double-bent leader."},
+        "accentCallout1": {"intent": "Straight-leader callout with an accent bar but no full border."},
+        "accentCallout2": {"intent": "One-bend callout with an accent bar but no full border."},
+        "accentCallout3": {"intent": "Double-bend callout with an accent bar but no full border."},
+        "borderCallout1": {"intent": "Bordered callout with a straight leader."},
+        "borderCallout2": {"intent": "Bordered callout with one bent leader."},
+        "borderCallout3": {"intent": "Bordered callout with a double-bent leader."},
+        "accentBorderCallout1": {"intent": "Bordered straight-leader callout with an accent bar."},
+        "accentBorderCallout2": {"intent": "Bordered one-bend callout with an accent bar."},
+        "accentBorderCallout3": {"intent": "Bordered double-bend callout with an accent bar."}
+      }
+    },
+    {
+      "id": "wedge-callouts",
+      "label": "Wedge and thought callouts",
+      "office_category": "callouts",
+      "scope": "general",
+      "roles": ["callout", "carrier", "label"],
+      "relationships": ["annotation", "link"],
+      "directionality": ["callout"],
+      "aspects": ["flexible"],
+      "text_capacity": "medium",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "A speech, thought, or annotation body whose wedge visibly identifies the target."
+      ],
+      "avoid_for": [
+        "Do not use without a real target.",
+        "Use the cloud variant only for thought, uncertainty, or a literal cloud context."
+      ],
+      "presets": {
+        "wedgeRectCallout": {"intent": "Rectangular annotation body with a pointed wedge to the target."},
+        "wedgeRoundRectCallout": {"intent": "Rounded rectangular annotation body with a pointed wedge."},
+        "wedgeEllipseCallout": {"intent": "Oval speech-like annotation body with a pointed wedge."},
+        "cloudCallout": {"intent": "Cloud-shaped thought callout with a dotted tail."}
+      }
+    },
+    {
+      "id": "action-controls",
+      "label": "Action-button controls",
+      "office_category": "action-buttons",
+      "scope": "navigation",
+      "roles": ["control", "symbol"],
+      "relationships": ["navigation", "literal"],
+      "directionality": ["none", "horizontal"],
+      "aspects": ["square", "flexible"],
+      "text_capacity": "short",
+      "visual_weight": "strong",
+      "literal_only": false,
+      "recommended_for": [
+        "Interactive presentation controls when the matching click or hover action will also be assigned."
+      ],
+      "avoid_for": [
+        "The preset supplies visual geometry only; it does not create navigation, media, or hyperlink behavior.",
+        "Do not use action-button chrome as a decorative icon set in a noninteractive deck."
+      ],
+      "presets": {
+        "actionButtonBlank": {"intent": "Blank action-button body for a custom control label or icon."},
+        "actionButtonHome": {"intent": "Home navigation control."},
+        "actionButtonHelp": {"intent": "Help control."},
+        "actionButtonInformation": {"intent": "Information control."},
+        "actionButtonForwardNext": {"intent": "Forward or next navigation control."},
+        "actionButtonBackPrevious": {"intent": "Back or previous navigation control."},
+        "actionButtonEnd": {"intent": "End or last-slide navigation control."},
+        "actionButtonBeginning": {"intent": "Beginning or first-slide navigation control."},
+        "actionButtonReturn": {"intent": "Return navigation control."},
+        "actionButtonDocument": {"intent": "Document-opening control."},
+        "actionButtonSound": {"intent": "Sound playback control."},
+        "actionButtonMovie": {"intent": "Movie or video playback control."}
+      }
+    }
+  ]
+}
