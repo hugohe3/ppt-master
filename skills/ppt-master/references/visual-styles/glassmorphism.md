@@ -15,7 +15,7 @@ Frosted-glass SaaS — translucent layered panels, flowing gradient light, float
 
 - Clean modern sans; regular with selective bold; airy. Exact Light/Black requires a user-confirmed installed face. Headlines can carry a luminous gradient on the dark field.
 
-> Families are chosen at confirmation `g`; this style asks for a clean, modern, airy sans *character*.
+> Families are chosen at confirmation `g`; this style asks for a clean, modern, airy sans *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

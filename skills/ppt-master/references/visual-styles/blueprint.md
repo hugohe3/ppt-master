@@ -16,7 +16,7 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 - Clean sans for labels and body; monospace for every component name / code / coordinate — mirroring how real technical docs read.
 - Small, precise annotation type; wide tracking on coordinate / dimension labels. Restraint over emphasis.
 
-> Families are chosen at confirmation `g`; this style asks for a clean sans + monospace pairing.
+> Families are chosen at confirmation `g`; this style asks for a clean sans + monospace pairing. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

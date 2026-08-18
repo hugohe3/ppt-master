@@ -8,14 +8,14 @@ Mid-century print poster (1950s–1970s) — bold rounded-geometric shapes, limi
 
 - Shape language: bold geometric shapes with rounded organic edges, often slightly off-axis for retro tension; overlapping flat blocks; thick hand-aware lines; stylized, reduced iconography (a stylized sun, an angular mountain).
 - Composition geometry: a giant sun disc or arch as the backdrop anchor; ray wedges radiating from the focal point; off-axis overlapping blocks staging the content; a horizon band splitting the page into field and sky zones; one badge or rosette seal at the emphasis point.
-- Decoration: the print artifacts — halftone dot overlays, slight ink misregistration — carry the character; imagery stays reduced and graphic, never photoreal.
+- Decoration: the print artifacts — halftone dot overlays, slight ink misregistration — carry the character. Generated illustration stays reduced and graphic. Required documentary photography remains eligible; integrate it through crop, tonal reduction, halftone, or another print treatment instead of replacing the real subject with invented imagery.
 - Whitespace: confident poster composition — a few large blocks, deliberate negative space.
 
 ## 2. Typography character
 
 - Retro display character for headlines (mid-century geometric, confident); a simple legible body by contrast.
 
-> Families are chosen at confirmation `g`; this style asks for a mid-century display *character*.
+> Families are chosen at confirmation `g`; this style asks for a mid-century display *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

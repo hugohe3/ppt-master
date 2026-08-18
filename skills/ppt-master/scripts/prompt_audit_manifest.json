@@ -269,7 +269,7 @@
         "skills/ppt-master/references/image-base.md",
         "skills/ppt-master/references/image-generator.md"
       ],
-      "max_tokens": 130000
+      "max_tokens": 145000
     },
     "route.generate.quick-generate.video-design": {
       "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery.",
