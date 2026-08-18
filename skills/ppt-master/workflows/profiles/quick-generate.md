@@ -647,7 +647,16 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --quick-generate --stage final --json
 ```
 
-Fix every blocking error and rerun the same command. Then export:
+Fix every blocking error and rerun the same command.
+
+**Mandatory — final carrier-receipt review**: Review the factual
+`[CARRIERS]` summary against the retained page jobs, resource roles, and running
+geometry signatures before export. Counts and diversity are not quotas, and
+zero use is valid. When the summary contradicts an active decision, read only
+the affected `files[].info.carrier_receipt` rows from the current report, repair
+those pages in one consolidated pass, and rerun the same final checker.
+
+Then export:
 
 When Speaker Notes is enabled, load
 [`executor-notes.md`](../../references/executor-notes.md) after the passing final
@@ -726,6 +735,7 @@ or lock.
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
+- [x] The current final report's carrier receipt was compared with the retained page jobs and any factual contradiction was repaired before export, without treating counts as quotas
 - [x] The lockless final SVG quality report passes and matches the current SVGs
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path

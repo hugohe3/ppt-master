@@ -194,12 +194,18 @@ python3 scripts/native_enhance_pptx.py apply <project_path>
 python3 scripts/pptx_delivery_check.py <finished.pptx>
 ```
 
-Native preset shape authoring (one registry-backed fragment on stdout):
+Native preset shape authoring (one or more registry-backed fragments on stdout):
 
 ```bash
 python3 scripts/preset_shape_svg.py list --search arrow
 python3 scripts/preset_shape_svg.py describe rightArrow
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
+python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
+[
+  {"preset":"chevron","id":"step-1","frame":[120,180,220,96],"fill":"#2563EB","stroke":"none"},
+  {"preset":"leftBrace","id":"group-brace","frame":[380,170,48,240],"fill":"none","stroke":"#111827","stroke_width":3}
+]
+JSON
 ```
 
 The helper never writes a page or project file. Select one exact semantic
@@ -209,7 +215,11 @@ is one compact atomic `<g>` with direct registry-generated visible paths. When
 one effect is justified, optional `--filter-id softShadow` references one
 existing direct page-level filter under the shared shadow/glow contract and
 applies it once to a shape preset. Connector presets do not accept that option.
-The helper does not create the filter definition.
+The helper does not create the filter definition. `render-batch` accepts a
+non-empty JSON array using the snake_case forms of the single-render options;
+it validates every item and duplicate id before printing, so one invalid item
+produces no partial fragment output. The batch remains fragment-only input for
+one current construction, not a page generator or project manifest.
 Quality check and export rerender the registry instead of relying on a hidden
 carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
