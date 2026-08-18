@@ -166,7 +166,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
 - **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; when speaker notes are enabled, state the attribution naturally there too. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and, when notes are enabled, state naturally there that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
 - **Default — compose compatible carriers by page job (may use any suitable subset)**: background paint, native shapes, editable text, prepared photos/scenes, transparent illustration slices, decorative lettering, icons, and visualizations may share one page. Use only prepared resources; choose their combination, visual weight, and z-order from the page message and hierarchy. The resolved style controls treatment and emphasis, never carrier eligibility, image source, or the complete native construction vocabulary.
-- **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Resolve the page-scale move from `spec_lock.md`: a preset uses that selected style's §1 `Composition geometry`; `custom` executes `visual_style_behavior` first, then uses §1 geometry only from exact `visual_style_references` that the behavior assigns a shape or composition job. Other bases contribute only their assigned job, and an unreferenced novel custom follows its behavior alone. Treat every listed move as generative vocabulary rather than a finite menu. Before defaulting to stacked rounded-rect cards or uniform equal columns, use that resolved geometry to stage the page's primary zone. Card grids are one option among many, not the house layout.
+- **Default — stage each page with the style's composition geometry (may override when another page-fit move is stronger)**: an SVG page is a canvas, not a DOM. Resolve the page-scale move from `spec_lock.md`: a preset uses that selected style's §1 `Composition geometry`; `custom` executes `visual_style_behavior` first, then uses §1 geometry only from exact `visual_style_references` that the behavior assigns a shape or composition job. Other bases contribute only their assigned job, and an unreferenced novel custom follows its behavior alone. Treat every listed move as generative vocabulary rather than a finite menu, then apply [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's shared semantic-before-neutral gate.
 - **Default — consider the planned motif direction (may override when another coherent expression better serves the deck)**: when §III `Theme` recommends a cross-page motif or element family, decide whether it earns a continuity job. If adopted, keep its reuse coherent while varying scale, crop, density, position, and content interaction by page role; otherwise adapt or decline it and establish a more fitting style-consistent expression. An explicit user/template motif remains binding.
 - **Inherited containers**: preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Selected Chart/Table reference adaptation is owned by [`executor-visualization.md`](./executor-visualization.md); preview effects never override project styling or structural roles.
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first compose faithful primitives and exact presets as one page geometry system; use a Boolean only when the contour itself must merge, open, or fragment. Only when neither construction works should one page-specific polygon/path replace a stack of generic arrows.
@@ -194,35 +194,12 @@ simplest exact authoring form directly from the page content and visual system;
 no Design Spec construction selection or material inventory gates this choice.
 
 **Mandatory — independent per-page geometry move**: after the Structure result
-and any applicable topology resolve, but before writing coordinates, choose one
-page-scale geometry move from the actual content, visual system, and complete
-native vocabulary. Compare a deliberate plain / neutral construction with
-[`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's page-field,
-outline, nesting, continuity, depth / contrast, and contour-change lenses.
-Readability alone does not select the simple branch; a plain grid or no compound
-construction remains valid when it is the deliberate best fit for the page job.
-This applies to both `Structure=no` and `Structure=yes`, stays in active context
-until the page is complete, and never changes that result. Use §2.1 whenever the
-move adopts two or more native shapes. There is no coverage target or required
-explanation for a simple result.
-
-**Default — do not use rectangles as the universal carrier (may use when a
-neutral field is the best fit)**: before drawing another `<rect>` / rounded
-`<rect>` container, test whether the content job calls for a more expressive
-preset, outline contour, or compound geometry. Choose one coherent shape
-language for the page; do not assign unrelated novelty shapes item by item.
-
-**Default — give floating text a geometric owner when useful (may omit when
-typography and negative space already establish deliberate hierarchy)**: before
-leaving a key or repeated text cluster unbounded, consider a native outline,
-frame, arc, bracket, band, spine, or other content-fit carrier. `fill="none"`
-with a visible stroke is a first-class option and does not imply a filled card.
-
-**Reference — use visual nesting for depth**: a larger field may contain or be
-crossed by an inset contour, secondary surface, badge, port, or focal shape.
-Keep these as independently editable siblings in the ordinary semantic group;
-visual containment never authorizes placing content inside an atomic preset
-fragment or merging shapes that do not require one contour.
+and any applicable topology resolve, apply
+[`native-shape-authoring.md`](./native-shape-authoring.md) §2.1 before writing
+coordinates. It owns the semantic-before-neutral comparison, composition
+lenses, positive fit for a neutral result, running topology signature, and
+materialization boundary for both `Structure=no` and `Structure=yes`. Keep the
+current decision in active context and never change the Structure result.
 
 | Selected result | Authoring form |
 |---|---|
