@@ -17,7 +17,7 @@ Photo-led editorial — large full-bleed photography dominates the page, text po
 
 - Editorial serif / CJK title × clean sans body; magazine-column cadence; small precise captions and figure notes. Words are concise — they point, they don't fill.
 
-> Families are chosen at confirmation `g`; this style asks for an editorial serif-title × clean-sans-body *character*.
+> Families are chosen at confirmation `g`; this style asks for an editorial serif-title × clean-sans-body *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

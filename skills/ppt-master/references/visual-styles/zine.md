@@ -16,7 +16,7 @@ Risograph zine / DIY poster — misregistered color layers, halftone dots, a tig
 - Punk-DIY contrast: a heavy poster display face for headlines, a plain readable sans for body, monospace for annotation (typewriter / photocopier feel).
 - Big headline tension against quiet body; slight intentional looseness reads as hand-set rather than mechanical.
 
-> Families are chosen at confirmation `g`; this style asks for a display-poster × plain-sans × monospace-annotation *character*.
+> Families are chosen at confirmation `g`; this style asks for a display-poster × plain-sans × monospace-annotation *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

@@ -16,7 +16,7 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 - Friendly sans (humanist or geometric); medium weights; clear but not severe hierarchy.
 - Rounded, open letterforms suit; avoid condensed / industrial faces.
 
-> Families are chosen at confirmation `g`; this style asks for an approachable sans *character*.
+> Families are chosen at confirmation `g`; this style asks for an approachable sans *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

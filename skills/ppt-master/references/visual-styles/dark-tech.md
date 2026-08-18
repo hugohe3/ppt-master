@@ -16,7 +16,7 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 - Clean sans for body; monospace for labels / figures / code cues. Wide tracking on small-caps labels.
 - High-contrast hierarchy against the dark field.
 
-> Families are chosen at confirmation `g`; this style asks for a clean sans + monospace pairing.
+> Families are chosen at confirmation `g`; this style asks for a clean sans + monospace pairing. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 
