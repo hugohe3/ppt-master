@@ -510,7 +510,7 @@ state and §X records its source/verbatim policy. After Gate 2, before Step 5 or
 split handoff, write the exact segments once to `notes/total.md`; split them only
 in Step 7.1. This is frozen production input, not a third planning artifact.
 
-**✅ Internal checkpoint — Phase deliverables complete**: facts read; confirmation consumed once; final Stage-2 production fields resolved (generation mode, refine-spec, proactive choices, and conditional AI path); mathematical content recorded where applicable; Design Spec passed Gate 1; enabled refinement approved; lock derived from it; split handling resolved; communication and every §IX `Audience move` validated. Do not print this checklist; auto-proceed.
+**✅ Internal checkpoint — Phase deliverables complete**: facts read; confirmation consumed once; final Stage-2 production fields resolved (generation mode, refine-spec, proactive choices, and conditional AI path); mathematical content recorded where applicable; every §IX page resolved its one-pass carrier mix and §VIII contains only assigned external image-resource jobs; Design Spec passed Gate 1; enabled refinement approved; lock derived from it; split handling resolved; communication and every §IX `Audience move` validated. Do not print this checklist; auto-proceed.
 
 ---
 
@@ -518,7 +518,7 @@ in Step 7.1. This is frozen production input, not a third planning artifact.
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`, or any row is a pending prepared derivative declared by `Reference: Derived from <canonical bare filename>; treatment=...`. A prepared-user-only plan skips this step only when it has no derivative to materialize; `placeholder` rows alone do not trigger it. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
+> **Trigger**: §VIII is Step 4's committed external image-resource result, not a candidate inventory. At least one row has `Acquire Via: ai`, `web`, and/or `slice`, or one row is a pending prepared derivative declared by `Reference: Derived from <canonical bare filename>; treatment=...`. A prepared-user-only plan skips this step only when it has no derivative to materialize; `placeholder` rows alone do not trigger it. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 

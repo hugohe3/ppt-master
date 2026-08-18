@@ -355,12 +355,21 @@ no-AI or editable-only requirements win. Execution follows
 
 The module owns AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
-### Presentation Capability & Visualization Selection (Non-blocking — Strategist recommends, no user confirmation needed)
+### Page Carrier and Capability Planning (Non-blocking — Strategist recommends, no user confirmation needed)
 
-**Per-page capability review**: Before §IX, consider this menu without a usage
-quota. Use existing fields for semantic intent; omit unused lines and
-implementation parameters. Executor may adapt/decline a `Motion suggestion`
-while preserving content and intent; explicit user/template requirements bind.
+**Mandatory — one-pass page carrier planning**: During the same §IX roster
+composition, resolve each page's complete semantic carrier mix—background
+field, editable text and optional lettering, native-geometry/relationship jobs,
+photos/scenes/illustrations/icons, and applicable visualizations—before
+deriving §VIII resource rows. Decide the primary, structural, and supporting
+jobs together; do not finish a text/container layout and then treat the other
+families as optional decoration. Use existing §VI/§VIII/§IX fields: keep the
+ordinary icon basis and prepared-pool plan in §VI, and add an image, lettering,
+or illustrated-icon resource to §VIII only when the page mix assigns it a
+plausible job. This creates no new field or candidate inventory; omitting any
+carrier remains valid after the same review. Macro composition recommendations
+remain Reference; planned resource identities/jobs and explicit user/template
+requirements retain their existing authority.
 
 **Hard rule — native construction stays downstream**: record the page's
 semantic relationships, prepared resource roles, and any useful macro
@@ -407,12 +416,12 @@ Classify by information model, never source PowerPoint object type:
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
-**Mandatory — complete Chart/Table capability review**: Before §IX, compare
-every page's information model against every `Pick` / `Skip` rule in the two
-already-loaded live registries. The registries expose the possibility space;
-they are neither usage quotas nor whitelists. Skip custom objects and
-qualitative composition. Retain `no-template-match` when no registered
-reference fits.
+**Mandatory — complete Chart/Table capability review**: During the same §IX
+roster composition, compare every page's information model against every
+`Pick` / `Skip` rule in the two already-loaded live registries. The registries
+expose the possibility space; they are neither usage quotas nor whitelists.
+Skip custom objects and qualitative composition. Retain `no-template-match`
+when no registered reference fits.
 
 **Selection**:
 

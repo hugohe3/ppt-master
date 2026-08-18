@@ -332,29 +332,44 @@ meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and
 must stand alone. Create no artifact, checkpoint, lock, or second
 authoring/review pass.
 
-**Mandatory — capability scan, not a coverage quota**: for every page, consider
-the complete carrier menu once and choose only the forms that communicate its
-content best. A decision to use none of a carrier is valid; skipping the scan
-because Quick is expected to be faster is not.
+**Mandatory — one-pass page carrier resolution, not a coverage quota**: During
+the same transient-roster resolution and before resource preparation or
+coordinates, decide each page's complete mix of background, editable text and
+optional lettering, native geometry and lines, photos/scenes,
+illustrations/icons, and applicable visualizations. Decide their primary,
+structural, and supporting jobs together; do not finish a text/container layout
+and then treat the other families as optional decoration. Only selected image,
+lettering, or illustrated-icon jobs with plausible page roles create image
+resources; ordinary SVG/emoji icons retain their curated-pool boundary.
+Omitting any carrier is valid after this review; Quick speed, resolved style,
+or easier syntax never skips it.
 
-**Reference — carriers compose, not compete**: Any page may combine a suitable subset of background paint, native shapes, editable text, photos/scenes, transparent illustration elements, decorative lettering, icons, and visualizations. Outside explicit requirements, no carrier is mandatory or mutually exclusive. The resolved style controls treatment, visual weight, and recurrence; it never decides carrier eligibility, image source, or the complete native construction vocabulary. A compact icon cue does not discharge a scene, subject, or visual-weight job that a photo or illustration family would serve.
+**Reference — carriers compose, not compete**: Use any suitable subset from the resolved mix; outside explicit requirements, no carrier is mandatory or mutually exclusive. The resolved style controls treatment, visual weight, and recurrence; it never decides carrier eligibility, image source, or the complete native construction vocabulary. A compact icon cue does not discharge a scene, subject, or visual-weight job that a photo or illustration family would serve.
 
 **Hard rule**: Credentials do not decide image need or the initial carrier plan. Do not inspect backend configuration or probe a provider before planning. Web acquisition retains zero-config providers; actual AI generation capability is resolved only during resource preparation, where the declared Quick no-AI replan below owns automated exhaustion.
 
 **Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. Prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
 
-**Default — prepare a composable illustration family when it strengthens the deck (may omit when no page benefits)**: Resolve the family before SVG authoring. Elements may repeat unchanged as title/corner chrome or vary as dominant anchors, supporting figures, and accents on any suitable page. Batch compatible elements through Illustration Sheets, split only for geometry/detail/quality conflicts, and keep final page composition in SVG under [`image-generator.md`](../../references/image-generator.md) §4.3.
+**Mandatory — materialize a selected composable illustration family**: When
+the carrier resolution selects one, resolve the family before SVG authoring.
+Elements may repeat unchanged as title/corner chrome or vary as dominant
+anchors, supporting figures, and accents on any suitable page. Batch compatible
+elements through Illustration Sheets, split only for geometry/detail/quality
+conflicts, and keep final page composition in SVG under
+[`image-generator.md`](../../references/image-generator.md) §4.3.
 
-**Default — consider AI illustrated icons when they strengthen compact semantic
-cues**: When the user has not forbidden AI, prepare useful cues as transparent
-slices under `images/`. Leave grouping, count, and coexistence with SVG icons
-to the page and deck fit under [`image-generator.md`](../../references/image-generator.md)
-§4.3; apply no coverage quota and never treat the slices as SVG inventory.
+**Mandatory — materialize selected AI illustrated-icon jobs**: When the carrier
+resolution selects them and the user has not forbidden AI, prepare useful cues
+as transparent slices under `images/`. Leave grouping, count, and coexistence
+with SVG icons to the page and deck fit under
+[`image-generator.md`](../../references/image-generator.md) §4.3; apply no
+coverage quota and never treat the slices as SVG inventory.
 
-**Mandatory — proactive AI decorative lettering**: When the user has not
-forbidden AI, scan the frozen roster for display strings
-anywhere in the deck. Exactly two questions decide eligibility: is that wording
-stable, and would an artistic treatment communicate better than native type?
+**Mandatory — proactive AI decorative lettering**: During that same one-pass
+carrier resolution, when the user has not forbidden AI, scan the frozen roster
+for display strings anywhere in the deck. Exactly two questions decide
+eligibility: is that wording stable, and would an artistic treatment
+communicate better than native type?
 Page role, string length, line count, and kind of noun never filter candidates —
 a cover hook, chapter word, place or product name, dish or exhibit name, year,
 hero number, pull quote, or recurring motif word all qualify when both answers
@@ -400,21 +415,21 @@ generation capability is resolved during resource preparation, not eligibility.
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
 
-**Mandatory — per-image source decision, never inherited from the resolved style**: Outside Image to PPTX, whose closed page surface owns its reconstruction assets, decide each page image's source separately — supplied/extracted, web, AI, or slice. Prefer a supplied/extracted asset that already carries authority; use web when an externally verifiable subject must appear as itself; use AI when invented or deliberately stylized expression matters more than documentary identity. Mixed sources across one deck are normal.
+**Mandatory — per-image source decision, never inherited from the resolved style**: During that same carrier resolution, outside Image to PPTX whose closed page surface owns its reconstruction assets, decide each selected page image's source separately — supplied/extracted, web, AI, or slice. Prefer a supplied/extracted asset that already carries authority; use web when an externally verifiable subject must appear as itself; use AI when invented or deliberately stylized expression matters more than documentary identity. Mixed sources across one deck are normal.
 
 Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
-**Mandatory — complete Chart/Table capability review**: Compare every page's
-information model against every `Pick` / `Skip` rule in the two already-loaded
-live registries. The registries expose the possibility space; they are neither
-usage quotas nor whitelists. Do not select a catalog reference for qualitative
-shape composition. Choose at most one primary Chart/Table `family/key` for a
-page, validate it with `visualization_recall.py validate`, and keep its short
-purpose only in active context. Retain `no-template-match` when none fits. The
-reference remains flexible: it does not lock final type, geometry, style, or
-native output. Describe an embedded child Chart/Table and every qualitative
-relationship in the page's active decision rather than selecting another
-primary reference.
+**Mandatory — complete Chart/Table capability review**: During that same
+carrier resolution, compare every page's information model against every
+`Pick` / `Skip` rule in the two already-loaded live registries. The registries
+expose the possibility space; they are neither usage quotas nor whitelists. Do
+not select a catalog reference for qualitative shape composition. Choose at
+most one primary Chart/Table `family/key` for a page, validate it with
+`visualization_recall.py validate`, and keep its short purpose only in active
+context. Retain `no-template-match` when none fits. The reference remains
+flexible: it does not lock final type, geometry, style, or native output.
+Describe an embedded child Chart/Table and every qualitative relationship in
+the page's active decision rather than selecting another primary reference.
 Actual information models determine the loaded execution branches. Give every independent
 Chart/Table a page-local semantic `kebab-case` object key; keep its
 `<object-key>=yes|no` native-ready decision and any promoted chart-verification
