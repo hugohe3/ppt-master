@@ -38,6 +38,7 @@ PPT Master 可以在任何能读取文件和执行命令、支持 Agent 的 AI �
 
 | 安装方式 | 更新方式 |
 |---|---|
+| `uvx`（PyPI） | `uvx ppt-master <command>` 始终解析最新发布版本，无需更新 |
 | Git clone | 在 `ppt-master` 目录运行 `uvx ppt-master update-repo` |
 | Download ZIP | 重新下载最新版 ZIP，解压到新目录；把旧目录里的 `.env` 和 `projects/` 复制过去；再运行 `pip install -r requirements.txt` |
 | Skill marketplace | 用对应的 marketplace / skills 工具重新安装或更新 |

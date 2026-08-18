@@ -38,6 +38,7 @@ It depends on how you installed PPT Master:
 
 | Install method | Update method |
 |---|---|
+| `uvx` (PyPI) | `uvx ppt-master <command>` always resolves the latest published version — nothing to update |
 | Git clone | Run `uvx ppt-master update-repo` inside the `ppt-master` folder |
 | Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run `pip install -r requirements.txt` |
 | Skill marketplace | Reinstall or update through the matching marketplace / skills tool |

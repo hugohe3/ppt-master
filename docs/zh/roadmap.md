@@ -161,6 +161,8 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 `pip + requirements.txt` 是唯一官方安装路径，因为它在所有 Python 环境下都可用、不需要额外学习成本。uv 是好工具，但「让 uv 成为默认」会抬高新用户的入门门槛。如果你个人偏好 uv，完全可以在 fork 里用，不影响主线。
 
+> **Fork 注记**：本 fork 正是那个 uv 路径——已发布到 PyPI。`uvx ppt-master <command>` 零安装直接运行；上游的 `pip` 路径仍然完全可用。
+
 ### 纯速度优化
 
 **对应 Issue**：[#97](https://github.com/hugohe3/ppt-master/issues/97)

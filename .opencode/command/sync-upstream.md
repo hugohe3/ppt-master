@@ -72,7 +72,11 @@ git merge --abort
 | `python3 skills/ppt-master/scripts/xxx.py` vs `uvx ppt-master xxx` | 保留 uvx 格式 |
 | 上游新增文件中的 `python3` 命令 | 保持原样，Step 4 统一替换 |
 | `AGENTS.md` / `CLAUDE.md` 命令参考 | 接受上游内容后，将 `python3` 替换为 `uvx` |
-| `README.md` / `README_CN.md` | 接受上游内容后，在语言切换行与赞助商 `<details>` 块之间**重新插入 fork 声明块**（`> **Fork notice**` / `> **Fork 声明**），声明赞助商与捐赠信息属于原作者、与本 fork 无关 |
+| `README.md` / `README_CN.md` | 接受上游内容后，在语言切换行与赞助商 `<details>` 块之间**重新插入 fork 声明块**（`> **Fork notice** / `> **Fork 声明**），声明赞助商与捐赠信息属于原作者、与本 fork 无关；声明块含 fork 的 `uvx` 安装说明（`uvx ppt-master <command>`），并在 `### 3. Set Up` / `### 3. 配置项目` 标题后重新插入 fork 提示行（`> **Fork users**` / `> **Fork 用户**） |
+| `docs/faq.md` / `docs/zh/faq.md` | 接受上游内容后，更新方式表格首行重新插入 `uvx`（PyPI）行 |
+| `docs/windows-installation.md` / `docs/zh/windows-installation.md` | 接受上游内容后，标题下方重新插入 fork `uvx` 注记块（`> **Fork users**` / `> **Fork 用户**） |
+| `docs/roadmap.md` / `docs/zh/roadmap.md` | 接受上游内容后，uv 段落末尾重新插入 fork 注记（`> **Fork note**` / `> **Fork 注记**） |
+| `CONTRIBUTING.md` | 接受上游内容后，Setup 代码块后重新插入 fork 注记（`> **Fork note**`） |
 | `pyproject.toml` 依赖变更 | 手动审查，同步到两个 `pyproject.toml` |
 | `update_repo.py` | 保留 fork 的 uv 功能（`ensure_uv_available`、`uv sync`、`--skip-deps`），合入上游新功能 |
 | `generate_examples_index.py` | 确保内部字符串已替换为 `uvx` |
@@ -250,7 +254,7 @@ python skills/ppt-master/scripts/check_cli_sync.py
    - 检查 `MANIFEST.in`（根 与 `skills/ppt-master/`）是否仍包含 `SKILL.md`/`LICENSE`/`SPONSORS.md`/`SPONSORS_CN.md`（上游若调整文件布局可能导致 wheel 打包缺失）
    - 检查上游是否在 `attribution_guard.py` 中新增了 `_REQUIRED_GATE_FILES`/`_REQUIRED_ATTRIBUTION_FILES` 条目,对应文件必须存在
 4. **fork 适配完整性**：对「fork 修改文件清单」的每个文件 grep 验证其关键适配标记仍在（`PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key`、`projects_root`、`PPT_MASTER_TEMPLATES_DIR`），任一缺失必须修复后再提交
-5. **fork 声明块**：`README.md` 与 `README_CN.md` 在语言切换行之后必须保留 fork 声明块（`Fork notice` / `Fork 声明`），`PYPI_README.md` 顶部引用块必须保留 fork 维护者与赞助归属声明；上游合并覆盖后必须恢复
+5. **fork 声明块**：`README.md` 与 `README_CN.md` 在语言切换行之后必须保留 fork 声明块（`Fork notice` / `Fork 声明`，含 `uvx ppt-master` 安装说明），`PYPI_README.md` 顶部引用块必须保留 fork 维护者与赞助归属声明；`docs/faq.md` / `docs/zh/faq.md` 更新表格首行必须保留 `uvx`（PyPI）行；`docs/windows-installation.md` / `docs/zh/windows-installation.md` 标题下方必须保留 fork `uvx` 注记块；`docs/roadmap.md` / `docs/zh/roadmap.md` uv 段落末尾必须保留 fork 注记；`CONTRIBUTING.md` Setup 后必须保留 fork 注记；上游合并覆盖后必须恢复
 
 **五项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
@@ -265,7 +269,7 @@ python skills/ppt-master/scripts/check_deps_sync.py
 
 如果上游 `requirements.txt` 新增/删除了依赖，手动同步到两个 `pyproject.toml` 的 `[project] dependencies` 后重新运行以上命令。
 
-**fork 独有依赖保护**：`pyyaml>=6.0` 是 fork 为 `register-template`（design_spec.md YAML frontmatter 解析）补充的依赖，上游三份清单均无此项。合并上游依赖变更时**必须保留 pyyaml**，不得因上游 requirements.txt 无此条目而删除；`check_deps_sync.py` 只校验三份清单互相一致，不校验上游，因此合并后需人工确认 pyyaml 仍在三份清单中。
+**pyyaml 依赖保护**：`pyyaml>=6.0` 是 `register-template`（design_spec.md YAML frontmatter 解析）所需依赖。上游已修复 Issue #269 并在 `skills/ppt-master/requirements.txt` 顶部声明 `PyYAML>=6.0`，因此该依赖不再是 fork 独有。合并上游依赖变更时**必须保留 pyyaml 且只保留一份**（上游条目在文件顶部，fork 旧条目在文件底部——若合并后出现两份，删除底部 fork 旧条目，保留上游顶部条目）；`check_deps_sync.py` 只校验三份清单互相一致，不校验上游，因此合并后需人工确认 pyyaml 仍在三份清单中且无重复。
 
 ---
 

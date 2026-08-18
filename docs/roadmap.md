@@ -161,6 +161,8 @@ The narrow exception is the `data-pptx-replace-with` marker: independently plann
 
 `pip + requirements.txt` is the only official install path because it works in every Python environment with no extra learning cost. uv is a fine tool, but making it default raises the bar for new users. If you personally prefer uv, use it in your fork — it won't affect the main line.
 
+> **Fork note**: this fork is exactly that — the uv path, published on PyPI. `uvx ppt-master <command>` runs the tool with no install step; the upstream `pip` path remains fully supported.
+
 ### Pure speed optimization
 
 **Issue**: [#97](https://github.com/hugohe3/ppt-master/issues/97)

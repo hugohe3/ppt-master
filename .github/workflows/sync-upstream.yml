@@ -87,9 +87,14 @@ jobs:
             grep for projects_root in project_management/paths.py and config.py, and grep for
             PPT_MASTER_TEMPLATES_DIR in scripts/register_template.py. Also verify the fork
             notice blocks: README.md and README_CN.md must contain the fork notice block
-            (Fork notice / Fork 声明) right after the language-switch line, and PYPI_README.md
-            must keep the fork maintainer + sponsor attribution note at the top. If any
-            marker is missing, restore the fork adaptation before committing.
+            (Fork notice / Fork 声明, including the uvx ppt-master install note) right after
+            the language-switch line, PYPI_README.md must keep the fork maintainer + sponsor
+            attribution note at the top, docs/faq.md + docs/zh/faq.md must keep the uvx (PyPI)
+            row in the update table, docs/windows-installation.md + docs/zh/windows-installation.md
+            must keep the fork uvx note under the title, docs/roadmap.md + docs/zh/roadmap.md
+            must keep the fork note after the uv paragraph, and CONTRIBUTING.md must keep the
+            fork note after Setup. If any marker is missing, restore the fork adaptation
+            before committing.
 
       # workflow_dispatch 事件：opencode CLI 非交互模式
       - name: Configure git for push (manual)
@@ -106,6 +111,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           npm install -g opencode-ai@latest
-          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes. CRITICAL: Step 4 must scan ALL .md files in the entire repo. Before committing, run Step 4e gate — rg 'python3' across all .md files (excluding .opencode/, docs/superpowers/). Do NOT commit until clean. CRITICAL: also run the skill integrity guard via python3 skills/ppt-master/scripts/attribution_guard.py and require exit 0; if it fails, fix the attribution/uvx conflict (keep _SKILL_GATE_MARKER as uvx ppt-master attribution-guard, keep SKILL.md/LICENSE/SPONSORS files and MANIFEST.in includes) and re-run until exit 0. Do NOT commit or push until both gates pass. Also verify fork adaptation markers (PPT_MASTER_LAUNCH_TOKEN in confirm_ui/server.py + svg_editor/server.py, normalized_project_key in server_common.py, projects_root in paths.py/config.py, PPT_MASTER_TEMPLATES_DIR in register_template.py) and the fork notice blocks (Fork notice / Fork 声明 in README.md + README_CN.md, fork maintainer + sponsor attribution note in PYPI_README.md) still exist; restore them if missing before committing."
+          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes. CRITICAL: Step 4 must scan ALL .md files in the entire repo. Before committing, run Step 4e gate — rg 'python3' across all .md files (excluding .opencode/, docs/superpowers/). Do NOT commit until clean. CRITICAL: also run the skill integrity guard via python3 skills/ppt-master/scripts/attribution_guard.py and require exit 0; if it fails, fix the attribution/uvx conflict (keep _SKILL_GATE_MARKER as uvx ppt-master attribution-guard, keep SKILL.md/LICENSE/SPONSORS files and MANIFEST.in includes) and re-run until exit 0. Do NOT commit or push until both gates pass. Also verify fork adaptation markers (PPT_MASTER_LAUNCH_TOKEN in confirm_ui/server.py + svg_editor/server.py, normalized_project_key in server_common.py, projects_root in paths.py/config.py, PPT_MASTER_TEMPLATES_DIR in register_template.py) and the fork notice blocks (Fork notice / Fork 声明 with uvx install note in README.md + README_CN.md, fork maintainer + sponsor attribution note in PYPI_README.md, uvx (PyPI) row in docs/faq.md + docs/zh/faq.md update table, fork uvx note in docs/windows-installation.md + docs/zh/windows-installation.md, fork note after uv paragraph in docs/roadmap.md + docs/zh/roadmap.md, fork note after Setup in CONTRIBUTING.md) still exist; restore them if missing before committing."
 
 

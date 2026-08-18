@@ -15,6 +15,14 @@
 [English](./README.md) | 中文
 
 > **Fork 声明**：本仓库是 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 的 fork，由 [elvisw](https://github.com/elvisw) 维护，并适配为发布到 PyPI 的 `uvx` 工具。下方赞助商与捐赠信息属于原作者（Hugo He），收益归原项目所有，与本 fork 无关。
+>
+> **Fork 安装方式（本 fork 推荐）**：无需 clone、无需 `pip install`——安装 [uv](https://docs.astral.sh/uv/) 后直接从 PyPI 运行：
+>
+> ```bash
+> uvx ppt-master <command>          # 例如 uvx ppt-master project init my-deck --format ppt169
+> ```
+>
+> `uvx` wheel 已内置 skill、脚本与模板，依赖自动解析。下方的 Git clone / ZIP / marketplace 安装路径为上游安装方式，仍然完全可用。
 
 <details open>
 <summary>本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
@@ -252,6 +260,8 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 **🔀 手上有多个渠道？** 拿到多家的 API Key 后，[cc-switch](https://github.com/farion1231/cc-switch)（跨平台桌面应用）可以一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商，免去手动改配置。
 
 ### 3. 配置项目
+
+> **Fork 用户**：可跳过本节——上面的 `uvx ppt-master` 安装方式无需 clone、无需 `pip install`。以下选项为上游安装路径。
 
 **方式 A — Git clone**（推荐；需先安装 [Git](https://git-scm.com/downloads)）：首选这种方式，因为 clone 可以随时拉取最新版本。
 

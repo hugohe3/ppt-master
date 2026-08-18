@@ -27,6 +27,8 @@ cd ppt-master
 pip install -r requirements.txt
 ```
 
+> **Fork note**: this fork publishes the tool on PyPI — `uvx ppt-master <command>` runs it with no clone and no `pip install`. The upstream setup above remains fully supported.
+
 ## Before You Open a PR
 
 PPT Master is solo-maintained with limited review bandwidth. To keep things healthy for everyone:

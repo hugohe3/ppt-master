@@ -15,6 +15,14 @@
 English | [中文](./README_CN.md)
 
 > **Fork notice**: This repository is a fork of [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master), maintained by [elvisw](https://github.com/elvisw) and adapted to run as a `uvx` tool published on PyPI. The sponsor and donation information below belongs to the original author (Hugo He) and benefits the original project, not this fork.
+>
+> **Fork install path (recommended for this fork)**: no clone and no `pip install` needed — install [uv](https://docs.astral.sh/uv/) and run the tool directly from PyPI:
+>
+> ```bash
+> uvx ppt-master <command>          # e.g. uvx ppt-master project init my-deck --format ppt169
+> ```
+>
+> The `uvx` wheel bundles the skill, scripts, and templates; dependencies resolve automatically. The Git-clone / ZIP / marketplace paths below are the upstream install paths and remain fully supported.
 
 <details open>
 <summary>This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a> and other sponsors.</summary>
@@ -248,6 +256,8 @@ Never used one of these? Don't worry — in this project they play exactly one r
 **🔀 Juggling several providers?** Once you hold keys from more than one of them, [cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app — lets you one-click switch API providers for Claude Code, Codex, Gemini CLI and more, no manual config editing.
 
 ### 3. Set Up
+
+> **Fork users**: skip this section — the `uvx ppt-master` install path above needs no clone and no `pip install`. The options below are the upstream install paths.
 
 **Option A — Git clone** (recommended; requires [Git](https://git-scm.com/downloads) installed): the preferred path, since a clone can pull the latest version at any time.
 

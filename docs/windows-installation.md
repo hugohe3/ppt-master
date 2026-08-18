@@ -4,6 +4,8 @@
 
 ---
 
+> **Fork users**: this guide describes the upstream install path (Python + `pip install -r requirements.txt`). The fork's `uvx` path needs no Python install and no `pip` step — install [uv](https://docs.astral.sh/uv/) and run `uvx ppt-master <command>` directly. The steps below remain fully supported.
+
 This guide walks you through installing PPT Master on Windows step by step. Follow along and you'll have a working setup in under 10 minutes.
 
 ---

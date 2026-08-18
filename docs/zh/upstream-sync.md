@@ -139,7 +139,7 @@ kebab-case 命名：下划线 `_` → 连字符 `-`，子目录取文件名。�
    python skills/ppt-master/scripts/check_deps_sync.py
    ```
 
-**fork 独有依赖保护**：`pyyaml>=6.0` 是 fork 为 `register-template` 补充的依赖（上游三份清单均无）。合并上游依赖变更时必须保留 pyyaml；`check_deps_sync.py` 只校验三份清单互相一致，合并后需人工确认 pyyaml 仍在三份清单中。
+**pyyaml 依赖保护**：`pyyaml>=6.0` 是 `register-template` 所需依赖。上游已修复 Issue #269 并在 `skills/ppt-master/requirements.txt` 顶部声明 `PyYAML>=6.0`，不再是 fork 独有。合并上游依赖变更时必须保留 pyyaml 且只保留一份（上游条目在文件顶部，fork 旧条目在文件底部——若合并后出现两份，删除底部 fork 旧条目，保留上游顶部条目）；`check_deps_sync.py` 只校验三份清单互相一致，合并后需人工确认 pyyaml 仍在三份清单中且无重复。
 
 ---
 
