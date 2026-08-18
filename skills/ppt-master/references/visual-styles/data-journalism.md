@@ -15,7 +15,7 @@ Bloomberg / Economist news-infographic — publication-grade information density
 
 - Serif headline / hero-number for authority × a clean sans or monospace for numeric precision in tables and chart labels. Small captions and source lines; tight, deliberate hierarchy.
 
-> Families are chosen at confirmation `g`; this style asks for a serif-headline × precise-sans/mono-data *character*.
+> Families are chosen at confirmation `g`; this style asks for a serif-headline × precise-sans/mono-data *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

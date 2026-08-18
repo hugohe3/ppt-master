@@ -6,7 +6,7 @@
 
 ## 1. Shape & decoration
 
-- Shape language: everything aligns to a visible pixel grid — blocky shapes, stepped edges, sharp transitions, no smooth curves; optional 1-pixel darker outlines for definition.
+- Shape language: style-defining visible forms align to a pixel grid — blocky shapes, stepped edges, sharp transitions, no smooth curves; optional 1-pixel darker outlines for definition. Exact native presets remain eligible when their semantic contour survives this blocky treatment; otherwise use a faithful stepped construction.
 - Composition geometry: a stepped pixel staircase as the divider; an oversized sprite anchoring the page; a HUD frame with corner brackets zoning content; a tile ground-band along the bottom edge; a pixel progress bar as the sequence device.
 - Decoration: classic game framing — HUD bars, tile floors, sprite icons, chunky pixel borders. References NES / SNES / arcade composition.
 - Whitespace: grid-disciplined; let blocks sit on clean tiled ground rather than crowd.
@@ -15,7 +15,7 @@
 
 - Pixel / bitmap display character for headlines; keep body in a clean legible face — full-pixel body type strains at reading length.
 
-> Families are chosen at confirmation `g`; this style asks for a pixel / bitmap display *character* for titles, legible body alongside.
+> Families are chosen at confirmation `g`; this style asks for a pixel / bitmap display *character* for titles, legible body alongside. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 

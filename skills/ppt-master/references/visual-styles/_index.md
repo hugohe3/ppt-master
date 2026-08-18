@@ -2,6 +2,13 @@
 
 A **visual style** is how the deck **looks** — shape language, decoration density, whitespace rhythm, typographic character, texture / elevation. Resolve **one per deck**; Default locks it, while Quick keeps it only in active context. It anchors the aesthetic of the SVG layout itself (cards, dividers, spacing, corner radius, shadow use).
 
+**Hard rule — capability boundary**: A style governs treatment, visual weight,
+density, recurrence, and coherence. It never decides carrier eligibility or
+image source, and never narrows the complete primitive, Office-preset,
+independent-composition, Boolean, or necessary-freeform authoring vocabulary.
+Page purpose selects the carriers and construction; the style makes the chosen
+forms belong to one visual system.
+
 > **Styles carry NO fixed HEX and define no palette.** Default core color identity and recurring role behavior live in `design_spec.colors` / `spec_lock.colors` (confirmation `e`); Quick resolves equivalent palette anchors in active context. A visual style describes how those anchors behave in SVG composition and may call for contextual tints, gradients, effects, or material transitions; it does not substitute an unrelated palette. Generated images follow the same anchor model through [`image-renderings/`](../image-renderings/). [`image-palettes/`](../image-palettes/) is legacy compatibility material only.
 >
 > A visual style is *not* a mode. **Visual style = how it looks; mode = how you argue** (see [`modes/_index.md`](../modes/_index.md)). Resolve them independently — any style pairs with any mode.
@@ -15,12 +22,16 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 > The **`visual_style` value is only ever a first-column `id`** (`swiss-minimal`, `editorial`, …). The "Paired rendering" column lists **image-rendering** names (`flat`, `minimalist-swiss`, `digital-dashboard`, …) — never treat one of those as the `visual_style`. Default records rendering under confirmation h; Quick keeps the selected rendering only in active context and any required image manifest.
 >
 > The **`Illus.`** column is each style's illustration propensity — `core` (illustration is intrinsic to the look), `supportive` (illustration can share the composition), or `sparse` (use selectively so the style's lead visual remains clear). It tunes centrality and recurrence, never eligible page types, element scale, or carrier combinations. An explicit user request to use / skip illustrations overrides it either way, and `image_usage: none` always writes no illustration rows. Full per-style rule in each file's §6.
+>
+> **Typography character applies to editable native text.** Decorative
+> lettering is a separate carrier decision; a selected style informs its
+> treatment, never its eligibility.
 
 ### 1.1 Corporate / product
 
 | Visual style | Character | Best for | Paired rendering | Illus. |
 |---|---|---|---|---|
-| [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, no decoration | High-end consulting, architecture, type-led | `minimalist-swiss` | sparse |
+| [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, near-zero ornament | High-end consulting, architecture, type-led | `minimalist-swiss` | sparse |
 | [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` | supportive |
 | [`glassmorphism`](./glassmorphism.md) | Translucent glass panels, gradient light, floating depth | Modern SaaS, fintech, product launches, AI demos | `glassmorphism` | sparse |
 | [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | Tech, AI, data products, launches | `digital-dashboard` | sparse |
@@ -110,4 +121,7 @@ Quick does not display a candidate spectrum. It reads this index, resolves one p
 | Default Generate | Strategist reads only this index while mapping three whole solution intents, freezes each custom direction's exact bases, then reads only their deduplicated detail files. Executor reads the confirmed preset file or exact custom references. |
 | Quick Generate | The current main agent reads only this index while deciding, then reads the resolved preset or exact custom bases and retains that one direction without Design Spec/lock. |
 
-**Resolution scope**: deck-wide (one style per deck). It anchors taste as a **reference**, not a whitelist — pages may deviate with reason.
+**Resolution scope**: deck-wide (one style per deck). It anchors taste as a
+**reference**, not a whitelist. Each §1 `Composition geometry` list is
+generative vocabulary, not a finite layout menu; pages may synthesize or
+deviate when their communication job calls for it.

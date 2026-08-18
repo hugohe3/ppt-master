@@ -35,6 +35,13 @@ contours are not an earlier visual tier merely because SVG has short primitive
 syntax for them. A neutral contour is valid when neutrality is the job; easier
 syntax is never the reason to select it.
 
+**Hard rule — style does not narrow capability**: the active visual system may
+weight contour fit and control paint, stroke, texture, density, and recurrence.
+It never removes primitives, Office presets, independent composition, Boolean,
+or necessary freeform from consideration. Style-specific syntax guidance
+applies only to the named style-defining mark, not every functional page
+contour.
+
 After contour selection, use the simplest exact materialization below. Do not
 hand-author a freeform merely because an SVG path is convenient.
 
@@ -62,7 +69,9 @@ rerun the helper whenever its geometry, paint, or filter reference changes.
 Use the table below as semantic navigation, not a shortlist: match the page's
 visual intent against the complete inventory already loaded above before
 settling on a neutral rectangle / ellipse or a freeform path. Do not let the
-examples or authoring convenience hide a more specific registered contour.
+examples, selected style, or authoring convenience hide a more specific
+registered contour. A style's composition examples are generative vocabulary,
+not the set of permitted page moves.
 
 "Automatic" means the Executor independently applies this semantic decision
 gate before drawing a new object. It does not scan existing SVG, classify

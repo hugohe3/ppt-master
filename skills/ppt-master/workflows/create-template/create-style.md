@@ -15,7 +15,7 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 
 **Hard rule — child workflow, not a top-level route**: Create Style executes only inside Create Template. It uses the parent workflow's single shared confirmation/preflight/registration contract and never creates a competing entry route or second confirmation gate.
 
-**Hard rule — method and defaults only**: A Style owns a reusable way to argue, express evidence, and coordinate non-binding design defaults. It owns no current-project communication contract, reusable brand identity, page geometry, canvas, SVG prototype, Master/Layout graph, placeholder contract, application contract, or visible asset inventory.
+**Hard rule — method and defaults only**: A Style owns a reusable way to argue, express evidence, and coordinate non-binding design defaults. It owns no current-project communication contract, reusable brand identity, page geometry, canvas, SVG prototype, Master/Layout graph, placeholder contract, application contract, visible asset inventory, carrier eligibility, image source, or local authoring-capability whitelist.
 
 **Hard rule — no page prototypes**: A Style workspace contains only `templates/design_spec.md`. Do not create page SVGs, a review PPTX, or empty `images/`, `icons/`, or `exports/` directories.
 
@@ -54,8 +54,8 @@ Add these child-owned requirements to Create Template Step 2:
 | Communication method | Required; argument flow, page-message discipline, and claim/evidence treatment; a preferred mode is optional |
 | Page-role vocabulary | Required; reusable semantic roles and their jobs, evidence obligations, and composition tendencies; no order or inclusion policy |
 | Evidence and data expression | Required; chart, table, source, and editability guidance without numeric content quotas |
-| Visual-system defaults | Required; composition, density, decoration, color behavior, and typography character; catalog seeds and literal fallbacks are optional |
-| Image and icon direction | Required; rendering, usage, and treatment defaults without asset inventory or page mapping |
+| Visual-system defaults | Required; composition, density, decoration, color behavior, and native-text character; catalog seeds and literal fallbacks are optional, while carrier and native-construction eligibility remain downstream |
+| Image and icon direction | Required; rendering, centrality, recurrence, and treatment defaults without source restrictions, asset inventory, or page mapping |
 | Review focus | Required; extra checks to apply only if the user explicitly activates visual review |
 
 Write this roster-free schema:
@@ -138,6 +138,12 @@ keywords: [<three-to-five discovery tags>]
 `Fallback Color Scheme` and `Fallback Typography` are conditional; omit either subsection when the Style has no literal fallback values. Exact fallback colors use `#RRGGBB`. A supplied Brand or Deck identity replaces overlapping fallback colors, font families, voice, and icon identity as one identity decision; it does not erase the Style's communication method or evidence discipline.
 
 `Preferred Mode`, `Preferred Visual Style`, and `Preferred Image Rendering` are recommendation seeds. The current project's confirmed Stage-2 values remain authoritative. A preset value must be a real ID in its matching catalog. For `custom`, retain only real catalog references actually used as a comma-separated ID list and include the matching behavior prose.
+
+**Hard rule — Style never becomes a capability policy**: Style prose may tune
+treatment, visual weight, density, recurrence, and coherence. It never bans a
+carrier or requires carrier coverage, never selects image source, and never
+narrows primitives, Office presets, independent composition, Boolean, or
+necessary freeform. Explicit current-project requirements remain upstream.
 
 `Page Role Vocabulary` is a semantic vocabulary, not a Page Roster. Do not assign order, required/optional/repeatable status, page count, filenames, Master/Layout identities, slots, or fixed/replaceable/example-only content policy.
 

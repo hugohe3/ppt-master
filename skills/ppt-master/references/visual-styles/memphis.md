@@ -16,7 +16,7 @@ Memphis / Pop — clashing color blocks, geometric confetti, bold outlines, 80s-
 - Display poster type for headlines (heavy, attention-grabbing); a neutral readable sans for body so density stays legible under the visual energy.
 - Big, confident headline scale; tight to the artwork. Body kept clean and quiet by contrast.
 
-> Families are chosen at confirmation `g`; this style asks for a display-poster headline × neutral-sans body *character*.
+> Families are chosen at confirmation `g`; this style asks for a display-poster headline × neutral-sans body *character*. This governs editable native text; decorative-lettering eligibility remains a separate carrier decision.
 
 ## 3. Using the deck's colors
 
