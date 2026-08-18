@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import OrderedDict
@@ -70,6 +71,23 @@ configure_utf8_stdio()
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
 TEMPLATES_DIR = SKILL_DIR / "templates"
+
+# Fork adaptation (uvx): the library root is the templates/ directory of a
+# writable checkout, not the read-only wheel cache. Resolution order:
+#   1. PPT_MASTER_TEMPLATES_DIR env override (explicit user choice)
+#   2. <cwd>/skills/ppt-master/templates when running inside a repo checkout
+#   3. bundled wheel templates (read-only fallback; registration will fail
+#      with a clear message when the target directory is not writable)
+_ENV_TEMPLATES_DIR = os.environ.get("PPT_MASTER_TEMPLATES_DIR")
+_TEMPLATES_DIR_SOURCE = "bundled"
+if _ENV_TEMPLATES_DIR:
+    TEMPLATES_DIR = Path(_ENV_TEMPLATES_DIR).expanduser().resolve()
+    _TEMPLATES_DIR_SOURCE = "env"
+else:
+    _cwd_checkout = Path.cwd() / "skills" / "ppt-master" / "templates"
+    if _cwd_checkout.is_dir():
+        TEMPLATES_DIR = _cwd_checkout.resolve()
+        _TEMPLATES_DIR_SOURCE = "cwd"
 
 KIND_CONFIG = {
     "brand": {
@@ -1290,6 +1308,13 @@ def main() -> int:
         spec_dir = base / args.template_id
         if not spec_dir.is_dir():
             print(f"Error: {args.kind} directory not found: {spec_dir}", file=sys.stderr)
+            if _TEMPLATES_DIR_SOURCE == "bundled":
+                print(
+                    "Hint: the library root resolved to the read-only bundled "
+                    "wheel templates. Run from a repo checkout, or set "
+                    "PPT_MASTER_TEMPLATES_DIR to a writable templates/ directory.",
+                    file=sys.stderr,
+                )
             return 1
 
     extracted: dict[str, dict] = {}
