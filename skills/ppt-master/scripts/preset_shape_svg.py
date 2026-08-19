@@ -2,9 +2,9 @@
 """
 PPT Master - Preset Shape SVG Fragment Tool
 
-Browse and recommend DrawingML presets, or print compact canonical
-native-preset SVG groups to stdout for manual insertion into a hand-authored
-page or template.
+Browse and inspect DrawingML presets, optionally run heuristic recall, or print
+compact canonical native-preset SVG groups to stdout for manual insertion into
+a hand-authored page or template.
 
 Usage:
     python3 scripts/preset_shape_svg.py list [--grouped] [--search QUERY]
@@ -14,9 +14,7 @@ Usage:
     python3 scripts/preset_shape_svg.py render-batch --input FILE_OR_DASH
 
 Examples:
-    python3 scripts/preset_shape_svg.py list --grouped
-    python3 scripts/preset_shape_svg.py recommend --role spine \
-        --relationship order --directionality horizontal --compact
+    python3 scripts/preset_shape_svg.py list --search arrow
     python3 scripts/preset_shape_svg.py describe rightArrow --compact
     python3 scripts/preset_shape_svg.py render rightArrow --id next-step \
         --frame 160 210 320 112 --fill "#2563EB" --stroke none
@@ -103,21 +101,20 @@ def build_parser() -> argparse.ArgumentParser:
 
     describe_parser = subparsers.add_parser(
         "describe",
-        help="Print preset geometry and semantic metadata as JSON.",
+        help="Print preset geometry and identity metadata as JSON.",
     )
     describe_parser.add_argument("preset", help="DrawingML preset name.")
     describe_parser.add_argument(
         "--compact",
         action="store_true",
         help=(
-            "Print one flat selection view with semantic boundaries and key "
-            "geometry facts."
+            "Print one flat objective identity view with key geometry facts."
         ),
     )
 
     recommend_parser = subparsers.add_parser(
         "recommend",
-        help="Recall semantically matched preset candidates as JSON.",
+        help="Optionally recall heuristic preset candidates as JSON.",
     )
     recommend_parser.add_argument(
         "--role",
@@ -330,9 +327,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         payload = (
             {
                 "preset": definition.name,
-                "intent": semantics["intent"],
-                "recommended_for": semantics["recommended_for"],
-                "avoid_for": semantics["avoid_for"],
+                "identity": semantics["intent"],
+                "office_category": semantics["office_category_label"],
+                "family": semantics["label"],
+                "scope": semantics["scope"],
+                "literal_only": semantics["literal_only"],
                 "adjustments": adjustments,
                 "connector_preset": connector_preset,
                 "path_count": path_count,

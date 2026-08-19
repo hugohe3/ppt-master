@@ -197,9 +197,7 @@ python3 scripts/pptx_delivery_check.py <finished.pptx>
 Native preset shape authoring (one or more registry-backed fragments on stdout):
 
 ```bash
-python3 scripts/preset_shape_svg.py list --grouped
-python3 scripts/preset_shape_svg.py recommend --compact --role spine --relationship order \
-  --directionality horizontal --aspect wide --limit 6
+python3 scripts/preset_shape_svg.py list --search arrow
 python3 scripts/preset_shape_svg.py describe rightArrow --compact
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
 python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
@@ -211,23 +209,23 @@ python3 scripts/preset_shape_svg.py render-batch --input - <<'JSON'
 JSON
 ```
 
-`list --grouped` is the compact entry index: it organizes the exact 187-name
-registry under the official Office gallery categories, then exposes semantic
-groups, scopes, one-line intent summaries, and grouped preset names. Full match
-reasons, intended uses, and misuse boundaries remain page-local in `recommend`
-and `describe` instead of being repeated in the mandatory discovery output.
-`recommend` recalls candidates from page-job criteria; its default `general`
-scope excludes literal-only symbols, flowchart notation, and action controls.
-Its result is neither a whitelist nor an automatic selection.
-`recommend --compact` keeps criteria, counts, selection note, and each
-candidate's preset, scope, literal boundary, intent, match reasons, and misuse
-boundaries; plain `recommend` preserves the full payload. The
-`describe --compact` view returns one flat object with semantic boundaries,
-adjustments, connection/text facts, and path count. Plain `describe` preserves
-the full nested geometry/semantics payload. A zero-match recommendation is
-valid JSON with exit code 0 so the caller can relax its criteria; a zero-match
-`list --search` remains a failed lookup with exit code 1. Plain
-`list [--search QUERY]` remains the compatibility name view.
+Runtime capability discovery reads
+[`preset-shape-vocabulary.md`](../references/preset-shape-vocabulary.md), which
+lists all 187 exact names by Office category and objective contour family.
+`list [--search QUERY]` and `list --grouped [--search QUERY]` remain optional
+location and compatibility views; they do not replace the complete vocabulary.
+`describe --compact` returns the selected preset's objective identity, Office
+category, family, scope, literal boundary, adjustments, connector/path facts,
+connection sites, and text-rectangle availability. Plain `describe` preserves
+the full nested legacy semantics payload.
+
+`recommend` remains an optional heuristic browse aid for unresolved family
+searches. Its result is neither a whitelist nor an automatic selection, and a
+zero-match result is not evidence that a preset is absent or unsuitable.
+`recommend --compact` keeps criteria, counts, selection note, and reduced
+candidate records; plain `recommend` preserves the full payload. A zero-match
+recommendation is valid JSON with exit code 0; a zero-match `list --search`
+remains a failed lookup with exit code 1.
 
 The helper never writes a page or project file. Select one exact semantic
 stock-shape match, inspect the emitted fragment, and insert it into the

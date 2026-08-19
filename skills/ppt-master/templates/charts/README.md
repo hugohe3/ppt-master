@@ -9,21 +9,27 @@ Cell-grid semantics belong in [`tables/`](../tables/). Reusable PowerPoint
 Master/Layout, page-type, slot, and placeholder contracts belong in
 [`layouts/`](../layouts/).
 
-## Source of truth
+## Planning vocabulary and source of truth
 
 [`charts_index.json`](./charts_index.json) is the sole chart registry. Its
 `charts` object maps each canonical key to one selection-rule `summary` in the
 form `Pick for ... Skip if ...`. The key matches `<key>.svg`; `meta.total`
 matches the canonical SVG roster.
 
-Default Strategist and Quick read this complete compact registry together with
-the Table registry before planning. They compare every `Pick` / `Skip` rule,
-then use [`visualization_recall.py`](../../scripts/visualization_recall.py)
-`validate` to resolve selected canonical references. Its `recall` mode remains
-an optional diagnostic helper, not the runtime capability gate. Default writes
-`chart/<key>` to `page_visualizations`; Quick keeps the selected reference in
-active context. [`chart_recall.py`](../../scripts/chart_recall.py) and bare keys
-remain legacy compatibility only.
+[`chart-vocabulary.md`](./chart-vocabulary.md) is the complete planning
+projection. It lists all 33 exact `chart/<key>` references by information
+relationship and states only what each encoding represents. It contains no
+chart-authoring instructions and does not prescribe selection.
+
+Default Strategist and Quick read the vocabulary together with the Table
+registry before planning, choose through their own judgment, then use
+[`visualization_recall.py`](../../scripts/visualization_recall.py) `validate`
+to resolve selected canonical references. Its `recall` mode remains an
+optional diagnostic helper over the machine registry, not the runtime
+capability gate. Default writes `chart/<key>` to `page_visualizations`; Quick
+keeps the selected reference in active context. Executor then reads only the
+selected SVG and execution references. [`chart_recall.py`](../../scripts/chart_recall.py)
+and bare keys remain legacy compatibility only.
 
 ## Authoring contract
 

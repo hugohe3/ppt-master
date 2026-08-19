@@ -255,7 +255,7 @@ Read references/modes/_index.md
 Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
 Read templates/icons/README.md
-Read templates/charts/charts_index.json
+Read templates/charts/chart-vocabulary.md
 Read templates/tables/tables_index.json
 ```
 
@@ -420,14 +420,16 @@ This carrier menu does not satisfy or replace the per-page Structure decision in
 Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
 **Mandatory — complete Chart/Table capability review**: During that same
-carrier resolution, compare every page's information model against every
-`Pick` / `Skip` rule in the two already-loaded live registries. The registries
-expose the possibility space; they are neither usage quotas nor whitelists. Do
-not select a catalog reference for qualitative shape composition. Choose at
-most one primary Chart/Table `family/key` for a page, validate it with
-`visualization_recall.py validate`, and keep its short purpose only in active
-context. Retain `no-template-match` when none fits. The reference remains
-flexible: it does not lock final type, geometry, style, or native output.
+carrier resolution, compare every page's information model against every entry
+in the already-loaded Chart expression vocabulary and Table registry. These
+complete capability maps expose what exists; their descriptions do not rank
+candidates or replace judgment from the actual information, and they are
+neither usage quotas nor whitelists. Do not select a catalog reference for
+qualitative shape composition. Choose at most one primary Chart/Table
+`family/key` for a page, validate it with `visualization_recall.py validate`,
+and keep its short purpose only in active context. Retain `no-template-match`
+when none fits. The reference remains flexible: it does not lock final type,
+geometry, style, or native output.
 Describe an embedded child Chart/Table and every qualitative relationship in
 the page's active decision rather than selecting another primary reference.
 Actual information models determine the loaded execution branches. Give every independent
@@ -495,6 +497,7 @@ not route among them one file at a time:
 [`shared-standards-core.md`](../../references/shared-standards-core.md),
 [`svg-effects.md`](../../references/svg-effects.md),
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
+[`preset-shape-vocabulary.md`](../../references/preset-shape-vocabulary.md),
 [`semantic-svg.md`](../../references/semantic-svg.md),
 and [`executor-structure.md`](../../references/executor-structure.md). Retain
 only the mode/style detail files selected during one-pass design resolution and
@@ -517,8 +520,8 @@ Reread only after a known file change or context invalidation.
 `Structure=yes` result can apply its qualitative topology grammar.
 `native-shape-authoring.md` independently owns contour selection and compound
 page geometry for both Structure results. Reuse both throughout the valid
-execution context; before P01, complete its unfiltered full-registry discovery,
-then reread only after a known file change or context invalidation.
+execution context; before P01, read the complete preset vocabulary once, then
+reread only after a known file change or context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
 or more images, after its content and communication move are
@@ -562,14 +565,14 @@ This decision is mandatory on every page and cannot be satisfied by the
 capability menu, visualization recall, template geometry, or a later check.
 
 **Mandatory — independent per-page geometry move**: after the Structure result
-and any applicable topology resolve, but before choosing any contour, run the
-page-local direct `recommend --compact --limit 6` invocation defined by
-[`native-shape-authoring.md`](../../references/native-shape-authoring.md) from
-the actual job, then invoke `describe --compact` directly only for serious
-candidates. Registry discovery followed by direct `describe` without
-`recommend` does not satisfy this recall. Apply §2.1 to the transient geometry
-job, actual content, resolved style, and complete native vocabulary before
-writing coordinates. It owns the exact-fit geometry gate, independent
+and any applicable topology resolve, apply
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1
+to the transient geometry job, actual content, resolved style, and complete
+loaded native vocabulary before writing coordinates. Select through direct
+semantic comparison; use `describe --compact` only when objective geometry
+facts could change a serious candidate decision. Optional search or
+recommendation output cannot narrow or replace the vocabulary. This move owns
+the exact-fit geometry gate, independent
 relationship / carrier fit,
 contour-family / exact-result choice, reader effect for a generic or undrawn
 result, running actual-geometry signature, and materialization boundary. A
@@ -743,7 +746,7 @@ or lock.
 
 - [x] All required source/resource preparation is complete
 - [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
-- [x] The complete native preset registry was read unfiltered before P01; every page entering ordinary contour selection ran job-derived `recommend` before choosing a contour and described only serious candidates
+- [x] The complete 187-name native preset vocabulary was read before P01; each page chose from that full capability surface, with objective candidate details inspected only when needed
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] The proactive decorative-lettering scan ran before capability resolution; every exact string passing both eligibility questions entered an AI item or lettering sheet/slice job unless the user forbade AI
 - [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif

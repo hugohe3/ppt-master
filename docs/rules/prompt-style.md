@@ -127,7 +127,7 @@ never inventories them or promotes a concrete preset, primitive, Connector,
 Boolean/freeform operation, or authoring parameter into a binding planning
 selection. A macro Reference may mention a technique as optional inspiration
 without prescribing or gating construction. The Design Spec / lock create no
-native-shape field; Executor discovers the complete current preset registry and
+native-shape field; Executor reads the complete current preset vocabulary and
 chooses the page-fit construction during realization.
 
 **Preparation timing**: In the default pipeline, topic research and import of

@@ -312,7 +312,7 @@ kind owns this segment”.
 
 ## 3. The four index files
 
-Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick, following the compact "meta + summary" pattern used by the Visualization catalog indexes ([Chart](../skills/ppt-master/templates/charts/charts_index.json) and [Table](../skills/ppt-master/templates/tables/tables_index.json)) while preserving structured metadata that helps selection. Qualitative Structure has no index because Executor generates it from page relationships.
+Each of these four indexes maps one-to-one with its physical directory, and its fields are trimmed to what Strategist needs to select a reusable workspace. Visualization uses a separate boundary: Chart planning reads the objective [`chart-vocabulary.md`](../skills/ppt-master/templates/charts/chart-vocabulary.md), while [`charts_index.json`](../skills/ppt-master/templates/charts/charts_index.json) remains the machine registry; the small [Table registry](../skills/ppt-master/templates/tables/tables_index.json) serves both roles directly. Qualitative Structure has no index because Executor generates it from page relationships.
 
 These indexes cover library scope only. A project-root workspace is intentionally absent from all four indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
 

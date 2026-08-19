@@ -341,9 +341,10 @@ no-AI or editable-only requirements win. Execution follows
 
 1. Before authoring Stage-2 directions, load the workflow's complete fixed
    planning-capability batch. It includes this module, the image-layout
-   authorities, all compact choice indexes, the icon-library contract, and the
-   complete Chart/Table registries. After the three whole-direction intents
-   exist and their mode/style/rendering reference ids are frozen, read only
+   authorities, all compact decision maps, the icon-library contract, the
+   complete Chart expression vocabulary, and the Table registry. After the
+   three whole-direction intents exist and their mode/style/rendering reference
+   ids are frozen, read only
    those exact detail siblings once and author one complete custom rendering
    inside each direction before deciding whether `recommend.image_usage`
    includes AI.
@@ -411,17 +412,18 @@ Classify by information model, never source PowerPoint object type:
 | Model | Planning action |
 |---|---|
 | Qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` | Preserve units, relationship, and reading path as free §IX prose; no catalog key |
-| Values/dates/durations determine geometry | Chart; compare the complete loaded chart registry |
+| Values/dates/durations determine geometry | Chart; compare the complete loaded chart expression vocabulary |
 | Row header × column header addresses each fact | Table; compare the complete loaded table registry |
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
 **Mandatory — complete Chart/Table capability review**: During the same §IX
-roster composition, compare every page's information model against every
-`Pick` / `Skip` rule in the two already-loaded live registries. The registries
-expose the possibility space; they are neither usage quotas nor whitelists.
-Skip custom objects and qualitative composition. Retain `no-template-match`
-when no registered reference fits.
+roster composition, compare every page's information model against every entry
+in the already-loaded Chart expression vocabulary and Table registry. These
+complete capability maps expose what can be selected; their descriptions do
+not rank candidates or replace judgment from the actual information. They are
+neither usage quotas nor whitelists. Skip custom objects and qualitative
+composition. Retain `no-template-match` when no registered reference fits.
 
 **Selection**:
 
@@ -434,7 +436,7 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
   <family>/<key> [<family>/<key> ...]
 ```
 
-Correct failed selections by re-reading the complete registries;
+Correct failed selections by re-reading the complete vocabulary/registry;
 `no-template-match` never enters `page_visualizations`.
 
 **Section VII selection list**: write `Page | Family | Template | Usage` for each `chart|table` reference; Usage is semantic purpose. Omit empty/no-match detail. Qualitative composition stays in §IX; only Layout/Deck owns reusable PowerPoint structure.

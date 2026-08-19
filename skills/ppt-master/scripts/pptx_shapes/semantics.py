@@ -374,11 +374,12 @@ class PresetShapeSemantics:
             "candidate_count": len(candidates),
             "returned_count": min(len(ordered), limit),
             "selection_note": (
-                "Candidate recall only. Compare contour, content fit, and avoid_for "
-                "before choosing; this is neither a whitelist nor an automatic choice."
+                "Heuristic browse candidates only. Compare them against the complete "
+                "vocabulary and page context; scores, filters, and the returned limit "
+                "do not decide fit or absence."
                 if ordered
-                else "No candidates matched. This is a valid recall result; relax or "
-                "change the criteria before selecting a contour."
+                else "No heuristic candidates matched. This does not prove absence; "
+                "select from the complete vocabulary directly or change the criteria."
             ),
             "candidates": ordered[:limit],
         }
