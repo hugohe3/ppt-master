@@ -20,7 +20,12 @@ Dependencies:
 
 from __future__ import annotations
 
-from .formula_ast import formula_node_count
+from .formula_ast import (
+    FormulaVerticalExtent,
+    Sequence,
+    formula_node_count,
+    formula_vertical_extent,
+)
 from .formula_omml import emit_omml, validate_omml_fragment
 from .formula_parser import FormulaCompileError, parse_latex_formula
 
@@ -29,7 +34,7 @@ _MAX_LATEX_LENGTH = 65_536
 _MAX_AST_NODES = 100_000
 
 
-def _compile(latex: str, *, display: bool) -> str:
+def _parse_checked_formula(latex: str, *, display: bool) -> Sequence:
     if not isinstance(latex, str):
         raise FormulaCompileError("LaTeX formula must be a string")
     if len(latex) > _MAX_LATEX_LENGTH:
@@ -42,6 +47,16 @@ def _compile(latex: str, *, display: bool) -> str:
             formula_node_count(expression, maximum=_MAX_AST_NODES)
         except ValueError as exc:
             raise FormulaCompileError(str(exc)) from exc
+        return expression
+    except RecursionError as exc:
+        raise FormulaCompileError(
+            "Formula nesting exceeds the supported limit"
+        ) from exc
+
+
+def _compile(latex: str, *, display: bool) -> str:
+    expression = _parse_checked_formula(latex, display=display)
+    try:
         return emit_omml(expression, display=display)
     except RecursionError as exc:
         raise FormulaCompileError(
@@ -59,9 +74,23 @@ def compile_latex_to_inline_omml(latex: str) -> str:
     return _compile(latex, display=False)
 
 
+def estimate_inline_formula_vertical_extent(
+    latex: str,
+) -> FormulaVerticalExtent:
+    """Estimate inline native-math bounds relative to its text baseline."""
+    expression = _parse_checked_formula(latex, display=False)
+    try:
+        return formula_vertical_extent(expression)
+    except RecursionError as exc:
+        raise FormulaCompileError(
+            "Formula nesting exceeds the supported limit"
+        ) from exc
+
+
 __all__ = [
     "FormulaCompileError",
     "compile_latex_to_inline_omml",
     "compile_latex_to_omml",
+    "estimate_inline_formula_vertical_extent",
     "validate_omml_fragment",
 ]

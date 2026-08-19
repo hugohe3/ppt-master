@@ -219,6 +219,7 @@ except ImportError:
 try:
     from svg_to_pptx.native_objects import (
         INLINE_FORMULA_ATTR as _INLINE_FORMULA_ATTR,
+        estimate_inline_formula_vertical_extent as _estimate_inline_formula_vertical_extent,
         native_fallback_kind as _native_fallback_kind,
         inline_formula_marker_errors as _inline_formula_marker_errors,
         native_marker_legacy_warnings as _native_marker_legacy_warnings,
@@ -227,6 +228,7 @@ try:
     )
 except ImportError:
     _INLINE_FORMULA_ATTR = 'data-pptx-inline-formula'
+    _estimate_inline_formula_vertical_extent = None
     _native_fallback_kind = None
     _inline_formula_marker_errors = None
     _native_marker_legacy_warnings = None
@@ -1946,6 +1948,7 @@ class SVGQualityChecker:
                     parent_by_id,
                 ) or '1',
                 'opacity_chain': tuple(reversed(opacity_chain)),
+                'inline_formula': owner.get(_INLINE_FORMULA_ATTR),
             })
         return cls._coalesce_checker_text_runs(resolved)
 
@@ -1978,6 +1981,10 @@ class SVGQualityChecker:
         merged: List[Dict] = []
         previous_signature: Tuple | None = None
         for run in runs:
+            if run.get('inline_formula') is not None:
+                merged.append(run)
+                previous_signature = None
+                continue
             current_signature = signature(run)
             if merged and current_signature == previous_signature:
                 candidate = {
@@ -1995,6 +2002,29 @@ class SVGQualityChecker:
             merged.append(run)
             previous_signature = current_signature
         return merged
+
+    @staticmethod
+    def _text_line_vertical_extent(
+        runs: List[Dict],
+        font_size: float,
+    ) -> Tuple[float, float]:
+        """Return native-math-aware ascent/descent for checker bounds."""
+        ascent = font_size * 0.85
+        descent = font_size * 0.35
+        if _estimate_inline_formula_vertical_extent is None:
+            return ascent, descent
+        for run in runs:
+            latex = run.get('inline_formula')
+            if latex is None:
+                continue
+            try:
+                run_font_size = float(run.get('font_size', font_size))
+                extent = _estimate_inline_formula_vertical_extent(str(latex))
+            except (TypeError, ValueError):
+                continue
+            ascent = max(ascent, run_font_size * extent.ascent_em)
+            descent = max(descent, run_font_size * extent.descent_em)
+        return ascent, descent
 
     def _check_text_output_geometry(
         self,
@@ -2191,8 +2221,9 @@ class SVGQualityChecker:
             right = x + width
         else:
             return None
-        top = y - font_size * 0.85
-        bottom = y + font_size * 0.35
+        ascent, descent = cls._text_line_vertical_extent(runs, font_size)
+        top = y - ascent
+        bottom = y + descent
 
         return cls._transformed_rect_bounds(
             line_el,

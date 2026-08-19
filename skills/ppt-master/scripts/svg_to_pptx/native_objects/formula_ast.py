@@ -168,6 +168,19 @@ class BorderBox:
     kind: str
 
 
+@dataclass(frozen=True)
+class FormulaVerticalExtent:
+    """Conservative formula bounds relative to the surrounding baseline."""
+
+    ascent_em: float
+    descent_em: float
+
+    @property
+    def height_em(self) -> float:
+        """Return total vertical extent in units of the owning font size."""
+        return self.ascent_em + self.descent_em
+
+
 Node = (
     Text
     | Sequence
@@ -190,6 +203,227 @@ Node = (
     | Phantom
     | BorderBox
 )
+
+
+_BASE_VERTICAL_EXTENT = FormulaVerticalExtent(0.85, 0.35)
+# These ratios model Office Math topology rather than any one installed font.
+# The ordinary-text floor matches the exporter/checker baseline contract.
+_SCRIPT_SCALE = 0.62
+_FRACTION_SCALE = 0.68
+
+
+def _max_vertical_extent(
+    *extents: FormulaVerticalExtent,
+) -> FormulaVerticalExtent:
+    if not extents:
+        return FormulaVerticalExtent(0.0, 0.0)
+    return FormulaVerticalExtent(
+        max(extent.ascent_em for extent in extents),
+        max(extent.descent_em for extent in extents),
+    )
+
+
+def _scaled_vertical_extent(
+    extent: FormulaVerticalExtent,
+    scale: float,
+) -> FormulaVerticalExtent:
+    return FormulaVerticalExtent(
+        extent.ascent_em * scale,
+        extent.descent_em * scale,
+    )
+
+
+def _script_vertical_extent(
+    base: FormulaVerticalExtent,
+    subscript: Sequence | None,
+    superscript: Sequence | None,
+) -> FormulaVerticalExtent:
+    ascent = base.ascent_em
+    descent = base.descent_em
+    if superscript is not None:
+        upper = _scaled_vertical_extent(
+            _node_vertical_extent(superscript),
+            _SCRIPT_SCALE,
+        )
+        baseline_shift = 0.55
+        ascent = max(ascent, baseline_shift + upper.ascent_em)
+        descent = max(descent, upper.descent_em - baseline_shift)
+    if subscript is not None:
+        lower = _scaled_vertical_extent(
+            _node_vertical_extent(subscript),
+            _SCRIPT_SCALE,
+        )
+        baseline_shift = 0.30
+        ascent = max(ascent, lower.ascent_em - baseline_shift)
+        descent = max(descent, baseline_shift + lower.descent_em)
+    return FormulaVerticalExtent(ascent, descent)
+
+
+def _limit_vertical_extent(
+    base: FormulaVerticalExtent,
+    lower: Sequence | None,
+    upper: Sequence | None,
+) -> FormulaVerticalExtent:
+    ascent = base.ascent_em
+    descent = base.descent_em
+    if upper is not None:
+        upper_extent = _node_vertical_extent(upper)
+        ascent += 0.14 + _SCRIPT_SCALE * upper_extent.height_em
+    if lower is not None:
+        lower_extent = _node_vertical_extent(lower)
+        descent += 0.14 + _SCRIPT_SCALE * lower_extent.height_em
+    return FormulaVerticalExtent(ascent, descent)
+
+
+def _rows_vertical_extent(
+    rows: tuple[tuple[Sequence, ...], ...] | tuple[Sequence, ...],
+) -> FormulaVerticalExtent:
+    row_heights: list[float] = []
+    for row in rows:
+        cells = row if isinstance(row, tuple) else (row,)
+        row_extent = _max_vertical_extent(
+            *(_node_vertical_extent(cell) for cell in cells)
+        )
+        row_heights.append(
+            max(_BASE_VERTICAL_EXTENT.height_em, row_extent.height_em)
+        )
+    if not row_heights:
+        return _BASE_VERTICAL_EXTENT
+    total_height = sum(row_heights) + 0.18 * (len(row_heights) - 1)
+    return FormulaVerticalExtent(
+        max(_BASE_VERTICAL_EXTENT.ascent_em, total_height * 0.55),
+        max(_BASE_VERTICAL_EXTENT.descent_em, total_height * 0.45),
+    )
+
+
+def _node_vertical_extent(node: Node) -> FormulaVerticalExtent:
+    if isinstance(node, Text):
+        return _BASE_VERTICAL_EXTENT
+    if isinstance(node, AlignmentPoint):
+        return FormulaVerticalExtent(0.0, 0.0)
+    if isinstance(node, Sequence):
+        return _max_vertical_extent(
+            *(_node_vertical_extent(child) for child in node.children)
+        )
+    if isinstance(node, Styled):
+        return _node_vertical_extent(node.body)
+    if isinstance(node, Fraction):
+        numerator = _node_vertical_extent(node.numerator)
+        denominator = _node_vertical_extent(node.denominator)
+        return FormulaVerticalExtent(
+            max(
+                _BASE_VERTICAL_EXTENT.ascent_em,
+                0.28 + _FRACTION_SCALE * numerator.height_em,
+            ),
+            max(
+                _BASE_VERTICAL_EXTENT.descent_em,
+                0.06 + _FRACTION_SCALE * denominator.height_em,
+            ),
+        )
+    if isinstance(node, Radical):
+        body = _node_vertical_extent(node.body)
+        ascent = body.ascent_em + 0.20
+        if node.degree is not None:
+            degree = _scaled_vertical_extent(
+                _node_vertical_extent(node.degree),
+                0.50,
+            )
+            ascent = max(ascent, 0.55 + degree.ascent_em)
+        return FormulaVerticalExtent(ascent, max(body.descent_em, 0.40))
+    if isinstance(node, (Script, Prescript)):
+        return _script_vertical_extent(
+            _node_vertical_extent(node.base),
+            node.subscript,
+            node.superscript,
+        )
+    if isinstance(node, Nary):
+        base = _max_vertical_extent(
+            FormulaVerticalExtent(1.05, 0.45),
+            _node_vertical_extent(node.body)
+            if node.body is not None else FormulaVerticalExtent(0.0, 0.0),
+        )
+        if node.limit_modifier == "limits":
+            return _limit_vertical_extent(
+                base,
+                node.subscript,
+                node.superscript,
+            )
+        return _script_vertical_extent(
+            base,
+            node.subscript,
+            node.superscript,
+        )
+    if isinstance(node, Delimiter):
+        body = _max_vertical_extent(
+            *(_node_vertical_extent(segment) for segment in node.segments)
+        )
+        return FormulaVerticalExtent(
+            max(_BASE_VERTICAL_EXTENT.ascent_em, body.ascent_em + 0.05),
+            max(_BASE_VERTICAL_EXTENT.descent_em, body.descent_em + 0.05),
+        )
+    if isinstance(node, Matrix):
+        return _rows_vertical_extent(node.rows)
+    if isinstance(node, EquationArray):
+        return _rows_vertical_extent(node.rows)
+    if isinstance(node, Accent):
+        body = _node_vertical_extent(node.body)
+        return FormulaVerticalExtent(body.ascent_em + 0.24, body.descent_em)
+    if isinstance(node, Bar):
+        body = _node_vertical_extent(node.body)
+        if node.position in {"bot", "bottom"}:
+            return FormulaVerticalExtent(body.ascent_em, body.descent_em + 0.16)
+        return FormulaVerticalExtent(body.ascent_em + 0.16, body.descent_em)
+    if isinstance(node, GroupChar):
+        body = _node_vertical_extent(node.body)
+        if node.position in {"bot", "bottom"}:
+            return FormulaVerticalExtent(body.ascent_em, body.descent_em + 0.30)
+        return FormulaVerticalExtent(body.ascent_em + 0.30, body.descent_em)
+    if isinstance(node, Limit):
+        return _limit_vertical_extent(
+            _node_vertical_extent(node.base),
+            node.lower,
+            node.upper,
+        )
+    if isinstance(node, Function):
+        name = _node_vertical_extent(node.name)
+        if node.subscript is not None or node.superscript is not None:
+            if node.limit_modifier == "limits":
+                name = _limit_vertical_extent(
+                    name,
+                    node.subscript,
+                    node.superscript,
+                )
+            else:
+                name = _script_vertical_extent(
+                    name,
+                    node.subscript,
+                    node.superscript,
+                )
+        if node.body is None:
+            return name
+        return _max_vertical_extent(name, _node_vertical_extent(node.body))
+    if isinstance(node, OperatorEmulator):
+        return _node_vertical_extent(node.body)
+    if isinstance(node, Phantom):
+        if node.kind == "hphantom":
+            return FormulaVerticalExtent(0.0, 0.0)
+        return _node_vertical_extent(node.body)
+    if isinstance(node, BorderBox):
+        body = _node_vertical_extent(node.body)
+        return FormulaVerticalExtent(
+            body.ascent_em + 0.08,
+            body.descent_em + 0.08,
+        )
+    return _BASE_VERTICAL_EXTENT
+
+
+def formula_vertical_extent(root: Node) -> FormulaVerticalExtent:
+    """Estimate native math ascent/descent from the parsed formula structure."""
+    extent = _node_vertical_extent(root)
+    return FormulaVerticalExtent(
+        max(_BASE_VERTICAL_EXTENT.ascent_em, extent.ascent_em),
+        max(_BASE_VERTICAL_EXTENT.descent_em, extent.descent_em),
+    )
 
 
 def merge_run_styles(base: RunStyle | None, override: RunStyle | None) -> RunStyle | None:
@@ -334,6 +568,7 @@ __all__ = [
     "Delimiter",
     "EquationArray",
     "Fraction",
+    "FormulaVerticalExtent",
     "Function",
     "GroupChar",
     "Limit",
@@ -351,6 +586,7 @@ __all__ = [
     "Text",
     "append_child",
     "formula_node_count",
+    "formula_vertical_extent",
     "is_empty",
     "merge_run_styles",
 ]

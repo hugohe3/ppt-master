@@ -35,6 +35,7 @@ from .fallback_hash import (
     stamp_native_fallback_baseline,
 )
 from .formula import FormulaSpec, build_native_formula, validate_formula_payload
+from .formula_compiler import estimate_inline_formula_vertical_extent
 from .inline_formula import (
     INLINE_FORMULA_ATTR,
     inline_formula_marker_errors,
@@ -79,6 +80,7 @@ from .workbook import (
 
 __all__ = [
     "convert_native_object",
+    "estimate_inline_formula_vertical_extent",
     "INLINE_FORMULA_ATTR",
     "NativeMarkerAttributeError",
     "native_fallback_kind",
