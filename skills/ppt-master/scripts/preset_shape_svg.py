@@ -2,14 +2,13 @@
 """
 PPT Master - Preset Shape SVG Fragment Tool
 
-Browse and inspect DrawingML presets, optionally run heuristic recall, or print
-compact canonical native-preset SVG groups to stdout for manual insertion into
-a hand-authored page or template.
+Browse and inspect DrawingML presets, or print compact canonical native-preset
+SVG groups to stdout for manual insertion into a hand-authored page or
+template.
 
 Usage:
     python3 scripts/preset_shape_svg.py list [--grouped] [--search QUERY]
     python3 scripts/preset_shape_svg.py describe PRESET [--compact]
-    python3 scripts/preset_shape_svg.py recommend --role ROLE [options] [--compact]
     python3 scripts/preset_shape_svg.py render PRESET --id ID --frame X Y W H
     python3 scripts/preset_shape_svg.py render-batch --input FILE_OR_DASH
 
@@ -34,16 +33,7 @@ from typing import Sequence
 
 from console_encoding import configure_utf8_stdio
 from pptx_shapes import CONNECTOR_PRESET_TYPES, get_preset_registry
-from pptx_shapes.semantics import (
-    SEMANTIC_ASPECTS,
-    SEMANTIC_DIRECTIONALITY,
-    SEMANTIC_RELATIONSHIPS,
-    SEMANTIC_ROLES,
-    SEMANTIC_SCOPES,
-    SEMANTIC_TEXT_CAPACITIES,
-    SEMANTIC_VISUAL_WEIGHTS,
-    get_preset_shape_semantics,
-)
+from pptx_shapes.semantics import get_preset_shape_semantics
 from pptx_to_svg.preset_authoring import render_preset_shape_fragment
 
 
@@ -109,73 +99,6 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help=(
             "Print one flat objective identity view with key geometry facts."
-        ),
-    )
-
-    recommend_parser = subparsers.add_parser(
-        "recommend",
-        help="Optionally recall heuristic preset candidates as JSON.",
-    )
-    recommend_parser.add_argument(
-        "--role",
-        action="append",
-        required=True,
-        choices=SEMANTIC_ROLES,
-        help="Required page role; repeat to allow multiple roles.",
-    )
-    recommend_parser.add_argument(
-        "--relationship",
-        action="append",
-        default=[],
-        choices=SEMANTIC_RELATIONSHIPS,
-        help="Required relationship fit; repeat to allow alternatives.",
-    )
-    recommend_parser.add_argument(
-        "--scope",
-        choices=("all", *SEMANTIC_SCOPES),
-        default="general",
-        help=(
-            "Semantic scope. The general default excludes literal-only, "
-            "flowchart, and navigation shapes."
-        ),
-    )
-    recommend_parser.add_argument(
-        "--directionality",
-        choices=SEMANTIC_DIRECTIONALITY,
-        help="Required direction or route character.",
-    )
-    recommend_parser.add_argument(
-        "--aspect",
-        choices=SEMANTIC_ASPECTS,
-        help="Required frame tendency; flexible candidates also match.",
-    )
-    recommend_parser.add_argument(
-        "--text-capacity",
-        choices=SEMANTIC_TEXT_CAPACITIES,
-        help="Minimum useful text capacity.",
-    )
-    recommend_parser.add_argument(
-        "--visual-weight",
-        choices=SEMANTIC_VISUAL_WEIGHTS,
-        help="Required visual-weight band.",
-    )
-    recommend_parser.add_argument(
-        "--query",
-        default="",
-        help="Optional English intent terms used to refine the recall set.",
-    )
-    recommend_parser.add_argument(
-        "--limit",
-        type=_positive_integer,
-        default=12,
-        help="Maximum returned candidates; default: 12.",
-    )
-    recommend_parser.add_argument(
-        "--compact",
-        action="store_true",
-        help=(
-            "Print a reduced recall view for direct inspection without "
-            "downstream parsing."
         ),
     )
 
@@ -344,42 +267,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
 
-    if args.command == "recommend":
-        full_payload = get_preset_shape_semantics().recommend(
-            roles=args.role,
-            scope=args.scope,
-            relationships=args.relationship,
-            directionality=args.directionality,
-            aspect=args.aspect,
-            text_capacity=args.text_capacity,
-            visual_weight=args.visual_weight,
-            query=args.query,
-            limit=args.limit,
-        )
-        payload = (
-            {
-                "criteria": full_payload["criteria"],
-                "candidate_count": full_payload["candidate_count"],
-                "returned_count": full_payload["returned_count"],
-                "selection_note": full_payload["selection_note"],
-                "candidates": [
-                    {
-                        "preset": candidate["preset"],
-                        "scope": candidate["scope"],
-                        "literal_only": candidate["literal_only"],
-                        "intent": candidate["intent"],
-                        "why": candidate["why"],
-                        "avoid_for": candidate["avoid_for"],
-                    }
-                    for candidate in full_payload["candidates"]
-                ],
-            }
-            if args.compact
-            else full_payload
-        )
-        print(json.dumps(payload, ensure_ascii=False, indent=2))
-        return 0
-
     if args.command == "render-batch":
         try:
             items = _read_batch_items(args.input)
@@ -424,16 +311,6 @@ def _parse_adjustments(values: Sequence[str]) -> dict[str, str]:
             raise ValueError(f"Duplicate adjustment guide: {name!r}")
         adjustments[name] = formula
     return adjustments
-
-
-def _positive_integer(value: str) -> int:
-    try:
-        number = int(value)
-    except ValueError as exc:
-        raise argparse.ArgumentTypeError("expected a positive integer") from exc
-    if number < 1:
-        raise argparse.ArgumentTypeError("expected a positive integer")
-    return number
 
 
 def _style_from_args(args: argparse.Namespace) -> dict[str, str]:

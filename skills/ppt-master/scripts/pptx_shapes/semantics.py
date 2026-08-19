@@ -83,9 +83,6 @@ SEMANTIC_TEXT_CAPACITIES = ("none", "short", "medium", "high")
 SEMANTIC_VISUAL_WEIGHTS = ("quiet", "moderate", "strong", "emblematic")
 SEMANTIC_SCOPES = ("general", "literal", "flowchart", "navigation")
 
-_TEXT_CAPACITY_RANK = {
-    value: index for index, value in enumerate(SEMANTIC_TEXT_CAPACITIES)
-}
 _QUERY_TOKEN_RE = re.compile(r"[a-z0-9]+")
 _CAMEL_BOUNDARY_RE = re.compile(r"(?<=[a-z0-9])(?=[A-Z])")
 _QUERY_STOP_WORDS = frozenset({
@@ -143,18 +140,15 @@ class PresetShapeSemantics:
         groups = _require_list(root.get("groups"), "catalog.groups")
         self._groups: list[dict[str, object]] = []
         self._preset_semantics: dict[str, dict[str, object]] = {}
-        self._group_order: dict[str, int] = {}
-        self._preset_order = {
-            name: index for index, name in enumerate(expected_names)
-        }
+        group_ids: set[str] = set()
         for index, raw_group in enumerate(groups):
             group = self._normalize_group(raw_group, index)
             group_id = str(group["id"])
-            if group_id in self._group_order:
+            if group_id in group_ids:
                 raise PresetShapeDataError(
                     f"Duplicate preset semantic group: {group_id!r}"
                 )
-            self._group_order[group_id] = index
+            group_ids.add(group_id)
             self._groups.append(group)
             presets = group["presets"]
             assert isinstance(presets, dict)
@@ -272,116 +266,6 @@ class PresetShapeSemantics:
             ),
             "search": search,
             "office_categories": category_payloads,
-        }
-
-    def recommend(
-        self,
-        *,
-        roles: Sequence[str],
-        scope: str = "general",
-        relationships: Sequence[str] = (),
-        directionality: str | None = None,
-        aspect: str | None = None,
-        text_capacity: str | None = None,
-        visual_weight: str | None = None,
-        query: str = "",
-        limit: int = 12,
-    ) -> dict[str, object]:
-        """Return a diverse, semantics-matched candidate recall set."""
-
-        query_tokens = _query_tokens(query)
-        candidates: list[dict[str, object]] = []
-        for details in self._preset_semantics.values():
-            if scope != "all" and details["scope"] != scope:
-                continue
-
-            role_matches = [role for role in roles if role in details["roles"]]
-            if not role_matches:
-                continue
-            relationship_matches = [
-                relationship
-                for relationship in relationships
-                if relationship in details["relationships"]
-            ]
-            if relationships and not relationship_matches:
-                continue
-            if directionality and directionality not in details["directionality"]:
-                continue
-            if aspect and not _aspect_matches(details["aspects"], aspect):
-                continue
-            if text_capacity and not _capacity_matches(
-                str(details["text_capacity"]),
-                text_capacity,
-            ):
-                continue
-            if visual_weight and details["visual_weight"] != visual_weight:
-                continue
-
-            query_score = _query_score(details, query_tokens, query)
-            if query_tokens and query_score == 0:
-                continue
-            score = (
-                len(role_matches) * 20
-                + len(relationship_matches) * 12
-                + (5 if directionality else 0)
-                + (4 if aspect else 0)
-                + (3 if text_capacity else 0)
-                + (2 if visual_weight else 0)
-                + query_score
-            )
-            why = [f"role={value}" for value in role_matches]
-            why.extend(
-                f"relationship={value}" for value in relationship_matches
-            )
-            if directionality:
-                why.append(f"directionality={directionality}")
-            if aspect:
-                why.append(f"aspect={aspect}")
-            if text_capacity:
-                why.append(f"text_capacity>={text_capacity}")
-            if visual_weight:
-                why.append(f"visual_weight={visual_weight}")
-            if query_tokens:
-                why.append(f"query={query}")
-            candidates.append({
-                "score": score,
-                "preset": details["preset"],
-                "office_category": {
-                    "id": details["office_category"],
-                    "label": details["office_category_label"],
-                },
-                "group": details["id"],
-                "scope": details["scope"],
-                "intent": details["intent"],
-                "why": why,
-                "recommended_for": details["recommended_for"],
-                "avoid_for": details["avoid_for"],
-                "literal_only": details["literal_only"],
-            })
-
-        ordered = self._diverse_order(candidates)
-        return {
-            "criteria": {
-                "roles": list(roles),
-                "scope": scope,
-                "relationships": list(relationships),
-                "directionality": directionality,
-                "aspect": aspect,
-                "text_capacity": text_capacity,
-                "visual_weight": visual_weight,
-                "query": query,
-            },
-            "candidate_count": len(candidates),
-            "returned_count": min(len(ordered), limit),
-            "selection_note": (
-                "Heuristic browse candidates only. Compare them against the complete "
-                "vocabulary and page context; scores, filters, and the returned limit "
-                "do not decide fit or absence."
-                if ordered
-                else "No heuristic candidates matched. This does not prove absence; "
-                "select from the complete vocabulary directly or change the criteria."
-            ),
-            "candidates": ordered[:limit],
         }
 
     def _normalize_group(
@@ -544,34 +428,6 @@ class PresetShapeSemantics:
             "presets": normalized_presets,
         }
 
-    def _diverse_order(
-        self,
-        candidates: list[dict[str, object]],
-    ) -> list[dict[str, object]]:
-        candidates.sort(
-            key=lambda item: (
-                -int(item["score"]),
-                self._group_order[str(item["group"])],
-                self._preset_order[str(item["preset"])],
-            )
-        )
-        ordered: list[dict[str, object]] = []
-        scores = sorted({int(item["score"]) for item in candidates}, reverse=True)
-        for score in scores:
-            score_items = [item for item in candidates if item["score"] == score]
-            first_by_group: list[dict[str, object]] = []
-            remaining: list[dict[str, object]] = []
-            seen_groups: set[str] = set()
-            for item in score_items:
-                group_id = str(item["group"])
-                target = first_by_group if group_id not in seen_groups else remaining
-                target.append(item)
-                seen_groups.add(group_id)
-            ordered.extend(first_by_group)
-            ordered.extend(remaining)
-        return ordered
-
-
 @lru_cache(maxsize=1)
 def get_preset_shape_semantics() -> PresetShapeSemantics:
     """Return the process-wide, lazily loaded bundled semantic catalog."""
@@ -685,33 +541,3 @@ def _matches_query(details: dict[str, object], query_tokens: Sequence[str]) -> b
         return True
     haystack = _search_text(details)
     return all(token in haystack for token in query_tokens)
-
-
-def _query_score(
-    details: dict[str, object],
-    query_tokens: Sequence[str],
-    query: str,
-) -> int:
-    if not query_tokens:
-        return 0
-    haystack = _search_text(details)
-    matches = sum(1 for token in query_tokens if token in haystack)
-    if matches == 0:
-        return 0
-    score = matches * 4
-    normalized_query = " ".join(_query_tokens(query))
-    if normalized_query and normalized_query in haystack:
-        score += 10
-    preset = str(details["preset"])
-    if query.casefold() == preset.casefold():
-        score += 20
-    return score
-
-
-def _aspect_matches(values: object, requested: str) -> bool:
-    assert isinstance(values, tuple)
-    return requested in values or "flexible" in values
-
-
-def _capacity_matches(actual: str, requested: str) -> bool:
-    return _TEXT_CAPACITY_RANK[actual] >= _TEXT_CAPACITY_RANK[requested]

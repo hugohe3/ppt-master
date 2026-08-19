@@ -570,10 +570,8 @@ and any applicable topology resolve, apply
 to the transient geometry job, actual content, resolved style, and complete
 loaded native vocabulary before writing coordinates. Select through direct
 semantic comparison; use `describe --compact` only when objective geometry
-facts could change a serious candidate decision. Optional search or
-recommendation output cannot narrow or replace the vocabulary. This move owns
-the exact-fit geometry gate, independent
-relationship / carrier fit,
+facts could change a serious candidate decision. This move owns the exact-fit
+geometry gate, independent relationship / carrier fit,
 contour-family / exact-result choice, reader effect for a generic or undrawn
 result, running actual-geometry signature, and materialization boundary. A
 primitive remains valid when it wins this comparison; there is no preset quota.
