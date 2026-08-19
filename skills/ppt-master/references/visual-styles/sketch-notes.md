@@ -34,4 +34,4 @@ Warm hand-drawn sketchnote — soft paper field, black ink doodle line work, gen
 
 ## 6. Illustration propensity
 
-**core** — doodles and hand-drawn illustration elements are intrinsic here, not optional garnish; with no user steer, default to recommending a coherent composable illustration family. This sets the default *lean* only: role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**core** — when illustration is selected, doodles and hand-drawn elements may lead the style rather than act as incidental garnish. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

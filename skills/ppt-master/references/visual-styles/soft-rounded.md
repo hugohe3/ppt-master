@@ -35,4 +35,4 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 
 ## 6. Illustration propensity
 
-**supportive** — friendly rounded illustration elements can carry anchors, support, rhythm, or warmth across the page system. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — when illustration is selected, friendly rounded elements can carry anchors, support, rhythm, or warmth across the page system. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

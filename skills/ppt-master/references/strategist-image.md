@@ -29,27 +29,26 @@ There is no confirmation field or coverage quota. Illustrated cues may coexist
 with base SVG/emoji icons when the overall visual system remains coherent, and
 their slices stay out of `icons/`.
 
-**Mandatory — evaluate decorative lettering under the two-question gate**:
-When confirmed image usage retains `ai`, scan the complete page roster once
-before writing §VIII. Confirmed `ai` is a Permission, not coverage: never create
+**Mandatory — scan decorative-lettering candidates before selection**: When
+confirmed image usage retains `ai`, scan the complete page roster once before
+writing §VIII. Confirmed `ai` is a Permission, not coverage: never create
 lettering merely to justify the AI source or because no other AI-image job was
-found. Eligibility turns on two questions only—is the wording stable, and would
-an artistic treatment communicate better than native type. When either answer
-is no, create no lettering row and keep the wording as native editable text.
-Page role, character count, word count, line count, and kind of noun never
-filter candidates; a complete long title, multi-word phrase, and multi-line
-lockup are as eligible as a short mark. Preserve each full exact character
-sequence as one intended mark when its hierarchy belongs to the art; never
-trim, rewrite, or split it merely to ease generation. When both answers are
-yes, the second answer already establishes the communication benefit; do not
-add another eligibility test. Eligibility is wide, but deck-wide use stays
-selective: choose a coherent set rather than lettering every heading; this
-limits coverage, not eligibility. Adopt the selected marks under the confirmed
-natural-language image intent, then materialize each one as an ordinary `ai`
-row or group compatible marks through the §4.3 sheet/element rows rather than
-leaving them as planning suggestions. Let letterform character, treatment, and
-practical generation needs guide grouping.
-Use has no coverage quota. An asset may carry the complete long or multi-line
+found. Candidate discovery asks two questions—is the wording stable, and could
+an artistic treatment plausibly communicate better than native type. When
+either answer is no, create no lettering row and keep the wording as native
+editable text. Page role, character count, word count, line count, kind of noun,
+and locked style never pre-filter candidates; a complete long title, multi-word
+phrase, and multi-line lockup are as eligible as a short mark. Preserve each
+full exact character sequence as one intended mark when its hierarchy belongs
+to the art; never trim, rewrite, or split it merely to ease generation. Passing
+both questions exposes a possible job rather than selecting it. Compare every
+candidate inside the complete page and deck carrier mix, then choose any
+coherent set whose artistic treatment wins that fit; zero selected marks
+remains valid and needs no skip explanation or coverage quota. Materialize each
+selected mark as an ordinary `ai` row or group compatible marks through the
+§4.3 sheet/element rows rather than leaving it as a planning suggestion. Let
+letterform character, treatment, and practical generation needs guide grouping.
+An asset may carry the complete long or multi-line
 title as its display layer. Keep an ordinary native title/subtitle in a
 separate text frame wherever the page needs a searchable,
 selectable, or outline-visible heading. Chrome and body remain native text. A

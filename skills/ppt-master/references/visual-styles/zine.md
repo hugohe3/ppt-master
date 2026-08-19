@@ -35,4 +35,4 @@ Risograph zine / DIY poster — misregistered color layers, halftone dots, a tig
 
 ## 6. Illustration propensity
 
-**core** — riso / halftone illustration and cutout imagery is part of the zine's print grit; with no user steer, default to recommending a coherent composable illustration family. Default *lean* only — role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**core** — when illustration is selected, riso / halftone elements and cutout imagery may lead the zine's print grit. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

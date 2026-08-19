@@ -35,4 +35,4 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 
 ## 6. Illustration propensity
 
-**supportive** — the natural illustration language is schematic line-work, annotated marks, and blueprint-aligned transparent elements, whether authored in SVG or generated and sliced. Choose the carrier that composes cleanly with the page. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — when illustration is selected, its natural language is schematic line-work, annotated marks, and blueprint-aligned transparent elements, whether authored in SVG or generated and sliced. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

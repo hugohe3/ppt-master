@@ -35,4 +35,4 @@ Whiteboard-ink minimalism — a pale field, confident black hand-ink line work, 
 
 ## 6. Illustration propensity
 
-**supportive** — hand-ink illustration elements can anchor, annotate, or connect a composition while the style's considered restraint remains intact. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — when illustration is selected, hand-ink elements can anchor, annotate, or connect a composition while the style's considered restraint remains intact. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
