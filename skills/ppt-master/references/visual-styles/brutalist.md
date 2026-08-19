@@ -36,4 +36,4 @@ Brutalist editorial newspaper. Wall-to-wall small type, irregular column widths,
 
 ## 6. Illustration propensity
 
-**supportive** — raw halftone cuts and illustration elements can anchor or disrupt the newsprint composition while structure remains legible. With no user steer this is the default lean; role, scale, reuse, and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
+**supportive** — when illustration is selected, raw halftone cuts and illustration elements can anchor or disrupt the newsprint composition while structure remains legible. Role, scale, reuse, and placement stay Strategist judgment; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

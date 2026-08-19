@@ -348,7 +348,7 @@ or easier syntax never skips it.
 
 **Hard rule**: Credentials do not decide image need or the initial carrier plan. Do not inspect backend configuration or probe a provider before planning. Web acquisition retains zero-config providers; actual AI generation capability is resolved only during resource preparation, where the declared Quick no-AI replan below owns automated exhaustion.
 
-**Default — visual grounding before a zero-image deck (may override when the user forbids images or charts / native SVG fully carry the visual burden)**: When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. Prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. This is a semantic decision, not an image-count quota.
+**Default — visual grounding before a zero-image deck (may override when the full-roster carrier review finds no useful image job)**: Honor an explicit no-image requirement. When the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting, plan supplied/extracted or web images. Prepare AI imagery proactively where invented or deliberately stylized expression materially improves a planned visual job; this may be a complete image or transparent elements composed with other page carriers. A zero-image result remains valid when no image job improves communication. This is a semantic decision, not an image-count quota.
 
 **Mandatory — materialize a selected composable illustration family**: When
 the carrier resolution selects one, resolve the family before SVG authoring.
@@ -365,24 +365,26 @@ with SVG icons to the page and deck fit under
 [`image-generator.md`](../../references/image-generator.md) §4.3; apply no
 coverage quota and never treat the slices as SVG inventory.
 
-**Mandatory — proactive AI decorative lettering**: During that same one-pass
+**Mandatory — proactive decorative-lettering capability scan**: During that same one-pass
 carrier resolution, when the user has not forbidden AI, scan the frozen roster
-for display strings anywhere in the deck. Exactly two questions decide
-eligibility: is that wording stable, and would an artistic treatment
-communicate better than native type?
-Page role, string length, line count, and kind of noun never filter candidates —
+for display strings anywhere in the deck. Two questions expose candidates: is
+that wording stable, and could an artistic treatment plausibly communicate
+better than native type? Passing both exposes a possible AI visual job; it does
+not select lettering or add AI by itself. Page role, string length, line count,
+kind of noun, and resolved style never pre-filter candidates —
 a cover hook, chapter word, place or product name, dish or exhibit name, year,
 hero number, pull quote, or recurring motif word all qualify when both answers
 are yes. Read any such list as examples, never as the set of allowed cases; a
 two-character mark, an eight-character phrase, and a two-line lockup are equally
 valid, and a phrase is never trimmed toward one or two characters to feel more
 "wordmark-like". Set over photography or a busy field is often exactly where
-native type reads pasted-on. Eligibility is wide but use stays selective: build
-one small coherent set for the deck rather than lettering every heading, and
-keep a native title wherever the page needs a searchable, selectable, or
-outline-visible heading, with the lettering as its display layer.
-If a suitable set exists, prepare it without
-a separate request: preserve the exact approved strings, use one ordinary AI
+native type reads pasted-on. Compare every candidate inside the complete page
+and deck carrier mix, then select any coherent set whose treatment wins that
+fit; selecting none remains valid and needs no skip explanation or coverage
+quota. For every selected mark, keep a native title wherever the page needs a
+searchable, selectable, or outline-visible heading, with the lettering as its
+display layer. Prepare the selected set without a separate request: preserve
+the exact approved strings, use one ordinary AI
 item for a single mark or group compatible marks through Illustration Sheets
 and transparent slices. Let the intended character and treatment guide grouping.
 Give the model the marks' role, placement/background relationship, relative
@@ -394,10 +396,9 @@ and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
 and body stay native text, so a wish to keep that wording editable is answered
 by the native layer rather than by dropping the lettering. AI permission is not
-coverage: never invent or alter copy, or create lettering merely
-to justify AI usage. Once an existing string passes both eligibility questions,
-skip it only when the user forbade AI; do not add another disqualifier. Actual
-generation capability is resolved during resource preparation, not eligibility.
+coverage: never invent or alter copy, or create lettering merely to justify AI
+usage. Actual generation capability is resolved during resource preparation,
+after selection rather than during candidate discovery.
 
 | Communication job | Available carrier |
 |---|---|
@@ -746,9 +747,9 @@ or lock.
 - [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
 - [x] The complete 187-name native preset vocabulary was read before P01; each page chose from that full capability surface, with objective candidate details inspected only when needed
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
-- [x] The proactive decorative-lettering scan ran before capability resolution; every exact string passing both eligibility questions entered an AI item or lettering sheet/slice job unless the user forbade AI
+- [x] The proactive decorative-lettering capability scan ran before carrier selection; every selected lettering job entered an AI item or lettering sheet/slice job, and zero selected jobs remained valid
 - [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
-- [x] Image need was decided independently of credentials; any zero-image deck is backed by an explicit no-image requirement or a roster whose visual burden is fully carried by charts / native SVG
+- [x] Image need was decided independently of credentials; any zero-image deck followed a complete roster review in which no image job improved communication or the selected non-image carriers fully carried it
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
