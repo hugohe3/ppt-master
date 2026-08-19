@@ -1170,6 +1170,31 @@ def _registry_ids(
         if isinstance(value, dict):
             return set(value), source, [], None
         if isinstance(value, list):
+            id_field = config.get("id_field")
+            if id_field is not None:
+                if not isinstance(id_field, str) or not id_field:
+                    raise AuditError(
+                        f"Registry {config.get('name')} id_field must be a non-empty string"
+                    )
+                matched_ids: list[str] = []
+                for index, item in enumerate(value):
+                    if not isinstance(item, dict):
+                        raise AuditError(
+                            f"Registry {config.get('name')} item {index} is not an object"
+                        )
+                    item_id = item.get(id_field)
+                    if not isinstance(item_id, str) or not item_id.strip():
+                        raise AuditError(
+                            f"Registry {config.get('name')} item {index} has no "
+                            f"non-empty {id_field!r}"
+                        )
+                    matched_ids.append(item_id.strip())
+                duplicates = sorted(
+                    item
+                    for item, count in Counter(matched_ids).items()
+                    if count > 1
+                )
+                return set(matched_ids), source, duplicates, matched_ids
             return set(range(len(value))), source, [], None
         raise AuditError(f"Registry key {key} in {source} is not a collection")
 

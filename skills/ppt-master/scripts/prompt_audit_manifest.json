@@ -30,7 +30,7 @@
     "skills/ppt-master/references/shared-standards.md": 500,
     "skills/ppt-master/references/shared-standards-core.md": 13000,
     "skills/ppt-master/references/svg-effects.md": 15000,
-    "skills/ppt-master/references/native-data-interface.md": 6750,
+    "skills/ppt-master/references/native-data-interface.md": 7500,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 18000,
@@ -39,6 +39,8 @@
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
     "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
+    "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
+    "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
     "skills/ppt-master/workflows/generate-pptx.md": 18000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
   },
@@ -156,7 +158,7 @@
       "max_tokens": 14000
     },
     "route.generate.planning": {
-      "description": "Generate-PPTX planning through Strategist, including the fixed capability-decision batch, complete Chart expression vocabulary and Table registry, and a conservative audit envelope for only the exact custom bases selected afterward; schemas and optional scaffolds are tool-consumed. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
+      "description": "Generate-PPTX planning through Strategist, including the fixed capability-decision batch, complete Chart and Table expression vocabularies, and a conservative audit envelope for only the exact custom bases selected afterward; schemas and optional scaffolds are tool-consumed. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -177,7 +179,7 @@
         "skills/ppt-master/scripts/docs/confirm_ui.md",
         "skills/ppt-master/templates/icons/README.md",
         "skills/ppt-master/templates/charts/chart-vocabulary.md",
-        "skills/ppt-master/templates/tables/tables_index.json",
+        "skills/ppt-master/templates/tables/table-vocabulary.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
           "exclude": [
@@ -231,7 +233,7 @@
         "skills/ppt-master/references/image-renderings/_index.md",
         "skills/ppt-master/templates/icons/README.md",
         "skills/ppt-master/templates/charts/chart-vocabulary.md",
-        "skills/ppt-master/templates/tables/tables_index.json",
+        "skills/ppt-master/templates/tables/table-vocabulary.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
           "exclude": [
@@ -381,7 +383,7 @@
       "max_tokens": 130000
     },
     "route.generate.quick-generate.visualization": {
-      "description": "Quick Generate with complete Chart/Table registries already in the fixed planning context, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar. Ceiling raised after BUDGET_LOAD_SET reported 126726 tokens.",
+      "description": "Quick Generate with complete Chart/Table expression vocabularies already in the fixed planning context, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar. Ceiling raised after BUDGET_LOAD_SET reported 126726 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -931,6 +933,14 @@
       ],
       "max_tokens": 35000
     },
+    "stage.generate.sound-selection": {
+      "description": "Complete post-motion sound identity vocabulary after a concrete auditory cue job exists.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/templates/sounds/sound-vocabulary.md"
+      ],
+      "max_tokens": 6250
+    },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",
       "scope": "incremental",
@@ -1041,12 +1051,12 @@
       "max_tokens": 3000
     },
     "stage.generate.executor.native-data": {
-      "description": "Conditional preset-pattern and native chart/table metadata interface.",
+      "description": "Conditional preset-pattern and native chart/table metadata interface. Ceiling raised after BUDGET_FILE and BUDGET_LOAD_SET reported 6774 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-data-interface.md"
       ],
-      "max_tokens": 6750
+      "max_tokens": 7500
     },
     "stage.generate.executor.formula": {
       "description": "Conditional direct authoring contract for PowerPoint-native inline and block formulas.",
@@ -1670,8 +1680,13 @@
       "kind": "json_collection",
       "source": "skills/ppt-master/templates/tables/tables_index.json",
       "key": "tables",
+      "projection": {
+        "source": "skills/ppt-master/templates/tables/table-vocabulary.md",
+        "entry_pattern": "^\\|\\s*`table/(?P<id>[a-z0-9_]+)`\\s*\\|"
+      },
       "reference_terms": [
         "tables_index.json",
+        "table-vocabulary.md",
         "table catalog"
       ],
       "claim_nouns": [
@@ -1683,6 +1698,29 @@
         "templates",
         "type",
         "types"
+      ]
+    },
+    {
+      "name": "sound-cues",
+      "kind": "json_collection",
+      "source": "skills/ppt-master/templates/sounds/sounds_index.json",
+      "key": "sounds",
+      "id_field": "id",
+      "projection": {
+        "source": "skills/ppt-master/templates/sounds/sound-vocabulary.md",
+        "entry_pattern": "^\\|\\s*`(?P<id>[a-z0-9-]+/[a-z0-9_]+)`\\s*\\|"
+      },
+      "reference_terms": [
+        "sound-vocabulary.md",
+        "sounds_index.json",
+        "sound catalog",
+        "sound cue vocabulary"
+      ],
+      "claim_nouns": [
+        "sound",
+        "sounds",
+        "cue",
+        "cues"
       ]
     }
   ],
@@ -2104,6 +2142,10 @@
       {
         "glob": "skills/ppt-master/templates/charts/charts_index.json",
         "reason": "Machine registry consumed by visualization validation and optional recall; planning roles load chart-vocabulary.md instead."
+      },
+      {
+        "glob": "skills/ppt-master/templates/tables/tables_index.json",
+        "reason": "Machine registry consumed by visualization validation and optional recall; planning roles load table-vocabulary.md instead."
       },
       {
         "glob": "skills/ppt-master/scripts/docs/mask-gradient-smoke.md",
