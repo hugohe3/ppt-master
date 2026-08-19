@@ -10,7 +10,7 @@ A **mode** is the deck's **narrative + persuasion skeleton** — how the argumen
 
 Each mode keeps its own authoritative file with: narrative skeleton, page-structure tendencies, speaker-notes register, and a page skeleton example. Read this index alone while choosing a direction. Only after a preset or custom bases are fixed may the active role read the selected sibling files: one file for a preset, every exact `mode_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling.
 
-| Mode | Narrative skeleton | Best for |
+| Mode | Narrative skeleton | Typical communication context |
 |---|---|---|
 | [`pyramid`](./pyramid.md) | Conclusion first; structured arguments; data contextualized with supported comparisons where useful | Decision support, analysis, strategy, board / exec reports |
 | [`narrative`](./narrative.md) | Story arc — situation → tension → resolution; suspense and turns | Pitches, case studies, brand journeys, fundraising |
@@ -24,19 +24,17 @@ Each mode keeps its own authoritative file with: narrative skeleton, page-struct
 
 ---
 
-## 2. Auto-selection — communication contract + source signal → mode
+## 2. Decision Distinctions
 
-| Contract / source signal | Recommended mode | Alternates |
-|---|---|---|
-| Decision / recommendation outcome; analysis, board, investor; criteria and trade-offs must land | `pyramid` | `narrative` |
-| Persuasion or mobilization lands through a case, tension, transformation, or origin arc | `narrative` | `showcase`, `pyramid` |
-| Understanding or capability must build step by step; course, onboarding, how-to, explainer | `instructional` | `pyramid`, `briefing` |
-| Attention / emotion / launch moment is primary; sparse presenter-led delivery | `showcase` | `narrative` |
-| Complete reference, status, record, hand-off, FAQ, meeting pack; no thesis dominates | `briefing` | `pyramid`, `instructional` |
+**Reference — not a constraint**: Read `communication_intent`,
+`audience_outcome`, `core_message`, delivery context / afterlife, source texture,
+and any user-authored outline together. The catalog exposes complete argument
+strategies; it does not rank them or map a topic keyword to a result. When
+several purposes coexist, judge the dominant argument movement of the body
+pages, not the cover or the first purpose word.
 
-> No keyword decides the mode. Read `communication_intent`, `audience_outcome`, `core_message`, delivery context / afterlife, source texture, and any user-authored outline together. When several purposes coexist, follow the dominant **argument movement of the body pages**, not the cover and not the first purpose word. A data review can legitimately run almost entirely `pyramid`; a progress report whose durable hand-off matters more than persuasion may stay `briefing`.
-
-**Close calls** — the genuinely adjacent pairs; every other pair is far enough apart that the auto-selection signal decides.
+The following adjacent pairs expose their structural difference without
+selecting one for the current deck:
 
 | Torn between | …the first when | …the second when |
 |---|---|---|

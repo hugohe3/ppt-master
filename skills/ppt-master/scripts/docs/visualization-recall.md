@@ -1,7 +1,7 @@
 # Visualization Candidate Recall
 
 Default Strategist and the Quick Generate main agent read the complete Chart
-expression vocabulary and Table registry before planning.
+and Table expression vocabularies before planning.
 `visualization_recall.py validate` resolves their selected canonical
 references. Its `recall` command remains an optional deterministic diagnostic
 across the machine Chart and Table registries; it is not the runtime
@@ -11,6 +11,7 @@ or keyword index:
 
 - `templates/charts/chart-vocabulary.md` — planning capability map, not read by this tool
 - `templates/charts/charts_index.json`
+- `templates/tables/table-vocabulary.md` — planning capability map, not read by this tool
 - `templates/tables/tables_index.json`
 
 Qualitative Structure does not enter recall. Default records its relationship

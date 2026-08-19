@@ -122,11 +122,12 @@ kinds:
 | Family | Owns | Planning map | Machine index |
 |---|---|---|---|
 | Chart | Value-driven geometry (33) | [`chart-vocabulary.md`](./charts/chart-vocabulary.md) | [`charts_index.json`](./charts/charts_index.json) |
-| Table | Row × column fact grid (6) | [`tables_index.json`](./tables/tables_index.json) | [`tables_index.json`](./tables/tables_index.json) |
+| Table | Row × column fact grid (6) | [`table-vocabulary.md`](./tables/table-vocabulary.md) | [`tables_index.json`](./tables/tables_index.json) |
 
 [`VISUALIZATION_TEMPLATE_AUTHORING.md`](./VISUALIZATION_TEMPLATE_AUTHORING.md)
 is the shared authoring contract. Each machine index owns family membership;
-the Chart vocabulary is its complete objective planning projection.
+the Chart and Table vocabularies are their complete objective planning
+projections.
 
 Qualitative Structure is a Slide-local Executor method rather than a catalog:
 Default and Quick both derive its relationship model and compose shapes for the
@@ -151,5 +152,7 @@ The `icons/` directory contains 12,027 vector icons across five libraries:
 
 ## Sound Library
 
-[`sounds/`](./sounds/) is post-motion discovery, not a template or
-Strategist resource. Sync selected cues only; see [usage](./sounds/README.md).
+[`sounds/`](./sounds/) is a post-motion selection resource, not a template or
+Strategist resource. Its complete
+[cue vocabulary](./sounds/sound-vocabulary.md) is read only after a concrete
+auditory job exists; sync selected cues only. See [usage](./sounds/README.md).

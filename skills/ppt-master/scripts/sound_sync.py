@@ -2,8 +2,10 @@
 """
 PPT Master - Sound Sync
 
-List the bundled CC0 sound catalog or copy explicitly selected sounds into a
-project-local `sounds/` directory. The global library is never copied in bulk.
+Inspect the bundled CC0 sound catalog or copy explicitly selected sounds into a
+project-local `sounds/` directory. Review `templates/sounds/sound-vocabulary.md`
+before using list filters for a resolved auditory job. The global library is
+never copied in bulk.
 
 Usage:
     python3 scripts/sound_sync.py list [--query TERM]
@@ -216,7 +218,8 @@ def _build_sync_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Copy explicitly selected library sounds into a project's sounds/ folder. "
-            "Use `sound_sync.py list [--query TERM]` for discovery."
+            "Review `templates/sounds/sound-vocabulary.md` first; use "
+            "`sound_sync.py list [--query TERM]` only for optional exact filtering."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -266,8 +269,9 @@ def _run_sync(argv: list[str]) -> int:
         for sound_id in missing:
             print(f"     x {sound_id}", file=sys.stderr)
         print(
-            "Run `python3 skills/ppt-master/scripts/sound_sync.py list --query <term>` "
-            "and select a listed ID.",
+            "Review `skills/ppt-master/templates/sounds/sound-vocabulary.md`, then "
+            "optionally run `python3 skills/ppt-master/scripts/sound_sync.py list "
+            "--query <term>` to locate an exact ID.",
             file=sys.stderr,
         )
         return 1

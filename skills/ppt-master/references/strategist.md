@@ -182,7 +182,7 @@ The base icon style is one single-select identity, not a material whitelist:
 | Option | Approach | Suitable Scenarios |
 |--------|----------|-------------------|
 | **A** | Emoji | Casual, playful, social media |
-| **B** | Built-in generic icon library | Professional scenarios (recommended) |
+| **B** | Built-in generic icon library | Recurring compact semantic cues in one coherent SVG style |
 | **C** | Custom project icons | Supplied, template-carried, or imported assets |
 | **D** | No base icons | Illustration, typography, shapes, or data already carry the compact cues |
 
@@ -344,7 +344,7 @@ editable-only requirements win. Execution follows
 1. Before authoring Stage-2 directions, load the workflow's complete fixed
    planning-capability batch. It includes this module, the image-layout
    authorities, all compact decision maps, the icon-library contract, the
-   complete Chart expression vocabulary, and the Table registry. After the
+   complete Chart and Table expression vocabularies. After the
    three whole-direction intents exist and their mode/style/rendering reference
    ids are frozen, read only
    those exact detail siblings once and author one complete custom rendering
@@ -415,13 +415,13 @@ Classify by information model, never source PowerPoint object type:
 |---|---|
 | Qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` | Preserve units, relationship, and reading path as free §IX prose; no catalog key |
 | Values/dates/durations determine geometry | Chart; compare the complete loaded chart expression vocabulary |
-| Row header × column header addresses each fact | Table; compare the complete loaded table registry |
+| Row header × column header addresses each fact | Table; compare the complete loaded Table expression vocabulary |
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
 **Mandatory — complete Chart/Table capability review**: During the same §IX
 roster composition, compare every page's information model against every entry
-in the already-loaded Chart expression vocabulary and Table registry. These
+in the already-loaded Chart and Table expression vocabularies. These
 complete capability maps expose what can be selected; their descriptions do
 not rank candidates or replace judgment from the actual information. They are
 neither usage quotas nor whitelists. Skip custom objects and qualitative

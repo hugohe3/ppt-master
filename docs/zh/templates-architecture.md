@@ -269,7 +269,7 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ## 三、四套 index 文件
 
-这四份 index 都与各自物理目录一一对应，字段只保留 Strategist 选择可复用 workspace 所需的信息。Visualization 采用另一条边界：Chart 规划读取客观的 [`chart-vocabulary.md`](../../skills/ppt-master/templates/charts/chart-vocabulary.md)，[`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 只保留为机器 registry；小型 [Table registry](../../skills/ppt-master/templates/tables/tables_index.json) 则直接同时承担两种职责。定性 Structure 没有 index，因为 Executor 会根据当前页关系现场生成。
+这四份 index 都与各自物理目录一一对应，字段只保留 Strategist 选择可复用 workspace 所需的信息。Visualization 采用另一条边界：规划读取客观的 [`chart-vocabulary.md`](../../skills/ppt-master/templates/charts/chart-vocabulary.md) 与 [`table-vocabulary.md`](../../skills/ppt-master/templates/tables/table-vocabulary.md)，[`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 和 [`tables_index.json`](../../skills/ppt-master/templates/tables/tables_index.json) 只保留为机器 registry。定性 Structure 没有 index，因为 Executor 会根据当前页关系现场生成。
 
 四套索引只覆盖全局库范围。项目根工作区有意不进入任何索引，仍可通过显式 `projects/<name>/` 路径使用。因为两种范围采用相同工作区形态，完整核心工作区可在两者之间移动或复制，不需要重写素材路径；只有全局库注册不同。
 

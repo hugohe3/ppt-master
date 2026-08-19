@@ -12,15 +12,20 @@ Master/Layout systems belong in [`layouts/`](../layouts/).
 
 ## Source of truth
 
-[`tables_index.json`](./tables_index.json) is the sole table registry. Its
-`tables` object maps each canonical key to one selection-rule `summary`; keys
-match `<key>.svg`, and `meta.total` matches the canonical SVG roster.
+[`tables_index.json`](./tables_index.json) is the machine registry. Its
+`tables` object maps each canonical key to one diagnostic-recall `summary`;
+keys match `<key>.svg`, and `meta.total` matches the canonical SVG roster.
+[`table-vocabulary.md`](./table-vocabulary.md) projects the same six keys as
+objective planning-side information relationships without execution details or
+selection conclusions.
 
-Default Strategist and Quick read this complete compact registry together with
-the Chart registry before planning. They compare every selection rule, then use
+Default Strategist and Quick read the complete Table vocabulary together with
+the Chart vocabulary before planning. They compare every objective
+relationship, then use
 [`visualization_recall.py`](../../scripts/visualization_recall.py) `validate`
 to resolve selected canonical references. Its `recall` mode remains an optional
-diagnostic helper, not the runtime capability gate. Default writes
+diagnostic helper over the machine registry, not the runtime capability gate.
+Default writes
 `table/<key>` to `page_visualizations`; Quick keeps the selected reference in
 active context.
 

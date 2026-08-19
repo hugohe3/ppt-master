@@ -126,25 +126,26 @@ audio/video workflows because they require media or bookmark targets.
 
 ## Add Sound After Choosing Motion
 
-Sound effects are off by default. PPT Master includes a global CC0 discovery
+Sound effects are off by default. PPT Master includes a global CC0 sound
 library, but it is not copied during strategy or ordinary project setup. First
 finish the SVG pages and choose the visual transition/object motion. Only when
-one of those resolved beats has a specific auditory job should you discover and
-sync a cue:
+one of those resolved beats has a specific auditory job should you read the
+complete objective [sound vocabulary](../skills/ppt-master/templates/sounds/sound-vocabulary.md),
+select one exact id, and sync the cue:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
 python3 skills/ppt-master/scripts/sound_sync.py \
   <project> bigsoundbank/1797 kenney-interface/click_001
 ```
 
-The second command copies only the selected files into
+The command copies only the selected files into
 `<project>/sounds/<namespace>/`. With no selected cue, PPT Master creates no
-project sound directory and copies nothing. The `recommended` catalog flag is
-a discovery shortlist, not an automatic choice:
+project sound directory and copies nothing. After reviewing the vocabulary,
+the CLI may narrow an already-considered label, tag, or context without deciding
+fit:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
 ```
 
 Configuration always references the copied project-local path, never the
