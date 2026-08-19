@@ -32,11 +32,13 @@
     "skills/ppt-master/references/svg-effects.md": 15000,
     "skills/ppt-master/references/native-data-interface.md": 6750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
+    "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 18000,
     "skills/ppt-master/references/strategist-image.md": 3250,
     "skills/ppt-master/references/strategist-template.md": 3000,
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
+    "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
     "skills/ppt-master/workflows/generate-pptx.md": 18000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
   },
@@ -154,7 +156,7 @@
       "max_tokens": 14000
     },
     "route.generate.planning": {
-      "description": "Generate-PPTX planning through Strategist, including the fixed capability-decision batch, complete compact Chart/Table registries, and a conservative audit envelope for only the exact custom bases selected afterward; schemas and optional scaffolds are tool-consumed. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
+      "description": "Generate-PPTX planning through Strategist, including the fixed capability-decision batch, complete Chart expression vocabulary and Table registry, and a conservative audit envelope for only the exact custom bases selected afterward; schemas and optional scaffolds are tool-consumed. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -174,7 +176,7 @@
         "skills/ppt-master/references/image-renderings/_index.md",
         "skills/ppt-master/scripts/docs/confirm_ui.md",
         "skills/ppt-master/templates/icons/README.md",
-        "skills/ppt-master/templates/charts/charts_index.json",
+        "skills/ppt-master/templates/charts/chart-vocabulary.md",
         "skills/ppt-master/templates/tables/tables_index.json",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
@@ -218,6 +220,7 @@
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
         "skills/ppt-master/references/executor-structure.md",
         "skills/ppt-master/references/canvas-formats.md",
@@ -227,7 +230,7 @@
         "skills/ppt-master/references/visual-styles/_index.md",
         "skills/ppt-master/references/image-renderings/_index.md",
         "skills/ppt-master/templates/icons/README.md",
-        "skills/ppt-master/templates/charts/charts_index.json",
+        "skills/ppt-master/templates/charts/chart-vocabulary.md",
         "skills/ppt-master/templates/tables/tables_index.json",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
@@ -444,7 +447,7 @@
       "max_tokens": 7500
     },
     "stage.generate.template.style": {
-      "description": "Conditional roster-free Style workspace application.",
+      "description": "Conditional roster-free Style workspace application. Ceiling raised after BUDGET_LOAD_SET reported 9019 tokens.",
       "scope": "incremental",
       "include": [
         "stage.generate.apply-template-workspace"
@@ -457,7 +460,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 9000
+      "max_tokens": 10000
     },
     "stage.generate.template.layout": {
       "description": "Conditional Layout workspace application with one selected Layout spec.",
@@ -727,6 +730,7 @@
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
         "skills/ppt-master/references/executor-structure.md",
         {
@@ -976,12 +980,13 @@
       "max_tokens": 1000
     },
     "stage.create-template.authored-preset": {
-      "description": "Conditional native preset and Boolean shape authoring reference for Create Layout/Create Deck. Ceiling raised after BUDGET_LOAD_SET reported 6618 tokens.",
+      "description": "Conditional complete preset vocabulary plus native preset and Boolean shape authoring authority for Create Layout/Create Deck. Ceiling raised after BUDGET_LOAD_SET reported 9139 tokens.",
       "scope": "incremental",
       "files": [
-        "skills/ppt-master/references/native-shape-authoring.md"
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md"
       ],
-      "max_tokens": 7500
+      "max_tokens": 10000
     },
     "route.generate.planning-template": {
       "description": "Generate-PPTX planning context after an explicit template workspace is installed. Ceiling raised after BUDGET_LOAD_SET reported 119170 tokens.",
@@ -1090,12 +1095,13 @@
       "max_tokens": 1000
     },
     "stage.generate.executor.native-shape": {
-      "description": "Stock PowerPoint shape selection and Boolean materialization authority, always included in Generate Executor contexts. Ceiling raised after BUDGET_LOAD_SET reported 6618 tokens.",
+      "description": "Complete stock PowerPoint shape vocabulary, selection, and Boolean materialization authority, always included in Generate Executor contexts. Ceiling raised after BUDGET_LOAD_SET reported 9139 tokens.",
       "scope": "incremental",
       "files": [
-        "skills/ppt-master/references/native-shape-authoring.md"
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md"
       ],
-      "max_tokens": 7500
+      "max_tokens": 10000
     },
     "stage.shared.svg-effects": {
       "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
@@ -1617,6 +1623,10 @@
       "kind": "json_collection",
       "source": "skills/ppt-master/templates/charts/charts_index.json",
       "key": "charts",
+      "projection": {
+        "source": "skills/ppt-master/templates/charts/chart-vocabulary.md",
+        "entry_pattern": "^\\|\\s*`chart/(?P<id>[a-z0-9_]+)`\\s*\\|"
+      },
       "reference_terms": [
         "charts_index.json",
         "chart catalog",
@@ -1631,6 +1641,28 @@
         "templates",
         "type",
         "types"
+      ]
+    },
+    {
+      "name": "preset-shape-vocabulary",
+      "kind": "line_collection",
+      "source": "skills/ppt-master/scripts/pptx_shapes/data/shape_type_values.txt",
+      "projection": {
+        "source": "skills/ppt-master/references/preset-shape-vocabulary.md",
+        "entry_pattern": "(?:\\|\\s|,\\s)`(?P<id>[A-Za-z][A-Za-z0-9]*)`(?=[^\\n]*\\|\\s*$)"
+      },
+      "reference_terms": [
+        "preset-shape-vocabulary.md",
+        "preset shape vocabulary",
+        "native preset shape vocabulary"
+      ],
+      "claim_nouns": [
+        "preset",
+        "presets",
+        "shape",
+        "shapes",
+        "name",
+        "names"
       ]
     },
     {
@@ -2068,6 +2100,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/image.md",
         "reason": "Standalone image-tool command reference; generation roles load the owning image contracts directly, and its formula renderer section is legacy-only."
+      },
+      {
+        "glob": "skills/ppt-master/templates/charts/charts_index.json",
+        "reason": "Machine registry consumed by visualization validation and optional recall; planning roles load chart-vocabulary.md instead."
       },
       {
         "glob": "skills/ppt-master/scripts/docs/mask-gradient-smoke.md",
