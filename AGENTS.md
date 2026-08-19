@@ -69,7 +69,9 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
 python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
 
-# Sounds
+# Sounds — after a concrete cue job, read the complete vocabulary:
+# skills/ppt-master/templates/sounds/sound-vocabulary.md
+# list is optional exact filtering
 python3 skills/ppt-master/scripts/sound_sync.py list [--query term]
 python3 skills/ppt-master/scripts/sound_sync.py <project_path> <namespace>/<id>...
 

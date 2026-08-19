@@ -313,10 +313,11 @@ post-processing state: do not recover it from or write it back to
 | Need | Action |
 |---|---|
 | No resolved cue needs sound | Omit every `sound` field; do not create `<project_path>/sounds/` |
-| A bundled cue fits one resolved transition or animation row | Discover with `sound_sync.py list [--query <term>]`, then sync only the chosen namespaced id(s) into the project |
+| A bundled cue fits one resolved transition or animation row | Read the complete [`sound-vocabulary.md`](../../templates/sounds/sound-vocabulary.md), choose from the resolved auditory job, then sync only the selected namespaced id(s) into the project |
 | The project already contains user-provided audio | Use its project-relative path when its format is valid; no library sync is required |
 
 ```bash
+# Optional exact filtering after reviewing the complete vocabulary
 python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
 python3 skills/ppt-master/scripts/sound_sync.py \
   <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]

@@ -14,7 +14,7 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
-| Rendering | One-liner | Best for |
+| Rendering | One-liner | Typical image job |
 |---|---|---|
 | [`vector-illustration`](./vector-illustration.md) | Clean flat vector with bold shapes, no gradients | Consulting / SaaS / general professional decks |
 | [`flat`](./flat.md) | Modern geometric blocks, slightly more design-forward than vector | Brand / product showcase decks |
@@ -28,7 +28,7 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 ### 1.2 Hand-drawn / educational
 
-| Rendering | One-liner | Best for |
+| Rendering | One-liner | Typical image job |
 |---|---|---|
 | [`sketch-notes`](./sketch-notes.md) | Warm cream paper, black hand-drawn lines, pastel fills | Education / training / onboarding |
 | [`ink-notes`](./ink-notes.md) | Pure white, black ink, sparse semantic color | Methodology / Before-After / manifestos |
@@ -37,7 +37,7 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 ### 1.3 Narrative / atmospheric
 
-| Rendering | One-liner | Best for |
+| Rendering | One-liner | Typical image job |
 |---|---|---|
 | [`watercolor`](./watercolor.md) | Painterly soft edges, color bleeding | Illustrative lifestyle / travel story / brand story |
 | [`warm-scene`](./warm-scene.md) | Golden-hour cinematic warmth | Personal growth / origin story |
@@ -46,7 +46,7 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 ### 1.4 Specialty
 
-| Rendering | One-liner | Best for |
+| Rendering | One-liner | Typical image job |
 |---|---|---|
 | [`fantasy-animation`](./fantasy-animation.md) | Ghibli/Disney hand-drawn warmth | Children / storybook / brand fable |
 | [`pixel-art`](./pixel-art.md) | 8-bit retro game aesthetic | Gaming / retro tech / nostalgic |
@@ -75,38 +75,30 @@ Write `image_rendering_references` only when the confirmed custom direction actu
 
 ---
 
-## 2. Selection recall — confirmed style + image job → rendering
+## 2. Selection Boundary
 
-**Reference — not a constraint**: Resolve the direction's intended image jobs and visual style before using this table. A topic keyword alone never selects the deck-wide rendering or turns a named real-world subject into an AI row. Travel planning and other documentary work keeps verifiable places in `provided` / `web`; its AI rendering applies only to complementary invented or deliberately stylized roles. Choose the strongest task-and-style match. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`. When the visual style names a paired rendering, prefer that for aesthetic alignment only when the intended image jobs still fit.
+**Reference — not a constraint**: Resolve the intended image jobs and visual
+style before choosing. Compare every catalog row through the image's required
+line quality, texture, depth, material, mood, documentary identity, and role in
+the page. A topic or industry keyword never selects the deck-wide rendering or
+turns a named real-world subject into an AI row. A paired visual-style
+rendering is one coherence candidate, not a default answer. When no preset
+describes the intended treatment, use `custom` per §1.5.
 
-| `d. Style` signal | Recommended rendering | Alternates |
-|---|---|---|
-| Strategic / MBB / board | `editorial` or `vector-illustration` | `blueprint`, `minimalist-swiss` |
-| Corporate report / analysis | `vector-illustration` | `flat`, `digital-dashboard` |
-| High-end consulting / luxury / 高端 / design-firm | `minimalist-swiss` | `editorial`, `vector-illustration` |
-| Tech / SaaS / AI / system / architecture | `3d-isometric`, `blueprint`, or `digital-dashboard` | `flat`, `vector-illustration` |
-| Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `digital-dashboard`, `flat` |
-| Product launch / brand / marketing | `flat`, `3d-isometric`, or `corporate-photo` | `vector-illustration` |
-| Education / training / onboarding / 教学 | `sketch-notes` | `vector-illustration` (if school is corporate), `paper-cut` |
-| Children / story / storybook / 儿童 | `fantasy-animation` | `paper-cut`, `watercolor`, `sketch-notes` |
-| Cultural / folk / festival / 文化 / 节日 | `paper-cut` | `vintage-poster`, `screen-print` |
-| Methodology / Before-After / manifesto / 方法论 | `ink-notes` | `editorial` |
-| Government / formal / official report | `editorial` or `corporate-photo` | `vector-illustration` |
-| Finance / data journalism / 财经 | `editorial` or `digital-dashboard` | `vector-illustration` |
-| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo`, `paper-cut` |
-| Cultural / media / opinion / cinematic | `screen-print`, `vintage-poster` | `editorial`, `warm-scene` |
-| Brand heritage / historic hospitality identity / 老字号 / 周年 | `vintage-poster` | `screen-print`, `editorial` |
-| Gaming / retro / 8-bit / 复古 | `pixel-art` | `vintage-poster` |
-| Environment / wellness / 环保 / 户外 | `nature` | `watercolor`, `paper-cut` |
-| Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
-| Team / company / product photo | `corporate-photo` | — |
+| Decision dimension | Evidence to compare |
+|---|---|
+| Subject identity | Documentary likeness, invented expression, metaphor, atmosphere, or abstract structure |
+| Mark language | Photographic detail, vector edges, hand-drawn line, halftone, pixel grid, or material contour |
+| Depth and material | Flat fields, layered paper, glass, isometric volume, wash, grain, or natural light |
+| Page role | Full composition, local illustration, reusable transparent element, or supporting visual cue |
+| Deck coherence | Fit with the resolved visual system and color roles without replacing the page's actual communication job |
 
 ---
 
 ## 3. How to use
 
-1. From `design_spec.md` extract `d. Style` mode + descriptor.
-2. Find the matching row above; pick the primary recommendation.
+1. Read the resolved visual system and the deck's intended AI image jobs.
+2. Compare the complete catalog and choose the strongest whole-deck fit, or use a warranted `custom` treatment.
 3. For a preset, read `image-renderings/<chosen>.md`. For `custom`, read every file named in `image_rendering_references`, then synthesize them under the confirmed behavior; with no references, use the novel behavior directly. Apply the result when assembling prompts per [`image-generator.md`](../image-generator.md) §4.
 
 **Lock for the whole deck.** Don't change rendering between images in the same deck.

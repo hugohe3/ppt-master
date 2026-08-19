@@ -256,7 +256,7 @@ Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
 Read templates/icons/README.md
 Read templates/charts/chart-vocabulary.md
-Read templates/tables/tables_index.json
+Read templates/tables/table-vocabulary.md
 ```
 
 This batch is the complete capability map for planning, not a usage checklist:
@@ -422,7 +422,7 @@ Resolving one visual style, `Illus.` propensity, or generated-image rendering re
 
 **Mandatory — complete Chart/Table capability review**: During that same
 carrier resolution, compare every page's information model against every entry
-in the already-loaded Chart expression vocabulary and Table registry. These
+in the already-loaded Chart and Table expression vocabularies. These
 complete capability maps expose what exists; their descriptions do not rank
 candidates or replace judgment from the actual information, and they are
 neither usage quotas nor whitelists. Do not select a catalog reference for

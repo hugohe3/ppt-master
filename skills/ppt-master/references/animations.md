@@ -254,14 +254,13 @@ copy its global-library file into the project and reference that local copy.
 
 | Source | Action |
 |---|---|
-| Bundled CC0 library | Discover ids with `sound_sync.py list`, sync only the selected ids, then use the corresponding `sounds/<namespace>/<file>.wav` paths |
+| Bundled CC0 library | Read the complete objective [`sound-vocabulary.md`](../templates/sounds/sound-vocabulary.md), select one exact id from the resolved auditory job, sync only that selection, then use the corresponding `sounds/<namespace>/<file>.wav` path |
 | User-provided audio already inside the project | Reference its existing project-relative `.m4a`, `.mp3`, or `.wav` path for object animation; a transition sound uses `.wav` |
 | External absolute file | The low-level object-animation path remains compatible, but new generated projects should copy or sync the intended file into the project and use a relative path |
 | No concrete auditory cue job | Keep `sound` omitted; do not create `<project>/sounds/` and do not copy the library |
 
 ```bash
-# Inspect ids only after the visual motion solution exists
-python3 skills/ppt-master/scripts/sound_sync.py list
+# Optional exact filtering only after the complete vocabulary is in context
 python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
 
 # Materialize only the chosen ids

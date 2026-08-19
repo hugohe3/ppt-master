@@ -281,7 +281,7 @@ Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
 Read templates/icons/README.md
 Read templates/charts/chart-vocabulary.md
-Read templates/tables/tables_index.json
+Read templates/tables/table-vocabulary.md
 ```
 
 This is a capability map, not a usage checklist: retain zero-use outcomes and

@@ -54,7 +54,7 @@ Every AI image uses one deck-wide rendering, the deck's stable color anchors/sem
 
 | Reference | Loaded |
 |---|---|
-| [`image-renderings/_index.md`](./image-renderings/_index.md) — rendering catalog + auto-selection table | Always (Step 1 below) |
+| [`image-renderings/_index.md`](./image-renderings/_index.md) — complete rendering catalog + objective selection boundary | Always (Step 1 below) |
 | [`image-type-templates/_index.md`](./image-type-templates/_index.md) — type catalog + auto-selection table | Always (Step 1 below) |
 | `image-renderings/<chosen>.md` | After Step 2 resolves the rendering — one preset file, or every exact reference listed for `custom` |
 | `image-type-templates/<chosen>.md` | After Step 3 picks the type per image — only the types actually used |
@@ -101,11 +101,12 @@ This fallback covers a missing key only. An empty or invalid value stops for loc
 
 | Signal | Maps to |
 |---|---|
-| `design_spec.md d. Style` mode + descriptor | Rendering (consult renderings `_index.md` auto-selection table) |
+| `design_spec.md d. Style` mode + descriptor plus intended image jobs | Rendering (compare the complete objective catalog; no keyword or paired style decides the result) |
 | Existing `spec_lock.md colors` rows | Deck color anchors; interpret them with the completed `design_spec.md`, never replace confirmed identity from a second palette |
 | Existing `spec_lock.md icons.library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
 
-If rendering inference surfaces multiple candidates, pick the first; do not present another choice after confirmation.
+If rendering inference surfaces multiple candidates, choose the strongest
+whole-deck fit; do not present another choice after confirmation.
 
 If the table returns `custom`, stop and repair the lock: authoring `image_rendering_behavior` is a planning decision this fallback cannot make, and the deck's SVG style prose is not an image-rendering description.
 

@@ -115,22 +115,23 @@ Wipe 方向名统一映射到 `entrance_wipe`；方向会保留为参数，而�
 
 ## 在确定动效后添加声音
 
-音效默认关闭。PPT Master 内置了全局 CC0 音效检索库，但不会在策略阶段或普通
+音效默认关闭。PPT Master 内置了全局 CC0 音效库，但不会在策略阶段或普通
 项目初始化时把它复制进项目。先完成 SVG 页面并确定视觉转场 / 对象动画；只有
-其中一个已确定的节拍确实需要听觉提示时，才检索并同步声音：
+其中一个已确定的节拍确实需要听觉提示时，才完整读取客观的
+[声音词汇表](../../skills/ppt-master/templates/sounds/sound-vocabulary.md)，选定一个
+准确 id 并同步声音：
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
 python3 skills/ppt-master/scripts/sound_sync.py \
   <project> bigsoundbank/1797 kenney-interface/click_001
 ```
 
-第二条命令只会把选中的文件复制到 `<project>/sounds/<namespace>/`。没有选中
-声音时，PPT Master 不创建项目 `sounds/` 目录，也不复制任何文件。
-`recommended` 只是便于检索的保守推荐集合，不会自动添加声音：
+该命令只会把选中的文件复制到 `<project>/sounds/<namespace>/`。没有选中声音时，
+PPT Master 不创建项目 `sounds/` 目录，也不复制任何文件。完整阅读词汇表后，可以
+用 CLI 缩小已经考虑过的名称、标签或语境范围，但它不负责判断适配性：
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
 ```
 
 配置始终引用复制后的项目相对路径，不直接引用全局 `templates/sounds/` 路径，

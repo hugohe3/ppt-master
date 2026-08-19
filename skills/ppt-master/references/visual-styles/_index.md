@@ -29,7 +29,7 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.1 Corporate / product
 
-| Visual style | Character | Best for | Paired rendering | Illus. |
+| Visual style | Character | Typical context | Paired rendering | Illus. |
 |---|---|---|---|---|
 | [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, near-zero ornament | High-end consulting, architecture, type-led | `minimalist-swiss` | sparse |
 | [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` | supportive |
@@ -39,7 +39,7 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.2 Editorial / publication
 
-| Visual style | Character | Best for | Paired rendering | Illus. |
+| Visual style | Character | Typical context | Paired rendering | Illus. |
 |---|---|---|---|---|
 | [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` | supportive |
 | [`photo-editorial`](./photo-editorial.md) | Full-bleed photography dominates, text points & captions | Architecture, design, fashion, culture, travel / destination, photo-led | `corporate-photo` | sparse |
@@ -48,7 +48,7 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.3 Expressive / print
 
-| Visual style | Character | Best for | Paired rendering | Illus. |
+| Visual style | Character | Typical context | Paired rendering | Illus. |
 |---|---|---|---|---|
 | [`memphis`](./memphis.md) | Clashing color blocks, geometric confetti, bold outlines | Festivals, consumer, youth, launch hype | `flat` | core |
 | [`zine`](./zine.md) | Riso misregistration, halftone, limited palette, print grit | Culture, design talks, indie brands | `screen-print` | core |
@@ -57,7 +57,7 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.4 Hand-drawn / brush
 
-| Visual style | Character | Best for | Paired rendering | Illus. |
+| Visual style | Character | Typical context | Paired rendering | Illus. |
 |---|---|---|---|---|
 | [`sketch-notes`](./sketch-notes.md) | Warm paper, doodle line work, soft pastel blocks | Education, training, onboarding, knowledge | `sketch-notes` | core |
 | [`ink-notes`](./ink-notes.md) | Pale field, black hand-ink, sparse semantic accent | Methodology, before/after, manifestos | `ink-notes` | supportive |
@@ -66,39 +66,32 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.5 Specialty
 
-| Visual style | Character | Best for | Paired rendering | Illus. |
+| Visual style | Character | Typical context | Paired rendering | Illus. |
 |---|---|---|---|---|
 | [`pixel-art`](./pixel-art.md) | Strict pixel grid, blocky forms, limited palette, flat | Gaming, retro-tech, nostalgic, game-flavored | `pixel-art` | core |
 
 ---
 
-## 2. Selection recall — communication task + content signal → style
+## 2. Selection Boundary
 
-**Reference — not a constraint**: Resolve the audience task, outcome, delivery context, required carriers, and artifact afterlife before using this table. A topic or industry word alone never selects a style. Reject a candidate that weakens the audience's practical task or cannot integrate required real-world imagery. A travel itinerary or destination decision aid is not retro merely because its subject is cultural or hospitality-related; choose retro only when nostalgia / heritage storytelling or an explicit user direction makes it part of the communication job.
+**Reference — not a constraint**: Resolve the audience task, outcome, delivery
+context, required carriers, and artifact afterlife before choosing. Compare the
+complete catalog's character, composition language, density, typography, and
+texture with the project as a whole. A topic, industry, or style keyword never
+selects a row; the same subject may support different visual systems when its
+communication job changes.
 
-| Signal | Recommended style | Alternates |
-|---|---|---|
-| High-end consulting / architecture / luxury / minimal | `swiss-minimal` | `editorial` |
-| Finance / journalism / research / long-form analysis | `editorial` | `data-journalism` |
-| Photography-led / architecture / design / fashion / 大图 | `photo-editorial` | `editorial` |
-| Itinerary / destination guide / trip planning / 旅游计划 / 行程 | `photo-editorial` | `editorial`, `soft-rounded` |
-| Data report / market review / 财经 / Bloomberg / Economist | `data-journalism` | `editorial` |
-| Product / SaaS / training / consumer / friendly | `soft-rounded` | `editorial` |
-| Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `dark-tech` |
-| Tech / AI / dev tools / data / futuristic | `dark-tech` | `glassmorphism` |
-| Cultural / philosophy / heritage / 新中式 / 东方 | `ink-wash` | `editorial` |
-| Engineering / systems / architecture walkthrough | `blueprint` | `dark-tech` |
-| Annual review / manifesto / max-density editorial | `brutalist` | `editorial` |
-| Festival / consumer brand / youth / loud launch | `memphis` | `soft-rounded` |
-| Indie publishing / design / culture / printed feel | `zine` | `editorial` |
-| Heritage brand / historic hospitality identity / retro brand / 老字号 / 周年 | `vintage-poster` | `zine` |
-| Cultural / folk / festival / children / sustainability | `paper-cut` | `sketch-notes` |
-| Education / training / onboarding / 教学 | `sketch-notes` | `paper-cut` |
-| Methodology / before-after / manifesto / 方法论 | `ink-notes` | `editorial` |
-| Classroom / tutorial / academic / 课堂 | `chalkboard` | `sketch-notes` |
-| Gaming / retro / 8-bit / 复古游戏 | `pixel-art` | `vintage-poster` |
+| Decision dimension | Evidence to compare |
+|---|---|
+| Shape and space | Contour language, grid behavior, whitespace, and boundary strength |
+| Information texture | Sparse presence, editorial hierarchy, dense evidence, or hand-made expression |
+| Carrier integration | How the system accommodates the page's actual photos, illustrations, charts, tables, and native geometry |
+| Typography character | The role editable type plays inside the composition, independent of exact font choice |
+| Delivery and afterlife | Viewing distance, projection/print behavior, reuse, and expected editing |
 
-> When the deck has AI images, align style with rendering: a `swiss-minimal` layout reads best with a `minimalist-swiss` rendering, so page and illustrations share one aesthetic. The "Paired rendering" column is the default pairing; override when content demands.
+> When the deck has AI images, the "Paired rendering" column exposes an
+> aesthetically related option. It does not select the rendering or create an
+> AI image job; compare it with the actual image roles before using it.
 >
 > Not every image-rendering becomes its own visual style. A rendering earns a layout twin only when it defines a whole-page layout language (shape, whitespace, composition, texture) — not merely how an inserted image looks. Purely atmospheric renderings (`nature`, `warm-scene`, `fantasy-animation`) stay imagery-only: they pair with whichever layout style fits rather than being one. (Note the distinction `photo-editorial` draws: photography as a *rendering* is image-look, but photo-*led composition* is a real layout language — so the style exists, paired with `corporate-photo`.)
 
