@@ -38,9 +38,8 @@ family, and catalog rules. Table-specific requirements are:
 - Preserve the complete row/column topology, headers, values, units, ordering,
   merges, alignment, totals, status, and source notes.
 - Default output remains independently editable DrawingML shapes.
-- Add native Table replacement metadata only for a supported pure text grid
-  selected as an independent native-ready object. The fallback and metadata
-  contain the same cells.
+- Add native Table replacement metadata to every supported pure text grid; it
+  is native-ready by default. The fallback and metadata contain the same cells.
 - Keep graphical cells such as rating dots, icons, status marks, avatars, or
   embedded bars on the Shape fallback route unless the active native-data
   contract explicitly supports them.

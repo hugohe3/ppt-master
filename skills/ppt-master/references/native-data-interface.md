@@ -43,14 +43,16 @@ this enum.
 [`executor-base.md`](./executor-base.md) remains the single Shape-first authoring authority: the complete visible SVG fallback is required regardless of native eligibility. This section only adds dormant replacement metadata to independently selected objects and defines how export may activate it.
 
 **Hard rule — selected-object authoring**: write the marker and JSON metadata in
-the same edit only for a supported chart or pure text-grid table independently
-selected as native-ready. Default reads the exact semantic object key from §IX
+the same edit for every supported chart and pure text-grid table; both are
+native-ready by default. An unactivated marker changes no export, so never skip
+an eligible object because the current request did not ask for native output.
+The Default route reads the exact semantic object key from §IX
 `Native-ready: <object-key>=yes|no; ...`; Quick assigns the same page-local
 `kebab-case` key in active context before drawing. Use that key as the marker
 group `id` and metadata `name`. A catalog `family/key`, family name, §VII row,
 numeric content, or another ready object on the page never implies eligibility.
-Default `<object-key>=no`, Quick `no`, and unlisted incidental microvisuals stay
-on the SVG fallback route. Canonical rectangular merged text cells may use the narrow
+A `<object-key>=no` entry and unlisted incidental microvisuals stay on the SVG
+fallback route. Canonical rectangular merged text cells may use the narrow
 `row_span` / `col_span` contract below; graphical cells stay unmarked. The
 marker group supplies visible fallback children for browser rendering and JSON
 metadata for `svg_to_pptx` native export.

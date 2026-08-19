@@ -451,7 +451,7 @@ Prepare only the resource paths needed by the decided pages:
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Composable illustration / illustrated-icon / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut. Slices remain under `images/` and may serve several pages; each lettering sheet still names every exact stable string assigned to it |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
-| Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
+| Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata for every supported chart and pure text grid, which are native-ready by default |
 
 **Hard rule — planned slice closure**: Every placeable-element sheet carries `slice_grid` plus comma-separated `slice_names` in `image_prompts.json`. Deterministically enumerate those basenames and require every `images/<name>.png` after an exit-0 `slice_images.py --strict-alpha` run before SVG authoring; a `Generated` parent sheet never satisfies its named outputs. A nonzero slice run returns the parent to image preparation: correct only an evidenced key/tolerance mismatch, then enlarge cells or split incompatible shape families and regenerate when content reaches a cell edge. Repeating the same failing grid is not recovery. An explicitly selected manual path retains the marker, sets the affected item to `Needs-Manual` with `last_error`, and blocks Quick SVG/export until every named output is supplied and validated. Exhausted automated AI generation or dependent slicing instead follows the no-AI replan below; never retain an unresolved AI/slice row merely to continue.
 
@@ -586,7 +586,7 @@ context and never change the Structure result.
 | Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
 | Any mathematical notation that may require native math | [`native-formula.md`](../../references/native-formula.md) before choosing ordinary text, inline native math, or block native math |
 | Any external or same-deck click hyperlink | [`native-hyperlinks.md`](../../references/native-hyperlinks.md) before authoring its inline or whole-object SVG anchor |
-| A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
+| A used preset pattern fill, or one independent Chart/Table object resolved as `<object-key>=yes` in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
 
 Chart/Table reference and final information model are independent loading

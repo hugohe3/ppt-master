@@ -167,9 +167,10 @@ PowerPoint structure. Omit empty §VII and recall diagnostics; legacy rows stay
 readable, while new specs use four columns.
 
 In §IX `Visualization`, key every independent data chart/pure text-grid table
-in `kebab-case` and add one `Native-ready` map: `<key>=yes|no; ...`. Use `yes`
-only when editable native output helps. Qualitative relationships/read order
-remain unkeyed prose, as do incidental microvisuals.
+in `kebab-case` and add one `Native-ready` map: `<key>=yes|no; ...`. Decide
+`yes` by default; use `no` only when the native payload cannot express that
+object. Qualitative relationships/read order remain unkeyed prose, as do
+incidental microvisuals.
 
 In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Write one concise, non-empty `Layout pattern` suggestion in ordinary language; optionally cite hierarchical ids from the layout library when they help recall a technique. Set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them. Native formulas never enter this table or `spec_lock.md images`.
 

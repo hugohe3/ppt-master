@@ -10,7 +10,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Any selected Chart/Table `family/key` reference, or a legacy `page_charts` row that resolves to a live Chart/Table SVG | [`executor-visualization.md`](./executor-visualization.md), then the resolver-returned Chart/Table branch |
 | Any value-driven geometry, including a chart-family reference, mini chart, sparkline, inset, or small multiple | [`executor-chart.md`](./executor-chart.md) |
 | Any semantic cell grid, including a table-family reference | [`executor-table.md`](./executor-table.md) |
-| A page will use a preset pattern fill or an independent object is explicitly selected as native-ready | [`native-data-interface.md`](./native-data-interface.md) before emitting the pattern or replacement metadata |
+| A page uses a preset pattern fill, or an independent Chart/Table object is resolved as `<object-key>=yes` | [`native-data-interface.md`](./native-data-interface.md) before emitting the pattern or replacement metadata |
 | Any image | [`executor-image.md`](./executor-image.md) + [`image-layout-spec.md`](./image-layout-spec.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) + [`svg-image-embedding.md`](./svg-image-embedding.md) |
 | Any nontrivial mathematical expression | [`native-formula.md`](./native-formula.md) |
 | Any external or same-deck click hyperlink | [`native-hyperlinks.md`](./native-hyperlinks.md) |
