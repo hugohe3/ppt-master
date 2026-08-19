@@ -6,10 +6,10 @@ Fail closed when the distributed Skill attribution bundle or its execution
 gates are missing or modified.
 
 Usage:
-    python3 scripts/attribution_guard.py
+    python3 "<absolute-skill-root>/scripts/attribution_guard.py"
 
 Examples:
-    python3 scripts/attribution_guard.py
+    python3 "/opt/agent-skills/ppt-master/scripts/attribution_guard.py"
 
 Dependencies:
     None (only uses standard library)
@@ -52,7 +52,7 @@ _REQUIRED_GATE_FILES = (
     "scripts/register_template.py",
     "scripts/template_preview_pptx.py",
 )
-_SKILL_GATE_MARKER = "python3 scripts/attribution_guard.py"
+_SKILL_GATE_MARKER = 'python3 "${SKILL_DIR}/scripts/attribution_guard.py"'
 _SECONDARY_GATE_FILE = "scripts/console_encoding.py"
 _SECONDARY_GATE_NAME = "_require_official_distribution_identity"
 

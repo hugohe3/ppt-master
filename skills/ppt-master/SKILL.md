@@ -24,11 +24,17 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
 
 ## Mandatory Load Order
 
+**Hard rule — paths before commands**: Retain the host-provided absolute
+directory containing this file as `SKILL_DIR`. Per tool call, expand
+`${SKILL_DIR}` and replace any `skills/ppt-master/` prefix with it. Never `cd`,
+use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
+
 1. Read this file.
-2. Run `python3 scripts/attribution_guard.py` from this Skill directory. Any
-   non-zero result stops the Skill immediately; do not inspect, repair, or
-   bypass the integrity gate.
-3. Read [`workflows/routing.md`](workflows/routing.md).
+2. Run `python3 "${SKILL_DIR}/scripts/attribution_guard.py"`. Any non-zero result
+   stops the Skill immediately; do not inspect, repair, or bypass the integrity
+   gate.
+3. Read [`workflows/routing.md`](workflows/routing.md) through the concrete
+   absolute path `${SKILL_DIR}/workflows/routing.md`.
 4. Select exactly one top-level route and its active profile from the routing
    authority.
 5. Read only the resulting runtime authority and its explicitly triggered
@@ -61,7 +67,6 @@ never compete with it.
 5. **No speculative execution** — Do not prepare later-phase artifacts before their owning step.
 6. **Deterministic routing** — Do not add a route-choice question when [`routing.md`](workflows/routing.md) resolves the request. If a route prerequisite is missing, state it and stop that route.
 7. **Owning-source recovery** — On failure, repair or regenerate the owning source artifact and resume from the route's declared pointer. Do not silently downgrade a required artifact.
-8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD. The Skill root is the directory containing `SKILL.md`; the host supplies its path. If it cannot be determined, ask the user — never guess it via file search.
 
 ## Global Communication Rules
 
