@@ -213,19 +213,12 @@ Runtime capability discovery reads
 [`preset-shape-vocabulary.md`](../references/preset-shape-vocabulary.md), which
 lists all 187 exact names by Office category and objective contour family.
 `list [--search QUERY]` and `list --grouped [--search QUERY]` remain optional
-location and compatibility views; they do not replace the complete vocabulary.
+location views; they do not replace the complete vocabulary.
 `describe --compact` returns the selected preset's objective identity, Office
 category, family, scope, literal boundary, adjustments, connector/path facts,
 connection sites, and text-rectangle availability. Plain `describe` preserves
-the full nested legacy semantics payload.
-
-`recommend` remains an optional heuristic browse aid for unresolved family
-searches. Its result is neither a whitelist nor an automatic selection, and a
-zero-match result is not evidence that a preset is absent or unsuitable.
-`recommend --compact` keeps criteria, counts, selection note, and reduced
-candidate records; plain `recommend` preserves the full payload. A zero-match
-recommendation is valid JSON with exit code 0; a zero-match `list --search`
-remains a failed lookup with exit code 1.
+the full nested semantics payload. A zero-match `list --search` remains
+a failed lookup with exit code 1.
 
 The helper never writes a page or project file. Select one exact semantic
 stock-shape match, inspect the emitted fragment, and insert it into the

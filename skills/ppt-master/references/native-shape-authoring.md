@@ -28,13 +28,10 @@ these calls through shell loops, merge stderr, or add a downstream parser when
 `--compact` exists.
 
 `list --search` and `list --grouped --search` are optional spelling/location
-helpers. `recommend` is an optional heuristic fallback when the complete
-vocabulary still leaves several plausible families; it is neither required
-evidence nor a selection authority, and zero results never establish that a
-shape is unavailable or unsuitable. Run `describe <name> --compact` only when
-a serious candidate needs objective identity, adjustment, connector, path,
-connection-site, or text-rectangle facts. Executor makes the final comparison
-through §§1–2.1; no query narrows the already-loaded vocabulary.
+helpers. Run `describe <name> --compact` only when a serious candidate needs
+objective identity, adjustment, connector, path, connection-site, or
+text-rectangle facts. Executor makes the final comparison through §§1–2.1;
+filtered lookup cannot narrow the already-loaded vocabulary.
 
 ## 1. Contour Selection and Materialization Gate
 
@@ -105,7 +102,7 @@ Apply this page-local sequence before drawing:
 | Pass | Action | Result |
 |---|---|---|
 | Job | State what the object must do for the reader before naming a shape. | Page role plus any real relationship, direction, aspect, text load, or literal scope. |
-| Browse | Compare that job against the complete loaded vocabulary; move from Office category to contour family to exact name. | A small candidate set chosen by meaning, not scorer rank or syntax convenience. |
+| Browse | Compare that job against the complete loaded vocabulary; move from Office category to contour family to exact name. | A small candidate set chosen by meaning, not syntax convenience. |
 | Inspect | When exact facts could change the decision, run `describe --compact` directly for those candidates and compare identity, scope, adjustments, connector status, paths, text rectangle, and connection sites. | Objective geometry evidence without prescribed use. |
 | Select | Choose the contour whose inference and visual character fit the page, including a neutral primitive when neutrality is useful. | One page-fit contour; no syntax decision yet. |
 | Encode | Apply §1's materialization gate. | Ordinary SVG primitive, helper-authored preset, Boolean result, or necessary freeform. |
@@ -116,11 +113,6 @@ Example location and inspection commands:
 python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" describe chevron --compact
 python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" list --search connector
 ```
-
-**Reference — not a constraint**: `recommend --compact` remains available as a
-legacy-compatible heuristic for an unresolved family search. Read it as another
-browse aid only; its filters, scores, and returned limit cannot prove fit,
-misfit, or absence.
 
 **Hard rule — semantic fit, not name association**: a preset name, topic word,
 or metaphor is not evidence of use. Respect `literal_only` and `scope` before
