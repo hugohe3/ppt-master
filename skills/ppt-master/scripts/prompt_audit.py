@@ -1173,7 +1173,61 @@ def _registry_ids(
             return set(range(len(value))), source, [], None
         raise AuditError(f"Registry key {key} in {source} is not a collection")
 
+    if kind == "line_collection":
+        values = [
+            line.strip()
+            for line in _read_utf8(root / source).splitlines()
+            if line.strip()
+        ]
+        duplicates = sorted(
+            item for item, count in Counter(values).items() if count > 1
+        )
+        return set(values), source, duplicates, values
+
     raise AuditError(f"Unsupported registry kind: {kind}")
+
+
+def _registry_projection_ids(
+    root: Path,
+    registry_name: str,
+    config: dict[str, Any],
+) -> tuple[set[str], str, list[str]] | None:
+    """Extract one declared Markdown projection of canonical registry ids."""
+    projection = config.get("projection")
+    if projection is None:
+        return None
+    if not isinstance(projection, dict):
+        raise AuditError(
+            f"Registry {registry_name} projection must be an object"
+        )
+    source = projection.get("source")
+    if not isinstance(source, str) or not (root / source).is_file():
+        raise AuditError(
+            f"Registry {registry_name} projection has missing source: {source}"
+        )
+    pattern = projection.get("entry_pattern")
+    if not isinstance(pattern, str):
+        raise AuditError(
+            f"Registry {registry_name} projection needs entry_pattern"
+        )
+    try:
+        regex = re.compile(pattern, re.MULTILINE)
+    except re.error as exc:
+        raise AuditError(
+            f"Invalid registry projection entry_pattern: {exc}"
+        ) from exc
+    if "id" not in regex.groupindex:
+        raise AuditError(
+            f"Registry {registry_name} projection entry_pattern needs an id group"
+        )
+    matched_ids = [
+        match.group("id")
+        for match in regex.finditer(_read_utf8(root / source))
+    ]
+    duplicates = sorted(
+        item for item, count in Counter(matched_ids).items() if count > 1
+    )
+    return set(matched_ids), source, duplicates
 
 
 def _registry_count_claims(paragraph: Paragraph, nouns: list[str]) -> list[int]:
@@ -1218,6 +1272,38 @@ def audit_registries(
                     path=source,
                 )
             )
+        projection = _registry_projection_ids(root, name, config)
+        projection_source: str | None = None
+        projection_ids: set[str] | None = None
+        projection_duplicates: list[str] = []
+        if projection is not None:
+            projection_ids, projection_source, projection_duplicates = projection
+            for duplicate_id in projection_duplicates:
+                findings.append(
+                    Finding(
+                        severity="error",
+                        code="REGISTRY_PROJECTION_ID_DUPLICATE",
+                        message=(
+                            f"{name} projection repeats id {duplicate_id!r}"
+                        ),
+                        path=projection_source,
+                    )
+                )
+            canonical_ids = {str(item) for item in ids}
+            missing_ids = sorted(canonical_ids - projection_ids)
+            extra_ids = sorted(projection_ids - canonical_ids)
+            if missing_ids or extra_ids:
+                findings.append(
+                    Finding(
+                        severity="error",
+                        code="REGISTRY_PROJECTION_MISMATCH",
+                        message=(
+                            f"{name} projection differs from its registry; "
+                            f"missing={missing_ids}, extra={extra_ids}"
+                        ),
+                        path=projection_source,
+                    )
+                )
         expected_order: list[str] | None = None
         expected_ids: set[str] | None = None
         if config.get("kind") == "structured_markdown":
@@ -1446,6 +1532,15 @@ def audit_registries(
                 "expected_entries": len(expected_ids) if expected_ids is not None else None,
                 "index_labels": index_labels,
                 "index_targets": index_targets,
+                "projection": (
+                    {
+                        "source": projection_source,
+                        "entries": len(projection_ids),
+                        "duplicate_ids": projection_duplicates,
+                    }
+                    if projection_ids is not None
+                    else None
+                ),
                 "claims": sorted(claims, key=lambda item: (item["path"], item["line"])),
             }
         )

@@ -24,7 +24,7 @@ Exit code `1` on any deterministic error. An unaccepted exact duplicate or schem
 | Corpus and hot-file token ceilings | error on budget overflow |
 | Declared load sets (route/stage scenarios) | error on budget overflow, unknown files, selector/registry drift |
 | Load coverage | error when a corpus file is in no load set and has no `coverage.exempt` entry |
-| Registry claims (layout patterns, modes, styles, renderings, types, charts) | error on ID/count/index drift |
+| Registry claims and declared vocabulary projections | error on ID/count/index/projection drift |
 | Markdown references and declared authority edges | error on broken links or unreferenced edges |
 | Cross-file exact duplicates | warning until adjudicated via `duplicates.accepted` |
 | Cross-file near duplicates | informational candidates in the report; no finding |
@@ -38,6 +38,7 @@ The manifest is audit-only (`audit_only: true`, `runtime_consumed: false`); it i
 - **New corpus file** → when no existing category exemption matches it, the audit fails with `LOAD_COVERAGE_GAP` until you add it to the load sets that read it or exempt it with a one-line reason. Exempt only material that never enters role context (for example, a legacy tombstone, generated maintenance asset, maintainer-only doc, or license notice); represent conditional runtime reads as incremental load sets.
 - **Intentional exact duplicate** → run `--json`, copy the candidate's `kind`, `fingerprint`, and `paths` into `duplicates.accepted` with a reason. The acceptance identity is all three values, so separate path pairs with identical prose remain independently reviewable. Editing either reported raw block changes its fingerprint; stale acceptance fails with `DUPLICATE_ACCEPTED_STALE`.
 - **Near duplicate** → inspect `duplicates.near` as heuristic maintenance information. It produces no warning. A maintainer may still record a stable intentional pair in `duplicates.accepted`; `--skip-near-duplicates` deliberately leaves accepted near pairs unchecked because that scan did not run.
+- **Registry projection** → declare `projection.source` plus an `entry_pattern` with a named `id` group on the canonical registry entry. The audit requires the projected ids to match the registry exactly and rejects duplicates, missing ids, and extra ids.
 - **Schema owner** → every configured field must have a field-local definition signal in its declared owner. Split fields into separate owner entries when they belong to different artifacts. Generic `key` / `value` prose elsewhere on a long line is not a grammar signal; explicit assignments, field-local grammar/format language, and forms such as `field ... one of ...` are.
 - **Intentional schema projection** → run `--json`, then copy the field's `owner_fingerprint` and each reviewed projection's `path` / `fingerprint` into that `schema_grammars[]` entry. Classify every projection as `producer`, `consumer`, `reference`, or `compatibility`, and record a one-line reason:
 
