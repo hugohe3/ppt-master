@@ -8,6 +8,10 @@ description: Default Generate PPTX authority for source intake, planning, SVG au
 > Beautify profile. This file owns that runtime's Step 1–7 sequence, gates, role
 > switching, and mandatory commands. Explicit Quick loads its own profile instead.
 
+**Hard rule — runtime paths**: Resolve every linked or abbreviated package path
+below from the entry-time `SKILL_DIR` anchor and expand it inside each tool
+call. Never change CWD or inherit a prior shell working directory.
+
 **Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → Template Candidate Preparation → Stage-1 Communication + Template Confirmation → [Template Installation] → Stage-2 Solution → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 **Generate-specific execution discipline**:
@@ -257,8 +261,8 @@ a deck's larger identity/slide-library files only when the specific need below
 arises.
 
 ```
-Read references/strategist.md
-Read references/canvas-formats.md
+Read ${SKILL_DIR}/references/strategist.md
+Read ${SKILL_DIR}/references/canvas-formats.md
 ```
 
 Then load only the extra role modules triggered by the current plan:
@@ -273,15 +277,15 @@ below in one batch before authoring any Stage-2 whole-solution intent, image
 source recommendation, or page roster:
 
 ```
-Read references/strategist-image.md
-Read references/image-layout-spec.md
-Read references/image-layout-patterns.md
-Read references/modes/_index.md
-Read references/visual-styles/_index.md
-Read references/image-renderings/_index.md
-Read templates/icons/README.md
-Read templates/charts/chart-vocabulary.md
-Read templates/tables/table-vocabulary.md
+Read ${SKILL_DIR}/references/strategist-image.md
+Read ${SKILL_DIR}/references/image-layout-spec.md
+Read ${SKILL_DIR}/references/image-layout-patterns.md
+Read ${SKILL_DIR}/references/modes/_index.md
+Read ${SKILL_DIR}/references/visual-styles/_index.md
+Read ${SKILL_DIR}/references/image-renderings/_index.md
+Read ${SKILL_DIR}/templates/icons/README.md
+Read ${SKILL_DIR}/templates/charts/chart-vocabulary.md
+Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
 ```
 
 This is a capability map, not a usage checklist: retain zero-use outcomes and
@@ -525,7 +529,7 @@ in Step 7.1. This is frozen production input, not a third planning artifact.
 **Always load the common framework**:
 
 ```
-Read references/image-base.md
+Read ${SKILL_DIR}/references/image-base.md
 ```
 
 Then **lazy-load the path-specific reference** for each row that actually needs it:
@@ -587,7 +591,7 @@ Workflow:
 Read the Executor role core before applying its context policy:
 
 ```
-Read references/executor-base.md                  # REQUIRED: flat/shared execution core
+Read ${SKILL_DIR}/references/executor-base.md     # REQUIRED: flat/shared execution core
 ```
 
 **Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
@@ -608,14 +612,14 @@ Read the exact execution references named by this deck's retained
 `spec_lock.md`; do not reopen the planning indexes. Load the remaining fixed
 construction block plus the resolved mode/style detail files as one batch:
 ```
-Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
-Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
-Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
-Read references/preset-shape-vocabulary.md        # REQUIRED: complete 187-name authoring vocabulary
-Read references/executor-structure.md              # REQUIRED: qualitative relationship and topology grammar
-Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
-Read references/modes/<resolved-id>.md             # one preset id, or each `mode_references` id
-Read references/visual-styles/<resolved-id>.md     # one preset id, or each `visual_style_references` id
+Read ${SKILL_DIR}/references/shared-standards-core.md      # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
+Read ${SKILL_DIR}/references/svg-effects.md                # REQUIRED: Visual Job Router + effects/construction vocabulary
+Read ${SKILL_DIR}/references/native-shape-authoring.md     # REQUIRED: native-shape selection and Boolean construction
+Read ${SKILL_DIR}/references/preset-shape-vocabulary.md    # REQUIRED: complete 187-name authoring vocabulary
+Read ${SKILL_DIR}/references/executor-structure.md         # REQUIRED: qualitative relationship and topology grammar
+Read ${SKILL_DIR}/references/semantic-svg.md               # REQUIRED: semantic metadata boundary
+Read ${SKILL_DIR}/references/modes/<resolved-id>.md        # one preset id, or each `mode_references` id
+Read ${SKILL_DIR}/references/visual-styles/<resolved-id>.md # one preset id, or each `visual_style_references` id
 ```
 
 Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual Job Router active during page authoring; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
@@ -708,7 +712,7 @@ Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or a
 
 | Signal | Reading |
 |---|---|
-| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is `svg_to_pptx.drawingml.elements.estimate_single_line_text_frame_width(runs)`, with `skills/ppt-master/scripts` on `sys.path` and every run key present — `text`, `font_size`, `font_family`, `font_weight`, `letter_spacing` — since omissions under-measure |
+| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is `svg_to_pptx.drawingml.elements.estimate_single_line_text_frame_width(runs)`, with `${SKILL_DIR}/scripts` on `sys.path` and every run key present — `text`, `font_size`, `font_family`, `font_weight`, `letter_spacing` — since omissions under-measure |
 | One isolated issue tied to this page's structure | Page-local — fix and continue |
 | A recurring element appears for the first time (page furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
 

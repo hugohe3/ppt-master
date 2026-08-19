@@ -13,6 +13,10 @@ description: One-pass Generate profile for agent-decided preparation, direct SVG
 strategy/confirmation, or directs the agent to proceed to SVG and export.
 Page count alone never activates or blocks this profile.
 
+**Hard rule — Quick paths**: Apply the entry-time `SKILL_DIR` anchor to every
+linked or abbreviated package path below. Expand it inside each tool call;
+never change CWD or inherit a prior shell working directory.
+
 ---
 
 ## 1. Profile Boundary
@@ -248,15 +252,15 @@ Before resolving the one-pass design, read this fixed planning-capability batch
 in one pass:
 
 ```
-Read references/canvas-formats.md
-Read references/image-layout-spec.md
-Read references/image-layout-patterns.md
-Read references/modes/_index.md
-Read references/visual-styles/_index.md
-Read references/image-renderings/_index.md
-Read templates/icons/README.md
-Read templates/charts/chart-vocabulary.md
-Read templates/tables/table-vocabulary.md
+Read ${SKILL_DIR}/references/canvas-formats.md
+Read ${SKILL_DIR}/references/image-layout-spec.md
+Read ${SKILL_DIR}/references/image-layout-patterns.md
+Read ${SKILL_DIR}/references/modes/_index.md
+Read ${SKILL_DIR}/references/visual-styles/_index.md
+Read ${SKILL_DIR}/references/image-renderings/_index.md
+Read ${SKILL_DIR}/templates/icons/README.md
+Read ${SKILL_DIR}/templates/charts/chart-vocabulary.md
+Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
 ```
 
 This batch is the complete capability map for planning, not a usage checklist:
