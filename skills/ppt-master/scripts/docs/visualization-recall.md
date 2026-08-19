@@ -1,13 +1,15 @@
 # Visualization Candidate Recall
 
-Default Strategist and the Quick Generate main agent read both complete compact
-registries before planning. `visualization_recall.py validate` resolves their
-selected canonical references. Its `recall` command remains an optional
-deterministic diagnostic across the same live Chart and Table registries; it is
-not the runtime capability-discovery gate and cannot replace the complete
-registry review. The tool reads these indexes on every invocation and maintains
-no second category or keyword index:
+Default Strategist and the Quick Generate main agent read the complete Chart
+expression vocabulary and Table registry before planning.
+`visualization_recall.py validate` resolves their selected canonical
+references. Its `recall` command remains an optional deterministic diagnostic
+across the machine Chart and Table registries; it is not the runtime
+capability-discovery gate and cannot replace the complete planning review. The
+tool reads these indexes on every invocation and maintains no second category
+or keyword index:
 
+- `templates/charts/chart-vocabulary.md` — planning capability map, not read by this tool
 - `templates/charts/charts_index.json`
 - `templates/tables/tables_index.json`
 
@@ -35,11 +37,10 @@ boundary certain; the default `all` preserves unified Chart/Table recall.
 `tail`, `head`, `grep`, or another truncator can discard higher-ranked
 candidates. `confidence` reports lexical strength only and never decides fit.
 
-At `high` / `medium`, retain `no-template-match` when none fits. At `low` /
-`none`, select a fitting bounded candidate directly; otherwise rerun the same
-command once with `--semantic-fallback` to inspect its diagnostic payload. The
-runtime owner still bases selection on the complete registries already loaded
-before planning.
+At any confidence, compare the diagnostic candidates against the complete
+planning maps already loaded. `--semantic-fallback` only exposes another
+diagnostic payload; it never requires a selection. Retain `no-template-match`
+when none fits.
 
 | Field | Contract |
 |---|---|
@@ -84,8 +85,9 @@ it without catalog lookup.
 
 ## Selection boundary
 
-- Runtime selection comes from the complete loaded registries; recall output is
-  optional diagnostic evidence, while `validate` resolves positive selections.
+- Runtime selection comes from the complete loaded Chart vocabulary and Table
+  registry; recall output is optional diagnostic evidence, while `validate`
+  resolves positive selections.
 - Default records `Page | Family | Template | Usage` for each positive
   selection and projects `family/key` into `page_visualizations`.
 - Usage is one concise page-local purpose; detailed adaptation remains in §IX.

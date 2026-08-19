@@ -197,10 +197,11 @@ materialize that contour with Boolean semantics, and use freeform last. Block
 arrows, chevrons, banners / ribbons, callouts, flowchart nodes, stars, and other
 Office symbols use `preset_shape_svg.py`, not plain paths or fake rectangles.
 
-Before the first page, complete [`native-shape-authoring.md`](./native-shape-authoring.md)'s
-unfiltered full-registry discovery. Decide every page-fit contour and its
-simplest exact authoring form directly from the page content and visual system;
-no Design Spec construction selection or material inventory gates this choice.
+Before the first page, read
+[`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md) completely. Decide
+every page-fit contour and its simplest exact authoring form directly from the
+page content and visual system; no Design Spec construction selection, scorer,
+or material inventory gates this choice.
 
 **Mandatory — independent per-page geometry move**: after the Structure result
 and any applicable topology resolve, apply

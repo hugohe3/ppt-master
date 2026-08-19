@@ -12,35 +12,29 @@ only when those constructions fail. Neither helper writes a page. The preset
 helper does not create the shape's own `p:txBody`; keep visible text outside the
 atomic fragment.
 
-**Mandatory — semantic registry discovery at authoring entry**: before the
-first newly authored page or template contour in each valid context, run the
-following command unfiltered and retain its complete output. It organizes all
-187 presets by the official Office gallery categories, then adds semantic
-groups, scopes, and one-line intent summaries. This compact index is
-authoring-time capability discovery, never a Strategist task or Design Spec
-field. Rerun only after context invalidation or a registry change.
+**Mandatory — complete vocabulary at authoring entry**: before the first newly
+authored page or template contour in each valid context, read
+[`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md) completely and
+retain it. It exposes all 187 exact preset names under the Office gallery and
+objective contour families. This is Executor-side capability knowledge, never
+a Strategist task or Design Spec field. Reread only after context invalidation
+or a known file change; a filtered query cannot replace the complete read.
 
 **Hard rule — direct structured calls**: `${SKILL_DIR}` below is the retained
-absolute Skill root. Invoke each JSON command once per concrete argument set
-and read stdout directly. Do not change CWD, encode executables or flag lists in
-scalar shell strings, batch these calls through shell loops, merge stderr, or
-add a downstream parser when `--compact` exists.
+absolute Skill root. After choosing a concrete lookup or authoring operation,
+invoke that command once per argument set and read stdout directly. Do not
+change CWD, encode executables or flag lists in scalar shell strings, batch
+these calls through shell loops, merge stderr, or add a downstream parser when
+`--compact` exists.
 
-```bash
-python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" list --grouped
-```
-
-The plain `list` command remains a compatibility view of exact registry names;
-it does not replace grouped discovery. For each page entering ordinary contour
-selection, run `recommend --compact --limit 6` from the actual page role and
-applicable relationship, direction, aspect, text capacity, scope, or intent
-terms before choosing a contour, then run `describe <name> --compact` on the
-serious candidates. Grouped discovery followed by direct `describe` does not satisfy
-page-local recall. Those commands supply the full match reasons, intended uses,
-misuse boundaries, adjustments, and key geometry facts omitted from the compact
-entry index. Recommendation is diverse candidate recall, not a whitelist,
-automatic choice, or shape quota; a neutral primitive remains valid when it
-fits best. Each page still resolves the final contour through §§1–2.1.
+`list --search` and `list --grouped --search` are optional spelling/location
+helpers. `recommend` is an optional heuristic fallback when the complete
+vocabulary still leaves several plausible families; it is neither required
+evidence nor a selection authority, and zero results never establish that a
+shape is unavailable or unsuitable. Run `describe <name> --compact` only when
+a serious candidate needs objective identity, adjustment, connector, path,
+connection-site, or text-rectangle facts. Executor makes the final comparison
+through §§1–2.1; no query narrows the already-loaded vocabulary.
 
 ## 1. Contour Selection and Materialization Gate
 
@@ -97,35 +91,36 @@ objects or their composition.
 
 ---
 
-## 2. Semantic Preset Selection
+## 2. Vocabulary-Guided Preset Selection
 
-The catalog's top level follows the Office gallery taxonomy: Lines,
-Rectangles, Basic Shapes, Block Arrows, Equation Shapes, Flowchart, Stars and
-Banners, Callouts, and Action Buttons. The bundled semantic layer at
-`scripts/pptx_shapes/data/presetShapeSemantics.json` adds authoring roles and
-use boundaries; it does not redefine the DrawingML registry.
+[`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md) follows the Office
+gallery taxonomy: Lines, Rectangles, Basic Shapes, Block Arrows, Equation
+Shapes, Flowchart, Stars and Banners, Callouts, and Action Buttons. Its family
+labels and objective identities expose the available contours without deciding
+their page use. The optional semantic helper data does not redefine the
+DrawingML registry or override Executor judgment.
 
 Apply this page-local sequence before drawing:
 
 | Pass | Action | Result |
 |---|---|---|
 | Job | State what the object must do for the reader before naming a shape. | Page role plus any real relationship, direction, aspect, text load, or literal scope. |
-| Recall | Run `recommend --compact` with the known criteria. Keep the default `general` scope unless the page truly needs `literal`, `flowchart`, or `navigation`. | A group-diverse candidate set with match reasons and misuse boundaries. |
-| Inspect | Run `describe --compact` for candidates whose contour could fit; compare `intent`, `recommended_for`, `avoid_for`, adjustments, text rectangle, and connection sites. | Evidence for choosing or rejecting each serious candidate. |
+| Browse | Compare that job against the complete loaded vocabulary; move from Office category to contour family to exact name. | A small candidate set chosen by meaning, not scorer rank or syntax convenience. |
+| Inspect | When exact facts could change the decision, run `describe --compact` directly for those candidates and compare identity, scope, adjustments, connector status, paths, text rectangle, and connection sites. | Objective geometry evidence without prescribed use. |
 | Select | Choose the contour whose inference and visual character fit the page, including a neutral primitive when neutrality is useful. | One page-fit contour; no syntax decision yet. |
 | Encode | Apply §1's materialization gate. | Ordinary SVG primitive, helper-authored preset, Boolean result, or necessary freeform. |
 
-Example recall and inspection commands:
+Example location and inspection commands:
 
 ```bash
-python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" recommend --compact \
-  --role spine --relationship order --directionality horizontal --aspect wide \
-  --limit 6
 python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" describe chevron --compact
-
-python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" recommend --compact \
-  --scope flowchart --role node --relationship flow --query decision --limit 6
+python3 "${SKILL_DIR}/scripts/preset_shape_svg.py" list --search connector
 ```
+
+**Reference — not a constraint**: `recommend --compact` remains available as a
+legacy-compatible heuristic for an unresolved family search. Read it as another
+browse aid only; its filters, scores, and returned limit cannot prove fit,
+misfit, or absence.
 
 **Hard rule — semantic fit, not name association**: a preset name, topic word,
 or metaphor is not evidence of use. Respect `literal_only` and `scope` before
@@ -135,10 +130,9 @@ lightning bolt is not generic price tension, `chartX` / `chartStar` /
 belongs only in an actual flowchart. An action-button preset supplies visual
 geometry only; it never creates an action or hyperlink.
 
-The semantic catalog chooses contours, not syntax. It never requires `rect`,
-`ellipse`, `line`, or any other primitive to pass through the preset helper;
-after selection, the simplest exact authoring form in §1 remains authoritative.
-Export never scans or upgrades existing geometry.
+The vocabulary exposes contours; Executor chooses them, and §1 chooses syntax.
+It never requires `rect`, `ellipse`, `line`, or any other primitive to pass
+through the preset helper. Export never scans or upgrades existing geometry.
 
 **Shape-first diagram rule**: use `<line>` for straight thin relationships;
 use an exact connector-family preset for a stock bent or curved contour; use a

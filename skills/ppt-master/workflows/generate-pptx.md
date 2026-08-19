@@ -280,7 +280,7 @@ Read references/modes/_index.md
 Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
 Read templates/icons/README.md
-Read templates/charts/charts_index.json
+Read templates/charts/chart-vocabulary.md
 Read templates/tables/tables_index.json
 ```
 
@@ -611,6 +611,7 @@ construction block plus the resolved mode/style detail files as one batch:
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
 Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
 Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
+Read references/preset-shape-vocabulary.md        # REQUIRED: complete 187-name authoring vocabulary
 Read references/executor-structure.md              # REQUIRED: qualitative relationship and topology grammar
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
 Read references/modes/<resolved-id>.md             # one preset id, or each `mode_references` id
@@ -672,7 +673,7 @@ sidecars, or guessed family paths.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Native shapes are Executor-local authoring capabilities, not planned resources: follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), load its complete current preset inventory before the first page, choose page-fit contours before their authoring forms, keep exact native atoms independent when possible, materialize a Merge Shapes Boolean result only where contour semantics require it, and use necessary freeform last. Diagram relationships follow the same Shape-first gate; do not infer a preset from contour similarity.
+Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Native shapes are Executor-local authoring capabilities, not planned resources: follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), read the complete current preset vocabulary before the first page, choose page-fit contours before their authoring forms, keep exact native atoms independent when possible, materialize a Merge Shapes Boolean result only where contour semantics require it, and use necessary freeform last. Diagram relationships follow the same Shape-first gate; do not infer a preset from contour similarity.
 
 **Motion-ready image composition**: Only when an explicit user motion
 instruction, the effective Custom Animations outcome in `design_spec.md §I` is
