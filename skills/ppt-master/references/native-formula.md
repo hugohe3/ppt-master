@@ -19,8 +19,8 @@ construction, accent, or complex script.
 | Content form | Authoring choice |
 |---|---|
 | Short variables, percentages, simple assignments, or notation such as `O(n log n)` | Ordinary editable SVG text |
-| One-line structural math embedded in prose | Inline native marker |
-| Matrix, `cases`, `aligned`, multiline derivation, or standalone high-structure expression | Block native marker |
+| One-line structural math embedded in prose whose native-height envelope fits the reserved row/module space | Inline native marker |
+| Matrix, `cases`, `aligned`, multiline derivation, standalone high-structure expression, or vertically expanding math that cannot fit its prose row | Block native marker |
 
 The Strategist's `Mathematical content` field does not pre-decide this choice.
 Formula handling is not a user-confirmed policy, image resource, manifest, or
@@ -56,6 +56,14 @@ inside a structured Layout placeholder, a Master/Layout layer, imported
 preserved `txBody`, geometry transport subtree, another inline marker, or any
 `data-pptx-replace-with` subtree. Export keeps the surrounding text runs in the
 same `a:p` and replaces only the marker run with `a14:m > m:oMath`.
+
+**Hard rule — reserve native height**: Treat the parsed formula structure, not
+its flat SVG preview, as vertical layout truth. Keep adjacent content outside
+the native ascent/descent required by fractions, radicals, nested scripts,
+n-ary limits, accents, and other stacked structures. The exporter and SVG
+checker use the same structural envelope. If the prose row or root module
+cannot reserve that space without overlap, isolate the formula line or use the
+block marker.
 
 ### 2.2 Block formula
 
@@ -154,5 +162,7 @@ versions are not the source-profile baseline. WPS, Keynote, LibreOffice, and
 other clients receive no embedded formula fallback and are outside the
 rendering/editability contract.
 
-**Validation**: The first-page/final SVG checker validates every marker and
-compiles its LaTeX before release; native export repeats validation.
+**Validation**: The first-page/final SVG checker validates every marker,
+compiles its LaTeX, and applies the shared native-height envelope to page/module
+text bounds before release; native export repeats validation and uses that
+envelope for the generated text frame.

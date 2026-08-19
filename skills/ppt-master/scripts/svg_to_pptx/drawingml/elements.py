@@ -1969,6 +1969,39 @@ _INLINE_FORMULA_ATTR = 'data-pptx-inline-formula'
 _INLINE_FORMULA_KEY = '_inline_formula_latex'
 
 
+def _text_line_vertical_extent(
+    runs: list[dict[str, Any]],
+    font_size: float,
+) -> tuple[float, float, bool]:
+    """Return native-math-aware ascent/descent for one authored text line."""
+    ascent = font_size * 0.85
+    descent = font_size * 0.35
+    has_inline_formula = False
+    from ..native_objects.formula_compiler import (
+        estimate_inline_formula_vertical_extent,
+    )
+
+    for run in runs:
+        latex = run.get(_INLINE_FORMULA_KEY)
+        if latex is None:
+            continue
+        has_inline_formula = True
+        run_font_size = float(run.get('font_size', font_size))
+        extent = estimate_inline_formula_vertical_extent(str(latex))
+        ascent = max(ascent, run_font_size * extent.ascent_em)
+        descent = max(descent, run_font_size * extent.descent_em)
+    return ascent, descent, has_inline_formula
+
+
+def _native_text_line_frame_height(
+    ascent: float,
+    descent: float,
+    font_size: float,
+) -> float:
+    """Add the ordinary text-frame headroom to one visible line extent."""
+    return ascent + descent + font_size * 0.30
+
+
 def _normalize_text_run_whitespace(
     runs: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -2888,6 +2921,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # of how many merge into one <a:p>; used to size the textbox so PowerPoint
     # has room to wrap text to the SVG's original line widths.
     visual_line_widths: list[float] = []
+    visual_line_runs: list[list[dict[str, Any]]] = []
     if line_height_px is not None and line_height_px > 0:
         xml_space = resolve_project_xml_space(elem)
         paragraph_runs = []
@@ -2903,6 +2937,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             line_runs = _normalize_text_run_whitespace(line_runs)
             if not line_runs:
                 continue
+            visual_line_runs.append(line_runs)
             visual_line_widths.append(
                 _estimate_bullet_line_width(line_runs, fonts, ctx)
             )
@@ -2944,6 +2979,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             paragraph_runs = None
             paragraph_space_before = []
             visual_line_widths = []
+            visual_line_runs = []
         else:
             stripped_paragraphs: list[list[dict[str, Any]]] = []
             for line_runs in paragraph_runs:
@@ -2975,24 +3011,61 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         paragraph_space_before = []
         paragraph_bullets = []
         visual_line_widths = []
+        visual_line_runs = []
         single_bullet = None
 
     # Estimate text dimensions
     if paragraph_runs is not None:
         # Use the widest authored visual line, not a reflow-joined paragraph.
         text_width = max(visual_line_widths) if visual_line_widths else 0.0
-        # Keep the authored visual-line count as the source height contract.
-        text_height = (
-            line_height_px * (len(visual_line_widths) - 1)
-            + sum(paragraph_space_before)
-            + font_size * 1.5
-        )
+        line_extents = [
+            _text_line_vertical_extent(line, font_size)
+            for line in visual_line_runs
+        ]
+        text_height = sum(paragraph_space_before)
+        for ascent, descent, has_formula in line_extents[:-1]:
+            line_advance = line_height_px
+            if has_formula:
+                line_advance = max(
+                    line_advance,
+                    _native_text_line_frame_height(
+                        ascent,
+                        descent,
+                        font_size,
+                    ),
+                )
+            text_height += line_advance
+        first_line_ascent = line_extents[0][0]
+        last_ascent, last_descent, last_has_formula = line_extents[-1]
+        last_line_height = font_size * 1.5
+        if last_has_formula:
+            last_line_height = max(
+                last_line_height,
+                _native_text_line_frame_height(
+                    last_ascent,
+                    last_descent,
+                    font_size,
+                ),
+            )
+        text_height += last_line_height
     else:
         text_width = _estimate_text_runs_width(runs)
         if single_bullet:
             fs_px = float(runs[0].get('font_size', font_size)) if runs else font_size
             text_width += _bullet_margin_px(single_bullet, fs_px)
+        first_line_ascent, line_descent, has_formula = (
+            _text_line_vertical_extent(runs, font_size)
+        )
         text_height = font_size * 1.5
+        if has_formula:
+            text_height = max(
+                text_height,
+                _native_text_line_frame_height(
+                    first_line_ascent,
+                    line_descent,
+                    font_size,
+                ),
+            )
     padding = _textbox_padding(font_size)
 
     # Adjust position based on text-anchor. This first box follows the visible
@@ -3005,7 +3078,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         box_x = x - padding
 
-    box_y = y - font_size * 0.85
+    box_y = y - first_line_ascent
     box_w = text_width + padding * 2
     box_h = text_height + padding
     if reflect_y:
