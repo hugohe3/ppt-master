@@ -280,11 +280,11 @@ the locked preset registry.
 | Deliberately absent transport fields | No hidden carrier, preview wrapper, `data-pptx-part`, or stored fingerprint belongs in project-authored SVG. Those fields remain part of expanded PPTX import/round-trip transport. |
 
 **Hard rule**: treat the returned group as atomic. Keep it as the content group
-when it stands alone. When it needs labels, icons, or other decorations, put
-the preset and those siblings in a separate parent content group; never put
+without `data-pptx-bounds` when it stands alone; `data-pptx-frame` owns its
+object geometry. When it needs labels, icons, or other decorations, put the
+preset and those siblings in a separate bounded parent content group; never put
 them inside the preset group itself. Do not edit the direct paths; they are
-validation evidence generated from the registry, not a freehand contour
-surface.
+validation evidence generated from the registry, not a freehand contour surface.
 
 Canonical page/template authoring also keeps paint and opacity off ancestor
 groups that contain the preset. Compatible ancestor paint still exports under
