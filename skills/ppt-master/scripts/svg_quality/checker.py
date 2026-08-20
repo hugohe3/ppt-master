@@ -2679,7 +2679,7 @@ class SVGQualityChecker:
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Validate direct root module boundaries in the SVG canvas."""
+        """Validate ordinary direct-root module boundaries in the SVG canvas."""
         parent_by_id = {
             id(child): parent
             for parent in root.iter()
@@ -2783,6 +2783,11 @@ class SVGQualityChecker:
         for group in root_groups:
             if self._is_hidden_element(group, parent_by_id):
                 continue
+            if (
+                _authored_preset_encoding is not None
+                and _authored_preset_encoding(group) == 'compact'
+            ):
+                continue
             raw_bounds = group.get(_BOUNDS_ATTR)
             if raw_bounds is None:
                 missing.append(_element_label(group))
@@ -2820,9 +2825,9 @@ class SVGQualityChecker:
             bucket.append(
                 f'{prefix} {len(missing)} visible root-level <g> '
                 f'module(s) without explicit {_BOUNDS_ATTR} '
-                f'({sample}{suffix}); every final-page/template root <g> declares '
-                'its root-coordinate layout subcanvas even when it also carries '
-                'data-pptx-frame or native chart/table coordinates'
+                f'({sample}{suffix}); every final-page/template root <g> other '
+                'than a compact authored-preset atom declares its root-coordinate '
+                'layout subcanvas even when it also carries native coordinates'
             )
 
     def _check_text_bounds(
