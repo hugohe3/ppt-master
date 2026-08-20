@@ -288,9 +288,16 @@ the roster after the whole-roster check:
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and one compact page-scale geometry job tied to its core message—what geometry must organize, without naming a preset or encoding form; keep it only in the transient roster for §3's authoring-time move;
 - for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
-- when useful, a transient deck-level visual motif system with an identity or
+- the resolved visual direction's deck-level shape language under
+  [`visual-styles/_index.md`](../../references/visual-styles/_index.md) §2,
+  retained for page-fit native geometry without selecting an exact preset here;
+- when useful, an additional transient deck-level visual motif system with an identity or
   communication job, a recognizable invariant, and a reuse mode: fixed chrome,
-  adaptive variation, or both; omit it when restraint serves the deck better;
+  adaptive variation, or both; treat restraint as control of visual weight,
+  recurrence, and reuse, not as a reason by itself to omit an evidenced source,
+  identity, or communication motif; omit the system when no motif earns a
+  continuity job or when reuse would add false meaning, compete with the page
+  message, or reduce clarity;
 - the resource decisions needed for immediate preparation. Required operational
   image manifests may carry filenames, page relationship, status, and
   generation/crop/focal cues. When page use depends on stable composition, also
@@ -572,9 +579,9 @@ capability menu, visualization recall, template geometry, or a later check.
 **Mandatory — independent per-page geometry move**: after the Structure result
 and any applicable topology resolve, apply
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1
-to the transient geometry job, actual content, resolved style, and complete
-loaded native vocabulary before writing coordinates. Select through direct
-semantic comparison; use `describe --compact` only when objective geometry
+to the transient geometry job, actual content, retained deck shape language,
+resolved style, and complete loaded native vocabulary before writing
+coordinates. Select through direct semantic comparison; use `describe --compact` only when objective geometry
 facts could change a serious candidate decision. This move owns the exact-fit
 geometry gate, independent relationship / carrier fit,
 contour-family / exact-result choice, reader effect for a generic or undrawn
@@ -677,11 +684,12 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 Fix every blocking error and rerun the same command.
 
 **Mandatory — final carrier-receipt review**: Review the factual
-`[CARRIERS]` summary against the retained page jobs, resource roles, and running
-geometry signatures before export. Counts and diversity are not quotas, and
-zero use is valid. When the summary contradicts an active decision, read only
-the affected `files[].info.carrier_receipt` rows from the current report, repair
-those pages in one consolidated pass, and rerun the same final checker.
+`[CARRIERS]` summary against the retained page jobs, deck shape language, any
+adopted motif, resource roles, and running geometry signatures before export.
+Counts and diversity are not quotas; zero preset use alone neither proves fit
+nor establishes a defect. When the summary contradicts an active decision, read
+only the affected `files[].info.carrier_receipt` rows from the current report,
+repair those pages in one consolidated pass, and rerun the same final checker.
 
 Then export:
 
@@ -752,7 +760,7 @@ or lock.
 - [x] The complete 187-name native preset vocabulary was read before P01; each page chose from that full capability surface, with objective candidate details inspected only when needed
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] The proactive decorative-lettering capability scan ran before carrier selection; every selected lettering job entered an AI item or lettering sheet/slice job, and zero selected jobs remained valid
-- [x] Every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
+- [x] The deck shape language remained active independently of any optional motif; every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
 - [x] Image need was decided independently of credentials; any zero-image deck followed a complete roster review in which no image job improved communication or the selected non-image carriers fully carried it
 - [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
 - [x] Every image-bearing page made its one pre-geometry composition decision

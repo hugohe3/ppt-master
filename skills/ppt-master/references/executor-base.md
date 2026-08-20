@@ -179,7 +179,8 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 factual `[CARRIERS]` summary and stores per-page detail under
 `files[].info.carrier_receipt`. Compare the summary with the retained page jobs,
 chosen resource roles, and running geometry signatures before export. Counts
-and diversity never create a quota or prove quality; zero use remains valid.
+and diversity never create a quota or prove quality; zero preset use alone
+neither proves fit nor establishes a defect.
 When the facts contradict an active decision—such as an adopted preset absent
 from output, a primary image reduced to a minor frame, or unrelated jobs
 collapsing to one neutral construction—read only the affected receipt rows,

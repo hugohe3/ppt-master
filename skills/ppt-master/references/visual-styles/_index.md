@@ -89,6 +89,14 @@ communication job changes.
 | Typography character | The role editable type plays inside the composition, independent of exact font choice |
 | Delivery and afterlife | Viewing distance, projection/print behavior, reuse, and expected editing |
 
+**Default — derive shape language from project fit (may override when a generic
+primitive system is itself the clearest identity or communication choice)**:
+Before settling on lines, rectangles, circles, or ellipses as the deck's main
+shape language, test whether the source material, identity, or communication
+job offers a more specific edge, corner, opening, angle, contour, or layering
+logic. Retain a primitive-led result when it deliberately fits; do not select
+an exact authoring preset here.
+
 > When the deck has AI images, the "Paired rendering" column exposes an
 > aesthetically related option. It does not select the rendering or create an
 > AI image job; compare it with the actual image roles before using it.
