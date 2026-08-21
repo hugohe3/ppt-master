@@ -8,9 +8,9 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 
 | Boundary | Rule |
 |---|---|
-| Selection | **Reference — not a constraint**: use any pattern, combine compatible ones, or author a clearer free-form composition; no ID, family, or coverage quota applies |
+| Selection | **Reference — not a constraint**: use any pattern, combine compatible ones, or author a clearer free-form composition. These entries seed technique; inventing one the catalog never names is equally valid, and no ID, family, or coverage quota applies |
 | Canonical IDs | Two-level prompt handles such as `#P1-01` and `#M2-01`; the letters expose composition responsibility, the first digit selects a family, and the final number follows current browse order. No legacy aliases or exporter mapping |
-| Composition grammar | Select one or more compatible `P` structures, then add only useful `M`, prepared `A`, or cross-page `C` patterns |
+| Composition grammar | Choose the page relationship, then add only the treatments a job needs; `P`, `M`, prepared `A`, and cross-page `C` name the catalogued form of each choice, and an uncatalogued one fills the same slot |
 | Effect options | Direction, side, position, proportion, contour, and intensity are options stated after the ID; they do not create another pattern |
 | Asset ownership | Consume prepared project-local assets; no acquisition or processing during SVG realization |
 | Exact information | Keep exact or editable text, data, labels, and annotations native |
@@ -219,9 +219,9 @@ If motion is enabled, [`animations.md`](./animations.md) owns its implementation
 
 | Pass | Decision |
 |---|---|
-| Skeleton | Select the `P` relationship: one visual field, comparison, sequence, evidence view, or multi-image system. Compatible Primaries may share one page |
+| Skeleton | Select the page relationship: one visual field, comparison, sequence, evidence view, multi-image system, or another the page needs; `P` entries name the catalogued ones. Compatible relationships may share one page |
 | Job | Name the concrete integration need or stylistic role: contrast, aspect fit, focus, reveal/opening, peer cohesion, exact native information, or a recurring depth/print gesture |
-| Apply | Add the smallest `M` that serves each chosen job; add no technique without a job |
+| Apply | Add the smallest treatment that serves each chosen job, `M` when one already fits; add no technique without a job |
 | Prepared asset | Use `A` only when the named project-local composite, cutout, or derivative already exists |
 | Continuity | Add `C` only when adjacent pages deliberately share a persistent state, camera relationship, or matched framing |
 | Integrate | Reuse contours, baselines, gap rhythm, palette, and required registration so the layers read as one composition |

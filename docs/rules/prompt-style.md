@@ -171,6 +171,19 @@ Most sections need at least one table. Reach for a table whenever you would writ
 
 Bullets are fine for ≤ 3 short imperatives or a single ordered procedure.
 
+### 5.1 Closed vs Illustrative Lists
+
+Strength (§4) and extent are separate axes: a `Hard rule` may carry an illustrative list, and a `Reference` may carry a closed one.
+
+| List kind | Test | Marking |
+|---|---|---|
+| Closed | A schema, validator, exporter, or script rejects an unlisted value | State the complete set; adding a value means changing that consumer too |
+| Illustrative | The list names instances of a broader idea the reader must still judge | Say so inline — `common triggers rather than an exhaustive list` |
+
+❌ An unmarked enumeration reads as closed, the same way an unlabeled soft rule reads as hard (§11).
+
+❌ Never phrase a rule so it turns an illustrative list into a lookup obligation. "Consult `<table>` for `<X>`" makes that table's rows the only reachable answers and invites restating `<X>` until it matches one — even when the table's own boundary grants free-form authorship. Point at the procedure that generates answers; offer the table as a shortcut when an entry already matches.
+
 ---
 
 ## 6. Examples

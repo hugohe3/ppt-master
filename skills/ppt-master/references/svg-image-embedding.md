@@ -21,7 +21,7 @@ and filter/clip contracts.
 ```markdown
 | Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
 |----------|------------|---------|------|----------------|-------------|-------------|--------|-----------|
-| team.jpg | 800x600 | Team photo | Photography | `#P1-02 image left, copy right` | adaptive | web | Pending | Diverse engineering team in modern office |
+| team.jpg | 800x600 | Team photo | Photography | `Put faces behind the hiring claim; #P1-02 + #M2-08 fading the photo edge into the page so copy meets it without a frame` | adaptive | web | Pending | Diverse engineering team in modern office |
 ```
 
 ### Image Status Enum
