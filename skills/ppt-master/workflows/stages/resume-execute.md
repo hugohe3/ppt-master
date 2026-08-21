@@ -98,7 +98,7 @@ Then continue the documented pipeline:
 
 - When §X records a final/literal narration script, read the verified frozen `notes/total.md` once and retain its page segments through SVG authoring and the late notes validation
 - If resuming mid-deck, read the latest completed SVG and current image metadata after their required paths have been verified
-- Read the remaining Step 6 construction core exactly as listed in [`generate-pptx.md`](../generate-pptx.md), then read one locked preset file or only the exact `*_references` of a custom synthesis; never reopen or glob the mode or visual-style catalogs, and load only the branches selected by the condition table
+- Read the remaining Step 6 construction core exactly as listed in [`generate-pptx.md`](../generate-pptx.md), then read one locked preset file or only the exact `*_references` of a custom; apply one basis under its behavior or synthesize several by their stated contributions. Never reopen or glob the mode or visual-style catalogs, and load only the branches selected by the condition table
 - For each page, make the mandatory Structure decision from retained §IX after its content/communication move is established and before any geometry; a `yes` result loads `executor-structure.md` before realization and creates no artifact or lock row
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
