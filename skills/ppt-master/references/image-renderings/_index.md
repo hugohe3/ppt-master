@@ -52,9 +52,9 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 | [`pixel-art`](./pixel-art.md) | 8-bit retro game aesthetic | Gaming / retro tech / nostalgic |
 | [`nature`](./nature.md) | Organic earthy illustration | Environment / wellness / sustainability |
 
-### 1.5 Escape hatch — `custom`
+### 1.5 Editable `custom` projection
 
-Every coordinated Stage-2 direction carries one complete `rendering: custom` candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. The 20 fixed renderings remain lower-level single-select alternatives. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
+Every coordinated Stage-2 direction carries one complete `rendering: custom` candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. `custom` is not constrained by its relationship to the catalog: it may use catalog material in any way or none, including carrying one fitting preset treatment unchanged. The three complete directions are plainly different designs, but no single component is required to carry that difference: rendering treatments and bases may coincide when other components express it, while a different name, note, or reference count alone is never a difference. The 20 fixed renderings remain lower-level single-select alternatives. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
 
 **Hard rule — `rendering_behavior` prose**:
 
@@ -62,7 +62,7 @@ Every coordinated Stage-2 direction carries one complete `rendering: custom` can
 |---|---|
 | Length | One paragraph, 2-5 sentences |
 | Axes covered | line / texture / depth / material / mood (same as preset files) |
-| Catalog basis | Freeze every exact id from this index, then read only those named files before synthesis |
+| Catalog basis | Freeze every exact id from this index, then read only those files before applying one basis or synthesizing several |
 
 ```yaml
 - image_rendering: custom
@@ -71,7 +71,7 @@ Every coordinated Stage-2 direction carries one complete `rendering: custom` can
 
 **Hard rule**: three complete rendering candidates are mandatory in every fresh Stage-2 direction set; AI source recommendation remains independent. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
 
-Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. A custom may use zero, one, or many renderings: keep one when it owns the whole specialized treatment, or include every rendering that contributes a distinct executable job across line, texture, depth, material, or mood. Reference count has no fixed cap; count is an outcome, not a target. A four-basis direction may assign `vector-illustration` to silhouette clarity, `minimalist-swiss` to negative-space composition, `screen-print` to restrained halftone texture, and `warm-scene` to light and mood; list all four ids. Omit every rendering whose contribution cannot be stated and never add a second merely to imply synthesis. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
+Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. One rendering may supply the complete treatment unchanged; when several are named, each contributes a distinct executable job across line, texture, depth, material, or mood. Reference count has no fixed cap; count is an outcome, not a target. A four-basis direction may assign `vector-illustration` to silhouette clarity, `minimalist-swiss` to negative-space composition, `screen-print` to restrained halftone texture, and `warm-scene` to light and mood; list all four ids. Omit every rendering whose contribution cannot be stated and never add a second merely to imply synthesis. A custom using no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
 
 ---
 
@@ -99,6 +99,6 @@ describes the intended treatment, use `custom` per §1.5.
 
 1. Read the resolved visual system and the deck's intended AI image jobs.
 2. Compare the complete catalog and choose the strongest whole-deck fit, or use a warranted `custom` treatment.
-3. For a preset, read `image-renderings/<chosen>.md`. For `custom`, read every file named in `image_rendering_references`, then synthesize them under the confirmed behavior; with no references, use the novel behavior directly. Apply the result when assembling prompts per [`image-generator.md`](../image-generator.md) §4.
+3. For a preset, read `image-renderings/<chosen>.md`. For `custom`, read every file named in `image_rendering_references`: apply one basis under the confirmed behavior, or synthesize several by their stated contributions. With no references, use the behavior directly. Apply the result when assembling prompts per [`image-generator.md`](../image-generator.md) §4.
 
 **Lock for the whole deck.** Don't change rendering between images in the same deck.

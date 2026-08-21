@@ -513,9 +513,9 @@ not route among them one file at a time:
 [`semantic-svg.md`](../../references/semantic-svg.md),
 and [`executor-structure.md`](../../references/executor-structure.md). Retain
 only the mode/style detail files selected during one-pass design resolution and
-realize that chosen direction. Exact `*_references` define the complete basis
-of a custom synthesis; a genuinely novel custom follows its resolved behavior
-without reading or inventing a nearby preset.
+realize that chosen direction. Exact `*_references` define the catalog material
+actually used by a custom: apply one basis under its behavior, synthesize several
+by their stated contributions, or follow the behavior directly when none exist.
 
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
