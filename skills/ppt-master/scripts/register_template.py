@@ -336,15 +336,113 @@ def _summary_from_use_cases(use_cases: str | None) -> str | None:
     return f"{cleaned}."
 
 
+_SPEC_NAME_RE = re.compile(
+    r"design_spec\.(?P<kind>brand|style|layout|deck)\.(?P<id>[^/\\]+)\.md"
+)
+
+
+def _has_kind_qualified_spec(directory: Path) -> bool:
+    """Report whether a directory holds any ``design_spec.<kind>.<id>.md``."""
+    if not directory.is_dir():
+        return False
+    return any(
+        _SPEC_NAME_RE.fullmatch(path.name)
+        for path in directory.glob("design_spec.*.md")
+    )
+
+
+def _qualified_template_specs(directory: Path) -> list[tuple[Path, str]]:
+    """Return kind-qualified specs and their filename-declared kinds."""
+    if not directory.is_dir():
+        return []
+    specs = []
+    for path in sorted(directory.glob("design_spec.*.md")):
+        match = _SPEC_NAME_RE.fullmatch(path.name)
+        if match is not None:
+            specs.append((path, match.group("kind")))
+    return specs
+
+
+def validate_qualified_spec_identity(
+    spec_path: str | Path,
+) -> tuple[str, str, dict, str]:
+    """Match one qualified filename's kind and id to its frontmatter."""
+    path = Path(spec_path)
+    match = _SPEC_NAME_RE.fullmatch(path.name)
+    if match is None:
+        raise SpecParseError(
+            "qualified Design Spec must be named "
+            "design_spec.<kind>.<id>.md: "
+            f"{path.name}"
+        )
+
+    filename_kind = match.group("kind")
+    filename_id = match.group("id")
+    frontmatter, body = _read_spec(path)
+    fm = frontmatter or {}
+    declared_kind = str(fm.get("kind") or "").strip()
+    id_key = KIND_CONFIG[filename_kind]["id_key"]
+    declared_id = str(fm.get(id_key) or "").strip()
+    errors: list[str] = []
+    if declared_kind != filename_kind:
+        errors.append(
+            f"filename kind {filename_kind!r} must match frontmatter kind "
+            f"{declared_kind!r}"
+        )
+    if declared_id != filename_id:
+        errors.append(
+            f"filename id {filename_id!r} must match frontmatter {id_key} "
+            f"{declared_id!r}"
+        )
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(
+            f"invalid qualified Design Spec identity ({path.name}):\n{details}"
+        )
+    return filename_kind, filename_id, fm, body
+
+
+def _validate_spec_shape(template_dir: Path) -> list[tuple[Path, str]]:
+    """Reject ambiguous project-spec naming and duplicate kind ownership."""
+    exact = template_dir / "design_spec.md"
+    qualified = _qualified_template_specs(template_dir)
+    if exact.is_file() and qualified:
+        raise SpecParseError(
+            "design_spec.md and design_spec.<kind>.<id>.md cannot share "
+            f"{template_dir}; rename the bare spec to its kind-qualified name"
+        )
+    kinds = [kind for _path, kind in qualified]
+    duplicate_kinds = sorted({
+        kind for kind in kinds if kinds.count(kind) > 1
+    })
+    if duplicate_kinds:
+        raise SpecParseError(
+            f"{template_dir} declares the same kind more than once: "
+            + ", ".join(duplicate_kinds)
+        )
+    for path, _kind in qualified:
+        validate_qualified_spec_identity(path)
+    return qualified
+
+
+def _has_qualified_roster_spec(template_dir: Path) -> bool:
+    """Return whether a project directory declares a structural kind."""
+    return any(
+        kind in {"layout", "deck"}
+        for _path, kind in _qualified_template_specs(template_dir)
+    )
+
+
 def _template_content_dir(template_root: Path) -> Path:
     """Resolve the canonical source directory, with legacy-flat compatibility."""
     nested = template_root / "templates"
-    if (nested / "design_spec.md").is_file():
+    if (nested / "design_spec.md").is_file() or _has_kind_qualified_spec(nested):
         return nested
     if (template_root / "design_spec.md").is_file():
         return template_root
     raise SpecParseError(
-        f"missing templates/design_spec.md or legacy design_spec.md in {template_root}"
+        "missing templates/design_spec.md, templates/design_spec.<kind>.<id>.md, "
+        f"or legacy design_spec.md in {template_root}"
     )
 
 
@@ -472,7 +570,8 @@ def _validate_brand_spec(
             + ", ".join(unexpected_fields)
         )
 
-    if pages:
+    # Project pages are valid only when one sibling Layout or Deck owns them.
+    if pages and not _has_qualified_roster_spec(template_dir):
         errors.append(
             "brand workspaces must not contain page SVGs under templates/: "
             + ", ".join(f"{page}.svg" for page in pages)
@@ -563,6 +662,7 @@ def _validate_style_spec(
     template_dir: Path,
     frontmatter: dict,
     body: str,
+    pages: list[str],
 ) -> None:
     """Reject Style workspaces outside the roster-free method contract."""
     errors: list[str] = []
@@ -632,18 +732,29 @@ def _validate_style_spec(
     elif len({item.strip().casefold() for item in keywords}) != len(keywords):
         errors.append("frontmatter keywords must be unique")
 
-    unexpected_source_entries = sorted(
-        path.relative_to(template_dir).as_posix()
-        + ("/" if path.is_dir() else "")
-        for path in template_dir.rglob("*")
-        if path.relative_to(template_dir).as_posix() != "design_spec.md"
-    )
-    if unexpected_source_entries:
+    if pages and not _has_qualified_roster_spec(template_dir):
         errors.append(
-            "style workspaces must contain only templates/design_spec.md; "
-            "unexpected template entry(s): "
-            + ", ".join(unexpected_source_entries)
+            "style workspaces must not contain page SVGs without a sibling "
+            "Layout or Deck owner: "
+            + ", ".join(f"{page}.svg" for page in pages)
         )
+
+    # The one-file packaging rule describes a workspace whose templates/ Style
+    # owns alone. A project root shares that directory with other kinds, so the
+    # rule there is only that Style itself contributes nothing but its spec.
+    if (template_dir / "design_spec.md").is_file():
+        unexpected_source_entries = sorted(
+            path.relative_to(template_dir).as_posix()
+            + ("/" if path.is_dir() else "")
+            for path in template_dir.rglob("*")
+            if path.relative_to(template_dir).as_posix() != "design_spec.md"
+        )
+        if unexpected_source_entries:
+            errors.append(
+                "style workspaces must contain only templates/design_spec.md; "
+                "unexpected template entry(s): "
+                + ", ".join(unexpected_source_entries)
+            )
 
     if expected_template_id is not None:
         unexpected_workspace_entries = sorted(
@@ -884,8 +995,10 @@ def _validate_svg_template_spec(
     template_dir: Path,
     frontmatter: dict,
     pages: list[str],
+    *,
+    validate_payload: bool = True,
 ) -> None:
-    """Reject Layout/Deck workspaces whose registry facts drift from SVGs."""
+    """Validate Layout/Deck metadata and, when active, its SVG payload."""
     errors: list[str] = []
     id_key = KIND_CONFIG[kind]["id_key"]
     declared_id = str(frontmatter.get(id_key) or "").strip()
@@ -969,7 +1082,7 @@ def _validate_svg_template_spec(
             )
 
     svg_paths = [template_dir / f"{page}.svg" for page in pages]
-    if canvas is not None:
+    if validate_payload and canvas is not None:
         expected_viewbox = str(canvas["viewbox"])
         for svg_path in svg_paths:
             try:
@@ -993,7 +1106,7 @@ def _validate_svg_template_spec(
                     f"{expected_canvas!r}"
                 )
 
-    if svg_paths:
+    if validate_payload and svg_paths:
         try:
             from svg_to_pptx.pptx_package.template_structure import (
                 TemplateStructureError,
@@ -1010,6 +1123,30 @@ def _validate_svg_template_spec(
     if errors:
         details = "\n".join(f"  - {error}" for error in errors)
         raise SpecParseError(f"invalid {kind} specification:\n{details}")
+
+
+def validate_shadowed_deck_spec(
+    spec_path: str | Path,
+    declared_pages: list[str],
+) -> None:
+    """Validate a Deck spec whose SVG roster is overridden by Layout."""
+    path = Path(spec_path)
+    match = _SPEC_NAME_RE.fullmatch(path.name)
+    if match is None or match.group("kind") != "deck":
+        raise SpecParseError(
+            "shadowed Deck validation requires design_spec.deck.<id>.md"
+        )
+    _kind, filename_id, frontmatter, _body = validate_qualified_spec_identity(
+        path
+    )
+    _validate_svg_template_spec(
+        "deck",
+        filename_id,
+        path.parent,
+        frontmatter,
+        declared_pages,
+        validate_payload=False,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1029,7 +1166,14 @@ def _extract_entry(
             "Style workspaces require templates/design_spec.md; "
             "legacy-flat design_spec.md is not supported"
         )
-    spec_path = template_dir / "design_spec.md"
+    if template_id is not None and template_dir != template_root:
+        exact_spec = template_dir / "design_spec.md"
+        if not exact_spec.is_file():
+            raise SpecParseError(
+                "library workspaces require templates/design_spec.md; "
+                "kind-qualified specs belong only to shared project roots"
+            )
+    spec_path = _resolve_spec_path(template_dir, kind)
 
     frontmatter, body = _read_spec(spec_path)
     fm = frontmatter or {}
@@ -1079,6 +1223,7 @@ def _extract_entry(
             template_dir,
             fm,
             body,
+            pages,
         )
         entry = OrderedDict(
             summary=summary,
@@ -1135,6 +1280,33 @@ def _extract_entry(
         ),
     )
     return {"entry": entry, "extras": extras}
+
+
+def _resolve_spec_path(template_dir: Path, kind: str) -> Path:
+    """Return the Design Spec one kind owns inside a template source directory.
+
+    A library workspace keeps the exact ``design_spec.md`` because
+    ``<kind_dir>/<template_id>/`` already names its kind and id. A project
+    workspace root has no such parent, so it keeps
+    ``design_spec.<kind>.<id>.md`` and may hold one spec per kind side by side.
+    """
+    qualified = _validate_spec_shape(template_dir)
+    exact = template_dir / "design_spec.md"
+    if exact.is_file():
+        return exact
+    matches = sorted(
+        path for path, declared_kind in qualified if declared_kind == kind
+    )
+    if len(matches) == 1:
+        return matches[0]
+    if not matches:
+        raise SpecParseError(
+            f"missing design_spec.md or design_spec.{kind}.<id>.md in {template_dir}"
+        )
+    raise SpecParseError(
+        f"{template_dir} declares kind {kind!r} more than once: "
+        + ", ".join(path.name for path in matches)
+    )
 
 
 def validate_brand_workspace(template_root: str | Path) -> dict:

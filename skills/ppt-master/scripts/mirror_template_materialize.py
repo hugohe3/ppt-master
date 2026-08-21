@@ -2515,11 +2515,36 @@ def _preflight_output(
             raise MirrorMaterializationError(
                 f"Template output is not a directory: {templates_root}"
             )
-        existing = sorted(path for path in templates_root.iterdir())
-        if existing:
+        # Brand/Style specs own no roster. During a Layout transition, one Deck
+        # spec may also remain after its lower-priority roster was withheld by
+        # the parent workflow. Any other payload would contend with this run.
+        existing = sorted(templates_root.iterdir())
+        coexisting_specs = [
+            path
+            for path in existing
+            if path.is_file()
+            and _MIRROR_COEXISTING_SPEC_NAME_RE.fullmatch(path.name)
+        ]
+        blocking = [path for path in existing if path not in coexisting_specs]
+        if blocking:
             raise MirrorMaterializationError(
-                f"Template output must be empty before mirror materialization: "
-                f"{templates_root}; first entry: {existing[0].name}"
+                "Template output must hold no roster before mirror "
+                f"materialization: {templates_root}; blocking entry: "
+                f"{blocking[0].name}"
+            )
+        coexisting_kinds = [
+            _MIRROR_COEXISTING_SPEC_NAME_RE.fullmatch(path.name).group("kind")
+            for path in coexisting_specs
+        ]
+        duplicate_kinds = sorted({
+            kind
+            for kind in coexisting_kinds
+            if coexisting_kinds.count(kind) > 1
+        })
+        if duplicate_kinds:
+            raise MirrorMaterializationError(
+                f"Template output declares the same kind more than once: "
+                + ", ".join(duplicate_kinds)
             )
     collisions = [
         template_workspace / relative
@@ -2530,6 +2555,11 @@ def _preflight_output(
         raise MirrorMaterializationError(
             f"Output file already exists: {collisions[0]}"
         )
+
+
+_MIRROR_COEXISTING_SPEC_NAME_RE = re.compile(
+    r"design_spec\.(?P<kind>brand|style|deck)\.[^/\\]+\.md"
+)
 
 
 def _nearest_existing_directory(path: Path) -> Path:
@@ -2910,7 +2940,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "template_workspace",
         type=Path,
-        help="Empty template workspace destination (templates/ must be absent or empty)",
+        help=(
+            "Template workspace destination (templates/ must own no roster; "
+            "qualified Brand/Style specs or one Deck spec staged for Layout "
+            "supersession may remain)"
+        ),
     )
     return parser
 

@@ -160,22 +160,77 @@ def _partition_svg_prototypes(
     return public_files, definition_files
 
 
+_TEMPLATE_SPEC_NAME_RE = re.compile(
+    r"design_spec\.(?P<kind>brand|style|layout|deck)\.[^/\\]+\.md"
+)
+
+
+def _roster_spec(directory: Path) -> Path | None:
+    """Return the effective spec that owns this directory's SVG roster.
+
+    A library workspace keeps the exact ``design_spec.md``. A project workspace
+    shares one ``templates/`` across kinds. Layout owns structure when both
+    Layout and Deck are present; otherwise Deck owns it.
+    """
+    if not directory.is_dir():
+        return None
+    exact = directory / "design_spec.md"
+    qualified = []
+    for item in sorted(directory.glob("design_spec.*.md")):
+        match = _TEMPLATE_SPEC_NAME_RE.fullmatch(item.name)
+        if match is not None:
+            qualified.append((item, match.group("kind")))
+    if exact.is_file() and qualified:
+        raise ValueError(
+            "design_spec.md and design_spec.<kind>.<id>.md cannot share "
+            f"{directory}; rename the bare spec to its kind-qualified name"
+        )
+    kinds = [kind for _item, kind in qualified]
+    duplicate_kinds = sorted({
+        kind for kind in kinds if kinds.count(kind) > 1
+    })
+    if duplicate_kinds:
+        raise ValueError(
+            f"{directory} declares the same kind more than once: "
+            + ", ".join(duplicate_kinds)
+        )
+    try:
+        from register_template import (
+            SpecParseError,
+            validate_qualified_spec_identity,
+        )
+        for item, _kind in qualified:
+            validate_qualified_spec_identity(item)
+    except ImportError as exc:
+        raise ValueError(
+            f"Qualified Design Spec validator could not be imported: {exc}"
+        ) from exc
+    except (OSError, SpecParseError) as exc:
+        raise ValueError(str(exc)) from exc
+    if exact.is_file():
+        return exact
+    for preferred_kind in ("layout", "deck"):
+        for item, kind in qualified:
+            if kind == preferred_kind:
+                return item
+    return None
+
+
 def _resolve_workspace(path: Path) -> tuple[Path, Path]:
     """Resolve one workspace root and its canonical template-source directory."""
     candidate = path.expanduser().resolve()
-    nested_spec = candidate / "templates" / "design_spec.md"
-    if nested_spec.is_file():
+    if _roster_spec(candidate / "templates") is not None:
         return candidate, candidate / "templates"
 
-    direct_spec = candidate / "design_spec.md"
-    if direct_spec.is_file():
+    if _roster_spec(candidate) is not None:
         if candidate.name == "templates" and (candidate.parent / "exports").is_dir():
             return candidate.parent, candidate
         return candidate, candidate
 
     raise ValueError(
-        "template workspace must contain templates/design_spec.md "
-        "(current structure) or design_spec.md (legacy flat package)"
+        "template workspace must contain templates/design_spec.md, "
+        "templates/design_spec.<layout|deck>.<id>.md, or a legacy flat "
+        "design_spec.md"
     )
 
 
@@ -382,7 +437,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"SVG prototypes: {template_dir}"
             )
 
-        spec_path = template_dir / "design_spec.md"
+        spec_path = _roster_spec(template_dir)
         template_id = _template_id(spec_path, workspace)
         replication_mode = _replication_mode(spec_path)
         locked_canvas = _canvas_viewbox(spec_path)
