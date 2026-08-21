@@ -26,7 +26,7 @@ Mandatory reference for every route that authors or regenerates slide visuals th
 | Containers | Use a card or panel when it expresses grouping, hierarchy, boundary, capacity, or a distinct material plane. Otherwise prefer spacing, rules, or direct text / geometry; peer containers share treatment unless a semantic difference justifies contrast. An unplanned repeated web-card grid is a carrier / topology problem, not a reason to suppress meaningful borders, shapes, or containers. |
 | Titles and page chrome | Treat the semantic page title as part of the current composition rather than an automatic fixed header band; its position, scale, and relationship may change with page role while preserving the active route's content invariants. Add or retain running headers, footers, and page numbers only when they carry navigation, identity, attribution, or another explicit page job. Fidelity profiles preserve required source chrome. |
 
-**Default — active effects vocabulary (may resolve to no added technique when no visual job is diagnosed)**: Default and Quick Generate run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 Visual Job Router before completing each page; apply a compatible technique only for a diagnosed visual job.
+**Default — active effects vocabulary (may resolve to no added technique when no visual job is diagnosed)**: Default and Quick Generate complete the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 job diagnostic, which that file makes mandatory, before completing each page; whether any compatible technique is then added is this default's call, with the Visual Job Router as recall.
 
 **Fidelity labels**:
 

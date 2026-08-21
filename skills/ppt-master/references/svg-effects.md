@@ -10,8 +10,9 @@ Authority for advanced paint, effects, transforms, freeform/radial geometry, and
 
 **Mandatory**: Default and Quick Generate read this file completely before SVG
 authoring and keep its compatible techniques in active construction vocabulary.
-Before finalizing each page, run the §6.1 selection procedure and Visual Job
-Router. Use §6.13 when diagnosed jobs benefit from one coordinated page recipe.
+Before finalizing each page, run the §6.1 selection procedure, with the Visual
+Job Router as recall for the jobs it diagnoses. Use §6.13 when diagnosed
+jobs benefit from one coordinated page recipe.
 
 **Default — situational use (may override when plain construction is stronger)**:
 “Advanced” means capability depth, not an effect quota. During page authoring,
@@ -22,7 +23,7 @@ rhythm, and style; apply those that materially help.
 
 | Decision layer | Authority |
 |---|---|
-| Technical validity | Required / Forbidden / Conditional contracts in this file |
+| Technical validity | Required / Forbidden / Conditional contracts in this file, over the shared core's closed authoring surface, the route's other required construction references, and any triggered module |
 | Project values | Default: `<project_path>/spec_lock.md` anchors plus retained Design Spec/page context; Quick: anchors resolved in the current context |
 | Aesthetic fit | Locked or Quick-resolved `visual_style` / `visual_style_behavior` |
 | Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
@@ -35,7 +36,7 @@ visual job.
 | Pass | Decision |
 |---|---|
 | Skeleton / diagnose | Establish native information, relationships, and hierarchy. Before completion, check image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif; keep plain construction when none needs treatment. |
-| Surface / select | Name the target, confirm its owning subsection and fidelity, then use the Router. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
+| Surface / select | Name the target, confirm its owning subsection and fidelity, and let the Router recall candidates. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
 | Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
 
 **Default — one dominant composition scaffold (may override when a second
@@ -47,9 +48,14 @@ simplify any competing scaffold without a separate communication job.
 
 #### Visual Job Router
 
-**Reference — not a quota**: route diagnosed problems through this table. A
+**Reference — not a quota**: recall candidates for a diagnosed problem from
+this table. A
 page may use no listed technique, one technique, or several techniques with
-different jobs.
+different jobs. The table recalls constructions rather than bounding them: one
+it never names is equally valid when it satisfies every applicable technical
+contract — the shared core's closed authoring surface, this file, the route's
+other required construction references, and any triggered module. Those
+contracts are the boundary; membership in this table is not.
 
 | Diagnosed visual problem | Candidate technique | Authority / stop |
 |---|---|---|
