@@ -363,28 +363,29 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 
 **为什么保留自由设计选项。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），最终选择仍由用户完成。
 
-**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。服务端解析每个 explicit root 的真实 `kind`，来源标签本身不参与优先级。当前工作区均解析 `templates/design_spec.md`；自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。旧平铺 Brand/Layout/Deck 目录只有在满足当前 kind 合同时，才兼容从根目录读取 `design_spec.md`；Layout/Deck 还必须满足当前 structured SVG 合同。Style 不存在旧平铺形态。目录形态从不授权结构迁移；带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
+**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。Library 工作区解析 `templates/design_spec.md`，project root 解析全部 `templates/design_spec.<kind>.<id>.md`；服务端解析每个 explicit root 的真实 kind 集合，来源标签本身不参与优先级。自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。旧平铺 Brand/Layout/Deck 目录只有在满足当前 kind 合同时，才兼容从根目录读取 `design_spec.md`；Layout/Deck 还必须满足当前 structured SVG 合同。Style 不存在旧平铺形态。目录形态从不授权结构迁移；带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
 
 当前 Brand/Style/Layout/Deck 都采用同一工作区路由合同；Brand 与 Style 不含 SVG roster，空的可选目录直接省略：
 
 ```text
 <template_workspace>/
-├── templates/   # design_spec.md；Create Layout / Create Deck 另含 SVG 原型
+├── templates/   # library 裸 spec 或 project 限定名 spec；Layout / Deck 另含 SVG 原型
 ├── images/      # 可选；位图素材，SVG 统一引用 ../images/<name>
 ├── icons/
 │   └── imported/ # 可选；导入向量素材的唯一规范副本
 └── exports/     # 可选、按需生成的审阅文件；全局库下由 Git 忽略
 ```
 
-Style 将这一路由形态收窄为仅 `templates/design_spec.md`，不携带素材或
-审阅 payload；项目中既有的脚手架也不属于 Style 输入。
+Style 只贡献自己的 Design Spec，不携带素材或审阅 payload；项目中既有的
+脚手架及其他 kind 文件都不属于 Style 输入。
 
 `<template_workspace>` 可以是 `skills/ppt-master/templates/<kind>/<id>/`，也
 可以是 `projects/<name>/` 等其他精确 root。Step 3 只把它记录为候选输入，
 不读取模板内容；Stage 1 选中后，apply 阶段才把它校验、合成并安装到当前项目
 的 `templates/`、`images/`、`icons/`，且不复制 `exports/`。模板感知的
-Strategist 及后续角色只读该项目本地副本。源工作区可在不同位置间迁移而不
-改形；全局索引注册决定它是否作为 library 选项出现。
+Strategist 及后续角色只读该项目本地副本。Project root 可直接被其他项目
+复用；把其中一项迁入 library 时保留 spec schema 与素材，但要把限定名改为
+单 kind 库路径下的裸 spec，再由全局索引注册决定它是否作为 library 选项出现。
 
 对 Create Layout / Create Deck，`standard` 与 `fidelity` 会重新创作 SVG 和新的 Master/Layout/slot 系统；来源拓扑只作为视觉证据，不保留、也不蒸馏。`mirror` 把来源包内实际存在且已验证的页序、Master/Layout 身份与父子关系、placeholder 事实和受支持视觉物化到新工作区，不做语义归纳或缺口补造。只有被保留的来源本身已经品牌中立且应用中立时，Layout mirror 才合法；否则应重新创作 Layout，或把这些事实保留为 Deck。由于结构层不能是 `<g>`，固定结构层的来源 group wrapper 只允许机械展开成直接原子，同时保持归属、paint order 和视觉一致。Create Brand 只提取身份片段，Create Style 只提取可移植方法/方向；两者都不进入结构复制策略，也不生成 SVG roster。
 
@@ -395,11 +396,11 @@ Strategist 及后续角色只读该项目本地副本。源工作区可在不同
 | `brand` | 身份片段 | 配色、字体、logo、语气、图标风格 | 锁定身份；结构保持自由 |
 | `style` | 方向/方法片段 | 沟通方法、开放页面角色、证据/数据规则、视觉默认值、图片/图标方向、审阅关注点 | 作为 Stage 2 起点；Style-only 保持 flat，与 Layout/Deck 合成时沿用所选结构；不升级为身份真值，也不触发 visual review |
 | `layout` | 品牌中立的结构片段 | 画布、页面结构、语义文字角色/空间行为、页面类型、SVG roster | 提供结构能力；身份与沟通应用仍由下游决定 |
-| `deck` | 应用段 + 一体化身份/结构 | 重复场景、受众与结果、代表性页面角色、身份和真实 SVG roster | 提供描述性语境和原型；Strategist 将其与独立确认的 Stage-1 契约及当前内容对照，再推导应用计划 |
+| `deck` | 应用段 + 一体化身份/结构 | 重复场景、受众与结果、代表性页面角色、身份和真实 SVG roster | 提供描述性语境和身份；没有 Layout 覆盖结构时才提供原型 |
 
 Theme、Slide Master、Slide Layout 与 Placeholder 是编译生成的 PowerPoint 原生对象，不是新的模板 kind。Layout 决定拓扑、位置、语义文字角色与空间行为，Brand 决定身份值与资产。`template_reuse_scope: layout` 会结合已确认的阅读模式和字号体系解析最终 placeholder 格式；`mirror` 则保留来源的字面格式与文字拓扑。两类规则都可编译进同一套原生 Master/Layout 图谱。
 
-当用户选择多个工作区时，融合是**片段级**而不是字段级：Brand 拥有身份，Style 拥有方向/方法默认值，Layout 拥有兼容结构，Deck 保留描述性的可复用应用语境及未被覆盖的身份/结构；library/explicit 来源不改变这个顺序。当前项目应用契约只来自已确认的 Stage 1，Deck 语境只是 Stage 2 对照输入，不会覆盖它。用户最终确认最高。Style 的色彩/字体 fallback 不覆盖 Brand/Deck 身份，其方法与构图预期必须兼容所选 Deck 语境和 Layout/Deck 结构，否则显式提出冲突。项目内 Brand + Layout 组合的应用语境来自 Stage 1，不会自动升级成可注册的 Deck。同类冲突也会显式列出，而不是按输入顺序默默决定。这样融合后的 spec 能明确说明每个片段来自哪里，便于审计和复现。
+当用户选择多个 root 时，每个不同 root 只安装一次，且每份贡献保持独立 spec。完整集合中每个 kind 最多一份，四种 kind 均可共存，多 kind project root 必须原子选择。随后按**片段级**而不是字段级解析所有权：Brand 拥有身份，Style 拥有方向/方法默认值；有 Layout 时由 Layout 拥有结构，否则由 Deck 拥有结构；Deck 始终保留描述性的可复用应用语境，以及未被 Brand 覆盖的身份。项目中只安装当前有效的 Layout 或 Deck 结构 roster。library/explicit 来源不改变这个顺序。当前项目应用契约只来自已确认的 Stage 1，Deck 语境只是 Stage 2 对照输入，不会覆盖它。用户最终确认最高。Style 的色彩/字体 fallback 不覆盖 Brand/Deck 身份，其方法与构图预期必须兼容所选结构。项目内 Brand + Layout 组合的应用语境来自 Stage 1，不会自动升级成可注册的 Deck。同 kind 重复会在安装前被拒绝。这样已装集合能明确说明每个片段来自哪里，便于审计和复现。
 
 **原生 PPTX 不能直接作为 Step 3 工作区。** 普通 Generate 可以把 PPTX 作为源材料使用，`beautify-pptx` 也可以在页数、页序和逐页措辞 1:1 的边界下重新设计；这两种情况都不会把原始 PPTX 当作 Step 3 模板。把原生 PPTX 作为模板或页面壳、再用新材料填充时，默认进入 Fill Native PPTX；若请求允许拆分、合并、删页、重排或叙事重构，则仍属于 Generate。只有当目标是创建可复用模板工作区、并在 SVG 路线的 Step 3 中重复使用其设计系统时，才先运行 Create Template，再传入生成的工作区根目录。
 
@@ -703,7 +704,7 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么 Create Layout / Create Deck 分为创作模式和保留模式。** `pptx_template_import.py` 输出分层 Master/Layout/Slide 参考和 native 结构事实。`standard` / `fidelity` 把这些素材和视觉当参考，再按照确认后的可复用行为创作新拓扑。Mirror 则把已验证的来源 roster 与拓扑一对一物化到新工作区，只允许显式 structured 合同要求的机械归一化，不补造缺失事实。原始 PPTX 保持为不可变分析证据，不成为最终模板依赖。Create Brand 没有结构复制策略。
 
-**为什么 create-template 在两种范围都使用同一工作区路由。** `create-template` 仍以写入索引的 `library` 为默认，也可写入已初始化项目。两种根目录都要求 `templates/`；`images/`、`icons/` 和按需生成的 `exports/` 只有存在真实内容时才出现，已有 SVG 素材的引用规则也一致。因此工作区可直接迁移和复用，不需要全局库专用 package 分支或缩减的项目分支。唯一范围差异是全局索引注册；两种范围共享同一可迁移工作区合同，但只有 Layout / Deck 拥有 structured SVG 合同，Brand 仍是 identity-only。
+**为什么 create-template 在两种范围都使用同一工作区路由。** `create-template` 仍以写入索引的 `library` 为默认，也可写入已初始化项目。两种根目录都要求 `templates/`；`images/`、`icons/` 和按需生成的 `exports/` 只有存在真实内容时才出现，已有 SVG 素材的引用规则也一致。Library 在单 kind 目录使用一份裸 spec，project 在共享 root 使用限定名 spec；schema 与素材路由保持一致，spec 落点及全局索引注册随范围变化。只有 Layout / Deck 拥有 structured SVG 合同，Brand 与 Style 保持 roster-free。
 
 **为什么模板 SVG 保持完整却仍能编译成原生结构。** 模板 SVG 会重复携带继承的 Master/Layout 视觉和示例 Slide 内容，因此可独立打开。生成时由 `page_layouts` 选择该原型，输出 SVG 仍保持视觉闭包。导出器移除重复继承原子、生成真实 Master/Layout part，并把槽位 carrier 与 Slide-local 内容留在 Slide。
 

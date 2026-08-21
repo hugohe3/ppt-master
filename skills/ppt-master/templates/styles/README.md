@@ -35,7 +35,7 @@ installed copy before authoring flat pages.
 | Current project communication contract, mode, visual style, palette, typography, images, and icons | Latest explicit user instruction and confirmed project values |
 | Exact identity values | Brand, then Deck identity; both override overlapping Style fallback values |
 | Reusable communication method and evidence discipline | Style, applied only where compatible with the current project contract |
-| Reusable structure | Compatible Layout, then Deck structure; Style never supplies structure |
+| Reusable structure | Layout when present, otherwise Deck; Style never supplies structure |
 | Recurring application context | Deck, subordinate to the current project's Stage-1 communication contract |
 
 Style fallback values seed the final Stage-2 solution when the corresponding decision remains open. They are not identity truth and do not bypass confirmation. If a Style method and a Deck application contract materially conflict, surface the mismatch; do not silently weaken either one.

@@ -23,7 +23,7 @@
 
 四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
 
-每份已装 spec 各自保留自己的 `kind` 与 id；不存在合并后的项目 spec，也没有组合出来的能力标签。路由结果在读取时推导：结构来自已装的 Layout 或 Deck，身份来自已装的 Brand 或 Deck，方向来自已装的 Style。项目内临时组合的 Brand + Layout 因此只是“两种能力都已安装”，不会被自动提升为可注册的 Deck，也不会凭空生成应用语境；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 在内部生成模板应用计划，确认页不显示模板模式控件。
+每份已装 spec 各自保留自己的 `kind` 与 id；不存在合并后的项目 spec，也没有组合出来的能力标签。路由结果在读取时推导：结构优先来自 Layout，没有 Layout 时才来自 Deck；身份来自 Brand 或 Deck，方向来自 Style。项目内临时组合的 Brand + Layout 因此只是“两种能力都已安装”，不会被自动提升为可注册的 Deck，也不会凭空生成应用语境；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 在内部生成模板应用计划，确认页不显示模板模式控件。
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -101,7 +101,7 @@ native_structure_mode: structured
 
 两种范围都在可移植 frontmatter 中保留所选 `kind`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
-任何范围第一次写最终文件前，都必须解析工作区根目录、确认 `templates/` 为空，并检查全部计划写入的图片与图标文件名无冲突；用户要求预览或已确认 roster 含多个 Master 时检查预览 PPTX 目标。项目范围还必须确认目标项目已初始化。任一失败都在写入前停止，不合并、不覆盖。
+任何范围第一次写最终文件前，都必须解析 Design Spec 和全部真实目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸名、同 kind spec 或无效的限定名集合；不同 kind 可以共存。Layout 与 Deck 同时存在时，Layout 拥有有效 roster：新增 Deck 不改变已有 Layout roster，新增 Layout 则先隔离校验，再原子替换已有 Deck 结构载荷。两种范围都会检查计划素材和预览目标冲突。任一失败都在写入前停止，不覆盖、不留下半套输出。
 
 ### 四段的字段切分
 
@@ -370,7 +370,7 @@ spec，并在上下文中解析下列片段：
 |---|---|
 | Identity | Brand，其次 Deck；都没有则留到最终 Stage 2；Style 只提供候选回退值 |
 | 方向／方法 | Style；没有则留到最终 Stage 2；Deck 的实际原型与 Signature 事实只用于兼容性判断 |
-| Structure | 兼容的 Layout，其次 Deck；都没有则留到最终 Stage 2 或自由设计 |
+| Structure | 有 Layout 时由 Layout 提供，否则由 Deck 提供；都没有则留到最终 Stage 2 或自由设计 |
 | 可复用应用语境 | 仅 Deck 拥有；保留供最终 Stage 2 比对，绝不作为当前项目的应用契约 |
 
 当前用户指令与最终确认覆盖任何起始所有者。Brand 身份对 Style 的色彩／字体回退值
@@ -381,8 +381,7 @@ spec，并在上下文中解析下列片段：
 退居次要或保持稀有时，该指令与取值本身具有同等权威——Style 的留白或构图倾向
 绝不能把 Brand 声明的主导色降格为偶然点缀。
 
-用 Layout 覆盖 Deck 结构前，先比对 Deck 的可复用应用角色与 Layout 的页面角色、
-槽位类型与容量。把 Style 与 Layout／Deck 组合前，先确认其沟通方法与构图预期
+把 Style 与 Layout／Deck 组合前，先确认其沟通方法与构图预期
 能够被该可复用语境与结构兑现。不兼容时显式报告模板片段冲突，不能静默混合字段
 或保留一份当前结构无法兑现的承诺。当前项目的适配只在 Stage 1 确认后的最终
 Stage 2 开始。
@@ -396,30 +395,17 @@ Logo / Voice / Icon Style 五段从 brand 拿，**不做字段级混搭**（即�
 字段级微调走策略师确认阶段这条已有路径——用户在 chat 里说"用 anthropic brand，
 但 primary 改成 #FF0000"，由 Strategist 在 e/g 现场调整；安装层不加字段级语法。
 
-### 同类多份
+### 选择冲突
 
-同一 kind 的多个 root 按 `<id>` 区分，各自安装为独立文件，与不同 kind 完全一致：
-
-```
-<project>/templates/design_spec.brand.anthropic.md
-<project>/templates/design_spec.brand.google.md
-```
-
-- 无隐式顺序，也不按路径先后定优先级
-- 消费方读取全部，优先遵循最新的明确用户指令
-- 用户未给指令、且两份同类 spec 对同一片段做出实质冲突的主张时，在 chat 中显式
-  提出冲突，而不是静默取中
-- 不做字段级冲突解决——只到片段级
-- `style × 2`、`layout × 2`、`deck × 2`、`brand × 2` 同处理
-
-Default 模板页面已经把组合空间收窄：Brand/Style/Layout/Deck 各有一个已注册模板
-单选下拉框，另有一个指定地址下拉框；指定地址按解析出的 kind，最多给该类
-增加第二份。
+完整选择中每个 kind 最多一份；Layout 与 Deck 可以同时存在，结构由 Layout
+优先提供。指定的多 kind root 必须原子选择，只能与 kind 不重叠的已注册 root 共存。Default 在 Stage-1
+选择器和服务端回执中拒绝冲突；Quick 要求先在 chat 中缩小精确 root 集合。
+安装阶段不会平均同 kind spec，也不会按路径顺序替用户选择。
 
 ### 可追溯性
 
 因为不做任何合并，已装集合本身即自描述：文件名带 kind 与 id，来源行带源 root，
-正文与源 spec 逐字节一致。追溯哪一段来自哪里，看目录列表即可，不需要做 diff。
+其余正文保持不变。追溯哪一段来自哪里，看目录列表即可，不需要重建合并过程。
 
 让 AI 和人类都能回溯每段来自哪。
 
@@ -431,23 +417,23 @@ Default Generate 的 [Step 3](../../skills/ppt-master/workflows/generate-pptx.md
 只准备候选输入。Stage 1 把沟通契约与可切换的自由设计/使用模板选择同屏呈现。
 普通请求默认自由设计并收起详细控件；明确要求使用模板或提供任意精确 root 时
 默认展开模板模式。只提供一个 root 时会预选，多 root 仍只作为未选候选。裸
-模板/品牌名称或风格词不会解析或预选工作区。对于每个已选工作区，确认后的
-apply 阶段解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md`、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，apply 阶段必须拒绝；先由 `create-template` 产出新工作区，再继续生成。`kind` 字段决定**AI 如何处理已选路径**：
+模板/品牌名称或风格词不会解析或预选工作区。对于每个已选 root，确认后的
+apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md`、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，apply 阶段必须拒绝；先由 `create-template` 产出新工作区，再继续生成。`kind` 字段决定**AI 如何处理已选路径**：
 
 | 用户路径指向 | Stage-1 确认后的 apply 行为（按 kind 分支）|
 |---|---|
-| `kind: brand` | 把工作区 `templates/` 及实际存在的 `images/`、`icons/` 映射到项目同名目录；忽略 `exports/` |
-| `kind: style` | 安装仅含 spec 的方向/方法工作区；要求无 SVG roster，并保持生成页面为 flat |
-| `kind: layout` | 把工作区 `templates/` 及实际存在的 `images/`、`icons/` 映射到项目同名目录；忽略 `exports/` |
-| `kind: deck` | 把工作区 `templates/` 及实际存在的 `images/`、`icons/` 映射到项目同名目录；忽略 `exports/` |
-| 多路径 | 每个选中工作区安装为一份 `design_spec.<kind>.<id>.md`，拒绝碰撞后再合并实际存在的可移植资产目录 |
-| 同类多份 | 按 `<id>` 各自成文件，读取时按上节规则解析所有权 |
+| `kind: brand` | 安装限定名身份 spec 与 root 自有素材；除非同时选择 Layout/Deck，否则结构自由 |
+| `kind: style` | 安装限定名方向/方法 spec；Style 自身不得带 roster 或素材，无 Layout/Deck 时页面保持 flat |
+| `kind: layout` | 安装限定名结构 spec、SVG roster 与素材；结构优先于 Deck |
+| `kind: deck` | 安装限定名应用/身份/结构 spec 与素材；仅在没有 Layout 时安装其 SVG roster |
+| 多 kind root | 保留全部限定名 spec，共享素材只映射一次，并只保留有效 Layout-or-Deck roster |
+| 选择冲突 | 安装前拒绝同 kind 重复 |
 
-位图统一进入工作区 `images/`，模板 SVG 通过 `../images/` 引用。如果显式输入根目录本来就是目标项目根目录，apply 阶段原地消费：不得复制到自身，也不得再次移动素材。除此之外，完整核心工作区是可移植的：可以从项目根复制到全局库根、从全局库复制到项目，或从另一个工作区直接复用，而不改变内部结构。注册是唯一与范围相关的步骤。
+位图统一进入工作区 `images/`，模板 SVG 通过 `../images/` 引用。如果显式输入根目录本来就是目标项目根目录，apply 阶段原地消费：不得复制到自身，也不得再次移动素材。项目 root 可以被其他项目直接复用；把其中一项移入全局库时，spec 正文保持不变，但要从项目限定名路径放到单 kind 库工作区的裸 spec 路径，并完成注册。
 
 ### 策略师确认阶段在不同 kind 下的行为
 
-安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；Layout/Deck 才读取真实原型和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用；Confirm UI 会显示自由设计/使用模板和候选控件，但不显示内部复用/遵循字段。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责，机器结构由 `templates/schemas/spec_lock.schema.json` 负责。
+安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；其他情况只读取有效原型（有 Layout 时用 Layout，否则用 Deck）和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用；Confirm UI 会显示自由设计/使用模板和候选控件，但不显示内部复用/遵循字段。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责，机器结构由 `templates/schemas/spec_lock.schema.json` 负责。
 
 ---
 
@@ -461,13 +447,25 @@ apply 阶段解析 `<workspace>/templates/design_spec.md`；为兼容目录形�
 | `workflows/create-template/create-layout.md` | 品牌中立、带结构化 SVG roster 的 Layout 工作区 |
 | `workflows/create-template/create-deck.md` | 应用契约与身份/结构一体化、带结构化 SVG roster 的 Deck 工作区；可复用成果带品牌身份或场景语义时选择，不能只因来源是一份完整 PPTX 就默认选择 |
 
-在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。完整工作区可在两种范围之间移动而不改形，只需增加或移除全局索引注册。
+**一套 schema，两个落点。** 模板是同一份合同落在两个层面，唯一的差别是 Design Spec 叫什么：
+
+| 层 | 容器 | Design Spec |
+|---|---|---|
+| skill 库 | `templates/<kind_dir>/<template_id>/` 已经说明了 kind 和 id | `templates/design_spec.md` |
+| 项目 | 一个平铺、多 kind 共用的 `templates/` | `templates/design_spec.<kind>.<id>.md` |
+
+消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与 frontmatter 的 `kind` 及对应 `<kind>_id` 一致；裸名与限定名不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于 schema 不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
+
+选择遵循同一条原则：单位是工作区 **root**，不是 kind。一个 root 会贡献它暴露的全部 kind，所以指向一个同时装了 Brand 和 Style 的项目，两者都会生效。按 kind 浏览全局库只是找到 root 的一种方式——`library` 与 `explicit` 记录的是 root 如何被发现，而不是它拥有什么。
+
+在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。项目到项目复用保持完整 root；单项进出全局库时保留 spec schema 与素材，但会改变 spec 文件名落点及索引注册。
 
 ---
 
 ## 七、不做（与本文 framing 配套的拒绝列表）
 
 - **不在安装层支持字段级覆盖语法** —— 字段级微调走 策略师确认阶段这条已有路径
+- **不接受同 kind 重复** —— 安装前先缩小 root 集合；Layout + Deck 按结构优先级解析
 - **不引入双名映射表** —— 模板命名按其品牌/场景母语（中文模板用中文名，英文模板用 snake_case），不强制统一
 - **不为输出范围新增结构分支或 CLI flag** —— 输出范围是 `create-template` 简报里的执行选择；两种范围的 Layout/Deck 都声明 `native_structure_mode: structured`，Brand/Style 均无 roster
 - **不增加 Theme kind** —— Theme 投影 Brand、Deck 或当前项目解析后的身份；Style fallback 不是身份真值

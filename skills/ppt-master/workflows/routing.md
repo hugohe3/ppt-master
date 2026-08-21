@@ -70,8 +70,11 @@ stays inside Generate PPTX but owns an explicit SVG → PPTX short circuit. Page
 count alone never activates or blocks it. Conversion, bounded research, and
 project-local resources remain available. Package capabilities may be requested
 or agent-selected. Quick may consume exact Brand/Style/Layout/Deck workspaces as
-flat authoring inputs; compiling reusable Master/Layout/placeholder structure
-still requires the default lock-backed Generate pipeline. Once selected, Quick
+flat authoring inputs, with at most one contribution per kind. All four kinds
+may combine; Layout takes structural precedence over Deck. A multi-kind project
+root contributes all of its specs atomically;
+compiling reusable Master/Layout/placeholder structure still requires the
+default lock-backed Generate pipeline. Once selected, Quick
 is the complete runtime procedure and never loads `generate-pptx.md`; Default
 never loads `quick-generate.md`. Image to PPTX is the narrow profile-owned
 Quick activation; Beautify may select either runtime, but never both.
@@ -140,7 +143,7 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 | User input | Behavior |
 |---|---|
 | Default Generate | Step 3 prepares candidates only; Stage 1 confirms one communication contract plus either free design or template use in the same interaction |
-| Explicit current workspace root containing `templates/design_spec.md` | Preserve it as a Stage-1 candidate and initialize template mode; preselect that specific candidate only when it is the sole supplied root. An exact registered-root match may be displayed as `library` |
+| Explicit current workspace root exposing at least one `templates/` Design Spec | Preserve it as a Stage-1 candidate and initialize template mode; preselect that specific candidate only when it is the sole supplied root. An exact registered-root match may be displayed as `library` |
 | No exact workspace root and no explicit template intent | Initialize Stage 1 to free design; the user may switch to template mode and select an indexed workspace |
 | Explicit template intent or any exact workspace root | Initialize Stage 1 to template mode; exactly one root may be preselected, while multiple roots remain unselected candidates |
 | Bare template/brand name or style label without an explicit template-use request | Do not resolve it to a local path or preselect a template; treat it as a style brief. An explicit request to use templates still initializes template mode, but leaves the specific candidate for the user to choose |

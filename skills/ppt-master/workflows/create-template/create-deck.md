@@ -20,7 +20,7 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 ## Invocation Points
 
 1. Use §1–2 below while executing Create Template Steps 1–3.
-2. After Create Template Step 4 preflights `<template_workspace>`, use §3 to author or materialize the deck workspace under the shared structured contract.
+2. After Create Template Step 4 preflights `<template_workspace>` and `<design_spec_path>`, use §3 to author or materialize the deck workspace under the shared structured contract.
 3. Apply §4 in addition to Create Template Step 5, then continue through shared Steps 6–8.
 
 ## 1. Deck Input Interpretation
@@ -100,7 +100,7 @@ The output is:
 
 ```text
 <template_workspace>/
-├── templates/        # design_spec.md + SVG prototypes
+├── templates/        # design_spec.md (project scope: design_spec.deck.<deck_id>.md) + SVG prototypes
 ├── images/           # optional adopted bitmaps
 ├── icons/
 │   └── imported/     # optional imported vectors
@@ -113,7 +113,7 @@ Every SVG is a complete preview and declares one root Master and Layout under th
 
 In addition to Create Template Steps 5–6, verify:
 
-- `templates/design_spec.md` contains `deck_id`, `kind: deck`, `summary`, `primary_color`, canvas fields, `replication_mode`, `native_structure_mode: structured`, and `page_count`; `summary` names the recurring presentation family/outcome rather than only visual tone.
+- The Design Spec contains `deck_id`, `kind: deck`, `summary`, `primary_color`, canvas fields, `replication_mode`, `native_structure_mode: structured`, and `page_count`; `summary` names the recurring presentation family/outcome rather than only visual tone.
 - `deck_id` matches the confirmed workspace ID in library scope.
 - Template Overview, Color Scheme, Signature Design Elements, and Page Roster exist; Template Overview describes the recurring application context, every roster row factually describes its prototype and slots without future-use policy, and conditional sections match real choices/assets.
 - Every identity color is `#RRGGBB`; the primary table row matches frontmatter, and SVG paint follows the confirmed identity.

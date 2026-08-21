@@ -368,7 +368,7 @@ template after the layered authoring IR has been reviewed and edited:
 
 ```bash
 python3 scripts/mirror_template_materialize.py \
-  <import_workspace> <empty_template_workspace>
+  <import_workspace> <template_workspace>
 ```
 
 The command treats `<import_workspace>/authoring-svg/` as the sole editable
@@ -376,8 +376,13 @@ source. It reads the tool-only layered authoring manifest internally and
 validates it against immutable lossless SVG
 hashes, source PPTX hash, complete Master/Layout/Slide graph, inheritance
 visibility facts, source-ref closure, and extracted-vector inventory before it
-writes anything. It refuses a non-empty destination and stages the whole result
-before atomic publication, so a failed preflight cannot leave a partial
+writes anything. It accepts an absent/empty destination or a project
+`templates/` containing unique qualified Brand/Style specs plus, for a
+Layout-over-Deck transition, one qualified Deck spec with no staged roster. A
+bare spec, active structural roster, SVG, Layout spec, or other template payload blocks direct
+materialization; Create Template uses its isolated transition workspace when a
+new Layout or Deck must be composed with the other structural kind. It stages the whole
+result before atomic publication, so a failed preflight cannot leave a partial
 template.
 
 Materialization preserves source page order and emits one definition-only

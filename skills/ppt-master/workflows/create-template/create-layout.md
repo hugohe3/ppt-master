@@ -22,7 +22,7 @@ Neutral colors, safe fonts, and provisional sizes may appear in SVG prototypes s
 ## Invocation Points
 
 1. Use §1–2 below while executing Create Template Steps 1–3.
-2. After Create Template Step 4 preflights `<template_workspace>`, use §3 to author or materialize the layout workspace under the shared structured contract.
+2. After Create Template Step 4 preflights `<template_workspace>` and `<design_spec_path>`, use §3 to author or materialize the layout workspace under the shared structured contract.
 3. Apply §4 in addition to Create Template Step 5, then continue through shared Steps 6–8.
 
 ## 1. Layout Input Interpretation
@@ -92,7 +92,7 @@ The output is:
 
 ```text
 <template_workspace>/
-├── templates/        # design_spec.md + SVG prototypes
+├── templates/        # design_spec.md (project scope: design_spec.layout.<layout_id>.md) + SVG prototypes
 ├── images/           # optional structural/example bitmaps
 ├── icons/
 │   └── imported/     # optional imported vectors
@@ -105,7 +105,7 @@ Every SVG is a complete preview and declares one root Master and Layout under th
 
 In addition to Create Template Steps 5–6, verify:
 
-- `templates/design_spec.md` contains `layout_id`, `kind: layout`, `summary`, canvas fields, `replication_mode`, `native_structure_mode: structured`, `page_count`, and `page_types`.
+- The Design Spec contains `layout_id`, `kind: layout`, `summary`, canvas fields, `replication_mode`, `native_structure_mode: structured`, `page_count`, and `page_types`.
 - `layout_id` matches the confirmed workspace ID in library scope.
 - Signature Design Elements and Page Roster exist; Template Overview, application-contract language, and all identity sections do not.
 - `primary_color`, brand palette, brand typeface/weight claims, final project type-scale claims, logo, voice, and icon-identity claims are absent; structural text roles and capacity rules may remain.

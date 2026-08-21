@@ -118,7 +118,7 @@ python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 clean
 - Confirm UI and live preview prefer the same memorable base port but keep separate processes and project-local locks (`.confirm_ui.lock` vs `live_preview/lock.json`). Normal Step 4 cleanup releases the confirm port before Step 6; concurrent projects may use different ports.
 - `--daemon` starts the Flask process in the background and returns after the health check. Every Default UI run launches directly into combined Stage 1 and keeps the same process live through final Stage 2. The wait budget defaults to **590 s** (`--wait-timeout`); on timeout the detached server remains live, and the caller re-checks both Stage-1 receipts before chat fallback.
 - `--wait-only` attaches to the page opened by `--daemon` and blocks until the requested receipt. If it is already persisted, the command returns before recovery, so a fast submit between launch, chat handoff, and wait is not lost. Otherwise, if the recorded server died, it restarts on the recorded/default port. Use `stage1` for the combined communication/template submission and the default/final wait for Stage 2.
-- `--complete-template-selection` is agent-only. It validates the Stage-1 sidecar and writes the bound `template_handoff.json`; template mode additionally requires project-local `templates/design_spec.md`. Run it after installation/free-design closure and before writing Stage 2. `--reset-template-selection` removes exactly `template_options.json`, `template_selection.json`, and `template_handoff.json`; it does not alter Strategist files, installed template content, or `result.json`. The old `--*-template-phase` names are not aliases.
+- `--complete-template-selection` is agent-only. It validates the Stage-1 sidecar and writes the bound `template_handoff.json`; template mode additionally requires at least one project-local `templates/design_spec.<kind>.<id>.md`. Run it after installation/free-design closure and before writing Stage 2. `--reset-template-selection` removes exactly `template_options.json`, `template_selection.json`, and `template_handoff.json`; it does not alter Strategist files, installed template content, or `result.json`. The old `--*-template-phase` names are not aliases.
 - `--shutdown` stops a confirm server left running for this project and exits — **idempotent** (a no-op when nothing is running). Tries a graceful `/api/shutdown`, falls back to killing the recorded pid, then clears the lock. Generate Step 4 runs this on every path so the selected port is released before live preview starts.
 - Every fresh UI run starts with `--reset-template-selection`, then writes valid `<project_path>/confirm_ui/template_options.json` and a newer `recommendations.stage1.json`; `explicit_workspace_roots` is an empty array when no exact root was supplied. Stage 1 writes the bound selection and communication result together. Stage 2 is exposed only when the matching handoff is newer than that selection and its recommendation is newer than the handoff. `--shutdown` needs neither input.
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
@@ -165,8 +165,10 @@ separate artifact from the Strategist contract. Its files live under
   Ordinary requests use `free_design`; explicit template intent or any supplied
   exact root uses `templates`. It initializes the UI but never locks the user.
 - `explicit_workspace_roots` is required even when empty. Every item is a
-  unique absolute path resolving to an existing directory with
-  `templates/design_spec.md` or compatible legacy `design_spec.md`.
+  unique absolute path resolving to an existing directory with a library
+  `templates/design_spec.md`, one or more project-qualified
+  `templates/design_spec.<kind>.<id>.md`, or compatible legacy
+  `design_spec.md`.
 - The array supplies candidates for the one specified-root dropdown; it does
   not authorize selecting several explicit roots in one confirmation.
 - Do not write library entries into this file. The server reads only
@@ -222,10 +224,11 @@ candidate controls: Brand, Style, Layout, and Deck each have one registered
 single-select dropdown, and Specified has one explicit-root single-select
 dropdown. Every dropdown includes `None`; template mode cannot submit until at
 least one is non-empty. Free design clears all dropdowns. Registered kinds may
-be combined, but each contributes at most one root and the specified channel at
-most one. Because an explicit candidate carries its parsed kind, it may coexist
-with one registered root of that kind and enter the two-workspace same-kind
-conflict gate. Source provenance never grants priority.
+be combined, and the complete selection contains at most one contribution per
+kind. Layout and Deck may coexist; Layout takes structural precedence. The specified channel contributes at
+most one root, selected atomically with every kind it exposes; it can coexist
+only with registered roots of non-overlapping kinds. Source provenance never
+grants priority.
 
 ### Output — `template_selection.json` (written with Stage 1)
 
@@ -258,23 +261,27 @@ conflict gate. Source provenance never grants priority.
 at least one selection. Roots are unique canonical absolute paths. A library
 selection contains exactly `source`, `kind`, `id`, and `workspace_root`; an
 explicit selection contains exactly `source`, `kind`, and `workspace_root`.
-There is at most one library selection per kind and at most one explicit
-selection overall; cross-kind composition remains valid, and one explicit plus
-one library selection may share a kind. The browser
-cannot submit arbitrary paths because the server resolves posted keys against
-the catalog it just built. `options_sha256` binds the receipt to the current
-input, four index files, and resolved candidates. `selection_sha256` binds the
-mode and canonical sorted selections to that option hash. Every receipt read
-rebuilds the catalog and rejects option/index drift.
+There is at most one explicit workspace **root** overall. The unit of choice is
+the root, not the kind: the browser's specified-path control lists roots, and
+selecting one emits a selection for every kind that root exposes. Across those
+emitted selections and all library choices, each kind appears at most once.
+Layout and Deck may coexist; downstream installation gives Layout structural
+precedence. The browser cannot submit arbitrary paths
+because the server resolves posted keys against the catalog it just built.
+`options_sha256` binds the receipt to the current input, four index files, and
+resolved candidates. `selection_sha256` binds the mode and canonical sorted
+selections to that option hash. Every receipt read rebuilds the catalog and
+rejects option/index drift or an incomplete explicit-root bundle.
 
 The Stage-1 submission writes this receipt and the Stage-1 `result.json`
 together. Generate reads both exactly once after `--wait-only --wait-stage
 stage1` returns. Free design skips installation. Template mode runs
 `apply-template-workspace` against all selected roots and waits for complete
 project-local installation. Only then does the agent complete the
-handoff below. Installation copies each selected spec separately; Stage 2
-resolves segment ownership and current-project fit from the installed set. Strategist never
-reads the source roots.
+handoff below. Installation validates and maps each distinct root once while
+preserving its separate specs; Stage 2 resolves segment ownership and
+current-project fit from the installed set. Strategist never reads the source
+roots.
 
 ### Agent handoff — `template_handoff.json`
 
