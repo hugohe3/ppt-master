@@ -35,10 +35,11 @@ Evaluate branches from each object's actual information model, not only from a C
 
 **Mandatory — select by visual job**: establish each page's semantic skeleton,
 then run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure
-and Visual Job Router before finalizing; use §6.13 for a coordinated page
-recipe when useful. The catalog expands construction vocabulary; it creates no
-effect quota. Active cross-page continuous action additionally loads
-[`animations.md`](./animations.md) §3.1 before authoring both endpoints.
+before finalizing, with its Visual Job Router as recall; use §6.13 for a
+coordinated page recipe when useful. The catalog expands construction
+vocabulary; it creates no effect quota. Active cross-page continuous action
+additionally loads [`animations.md`](./animations.md) §3.1 before authoring
+both endpoints.
 
 **Hard rule — discovery does not expand compatibility**: Follow
 `svg-effects.md` syntax and fallbacks; unsupported source/backdrop blur, blend

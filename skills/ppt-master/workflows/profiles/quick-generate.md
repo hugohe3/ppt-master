@@ -604,7 +604,7 @@ Chart/Table reference and final information model are independent loading
 signals; load every applicable authority. Selection never makes an object
 native-ready or replaces the per-page Structure decision.
 
-Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery. Treat selected style composition examples as generative vocabulary rather than a finite layout menu.
+Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 job diagnostic active while authoring, with its Visual Job Router as recall. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery. Treat selected style composition examples as generative vocabulary rather than a finite layout menu.
 
 **Per-page execution anchors**: apply the transient core-message, typography-role, semantic-color, body-frame, density, and composition anchors resolved in §2 while authoring; they guide the current run without creating a persisted planning artifact.
 
