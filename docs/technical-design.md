@@ -421,8 +421,9 @@ Brand/Style/Layout/Deck entries only from their four `*_index.json` files;
 chat discovery reads the same indexes and returns exact roots. Explicit paths
 remain valid, and an exact path matching a registered canonical root may be
 displayed as `library`; an unregistered root remains `explicit`. Current
-workspaces resolve `templates/design_spec.md`; the server parses every explicit
-root's real `kind`, while the source label remains provenance only. Compatible flat Brand/Layout/Deck
+library workspaces resolve `templates/design_spec.md`, while project roots
+resolve every `templates/design_spec.<kind>.<id>.md`; the server parses every
+explicit root's real kinds, while the source label remains provenance only. Compatible flat Brand/Layout/Deck
 packages may resolve direct `design_spec.md` only when they satisfy the current
 kind contract, including current structured SVGs for Layout/Deck. Style has no
 legacy-flat form. A free-form style brief remains ordinary Stage-2 input and
@@ -434,15 +435,15 @@ All current Brand/Style/Layout/Deck packages use one workspace routing contract.
 
 ```text
 <template_workspace>/
-├── templates/   # design_spec.md; Create Layout / Create Deck also include SVG prototypes
+├── templates/   # library bare spec or project qualified specs; Layout / Deck also include SVG prototypes
 ├── images/      # optional; bitmap assets referenced as ../images/<name>
 ├── icons/
 │   └── imported/ # optional; canonical imported vector assets
 └── exports/     # optional, on-demand review files; Git-ignored in the library
 ```
 
-Style narrows this routing shape to `templates/design_spec.md` only; it does
-not carry asset or review payloads. Existing project scaffolding is not Style
+Style contributes only its Design Spec; it does not carry asset or review
+payloads. Existing project scaffolding and sibling kind files are not Style
 input.
 
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or
@@ -451,9 +452,10 @@ candidate input without reading template content. Once Stage 1 selects it, the
 apply stage validates and installs it into the current project's
 `templates/`, `images/`, and `icons/`; it never copies `exports/`. Strategist
 and later roles read only that project-local copy when template-aware planning
-begins after Stage 1. The source workspace remains portable between
-locations without reshaping; global index registration controls whether it
-appears as a library choice.
+begins after Stage 1. A project root remains directly reusable by another
+project. Moving one contribution into the library preserves its spec schema and
+assets but changes its qualified filename to the bare single-kind library path;
+global index registration then controls whether it appears as a library choice.
 
 For Create Layout / Create Deck, `standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Layout mirror is legal only when that preserved source is already brand-neutral and application-neutral; otherwise author a new Layout or retain the facts as Deck. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance. Create Brand analyzes identity fragments only; Create Style extracts portable method/direction only. Neither enters structural replication strategies or produces an SVG roster.
 
@@ -464,7 +466,7 @@ The four template kinds own different segments of the design contract:
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
 | `style` | direction / method | communication method, open page roles, evidence/data rules, visual defaults, image/icon direction, advisory review focus | seeds Stage 2; Style-only stays flat, while an installed Layout/Deck supplies the structure plan; never becomes identity truth or triggers visual review |
 | `layout` | brand-neutral structure | canvas, page structure, semantic text roles/spatial behavior, page types, SVG roster | exposes structure; identity and communication application remain downstream decisions |
-| `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, representative page roles, identity, and actual SVG roster | contributes descriptive context and prototypes that Strategist compares with the independently confirmed Stage-1 contract and current content before deriving the application plan |
+| `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, representative page roles, identity, and actual SVG roster | contributes descriptive context and identity; supplies prototypes when no Layout overrides structure |
 
 Theme, Slide Master, Slide Layout, and Placeholder are compiled PowerPoint
 objects, not additional template kinds. Layout owns topology, placement,
@@ -474,7 +476,7 @@ formatting from those rules plus the confirmed reading mode/type scale;
 `mirror` preserves literal source formatting and text topology. Export may
 place both rule sets into the same native Master/Layout graph.
 
-When several workspaces are selected, each installs as its own spec file and ownership is resolved segment-level while reading, not field-level. Brand owns identity, Style owns direction/method defaults, Layout owns compatible structure, and Deck retains descriptive reusable-application context plus any identity/structure not overridden. Library/explicit provenance never changes that order. The current project's application contract comes only from confirmed Stage 1; Deck context is comparison input for Stage 2, not an override. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity; its method/composition expectations must be compatible with the selected Deck context and Layout/Deck structure, or the conflict is surfaced. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: the installed set is self-describing, since each file names its kind and id and keeps its source body unchanged.
+When several roots are selected, each distinct root is installed once and every contribution remains its own spec file. The complete set contains at most one contribution per kind; all four kinds may coexist, and a multi-kind project root is atomic. Ownership is resolved segment-level while reading, not field-level: Brand owns identity, Style owns direction/method defaults, Layout owns structure when present, and Deck otherwise owns structure while always retaining descriptive reusable-application context and any identity not overridden by Brand. Only the effective Layout-or-Deck structural roster is installed. Library/explicit provenance never changes that order. The current project's application contract comes only from confirmed Stage 1; Deck context is comparison input for Stage 2, not an override. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity, and its method/composition expectations must be compatible with the selected structure. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Duplicate kinds are rejected before installation. This keeps template composition debuggable: the installed set is self-describing, since each file names its kind and id and retains its source body apart from provenance.
 
 **Raw PPTX files cannot be Step 3 workspaces.** Normal Generate may use a PPTX as source material, and `beautify-pptx` may redesign it while preserving page count, order, and per-page wording 1:1; neither treats the source PPTX as a Step 3 template. When a raw PPTX is used as a template or native slide shell and filled with new material, the default route is Fill Native PPTX. If the request permits splitting, merging, dropping, reordering, or narrative restructuring, it remains Generate. Only a request to create a reusable template workspace and reuse that design system in SVG-route Step 3 first runs Create Template and then supplies the generated workspace root.
 
@@ -819,7 +821,7 @@ These direct routes share some analysis primitives with the main pipeline, but a
 
 **Why Create Layout / Create Deck have authored and preservation modes.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `standard` / `fidelity` use those assets and visuals as references, then author a new topology from the confirmed reusable behavior. Mirror instead materializes a new workspace from the validated source roster and topology one-to-one, allowing only mechanical normalization required by the explicit structured contract and never inventing absent facts. The original PPTX remains immutable analysis evidence, not a packaged export dependency. Create Brand has no structural replication strategy.
 
-**Why create-template uses one workspace route in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots require `templates/`; `images/`, `icons/`, and on-demand `exports/` appear only when they contain real files, and existing SVG asset references follow the same rules. This makes the workspace migratable and reusable without a library-only package branch or a reduced project branch. The sole scope difference is global index registration. Both scopes share one portable workspace contract, but only Layout / Deck own a structured SVG contract; Brand remains identity-only.
+**Why create-template uses one workspace route in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots require `templates/`; `images/`, `icons/`, and on-demand `exports/` appear only when they contain real files, and existing SVG asset references follow the same rules. Library uses one bare spec inside a single-kind directory; project uses qualified specs in one shared root. The schema and asset routes remain portable, while spec placement and global index registration are scope-specific. Only Layout / Deck own a structured SVG contract; Brand and Style remain roster-free.
 
 **Why each template SVG stays complete while still compiling to native structure.** A template SVG repeats the inherited Master/Layout visuals together with sample Slide content so it opens as a complete standalone page. During generation, `page_layouts` selects that prototype and the output SVG remains complete. Export removes repeated inherited atoms, emits real Master/Layout parts, and leaves actual slot carriers and Slide-local content on the Slide.
 

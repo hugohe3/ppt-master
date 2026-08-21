@@ -20,7 +20,7 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 ## Invocation Points
 
 1. Use §1–2 below for brand analysis and identity fields, then execute Create Template Steps 2–3 with those child-owned fields.
-2. After Create Template Step 4 resolves and preflights `<template_workspace>`, use §3 to materialize the confirmed identity.
+2. After Create Template Step 4 resolves and preflights `<template_workspace>` and `<design_spec_path>`, use §3 to materialize the confirmed identity.
 3. Run §4, then return its evidence to Create Template Steps 5, 7, and 8. Create Brand always skips shared Step 6.
 
 ## 1. Brand Input Analysis
@@ -63,17 +63,17 @@ When the user explicitly requests an empty skeleton, all identity values remain 
 
 ## 3. Materialize the Confirmed Brand
 
-Create Template supplies an already resolved and collision-checked `<template_workspace>`. Write only:
+Create Template supplies an already resolved and collision-checked `<template_workspace>` and `<design_spec_path>`. Write only:
 
 ```text
 <template_workspace>/
 ├── templates/
-│   └── design_spec.md
+│   └── design_spec.md          # project scope: design_spec.brand.<brand_id>.md
 ├── images/       # optional; logo/photos/illustrations only when adopted
 └── icons/        # optional; branded icon overrides only when adopted
 ```
 
-Do not create optional directories or `exports/` solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and do not report it as Brand output. Bitmap references from `templates/design_spec.md` use `../images/<name>`; branded icon references use `../icons/<name>`.
+Do not create optional directories or `exports/` solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and do not report it as Brand output. Bitmap references from `<design_spec_path>` use `../images/<name>`; branded icon references use `../icons/<name>`.
 
 Write this personality-only schema:
 
@@ -133,7 +133,7 @@ Preserve a supplied logo's extension. When multiple lockups exist, use descripti
 
 Return these facts to Create Template:
 
-- `templates/design_spec.md` exists and contains `brand_id`, `kind: brand`, `summary`, and `primary_color`.
+- The Design Spec exists and contains `brand_id`, `kind: brand`, `summary`, and `primary_color`.
 - `brand_id` matches the confirmed workspace ID in library scope.
 - Required sections I–VI exist; Page Roster and Signature Design Elements do not exist.
 - No `*.svg`, `native_structure_mode`, Master/Layout, placeholder, canvas, or page-count fields were written.

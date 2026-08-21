@@ -61,19 +61,24 @@ Brand/Style/Layout/Deck plus supplied-root candidates. Exactly one supplied root
 is preselected; multiple roots remain unselected candidates. The system does
 not infer a specific template from the topic.
 
-> **Quick Generate exception:** Quick never opens that page. Up to one exact
-> workspace root per kind supplied in the request is validated, installed, and
-> used directly; no exact root means free design. Bare names still do not
-> resolve. Quick remains a lockless flat export, so Layout/Deck prototypes are
-> authoring inputs rather than reusable native Master/Layout output.
+> **Quick Generate exception:** Quick never opens that page. Exact roots in the
+> request are validated and used directly, with at most one contribution per
+> kind. Layout and Deck may coexist, with Layout taking structural precedence;
+> a multi-kind root contributes all of its specs.
+> No exact root means free design. Bare names still do not resolve. Quick remains
+> a lockless flat export, so Layout/Deck prototypes are authoring inputs rather
+> than reusable native Master/Layout output.
 
 ### How to use the selector
 
 On the Stage-1 page, choose Free design or Use templates. Only Use templates
 reveals five compact dropdowns: one each for registered Brand, Style, Layout,
 and Deck workspaces, plus one for exact roots supplied for this run. Each is
-single-select and includes `None`; the four registered kinds can be combined,
-and the specified-root channel contributes at most one workspace. The lists
+single-select and includes `None`; the complete selection may combine all four
+distinct kinds but contains at most one of each kind. Layout supplies structure
+when present; otherwise Deck does. The
+specified-root channel contributes at most one workspace, atomically with every
+kind it exposes. The lists
 come only from the four kind indexes; the workflow never scans the template
 directories. Send an exact Brand/Style/Layout/Deck workspace root in chat when
 you want template mode opened and that sole path preselected. Anywhere in the
@@ -83,7 +88,7 @@ sentence is fine; the path just has to be unambiguous:
 > "use last deck's template: `projects/last_deck/`" ✅
 > "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
-For every current template kind, an explicit path is the **template workspace root**. An exact root matching a registered index entry may be displayed as `library`; an unregistered root remains separately labelled `explicit`. The server parses the latter's actual frontmatter `kind`; `explicit` is provenance, not a fifth kind or a priority tier. Stage 1 validates the selected candidate roots; after confirmation, Brand/Layout/Deck install their package-owned `templates/` plus any real `images/` and `icons/`, while Style installs only its spec and ignores unrelated project scaffolding. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract; Brand/Style validate their roster-free specs. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A Create Template run may hand its exact validated workspace root directly to the next Stage-1 selector in the same conversation.
+For every current template kind, an explicit path is the **template workspace root**. An exact root matching a registered index entry may be displayed as `library`; an unregistered root remains separately labelled `explicit`. The server parses the latter's actual qualified specs; `explicit` is provenance, not a fifth kind or a priority tier. Stage 1 validates each selected root atomically. After confirmation, installation maps every selected spec and asset root exactly once, installs only the effective structural roster (Layout when present, otherwise Deck), and never copies `exports/`. Deck/Layout roots additionally validate their structured SVG contracts before precedence is applied; Brand/Style validate their roster-free specs. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A Create Template run may hand its exact validated workspace root directly to the next Stage-1 selector in the same conversation.
 
 Template selection shares the Stage-1 screen and submit action but remains a
 separate sidecar decision. The communication recommendation is authored only
@@ -131,9 +136,9 @@ Make a deck from projects/annual-report/sources/report.md.
 Template workspace: projects/acme_template/
 ```
 
-For chat-based explicit root selection, path labels are optional but exact roots are mandatory. The page's library selection already carries exact roots. The page allows one registered selection per kind and one specified root. If the specified root has the same parsed kind as a registered selection, the workflow stops at the existing two-workspace conflict-resolution gate instead of choosing one silently.
+For chat-based explicit root selection, path labels are optional but exact roots are mandatory. The page's library selection already carries exact roots. The page allows one registered selection per kind and one specified root, and rejects only duplicate kinds. Layout and Deck may be selected together; Layout then owns structure while Deck retains its other segments. A specified multi-kind root is all-or-nothing; its exposed kinds cannot be selected again from the library.
 
-You do not need to choose a template-use mode. For Layout/Deck, Strategist reads the actual Master/Layout/prototype roster and current content, then decides which pages to select, repeat, skip, reorder, or reorganize. Brand instead supplies identity constraints, while Style supplies direction/method defaults; both leave pages freely composed unless another workspace supplies structure. If you care about a specific boundary, state it in ordinary language in the same request—for example, “keep the cover and closing page exactly, choose suitable middle pages yourself” or “use only the visual language”. That explicit sentence wins over AI judgment.
+You do not need to choose a template-use mode. Strategist reads the effective structural roster—Layout when present, otherwise Deck—and current content, then decides which pages to select, repeat, skip, reorder, or reorganize. Brand instead supplies identity constraints, while Style supplies direction/method defaults; both leave pages freely composed unless another workspace supplies structure. If you care about a specific boundary, state it in ordinary language in the same request—for example, “keep the cover and closing page exactly, choose suitable middle pages yourself” or “use only the visual language”. That explicit sentence wins over AI judgment.
 
 ### Template catalog
 
@@ -212,7 +217,7 @@ Before generation, the workflow writes one concise natural-language proposal and
 
 | Field | Notes |
 |-------|-------|
-| **Output scope** | `library` (default) or `project`; both use the same portable workspace routing, while only library scope registers it globally |
+| **Output scope** | `library` (default) or `project`; both use the same spec schema, while the library uses a bare spec in a single-kind directory and a project uses a qualified spec in its shared root |
 | **Target project** | Required only for `project`; give the exact initialized project path |
 | **Selected child workflow** | Create Brand / Create Style / Create Layout / Create Deck, fixed by the entry dispatch |
 | **Template ID** | Portable template identity; in library scope it is also the directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
@@ -226,7 +231,7 @@ Before generation, the workflow writes one concise natural-language proposal and
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. Existing empty scaffolding created by project initialization is allowed and left untouched; Create Template does not create optional directories merely to keep empty paths. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves the Design Spec and all real asset destinations. Library scope requires an empty `templates/` root. Project scope requires an initialized project and rejects a bare spec, an existing spec of the new kind, or invalid qualified naming; distinct kinds may coexist. Adding Deck beside Layout preserves the Layout roster, while adding Layout beside Deck uses isolated validation and an atomic structural replacement. Both scopes reject bitmap, imported-vector, review-export, and unrelated destination collisions before writing. Existing empty project scaffolding is left untouched, and optional directories are not created merely to retain empty paths. A failed check stops before partial output; the workflow does not overwrite.
 
 > Why so strict? A template is a reusable ownership contract, whether it is global or project-scoped. Confirming the owned segment and destination first—and geometry only for Layout/Deck—avoids partial or misplaced output.
 
@@ -251,15 +256,15 @@ For a PPTX-backed Type A mirror, that final step is one deterministic command:
 
 ```bash
 python3 skills/ppt-master/scripts/mirror_template_materialize.py \
-  "<import_workspace>" "<empty_template_workspace>"
+  "<import_workspace>" "<template_workspace>"
 ```
 
 It validates the IR manifest, immutable source hashes, complete native graph,
 visibility facts, and imported-vector closure before atomically publishing the
 source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
 requires or uses the opt-in `svg-flat/` verification tree as the template source
-and never generates `design_spec.md`;
-the designer writes that brief against the published roster.
+and never generates a Design Spec; the designer writes the resolved spec
+against the published roster.
 
 **Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
 
@@ -274,7 +279,7 @@ After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-maste
 | `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand/Create Style: N/A; Create Layout/Create Deck: optional for one Master, mandatory for multiple Masters | Register in the matching `brands_index.json`, `styles_index.json`, `layouts_index.json`, or `decks_index.json` after validation |
 | `project` | `projects/<name>/` | Same kind-specific review behavior | Skip global index registration |
 
-Library registration makes the template **selectable** in the Default Stage-1 template controls and discoverable in chat because both read the same index. For project scope or an exact handoff, supply the workspace root, for example `use this template: projects/<name>/`; this initializes template mode, exactly one supplied root is preselected, multiple supplied roots remain unselected candidates, and an unregistered root remains labelled `explicit`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in the library catalog.
+Library registration makes the template **selectable** in the Default Stage-1 template controls and discoverable in chat because both read the same index. For project scope or an exact handoff, supply the workspace root, for example `use this template: projects/<name>/`; this initializes template mode, exactly one supplied root is preselected, multiple supplied roots remain unselected candidates, and an unregistered root remains labelled `explicit`. A project root remains directly reusable by another project and contributes every qualified spec it exposes. Moving one contribution into the single-kind library requires placing its unchanged spec body at that library workspace's bare `templates/design_spec.md` path and registering it.
 
 When a Deck/Layout template is selected, Strategist automatically authors the page/prototype plan. It may use the whole roster or a subset, repeat or reorder prototypes, and reorganize content where needed. `strict` / `adaptive` remain internal exporter values and do not appear as confirmation options.
 
@@ -298,7 +303,7 @@ Microsoft PowerPoint is the acceptance target for Master/Layout behavior. Keynot
 
 ### What a derived template workspace looks like
 
-Library and project scopes use the same core structure; substitute either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/` for `<template_workspace>`:
+Library and project scopes use the same spec schema and asset routing; a library workspace uses a bare spec while a shared project root uses qualified specs. Substitute either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/` for `<template_workspace>`:
 
 Brand and Style stop at `templates/design_spec.md` (plus real Brand assets when
 present); they do not create the SVG or `exports/` rows shown above.
@@ -333,16 +338,17 @@ nor allowed.
 ### Library registration vs project placement
 
 - **Library scope (`library`, default)** writes the workspace under `skills/ppt-master/templates/<kind>/<id>/` and registers it globally.
-- **Project scope (`project`)** writes the same portable workspace at `projects/<name>/` and skips registration.
+- **Project scope (`project`)** writes a qualified spec at `projects/<name>/templates/design_spec.<kind>.<id>.md` and skips registration, so one project root can accumulate one contribution of every kind over separate runs and hand the complete bundle to any project that points at that root. Layout owns the active roster when Layout and Deck coexist.
 
 The result is not a private or reduced project-only format. Supplying an exact
 workspace root adds it to the Step-3 candidate input, defaults Stage 1 to
 template mode, and preselects that root only when it is the sole supplied root.
-Brand/Layout/Deck migrate with `templates/` plus any real package-owned
-`images/` and `icons/`; Style migrates only `templates/design_spec.md`, and
-unrelated project scaffolding is ignored. If a workspace moves into the
-library, run its kind-specific registration so discovery reflects the new
-location.
+Each distinct root migrates once with every qualified spec it exposes and any
+real package-owned `images/` and `icons/`; only the effective Layout-or-Deck SVG
+roster is installed;
+unrelated project scaffolding and `exports/` are ignored. If one contribution
+moves into the library, place it in a single-kind library workspace and run its
+kind-specific registration so discovery reflects the new location.
 
 ---
 

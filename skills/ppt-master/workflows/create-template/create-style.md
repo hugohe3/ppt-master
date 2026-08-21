@@ -17,12 +17,12 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 
 **Hard rule — method and defaults only**: A Style owns a reusable way to argue, express evidence, and coordinate non-binding design defaults. It owns no current-project communication contract, reusable brand identity, page geometry, canvas, SVG prototype, Master/Layout graph, placeholder contract, application contract, visible asset inventory, carrier eligibility, image source, or local authoring-capability whitelist.
 
-**Hard rule — no page prototypes**: A Style workspace contains only `templates/design_spec.md`. Do not create page SVGs, a review PPTX, or empty `images/`, `icons/`, or `exports/` directories.
+**Hard rule — no page prototypes**: Style contributes only its own Design Spec. Do not create page SVGs, a review PPTX, or empty `images/`, `icons/`, or `exports/` directories. In a project workspace shared with another kind, files that kind owns are not Style output and are left untouched.
 
 ## Invocation Points
 
 1. Use §1–2 below for Style analysis and brief fields, then execute Create Template Steps 2–3 with those child-owned fields.
-2. After Create Template Step 4 resolves and preflights `<template_workspace>`, use §3 to materialize the confirmed Style.
+2. After Create Template Step 4 resolves and preflights `<template_workspace>` and `<design_spec_path>`, use §3 to materialize the confirmed Style.
 3. Run §4, then return its evidence to Create Template Steps 5, 7, and 8. Create Style always skips the shared structured-preview step.
 
 ## 1. Style Input Interpretation
@@ -149,12 +149,12 @@ necessary freeform. Explicit current-project requirements remain upstream.
 
 ## 3. Materialize the Confirmed Style
 
-Create Template supplies an already resolved and collision-checked `<template_workspace>`. Write only:
+Create Template supplies an already resolved and collision-checked `<template_workspace>` and `<design_spec_path>`. Write only:
 
 ```text
 <template_workspace>/
 └── templates/
-    └── design_spec.md
+    └── design_spec.md          # project scope: design_spec.style.<style_id>.md
 ```
 
 Do not create or adopt images, icons, SVGs, native payloads, or review exports. References remain textual provenance; they are not portable Style assets.
@@ -163,7 +163,7 @@ Do not create or adopt images, icons, SVGs, native payloads, or review exports. 
 
 Return these facts to Create Template:
 
-- `templates/design_spec.md` contains non-empty `style_id`, `kind: style`, `summary`, and three-to-five `keywords`; no other frontmatter field exists.
+- The Design Spec contains non-empty `style_id`, `kind: style`, `summary`, and three-to-five `keywords`; no other frontmatter field exists.
 - `style_id` matches the confirmed workspace ID in library scope.
 - Required sections I–VII exist; preset seeds resolve to real catalog IDs, while custom seeds include behavior prose and only real comma-separated catalog references.
 - No `*.svg`, optional asset directory, review export, or native payload was created.

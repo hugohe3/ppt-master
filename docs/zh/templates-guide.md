@@ -52,17 +52,21 @@ Default Generate 把模板选择放进 **Stage 1**，与不受模板影响的沟
 模板模式展示已注册 Brand/Style/Layout/Deck 与本次提供的 root；只提供一个
 root 时会预选，多 root 仍只作为未选候选。系统不会根据主题替用户推断具体模板。
 
-> **快速模式例外：** Quick 不会打开这个页面。请求中每个 kind 最多一个精确
-> 工作区 root，会被直接校验、安装并使用；没有精确 root 就直接自由设计。
-> 裸模板名仍不会被解析。Quick 继续采用无锁 flat 导出，因此 Layout/Deck
-> 原型是页面创作输入，不会变成可复用的原生 Master/Layout 输出。
+> **快速模式例外：** Quick 不会打开这个页面。请求中的精确 root 会被直接
+> 校验并使用，每个 kind 最多一份；Layout 与 Deck 可以共存，结构由 Layout
+> 优先提供。多 kind root
+> 会原子地贡献其全部 spec。没有精确 root 就直接自由设计，裸模板名仍不会
+> 被解析。Quick 继续采用无锁 flat 导出，因此 Layout/Deck 原型是页面创作
+> 输入，不会变成可复用的原生 Master/Layout 输出。
 
 ### 怎么使用选择器
 
 Stage-1 页面先让用户选择自由设计或使用模板；只有选择使用模板，才展开五个
 紧凑下拉框：Brand、Style、Layout、Deck 各一个已注册工作区单选框，再加
-一个本次运行指定地址单选框。每个下拉框都有“无”；四类已注册模板可跨类型
-组合，指定地址最多选一个。已注册列表只来自四类索引，工作流不会扫描模板
+一个本次运行指定地址单选框。每个下拉框都有“无”；完整选择可以跨类型组合，
+四种 kind 均可参与，但每个 kind 最多一份。Layout 与 Deck 同时存在时由
+Layout 提供结构。指定地址最多选一个，并原子携带
+该 root 暴露的全部 kind。已注册列表只来自四类索引，工作流不会扫描模板
 目录。需要默认展开模板模式并预选某个 Brand/Style/Layout/Deck 工作区时，
 直接在对话里写出精确 root（位置不重要，只要明确即可）：
 
@@ -70,7 +74,7 @@ Stage-1 页面先让用户选择自由设计或使用模板；只有选择使用
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其 frontmatter 中的真实 `kind`。`explicit` 只是来源，不是第五种类型，也不提高优先级。Stage 1 会校验已选候选 root；确认后，Brand/Layout/Deck 安装其包自有 `templates/` 及真实存在的 `images/`、`icons/`，Style 只安装 spec，并忽略项目中无关的脚手架。如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给下一次 Stage-1 选择器。
+对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其中真实的限定名 spec。`explicit` 只是来源，不是第五种类型，也不提高优先级。Stage 1 会原子校验每个已选 root；确认后，每个不同 root 的 spec 和真实包自有 `images/`、`icons/` 只映射一次，并只安装有效结构 roster（有 Layout 时用 Layout，否则用 Deck），始终不复制 `exports/`。Deck/Layout root 会在应用优先级前各自校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给下一次 Stage-1 选择器。
 
 模板选择与 Stage 1 共用页面和提交动作，但仍作为独立 sidecar 决策保存。
 沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态；候选元数据、
@@ -114,9 +118,9 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 模板工作区：projects/acme_template/
 ```
 
-在聊天中显式提供 root 时，“模板工作区”这些标签可以不写，但 root 必须精确；页面中的 library 选择已自带精确 root。页面中每个注册 kind 最多选一个，指定地址最多选一个；若指定地址解析出的 kind 与某个注册选择相同，工作流会进入既有的两份同类冲突解决门，不会静默替你选一个。
+在聊天中显式提供 root 时，“模板工作区”这些标签可以不写，但 root 必须精确；页面中的 library 选择已自带精确 root。页面中每个注册 kind 最多选一个、指定地址最多选一个，并拒绝同 kind 重复。Layout 与 Deck 可以同时选择：Layout 拥有结构，Deck 保留其他片段。指定的多 kind root 必须整包选择，其已暴露的 kind 不能再从 library 重复选择。
 
-你不需要选择模板使用模式。对 Layout/Deck，Strategist 会读取真实的 Master/Layout/原型集合和当前内容，决定选哪些页、哪些重复/跳过/重排，以及是否重组。Brand 只提供身份约束，Style 只提供方向/方法默认值；除非另一个工作区提供结构，否则两者都保持页面自由编排。如果你在意某个边界，直接在同一句请求里用普通语言说明即可，例如“封面和结束页原样保留，中间页由你选择”或“只参考视觉语言”；明确文字优先于 AI 判断。
+你不需要选择模板使用模式。Strategist 会读取有效结构 roster（有 Layout 时用 Layout，否则用 Deck）和当前内容，决定选哪些页、哪些重复/跳过/重排，以及是否重组。Brand 只提供身份约束，Style 只提供方向/方法默认值；除非另一个工作区提供结构，否则两者都保持页面自由编排。如果你在意某个边界，直接在同一句请求里用普通语言说明即可，例如“封面和结束页原样保留，中间页由你选择”或“只参考视觉语言”；明确文字优先于 AI 判断。
 
 ### 现有模板一览
 
@@ -194,7 +198,7 @@ Strategist 会把方向拆成两个彼此独立的选择：
 
 | 字段 | 说明 |
 |------|------|
-| **输出范围** | `library`（默认）或 `project`；两者使用相同的可移植工作区路由，只有 library 会进入全局索引 |
+| **输出范围** | `library`（默认）或 `project`；两者使用相同 spec schema，但 library 在单 kind 目录使用裸 spec，project 在共享根使用限定名 spec |
 | **目标项目** | 仅 `project` 必填；必须给出已初始化项目的精确路径 |
 | **已选子工作流** | Create Brand / Create Style / Create Layout / Create Deck，由入口分派后固定 |
 | **模板 ID** | 模板的可移植身份；在 `library` 下同时也是目录名 / 索引键。优先 ASCII slug，如 `acme_consulting`；中文品牌名也行，但要文件系统安全 |
@@ -208,7 +212,7 @@ Strategist 会把方向拆成两个彼此独立的选择：
 
 确认后，工作流会回显一份完整简报并写入标记 `[TEMPLATE_BRIEF_CONFIRMED]`，从这一刻起后续步骤才会启动。**这是一个硬门——简报没确认，不会开始生成**。
 
-无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/` 与 `icons/imported/` 中计划写入的位图和导入向量文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。项目初始化时已存在的空脚手架目录可以保留且不会被算作模板产物；Create Template 不会为了保留空路径而新建可选目录。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
+无论选择哪种范围，第一次写最终文件前都会做一次完整预检，解析 Design Spec 和全部真实素材目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸 spec、同 kind spec 或无效限定名集合；不同 kind 可以共存。新增 Deck 而项目已有 Layout 时，不改变 Layout roster；新增 Layout 而项目已有 Deck 时，先隔离校验，再原子替换 Deck 的结构载荷。两种范围都会在写入前拒绝位图、导入向量、审阅导出及其他计划目标冲突。已有空脚手架会原样保留，Create Template 不会只为保留空路径创建可选目录。任一检查失败都会在写入前停止且不覆盖。
 
 > 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是可复用的 ownership contract。先确认所拥有的片段和目标位置，并且只为 Layout/Deck 确认几何，可避免半成品或资产落错目录。
 
@@ -230,13 +234,13 @@ Layout/Deck frontmatter 仍会记录 `replication_mode: standard|fidelity|mirror
 
 ```bash
 python3 skills/ppt-master/scripts/mirror_template_materialize.py \
-  "<import_workspace>" "<empty_template_workspace>"
+  "<import_workspace>" "<template_workspace>"
 ```
 
 它会先校验 IR manifest、不可变来源 hash、完整原生图谱、可见性事实和
 导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
 `icons/imported/`、`images/` 素材。它不要求、也不会把按需生成的
-`svg-flat/` 校验视图当成模板来源，并且不会生成 `design_spec.md`；设计角色必须针对物化后的 roster 编写该简报。
+`svg-flat/` 校验视图当成模板来源，并且不会生成 Design Spec；设计角色必须针对物化后的 roster 写入已解析的 spec 路径。
 
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
@@ -251,7 +255,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 | `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand/Create Style：不适用；Create Layout/Create Deck：单 Master 可选、多 Master 必须 | 校验后注册到对应 `brands_index.json`、`styles_index.json`、`layouts_index.json` 或 `decks_index.json` |
 | `project` | `projects/<name>/` | 沿用同一套 kind-specific 审阅规则 | 跳过全局索引注册 |
 
-全局注册会让模板出现在 Default Stage-1 模板控件中，也可在聊天中发现，因为两者都读取同一个索引。项目范围或精确交接则提供工作区 root，例如 `用这个模板：projects/<name>/`；这会默认展开模板模式，只提供一个 root 时页面会预选，多 root 保持未选候选，未注册 root 仍标记为 `explicit`。项目工作区也可以迁移或被其他工作区复用，因为核心结构完全一致；只有放进全局库并需要出现在 library 列表中时才执行注册。
+全局注册会让模板出现在 Default Stage-1 模板控件中，也可在聊天中发现，因为两者都读取同一个索引。项目范围或精确交接则提供工作区 root，例如 `用这个模板：projects/<name>/`；这会默认展开模板模式，只提供一个 root 时页面会预选，多 root 保持未选候选，未注册 root 仍标记为 `explicit`。项目 root 可被其他项目直接复用，并原子贡献其中全部限定名 spec。要把其中一项移入单 kind 全局库，则保持 spec 内容不变，把它放到该库工作区的裸 `templates/design_spec.md` 路径后再注册。
 
 选择 Deck/Layout 模板后，Strategist 会自动生成页面/原型应用计划：可以使用全套或子集，重复或重排原型，并按内容需要重组。`strict` / `adaptive` 只作为内部导出值，不再出现在确认选项中。
 
@@ -275,7 +279,7 @@ Master/Layout 行为以 Microsoft PowerPoint 为验收目标。Keynote、WPS 与
 
 ### 派生后的模板工作区长什么样
 
-全局库与项目范围使用相同的核心结构。把下面的 `<template_workspace>` 替换为 `skills/ppt-master/templates/<kind>/<id>/` 或 `projects/<name>/` 即可：
+全局库与项目范围使用相同的 spec schema 和素材路由；库工作区用裸 spec，项目共享根则用限定名 spec。把下面的 `<template_workspace>` 替换为 `skills/ppt-master/templates/<kind>/<id>/` 或 `projects/<name>/` 即可：
 
 Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资产），
 不会生成下面的 SVG 或 `exports/` 行。
@@ -307,13 +311,13 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 ### 全局注册与项目放置
 
 - **全局库范围（`library`，默认）**把工作区写入 `skills/ppt-master/templates/<kind>/<id>/`，并完成全局注册。
-- **项目范围（`project`）**把同一份可移植工作区写入 `projects/<name>/`，并跳过注册。
+- **项目范围（`project`）**把限定名 spec 写入 `projects/<name>/templates/design_spec.<kind>.<id>.md` 并跳过注册，因此同一个项目根可以分多次积累四种 kind 各一份，并把整套 bundle 交给任何指向该 root 的项目。Layout 与 Deck 同时存在时，Layout 拥有有效 roster。
 
 项目范围不是私有或缩减格式。提供精确工作区根目录会把它加入 Step 3
 候选输入，并让 Stage 1 默认展开模板模式；只有该 root 是唯一输入时才会预选。
-Brand/Layout/Deck 迁移 `templates/` 及真实的包自有 `images/`、`icons/`；
-Style 只迁移 `templates/design_spec.md`，并忽略无关的项目脚手架。迁入全局库
-后，再按对应 kind 执行注册，让发现索引反映新位置。
+每个不同 root 只迁移一次：携带其暴露的全部限定名 spec 及真实包自有
+`images/`、`icons/`，并只安装有效 Layout-or-Deck SVG roster；忽略无关项目脚手架和 `exports/`。
+若把其中一项迁入全局库，应将其放入单 kind 库工作区并执行对应注册命令。
 
 ---
 

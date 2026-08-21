@@ -19,7 +19,7 @@ specific candidate only when it is the sole supplied root.
 Registered exact roots are `library`; other exact roots remain `explicit`. The conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage owns path normalization, portable-root installation, per-workspace spec naming,
-same-kind conflict resolution, and provenance after Stage 1 and before Stage 2. Template-aware
+selection-conflict rejection, and provenance after Stage 1 and before Stage 2. Template-aware
 reading begins in final Stage 2 from the installed project-local copy. This file owns
 only the Brand schema. Quick applies a supplied exact Brand root directly and
 otherwise uses free design.
