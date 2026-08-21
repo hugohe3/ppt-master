@@ -198,22 +198,74 @@ def _safe_template_id(template_id: object) -> bool:
     )
 
 
-def _template_design_spec_path(workspace_root: Path) -> Path:
-    """Return the current or legacy Design Spec for one workspace root."""
-    current = workspace_root / 'templates' / 'design_spec.md'
+_TEMPLATE_SPEC_NAME_RE = re.compile(
+    r'design_spec\.(?P<kind>brand|style|layout|deck)\.(?P<id>[^/\\]+)\.md'
+)
+
+
+def _template_design_specs(workspace_root: Path) -> list[Path]:
+    """Return every Design Spec one template workspace root exposes.
+
+    A single-kind workspace keeps the exact ``templates/design_spec.md``, and a
+    compatible legacy-flat root keeps ``design_spec.md`` beside its pages. A
+    multi-kind workspace keeps one ``templates/design_spec.<kind>.<id>.md`` per
+    kind — the same shape the apply stage installs into a consuming project — so
+    one root can carry, for example, a Brand plus a Style. Order is stable so
+    candidate keys and the options digest do not depend on directory listing
+    order.
+    """
+    templates_dir = workspace_root / 'templates'
+    current = templates_dir / 'design_spec.md'
+    multi = sorted(
+        path
+        for path in templates_dir.glob('design_spec.*.md')
+        if _TEMPLATE_SPEC_NAME_RE.fullmatch(path.name)
+    ) if templates_dir.is_dir() else []
+    if current.is_file() and multi:
+        raise ValueError(
+            'template workspace mixes design_spec.md with kind-qualified specs '
+            f'({", ".join(path.name for path in multi)}): {workspace_root}; '
+            'rename the bare spec to design_spec.<kind>.<id>.md'
+        )
     if current.is_file():
-        return current
+        return [current]
+    if multi:
+        return multi
     legacy = workspace_root / 'design_spec.md'
     if legacy.is_file():
-        return legacy
+        return [legacy]
     raise ValueError(
-        'template workspace is missing templates/design_spec.md '
-        f'or legacy design_spec.md: {workspace_root}'
+        'template workspace is missing templates/design_spec.md, '
+        'templates/design_spec.<kind>.<id>.md, or legacy design_spec.md: '
+        f'{workspace_root}'
     )
 
 
 def _template_kind_from_spec(spec_path: Path) -> str:
-    """Read one supported top-level ``kind`` from Design Spec frontmatter."""
+    """Read one supported top-level ``kind`` from Design Spec frontmatter.
+
+    Frontmatter stays the single truth. When the filename also carries a kind,
+    both its kind and id must agree; a mismatch is a corrupt workspace rather
+    than a precedence question.
+    """
+    name_match = _TEMPLATE_SPEC_NAME_RE.fullmatch(spec_path.name)
+    if name_match is not None:
+        try:
+            from register_template import (
+                SpecParseError,
+                validate_qualified_spec_identity,
+            )
+            declared_kind, _filename_id, _frontmatter, _body = (
+                validate_qualified_spec_identity(spec_path)
+            )
+        except ImportError as exc:
+            raise ValueError(
+                f'Qualified Design Spec validator could not be imported: {exc}'
+            ) from exc
+        except (OSError, SpecParseError) as exc:
+            raise ValueError(str(exc)) from exc
+        return declared_kind
+
     try:
         lines = spec_path.read_text(encoding='utf-8-sig').splitlines()
     except OSError as exc:
@@ -313,7 +365,7 @@ def _read_template_options_input(confirm_dir: Path) -> tuple[dict, list[Path]]:
             )
         if not root.is_dir():
             raise ValueError(f'explicit workspace root is not a directory: {canonical}')
-        _template_design_spec_path(root)
+        _template_design_specs(root)
         seen.add(canonical)
         roots.append(root)
     return data, roots
@@ -404,25 +456,39 @@ def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
             suggested_keys.append(registered['key'])
             continue
         digest = hashlib.sha256(canonical_root.encode('utf-8')).hexdigest()
-        key = f'explicit:{digest}'
-        if key in candidates:
-            raise ValueError(f'duplicate template candidate key: {key}')
-        kind = _template_kind_from_spec(_template_design_spec_path(root))
-        candidate = {
-            'key': key,
-            'source': 'explicit',
-            'kind': kind,
-            'label': root.name or canonical_root,
-            'workspace_root': canonical_root,
-        }
-        explicit.append(candidate)
-        candidates[key] = candidate
-        suggested_keys.append(key)
+        root_specs = [
+            (spec, _template_kind_from_spec(spec))
+            for spec in _template_design_specs(root)
+        ]
+        root_kinds = [kind for _spec, kind in root_specs]
+        duplicate_kinds = sorted({
+            kind for kind in root_kinds if root_kinds.count(kind) > 1
+        })
+        if duplicate_kinds:
+            raise ValueError(
+                'workspace root exposes the same kind more than once '
+                f'({", ".join(duplicate_kinds)}): {canonical_root}'
+            )
+        for spec, kind in root_specs:
+            key = f'explicit:{digest}:{kind}'
+            if key in candidates:
+                raise ValueError(f'duplicate template candidate key: {key}')
+            candidate = {
+                'key': key,
+                'source': 'explicit',
+                'kind': kind,
+                'label': root.name or canonical_root,
+                'workspace_root': canonical_root,
+            }
+            explicit.append(candidate)
+            candidates[key] = candidate
+            suggested_keys.append(key)
 
-    # One supplied exact root is an unambiguous convenience default. Multiple
-    # roots are candidates for the single-select controls, not an instruction
-    # to select all of them.
-    preselected_keys = suggested_keys if len(suggested_keys) == 1 else []
+    # One supplied exact root is an unambiguous convenience default, including
+    # a multi-kind root whose kinds compose rather than compete. Several roots
+    # are candidates for the single-select controls, not an instruction to
+    # select all of them.
+    preselected_keys = suggested_keys if len(explicit_roots) == 1 else []
 
     response = {
         'schema_version': TEMPLATE_SCHEMA_VERSION,
@@ -515,9 +581,9 @@ def _validate_template_selection(data: dict) -> None:
     if not isinstance(selection_sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', selection_sha256):
         raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 is invalid')
 
-    seen_roots = set()
-    seen_library_kinds = set()
-    explicit_count = 0
+    seen_root_kinds = set()
+    seen_kinds: set[str] = set()
+    explicit_roots_seen: dict[str, set[str]] = {}
     for index, selection in enumerate(selections):
         if not isinstance(selection, dict):
             raise ValueError(
@@ -536,22 +602,16 @@ def _validate_template_selection(data: dict) -> None:
         expected_keys = {'source', 'kind', 'workspace_root'}
         if source == 'library':
             expected_keys.add('id')
-            if kind in seen_library_kinds:
-                raise ValueError(
-                    'template selection allows at most one library workspace '
-                    f'for kind {kind!r}'
-                )
-            seen_library_kinds.add(kind)
             if not _safe_template_id(selection.get('id')):
                 raise ValueError(
                     f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid id'
                 )
-        else:
-            explicit_count += 1
-            if explicit_count > 1:
-                raise ValueError(
-                    'template selection allows at most one explicit workspace'
-                )
+        if kind in seen_kinds:
+            raise ValueError(
+                'template selection allows at most one workspace for kind '
+                f'{kind!r}'
+            )
+        seen_kinds.add(kind)
         if set(selection) != expected_keys:
             raise ValueError(
                 f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid fields'
@@ -568,12 +628,20 @@ def _validate_template_selection(data: dict) -> None:
                 f'{TEMPLATE_SELECTION_NAME} selections[{index}] '
                 'workspace_root must be a canonical absolute path'
             )
-        if workspace_root in seen_roots:
+        if source == 'explicit':
+            # One explicit workspace root may contribute several kinds, so the
+            # cap counts roots rather than selections.
+            explicit_roots_seen.setdefault(workspace_root, set()).add(kind)
+            if len(explicit_roots_seen) > 1:
+                raise ValueError(
+                    'template selection allows at most one explicit workspace'
+                )
+        if (workspace_root, kind) in seen_root_kinds:
             raise ValueError(
-                f'{TEMPLATE_SELECTION_NAME} contains duplicate workspace root: '
-                f'{workspace_root}'
+                f'{TEMPLATE_SELECTION_NAME} contains duplicate workspace root '
+                f'for kind {kind!r}: {workspace_root}'
             )
-        seen_roots.add(workspace_root)
+        seen_root_kinds.add((workspace_root, kind))
     if not isinstance(data.get('confirmed_at'), str) or not data['confirmed_at']:
         raise ValueError(
             f'{TEMPLATE_SELECTION_NAME} confirmed_at must be a non-empty string'
@@ -585,6 +653,32 @@ def _validate_template_selection(data: dict) -> None:
     )
     if selection_sha256 != expected_selection_sha256:
         raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 does not match')
+
+
+def _validate_explicit_root_closure(
+    selections: list[dict],
+    candidates: dict[str, dict],
+) -> None:
+    """Require every selected explicit root to contribute all exposed kinds."""
+    exposed: dict[str, set[str]] = {}
+    for candidate in candidates.values():
+        if candidate['source'] == 'explicit':
+            exposed.setdefault(candidate['workspace_root'], set()).add(
+                candidate['kind']
+            )
+    chosen: dict[str, set[str]] = {}
+    for selection in selections:
+        if selection['source'] == 'explicit':
+            chosen.setdefault(selection['workspace_root'], set()).add(
+                selection['kind']
+            )
+    for root, kinds in chosen.items():
+        missing = sorted(exposed.get(root, set()) - kinds)
+        if missing:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selects workspace root {root} '
+                f'without every kind it exposes; missing: {", ".join(missing)}'
+            )
 
 
 def _read_template_selection(selection_file: Path) -> dict:
@@ -611,6 +705,8 @@ def _read_template_selection(selection_file: Path) -> dict:
             raise ValueError(
                 f'{TEMPLATE_SELECTION_NAME} references an unavailable candidate'
             )
+
+    _validate_explicit_root_closure(data['selections'], candidates)
     return data
 
 
@@ -685,7 +781,7 @@ def _installed_template_specs(project_path: Path) -> list[Path]:
     return sorted(
         path
         for path in (project_path / 'templates').glob('design_spec.*.md')
-        if path.is_file()
+        if path.is_file() and _TEMPLATE_SPEC_NAME_RE.fullmatch(path.name)
     )
 
 
@@ -890,6 +986,7 @@ def _resolve_template_confirmation(
         'confirmed_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
     }
     _validate_template_selection(receipt)
+    _validate_explicit_root_closure(selections, candidates)
     return receipt
 
 

@@ -792,13 +792,77 @@ SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES = 2
 IMAGE_DOWNSIZE_WARN_RATIO = 4.0
 IMAGE_DOWNSIZE_WARN_MIN_BYTES = 1024 * 1024
 
+_TEMPLATE_SPEC_NAME_RE = re.compile(
+    r'design_spec\.(?P<kind>brand|style|layout|deck)\.(?P<id>[^/\\]+)\.md'
+)
+
+
+def _template_spec_paths(directory: Path) -> list[Path]:
+    """Return every template Design Spec directly inside one directory.
+
+    A library workspace keeps the exact ``design_spec.md`` because its parent
+    directory already names the kind and id. A project workspace root shares one
+    ``templates/`` across kinds, so it keeps ``design_spec.<kind>.<id>.md`` and
+    may hold one spec per kind side by side.
+    """
+    if not directory.is_dir():
+        return []
+    exact = directory / 'design_spec.md'
+    qualified = sorted(
+        path
+        for path in directory.glob('design_spec.*.md')
+        if _TEMPLATE_SPEC_NAME_RE.fullmatch(path.name)
+    )
+    if exact.is_file():
+        # Mixing both shapes hides one of them from every reader that stops at
+        # the first match, so it is reported rather than silently resolved.
+        return [exact] + qualified
+    return qualified
+
+
+def _spec_declared_kind(spec_path: Path) -> str | None:
+    """Return one spec's kind, from its filename when it carries one."""
+    match = _TEMPLATE_SPEC_NAME_RE.fullmatch(spec_path.name)
+    if match is not None:
+        return match.group('kind')
+    return _design_spec_kind(spec_path)
+
+
+def _roster_spec_paths(directory: Path) -> list[Path]:
+    """Return every spec in one directory that owns an SVG roster."""
+    roster = []
+    for spec in _template_spec_paths(directory):
+        match = _TEMPLATE_SPEC_NAME_RE.fullmatch(spec.name)
+        if match is not None:
+            if match.group('kind') in {'layout', 'deck'}:
+                roster.append(spec)
+        elif _design_spec_kind(spec) not in {'brand', 'style'}:
+            roster.append(spec)
+    return roster
+
+
+def _roster_spec_path(directory: Path) -> Path | None:
+    """Return the effective spec that owns this directory's SVG roster.
+
+    A project root may carry both Layout and Deck. Layout owns reusable
+    structure when present; Deck owns it only when no Layout is installed.
+    """
+    roster = _roster_spec_paths(directory)
+    for spec in roster:
+        if spec.name == 'design_spec.md':
+            return spec
+    for kind in ('layout', 'deck'):
+        for spec in roster:
+            if _spec_declared_kind(spec) == kind:
+                return spec
+    return None
+
+
 def _design_spec_kind(spec_path: Path) -> str | None:
-    """Return a roster-free ``kind`` declared in design_spec.md frontmatter.
+    """Return ``kind`` declared in Design Spec frontmatter.
 
     Lightweight detector that does not require PyYAML — scans only the
-    frontmatter block (``---`` delimited). Used by ``check_directory`` to
-    select schema-only validation for Brand and Style workspaces instead of
-    SVG-roster validation.
+    frontmatter block (``---`` delimited).
     """
     try:
         text = spec_path.read_text(encoding='utf-8')
@@ -813,7 +877,8 @@ def _design_spec_kind(spec_path: Path) -> str | None:
     for line in fm_block.splitlines():
         stripped = line.strip()
         match = re.fullmatch(
-            r'''kind\s*:\s*(?:(['"])(brand|style)\1|(brand|style))'''
+            r'''kind\s*:\s*(?:(['"])(brand|style|layout|deck)\1|'''
+            r'''(brand|style|layout|deck))'''
             r'''(?:\s+#.*)?\s*''',
             stripped,
         )
@@ -825,7 +890,9 @@ def _design_spec_kind(spec_path: Path) -> str | None:
 def _declared_template_structure_mode(target_path: Path) -> str | None:
     """Return a template directory's explicit native structure mode."""
     directory = target_path.parent if target_path.is_file() else target_path
-    spec_path = directory / 'design_spec.md'
+    spec_path = _roster_spec_path(directory)
+    if spec_path is None:
+        return None
     try:
         text = spec_path.read_text(encoding='utf-8')
     except OSError:
@@ -846,7 +913,9 @@ def _declared_template_structure_mode(target_path: Path) -> str | None:
 def _declared_template_canvas_viewbox(target_path: Path) -> str | None:
     """Return a template design spec's locked root-canvas value."""
     directory = target_path.parent if target_path.is_file() else target_path
-    spec_path = directory / 'design_spec.md'
+    spec_path = _roster_spec_path(directory)
+    if spec_path is None:
+        return None
     try:
         text = spec_path.read_text(encoding='utf-8')
     except OSError:
@@ -5258,17 +5327,103 @@ class SVGQualityChecker:
         # registration, while keeping project scope independent of global
         # indexes and directory names.
         if self.template_mode and dir_path.is_dir():
-            nested_spec = dir_path / 'templates' / 'design_spec.md'
-            spec = nested_spec if nested_spec.is_file() else dir_path / 'design_spec.md'
-            spec_kind = _design_spec_kind(spec) if spec.exists() else None
-            if spec_kind in {'brand', 'style'}:
+            nested = dir_path / 'templates'
+            spec_dir = nested if _template_spec_paths(nested) else dir_path
+            specs = _template_spec_paths(spec_dir)
+            bare = [spec for spec in specs if spec.name == 'design_spec.md']
+            qualified = [spec for spec in specs if spec.name != 'design_spec.md']
+            if bare and qualified:
+                self._template_issues.append((
+                    'error',
+                    'spec_naming',
+                    'design_spec.md and design_spec.<kind>.<id>.md cannot share '
+                    f'{spec_dir}; rename the bare spec to its kind-qualified name',
+                ))
+                return self.results
+            try:
+                from register_template import (
+                    SpecParseError,
+                    validate_qualified_spec_identity,
+                )
+                for spec in qualified:
+                    validate_qualified_spec_identity(spec)
+            except ImportError as exc:
+                self._template_issues.append((
+                    'error',
+                    'spec_naming',
+                    f'Qualified Design Spec validator could not be imported: {exc}',
+                ))
+                return self.results
+            except (OSError, SpecParseError) as exc:
+                self._template_issues.append((
+                    'error',
+                    'spec_naming',
+                    str(exc),
+                ))
+                return self.results
+            declared_kinds = [
+                kind
+                for spec in qualified
+                for kind in [_spec_declared_kind(spec)]
+                if kind is not None
+            ]
+            duplicate_kinds = sorted({
+                kind for kind in declared_kinds
+                if declared_kinds.count(kind) > 1
+            })
+            if duplicate_kinds:
+                self._template_issues.append((
+                    'error',
+                    'spec_naming',
+                    f'{spec_dir} declares the same kind more than once: '
+                    + ', '.join(duplicate_kinds),
+                ))
+                return self.results
+            active_roster_spec = _roster_spec_path(spec_dir)
+            shadowed_deck_specs = [
+                spec
+                for spec in _roster_spec_paths(spec_dir)
+                if spec != active_roster_spec
+                and _spec_declared_kind(spec) == 'deck'
+            ]
+            for spec in shadowed_deck_specs:
+                try:
+                    from register_template import (
+                        SpecParseError,
+                        validate_shadowed_deck_spec,
+                    )
+                    declared_pages = self._extract_spec_roster(
+                        spec.read_text(encoding='utf-8')
+                    )
+                    validate_shadowed_deck_spec(spec, declared_pages)
+                except ImportError as exc:
+                    self._template_issues.append((
+                        'error',
+                        'deck_contract',
+                        f'Shadowed Deck validator could not be imported: {exc}',
+                    ))
+                    return self.results
+                except (OSError, SpecParseError) as exc:
+                    self._template_issues.append((
+                        'error',
+                        'deck_contract',
+                        str(exc),
+                    ))
+                    return self.results
+            roster_free = [
+                (spec, kind)
+                for spec in _template_spec_paths(spec_dir)
+                for kind in [_spec_declared_kind(spec)]
+                if kind in {'brand', 'style'}
+            ]
+            for spec, spec_kind in roster_free:
                 self._spec_only_template_kind = spec_kind
                 self.summary['total'] += 1
                 spec_valid = True
                 pretty_kind = spec_kind.title()
                 print(
-                    f"[INFO] {pretty_kind} directory detected "
-                    f"(kind: {spec_kind}) — "
+                    f"[INFO] {pretty_kind} spec detected "
+                    f"({spec.name}) — "
                     f"validating its portable workspace contract."
                 )
                 workspace_root = (
@@ -5303,6 +5458,9 @@ class SVGQualityChecker:
                     ))
                 if spec_valid:
                     self.summary['passed'] += 1
+            # A roster-bearing Layout/Deck spec may sit beside those in one
+            # project workspace; only then does SVG validation still apply.
+            if roster_free and _roster_spec_path(spec_dir) is None:
                 return self.results
 
         # Find all SVG files
@@ -6791,8 +6949,12 @@ class SVGQualityChecker:
         Issues are aggregated and printed in :py:meth:`print_summary` so the
         per-file report stays focused on intrinsic SVG validity.
         """
-        spec_path = dir_path / 'design_spec.md'
-        spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
+        spec_path = _roster_spec_path(dir_path)
+        spec_text = (
+            spec_path.read_text(encoding='utf-8')
+            if spec_path is not None and spec_path.exists()
+            else ""
+        )
         declared_structure_mode = _declared_template_structure_mode(dir_path)
         mode_error_recorded = False
         if declared_structure_mode != 'structured':
@@ -6920,7 +7082,7 @@ class SVGQualityChecker:
                     'roster_missing',
                     f"design_spec.md Page Roster lists {page} but {page}.svg is missing on disk",
                 ))
-        elif spec_path.exists():
+        elif spec_path is not None and spec_path.exists():
             # design_spec.md is present but the roster parser found nothing —
             # reusable template workspaces always fail closed.
             self._template_issues.append((
@@ -6933,7 +7095,7 @@ class SVGQualityChecker:
             self._template_issues.append((
                 'error',
                 'spec_missing',
-                f"{spec_path.name} not found — required for every library template",
+                "one Layout or Deck Design Spec is required for every SVG roster",
             ))
 
         # Per-file placeholder coverage. Variants reuse the parent type's set
