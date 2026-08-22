@@ -141,8 +141,9 @@ start/end remain derived rather than duplicated.
 ## 4. Target Resolution
 
 Generated object animation targets top-level SVG content groups. Explicit SVG
-semantics are authoritative; the group-id chrome heuristic is only a fallback
-for marker-free legacy SVGs.
+semantics are authoritative; the group-id chrome heuristic applies only to a
+top-level group that itself lacks `data-pptx-layer`, `data-pptx-role`, and
+`data-pptx-placeholder` semantics.
 
 | Target state | Behavior |
 |---|---|

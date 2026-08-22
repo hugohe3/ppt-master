@@ -12,13 +12,18 @@ only when those constructions fail. Neither helper writes a page. The preset
 helper does not create the shape's own `p:txBody`; keep visible text outside the
 atomic fragment.
 
-**Mandatory — complete vocabulary at authoring entry**: before the first newly
-authored page or template contour in each valid context, read
+**Mandatory — complete vocabulary before contour selection**: In Create
+Template, load this reference and
 [`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md) completely and
-retain it. It exposes all 187 exact preset names under the Office gallery and
-objective contour families. This is Executor-side capability knowledge, never
-a Strategist task or Design Spec field. Reread only after context invalidation
-or a known file change; a filtered query cannot replace the complete read.
+retain both as soon as `replication_mode` resolves to `standard` or `fidelity`,
+before selecting any newly authored page or template contour. Do not load this
+authored-construction bundle for `mirror`; it preserves source-owned geometry.
+In every other valid authoring context, read the preset vocabulary completely
+at authoring entry before selecting the first newly authored contour. It exposes
+all 187 exact preset names under the Office gallery and objective contour
+families. This is authoring-side capability knowledge, never a Strategist task
+or Design Spec field. Reread only after context invalidation or a known file
+change; a filtered query cannot replace the complete read.
 
 **Hard rule — direct structured calls**: `${SKILL_DIR}` below is the retained
 absolute Skill root. After choosing a concrete lookup or authoring operation,

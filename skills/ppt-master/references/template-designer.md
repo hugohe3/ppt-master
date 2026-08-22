@@ -48,6 +48,14 @@ Input priority for PPTX-backed template creation depends on the AI-derived inter
 | `standard` / `fidelity` | Finalized brief for the newly designed output; `manifest.json` for factual canvas/theme/assets | `authoring-svg/authoring_summary.json`, layered authoring SVGs, optional flat spot checks, and exported assets as visual references. Do not read `authoring_manifest.json`. Source Master/Layout topology is informational only and is not mined into output structure. |
 | `mirror` | `manifest.json`, `native_structure.json`, and `svg/inheritance.json`; the compiler validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus layered authoring SVGs as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
 
+**Mandatory — authored construction bundle**: As soon as `replication_mode`
+resolves to `standard` or `fidelity`, and before selecting any page or template
+contour, read [`native-shape-authoring.md`](./native-shape-authoring.md) and
+[`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md) completely and
+retain both for the active authoring context. Do not load this bundle for
+`mirror`; it preserves source-owned geometry and never selects or authors
+replacement contours.
+
 Use the compact facts in `manifest.json` for orientation. Open screenshots or the original PPTX only for visual cross-checking.
 
 **Native structure output**: Always set `native_structure_mode: structured`.
