@@ -70,6 +70,8 @@ Recommend format from the current scenario and project initialization (see [`can
 
 ### b. Page Count Confirmation
 
+**Default — open `page_count` as a narrow range (may override when an exact count is supplied or locked)**: At confirmation, the recommendation should be a range rather than a single value, narrow enough for the user to judge at a glance without becoming a material decision burden.
+
 **Stage-2 planning input.** Confirm UI may hold an approximation/range; *exactly*, *1:1*, or preservation fixes it. After Stage 1, choose one exact count from source volume, audience outcome, delivery context/afterlife, and reading mode, then author the complete §IX roster. After Gate 1 and any enabled refine-spec approval, that roster's ids, count, and order—not the earlier UI wording—are invariant. Executor cannot add, drop, merge, split, or reorder pages; changes first repair or reconfirm the Design Spec.
 
 ### c. Communication Contract Confirmation
