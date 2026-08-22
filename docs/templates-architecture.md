@@ -32,7 +32,7 @@ kind: brand
 ...
 ---
 
-# templates/styles/consulting_analytical/templates/design_spec.md
+# templates/styles/consulting-decision/templates/design_spec.md
 ---
 kind: style
 ...

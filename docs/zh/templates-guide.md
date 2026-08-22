@@ -63,8 +63,8 @@ root 时会预选，多 root 仍只作为未选候选。系统不会根据主题
 
 Stage-1 页面先让用户选择自由设计或使用模板；只有选择使用模板，才展开五个
 紧凑下拉框：Brand、Style、Layout、Deck 各一个已注册工作区单选框，再加
-一个本次运行指定地址单选框。每个下拉框都有“无”；完整选择可以跨类型组合，
-四种 kind 均可参与，但每个 kind 最多一份。Layout 与 Deck 同时存在时由
+一个本次运行指定地址单选框。每个下拉框都有“无”；完整选择可以分别选用
+四种 kind，但每个 kind 最多一份。Layout 与 Deck 同时存在时由
 Layout 提供结构。指定地址最多选一个，并原子携带
 该 root 暴露的全部 kind。已注册列表只来自四类索引，工作流不会扫描模板
 目录。需要默认展开模板模式并预选某个 Brand/Style/Layout/Deck 工作区时，
@@ -79,7 +79,7 @@ Layout 提供结构。指定地址最多选一个，并原子携带
 模板选择与 Stage 1 共用页面和提交动作，但仍作为独立 sidecar 决策保存。
 沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态；候选元数据、
 所选 root、已安装内容及模板画布均不得影响它。合并确认后，非自由设计选择才
-运行统一 apply 阶段，把所选工作区校验、合成并安装到当前项目的 `templates/`、
+运行统一 apply 阶段，把所选工作区分别校验并安装到当前项目的 `templates/`、
 `images/`、`icons/`。最终 Stage 2 再把已确认沟通契约与安装状态适配；
 `template_application` 只描述**如何使用**，不负责决定**选哪个模板**。
 
@@ -133,10 +133,10 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 
 这四个索引是 Default Stage 1 模板控件与聊天发现共用的完整已注册模板来源；
 目录永远不会被扫描。直接问“有哪些模板可以用？”即可得到带精确工作区路径的
-可读清单；四类 README 负责定义合同。完整数据模型与四类的合成 / 冲突解决
+可读清单；四类 README 负责定义合同。完整数据模型、安装与片段所有权
 规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
-### 自由设计 vs 模板
+### 自由设计与模板
 
 自由设计不是“没有结构”或“没有风格”——Strategist 仍会为这份 deck 规划叙事、层级与视觉系统，但生成页面使用 `pptx_structure.mode: flat`，所有可见对象都保留在 Slide 本地。仅使用 Brand 或 Style 工作区时同样保持 `flat`：Brand 提供身份约束，Style 提供可复用方法与视觉默认值候选。Layout 与 Deck 工作区提供可复用 Master / Layout / slot 合同；Strategist 会读取真实原型和当前内容，自动判断是复用结构，还是只参考视觉语言。
 
@@ -326,7 +326,7 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 避免常见误解：
 
 - **可复用模板是一份显式工作区，不是打包后的源 PPTX。** Brand 与 Style 无 roster；Layout 与 Deck 才增加 structured SVG 合同。创作模式建立这份合同，mirror 则把经过验证的来源归属事实映射进去；导出只编译已声明的结构
-- **模板不是一张不可拆分的“风格皮肤”。** Brand、Style、Layout 与 Deck 有意拆开身份、方向/方法、结构和应用，使每一段都能按明确所有权单独复用或参与合成
+- **模板不是一张不可拆分的“风格皮肤”。** Brand、Style、Layout 与 Deck 有意拆开身份、方向/方法、结构和应用，使每个片段都能单独复用；同时安装多个工作区时，各片段按明确的所有权规则生效
 - **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余
 - **`mirror` 的目标是受支持范围内的视觉与来源拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。

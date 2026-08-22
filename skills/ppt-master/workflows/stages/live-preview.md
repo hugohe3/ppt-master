@@ -13,7 +13,7 @@ description: Main-pipeline editor stage for starting live preview and applying s
 - **Start (Step 1)** — preview service is not currently running and the user wants to look at the deck or click an element. Typical cases: post-export re-entry in a fresh chat, or the user clicked **Exit preview** earlier and now wants it back.
 - **Apply annotations (Step 2)** — Step 7 has produced at least one PPTX, and the user signals that submitted annotations should now be applied. Triggers include:
   - quoting the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`)
-  - saying `apply my annotations` / `apply my edits` / `应用注解` / `开始应用` / 等价表达
+  - saying `apply my annotations` / `apply my edits` / `应用注解` / `开始应用` / or equivalent expressions
 
 ## When NOT to Run
 

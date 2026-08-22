@@ -116,12 +116,13 @@ PowerPoint 意图
 | 行内混合格式 | 不带定位的 `<tspan>` run | 同一文本框内的 DrawingML run | `Native-normalized`；已登记 run 格式仍可编辑 | 改变文本框几何的定位可能会拆分结果 |
 | 作者断行与多段落文本 | 一个 `<text>` 加直接定位的 `<tspan>` 行 | 默认在一个禁用自动换行的文本框中保留作者断行；普通生成文本框会随后续编辑调整大小，精确框和结构化多行占位符 carrier 保持原有固定尺寸行为；语义段落边界仍为 `a:p` | `Native-normalized` | `--reflow-text` 允许 PowerPoint 重排；`--no-merge` 为每一视觉行生成一个形状 |
 | 有意义的文本空白 | `<text>`/`<tspan>` 上精确的 `xml:space="default"` 或 `xml:space="preserve"` | 可编辑 DrawingML run 中归一化或保留的 U+0020 文本 | `Native-normalized`；保留行内 run 所有权 | 使用项目 Chromium/SVG2 合同：LF/TAB 转为空格，`default` 跨 run 折叠，`preserve` 全部保留，Unicode 间隔字符保持字面值；CSS `white-space` 与 SVG 1.1 遗留换行删除不在映射内 |
-| 字体 | 根据项目 lock 解析的规范 `font-family` | 直接 typeface 或已登记 theme font | 在安装字体/替换边界内为 `Native-stable` | 校验会报告未锁定或不可用字体 |
+| 字体 | 解析为 `spec_lock` 结构角色或可安全导出的上下文选择的规范 `font-family` | 直接 typeface 或已登记 theme font | 在安装字体/替换边界内为 `Native-stable` | 报告不可用或不安全的字体；安全的上下文字体只记录信息，不构成 lock 失败 |
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
 | 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 普通文本上标与下标 | `<tspan>` 上精确的直接属性 `baseline-shift="super|sub"`；显式 run `font-size` 与之独立 | 可编辑普通文本 `a:rPr@baseline`，取值为 `30000` / `-25000`；不会自动缩小字号 | 前向导出为原生能力。PPTX-to-SVG 不在可见 SVG 中重建 baseline shift；未修改的导入 `txBody` metadata 与源保留型原生工作流仍可保留来源 run | 拒绝 inline style、其他元素、数值偏移及与行内公式 marker 组合；结构化数学使用可编辑 OMML，Unicode 字形仍是字面文字 |
-| 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
+| 纯色/渐变文本填充与透明度 | 规范纯色/渐变 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
+| 图片或纹理文本填充 | `<text>` / 不带定位的 `<tspan>` 的 fill 引用一个带注解的单图 `pattern` | 可编辑 DrawingML run `a:blipFill`，使用原生 `stretch` 或 `tile` | 正向导出为原生能力；`stretch` 为 `Native-normalized`，`tile` 的缩放/相位可能归一化；回导暂不重建该填充 | 要求 `data-pptx-text-image-fill="stretch|tile"`、一个直接有效的 `<image>`，且 `<image>` 不带 `clip-path` / `filter` / `mask` / `transform`；见 [`svg-effects.md` §6.3](../../skills/ppt-master/references/svg-effects.md#63-gradients-and-paint-effects) |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
 | 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的文本框垂直锚定可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
@@ -152,7 +153,7 @@ PowerPoint 意图
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 无填充 | `fill="none"` | `a:noFill` | `Native-stable` | 生成 SVG 使用小写规范拼法 |
-| 纯色填充 | 已锁定规范 `fill="#RRGGBB"` | `a:solidFill`；当锁定角色可精确复用时使用 theme token | `Native-stable` | 兼容颜色拼法可产生 warning；格式错误或生成未锁定值失败 |
+| 纯色填充 | 规范 `fill="#RRGGBB"`，可以是具名 lock 锚点或上下文页面颜色 | `a:solidFill`；当锚点角色可精确复用时使用 theme token | `Native-stable` | 兼容颜色拼法可产生 warning；格式错误会失败，合法的上下文颜色只记录信息 |
 | 填充透明度 | 不透明 fill 加 `fill-opacity` | 原生 alpha | `Native-stable` | 生成值为 0 到 1 的有限无单位数 |
 | 线性渐变填充 | `<defs>` 中已登记 `<linearGradient>` | 原生 `a:gradFill` | `Native-normalized` | stop、坐标、transform 与引用必须遵循封闭合同 |
 | 径向渐变填充 | 已登记 `<radialGradient>` | 可偏心单点焦点的圆形 DrawingML 渐变 | `Approximate`；位于规范圆内的有效焦点可往返，外圆中心与半径会归一化 | 有效焦点必须落在中心 `(0.5,0.5)`、半径 `0.5` 的规范圆内；回导会居中越界焦点并记录诊断；对半径或外圆中心敏感的设计需复核 |

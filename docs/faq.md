@@ -63,6 +63,8 @@ Either way, run `pip install -r requirements.txt` from the installed location so
 
 Neither path carries a `.git` directory, so `git describe` cannot report the version. The installed release is recorded in the `metadata.version` field of the skill's own `SKILL.md` frontmatter.
 
+For users in mainland China who cannot reach GitHub reliably, the complete repository is also mirrored on [AtomGit](https://atomgit.com/hugohe3/ppt-master); clone it or download its ZIP there.
+
 ## Q: Can I use AI-generated images in my presentation?
 
 Yes. When the agent host exposes a native image tool, PPT Master can use it without a separate provider image-generation API key. It can also use the built-in `image_gen.py` through a configured provider. Choose "AI generation" for the image approach; you can explicitly ask the agent to use its own image tool. You can also place your own images in the project's `images/` folder.
@@ -278,11 +280,15 @@ deck needs still run when required: supplied or extracted images,
 AI/web/sliced images, project icons, native shapes, charts/tables, and the
 required operational manifests or provenance records. Formulas are authored
 directly as PowerPoint-native markers in the affected SVG, not prepared as
-image assets. If a required asset is not ready, it still stops and asks you for
-it instead of substituting unrelated material. After preparation, the current agent
-hand-authors `svg_output/` to the shared standards, runs the lockless Quick
-final quality checker, fixes every blocking error, and only then exports the
-final PPTX.
+image assets. An explicitly selected manual path or another irreplaceable file
+dependency still blocks until you provide the required file. If automated AI
+generation or its required slicing is exhausted, Quick instead removes the
+failed jobs and stale manifest entries, replans their communication role with
+native editable text/SVG or already-prepared non-AI assets, continues the same
+run, and discloses the replacement in the final handoff. It never fills the gap
+with unrelated material. After preparation, the current agent hand-authors
+`svg_output/` to the shared standards, runs the lockless Quick final quality
+checker, fixes every blocking error, and only then exports the final PPTX.
 
 Ordinary exporter capabilities remain available as needed, including native
 chart/table replacement, notes, motion, narration, and diagnostics. Notes,
@@ -330,7 +336,7 @@ Think of "using an existing PPT" as two questions: **keep its content or not**, 
 | Keep only content, redo design and pagination | **Generate PPTX** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
-Use the **beautify profile** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify profile](../skills/ppt-master/workflows/profiles/beautify-pptx.md).
+Use the **beautify profile** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, and layout / hierarchy / whitespace are redone. The source palette and fonts are the recommended, preselected defaults; an explicit request or final confirmation can override visual fields, but Beautify never departs from the source identity silently. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify profile](../skills/ppt-master/workflows/profiles/beautify-pptx.md).
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
@@ -346,7 +352,7 @@ There is also one orthogonal route: if you don't want to produce a deck right no
 
 Yes — this is the **template fill** route, separate from the SVG generation pipeline. Give the AI your existing `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" or "fill this back into the template". It treats your deck as a native slide library, lets you pick only the pages that fit the new story (reorder freely, and reuse one page for several output slides), and writes the new text — plus native table cells and chart data — straight into the original OOXML.
 
-The output stays 100% native-editable PowerPoint: the original design, layouts, images, and animations are preserved, and only the selected pages are exported. It deliberately does **not** change layouts, add pages, or swap images — a deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. For a fresh structure or a different page count, use create-template (next question) instead. Full steps: [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md).
+The output stays 100% native-editable PowerPoint: the original design, layouts, images, and animations are preserved, and only the planned pages are exported. It deliberately does **not** author a new layout topology or swap source images. The ordered `slides` roster in `fill_plan.json` may omit, reorder, or repeat source slide shells, so the output page count can differ from the source. A deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. When the source library lacks a required new structure, use ordinary Generate, or run Create Template first and then Generate from the resulting workspace. Full steps: [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md).
 
 ---
 

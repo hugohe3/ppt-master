@@ -299,7 +299,15 @@ slide_2 = """<svg xmlns="http://www.w3.org/2000/svg"
 )
 
 run_tool("project_manager.py", "validate", project)
-run_tool("svg_quality_checker.py", project, "--format", "ppt169")
+run_tool(
+    "svg_quality_checker.py",
+    project,
+    "--format",
+    "ppt169",
+    "--stage",
+    "final",
+    "--json",
+)
 run_tool("animation_config.py", "validate", project)
 
 

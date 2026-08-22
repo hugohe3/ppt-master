@@ -8,7 +8,7 @@
 
 ---
 
-## Step 1 — 安装 Python（必须）
+## 步骤 1 — 安装 Python（必须）
 
 Python 是唯一的硬性要求。
 
@@ -28,27 +28,35 @@ Python 是唯一的硬性要求。
 
 ---
 
-## Step 2 — 下载项目
+## 步骤 2 — 下载项目
 
 **方式 A — 下载 ZIP**（最简单）：
 
-1. 打开 [GitHub](https://github.com/hugohe3/ppt-master)（或 [AtomGit 镜像](https://atomgit.com/hugohe3/ppt-master)，国内更快）
+1. 打开 [GitHub](https://github.com/hugohe3/ppt-master)（中国大陆也可使用 [AtomGit 镜像](https://atomgit.com/hugohe3/ppt-master)）
 2. 点击绿色 **Code** 按钮 → **Download ZIP**
 3. 解压到 `C:\Users\你的用户名\ppt-master`
 
-**方式 B — Git Clone**（需要 [Git](https://git-scm.com/downloads)）：
+**方式 B — Git Clone**（需要 [Git](https://git-scm.com/downloads)）。下面两条 clone 命令任选其一：
 
 ```powershell
 # GitHub
 git clone https://github.com/hugohe3/ppt-master.git
-# AtomGit（国内更快）
+```
+
+```powershell
+# AtomGit 镜像
 git clone https://atomgit.com/hugohe3/ppt-master.git
+```
+
+然后进入克隆出的目录：
+
+```powershell
 cd ppt-master
 ```
 
 ---
 
-## Step 3 — 安装依赖
+## 步骤 3 — 安装依赖
 
 ```powershell
 cd C:\Users\你的用户名\ppt-master   # ← 替换为你的实际路径
@@ -61,7 +69,7 @@ pip install -r requirements.txt
 
 ---
 
-## Step 4 — 验证安装
+## 步骤 4 — 验证安装
 
 ```powershell
 python -c "import pptx; import fitz; print('All core dependencies OK')"
@@ -73,7 +81,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ---
 
-## Step 5 — 跑一个最小示例
+## 步骤 5 — 跑一个最小示例
 
 在支持 Agent 的 AI 工具（Claude Code、Codex、Cursor、VS Code agent 等）中打开 `ppt-master` 目录，在聊天面板输入：
 
@@ -91,7 +99,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ---
 
-## Step 6 — 可选增强（大多数用户可以跳过）
+## 步骤 6 — 可选增强（大多数用户可以跳过）
 
 装好 Python 和 `requirements.txt` 后，生成 PPT 的全部功能已经就绪。PPTX 导出直接写入原生 DrawingML 形状，不需要 CairoSVG、GTK 或另一套 SVG 栅格化环境。下面只保留一种**边缘场景的备用工具**——遇到对应需求时再装。
 

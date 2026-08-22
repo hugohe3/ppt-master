@@ -63,7 +63,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 这两条路径都不带 `.git` 目录，`git describe` 查不到版本。已安装的版本记录在 skill 自身 `SKILL.md` frontmatter 的 `metadata.version` 字段里。
 
-中国大陆地区访问 GitHub 下载不便的话，完整仓库在 [AtomGit](https://atomgit.com/hugohe3/ppt-master) 也有镜像（clone 或下载 ZIP）；1 GB 出头的体积在中国大陆地区网络下载一般没问题。
+中国大陆地区访问 GitHub 下载不便时，可以从 [AtomGit](https://atomgit.com/hugohe3/ppt-master) 的完整仓库镜像 clone 或下载 ZIP。
 
 ## Q: 能用 AI 生成配图吗？
 
@@ -253,7 +253,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 **它跳过的是策略师分析、`design_spec.md` / `spec_lock.md` 落盘和分步确认停顿：你明确提出的要求照做；你没提的，当前 Agent 直接决定并继续，不再回来征求同意。** 什么都不提，才是全部由 Agent 决定。它同时跳过 `finalize_svg.py`，因此不生成 `svg_final/` 预览。
 
-它不跳过备料或设计能力：来源转换、已识别事实缺口的研究、共享美学参考，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、原生形状、图表 / 表格，以及对应的必要运行 manifest 或来源记录。公式由当前 Agent 直接写成受影响 SVG 中的 PowerPoint 原生 marker，不再作为图片资源准备。必需素材未就绪时它仍会停下来跟你要，不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
+它不跳过备料或设计能力：来源转换、已识别事实缺口的研究、共享美学参考，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、原生形状、图表 / 表格，以及对应的必要运行 manifest 或来源记录。公式由当前 Agent 直接写成受影响 SVG 中的 PowerPoint 原生 marker，不再作为图片资源准备。显式选择的 manual 路径或其他不可替代的文件依赖未就绪时，Quick 会阻塞并索取文件。自动 AI 生成或其必需切片路径耗尽时，Quick 则会移除失败任务与过期 manifest 条目，改用原生可编辑文字 / SVG 或已经备好的非 AI 素材承载原沟通任务，继续本次运行，并在最终交接中披露替代结果；它不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
 
 原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。
 
@@ -286,7 +286,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 | 只留内容，设计与分页都重来 | **Generate PPTX** | 源事实；故事结构和页数都可重构 |
 | 留内容 + 留设计 | 不必生成 | 直接用原文件 |
 
-使用 **beautify profile** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，只重排版式、层级和留白，并继承原配色字体。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify profile](../../skills/ppt-master/workflows/profiles/beautify-pptx.md)。
+使用 **beautify profile** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，并重排版式、层级和留白。源配色与字体是推荐且预选的默认值；用户显式要求或最终确认可以覆盖视觉字段，但 Beautify 不会在未经确认时静默偏离源身份。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify profile](../../skills/ppt-master/workflows/profiles/beautify-pptx.md)。
 
 用 **主管线** 的前提是：原 PPT 只是内容材料。流程会用 `ppt_to_md` 抽成 Markdown，并读取 `analysis/` 里的 PPTX intake 事实，再由 Strategist 自由重构大纲（合页 / 拆页 / 换序）。典型说法是「用这份 PPT 的内容重做一份更好的」或「提炼成 10 页高管汇报」。
 
@@ -302,7 +302,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 可以——这就是 **套模板（template fill）** 路径，独立于 SVG 生成管线。把你现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把你的 deck 当作原生页面库，只挑适合新内容的页面（可乱序、可重复），把新文字——以及原生表格单元格、图表数据——直接写回原始 OOXML。
 
-输出仍是 100% 原生可编辑的 PowerPoint：原设计、母版、图片、动画都保留，且只导出选中的页面。它刻意**不**改版式、不加页、不换图——一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若需要全新结构或不同页数，请改用 create-template（见下一问）。完整步骤：[套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+输出仍是 100% 原生可编辑的 PowerPoint：原设计、母版、图片、动画都保留，且只导出计划中的页面。它刻意**不**创作新的版式拓扑，也不替换源图。`fill_plan.json` 中有序的 `slides` 清单可以省略、乱序或重复源页面壳，因此输出页数可以不同于源文件。一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若源页面库缺少所需的新结构，请走普通 Generate，或先 Create Template、再从产出的工作区 Generate。完整步骤：[套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。
 
 ---
 
@@ -340,7 +340,7 @@ python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest
 
 完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
 
-没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。这里提取的是可复用模板系统；如果目标是把每个页面画面还原成分层可编辑输出页，应改用图片还原为 PPTX（`image-to-pptx`）。
+没有源 PPTX 时，也可以提供关键页面类型的截图——封面、目录、章节、内容和结尾——但此时几何、字体和继承关系只能根据画面推断。这里提取的是可复用模板系统；如果目标是把每个页面画面还原成分层可编辑输出页，应改用图片还原为 PPTX（`image-to-pptx`）。
 
 **第二步 — 让 AI 创建模板**
 

@@ -6,7 +6,11 @@ description: Generate profile for 1:1, content-faithful re-layout of an existing
 
 > Generate profile, not a top-level route. [`template-fill-pptx.md`](../template-fill-pptx.md) reuses a deck's design and swaps in new content; this profile keeps a deck's content and redoes its layout.
 
-Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source deck's visual identity (palette / fonts) is **inherited as truth**, and only layout, hierarchy, and whitespace are redesigned. Output is a brand-new native deck generated through the standard SVG pipeline — not a patch over the original.
+Re-lays-out an existing `.pptx`: text is preserved **verbatim** and source
+palette / fonts are the preselected recommendation. Only explicit user
+requirements or final confirmation may override them; never deviate silently.
+It rebuilds layout, hierarchy, whitespace, and effective visual treatment into
+a new native deck through the SVG pipeline — not a patch over the original.
 
 **Trigger**: the user supplies a `.pptx` and asks to beautify / re-layout / 重新排版 / 美化 while keeping the content. Explicit intent + a provided file only; never auto-infer.
 
@@ -30,7 +34,7 @@ Beautify constraints in this file apply in either runtime.
 
 **Hard rule — not a patch, not a fill**: this regenerates a native deck through the selected Default or Quick SVG → PPTX runtime. It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](../template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
 
-**Distinct from mirror templates**: `replication_mode: mirror` ([`executor-structured.md`](../../references/executor-structured.md) §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
+**Distinct from mirror templates**: `replication_mode: mirror` ([`executor-structured.md`](../../references/executor-structured.md) §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, source identity recommended unless the user overrides it.
 
 **Distinct from page-image reconstruction**: when the authoritative input is
 an ordered raster page roster and the user wants its visible layout preserved,
@@ -102,9 +106,9 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 | `layout_sizes_pt` (pt, frequency-ranked) | **reference fact only**, NOT an auto-seed — the level-1 sizes that the in-use slide layouts' body placeholders declare. Usually empty (decks rely on runs / master) and ambiguous when present; use it as a hint when judging the body size, never as the authoritative seed |
 | `canvas.aspect` | drives the Step 3 format choice |
 
-> Note: `theme` is what the deck declares; `observed` is a frequency sample of run-level overrides (not a complete style resolution — it misses `schemeClr` and master/layout inheritance, and counts chart/gradient fills). A hand-edited deck can diverge from `theme` — Step 5 recommends which to inherit and the user confirms.
+> Note: `theme` is what the deck declares; `observed` is a frequency sample of run-level overrides (not a complete style resolution — it misses `schemeClr` and master/layout inheritance, and counts chart/gradient fills). A hand-edited deck can diverge from `theme` — Step 5 resolves which to use.
 
-**Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the inherited style, never spliced in byte-for-byte. This keeps the deck style-consistent and natively editable. **Data values are frozen** (categories / series / cell text / numbers unchanged); only their rendering is the deck's own. Pictures (`ppt_to_md`-extracted files) are reused but re-laid-out — position / crop / size follow the new layout, not the source slot. A user who wants an original element verbatim copies it across themselves.
+**Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the effective style, never spliced in byte-for-byte. This keeps the deck style-consistent and natively editable. **Data values are frozen** (categories / series / cell text / numbers unchanged); only their rendering is the deck's own. Pictures (`ppt_to_md`-extracted files) are reused but re-laid-out — position / crop / size follow the new layout, not the source slot. A user who wants an original element verbatim copies it across themselves.
 
 **Optional source-SVG visual reference**: when the source deck has complex vector decoration, distinctive page chrome, or a visual language that cannot be captured by `<stem>.identity.json` colors/fonts alone, create a read-only SVG reference package under `analysis/`. This is for understanding style only; it is not a carry-over asset path.
 
@@ -128,7 +132,7 @@ path. Promote to `<project_path>/icons/imported/` and reference with
 `<use data-icon="imported/<name>"/>`; Quick never runs `finalize_svg.py`. Never
 promote text-bearing groups, charts/tables, page layouts, or dense composites.
 
-**Assemble the inventory** — the deterministic join into one per-slide ledger, `analysis/beautify_inventory.json`, the contract Step 5 confirms and Step 7 verifies against:
+**Assemble the inventory** — the deterministic join into one per-slide ledger, `analysis/beautify_inventory.json`, the contract Step 5 resolves and Step 7 verifies against:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/<stem>.slide_library.json \
@@ -223,7 +227,7 @@ This step has two halves:
 | Item | What v1 delivers |
 |---|---|
 | Overcrowded source page | layout / hierarchy / whitespace improve **within the page as-is** — v1 does **not** relieve information overload (that needs re-pagination / rewrite, deferred). Flag such pages; the user may accept or note them for manual split |
-| Paste-back into the original | regenerated elements share the inherited palette + fonts, so they **blend visually** when pasted. v1 does **not** guarantee a seamless coordinate-level drop-in (slide coordinates, master placeholders, font availability are the original deck's, not ours) |
+| Paste-back into the original | regenerated elements retain confirmed palette + font declarations; v1 does **not** guarantee coordinate alignment or font availability in the original deck |
 | Complex charts / merged-cell tables | best-effort from the captured data; combo / dual-axis / waterfall lose the un-captured plots — flagged for the user |
 
 **Visual re-confirm — full confirmation seeded from the source**:
@@ -326,17 +330,17 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 | Text fidelity | every source text string appears in the output, unaltered |
 | Data fidelity | chart categories / series / table cells match the source exactly |
 | Page count | output slide count equals the source slide count |
-| Regenerated visuals | charts / tables are native SVG re-themed to the inherited palette |
-| Identity | generated text / shapes use only `<stem>.identity.json` colors + fonts |
-| Paste-back | copying a beautified element into the original deck looks native |
+| Regenerated visuals | charts / tables are native SVG re-themed to the effective palette |
+| Identity | text / shapes use effective colors + fonts, seeded from `<stem>.identity.json` |
+| Paste-back | copied elements retain effective palette + font declarations; alignment and font availability are not guaranteed |
 
 ```markdown
 ## ✅ Beautify Complete
 
 - [x] Content + data values verbatim (read-back Markdown matches the source)
 - [x] 1:1 page count preserved
-- [x] Source-derived or explicitly overridden colors + fonts applied consistently
-- [x] Charts / tables regenerated as native SVG in the inherited style
+- [x] Effective colors + fonts applied consistently
+- [x] Charts / tables regenerated as native SVG in the effective style
 - [x] Native PPTX exported to `exports/`
 ```
 
@@ -347,11 +351,11 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 | Capability | Status |
 |---|---|
 | Re-layout with verbatim text | Supported |
-| Inherit source palette / fonts as truth | Supported |
+| Source palette / fonts as preselected recommendation, with user-approved overrides | Supported |
 | Strict 1:1 page mapping | Supported |
 | Regenerate charts / tables as native SVG from extracted data | Supported |
 | Re-lay-out source pictures | Supported |
 | Re-pagination (split dense / merge sparse) | Not in v1 |
 | Carry source charts / tables / images over byte-for-byte | Out of scope — user copies originals manually if wanted |
-| Free visual-style application / cleanup deviating from source identity | Not in v1 |
+| Silent visual-style / identity deviation | Out of scope |
 | Batch / multi-deck beautification | Not in v1 |

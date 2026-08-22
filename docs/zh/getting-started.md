@@ -89,7 +89,7 @@ Brand / Style / Layout / Deck 工作区 root，它会直接校验、安装并使
 Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创作，但不会
 编译成可复用的原生 Master / Layout 对象。
 
-它不跳过能力：来源转换、事实缺口研究、共享美学规范、图片 / 图标准备，以及原生形状 / 图表 / 表格创作仍按需运行。结构性公式直接写成 PowerPoint 原生 marker，不再作为图片素材准备。必需素材缺失时它会停下来跟你要，不会拿无关材料顶替。
+它不跳过能力：来源转换、事实缺口研究、共享美学规范、图片 / 图标准备，以及原生形状 / 图表 / 表格创作仍按需运行。结构性公式直接写成 PowerPoint 原生 marker，不再作为图片素材准备。显式选择的 manual 素材或其他不可替代的文件依赖缺失时，Quick 会阻塞并索取文件；自动 AI 生成或其必需切片路径耗尽时，Quick 会移除失败任务与过期 manifest 条目，改用原生可编辑文字 / SVG 或已经备好的非 AI 素材，继续本次运行，并在最终交接中披露替代结果。
 
 快速模式是一次性生成,不是缩短后的可续接流程。它不产生 Strategist 记录、`design_spec.md`、`spec_lock.md` 或替代性的页面计划;内容、设计和资源决策只存在于 AI 的当前上下文。交付前一旦丢失该上下文,就重新运行 Quick。资源 manifest、质量报告、postflight 与冷 Python 审计日志可以保留,但无法还原 AI 为什么这样设计。该 profile 省掉的是交互和持久规划,不是 PPT 能力或预期质量标准。
 
@@ -103,7 +103,7 @@ Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创�
 
 - **实时看着每页渲染**出来。
 - **直接改,无需 AI** —— 选中元素后在右栏改文字、颜色、字体、字号;拖拽即可移动,或用方向键微调(`Shift` = 10px),`Ctrl+Z` 撤销。改动即时预览,点 **Apply changes** 写回 `svg_output/`。
-- **或写注解交给 AI** —— 点选元素写一句要改成什么,点 **Submit annotations**,再回对话说"应用注解"(或 "apply my annotations"),AI 会改写那块区域并重新导出 PPTX。
+- **或写注解交给 AI** —— 点选元素写一句要改成什么，点 **Add annotation** 暂存，再点 **Apply changes** 把注解标记写入 `svg_output/`；回到对话说“应用注解”（或 “apply my annotations”），AI 会改写那块区域并重新导出 PPTX。
 
 PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后融入的(建立在 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85) 之上)。
 
