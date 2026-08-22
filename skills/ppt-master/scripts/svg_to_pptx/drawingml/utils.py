@@ -3496,6 +3496,11 @@ def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
 
 
 def _estimate_character_width(ch: str, font_size: float) -> float:
+    if (
+        0xFF00 <= ord(ch) <= 0xFFEF
+        and unicodedata.east_asian_width(ch) == 'H'
+    ):
+        return font_size * 0.5
     if is_cjk_char(ch):
         return font_size
     if ch == ' ':
@@ -3533,12 +3538,16 @@ def estimate_text_cluster_widths(
     font_weight: str = '400',
 ) -> list[float]:
     """Estimate each project text cluster without inserting tracking."""
+    clusters = split_project_text_clusters(text)
     widths = [
         _estimate_grapheme_width(cluster, font_size)
-        for cluster in split_project_text_clusters(text)
+        for cluster in clusters
     ]
     if font_weight in ('bold', '600', '700', '800', '900'):
-        widths = [width * 1.05 for width in widths]
+        widths = [
+            width if any(is_cjk_char(ch) for ch in cluster) else width * 1.05
+            for cluster, width in zip(clusters, widths)
+        ]
     return widths
 
 
