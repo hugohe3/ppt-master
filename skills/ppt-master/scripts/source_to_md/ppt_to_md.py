@@ -789,27 +789,33 @@ def _unexposed_chartex_markdown(
     return blocks
 
 
-def _image_part_for_shape(shape: object) -> object | None:
-    """Return the first embedded image part referenced by a shape."""
+def _image_part_for_shape(shape: object) -> tuple[object | None, str | None]:
+    """Return the first referenced image part plus any resolution failure."""
     element = getattr(shape, "element", None)
-    part = getattr(shape, "part", None)
-    if element is None or part is None:
-        return None
+    if element is None:
+        return None, "shape XML is unavailable while inspecting image references"
 
     try:
         blips = element.xpath(".//a:blip")
-    except Exception:
-        return None
+    except Exception as exc:
+        return None, (
+            "image reference scan failed "
+            f"({type(exc).__name__}: {exc})"
+        )
 
+    part = getattr(shape, "part", None)
+    failures: list[str] = []
     for blip in blips:
         rel_id = blip.get(qn("r:embed")) or blip.get(qn("r:link"))
         if not rel_id:
             continue
         try:
-            return part.related_part(rel_id)
-        except Exception:
-            continue
-    return None
+            return part.related_part(rel_id), None
+        except Exception as exc:
+            failures.append(f"{rel_id} ({type(exc).__name__}: {exc})")
+    if failures:
+        return None, "image relationship resolution failed: " + "; ".join(failures)
+    return None, None
 
 
 def _image_size_from_bytes(blob: bytes) -> tuple[int | None, int | None]:
@@ -959,6 +965,7 @@ def _asset_filename(
 
 def save_picture(
     shape: object,
+    image_part: object,
     asset_dir: Path,
     slide_index: int,
     asset_index: int,
@@ -966,10 +973,6 @@ def save_picture(
     used_filenames: set[str],
 ) -> SavedPicture | None:
     """Persist a shape image to the output asset directory."""
-    image_part = _image_part_for_shape(shape)
-    if image_part is None:
-        return None
-
     content_type = getattr(image_part, "content_type", None)
     part_ext = getattr(getattr(image_part, "partname", None), "ext", None)
     ext = normalize_ext(part_ext, content_type)
@@ -1022,12 +1025,12 @@ def _reset_generated_asset_dir(asset_dir: Path) -> None:
     shutil.rmtree(asset_dir)
 
 
-def extract_notes(slide: object) -> str:
-    """Extract speaker notes text from a slide, if available."""
+def extract_notes(slide: object) -> tuple[str, str | None]:
+    """Extract speaker notes text plus any notes-slide access failure."""
     try:
         notes_slide = slide.notes_slide
-    except Exception:
-        return ""
+    except Exception as exc:
+        return "", f"speaker notes read failed ({type(exc).__name__}: {exc})"
 
     blocks = []
     for item in iter_leaf_shapes(notes_slide.shapes):
@@ -1038,7 +1041,7 @@ def extract_notes(slide: object) -> str:
         if text:
             blocks.append(text)
 
-    return "\n\n".join(blocks).strip()
+    return "\n\n".join(blocks).strip(), None
 
 
 def convert_presentation_to_markdown(
@@ -1152,18 +1155,29 @@ def convert_presentation_to_markdown(
                 MSO_SHAPE_TYPE.PICTURE,
                 MSO_SHAPE_TYPE.LINKED_PICTURE,
             }
-            has_shape_image = is_picture_shape or _image_part_for_shape(shape) is not None
+            image_part, image_error = _image_part_for_shape(shape)
+            if image_error is not None:
+                shape_name = getattr(shape, "name", "") or "unnamed shape"
+                warning = f"Slide {slide_index}, {shape_name}: {image_error}"
+                conversion_warnings.append(warning)
+                print(f"[WARN] ppt_to_md: {warning}", file=sys.stderr)
+            has_shape_image = is_picture_shape or image_part is not None
             if has_shape_image:
                 image_ref_count += 1
                 next_image_index = image_count + 1
                 asset_dir.mkdir(parents=True, exist_ok=True)
-                saved_picture = save_picture(
-                    shape,
-                    asset_dir,
-                    slide_index,
-                    next_image_index,
-                    asset_cache,
-                    used_filenames,
+                saved_picture = (
+                    save_picture(
+                        shape,
+                        image_part,
+                        asset_dir,
+                        slide_index,
+                        next_image_index,
+                        asset_cache,
+                        used_filenames,
+                    )
+                    if image_part is not None
+                    else None
                 )
                 if saved_picture is None:
                     if is_picture_shape:
@@ -1234,7 +1248,11 @@ def convert_presentation_to_markdown(
             lines.append("_No extractable text content._")
             lines.append("")
 
-        notes_md = extract_notes(slide)
+        notes_md, notes_error = extract_notes(slide)
+        if notes_error is not None:
+            warning = f"Slide {slide_index}: {notes_error}"
+            conversion_warnings.append(warning)
+            print(f"[WARN] ppt_to_md: {warning}", file=sys.stderr)
         if notes_md:
             lines.append("### Speaker Notes")
             lines.append("")
