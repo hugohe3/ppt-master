@@ -2968,7 +2968,7 @@ class SVGQualityChecker:
                 parent_by_id,
                 font_sizes,
                 letter_spacings,
-                include_headroom=True,
+                include_headroom=False,
             )
             if estimated is not None:
                 estimated_by_id[id(text_element)] = estimated
