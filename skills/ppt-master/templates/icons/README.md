@@ -75,7 +75,13 @@ python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 
 For a known basename, run `icon_sync.py` directly; it copies and validates without a per-file precheck.
 
-For an uncertain basename, search only the chosen stylistic library; use `simple-icons` only for a real brand mark:
+For an uncertain basename, search only the chosen stylistic library; use `simple-icons` only for a real brand mark.
+
+**Hard rule**: search by the drawable object, not the abstract concept. These libraries store things that can be drawn — `bulb`, `target`, `trending-up`, `alert-triangle` — so concept words such as `idea`, `goal`, `growth`, `warning`, or `innovation` return nothing in most of them. Translate the semantic into an object first, then search.
+
+**Reference — not a constraint**: one concept usually has several valid objects. Which one fits is a per-deck judgment of page register and visual style, not a fixed mapping.
+
+**Hard rule**: basenames are not portable across the four stylistic libraries; verify inside the selected one. `alert-*` exists in the tabler libraries but not in `phosphor-duotone`, which uses `warning-*`; `arrow-trend-*` exists in `chunk-filled`, while `tabler-outline` uses `trending-*`.
 
 ```bash
 rg --files "skills/ppt-master/templates/icons/tabler-outline" -g '*chart*.svg'
@@ -83,6 +89,8 @@ rg --files "skills/ppt-master/templates/icons/simple-icons" -g '*github*.svg'
 ```
 
 Do not load a full index or enumerate broad keyword families. Re-pick from the narrow result and rerun the final batch until clean; never switch stylistic libraries for a missing generic icon.
+
+**Empty result** → translate the semantic into a different drawable object and search the same library again. When several translations stay empty, that semantic has no fit in the selected library: let another carrier take it — a chart, typography, or a shape — rather than forcing a loose icon. Widening the keyword family is not the fallback.
 
 ---
 
