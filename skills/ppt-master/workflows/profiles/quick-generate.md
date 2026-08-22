@@ -188,6 +188,14 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
   [projects/<research_slug>.md projects/<research_slug>.facts.json]
 ```
 
+**✅ Checkpoint — every named input landed**: `import-sources` exits 0 as long
+as one input produced a usable artifact, so a partially failed batch still
+succeeds. Read the printed `skipped` reasons before continuing. An entry skipped
+because equivalent content already exists is benign; `path not found`, a failed
+conversion, or no usable Markdown means that source is absent. Re-import or
+supply a converted equivalent for each absent source, or state why the deck
+proceeds without it.
+
 The facts JSON is the sole URL authority, not a download queue.
 `project_manager.py` imports it as an ordinary file and never expands its
 `source_url` values. If normal web-image search is exhausted, follow
@@ -326,6 +334,12 @@ content requires a clean full-canvas base plus registered RGBA cutout
 (`#A2-03`; [`image-generator.md`](../../references/image-generator.md) §4.4);
 a floating cutout may use `#A2-01`. Finish assets before SVG per
 [`image-base.md`](../../references/image-base.md) §2–3.
+
+**Prepared derivative**: create it with `image_treat.py` (blur,
+desaturation/grayscale, duotone, brightness, contrast) under a name separate
+from its source. The canonical file stays intact: a derivative never overwrites
+its source, never becomes another derivative's parent, and never has its output
+equal its input. Derive only after that source is itself final.
 
 **Mandatory — whole-roster rhythm check**: During the same active-context
 resolution, compare neighbors and section arcs to judge whether chapter entries
@@ -702,6 +716,12 @@ roster. Then run:
 ```bash
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
+
+**Success criterion**: per-slide Markdown files exist under
+`<project_path>/notes/` and cover every published slide. The command exits
+non-zero when a slide has no notes or a write fails; repair `notes/total.md` and
+rerun before animations or export, and never let leftover files from an earlier
+run satisfy this criterion.
 
 Run [`customize-animations`](../stages/customize-animations.md) after that notes
 pass when the active-context outcome or an existing sidecar triggers it. Resolve
