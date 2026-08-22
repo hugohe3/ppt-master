@@ -654,7 +654,8 @@ playback instead and does not consume the trace for sound mixing.
 
 ## 9. Implementation References
 
-See [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md),
+See [`pptx_transitions.py`](../scripts/pptx_transitions.py),
+[`svg-pipeline.md`](../scripts/docs/svg-pipeline.md),
 [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md),
 [`pptx-animations.md`](../scripts/docs/pptx-animations.md), and
 [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md).

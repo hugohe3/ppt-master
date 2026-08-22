@@ -352,6 +352,13 @@ def resolve_visualization_reference(
     return _require_svg(resolved)
 
 
+if __name__ == "__main__" and any(
+    arg in {"-h", "--help", "help"} for arg in sys.argv[1:]
+):
+    print(__doc__)
+    raise SystemExit(0)
+
+
 if __name__ == "__main__":
     from console_encoding import configure_utf8_stdio
 
