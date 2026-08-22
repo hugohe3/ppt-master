@@ -6,6 +6,7 @@
 
 最快做出第一份 deck 的路径、围绕它的各项能力——模板、实时预览、动画、旁白、声音复刻——以及出问题时去哪里查。章节大致按你真实使用时遇到它们的顺序排列。每节都是精简版,需要细节就点 **完整说明 →** 链接。
 
+- [配置安装目录与工作目录](#配置安装目录与工作目录)
 - [用模板](#用模板)
 - [做出第一份 deck](#做出第一份-deck)
 - [实时预览与可视化修改](#实时预览与可视化修改)
@@ -13,6 +14,32 @@
 - [旁白与视频](#旁白与视频)
 - [使用复刻音色](#使用复刻音色)
 - [遇到问题怎么办](#遇到问题怎么办)
+
+---
+
+## 配置安装目录与工作目录
+
+启动 Agent 前，先分清三个目录：
+
+| 目录 | 它是什么 | 怎样产生 |
+|---|---|---|
+| **Skill 安装目录** | 包含 `SKILL.md`、`requirements.txt`、工作流与脚本的 PPT Master 包 | 完整仓库 clone 或仓库 ZIP 中是 `skills/ppt-master/`；marketplace/plugin 安装或 skill-only release ZIP 则使用自己的安装或解压位置 |
+| **工作目录** | 你在 Agent 中打开的、可持久保存且可写的目录 | 完整仓库 clone 或仓库 ZIP 通常使用仓库根目录；skill-only 安装则自行选择，不必是 skill 安装目录 |
+| **活动项目** | 一次生成任务的来源、SVG、报告、备份与导出物所在目录 | Agent 会在 `<工作目录>/projects/<生成的项目名>/` 下初始化，并报告精确路径 |
+
+所有安装方式都需要 Python 3.10+，以及一个已经安装和鉴权、能够读写工作目录并执行 shell 命令的 Agent host。完整仓库 clone 或仓库 ZIP 从仓库根目录安装依赖：
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Skill-only 安装应先找到同时包含 skill 的 `SKILL.md` 与 `requirements.txt` 的安装或解压目录，再从该路径安装：
+
+```bash
+python3 -m pip install -r "<installed-skill-dir>/requirements.txt"
+```
+
+使用 `npx skills add hugohe3/ppt-master` 还要求本机有可用的 `npx` 命令，通常由 Node.js/npm 提供；仓库没有规定 Node/npm 的最低版本。Host 自带的 `/plugin install` 不走这条 `npx` 路径。安装完成后，从**工作目录**启动 Agent，不要从 host 管理的 skill 缓存目录启动；执行入口会单独解析已安装 skill。安装方式见[快速开始](../../README_CN.md#快速开始)，运行规范见 [`SKILL.md`](../../skills/ppt-master/SKILL.md)。
 
 ---
 
@@ -58,17 +85,17 @@ Default Generate 把模板选择放在 Stage 1，与沟通契约同屏确认；�
 
 ## 做出第一份 deck
 
-整个流程就三步。先装好环境——只需要 Python,见 [快速开始](../../README_CN.md#快速开始)。
+准备好上面的环境和工作目录后，整个流程就三步：
 
-1. **把源材料放进** `projects/` —— PDF、DOCX、Markdown、一个网址,或直接要粘贴的文字。
-2. **在对话里告诉 AI** 要把什么做成 deck。Stage 1 会让你同时确认沟通契约与自由设计/模板使用；只附上一个精确工作区 root 时，页面可默认进入模板模式并预选该路径：
+1. **把 Agent 可读取的源材料交给它**——PDF、DOCX、Markdown、网址，或直接粘贴的文字都可以。放在 `<工作目录>/inputs/` 之类的目录即可，不需要先手工创建最终的 `projects/<name>/`。
+2. **在对话里告诉 AI** 要把什么做成 deck。[Default Generate Step 2](../../skills/ppt-master/workflows/generate-pptx.md)或[Quick 初始化](../../skills/ppt-master/workflows/profiles/quick-generate.md)会在工作目录的 `projects/` 下创建活动项目，并报告精确项目路径。存在文件型材料时才导入；直接粘贴的文字保留在对话上下文，不需要导入。Default 随后进入 Stage 1，同时确认沟通契约与自由设计/模板使用；Quick 会跳过这些确认阶段。Default 只附上一个精确工作区 root 时，页面可默认进入模板模式并预选该路径：
    ```
-   你：用 projects/q3-report/sources/report.pdf 做一份 PPT
+   你：用 <报告文件路径.pdf> 做一份 PPT
    你：把这份内容做成 PPT：<粘贴你的文字>
    ```
-3. **拿回可编辑的 `.pptx`**,位于 `exports/<名称>_<时间戳>.pptx` —— 真正的 DrawingML 形状、文本框、图表,在 PowerPoint / Keynote / WPS / LibreOffice 里点开就能改。
+3. **拿回可编辑的 `.pptx`**。除非显式指定其他输出路径，文件位于 `<活动项目>/exports/<项目名>_<时间戳>.pptx`。完整仓库 clone 或仓库 ZIP 通常对应 `<仓库根目录>/projects/<生成的项目名>/exports/...`；skill-only 安装则对应 `<工作目录>/projects/<生成的项目名>/exports/...`。应以 Agent 报告的活动项目精确路径为准，不要到仓库根目录查找一个没有项目上下文的 `exports/`。
 
-生成前，Stage 1 同时确认沟通契约、画布/格式与自由设计/模板选择。AI 随后安装所选工作区；最终 Stage 2 读取安装结果，并确认页数、视觉系统、模板应用方式与生产选项。之后内容分析、排版、配图、SVG 生成、导出都由 AI 完成——这就是其它能力围绕的核心环节。不想走交互确认，见下方[快速模式](#快速模式)。
+这些术语不是需要你另建的目录。**Stage 1** 会确认沟通契约，即用途、受众、阅读场景、画布/格式，以及自由设计/模板选择。**工作区根目录**是可选的 Brand、Style、Layout 或 Deck 可复用包的根目录，不是活动项目。AI 安装所选工作区后，**Stage 2** 再确认页数、视觉系统、模板应用方式与生产选项。之后内容分析、排版、配图、SVG 生成与导出都由 AI 完成。不想走交互确认，见下方[快速模式](#快速模式)。
 
 ---
 
