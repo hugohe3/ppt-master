@@ -29,7 +29,7 @@
     "skills/ppt-master/references/executor-notes.md": 1000,
     "skills/ppt-master/references/shared-standards.md": 500,
     "skills/ppt-master/references/shared-standards-core.md": 13000,
-    "skills/ppt-master/references/svg-effects.md": 15000,
+    "skills/ppt-master/references/svg-effects.md": 16000,
     "skills/ppt-master/references/native-data-interface.md": 7500,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
@@ -478,7 +478,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 9000
+      "max_tokens": 10000
     },
     "stage.generate.template.deck": {
       "description": "Conditional Deck workspace application with one selected Deck spec.",
@@ -834,7 +834,7 @@
         "skills/ppt-master/workflows/stages/resume-execute.md",
         "skills/ppt-master/references/artifact-ownership.md"
       ],
-      "max_tokens": 97000
+      "max_tokens": 99000
     },
     "stage.generate.resume-execute-image": {
       "description": "Fresh-session resume when the locked resource plan contains image rows.",
@@ -1119,7 +1119,7 @@
       "files": [
         "skills/ppt-master/references/svg-effects.md"
       ],
-      "max_tokens": 15000
+      "max_tokens": 16000
     }
   },
   "duplicates": {
