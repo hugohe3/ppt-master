@@ -71,6 +71,11 @@ class TextRun:
 
 HyperlinkResolver = Callable[[str, str], str | None]
 InlineFormulaResolver = Callable[[ET.Element], tuple[str | None, str]]
+TextDiagnosticSink = Callable[[str, str, str], None]
+
+
+class TextImportError(ValueError):
+    """Report malformed DrawingML text in strict import mode."""
 
 
 @dataclass
@@ -124,6 +129,8 @@ def convert_txbody(
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
     inline_formula_resolver: InlineFormulaResolver | None = None,
+    strict: bool = False,
+    diagnostic_sink: TextDiagnosticSink | None = None,
 ) -> TextResult:
     """Convert <p:txBody> under the given shape geometry to SVG <text>(s)."""
     if tx_body is None:
@@ -138,6 +145,8 @@ def convert_txbody(
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
         hyperlink_resolver=hyperlink_resolver,
         inline_formula_resolver=inline_formula_resolver,
+        strict=strict,
+        diagnostic_sink=diagnostic_sink,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
         return TextResult()
@@ -243,6 +252,8 @@ def convert_vertical_txbody(
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
     inline_formula_resolver: InlineFormulaResolver | None = None,
+    strict: bool = False,
+    diagnostic_sink: TextDiagnosticSink | None = None,
 ) -> TextResult:
     """Render East Asian vertical text as upright stacked glyphs.
 
@@ -262,6 +273,8 @@ def convert_vertical_txbody(
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
         hyperlink_resolver=hyperlink_resolver,
         inline_formula_resolver=inline_formula_resolver,
+        strict=strict,
+        diagnostic_sink=diagnostic_sink,
     )
     runs = [
         run
@@ -401,6 +414,8 @@ def _parse_paragraphs(
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
     inline_formula_resolver: InlineFormulaResolver | None = None,
+    strict: bool = False,
+    diagnostic_sink: TextDiagnosticSink | None = None,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
@@ -422,6 +437,8 @@ def _parse_paragraphs(
             id_prefix=id_prefix, id_seq=id_seq,
             hyperlink_resolver=hyperlink_resolver,
             inline_formula_resolver=inline_formula_resolver,
+            strict=strict,
+            diagnostic_sink=diagnostic_sink,
         )
         paragraphs.append(para)
 
@@ -443,6 +460,8 @@ def _parse_paragraph(
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
     inline_formula_resolver: InlineFormulaResolver | None = None,
+    strict: bool = False,
+    diagnostic_sink: TextDiagnosticSink | None = None,
 ) -> TextParagraph:
     para = TextParagraph()
 
@@ -484,6 +503,8 @@ def _parse_paragraph(
             default_font_size_px=default_font_size_px,
             id_prefix=id_prefix, id_seq=id_seq,
             hyperlink_resolver=hyperlink_resolver,
+            strict=strict,
+            diagnostic_sink=diagnostic_sink,
         )
 
     for child in list(p_elem):
@@ -564,6 +585,8 @@ def _build_run(
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
+    strict: bool = False,
+    diagnostic_sink: TextDiagnosticSink | None = None,
 ) -> TextRun:
     """Resolve a single <a:r> run from its rPr and fallback run properties."""
     style_chain = (
@@ -586,8 +609,19 @@ def _build_run(
     if spc is not None:
         try:
             letter_spacing_px = float(spc) / 100.0 * 4.0 / 3.0  # pt -> px
-        except ValueError:
-            pass
+        except ValueError as exc:
+            message = (
+                f"Invalid DrawingML a:rPr@spc value {spc!r}; expected a numeric "
+                "hundredths-of-a-point value"
+            )
+            if strict:
+                raise TextImportError(message) from exc
+            if diagnostic_sink is not None:
+                diagnostic_sink(
+                    "text-letter-spacing-normalized",
+                    message,
+                    "use zero letter spacing for this run",
+                )
 
     # Color
     fill = default_fill

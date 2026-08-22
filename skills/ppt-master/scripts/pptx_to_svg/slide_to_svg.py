@@ -598,6 +598,8 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                     action,
                 ),
                 inline_formula_resolver=inline_formula_resolver,
+                strict=ctx.strict,
+                diagnostic_sink=ctx.diagnose,
             )
         else:
             text_result = convert_txbody(
@@ -615,6 +617,8 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                     action,
                 ),
                 inline_formula_resolver=inline_formula_resolver,
+                strict=ctx.strict,
+                diagnostic_sink=ctx.diagnose,
             ) if tx_body is not None else TextResult()
     except ValueError as exc:
         if ctx.strict:
@@ -1511,6 +1515,8 @@ def _render_graphic_table(
             rid,
             action,
         ),
+        strict=ctx.strict,
+        diagnostic_sink=ctx.diagnose,
     )
     if result.defs:
         ctx.defs.extend(result.defs)
@@ -1738,16 +1744,36 @@ def _theme_background_fill(
     bg_ref: ET.Element,
 ) -> ET.Element | None:
     """Resolve p:bgRef idx into the theme background fill style list."""
+    def reject_invalid_idx(message: str) -> None:
+        if ctx.strict:
+            raise ValueError(message)
+        ctx.diagnose(
+            "theme-background-reference-omitted",
+            message,
+            "omit this part's theme background fill",
+        )
+
     idx_raw = bg_ref.attrib.get("idx")
     if not idx_raw:
+        reject_invalid_idx(
+            "Invalid p:bgRef@idx: expected a 1001-based theme fill index"
+        )
         return None
     try:
         idx = int(idx_raw)
     except ValueError:
+        reject_invalid_idx(
+            f"Invalid p:bgRef@idx value {idx_raw!r}; expected a 1001-based "
+            "theme fill index"
+        )
         return None
     # ECMA style matrix background fill references are 1001-based.
     bg_fill_index = idx - 1001
     if bg_fill_index < 0:
+        reject_invalid_idx(
+            f"Invalid p:bgRef@idx value {idx_raw!r}; expected a value of 1001 "
+            "or greater"
+        )
         return None
 
     theme = ctx.pkg.resolve_theme(slide.master)
@@ -1758,6 +1784,10 @@ def _theme_background_fill(
         return None
     fills = [child for child in list(fill_list) if isinstance(child.tag, str)]
     if bg_fill_index >= len(fills):
+        reject_invalid_idx(
+            f"Invalid p:bgRef@idx value {idx_raw!r}; theme background fill list "
+            f"contains {len(fills)} entries"
+        )
         return None
     return fills[bg_fill_index]
 
