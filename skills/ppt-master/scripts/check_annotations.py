@@ -28,13 +28,14 @@ from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
-
 def scan_svg_file(svg_path: Path) -> list[dict]:
-    """Scan a single SVG file for edit annotations."""
-    try:
-        tree = ET.parse(svg_path)
-    except ET.ParseError:
-        return []
+    """Scan a single SVG file for edit annotations.
+
+    Propagates ``ET.ParseError``: whether one unreadable slide is fatal is
+    the caller's call, and an empty annotation list must never stand in for
+    a file that could not be read.
+    """
+    tree = ET.parse(svg_path)
 
     root = tree.getroot()
     annotations = []
@@ -59,19 +60,28 @@ def scan_svg_file(svg_path: Path) -> list[dict]:
     return annotations
 
 
-def scan_directory(dir_path: Path) -> dict[str, list[dict]]:
-    """Scan all SVG files in svg_output/ for edit annotations."""
+def scan_directory(dir_path: Path) -> tuple[dict[str, list[dict]], list[str]]:
+    """Scan all SVG files in svg_output/ for edit annotations.
+
+    Returns the annotations found plus one message per slide that could not
+    be parsed, so a broken page cannot pass as a page with no annotations.
+    """
     svg_dir = dir_path / 'svg_output'
     if not svg_dir.exists():
-        return {}
+        return {}, []
 
     results = {}
+    unreadable = []
     for svg_file in discover_slide_svgs(svg_dir):
-        annotations = scan_svg_file(svg_file)
+        try:
+            annotations = scan_svg_file(svg_file)
+        except ET.ParseError as exc:
+            unreadable.append(f"{svg_file}: {exc}")
+            continue
         if annotations:
             results[svg_file.name] = annotations
 
-    return results
+    return results, unreadable
 
 
 def print_results(results: dict[str, list[dict]]) -> None:
@@ -107,6 +117,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    unreadable: list[str] = []
 
     target = Path(args.path).resolve()
 
@@ -115,16 +126,24 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
 
     if target.is_file() and target.suffix == '.svg':
-        annotations = scan_svg_file(target)
+        try:
+            annotations = scan_svg_file(target)
+        except ET.ParseError as exc:
+            unreadable.append(f"{target}: {exc}")
+            annotations = []
         results = {target.name: annotations} if annotations else {}
     elif target.is_dir():
-        results = scan_directory(target)
+        results, unreadable = scan_directory(target)
     else:
         print(f"Error: Expected a project directory or .svg file, got: {target}", file=sys.stderr)
         return 1
 
-    print_results(results)
-    return 0
+    for message in unreadable:
+        print(f"[ERROR] Failed to parse SVG {message}", file=sys.stderr)
+
+    if results or not unreadable:
+        print_results(results)
+    return 1 if unreadable else 0
 
 
 if __name__ == '__main__':
