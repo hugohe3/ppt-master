@@ -97,10 +97,10 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/styles/README.md"
       ],
-      "max_tokens": 37000
+      "max_tokens": 38000
     },
     "route.create-template.deck": {
-      "description": "Create Deck path through Template_Designer, SVG core, and the structured PPTX interface.",
+      "description": "Create Deck standard/fidelity path through Template_Designer, the strategy-triggered native-shape bundle, SVG core, and the structured PPTX interface; mirror excludes the authored bundle.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -109,16 +109,18 @@
         "skills/ppt-master/workflows/create-template.md",
         "skills/ppt-master/workflows/create-template/create-deck.md",
         "skills/ppt-master/references/template-designer.md",
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/pptx-structure-interface.md",
         "skills/ppt-master/references/canvas-formats.md",
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 67000
+      "max_tokens": 75000
     },
     "route.create-template.layout": {
-      "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
+      "description": "Create Layout standard/fidelity path through Template_Designer, the strategy-triggered native-shape bundle, SVG core, and the structured PPTX interface; mirror excludes the authored bundle.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -127,13 +129,15 @@
         "skills/ppt-master/workflows/create-template.md",
         "skills/ppt-master/workflows/create-template/create-layout.md",
         "skills/ppt-master/references/template-designer.md",
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/pptx-structure-interface.md",
         "skills/ppt-master/references/canvas-formats.md",
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 67000
+      "max_tokens": 76000
     },
     "route.enhance-native-pptx": {
       "description": "Finished-PPTX native enhancement route.",
@@ -990,7 +994,7 @@
       "max_tokens": 1000
     },
     "stage.create-template.authored-preset": {
-      "description": "Conditional complete preset vocabulary plus native preset and Boolean shape authoring authority for Create Layout/Create Deck. Ceiling raised after BUDGET_LOAD_SET reported 9139 tokens.",
+      "description": "Conditional native-shape and complete preset-vocabulary bundle loaded when Create Layout/Create Deck resolves to standard/fidelity, before any contour selection; mirror excludes it. Ceiling raised after BUDGET_LOAD_SET reported 9139 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md",

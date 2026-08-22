@@ -527,6 +527,15 @@ The preflight is atomic at the Create Template parent level: settle every output
 
 **Create Layout/Create Deck branch**: continue in the selected child workflow, switch to the Template_Designer role, and generate per role definition. Bind the role's `<template_workspace>` to `<authoring_workspace>` and pass `<design_spec_path>`, the finalized brief from Step 3, and the Step-1 analysis bundle with accepted norms.
 
+**Mandatory — authored construction bundle**: Immediately after the confirmed
+creation strategy resolves to `standard` or `fidelity`, and before
+Template_Designer selects any page or template contour, read
+[`native-shape-authoring.md`](../references/native-shape-authoring.md) and
+[`preset-shape-vocabulary.md`](../references/preset-shape-vocabulary.md)
+completely and retain both for the active authoring context. Do not load this
+bundle for `mirror`; it preserves source-owned geometry and does not select or
+author replacement contours.
+
 When the bundle includes Type A, pass the following internal package to the role:
 
 - finalized brief from Step 3
