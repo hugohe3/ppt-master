@@ -8,6 +8,22 @@
 
 Almost anything: **PDF**, **DOCX**, **PPTX**, **EPUB**, **HTML**, **LaTeX**, **RST**, **URLs** (including WeChat articles), **Markdown**, or just plain text pasted into the conversation. The AI agent converts your source material to Markdown automatically before generating slides.
 
+## Q: What happens to images embedded in a DOCX?
+
+DOCX conversion extracts embedded image assets into a companion asset directory and records an image manifest; when the source exposes the information, that record includes displayed dimensions, pixel dimensions, and aspect ratios. Project import makes those companion assets available to the active project. Planning uses source position, surrounding text, captions, alt text, filenames, and geometry to decide whether an extracted asset is used; it does not have to inspect or use every extracted image. A selected image may be shown complete or placed with a focal-safe crop. Extraction and registration do **not** mean that the image is regenerated.
+
+See the [source-conversion output contract](../skills/ppt-master/scripts/docs/conversion.md) for companion assets and the [image-planning contract](../skills/ppt-master/references/strategist-image.md) for selection and geometry evidence.
+
+## Q: Can PPT Master batch-redraw every image in a DOCX to one ratio and style?
+
+No. There is currently no user-facing Generate route that reference-redraws every embedded DOCX image as a batch and automatically replaces the originals. Manifest mode can batch **new** image jobs from prompts, but the built-in CLI's `--reference-image` editing is a narrow single-image path, is not manifest mode, and is available only through supported image backends. The Image to PPTX profile does not fill this gap: it applies when raster inputs represent whole slide pages to reconstruct, not when ordinary photos or illustrations are source assets inside a Word document.
+
+These boundaries are defined by the [image-generation contract](../skills/ppt-master/references/image-generator.md), [Generate Step 5](../skills/ppt-master/workflows/generate-pptx.md), and the [Image to PPTX profile](../skills/ppt-master/workflows/profiles/image-to-pptx.md).
+
+## Q: What is the difference between cropping an image and generating one at a requested aspect ratio?
+
+They change different things. `crop=adaptive` permits but never requires cropping. Executor may use `meet` to show the complete source or a focal-safe `slice` to fill the chosen container; both reuse source pixels. An AI job's `aspect_ratio` requests a newly generated canvas. A reference edit transforms one supplied image through the separate single-image path; it is not a manifest batch operation. See the [image resource-list rules](../skills/ppt-master/references/strategist-image.md), [Executor crop policy](../skills/ppt-master/references/executor-image.md), [SVG image placement contract](../skills/ppt-master/references/svg-image-embedding.md), and [image manifest schema](../skills/ppt-master/references/image-generator.md).
+
 ## Q: Can I generate a deck with just a topic, no source materials?
 
 Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The Generate PPTX route will run its **topic-research stage** to gather the factual baseline and provenance needed for planning. If you provide partial material, the same stage may fill only the factual gaps required by your requested outcome unless you ask for a source-only result. Project import does not bulk-fetch the adopted webpage URLs recorded in provenance. After normal image search fails, one relevant page may be fetched with its companion images for review, and only selected files enter the deck's image pool.
@@ -30,7 +46,7 @@ Just specify the format when starting a project (e.g., `--format xhs`). The outp
 
 ## Q: What AI tools work with PPT Master?
 
-PPT Master works inside any agent-capable AI tool that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
+PPT Master works inside any agent-capable AI tool that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. Installation and authentication are handled by the selected host; the [Getting Started guide](./getting-started.md) defines the working-folder model used after installation.
 
 ## Q: I downloaded an old version. How do I update to the latest?
 
@@ -59,15 +75,47 @@ Yes. The full repository is large (Git history plus bundled example decks and th
 - **Marketplace CLI**: `npx skills add hugohe3/ppt-master` or Claude Code's `/plugin install` fetch the skill files only (see the Set Up section of the README).
 - **Manual download**: grab `ppt-master-skill-*.zip` from the [Releases](https://github.com/hugohe3/ppt-master/releases) page — the skill files only (~56 MB), no full-repo clone.
 
-Either way, run `pip install -r requirements.txt` from the installed location so the post-processing scripts work.
+For either skill-only path, locate the installed skill directory that contains `SKILL.md` and `requirements.txt`, then run `python3 -m pip install -r "<installed-skill-dir>/requirements.txt"` so the post-processing scripts work.
 
 Neither path carries a `.git` directory, so `git describe` cannot report the version. The installed release is recorded in the `metadata.version` field of the skill's own `SKILL.md` frontmatter.
 
 For users in mainland China who cannot reach GitHub reliably, the complete repository is also mirrored on [AtomGit](https://atomgit.com/hugohe3/ppt-master); clone it or download its ZIP there.
 
+## Q: I installed from a skill marketplace. What prerequisites and working directory do I need?
+
+All installation paths require Python 3.10+ and an installed, authenticated agent host that can read and write files and run shell commands. The `npx skills add hugohe3/ppt-master` path additionally requires a working `npx` command, normally supplied with Node.js/npm; the repository does not declare a Node/npm minimum version. A host's own `/plugin install` command does not use that `npx` path.
+
+The installed skill directory and your working folder are different roles. Install Python dependencies from the directory that contains the installed skill's `SKILL.md` and `requirements.txt`, but start the agent in a separate persistent, writable working folder of your choice. The agent creates that folder's `projects/` directory as needed; you do not need to run it from the host-managed skill cache. See [Getting Started: Set up the installation and working folders](./getting-started.md#set-up-the-installation-and-working-folders) and the skill's [execution entry point](../skills/ppt-master/SKILL.md).
+
+## Q: How can I run the same minimal installation check on macOS or Linux?
+
+After installing the Python dependencies, run the same core import check used by the Windows guide:
+
+```bash
+python3 -c "import pptx; import fitz; print('All core dependencies OK')"
+```
+
+Then ask the agent for a three-slide "Hello World" deck in Quick mode, with no source file. The import command checks the core Python packages; the Quick run checks project initialization, SVG authoring, validation, and export together. Success means a PPTX appears in the active project's `exports/` directory and the file opens in a presentation application. See the [Windows installation smoke test](./windows-installation.md) and the [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md).
+
+## Q: Do I need to create `projects/<name>` manually, and which `exports/` contains my deck?
+
+No. In an agent-driven run, Default Generate Step 2 or Quick initialization creates the active project, normally under `<working-folder>/projects/<generated-project-name>/`, and reports its exact path. With the default exporter path, the deck belongs to that project:
+
+```text
+<active-project>/exports/<project-name>_<timestamp>.pptx
+```
+
+That is not an unqualified `exports/` at the repository root. An explicitly supplied output path is the exception. See [Generate project initialization and export](../skills/ppt-master/workflows/generate-pptx.md), the [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md), and the [working-folder explanation](./getting-started.md#set-up-the-installation-and-working-folders).
+
 ## Q: Can I use AI-generated images in my presentation?
 
 Yes. When the agent host exposes a native image tool, PPT Master can use it without a separate provider image-generation API key. It can also use the built-in `image_gen.py` through a configured provider. Choose "AI generation" for the image approach; you can explicitly ask the agent to use its own image tool. You can also place your own images in the project's `images/` folder.
+
+## Q: Why are there no icons? Are icons supposed to appear on every slide?
+
+No per-slide icon coverage is required. In Default, `No base icons` is a valid confirmed choice alongside emoji, bundled SVG icons, and custom project icons. Default's `icons.inventory` indexes its curated prepared pool without assigning icons to pages. Both profiles may use project-local prepared icons; Quick creates neither a general resource roster nor an icon-to-page assignment. The author uses an icon only when it serves that page's communication task, so a deck or page may use none. AI-generated illustrated-icon slices are image assets under a separate path and are also optional.
+
+See the [Strategist icon choice](../skills/ppt-master/references/strategist.md), [Executor icon usage](../skills/ppt-master/references/executor-base.md), and [Quick resource preparation](../skills/ppt-master/workflows/profiles/quick-generate.md).
 
 ## Q: I don't have an image-generation API key — can I still get images?
 
@@ -85,7 +133,7 @@ Ordinary visible text is rebuilt as native editable text. Logos, icons, badges, 
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. With the default output path, both Default Generate and Quick Generate copy the authored `svg_output/` to `backup/<timestamp>/svg_output/`, so the same authored deck can be re-exported without re-running the LLM. For Quick this is package reconstruction, not a recoverable record of the AI's design decisions.
+Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to the active project's `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. With the default output path, both Default Generate and Quick Generate copy the authored `svg_output/` to `backup/<timestamp>/svg_output/`, so the same authored deck can be re-exported without re-running the LLM. For Quick this is package reconstruction, not a recoverable record of the AI's design decisions.
 
 `finalize_svg.py` remains a mandatory Step 7 operation in the default Generate flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-generate profile skips this preview artifact, but still retains the normal postflight report and default-path backup after its lockless final quality check. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
@@ -134,19 +182,23 @@ Two independent choices, locked at confirmation `d`:
 
 Any mode pairs with any visual style.
 
-## Q: Is PPT Master expensive to use?
+## Q: The result looks like only boxes and lines. What run facts should I check first?
 
-PPT Master itself is free and open source. The only cost is your own AI model usage.
+PPT Master has no documented `wireframe` runtime mode and no documented visual-equivalence guarantee between releases, so appearance alone does not identify a version regression. First record whether the run used Default or Quick, plus the actual mode, visual style, image-usage choice, base-icon choice, Custom Animations setting, and prepared-resource state. Quick keeps these decisions in the active agent context rather than writing `design_spec.md` or `spec_lock.md`.
 
-AI tools across the industry are shifting to usage-based billing — you pay for what you actually consume. PPT Master works with this model naturally: there's no separate PPT subscription, no proprietary credits, no per-seat fee for a presentation platform on top of what you're already paying for AI.
+Next compare the same page in the active project's `svg_output/` with the exported PPTX. If the SVG is already sparse, inspect the planning, resource, and SVG-authoring layers. If the SVG contains the intended objects but the PPTX loses or changes them, inspect the conversion or rendering layer. This boundary follows [Materials → Plan → Realization](./technical-design.md), the [Default Generate workflow](../skills/ppt-master/workflows/generate-pptx.md), and the [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md).
 
-And because it runs inside a coding agent, a flat subscription plan lets you make many decks at no extra per-deck cost, while a direct per-token API is simply a different price structure — the choice is yours. Either way, PPT Master adds no cost of its own on top of your AI spend.
+## Q: How is PPT Master priced, and does template reuse reduce token usage?
+
+You pay according to your AI usage; PPT Master adds no subscription fee.
+
+The repository documents template reuse as reuse of identity, method, structure, or a recurring application contract. It contains no measured or guaranteed relationship between template reuse and token usage. See the [product positioning](../README.md#product-positioning) and [template boundaries](./templates-guide.md).
 
 ## Q: Are the charts in the generated PPTX editable?
 
 By default, charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate default over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint, and they render pixel-consistently across PowerPoint / Keynote / LibreOffice / WPS.
 
-If your workflow specifically requires Excel-driven data editing or PowerPoint's chart/table-specific controls, export with `--native-charts-and-tables`: supported data charts and pure text-grid tables then ship as **PowerPoint-native Chart / Table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts_tables.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The default SVG fallback also becomes editable DrawingML shapes, but it has no chart data workbook or table/chart object model. Native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, so the shape-based route remains the visual-stability default.
+If your workflow specifically requires Excel-driven data editing or PowerPoint's chart/table-specific controls, export with `--native-charts-and-tables`: supported data charts and pure text-grid tables then ship as **PowerPoint-native Chart / Table objects backed by data** (saved as `<active-project>/exports/<name>_<timestamp>_native_charts_tables.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The default SVG fallback also becomes editable DrawingML shapes, but it has no chart data workbook or table/chart object model. Native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, so the shape-based route remains the visual-stability default.
 
 ## Q: Are formulas editable?
 
@@ -192,9 +244,9 @@ settings are not authored. See the [PowerPoint ↔ SVG Mapping
 Guide](./powerpoint-svg-mapping.md#10-powerpoint-playback-and-package-features)
 for the carrier and preservation boundaries.
 
-## Q: Can I change page transitions and element animations?
+## Q: Why are there no element animations? Were animations removed?
 
-Yes. Page transitions are on by default (`fade` 0.4s); per-element object
+Animations were not removed. Page transitions are on by default (`fade` 0.4s); per-element object
 animation is **off by default**—a page appears as a whole instead of having
 elements auto-cascade in one by one. Both are controlled by `svg_to_pptx.py`
 flags: `-t/--transition` for page-level and `-a/--animation` for element-level.
@@ -202,6 +254,8 @@ The object registry includes entrance, emphasis, motion-path, and exit effects.
 `pptx_to_svg.py` also reconstructs exact current-registry page transitions and
 finite exact-duration object-animation rows into `animations.json`;
 unsupported source timing remains an explicit diagnostic.
+
+Use `-a auto` for deck-wide automatic entrances, a canonical effect for one deck-wide effect, or a project-level `animations.json` for explicit page/object timing. Default runs the custom stage for an existing sidecar, an explicit per-slide/per-object request, or an enabled effective Custom Animations outcome. Quick runs it when a sidecar or its active-context motion decision requires object-level work; recorded, self-running, or video-directed Quick delivery requires that stage unless the user explicitly requests static or page-transition-only playback. A deck-wide-only request can remain exporter flags. If none of these triggers applies, the `fade`/`none` defaults remain. The [Generate workflow](../skills/ppt-master/workflows/generate-pptx.md) and [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md) define those triggers.
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
@@ -257,10 +311,10 @@ A typical 10–15 page presentation takes about **10–20 minutes** with a fast 
 If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
 
 If what you want is less process rather than a different model, explicitly ask
-for quick generation: it skips the Strategist analysis and the confirmation
-stop, so the planning phase costs nothing, but per-page SVG authoring takes the
-same time. See the next question, "I don't want to confirm a design spec first
-— can I generate directly?".
+for quick generation: it omits the Strategist analysis and the confirmation
+stop, while per-page SVG authoring remains. The repository does not promise a
+fixed time reduction for Quick. See the next question, "I don't want to confirm
+a design spec first — can I generate directly?".
 
 ## Q: I don't want to confirm a design spec first — can I generate directly?
 
@@ -299,9 +353,9 @@ default-path export writes the normal postflight report and snapshots
 no-backup behavior. Page count alone neither activates nor blocks quick
 generation.
 
-Because the whole planning phase no longer happens, token usage is materially
-lower than the default flow; per-page SVG authoring is the dominant cost of a
-run and it does not shrink. Quick keeps the same page-level visual and
+Quick omits the separate planning phase, but the repository does not document
+a measured or guaranteed token reduction; per-page SVG authoring remains.
+Quick keeps the same page-level visual and
 resource-authoring capabilities and the shared SVG/resource blocking
 standards. It does not run Spec Lock alignment checks; its package keeps
 converter-default Theme scaffolding instead of deriving Theme colors, fonts,
@@ -377,6 +431,27 @@ python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest
 `manifest.json` reports, per slide, the layout and master paths, placeholders (`type`, `idx`, `semanticRole`, `shapeName`), image assets, text counts, and page type; `native_structure.json` adds the source structure assessment. `--manifest-only` skips SVG export, so it is cheap to run just to look.
 
 Note that Create Template produces a reusable template workspace, not a filled deck: the pages that follow are newly authored by Generate, so the source's body copy and speaker notes are deliberately not carried onto them. If a shape you expected to be usable is missing from these reports, that is the concrete thing to include in an issue.
+
+---
+
+## Q: Can I turn a company `.pptx` into a reusable workspace? Which kind should I choose?
+
+Yes, through an explicit `/create-template` request. A complete source deck does not by itself imply `Deck`; choose the kind by what must remain reusable:
+
+| Kind | Reusable contract |
+|---|---|
+| **Brand** | Identity only: colors, type, logo, voice, and icon language; no page roster |
+| **Style** | Communication method and visual defaults without identity truth, page prototypes, or native structure |
+| **Layout** | Brand-neutral and application-neutral Master/Layout/slot structure |
+| **Deck** | A recurring application or branded structure that integrates identity, structure, and an SVG roster |
+
+Create Template confirms the brief before writing either an indexed `library` workspace or a non-registered initialized `project` workspace. For later Generate runs, pass the resulting workspace root—not the source `.pptx` or its inner `templates/` directory. See the [Create Template route](../skills/ppt-master/workflows/create-template.md) and [Templates Guide](./templates-guide.md).
+
+---
+
+## Q: Does registering a template make every future deck use it automatically?
+
+No. Registration makes a workspace discoverable; it does not select it. In Default Generate, the template must still be confirmed in Stage 1. Supplying exactly one workspace root can preselect it there, but does not bypass confirmation; supplying several roots leaves them as unselected candidates. Quick has no template selector, so an exact root is validated and used directly, while no exact root means free design. A raw `.pptx`, an inner `templates/` directory, a bare template name, or a style phrase is not a workspace selection. See [How template selection works](./templates-guide.md) and the [Quick template boundary](../skills/ppt-master/workflows/profiles/quick-generate.md).
 
 ---
 
