@@ -32,14 +32,25 @@ Python is the only hard requirement.
 
 **Option A — Download ZIP** (easiest):
 
-1. Go to [github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+1. Go to [github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master), or use the [AtomGit mirror](https://atomgit.com/hugohe3/ppt-master) in mainland China
 2. Click the green **Code** button → **Download ZIP**
 3. Unzip to `C:\Users\YourName\ppt-master`
 
-**Option B — Git Clone** (requires [Git](https://git-scm.com/downloads)):
+**Option B — Git Clone** (requires [Git](https://git-scm.com/downloads)). Run one of these clone commands:
 
 ```powershell
+# GitHub
 git clone https://github.com/hugohe3/ppt-master.git
+```
+
+```powershell
+# AtomGit mirror
+git clone https://atomgit.com/hugohe3/ppt-master.git
+```
+
+Then enter the cloned folder:
+
+```powershell
 cd ppt-master
 ```
 
@@ -133,6 +144,10 @@ Or run PowerShell as Administrator.
 ### `pip install` fails due to network issues
 
 ```powershell
+# Tsinghua PyPI mirror
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Proxy
 pip install -r requirements.txt --proxy http://your-proxy:port
 ```
 

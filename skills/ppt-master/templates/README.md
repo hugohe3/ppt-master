@@ -137,8 +137,9 @@ projections.
 
 Qualitative Structure is a Slide-local Executor method rather than a catalog:
 Default and Quick both derive its relationship model and compose shapes for the
-current page. Only [`layouts/`](./layouts/) owns reusable Master/Layout, page
-types, slots, and placeholders.
+current page. Only Layout and Deck workspaces own reusable Master/Layout, page
+types, slots, and placeholders. When both are present, Layout supplies the
+active SVG roster and overrides only Deck's structure segment.
 
 ## Icon Library
 

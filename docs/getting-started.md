@@ -90,7 +90,7 @@ A bare template name or style phrase is still only a design brief. Quick keeps
 its lockless flat export, so Layout / Deck prototypes guide the authored pages
 but do not compile into reusable native Master / Layout objects.
 
-It does not skip capabilities: source conversion, research on identified factual gaps, shared aesthetic guidance, image / icon preparation, and native-shape / chart / table authoring still run as needed. Structural formulas are authored directly as native PowerPoint markers rather than prepared as image assets. If a required asset is missing, it still stops and asks you for it instead of substituting unrelated material.
+It does not skip capabilities: source conversion, research on identified factual gaps, shared aesthetic guidance, image / icon preparation, and native-shape / chart / table authoring still run as needed. Structural formulas are authored directly as native PowerPoint markers rather than prepared as image assets. A missing explicitly selected manual asset or other irreplaceable file dependency blocks until you provide it. If automated AI generation or required dependent slicing is exhausted, Quick removes the failed jobs and stale manifest entries, replans with native editable text/SVG or already-prepared non-AI assets, continues the same run, and reports the replacement in its final handoff.
 
 Quick is a one-pass profile, not a shortened resumable workflow. It creates no Strategist record, `design_spec.md`, `spec_lock.md`, or substitute page plan; its content/design/resource decisions exist only in the active AI context. If that context is lost before delivery, start Quick again. Operational manifests, quality reports, postflight, and the cold Python audit log may remain, but they cannot reconstruct why the AI designed the deck that way. The profile reduces interaction and durable planning, not the available presentation toolbox or the intended quality bar.
 
@@ -104,7 +104,7 @@ A browser preview opens at the URL reported by the launcher while the deck is be
 
 - **Watch pages render live** as the AI produces them.
 - **Edit directly, no AI** — select an element to change its text, color, font, or size in the side panel; drag it to reposition, or nudge with the arrow keys (`Shift` = 10px). `Ctrl+Z` undoes. Edits preview instantly and write to `svg_output/` when you click **Apply changes**.
-- **Or annotate for the AI** — click an element, type what you want changed, hit **Submit annotations**, then say "apply my annotations" in chat and the AI rewrites that region and re-exports the PPTX.
+- **Or annotate for the AI** — click an element, type what you want changed, click **Add annotation** to stage it, then click **Apply changes** to write the annotation markers to `svg_output/`. Return to chat and say "apply my annotations"; the AI rewrites that region and re-exports the PPTX.
 
 PPT Master was chat-only by design; visual editing was folded in after enough users asked for it (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)).
 

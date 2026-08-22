@@ -21,7 +21,7 @@
 
 每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。Create Template 根据自然语言意图与来源证据在内部推导 `standard` / `fidelity` / `mirror`；Strategist 再根据真实原型与当前内容推导 strict/adaptive 导出行为。这些实现值都不是用户必选项。仅 Brand/Layout/Deck 的旧式平铺目录可在满足当前 kind 合同时继续读取；Style 没有平铺兼容形态。带旧结构语义的包必须替换为新建模板工作区，不能原地升级。
 
-四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
+四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与前置元数据中的 `kind` 字段双向对齐：
 
 每份已装 spec 各自保留自己的 `kind` 与 id；不存在合并后的项目 spec，也没有组合出来的能力标签。路由结果在读取时推导：结构优先来自 Layout，没有 Layout 时才来自 Deck；身份来自 Brand 或 Deck，方向来自 Style。项目内临时组合的 Brand + Layout 因此只是“两种能力都已安装”，不会被自动提升为可注册的 Deck，也不会凭空生成应用语境；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 在内部生成模板应用计划，确认页不显示模板模式控件。
 
@@ -32,7 +32,7 @@ kind: brand
 ...
 ---
 
-# templates/styles/consulting_analytical/templates/design_spec.md
+# templates/styles/consulting-decision/templates/design_spec.md
 ---
 kind: style
 ...
@@ -99,7 +99,7 @@ native_structure_mode: structured
 
 原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
 
-两种范围都在可移植 frontmatter 中保留所选 `kind`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
+两种范围都在可移植前置元数据中保留所选 `kind`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
 任何范围第一次写最终文件前，都必须解析 Design Spec 和全部真实目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸名、同 kind spec 或无效的限定名集合；不同 kind 可以共存。Layout 与 Deck 同时存在时，Layout 拥有有效 roster：新增 Deck 不改变已有 Layout roster，新增 Layout 则先隔离校验，再原子替换已有 Deck 结构载荷。两种范围都会检查计划素材和预览目标冲突。任一失败都在写入前停止，不覆盖、不留下半套输出。
 
@@ -124,13 +124,13 @@ Deck 编码的是**一类可重复演示**，而不只是预先组合好的 Bran
 
 ---
 
-## 二、各分类的 `design_spec.md` Schema
+## 二、各分类的 `design_spec.md` 结构定义
 
-字段集只规定**必须写**的部分。「非必要不表明」——当前 schema 没列出的字段，不写。
+字段集只规定**必须写**的部分。「非必要不表明」——当前结构定义没列出的字段，不写。
 
-### Brand schema
+### Brand 结构定义
 
-**Frontmatter**
+**前置元数据**
 
 ```yaml
 ---
@@ -154,9 +154,9 @@ primary_color: "<HEX>"
 
 **不允许出现**：canvas viewBox、page types、SVG roster——这些是 layout 的职责。
 
-### Style schema
+### Style 结构定义
 
-**Frontmatter**
+**前置元数据**
 
 ```yaml
 ---
@@ -185,9 +185,9 @@ fallback：用户最终确认及 Brand/Deck 身份优先。Review Focus 不能�
 visual review。`kind: style` 表示可复用包类型，区别于最终 Stage 2 的
 `visual_style` 选择和内部 flat 导出值 `template_reuse_scope: style`。
 
-### Layout schema
+### Layout 结构定义
 
-**Frontmatter**
+**前置元数据**
 
 ```yaml
 ---
@@ -217,16 +217,16 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 | IV | Signature Design Elements | 该 Layout 特有的网格、区域、图片行为、密度节奏、中性框架、语义文字角色、对齐/换行/容量行为和 slot 约定 |
 | V | Page Roster | 每个 SVG 文件、Layout key、picker name、适用内容与 slot 行为 |
 
-只有 Layout 改写规范占位词汇时才增加 `Placeholder Overrides`。frontmatter
+只有 Layout 改写规范占位词汇时才增加 `Placeholder Overrides`。前置元数据
 `summary` 承担简短的选型语境；Layout 不写 deck 独有的 Template Overview。
 
 `category: scenario` 只表示发现时的适配标签。Layout 可以针对某种内容形态或交付环境优化几何，但不能规定沟通目的、受众结果、必需叙事顺序、固定措辞或示例内容；如果这些规则也要重复使用，应创建 Deck。
 
 **不允许出现**：Color Scheme、品牌字体家族/字重身份、最终字号体系、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。Layout 可以保留语义文字角色、对齐、换行与容量规则，因为它们属于结构；SVG 中性 paint、字体和字号只用于审阅。最终色彩与字体由策略师确认阶段或其他模板 kind 解析。
 
-### Deck schema
+### Deck 结构定义
 
-**Frontmatter**
+**前置元数据**
 
 ```yaml
 ---
@@ -447,22 +447,22 @@ apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；为
 | `workflows/create-template/create-layout.md` | 品牌中立、带结构化 SVG roster 的 Layout 工作区 |
 | `workflows/create-template/create-deck.md` | 应用契约与身份/结构一体化、带结构化 SVG roster 的 Deck 工作区；可复用成果带品牌身份或场景语义时选择，不能只因来源是一份完整 PPTX 就默认选择 |
 
-**一套 schema，两个落点。** 模板是同一份合同落在两个层面，唯一的差别是 Design Spec 叫什么：
+**一套结构定义，两个落点。** 模板是同一份合同落在两个层面，唯一的差别是 Design Spec 叫什么：
 
 | 层 | 容器 | Design Spec |
 |---|---|---|
 | skill 库 | `templates/<kind_dir>/<template_id>/` 已经说明了 kind 和 id | `templates/design_spec.md` |
 | 项目 | 一个平铺、多 kind 共用的 `templates/` | `templates/design_spec.<kind>.<id>.md` |
 
-消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与 frontmatter 的 `kind` 及对应 `<kind>_id` 一致；裸名与限定名不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于 schema 不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
+消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与前置元数据中的 `kind` 及对应 `<kind>_id` 一致；裸名与限定名不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于结构定义不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
 
 选择遵循同一条原则：单位是工作区 **root**，不是 kind。一个 root 会贡献它暴露的全部 kind，所以指向一个同时装了 Brand 和 Style 的项目，两者都会生效。按 kind 浏览全局库只是找到 root 的一种方式——`library` 与 `explicit` 记录的是 root 如何被发现，而不是它拥有什么。
 
-在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。项目到项目复用保持完整 root；单项进出全局库时保留 spec schema 与素材，但会改变 spec 文件名落点及索引注册。
+在全局库范围，前置元数据中的 `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。项目到项目复用保持完整 root；单项进出全局库时保留 spec 的结构定义与素材，但会改变 spec 文件名落点及索引注册。
 
 ---
 
-## 七、不做（与本文 framing 配套的拒绝列表）
+## 七、不做（与本文叙述框架配套的拒绝列表）
 
 - **不在安装层支持字段级覆盖语法** —— 字段级微调走 策略师确认阶段这条已有路径
 - **不接受同 kind 重复** —— 安装前先缩小 root 集合；Layout + Deck 按结构优先级解析

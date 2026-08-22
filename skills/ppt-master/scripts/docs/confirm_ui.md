@@ -305,9 +305,9 @@ The command writes, and agents must not hand-author:
 ```
 
 The handoff must match the current valid selection. Template mode also requires
-`<project_path>/templates/design_spec.md`; free design requires no installed
-spec. Write `recommendations.stage2.json` only after this command succeeds, so
-its file time is newer than the handoff.
+at least one `<project_path>/templates/design_spec.<kind>.<id>.md`; free design
+requires no installed spec. Write `recommendations.stage2.json` only after this
+command succeeds, so its file time is newer than the handoff.
 
 ## Field shapes
 

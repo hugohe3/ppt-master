@@ -1,4 +1,4 @@
-# Visualization Template Authoring Guide
+# 可视化模板编写指南
 
 这是供维护者审阅的中文指南，因此放在两个 Visualization catalog 的共同父目录，
 而不是归某一个 family 所有。`templates/charts/` 和 `templates/tables/` 共同组成
@@ -6,25 +6,26 @@ page-local Visualization 模板库；模板负责数据编码或单元格关系�
 风格。模板必须保持源码可读、独立可渲染，并允许 Executor 根据项目 Design Spec
 与 `spec_lock.md` 重做字体、配色和装饰。
 
-| Family | 定义 | 判定边界 |
+| 分类 | 定义 | 判定边界 |
 |---|---|---|
-| `chart` | Value-driven visualization | 数值、类别、时间、权重或持续时间决定 mark 的位置、长度、面积、角度、字号或连接宽度 |
-| `table` | Row × column fact grid | 行头与列头共同寻址一个单元格事实；合并、对齐和边界保持该交点关系 |
+| `chart` | 数值驱动的可视化 | 数值、类别、时间、权重或持续时间决定 mark 的位置、长度、面积、角度、字号或连接宽度 |
+| `table` | 行 × 列事实网格 | 行头与列头共同寻址一个单元格事实；合并、对齐和边界保持该交点关系 |
 
-**Hard rule — Structure is a method, not a catalog**: 定性顺序、层级、角色、
+**硬规则——Structure 是一种方法，不是目录**：定性顺序、层级、角色、
 分区和关系由 [`executor-structure.md`](../references/executor-structure.md) 在当前页面
 现场构形，不登记固定 `structure/<key>`、SVG roster 或 index。Default 和 Quick 都先
 判断页面真实信息模型；需要定性拓扑时都必须采用这套 Structure 方法。删除 catalog
 只删除固定示例，不删除 Quick 或 Default 的 Structure 能力。
 
-**Hard rule — Visualization is not Layout**: Chart/Table 模板和运行时 Structure
+**硬规则——Visualization 不是 Layout**：Chart/Table 模板和运行时 Structure
 都不拥有 `data-pptx-master`、`data-pptx-layout`、`data-pptx-layer` 或
 `data-pptx-placeholder`。跨页 Master/Layout、page type、slot geometry 和
-placeholder 合同仍只属于 [`layouts/`](./layouts/) workspace。
+placeholder 合同属于 [`layouts/`](./layouts/) 或 [`decks/`](./decks/) workspace；
+两者共存时，仅由 Layout 覆盖 Deck 的结构分段。
 
 ## 0. 上游规范
 
-**Hard rule**: 本指南只定义 Chart/Table 两个 catalog family 的结构与中性预览合同。通用 SVG 语法、效果、原生数据接口和 PowerPoint 结构分别由以下权威文件定义：
+**硬规则**：本指南只定义 Chart/Table 两个 catalog family 的结构与中性预览合同。通用 SVG 语法、效果、原生数据接口和 PowerPoint 结构分别由以下权威文件定义：
 
 | 合同 | 权威文件 |
 |---|---|
@@ -33,7 +34,7 @@ placeholder 合同仍只属于 [`layouts/`](./layouts/) workspace。
 | Native Chart/Table | [`native-data-interface.md`](../references/native-data-interface.md) |
 | 画布格式 | [`canvas-formats.md`](../references/canvas-formats.md) |
 
-**Forbidden — second SVG specification**: 不在本指南复述或放宽上游语法。发生冲突时以上游权威文件为准。
+**禁止——重复定义第二套 SVG 规范**：不在本指南复述或放宽上游语法。发生冲突时以上游权威文件为准。
 
 ---
 
@@ -51,14 +52,14 @@ placeholder 合同仍只属于 [`layouts/`](./layouts/) workspace。
 | 必要的状态与语义区分 | 页面背景、页头、页脚和品牌 chrome |
 | 独立预览所需的中性样式 | 最终强调策略与页面级视觉层级 |
 
-**Hard rule — authoring integrity**: 维护某个库模板时必须保持该模板自身的
-family 与信息模型：Chart 的 value mapping、Table 的 row × column fact grid。
+**硬规则——编写完整性**：维护某个库模板时必须保持该模板自身的
+family 与信息模型：Chart 的数值映射、Table 的行 × 列事实网格。
 若修改结果属于定性关系拓扑，不新增第三类模板，而由 runtime Structure 方法构建；
 若仍属于另一 catalog family，应登记到正确 family，不能保留错误标签。最终视觉样式
 仍来自使用它的项目，而不是模板的示例审美。
 
-**Hard rule — flexible project reference**: Executor 选中的 `family/key` 仍只是
-flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有最终结构；
+**硬规则——灵活的项目引用**：Executor 选中的 `family/key` 仍只是
+灵活的页内引用。Default 的 §IX 或 Quick 的页面决策拥有最终结构；
 选中引用不会锁死页面的可视化类型、几何、分组数、项目数或组合方式，Executor
 可按已确认的页面意图适配、重组或替换。项目若实际采用某一信息模型，必须保持
 其真实数据与关系准确；仅有引用本身不构成页面结构权威。
@@ -74,20 +75,20 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 | 只让示例显得更精致、立体、品牌化或“高级” | 作为简化候选；通过文本与前后渲染核对后再删除 |
 | 只对某个项目风格成立 | 交给 Executor 重建 |
 
-**Default — information first (may override when semantics require it)**: 优先使用清楚的线、面、标签和留白。装饰不能成为理解信息的前提。
+**默认——信息优先（语义需要时可以覆盖）**：优先使用清楚的线、面、标签和留白。装饰不能成为理解信息的前提。
 
 ### 1.3 保真优先
 
-**Hard rule — fidelity before slimming**: 模板瘦身不得改写或删除原有可见标题、标签、说明、数值、单位、状态、来源、顺序、容量和关系。占位内容保持原文；只有明确重复的信息可以删除，并记录理由。
+**硬规则——先保真，再瘦身**：模板瘦身不得改写或删除原有可见标题、标签、说明、数值、单位、状态、来源、顺序、容量和关系。占位内容保持原文；只有明确重复的信息可以删除，并记录理由。
 
-**Explicit migration exception**: 经明确批准的 family/key 合并、重组或退役可以用
+**显式迁移例外**：经明确批准的 family/key 合并、重组或退役可以用
 中性占位内容重建 canonical SVG，或移除不再存活的工件；这不是普通模板瘦身。
 迁移必须在 §8 记录 catalog 边界和仍可读取的 legacy 语义。未列入批准迁移的模板
 仍受上一条逐字保真约束。
 
-**Hard rule — structural frames survive**: 框线、底色、分隔、标签页或面板只要表达真实的信息单元、父子层级、阶段范围、绘图区或输出区，就属于结构。可以减少叠加效果，但不得为了 token 数字把有效层级压平。
+**硬规则——保留结构框架**：框线、底色、分隔、标签页或面板只要表达真实的信息单元、父子层级、阶段范围、绘图区或输出区，就属于结构。可以减少叠加效果，但不得为了 token 数字把有效层级压平。
 
-**Forbidden — compression by rewriting**: 不用缩写、概括、换词或删句降低 token。体积优化来自属性继承、重复样式合并和非语义效果简化，不来自内容编辑。
+**禁止——通过改写压缩**：不用缩写、概括、换词或删句降低 token。体积优化来自属性继承、重复样式合并和非语义效果简化，不来自内容编辑。
 
 ---
 
@@ -95,7 +96,7 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 
 ### 2.1 独立可渲染
 
-**Hard rule**: 每个模板保持完整 `<svg>`、`viewBox="0 0 1280 720"` 和一个直接的白色全画布背景，使文件无需外部样式即可打开审阅。
+**硬规则**：每个模板保持完整 `<svg>`、`viewBox="0 0 1280 720"` 和一个直接的白色全画布背景，使文件无需外部样式即可打开审阅。
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
@@ -122,9 +123,9 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 | 负向语义 | `#E11D48` | 仅表示下降、异常、未达标 |
 | 警示语义 | `#D97706` | 仅表示风险或待处理 |
 
-**Hard rule**: 多系列数据必须可区分；正负、完成/计划等语义状态必须可辨认。颜色承担这些信息时保留，颜色只承担装饰时移除。
+**硬规则**：多系列数据必须可区分；正负、完成/计划等语义状态必须可辨认。颜色承担这些信息时保留，颜色只承担装饰时移除。
 
-**Forbidden — fixed catalog palette**: 不要求每个卡片、步骤或能力点使用不同 Tailwind hue。项目配色不从模板示例反向推导。
+**禁止——固定目录调色板**：不要求每个卡片、步骤或能力点使用不同 Tailwind hue。项目配色不从模板示例反向推导。
 
 ### 2.3 页面 chrome
 
@@ -141,7 +142,7 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 
 ### 3.1 减少冗余效果
 
-**Default — one clear treatment (may override when structure requires depth)**: 中性模板避免阴影、发光、纹理、渐变和多层框同时叠加；保留能帮助读者识别真实边界、重叠或空间关系的最少效果。
+**默认——一种清楚的处理方式（结构需要深度时可以覆盖）**：中性模板避免阴影、发光、纹理、渐变和多层框同时叠加；保留能帮助读者识别真实边界、重叠或空间关系的最少效果。
 
 | 效果 | 默认 | 允许条件 |
 |---|---|---|
@@ -151,13 +152,13 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 | 圆角卡片 | 保留真实信息单元的一层边界 | 圆角值与最终外观由项目适配 |
 | 图标底板 | 非默认 | 需要明确图标槽位或状态边界 |
 
-**Hard rule**: Heatmap 色阶、Sankey 流量宽度、系列区分、Isometric 面向关系和真实模块边界属于信息编码或结构。普通卡片阴影、气泡高光、无含义色带和不承担顺序的大号淡色编号通常不属于；删除前仍需确认没有弱化层级。
+**硬规则**：Heatmap 色阶、Sankey 流量宽度、系列区分、Isometric 面向关系和真实模块边界属于信息编码或结构。普通卡片阴影、气泡高光、无含义色带和不承担顺序的大号淡色编号通常不属于；删除前仍需确认没有弱化层级。
 
 ### 3.2 容器克制
 
-**Hard rule**: 每个真实信息单元保留至少一种清楚的边界表达：留白、分隔线、描边或底色。通常只需一种；父级区域与子级内容确实表达两个层级时可以保留两层。不要同时叠加无语义的描边、阴影、渐变和多层圆角框。
+**硬规则**：每个真实信息单元保留至少一种清楚的边界表达：留白、分隔线、描边或底色。通常只需一种；父级区域与子级内容确实表达两个层级时可以保留两层。不要同时叠加无语义的描边、阴影、渐变和多层圆角框。
 
-**Reference — not a constraint**: 项目最终可能采用强装饰风格。那是 Executor 根据 Design Spec 重建的项目决策，不是共享模板的默认形态。
+**参考说明——不是约束**：项目最终可能采用强装饰风格。那是 Executor 根据 Design Spec 重建的项目决策，不是共享模板的默认形态。
 
 ---
 
@@ -165,7 +166,7 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 
 ### 4.1 语义压缩
 
-**Hard rule**: 缩小模板时保留正常换行、缩进、语义 `id` 和必要分区注释。压缩目标是减少重复信息，不是把 XML 变成一行。
+**硬规则**：缩小模板时保留正常换行、缩进、语义 `id` 和必要分区注释。压缩目标是减少重复信息，不是把 XML 变成一行。
 
 | 做法 | 要求 |
 |---|---|
@@ -178,7 +179,7 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 
 ### 4.2 禁止的压缩
 
-**Forbidden — opaque source**:
+**禁止——不可读源码**：
 
 - 单行 minify、随机缩写 ID 或删除结构注释。
 - 为省字符把核心构图拆成难以追踪的深层 `<symbol>/<use>` 图。
@@ -194,9 +195,9 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 | 页面标题 | `30–36`，`700–800` |
 | 区域标题 | `18–24`，`600–700` |
 | 正文/标签 | `13–16` |
-| Caption/轴刻度 | `12–14` |
+| 图注/轴刻度 | `12–14` |
 
-**Hard rule**: 所有文本 `font-size >= 12`，使用有限无单位数值。需要成为一个 PowerPoint 文本框的多格式逻辑行使用一个 `<text>` 加非定位 `<tspan>`；独立文本框使用独立 `<text>`。
+**硬规则**：所有文本 `font-size >= 12`，使用有限无单位数值。需要成为一个 PowerPoint 文本框的多格式逻辑行使用一个 `<text>` 加非定位 `<tspan>`；独立文本框使用独立 `<text>`。
 
 ---
 
@@ -204,7 +205,7 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 
 ### 5.1 语义分组
 
-**Hard rule**: 使用描述性顶层 `<g id>` 表达页面级逻辑单元，例如 Header、Chart、Legend、Card Grid 或 Process。不要为每条文字、图标或数据点建立一个直属根组。
+**硬规则**：使用描述性顶层 `<g id>` 表达页面级逻辑单元，例如 Header、Chart、Legend、Card Grid 或 Process。不要为每条文字、图标或数据点建立一个直属根组。
 
 | 顶层组 | 典型内容 |
 |---|---|
@@ -214,13 +215,13 @@ flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有
 | `table-area` / replacement carrier | Table 的行、列、单元格和必要 metadata |
 | `table-notes` | 来源、口径或脚注 |
 
-**Forbidden — workspace metadata**: 两个 catalog family 都不得写入
+**禁止——工作区元数据**：两个 catalog family 都不得写入
 Master/Layout/placeholder 所有权标记。运行时 Structure 即使占满整个
 `1280×720` 画布也仍是 Slide-local 构形，不会因此成为 Layout workspace。
 
 ### 5.2 `data-pptx-bounds`
 
-**Hard rule**: 每个可见直属根 `<g>` 都声明正数、根坐标系的 `data-pptx-bounds="x y width height"`。即使该组已有 native chart/table frame，也保留 bounds。
+**硬规则**：每个可见直属根 `<g>` 都声明正数、根坐标系的 `data-pptx-bounds="x y width height"`。即使该组已有 native chart/table frame，也保留 bounds。
 
 ```xml
 <g id="header" data-pptx-bounds="60 40 1160 72">
@@ -240,7 +241,7 @@ Master/Layout/placeholder 所有权标记。运行时 Structure 即使占满整�
 | 嵌套组 | 不写；Checker 忽略嵌套 bounds |
 | 背景/defs | 直接背景 primitive 与非可见定义不需要 bounds |
 
-**Forbidden — bounds noise**: 不给每个嵌套 `<g>`、图标、数据点或实现碎片添加 bounds。
+**禁止——冗余 bounds**：不给每个嵌套 `<g>`、图标、数据点或实现碎片添加 bounds。
 
 ### 5.3 Shape-first
 
@@ -253,7 +254,7 @@ Master/Layout/placeholder 所有权标记。运行时 Structure 即使占满整�
 | 图元、预设、Boolean 都不能表达的数据/语义/锁定风格几何 | `<path>`、`<polygon>`、`<polyline>` |
 | 数据图表 | 默认 Shape fallback；符合条件时附带 native replacement marker |
 
-**Forbidden — inferred native semantics**: 概念图、流程图和框架图不添加 `data-pptx-replace-with="chart"`；普通关系线不添加 Connector attachment metadata。
+**禁止——推断原生语义**：概念图、流程图和框架图不添加 `data-pptx-replace-with="chart"`；普通关系线不添加 Connector attachment metadata。
 
 ---
 
@@ -261,7 +262,7 @@ Master/Layout/placeholder 所有权标记。运行时 Structure 即使占满整�
 
 ### 6.1 绘图区标记
 
-**Hard rule**: calculator-supported 数据图表在 `<g id="chartArea">` 内、轴之后、首个数据元素之前保留精确机器注释：
+**硬规则**：calculator-supported 数据图表在 `<g id="chartArea">` 内、轴之后、首个数据元素之前保留精确机器注释：
 
 ```xml
 <!-- chart-plot-area: 140,150,1160,550 -->
@@ -276,7 +277,7 @@ Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
 
 ### 6.2 Native Chart/Table
 
-**Hard rule**: 只有 [`native-data-interface.md`](../references/native-data-interface.md) 支持的真实 Chart 或纯文本 Table 使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。运行时构建的 Structure 永远不使用 Chart/Table replacement marker。
+**硬规则**：只有 [`native-data-interface.md`](../references/native-data-interface.md) 支持的真实 Chart 或纯文本 Table 使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。运行时构建的 Structure 永远不使用 Chart/Table replacement marker。
 
 ```xml
 <g id="line-chart"
@@ -287,7 +288,7 @@ Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
 </g>
 ```
 
-**Hard rule**: 项目颜色适配时同步修改可见系列颜色和 metadata `style.colors`。默认 Shape 输出与显式 native 输出都必须可验证。
+**硬规则**：项目颜色适配时同步修改可见系列颜色和 metadata `style.colors`。默认 Shape 输出与显式 native 输出都必须可验证。
 
 ### 6.3 数据装饰边界
 
@@ -306,7 +307,7 @@ Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
 
 ### 7.1 占位内容
 
-**Hard rule**: 模板占位文本使用英文，展示真实文本容量和数据格式，但不承载具体项目事实。
+**硬规则**：模板占位文本使用英文，展示真实文本容量和数据格式，但不承载具体项目事实。
 
 | 应展示 | 示例 |
 |---|---|
@@ -315,7 +316,7 @@ Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
 | 正常换行 | 2–3 行短描述 |
 | 结构容量 | 真实建议数量范围内的 series/items/nodes |
 
-**Forbidden — placeholder storytelling**: 不写长篇营销文案、部门归属、真实品牌或无法复用的项目背景。
+**禁止——用占位内容讲故事**：不写长篇营销文案、部门归属、真实品牌或无法复用的项目背景。
 
 ### 7.2 分类索引与规划投影
 
@@ -338,7 +339,7 @@ Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
 规划主路径不读取这些记录。Chart 与 Table 的规划词汇表必须完整列出各自同一组
 canonical `family/<key>`，只说明信息关系，不写 SVG 实现、布局参数或选择结论。
 
-**Hard rule**: `key` 与同 family 文件名一致，`meta.total` 与该 family catalog
+**硬规则**：`key` 与同 family 文件名一致，`meta.total` 与该 family catalog
 数量一致；每份 planning vocabulary 与 owning index 的成员集合必须精确一致。
 除此以外不要建立跨 family 的第二份成员清单。
 
@@ -350,7 +351,7 @@ canonical `family/<key>`，只说明信息关系，不写 SVG 实现、布局参
 39 个 SVG：Chart 33 个、Table 6 个。各 live index 是成员清单的唯一权威；
 Structure 不再有固定 SVG roster、index 或 canonical key。
 
-**Hard rule — topology is generated, not recalled**: 从来源 deck 吸收的是 Shape
+**硬规则——拓扑由现场生成，不从目录召回**：从来源 deck 吸收的是 Shape
 grammar 和构形思维，而不是页面示例清单。先还原顺序、层级、分组、分区、连接、
 交叠等真实关系，再由 `executor-structure.md` 使用区域、节点、主轴、连接、标签与
 装饰等角色现场组合。Default 在 §IX 描述该关系，Quick 在当前上下文作同一判断；
@@ -359,13 +360,13 @@ Structure 载体判断。
 
 **已批准的图表容量迁移**：
 
-| Canonical key | 已批准边界 | 兼容处理 |
+| 规范 key | 已批准边界 | 兼容处理 |
 |---|---|---|
 | `gauge_chart` | 2026-08-10：中性预览从三个并列 Gauge 重组为一个有界域、明确目标或阈值的 KPI；多个同级 KPI 改用 `bullet_chart` 或 `progress_bar_chart` | canonical key 保持不变；旧三指标示例不再作为可读取容量合同，无需 alias |
 
-**Canonical Table set**:
+**规范 Table 集合**：
 
-| Canonical key | 核心信息关系 |
+| 规范 key | 核心信息关系 |
 |---|---|
 | `record_table` | 每行一条记录、每列一个稳定字段 |
 | `metric_table` | 实体与 KPI 的交点承载度量、变化、状态或 cell 内微图形 |
@@ -374,14 +375,14 @@ Structure 载体判断。
 | `rating_matrix` | 评价维度与方案的交点使用同一套序数等级 |
 | `hierarchical_table` | 分组或缩进行、明细与小计/总计形成层级网格 |
 
-**Hard rule — semantic family before physical object**: PowerPoint 中的物理
+**硬规则——先判定语义分类，再看物理对象**：PowerPoint 中的物理
 Table 对象不自动属于 `table` family。只有行头与列头的交点可寻址为一个事实时才是
 Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`；阶段与泳道只
 表达定性活动位置时由 runtime Structure 构建。
 
-**Canonical catalog aliases**:
+**规范目录别名**：
 
-| Canonical reference | Legacy bare keys |
+| 规范引用 | 旧版裸 key |
 |---|---|
 | `table/record_table` | `basic_table` |
 | `table/metric_table` | `consulting_table` |
@@ -398,7 +399,7 @@ Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`
 也不能写入新 §VII/lock。消费方把该意图投影为定性关系提示，再交给 runtime Structure
 构形；不得把它伪装成仍存活的模板。
 
-**Hard rule**: 修改一个仍属 canonical 的模板时先冻结可见文本、数据和结构层级，
+**硬规则**：修改一个仍属 canonical 的模板时先冻结可见文本、数据和结构层级，
 再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线
 验证。经本节明确登记的 catalog 合并/重组/退役不要求保留旧示例文案；除此之外，未经
 说明的文本删除、改写或结构边界丢失都会阻断变更。
@@ -424,9 +425,9 @@ Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`
 - [ ] 颜色差异确实表达 series、state、positive/negative 等语义。
 - [ ] 标题、副标题和来源只用于展示必要结构或容量。
 
-### 9.3 Family 与 PowerPoint
+### 9.3 分类与 PowerPoint
 
-- [ ] Family 判定正确：Chart 为 value-driven、Table 为 row × column fact grid；定性拓扑退出 catalog 并由 runtime Structure 构建。
+- [ ] 分类判定正确：Chart 为数值驱动、Table 为行 × 列事实网格；定性拓扑退出 catalog 并由 runtime Structure 构建。
 - [ ] Chart/Table 模板不含 Master/Layout/layer/placeholder ownership metadata。
 - [ ] Calculator-supported Chart 保留准确 `chart-plot-area` 标记。
 - [ ] Eligible Chart/Table 的 metadata 与可见 fallback 数据一致。
@@ -434,7 +435,7 @@ Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`
 - [ ] 存在 replacement marker 时，显式 native Chart/Table 导出通过。
 - [ ] `svg_quality_checker.py` 无 error；warning 已人工判断。
 
-### 9.4 Catalog
+### 9.4 目录
 
 - [ ] 新模板只登记到 owning family index，index object、`meta.total` 与 SVG roster 一致。
 - [ ] 修改 key/summary 后通过 `visualization_recall.py validate` 和 recall 烟测。
@@ -460,4 +461,4 @@ python3 skills/ppt-master/scripts/compact_svg_coordinates.py \
   skills/ppt-master/templates/<family-directory>/<key>.svg
 ```
 
-**Validation**: 修改后至少完成 XML 解析、独立 SVG 渲染、Checker、默认 Shape-first 导出，以及 marker 模板的 native Chart/Table 导出。
+**验证**：修改后至少完成 XML 解析、独立 SVG 渲染、Checker、默认 Shape-first 导出，以及 marker 模板的 native Chart/Table 导出。

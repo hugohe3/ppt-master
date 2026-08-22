@@ -12,20 +12,22 @@ diagnostic or forced route is needed.
 
 ## Shared Output Contract
 
-All `source_to_md` converters keep their existing Markdown output behavior and
-now also write a lightweight sidecar profile when conversion succeeds:
+All `source_to_md` backends preserve their Markdown output and attempt a
+sidecar profile after conversion. Direct calls treat the sidecar as
+best-effort: an I/O failure warns without changing the Markdown result. The
+unified `source_to_md.py` dispatcher writes a missing profile before success.
 
 | Output | Convention |
 |---|---|
 | Markdown | `<stem>.md` beside the local source unless `-o` selects another path |
 | Asset directory | `<stem>_files/` when the backend extracts images or media |
 | Image manifest | `<stem>_files/image_manifest.json` when image metadata is available |
-| Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output |
+| Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output when written |
 
-The conversion profile is metadata only. It records the converter, source path,
+When present, the conversion profile is metadata only: converter, source path,
 Markdown structure counts, asset directory, image manifest path, and image
-count. Downstream PPT workflows still use the Markdown and image manifest as the
-content/asset contract; the profile is for inspection and debugging.
+count. Downstream PPT workflows still use Markdown and the image manifest as
+the content/asset contract; the profile is for inspection and debugging.
 
 ## `source_to_md.py`
 
@@ -64,9 +66,9 @@ Useful options:
 
 For multi-source project intake, use `project_manager.py import-sources` with
 all source paths / URLs. For local files, the default is to keep generated
-Markdown/profile outputs beside the original source. `source_to_md.py` and the
-backend converters support single files, explicit multi-file inputs, and
-non-recursive directory inputs.
+Markdown and profile outputs beside the original source.
+`source_to_md.py` and the backend converters support single files, explicit
+multi-file inputs, and non-recursive directory inputs.
 
 ## `source_to_md/pdf_to_md.py`
 
@@ -136,8 +138,10 @@ pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
 # Windows: https://pandoc.org/installing.html
 ```
 
-All paths produce the same output convention: `<input>.md` plus a sibling `<input>_files/` directory containing extracted images with relative references.
-On success, a sibling `<input>.conversion_profile.json` is also written.
+All paths produce `<input>.md`. Extracted assets use a sibling `<input>_files/`
+directory with relative references. Without assets, that directory need not remain.
+The direct backend then attempts `<input>.conversion_profile.json` under the
+shared best-effort sidecar contract.
 
 ## `source_to_md/excel_to_md.py`
 
@@ -165,7 +169,7 @@ Behavior:
 - trims empty outer rows and columns
 - propagates merged-cell labels for readable Markdown tables
 - exports formula cells as cached values; it does not recalculate formulas
-- writes `<input>.conversion_profile.json` after successful conversion
+- uses the shared best-effort conversion-profile contract after success
 
 Dependency:
 
@@ -202,7 +206,7 @@ Behavior:
 - exports embedded pictures to a sibling `_files/` directory
 - preserves supported run, table-cell, picture, and text-shape links as Markdown links, including `#slide-N` jumps
 - appends speaker notes when present
-- writes `<input>.conversion_profile.json` after successful conversion
+- uses the shared best-effort conversion-profile contract after success
 
 Dependency:
 
@@ -626,8 +630,8 @@ fetch WeChat Official Accounts (`mp.weixin.qq.com`) and other sites that
 block Python's default TLS fingerprint. No extra flags needed. If
 `curl_cffi` is not available, it falls back to plain `requests`.
 
-On success, the converter writes `<output>.conversion_profile.json` beside the
-Markdown output.
+On success, the converter uses the shared best-effort sidecar contract for
+`<output>.conversion_profile.json` beside the Markdown output.
 `--emit-result` is for wrapper scripts that need the actual saved Markdown path
 when the converter derives a title-based filename.
 

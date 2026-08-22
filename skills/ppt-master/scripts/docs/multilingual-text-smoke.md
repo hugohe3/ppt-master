@@ -97,6 +97,17 @@ with TemporaryDirectory(prefix="ppt-master-multilingual-smoke-") as tmp:
         json.dumps(recommendation),
         encoding="utf-8",
     )
+    (confirm / "template_options.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "phase": "template",
+                "default_mode": "free_design",
+                "explicit_workspace_roots": [],
+            }
+        ),
+        encoding="utf-8",
+    )
     app = create_app(str(project), idle_timeout=0)
     app.testing = True
     client = app.test_client()
@@ -107,6 +118,10 @@ with TemporaryDirectory(prefix="ppt-master-multilingual-smoke-") as tmp:
         "/api/confirm",
         json={
             "stage": "stage1",
+            "template_selection": {
+                "mode": "free_design",
+                "selection_keys": [],
+            },
             "primary_language": "ar-SA",
             "canvas": "ppt169",
             "audience": "Team",
