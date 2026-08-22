@@ -9,6 +9,7 @@ Usage:
     python3 scripts/generate_examples_index.py examples
 """
 
+import argparse
 import os
 import sys
 from collections import defaultdict
@@ -16,8 +17,6 @@ from datetime import datetime
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
-
-configure_utf8_stdio()
 
 try:
     from project_utils import find_all_projects, get_project_info, CANVAS_FORMATS
@@ -214,16 +213,30 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     return "\n".join(content)
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Build the examples-index CLI parser."""
+    parser = argparse.ArgumentParser(
+        description="Generate the PPT Master examples README index.",
+    )
+    parser.add_argument(
+        "examples_dir",
+        nargs="?",
+        default="examples",
+        help="Examples directory (default: examples)",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
-    examples_dir = 'examples'
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] in {'-h', '--help', 'help'}:
-            print(__doc__)
-            sys.exit(0)
-
-        examples_dir = sys.argv[1]
+    parser = build_parser()
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    if raw_argv == ["help"]:
+        parser.print_help()
+        return 0
+    args = parser.parse_args(raw_argv)
+    configure_utf8_stdio()
+    examples_dir = args.examples_dir
 
     print("=" * 80)
     print("PPT Master - Examples Index Generator")
@@ -234,7 +247,7 @@ def main() -> None:
 
     if not content:
         print("\n[ERROR] Generation failed")
-        sys.exit(1)
+        return 1
 
     # Write to file
     output_file = Path(examples_dir) / 'README.md'
@@ -252,8 +265,10 @@ def main() -> None:
 
     except Exception as e:
         print(f"\n[ERROR] Failed to write file: {e}")
-        sys.exit(1)
+        return 1
+
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

@@ -17,6 +17,7 @@ Dependencies:
 
 from __future__ import annotations
 
+import argparse
 import ast
 import hashlib
 import re
@@ -208,8 +209,16 @@ def require_skill_integrity() -> None:
     raise SystemExit(78)
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
+    """Build the zero-argument integrity-check CLI parser."""
+    return argparse.ArgumentParser(
+        description="Validate the PPT Master Skill attribution and execution gates.",
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the fail-closed Skill integrity gate."""
+    build_parser().parse_args(argv)
     require_skill_integrity()
     return 0
 

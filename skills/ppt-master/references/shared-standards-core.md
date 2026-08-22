@@ -543,6 +543,8 @@ external stylesheets, and imported styles remain forbidden. This contract is
 only for literal declarations in an element's own `style` attribute; PPT Master
 does not compute CSS cascade or custom properties. Root canvas authority remains
 the `viewBox`, regardless of root `<svg>` compatibility width/height values.
+The shared coordinate and geometry implementation is
+[`utils.py`](../scripts/svg_to_pptx/drawingml/utils.py).
 
 ### 2.2 Group Opacity Compatibility
 

@@ -103,7 +103,9 @@ when the effect carries material meaning.
 
 Compatible paint grammar includes recognized named colors, `rgb()` / `rgba()`,
 `hsl()` / `hsla()`, and `#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`. The
-converter also tolerates legacy bare 3/4/6/8-digit hexadecimal tokens.
+converter also tolerates legacy bare 3/4/6/8-digit hexadecimal tokens. The
+shared converter implementation for §§6.2–6.8 is
+[`utils.py`](../scripts/svg_to_pptx/drawingml/utils.py).
 
 **Default — canonical generated paint tokens (may preserve compatible
 alternatives)**: New `svg_output/` and reusable template SVGs write solid paint

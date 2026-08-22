@@ -117,6 +117,13 @@ gate live in `scripts/svg_to_pptx/native_objects/formula_compiler.py` and
 names; only explicitly named commands and retained project aliases are
 contractual.
 
+Implementations:
+[`formula.py`](../scripts/svg_to_pptx/native_objects/formula.py),
+[`formula_ast.py`](../scripts/svg_to_pptx/native_objects/formula_ast.py),
+[`formula_parser.py`](../scripts/svg_to_pptx/native_objects/formula_parser.py),
+[`formula_run_properties.py`](../scripts/svg_to_pptx/native_objects/formula_run_properties.py),
+[`inline_formula.py`](../scripts/svg_to_pptx/native_objects/inline_formula.py).
+
 **Native normalization**: `\dfrac` / `\tfrac`, `\dbinom` / `\tbinom`, and
 continued-fraction alignment normalize to the corresponding OMML structure;
 explicit big-delimiter grades become auto-sizing delimiters; `\mathscr`
