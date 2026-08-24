@@ -16,16 +16,46 @@ the grammar does not select `Structure=yes` or create a geometry quota.
 
 ## 1. Relationship Atoms
 
-| Atom | Meaning | Encode with |
-|---|---|---|
-| `order` | Sequence, progression, or rank | Position, numbering, direction, shared path |
-| `link` | Dependency, exchange, influence, transition | Proximity/alignment when unmistakable; otherwise an edge |
-| `parent` | One unit governs or decomposes into children | Branching, indentation, nesting, scale |
-| `membership` | Units belong to a group, stage, lane, or region | Containment, shared field, band, repetition |
-| `contrast` | Peers, states, options, or positions compare | Shared baseline, opposing regions, parallel framing |
-| `overlap` | Units share a meaningful subset or duty | Intersecting regions plus a clear common area |
+**Mandatory — relationship → topology before contour**: For each active atom,
+resolve only the path, junctions, enclosure, field partition, shared region,
+scale change, and entry / endpoint that carry meaning. Adapt that topology to
+the actual units, text load, page role, and active visual system before
+selecting contours.
 
-Combine atoms as needed; never force a named business model. Numbers used only as labels do not create a chart. Value-derived position/length/angle/area/radius/width/color routes to [`executor-chart.md`](./executor-chart.md); row-header × column-header facts route to [`executor-table.md`](./executor-table.md). Qualitative lanes use this grammar, but date/duration-driven task-bar `x`/`width` is Gantt Chart geometry.
+| Atom | Meaning | Encode with | Generate topology from |
+|---|---|---|---|
+| `order` | Sequence, progression, or rank | Position, numbering, direction, shared path | One reading path: open / closed; straight / bent / stepped / switchback / coiled; level / rising / falling; constant / expanding / contracting; turns, milestones, endpoint |
+| `link` | Dependency, exchange, influence, transition | Proximity / alignment when unmistakable; otherwise an edge | Sources, targets, and junctions: direct, hub, chain, split, merge, exchange, or feedback; let the relationship determine the fewest necessary edges |
+| `parent` | One unit governs or decomposes into children | Branching, indentation, nesting, scale | Root, depth, and sibling groups: branch, indent, nest, radiate, or scale; let child roles set fan-out and weight |
+| `membership` | Units belong to a group, stage, lane, or region | Containment, shared field, band, repetition | Owning fields: enclose, band, lane, cluster, repeat, or nest; let content set field shape and occupancy |
+| `contrast` | Peers, states, options, or positions compare | Shared baseline, opposing regions, parallel framing | Shared invariants plus separation: one or more semantic axes / baselines, opposing or parallel fields, counterweight, divergence, or a before / after boundary |
+| `overlap` | Units share a meaningful subset or duty | Intersecting regions plus a clear common area | Exact exclusive / shared regions: paired, chained, or layered intersections; keep every owner and common area legible |
+
+**Reference — not a constraint**: `Generate topology from` names common
+transform axes rather than an exhaustive set. Combine, deform, or invent
+page-fit topologies from the active atoms; never recall a named diagram or
+reproduce a listed form by default.
+
+**Mandatory — combined-atom spatial relation before contour**: Combine atoms as
+needed; never force a named business model. When multiple atoms share one
+construct, resolve whether their topologies share a field, nest, run in
+parallel, cross orthogonally, or intersect. Orthogonal overlay applies when
+independent dimensions occupy one field, including but not limited to an
+`order` path across `membership` lanes and two independent `contrast`
+dimensions; preserve each atom's ownership and reading direction. The overlay
+never implies equal partitions.
+
+**Hard rule — no topology from balance alone**: Node count and text fit may
+change spacing, route, or wrap. They never justify equal shapes, gaps, or
+partitions, mirroring, radial symmetry, or closure that invents peer weight,
+centrality, reciprocity, or recurrence.
+
+Numbers used only as labels do not create a chart. Value-derived position,
+length, angle, area, radius, width, or color routes to
+[`executor-chart.md`](./executor-chart.md); row-header × column-header facts
+route to [`executor-table.md`](./executor-table.md). Qualitative lanes use this
+grammar, but date / duration-driven task-bar `x` / `width` is Gantt Chart
+geometry.
 
 ---
 
