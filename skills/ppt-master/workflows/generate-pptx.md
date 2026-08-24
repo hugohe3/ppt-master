@@ -617,6 +617,7 @@ Read ${SKILL_DIR}/references/svg-effects.md                # REQUIRED: §6.1 job
 Read ${SKILL_DIR}/references/native-shape-authoring.md     # REQUIRED: native-shape selection and Boolean construction
 Read ${SKILL_DIR}/references/preset-shape-vocabulary.md    # REQUIRED: complete 187-name authoring vocabulary
 Read ${SKILL_DIR}/references/executor-structure.md         # REQUIRED: qualitative relationship and topology grammar
+Read ${SKILL_DIR}/references/topology-assembly.md          # REQUIRED: topology assembly and relative-registration material
 Read ${SKILL_DIR}/references/semantic-svg.md               # REQUIRED: semantic metadata boundary
 Read ${SKILL_DIR}/references/modes/<resolved-id>.md        # one preset id, or each `mode_references` id
 Read ${SKILL_DIR}/references/visual-styles/<resolved-id>.md # one preset id, or each `visual_style_references` id

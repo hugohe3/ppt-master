@@ -525,7 +525,8 @@ not route among them one file at a time:
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
 [`preset-shape-vocabulary.md`](../../references/preset-shape-vocabulary.md),
 [`semantic-svg.md`](../../references/semantic-svg.md),
-and [`executor-structure.md`](../../references/executor-structure.md). Retain
+[`executor-structure.md`](../../references/executor-structure.md),
+and [`topology-assembly.md`](../../references/topology-assembly.md). Retain
 only the mode/style detail files selected during one-pass design resolution and
 realize that chosen direction. Exact `*_references` define the catalog material
 actually used by a custom: apply one basis under its behavior, synthesize several
@@ -543,11 +544,13 @@ and [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 Reread only after a known file change or context invalidation.
 
 `executor-structure.md` is loaded once before all SVG authoring so every
-`Structure=yes` result can apply its qualitative topology grammar.
-`native-shape-authoring.md` independently owns contour selection and compound
-page geometry for both Structure results. Reuse both throughout the valid
-execution context; before P01, read the complete preset vocabulary once, then
-reread only after a known file change or context invalidation.
+`Structure=yes` result can resolve its qualitative topology.
+`topology-assembly.md` supplies assembly and relative-registration material for
+that resolved topology; `native-shape-authoring.md` owns the two-step assembly
+gate, contour selection, and compound page geometry for both Structure results.
+Reuse all three throughout the valid execution context; before P01, read the
+complete preset vocabulary once, then reread only after a known file change or
+context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
 or more images, after its content and communication move are

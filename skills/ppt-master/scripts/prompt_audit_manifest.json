@@ -23,6 +23,7 @@
     "skills/ppt-master/references/executor-chart.md": 3500,
     "skills/ppt-master/references/executor-visualization.md": 1250,
     "skills/ppt-master/references/executor-structure.md": 2250,
+    "skills/ppt-master/references/topology-assembly.md": 3750,
     "skills/ppt-master/references/executor-table.md": 1000,
     "skills/ppt-master/references/executor-image.md": 2000,
     "skills/ppt-master/references/executor-web-image.md": 750,
@@ -229,6 +230,7 @@
         "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
         "skills/ppt-master/references/executor-structure.md",
+        "skills/ppt-master/references/topology-assembly.md",
         "skills/ppt-master/references/canvas-formats.md",
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/image-layout-patterns.md",
@@ -384,7 +386,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 130000
+      "max_tokens": 145000
     },
     "route.generate.quick-generate.visualization": {
       "description": "Quick Generate with complete Chart/Table expression vocabularies already in the fixed planning context, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar. Ceiling raised after BUDGET_LOAD_SET reported 126726 tokens.",
@@ -739,6 +741,7 @@
         "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
         "skills/ppt-master/references/executor-structure.md",
+        "skills/ppt-master/references/topology-assembly.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
           "exclude": [
@@ -772,7 +775,7 @@
         "skills/ppt-master/references/executor-structured.md",
         "skills/ppt-master/references/pptx-structure-interface.md"
       ],
-      "max_tokens": 74000
+      "max_tokens": 85000
     },
     "stage.generate.image.ai-two-types": {
       "description": "Incremental AI-image role with the selected preset or exact custom rendering bases and two selected local types. Ceiling raised after BUDGET_LOAD_SET reported 26216 tokens.",
@@ -838,7 +841,7 @@
         "skills/ppt-master/workflows/stages/resume-execute.md",
         "skills/ppt-master/references/artifact-ownership.md"
       ],
-      "max_tokens": 99000
+      "max_tokens": 115000
     },
     "stage.generate.resume-execute-image": {
       "description": "Fresh-session resume when the locked resource plan contains image rows.",
@@ -848,7 +851,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 115000
+      "max_tokens": 130000
     },
     "stage.generate.topic-research": {
       "description": "Gap-targeted factual intake stage.",

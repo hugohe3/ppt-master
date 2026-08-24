@@ -155,8 +155,10 @@ owned by the preserve/mirror round-trip contract.
 composition anchors, and any applicable topology under
 [`executor-structure.md`](./executor-structure.md) are resolved, but before
 writing coordinates, run this gate at every active granularity. For
-`Structure=yes`, assemble each resolved topology without changing it; for every
-page, resolve the page-scale geometry move carrying its background field,
+`Structure=yes`, assemble each resolved topology without changing it, using
+[`topology-assembly.md`](./topology-assembly.md) as assembly and relative
+registration material; for every page, resolve the page-scale geometry move
+carrying its background field,
 content zoning, focal hierarchy, or reading path. Apply §1's exact-fit decision
 and compare the useful lenses below. Before repeating stacked rectangles /
 rounded cards or uniform equal columns, compare a page-field, outline, nesting,
