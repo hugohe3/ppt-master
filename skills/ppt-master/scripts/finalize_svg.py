@@ -24,7 +24,7 @@ Usage:
 
 Examples:
     python3 scripts/finalize_svg.py projects/my_project
-    python3 scripts/finalize_svg.py examples/ppt169_demo --only embed-icons
+    python3 scripts/finalize_svg.py projects/ppt169_demo --only embed-icons
 
 Processing options:
     embed-icons   - Expand project icons and static same-document <use>

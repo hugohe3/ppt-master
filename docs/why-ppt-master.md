@@ -82,7 +82,7 @@ The choice is yours — and it doesn't stop at editors and models. Native chart 
 
 A deck's design is set by two independent axes you combine freely: the **narrative skeleton** (mode, see the section above) decides how it argues, and the **visual style** decides how it looks — 18 built-ins from `swiss-minimal` and `editorial` to `dark-tech`, `brutalist`, and `ink-wash`, each with a `custom` option. Any one pairs with any other, locked once at confirmation and held stable across the deck.
 
-The [examples/](../examples/) directory spans government fiscal analysis, AI architecture, editorial magazine, data journalism, Swiss grid, Memphis pop, risograph zine, and more.
+The [PPT Master examples site](https://hugohe3.github.io/ppt-master-examples/) spans government fiscal analysis, AI architecture, editorial magazine, data journalism, Swiss grid, Memphis pop, risograph zine, and more.
 
 ### Full Source-Document Input
 

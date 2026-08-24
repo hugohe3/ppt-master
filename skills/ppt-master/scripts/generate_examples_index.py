@@ -5,8 +5,10 @@ PPT Master - Examples Index Generator
 Automatically scans the examples directory and generates a README.md index file.
 
 Usage:
-    python3 scripts/generate_examples_index.py
-    python3 scripts/generate_examples_index.py examples
+    python3 scripts/generate_examples_index.py <examples_dir>
+
+The example projects live in the separate ppt-master-examples repository;
+pass the path to its examples/ directory.
 """
 
 import argparse
@@ -220,9 +222,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "examples_dir",
-        nargs="?",
-        default="examples",
-        help="Examples directory (default: examples)",
+        help="Path to the examples/ directory of the ppt-master-examples repository",
     )
     return parser
 

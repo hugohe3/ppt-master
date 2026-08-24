@@ -12,8 +12,8 @@ Usage:
     python3 scripts/svg_finalize/svg_rect_to_path.py <project_path> -s final -o svg_rounded
 
 Examples:
-    python3 scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo
-    python3 scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
+    python3 scripts/svg_finalize/svg_rect_to_path.py projects/ppt169_demo
+    python3 scripts/svg_finalize/svg_rect_to_path.py projects/ppt169_demo/svg_output/01_cover.svg
 
 Output:
     - Directory mode: outputs to svg_rounded/ subdirectory
@@ -240,9 +240,9 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:
-    %(prog)s examples/ppt169_demo
-    %(prog)s examples/ppt169_demo -s final
-    %(prog)s examples/ppt169_demo/svg_output/01_cover.svg
+    %(prog)s projects/ppt169_demo
+    %(prog)s projects/ppt169_demo -s final
+    %(prog)s projects/ppt169_demo/svg_output/01_cover.svg
 
 What it does:
     Converts <rect> elements with rx/ry to equivalent <path> elements.

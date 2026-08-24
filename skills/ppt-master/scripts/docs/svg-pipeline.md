@@ -729,14 +729,14 @@ Requirements:
 Validate SVG technical compliance.
 
 ```bash
-python3 scripts/svg_quality_checker.py examples/project/svg_output/01_cover.svg
-python3 scripts/svg_quality_checker.py examples/project/svg_output
-python3 scripts/svg_quality_checker.py examples/project
-python3 scripts/svg_quality_checker.py examples/project --stage first-page
-python3 scripts/svg_quality_checker.py examples/project --stage final --json
-python3 scripts/svg_quality_checker.py examples/project --format ppt169
-python3 scripts/svg_quality_checker.py --all examples
-python3 scripts/svg_quality_checker.py examples/project --export
+python3 scripts/svg_quality_checker.py projects/project/svg_output/01_cover.svg
+python3 scripts/svg_quality_checker.py projects/project/svg_output
+python3 scripts/svg_quality_checker.py projects/project
+python3 scripts/svg_quality_checker.py projects/project --stage first-page
+python3 scripts/svg_quality_checker.py projects/project --stage final --json
+python3 scripts/svg_quality_checker.py projects/project --format ppt169
+python3 scripts/svg_quality_checker.py --all projects
+python3 scripts/svg_quality_checker.py projects/project --export
 python3 scripts/svg_quality_checker.py path/to/template/templates --template-mode
 ```
 
@@ -806,7 +806,7 @@ Use this after SVG generation to inspect existing SVG geometry when manual compa
 ### `flatten_tspan.py`
 
 ```bash
-python3 scripts/svg_finalize/flatten_tspan.py examples/<project>/svg_output
+python3 scripts/svg_finalize/flatten_tspan.py projects/<project>/svg_output
 python3 scripts/svg_finalize/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 

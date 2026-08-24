@@ -817,13 +817,13 @@ def main(argv: list[str] | None = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
-    %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
+    %(prog)s projects/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
+    %(prog)s projects/ppt169_demo -o out.pptx            # Explicit path (no backup/)
     %(prog)s projects/quick_generate_demo --quick-generate # Lockless flat export with normal postflight
 
     # Disable transition / change transition effect
-    %(prog)s examples/ppt169_demo -t none
-    %(prog)s examples/ppt169_demo -t push --transition-duration 1.0
+    %(prog)s projects/ppt169_demo -t none
+    %(prog)s projects/ppt169_demo -t push --transition-duration 1.0
 
 SVG source directory (-s):
     output   - svg_output (hand-authored source; native default)
@@ -870,7 +870,7 @@ Speaker notes:
     - Disabled by default in Quick Generate; use --with-notes to enable
 
 Recorded narration:
-    %(prog)s examples/ppt169_demo --recorded-narration audio \\
+    %(prog)s projects/ppt169_demo --recorded-narration audio \\
       --inherit-motion-from validation/<base>.report.json
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
@@ -884,7 +884,7 @@ Recorded narration:
     - Sets slide auto-advance from audio duration so video export can use
       "recorded timings and narrations"
     - Rejects on-click object animations; use after-previous or with-previous
-    %(prog)s examples/ppt169_demo --narration-audio-dir audio
+    %(prog)s projects/ppt169_demo --narration-audio-dir audio
     - Lower-level audio embedding: embeds matched files but allows partial matches
     - Use only when you do not need a complete recorded-timings export
 ''',

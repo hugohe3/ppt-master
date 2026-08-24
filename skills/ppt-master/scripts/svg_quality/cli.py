@@ -61,11 +61,11 @@ def print_usage() -> None:
     print("  python3 scripts/svg_quality_checker.py <svg_file>")
     print("  python3 scripts/svg_quality_checker.py <directory>")
     print("  python3 scripts/svg_quality_checker.py <workspace>/templates --template-mode")
-    print("  python3 scripts/svg_quality_checker.py --all examples")
+    print("  python3 scripts/svg_quality_checker.py --all projects")
     print("\nExamples:")
-    print("  python3 scripts/svg_quality_checker.py examples/project/svg_output/slide_01.svg")
-    print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
-    print("  python3 scripts/svg_quality_checker.py examples/project")
+    print("  python3 scripts/svg_quality_checker.py projects/project/svg_output/slide_01.svg")
+    print("  python3 scripts/svg_quality_checker.py projects/project/svg_output")
+    print("  python3 scripts/svg_quality_checker.py projects/project")
     print("  python3 scripts/svg_quality_checker.py templates/layouts/presentation_core/templates --template-mode")
     print("  python3 scripts/svg_quality_checker.py templates/decks/中国电信/templates --template-mode")
     print("\nOptions:")
@@ -142,7 +142,7 @@ def main() -> None:
         if stage != "final":
             print("[ERROR] --stage first-page does not support --all")
             sys.exit(1)
-        base_dir = sys.argv[2] if len(sys.argv) > 2 else "examples"
+        base_dir = sys.argv[2] if len(sys.argv) > 2 else "projects"
         from project_utils import find_all_projects
 
         projects = find_all_projects(base_dir)

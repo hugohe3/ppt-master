@@ -119,5 +119,4 @@ For serial post-processing and export, follow [`generate-pptx.md`](skills/ppt-ma
 - `skills/ppt-master/workflows/` — top-level route authorities plus supporting child workflows, profiles, stages, and governance runbooks.
 - `docs/` — user-facing documentation (FAQ, installation, technical design, templates guide, audio narration).
 - `docs/rules/` — repo-wide style rules.
-- `examples/` — example projects.
 - `projects/` — user project workspace.

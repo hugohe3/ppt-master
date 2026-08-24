@@ -46,5 +46,5 @@ Projects can remain at different stages and do not necessarily have all artifact
 
 - Contents under this directory are excluded by `.gitignore`
 - `svg_final/` may be opened directly or inserted manually as an SVG image; PowerPoint's manual Convert to Shape behavior is not supported
-- Completed projects can be moved to the `examples/` directory for sharing
+- Completed projects can be published through the [PPT Master examples repository](https://github.com/hugohe3/ppt-master-examples)
 - Files outside the workspace are copied by default; files within the workspace are moved directly to the project's `sources/`

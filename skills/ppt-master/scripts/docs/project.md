@@ -216,21 +216,20 @@ python3 scripts/project_utils.py <project_path>
 Batch-check project structure and compliance.
 
 ```bash
-python3 scripts/batch_validate.py examples
-python3 scripts/batch_validate.py examples projects
+python3 scripts/batch_validate.py projects
 python3 scripts/batch_validate.py --all
-python3 scripts/batch_validate.py examples --export
+python3 scripts/batch_validate.py projects --export
 ```
 
-Use this for repository-wide health checks before release or cleanup.
+Use this for multi-project health checks before release or cleanup.
 
 ## `generate_examples_index.py`
 
-Rebuild `examples/README.md` automatically.
+Rebuild the examples `README.md` index. The example projects live in the separate
+[ppt-master-examples](https://github.com/hugohe3/ppt-master-examples) repository.
 
 ```bash
-python3 scripts/generate_examples_index.py
-python3 scripts/generate_examples_index.py examples
+python3 scripts/generate_examples_index.py <path-to>/ppt-master-examples/examples
 ```
 
 ## `pptx_template_import.py`

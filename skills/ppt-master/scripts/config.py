@@ -40,7 +40,6 @@ WORKFLOWS_DIR = PROJECT_ROOT / 'workflows'
 
 # Repository root directory
 REPO_ROOT = PROJECT_ROOT.parent.parent
-EXAMPLES_DIR = REPO_ROOT / 'examples'
 PROJECTS_DIR = REPO_ROOT / 'projects'
 
 # Template subdirectories

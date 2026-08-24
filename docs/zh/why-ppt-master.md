@@ -82,7 +82,7 @@ PPT Master 是一个框架，不是某个 IDE 的插件。**编辑器方面**，
 
 一份 deck 的设计由两条独立的轴决定、可自由组合：**叙事骨架**（mode，见上一节）决定怎么讲，**视觉风格**（visual style）决定长什么样——18 种内置，从 `swiss-minimal`、`editorial` 到 `dark-tech`、`brutalist`、`ink-wash`，都可再加 `custom`。任意一个配任意一个，在确认阶段锁定一次、全程稳定。
 
-[examples/](../../examples/) 目录涵盖政府财政分析、AI 架构、杂志编辑、数据新闻、瑞士网格、孟菲斯波普、Riso 版画等等。
+[PPT Master 示例站](https://hugohe3.github.io/ppt-master-examples/)涵盖政府财政分析、AI 架构、杂志编辑、数据新闻、瑞士网格、孟菲斯波普、Riso 版画等等。
 
 ### 全格式源文档输入
 
