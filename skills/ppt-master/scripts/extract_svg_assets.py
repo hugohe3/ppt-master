@@ -38,10 +38,12 @@ import argparse
 import copy
 import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
@@ -55,6 +57,7 @@ configure_utf8_stdio()
 SVG_NS = "http://www.w3.org/2000/svg"
 DRAWABLE = {"path", "polygon", "polyline", "rect", "circle", "ellipse", "line"}
 SEMANTIC_CONTENT = {"text", "tspan", "foreignObject"}
+DEFINITION_CONTAINERS = {"defs"}
 DEFAULT_MIN_DRAWABLES = 20
 DEFAULT_MIN_BYTES = 3000
 DEFAULT_MIN_DECORATION_BYTES = 3000
@@ -99,7 +102,12 @@ def _has_icon_placeholder(elem: ET.Element) -> bool:
 
 def _is_extractable_subtree(elem: ET.Element) -> bool:
     """Pure vector subtrees can be moved; semantic content must stay inline."""
-    if _has_icon_placeholder(elem) or _is_chart_group(elem) or _has_semantic_content(elem):
+    if (
+        _local(elem.tag) in DEFINITION_CONTAINERS
+        or _has_icon_placeholder(elem)
+        or _is_chart_group(elem)
+        or _has_semantic_content(elem)
+    ):
         return False
     return _drawable_count(elem) > 0
 
@@ -189,16 +197,48 @@ def _collect_id_mapping(asset_id: str, group: ET.Element, dependencies: list[ET.
 
 
 def _rewrite_references(elem: ET.Element, id_mapping: dict[str, str]) -> None:
-    def rewrite_url(match: re.Match[str]) -> str:
-        quote, ref_id = match.group(1), match.group(2)
-        new_id = id_mapping.get(ref_id, ref_id)
-        return f"url({quote}#{new_id}{quote})"
+    _rewrite_reference_values(elem, id_mapping)
 
     for item in elem.iter():
         elem_id = item.get("id")
         if elem_id in id_mapping:
             item.set("id", id_mapping[elem_id])
 
+
+def _rebase_external_hrefs(
+    elem: ET.Element,
+    source_dir: Path,
+    target_dir: Path,
+) -> int:
+    """Keep relative image/use references valid after moving a subtree."""
+    rewritten_count = 0
+    for item in elem.iter():
+        for attr_name, value in list(item.attrib.items()):
+            if _local(attr_name) != "href" or value.startswith(("#", "/")):
+                continue
+            parsed = urlsplit(value)
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            source_target = (source_dir / parsed.path).resolve()
+            relative = Path(os.path.relpath(source_target, target_dir)).as_posix()
+            rewritten = urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+            if rewritten != value:
+                item.set(attr_name, rewritten)
+                rewritten_count += 1
+    return rewritten_count
+
+
+def _rewrite_reference_values(
+    elem: ET.Element,
+    id_mapping: dict[str, str],
+) -> None:
+    """Rewrite local URL/href references without renaming definition ids."""
+    def rewrite_url(match: re.Match[str]) -> str:
+        quote, ref_id = match.group(1), match.group(2)
+        new_id = id_mapping.get(ref_id, ref_id)
+        return f"url({quote}#{new_id}{quote})"
+
+    for item in elem.iter():
         for attr_name, value in list(item.attrib.items()):
             rewritten = URL_REF_RE.sub(rewrite_url, value)
             if _local(attr_name) == "href" and value.startswith("#") and value[1:] in id_mapping:
@@ -207,11 +247,92 @@ def _rewrite_references(elem: ET.Element, id_mapping: dict[str, str]) -> None:
                 item.set(attr_name, rewritten)
 
 
+def _definition_signature(elem: ET.Element) -> bytes:
+    """Return definition semantics without its document-local id."""
+    normalized = copy.deepcopy(elem)
+    normalized.attrib.pop("id", None)
+    return ET.tostring(normalized, encoding="utf-8")
+
+
+def _optimize_definitions(root: ET.Element) -> tuple[int, int]:
+    """Deduplicate equivalent defs and remove definitions with no live refs."""
+    deduplicated = 0
+    pruned = 0
+    definition_containers = [
+        child for child in root
+        if _local(child.tag) in DEFINITION_CONTAINERS
+    ]
+
+    for definitions in definition_containers:
+        canonical_by_signature: dict[bytes, str] = {}
+        duplicate_ids: dict[str, str] = {}
+        duplicate_elements: list[ET.Element] = []
+        for definition in list(definitions):
+            definition_id = definition.get("id")
+            if not definition_id:
+                continue
+            signature = _definition_signature(definition)
+            canonical_id = canonical_by_signature.get(signature)
+            if canonical_id is None:
+                canonical_by_signature[signature] = definition_id
+                continue
+            duplicate_ids[definition_id] = canonical_id
+            duplicate_elements.append(definition)
+
+        if duplicate_ids:
+            _rewrite_reference_values(root, duplicate_ids)
+            for definition in duplicate_elements:
+                definitions.remove(definition)
+            deduplicated += len(duplicate_elements)
+
+        owner_by_id: dict[str, ET.Element] = {}
+        for definition in definitions:
+            for item in definition.iter():
+                if item_id := item.get("id"):
+                    owner_by_id[item_id] = definition
+
+        live_refs: set[str] = set()
+        for attr_name, value in root.attrib.items():
+            live_refs.update(match.group(2) for match in URL_REF_RE.finditer(value))
+            if _local(attr_name) == "href" and value.startswith("#"):
+                live_refs.add(value[1:])
+        for child in root:
+            if child is definitions:
+                continue
+            live_refs.update(_referenced_ids(child))
+
+        reachable: set[ET.Element] = set()
+        pending = sorted(live_refs)
+        while pending:
+            ref_id = pending.pop(0)
+            owner = owner_by_id.get(ref_id)
+            if owner is None or owner in reachable:
+                continue
+            reachable.add(owner)
+            for nested_ref in sorted(_referenced_ids(owner)):
+                if nested_ref not in live_refs:
+                    live_refs.add(nested_ref)
+                    pending.append(nested_ref)
+
+        for definition in list(definitions):
+            has_id = any(item.get("id") for item in definition.iter())
+            if has_id and definition not in reachable:
+                definitions.remove(definition)
+                pruned += 1
+
+        if not list(definitions):
+            root.remove(definitions)
+
+    return deduplicated, pruned
+
+
 def _find_extractable(root: ET.Element, min_drawables: int, min_bytes: int) -> list[ET.Element]:
     """Outermost <g> groups whose drawable count clears the threshold (no nesting)."""
     found: list[ET.Element] = []
 
     def walk(elem: ET.Element) -> None:
+        if _local(elem.tag) in DEFINITION_CONTAINERS:
+            return
         for child in list(elem):
             if _local(child.tag) != "g":
                 walk(child)
@@ -254,6 +375,8 @@ def _find_extractable_runs(
             found.append((parent, list(run)))
 
     def walk(elem: ET.Element) -> None:
+        if _local(elem.tag) in DEFINITION_CONTAINERS:
+            return
         run: list[ET.Element] = []
         for child in list(elem):
             if _is_extractable_subtree(child):
@@ -548,12 +671,13 @@ def extract_file(
     view_box = root.get("viewBox")
     width = root.get("width")
     height = root.get("height")
+    definitions_changed = any(_optimize_definitions(root))
 
     # A namespaced projection is an all-at-once readability pass. Once it owns
     # an asset reference, reruns inventory the existing placeholders instead of
     # progressively factoring their remaining parent/sibling geometry.
     if _has_namespace_placeholder(root, icon_namespace):
-        if not inplace:
+        if definitions_changed or not inplace:
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
@@ -587,7 +711,7 @@ def extract_file(
             targets.append((parent, run))
 
     if not targets:
-        if not inplace:
+        if definitions_changed or not inplace:
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
@@ -648,8 +772,20 @@ def extract_file(
             _rewrite_references(dependency, id_mapping)
 
         # Asset keeps the group in original page coordinates and carries its defs.
+        asset_path = icons_dir / asset
+        external_hrefs_rewritten = _rebase_external_hrefs(
+            group,
+            svg_path.parent,
+            asset_path.parent,
+        )
+        for dependency in dependencies:
+            external_hrefs_rewritten += _rebase_external_hrefs(
+                dependency,
+                svg_path.parent,
+                asset_path.parent,
+            )
         asset_bytes = _asset_svg(group, dependencies, view_box, width, height)
-        (icons_dir / asset).write_bytes(asset_bytes)
+        asset_path.write_bytes(asset_bytes)
 
         placeholder = ET.Element(f"{{{SVG_NS}}}use")
         placeholder.set("data-icon", icon_reference)
@@ -670,9 +806,11 @@ def extract_file(
             "byte_count": _xml_size(group),
             "source_refs": source_refs,
             "dependencies": [id_mapping.get(elem_id, elem_id) for elem_id in dependency_source_ids],
+            "external_hrefs_rewritten": external_hrefs_rewritten,
             "elements": _tag_histogram(group),
         })
 
+    _optimize_definitions(root)
     rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
     rewritten.parent.mkdir(parents=True, exist_ok=True)
     tree.write(rewritten, encoding="utf-8", xml_declaration=True)

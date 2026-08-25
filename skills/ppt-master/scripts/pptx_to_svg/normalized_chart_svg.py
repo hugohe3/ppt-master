@@ -63,7 +63,7 @@ def render_normalized_chart_svg(
     chart_type = str(payload.get("type") or "")
     if chart_type not in {
         "area", "bar", "column", "doughnut", "line", "pie",
-        "scatter", "bubble",
+        "scatter", "bubble", "combo",
     }:
         return None
 
@@ -92,6 +92,8 @@ def render_normalized_chart_svg(
     parts = [*title_parts]
     if chart_type in {"pie", "doughnut"}:
         parts.extend(_render_pie(payload, styles, content, chart_type == "doughnut"))
+    elif chart_type == "combo":
+        parts.extend(_render_combo(payload, styles, content))
     elif chart_type in {"scatter", "bubble"}:
         parts.extend(_render_xy(payload, styles, content, chart_type))
     else:
@@ -297,6 +299,134 @@ def _render_category(
                 percent,
             )
         )
+    return parts
+
+
+def _render_combo(
+    payload: dict[str, Any],
+    styles: list[SeriesVisualStyle],
+    content: _Rect,
+) -> list[str]:
+    """Render supported category combo plots against one shared value scale."""
+    categories = [str(value) for value in payload.get("categories") or []]
+    plots = payload.get("plots") or []
+    if not categories or not isinstance(plots, list) or not plots:
+        return []
+    all_series = [
+        series
+        for plot_payload in plots
+        if isinstance(plot_payload, dict)
+        for series in plot_payload.get("series") or []
+        if isinstance(series, dict)
+    ]
+    values = [
+        float(value)
+        for series in all_series
+        for value in series.get("values") or []
+    ]
+    if not all_series or not values:
+        return []
+
+    label_size = max(6.0, min(11.0, content.h * 0.037, content.w * 0.021))
+    axes = payload.get("axes") if isinstance(payload.get("axes"), dict) else {}
+    value_axis = axes.get("value") if isinstance(axes.get("value"), dict) else {}
+    show_value_labels = value_axis.get("visible") is not False
+    show_gridlines = value_axis.get("major_gridlines") is not False
+    left = max(12.0, content.w * 0.035)
+    if show_value_labels:
+        left = max(34.0, content.w * 0.075)
+    bottom = max(25.0, content.h * 0.105)
+    plot_rect = _Rect(
+        content.x + left,
+        content.y + 5.0,
+        max(12.0, content.w - left - 10.0),
+        max(12.0, content.h - bottom - 8.0),
+    )
+    lo, hi, ticks = _nice_scale(values, include_zero=True)
+    parts = _vertical_grid_and_ticks(
+        plot_rect,
+        ticks,
+        lo,
+        hi,
+        label_size,
+        False,
+        show_labels=show_value_labels,
+        show_gridlines=show_gridlines,
+    )
+    parts.extend(
+        _column_category_labels(
+            plot_rect,
+            categories,
+            label_size,
+            point_aligned=False,
+        )
+    )
+
+    style_offset = 0
+    for plot_payload in plots:
+        if not isinstance(plot_payload, dict):
+            continue
+        plot_type = str(plot_payload.get("type") or "")
+        plot_series = plot_payload.get("series") or []
+        if not isinstance(plot_series, list) or not plot_series:
+            continue
+        plot_styles = _complete_styles(
+            styles[style_offset:style_offset + len(plot_series)],
+            len(plot_series),
+        )
+        style_offset += len(plot_series)
+        grouping = str(plot_payload.get("grouping") or "standard")
+        segments, percent = _category_segments(
+            plot_series,
+            len(categories),
+            grouping,
+        )
+        normalized_plot = {
+            **payload,
+            **plot_payload,
+            "categories": categories,
+            "series": plot_series,
+        }
+        if plot_type == "column":
+            parts.extend(
+                _render_bars(
+                    normalized_plot,
+                    categories,
+                    plot_series,
+                    plot_styles,
+                    segments,
+                    plot_rect,
+                    lo,
+                    hi,
+                    grouping,
+                    horizontal=False,
+                    label_size=label_size,
+                    percent=percent,
+                )
+            )
+        elif plot_type in {"line", "area"}:
+            category_span = plot_rect.w / max(len(categories), 1)
+            point_plot = _Rect(
+                plot_rect.x + category_span / 2.0,
+                plot_rect.y,
+                max(1.0, plot_rect.w - category_span),
+                plot_rect.h,
+            )
+            parts.extend(
+                _render_lines_or_areas(
+                    normalized_plot,
+                    categories,
+                    plot_series,
+                    plot_styles,
+                    segments,
+                    point_plot,
+                    lo,
+                    hi,
+                    plot_type,
+                    label_size,
+                    percent,
+                )
+            )
     return parts
 
 
@@ -550,6 +680,11 @@ def _render_pie(
     styles = _complete_styles(styles, len(categories))
     label_size = max(6.0, min(10.0, content.h * 0.035, content.w * 0.018))
     radius = max(5.0, min(content.w, content.h) * 0.34)
+    inner_radius = radius * (
+        float(payload.get("hole_size", 75)) / 100.0
+        if doughnut
+        else 0.0
+    )
     cx = content.x + content.w / 2
     cy = content.y + content.h / 2
     if total <= 0:
@@ -559,7 +694,7 @@ def _render_pie(
         ]
         if doughnut:
             parts.append(
-                f'<circle cx="{_fmt(cx)}" cy="{_fmt(cy)}" r="{_fmt(radius * 0.75)}" '
+                f'<circle cx="{_fmt(cx)}" cy="{_fmt(cy)}" r="{_fmt(inner_radius)}" '
                 'fill="none" stroke="#D5DAE1" stroke-width="1"/>'
             )
         parts.append(
@@ -577,8 +712,7 @@ def _render_pie(
         stroke = style.stroke or "none"
         if sweep >= math.tau - 1e-9:
             if doughnut:
-                inner = radius * 0.75
-                path = _full_ring_path(cx, cy, radius, inner)
+                path = _full_ring_path(cx, cy, radius, inner_radius)
                 parts.append(
                     f'<path d="{path}" fill="{fill}" fill-opacity="{_fmt(style.fill_opacity)}" '
                     f'stroke="{stroke}" stroke-width="{_fmt(max(0.6, style.stroke_width))}" '
@@ -591,7 +725,14 @@ def _render_pie(
                     f'stroke="{stroke}" stroke-width="{_fmt(max(0.6, style.stroke_width))}"/>'
                 )
         else:
-            path = _sector_path(cx, cy, radius, angle, end, radius * 0.75 if doughnut else 0.0)
+            path = _sector_path(
+                cx,
+                cy,
+                radius,
+                angle,
+                end,
+                inner_radius,
+            )
             parts.append(
                 f'<path d="{path}" fill="{fill}" fill-opacity="{_fmt(style.fill_opacity)}" '
                 f'stroke="{stroke}" stroke-opacity="{_fmt(style.stroke_opacity)}" '
@@ -925,6 +1066,17 @@ def _legend_entries(
     chart_type = str(payload.get("type") or "")
     if chart_type in {"pie", "doughnut"}:
         labels = [str(value) for value in payload.get("categories") or []]
+    elif chart_type == "combo":
+        labels = [
+            str(series.get("name") or f"Series {index + 1}")
+            for index, series in enumerate(
+                series
+                for plot_payload in payload.get("plots") or []
+                if isinstance(plot_payload, dict)
+                for series in plot_payload.get("series") or []
+                if isinstance(series, dict)
+            )
+        ]
     else:
         labels = [str(item.get("name") or f"Series {idx + 1}") for idx, item in enumerate(payload.get("series") or [])]
     completed = _complete_styles(styles, len(labels))

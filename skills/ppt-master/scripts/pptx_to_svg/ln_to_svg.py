@@ -237,7 +237,7 @@ def resolve_stroke(
             if set(join.attrib) - {"lim"}:
                 raise ValueError("Invalid DrawingML line join structure")
             limit = join.attrib.get("lim")
-            if limit != "800000":
+            if limit not in {None, "800000"}:
                 raise ValueError(
                     f"Unsupported DrawingML miter limit: {limit!r}"
                 )

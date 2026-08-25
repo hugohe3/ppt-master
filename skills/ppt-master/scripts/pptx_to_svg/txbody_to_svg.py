@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Callable
+from unicodedata import east_asian_width
 from xml.etree import ElementTree as ET
 
 from svg_to_pptx.drawingml.utils import detect_text_lang, is_cjk_char
@@ -92,6 +93,8 @@ class TextParagraph:
     space_after_px: float = 0.0
     empty_line_font_size_px: float = DEFAULT_FONT_SIZE_PX
     bullet_prefix: str = ""  # rendered prefix like '• ' or '1. '
+    bullet_fill: str | None = None
+    bullet_fill_opacity: float = 1.0
 
 
 @dataclass
@@ -265,6 +268,7 @@ def convert_vertical_txbody(
     if tx_body is None:
         return TextResult()
 
+    body_pr = tx_body.find("a:bodyPr", NS)
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
         default_font_size_px=default_font_size_px,
@@ -276,6 +280,13 @@ def convert_vertical_txbody(
         strict=strict,
         diagnostic_sink=diagnostic_sink,
     )
+    if body_pr is not None and body_pr.attrib.get("vert") == "eaVert":
+        return _convert_east_asian_vertical(
+            paragraphs,
+            xfrm,
+            body_pr,
+        )
+
     runs = [
         run
         for para in paragraphs
@@ -336,6 +347,183 @@ def convert_vertical_txbody(
         defs=_collect_text_defs(paragraphs),
         contains_inline_formula=False,
     )
+
+
+def _convert_east_asian_vertical(
+    paragraphs: list[TextParagraph],
+    xfrm: Xfrm,
+    body_pr: ET.Element,
+) -> TextResult:
+    """Render eaVert columns with upright CJK and sideways Latin runs."""
+    columns: list[list[tuple[bool, str, TextRun]]] = []
+    for paragraph in paragraphs:
+        column: list[tuple[bool, str, TextRun]] = []
+        for run in paragraph.runs:
+            if run.is_break:
+                if column:
+                    columns.append(column)
+                    column = []
+                continue
+            start = 0
+            while start < len(run.text):
+                upright = _is_east_asian_vertical_upright(run.text[start])
+                end = start + 1
+                while (
+                    end < len(run.text)
+                    and _is_east_asian_vertical_upright(run.text[end]) == upright
+                ):
+                    end += 1
+                column.append((upright, run.text[start:end], run))
+                start = end
+        if column:
+            columns.append(column)
+
+    if not columns:
+        return TextResult()
+
+    box_x, box_y, box_w, box_h = _rotated_bbox(xfrm)
+    lins = _read_emu_attr(body_pr, "lIns", DEFAULT_INSETS_EMU["l"])
+    tins = _read_emu_attr(body_pr, "tIns", DEFAULT_INSETS_EMU["t"])
+    rins = _read_emu_attr(body_pr, "rIns", DEFAULT_INSETS_EMU["r"])
+    bins = _read_emu_attr(body_pr, "bIns", DEFAULT_INSETS_EMU["b"])
+    inner_x = box_x + lins
+    inner_y = box_y + tins
+    inner_w = max(box_w - lins - rins, 1.0)
+    inner_h = max(box_h - tins - bins, 1.0)
+
+    column_widths = [
+        max(run.font_size_px * 1.05 for _upright, _text, run in column)
+        for column in columns
+    ]
+    total_width = sum(column_widths)
+    right_x = inner_x + min(inner_w, (inner_w + total_width) / 2.0)
+    column_centers: list[float] = []
+    for width in column_widths:
+        column_centers.append(right_x - width / 2.0)
+        right_x -= width
+
+    anchor = body_pr.attrib.get("anchor", "t")
+    bottom_y = inner_y + inner_h
+    text_blocks: list[str] = []
+    for column, center_x in zip(columns, column_centers):
+        content_height = sum(
+            _east_asian_vertical_segment_height(upright, text, run)
+            for upright, text, run in column
+        )
+        if anchor == "ctr":
+            cursor_y = inner_y + max(0.0, (inner_h - content_height) / 2.0)
+        elif anchor == "b":
+            cursor_y = inner_y + max(0.0, inner_h - content_height)
+        else:
+            cursor_y = inner_y
+
+        for upright, text, run in column:
+            available = bottom_y - cursor_y
+            if available <= 0:
+                break
+            if upright:
+                advance = run.font_size_px * 1.05
+                visible_count = min(len(text), int(available // advance))
+                visible = text[:visible_count]
+                if not visible:
+                    break
+                text_blocks.append(
+                    _emit_upright_vertical_segment(
+                        visible,
+                        run,
+                        center_x,
+                        cursor_y,
+                        advance,
+                    )
+                )
+                cursor_y += advance * visible_count
+                if visible_count < len(text):
+                    break
+                continue
+
+            visible = _fit_sideways_vertical_text(text, run, available)
+            if not visible:
+                break
+            text_blocks.append(
+                _emit_sideways_vertical_segment(
+                    visible,
+                    run,
+                    center_x,
+                    cursor_y,
+                )
+            )
+            cursor_y += _estimate_run_width(visible, run)
+            if len(visible) < len(text):
+                break
+
+    return TextResult(
+        svg="\n".join(text_blocks),
+        defs=_collect_text_defs(paragraphs),
+        contains_inline_formula=False,
+    )
+
+
+def _is_east_asian_vertical_upright(char: str) -> bool:
+    """Keep East Asian wide/full-width glyphs upright in eaVert text."""
+    return _is_cjk(char) or east_asian_width(char) in {"W", "F"}
+
+
+def _east_asian_vertical_segment_height(
+    upright: bool,
+    text: str,
+    run: TextRun,
+) -> float:
+    if upright:
+        return len(text) * run.font_size_px * 1.05
+    return _estimate_run_width(text, run)
+
+
+def _fit_sideways_vertical_text(
+    text: str,
+    run: TextRun,
+    available: float,
+) -> str:
+    end = 0
+    for index in range(1, len(text) + 1):
+        if _estimate_run_width(text[:index], run) > available:
+            break
+        end = index
+    return text[:end]
+
+
+def _emit_upright_vertical_segment(
+    text: str,
+    run: TextRun,
+    center_x: float,
+    top_y: float,
+    advance: float,
+) -> str:
+    first_baseline = top_y + run.font_size_px * 0.85
+    attrs = _text_base_attrs(run, center_x, first_baseline, "middle")
+    spans = [_xml_escape(text[0])]
+    for char in text[1:]:
+        spans.append(
+            f'<tspan x="{fmt_num(center_x)}" dy="{fmt_num(advance)}">'
+            f"{_xml_escape(char)}</tspan>"
+        )
+    markup = f"<text{attrs}>{''.join(spans)}</text>"
+    return _wrap_run_hyperlink(markup, run)
+
+
+def _emit_sideways_vertical_segment(
+    text: str,
+    run: TextRun,
+    center_x: float,
+    top_y: float,
+) -> str:
+    baseline_x = center_x - run.font_size_px * 0.3
+    start_y = top_y + run.font_size_px * 0.1
+    attrs = _text_base_attrs(run, baseline_x, start_y, "start")
+    transform = (
+        f' transform="rotate(90 {fmt_num(baseline_x)} {fmt_num(start_y)})"'
+    )
+    markup = f"<text{attrs}{transform}>{_xml_escape(text)}</text>"
+    return _wrap_run_hyperlink(markup, run)
 
 
 def _rotated_bbox(xfrm: Xfrm) -> tuple[float, float, float, float]:
@@ -481,6 +669,9 @@ def _parse_paragraph(
     para.space_after_px = _spacing_points_px(para_style_chain, "a:spcAft/a:spcPts")
     para.bullet_prefix = _resolve_bullet_prefix(
         para_style_chain, para.level, autonum_state,
+    )
+    para.bullet_fill, para.bullet_fill_opacity = _resolve_bullet_fill(
+        para_style_chain, palette,
     )
 
     # Default endParaRPr style (applies if a run has no rPr)
@@ -940,6 +1131,10 @@ def _resolve_bullet_prefix(
     bu_char = _child_chain(sources, "a:buChar")
     if bu_char is not None:
         ch = bu_char.attrib.get("char", "•")
+        bu_font = _child_chain(sources, "a:buFont")
+        typeface = bu_font.attrib.get("typeface", "") if bu_font is not None else ""
+        if typeface.casefold() == "wingdings" and ch == "l":
+            ch = "●"
         return f"{ch} "
     bu_auto = _child_chain(sources, "a:buAutoNum")
     if bu_auto is not None:
@@ -956,6 +1151,19 @@ def _resolve_bullet_prefix(
             bu_auto.attrib.get("type", "arabicPeriod"),
         )
     return ""
+
+
+def _resolve_bullet_fill(
+    sources: tuple[ET.Element | None, ...],
+    palette: ColorPalette | None,
+) -> tuple[str | None, float]:
+    """Resolve an explicit DrawingML bullet color independently of text."""
+    bu_clr = _child_chain(sources, "a:buClr")
+    if bu_clr is None:
+        return None, 1.0
+    color_elem = find_color_elem(bu_clr)
+    color, opacity = resolve_color(color_elem, palette)
+    return color, opacity
 
 
 def _format_auto_number(value: int, kind: str) -> str:
@@ -1132,8 +1340,19 @@ def _wrap_paragraph_into_lines(
         first_run = next((r for r in para.runs if not r.is_break), None)
         if first_run is not None:
             bullet_run = _copy_run(first_run, text=para.bullet_prefix)
+            if para.bullet_fill is not None:
+                bullet_run.fill = para.bullet_fill
+                bullet_run.fill_opacity = para.bullet_fill_opacity
+            hanging_width = max(-para.indent_px, 0.0)
+            measured_width = _estimate_run_width(para.bullet_prefix, bullet_run)
+            if hanging_width > measured_width:
+                space_width = _estimate_run_width(" ", bullet_run)
+                extra_spaces = round(
+                    (hanging_width - measured_width) / space_width
+                )
+                bullet_run.text += " " * max(extra_spaces, 0)
             lines[-1].append(bullet_run)
-            cur_w = _estimate_run_width(para.bullet_prefix, bullet_run)
+            cur_w = _estimate_run_width(bullet_run.text, bullet_run)
 
     for run in para.runs:
         if run.is_break:

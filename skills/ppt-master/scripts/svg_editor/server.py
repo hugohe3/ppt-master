@@ -165,6 +165,7 @@ def _normalize_preview_hrefs(root: ET.Element) -> None:
 def _inline_icons(
     content: str,
     icons_dir: Path,
+    target_dir: Path,
     fallback_dir: Optional[Path] = None,
 ) -> tuple[str, list[dict]]:
     """Replace <use data-icon="..."/> with rendered <g> for browser preview.
@@ -190,7 +191,11 @@ def _inline_icons(
                 continue
             icon_path, _ = resolve_icon_path(icon_name, icons_dir, fallback_dir)
             color = str(attrs.get('fill', '#000000'))
-            elements, style, base_size = extract_paths_from_icon(icon_path, color)
+            elements, style, base_size = extract_paths_from_icon(
+                icon_path,
+                color,
+                target_dir=target_dir,
+            )
         except Exception as exc:
             warnings.append({'icon': icon_name, 'reason': f'{type(exc).__name__}: {exc}'})
             logger.warning('icon inline failed: name=%r reason=%s', icon_name, exc)
@@ -713,6 +718,7 @@ def create_app(
             content, warnings = _inline_icons(
                 content,
                 icons_dir,
+                svg_file.parent,
                 icons_fallback_dir,
             )
             if not pending_edits:

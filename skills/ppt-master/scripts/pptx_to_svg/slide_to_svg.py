@@ -43,6 +43,14 @@ from pptx_effects import (
     unsupported_effect_metadata,
 )
 from hyperlink_contract import SHAPE_HYPERLINK_ATTR
+from svg_to_pptx.drawingml.paths import (
+    PathCommand,
+    normalize_path_commands,
+    parse_svg_path,
+    parse_svg_points,
+    svg_path_to_absolute,
+    transform_path_commands,
+)
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
@@ -129,6 +137,7 @@ class AssemblyContext:
     # Accumulated outputs
     defs: list[str] = field(default_factory=list)
     media: dict[str, bytes] = field(default_factory=dict)
+    group_fills: list[FillResult | None] = field(default_factory=list)
 
     def bind_palette(self) -> None:
         """Route tolerant color diagnostics through the current object context."""
@@ -1027,6 +1036,7 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
             ctx.palette,
             id_prefix="g",
             id_seq=ctx.grad_seq,
+            group_fill=ctx.group_fills[-1] if ctx.group_fills else None,
         )
     except ValueError as exc:
         if ctx.strict:
@@ -1133,15 +1143,17 @@ def _resolve_shape_style_defaults(node: ShapeNode, ctx: AssemblyContext) -> dict
     defaults: dict[str, str] = {}
 
     fill_ref = style.find("a:fillRef", NS)
-    fill_color = _resolve_ref_color(fill_ref, ctx)
-    if fill_color:
-        defaults["fill"] = fill_color
+    if fill_ref is not None and fill_ref.attrib.get("idx", "").strip() != "0":
+        fill_color = _resolve_ref_color(fill_ref, ctx)
+        if fill_color:
+            defaults["fill"] = fill_color
 
     ln_ref = style.find("a:lnRef", NS)
-    line_color = _resolve_ref_color(ln_ref, ctx)
-    if line_color:
-        defaults["stroke"] = line_color
-        defaults.setdefault("stroke-width", "1")
+    if ln_ref is not None and ln_ref.attrib.get("idx", "").strip() != "0":
+        line_color = _resolve_ref_color(ln_ref, ctx)
+        if line_color:
+            defaults["stroke"] = line_color
+            defaults.setdefault("stroke-width", "1")
 
     return defaults
 
@@ -1206,9 +1218,40 @@ def _clip_blip_image(image_xml: str, geom: GeomResult | None,
     if geom.tag == "rect" and not geom.attrs.get("rx") and not geom.attrs.get("ry"):
         return image_xml
 
+    clip_geom = geom
+    if image_xml.startswith("<svg"):
+        flattened = None
+        if (
+            not ctx.strict
+            and geom.attrs.get("data-pptx-geometry-kind") == "custom"
+        ):
+            flattened = _flatten_vector_custom_crop(image_xml)
+        if flattened is not None:
+            image_xml = flattened
+            ctx.diagnose(
+                "vector-custom-geometry-crop-normalized",
+                "SVG-only picture combines srcRect with custom geometry; "
+                "Office renders the complete vector as the custom-shape fill",
+                "ignore srcRect and clip the complete vector to the custom geometry",
+            )
+        else:
+            try:
+                clip_geom = _project_clip_into_nested_crop(geom, image_xml)
+            except ValueError as exc:
+                if ctx.strict:
+                    raise ValueError(
+                        f"Cannot project picture geometry into its crop viewBox: {exc}"
+                    ) from exc
+                ctx.diagnose(
+                    "nested-crop-shape-clip-omitted",
+                    f"Cannot project picture geometry into its crop viewBox: {exc}",
+                    "source image crop retained without the additional shape clip",
+                )
+                return image_xml
+
     ctx.clip_seq[0] += 1
     clip_id = f"{ctx.group_id_prefix}clip{ctx.clip_seq[0]}"
-    clip_shape = _geom_to_svg(geom, "")
+    clip_shape = _geom_to_svg(clip_geom, "")
     ctx.defs.append(
         f'<clipPath id="{clip_id}" clipPathUnits="userSpaceOnUse">'
         f'{clip_shape}</clipPath>'
@@ -1216,13 +1259,119 @@ def _clip_blip_image(image_xml: str, geom: GeomResult | None,
     return _inject_clip_path(image_xml, clip_id)
 
 
+def _flatten_vector_custom_crop(image_xml: str) -> str | None:
+    """Normalize an SVG-only custom-shape crop to a plain full-vector image."""
+    wrapper = ET.fromstring(image_xml)
+    if wrapper.tag != "svg" or len(wrapper) != 1 or wrapper[0].tag != "image":
+        return None
+    image = wrapper[0]
+    href = image.attrib.get("href", "")
+    href_path = href.split("#", 1)[0].split("?", 1)[0].casefold()
+    if not (
+        href_path.endswith(".svg")
+        or href_path.startswith("data:image/svg+xml")
+    ):
+        return None
+
+    attrs = {
+        key: value
+        for key, value in image.attrib.items()
+        if key not in {"x", "y", "width", "height", "preserveAspectRatio"}
+    }
+    for key in ("x", "y", "width", "height"):
+        value = wrapper.attrib.get(key)
+        if value is None:
+            return None
+        attrs[key] = value
+    attrs["preserveAspectRatio"] = "none"
+    return f"<image{_attrs_to_xml(attrs)}/>"
+
+
 def _inject_clip_path(image_xml: str, clip_id: str) -> str:
     clip_attr = f' clip-path="url(#{clip_id})"'
     if image_xml.startswith("<image"):
         return image_xml.replace("<image", f"<image{clip_attr}", 1)
     if image_xml.startswith("<svg"):
-        return image_xml.replace("<svg", f'<svg data-pptx-crop="1"{clip_attr}', 1)
+        marked = image_xml.replace("<svg", '<svg data-pptx-crop="1"', 1)
+        return marked.replace("<image", f"<image{clip_attr}", 1)
     return image_xml
+
+
+def _project_clip_into_nested_crop(
+    geom: GeomResult,
+    image_xml: str,
+) -> GeomResult:
+    """Map absolute slide geometry into one nested crop's viewBox space."""
+    wrapper = ET.fromstring(image_xml)
+    if wrapper.tag != "svg":
+        raise ValueError("expected a nested <svg> crop wrapper")
+
+    try:
+        frame_x = float(wrapper.attrib["x"])
+        frame_y = float(wrapper.attrib["y"])
+        frame_w = float(wrapper.attrib["width"])
+        frame_h = float(wrapper.attrib["height"])
+        view_box = [float(token) for token in wrapper.attrib["viewBox"].split()]
+    except (KeyError, ValueError) as exc:
+        raise ValueError("crop wrapper has incomplete numeric geometry") from exc
+    if frame_w <= 0 or frame_h <= 0 or len(view_box) != 4:
+        raise ValueError(
+            "crop wrapper requires positive dimensions and four viewBox values"
+        )
+    vb_x, vb_y, vb_w, vb_h = view_box
+    if vb_w <= 0 or vb_h <= 0:
+        raise ValueError("crop viewBox dimensions must be positive")
+
+    scale_x = vb_w / frame_w
+    scale_y = vb_h / frame_h
+    matrix = (
+        scale_x,
+        0.0,
+        0.0,
+        scale_y,
+        vb_x - frame_x * scale_x,
+        vb_y - frame_y * scale_y,
+    )
+
+    if geom.tag == "path" and geom.path_d:
+        commands = normalize_path_commands(
+            svg_path_to_absolute(parse_svg_path(geom.path_d))
+        )
+        transformed = transform_path_commands(commands, matrix)
+        return GeomResult(
+            tag="path",
+            path_d=_serialize_clip_path(transformed),
+        )
+    if geom.tag in {"polygon", "polyline"} and geom.points:
+        points = parse_svg_points(
+            geom.points,
+            min_points=3 if geom.tag == "polygon" else 2,
+        )
+        transformed = [
+            (
+                x * scale_x + matrix[4],
+                y * scale_y + matrix[5],
+            )
+            for x, y in points
+        ]
+        return GeomResult(
+            tag=geom.tag,
+            points=" ".join(
+                f"{fmt_num(x, 5)},{fmt_num(y, 5)}"
+                for x, y in transformed
+            ),
+        )
+    raise ValueError(f"unsupported clip geometry <{geom.tag}>")
+
+
+def _serialize_clip_path(commands: list[PathCommand]) -> str:
+    """Serialize normalized M/L/C/Z commands with crop-safe precision."""
+    parts: list[str] = []
+    for command in commands:
+        parts.append(command.cmd)
+        if command.args:
+            parts.append(" ".join(fmt_num(value, 5) for value in command.args))
+    return " ".join(parts)
 
 
 # ---------------------------------------------------------------------------
@@ -1323,11 +1472,42 @@ def _convert_connector(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool
 
 def _convert_group(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     """Render group contents flat (children already remapped to slide space)."""
+    parent_fill = ctx.group_fills[-1] if ctx.group_fills else None
+    group_properties = node.xml.find("p:grpSpPr", NS)
+    try:
+        resolved_fill = resolve_fill(
+            group_properties,
+            ctx.palette,
+            id_prefix="g",
+            id_seq=ctx.grad_seq,
+            group_fill=parent_fill,
+        )
+    except ValueError as exc:
+        if ctx.strict:
+            raise
+        ctx.diagnose(
+            "group-fill-omitted",
+            str(exc),
+            "inherit the nearest resolved ancestor group fill when available",
+        )
+        group_fill = parent_fill
+    else:
+        ctx.defs.extend(resolved_fill.defs)
+        group_fill = (
+            FillResult(attrs=dict(resolved_fill.attrs))
+            if resolved_fill.attrs
+            else parent_fill
+        )
+
     inner_parts: list[str] = []
-    for child in node.children:
-        chunk = _convert_node(child, ctx, top_level=False)
-        if chunk:
-            inner_parts.append(chunk)
+    ctx.group_fills.append(group_fill)
+    try:
+        for child in node.children:
+            chunk = _convert_node(child, ctx, top_level=False)
+            if chunk:
+                inner_parts.append(chunk)
+    finally:
+        ctx.group_fills.pop()
     if not inner_parts:
         return ""
     inner = "\n".join(inner_parts)

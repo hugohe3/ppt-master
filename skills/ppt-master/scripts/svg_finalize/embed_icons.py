@@ -49,6 +49,7 @@ import re
 import sys
 import argparse
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -258,7 +259,41 @@ def resolve_icon_path(icon_name: str, icons_dir: Path, fallback_dir: Path | None
     return icon_path, base_size
 
 
-def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> tuple[list[str], str, BaseGeometry]:
+def _rebase_preserve_asset_hrefs(
+    content: str,
+    source_dir: Path,
+    target_dir: Path,
+) -> str:
+    """Rebase relative hrefs when a preserve-color asset is inlined."""
+    pattern = re.compile(
+        r'(\b(?:xlink:)?href\s*=\s*)(["\'])(.*?)\2',
+        re.IGNORECASE | re.DOTALL,
+    )
+
+    def replace(match: re.Match[str]) -> str:
+        value = match.group(3)
+        if value.startswith(("#", "/")):
+            return match.group(0)
+        parsed = urlsplit(value)
+        if parsed.scheme or parsed.netloc or not parsed.path:
+            return match.group(0)
+        source_target = (source_dir / parsed.path).resolve()
+        try:
+            relative = Path(os.path.relpath(source_target, target_dir)).as_posix()
+        except ValueError:
+            return match.group(0)
+        rewritten = urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+        return f'{match.group(1)}{match.group(2)}{rewritten}{match.group(2)}'
+
+    return pattern.sub(replace, content)
+
+
+def extract_paths_from_icon(
+    icon_path: Path,
+    target_color: str = '#000000',
+    *,
+    target_dir: Path | None = None,
+) -> tuple[list[str], str, BaseGeometry]:
     """
     Extract drawable elements from an icon SVG file.
 
@@ -274,6 +309,15 @@ def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> t
     if _is_preserve_color_asset(content):
         geometry = _get_viewbox_geometry(content) or (0.0, 0.0, DEFAULT_ICON_BASE_SIZE, DEFAULT_ICON_BASE_SIZE)
         elements = _extract_svg_body(content)
+        if target_dir is not None:
+            elements = [
+                _rebase_preserve_asset_hrefs(
+                    element,
+                    icon_path.parent,
+                    target_dir,
+                )
+                for element in elements
+            ]
         return elements, 'preserve', geometry
 
     style = _detect_icon_style(content)
@@ -483,7 +527,10 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
             )
             continue
 
-        elements, style, base_size = extract_paths_from_icon(icon_path)
+        elements, style, base_size = extract_paths_from_icon(
+            icon_path,
+            target_dir=svg_path.parent,
+        )
         color = resolve_icon_color(attrs, style)
         if not elements:
             print(
