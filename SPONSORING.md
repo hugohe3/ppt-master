@@ -6,11 +6,19 @@ PPT Master is a free, open-source workflow for turning documents or topics into 
 
 Sponsorship is considered selectively. A partnership must be useful to PPT Master users and must not compromise the project's technical independence or user trust.
 
+## Audience
+
+- **49,000+ GitHub stars** and **3,900+ forks** (August 2026), with the project still in active growth.
+- **Five corporate sponsors are currently on renewal.**
+- Readers are developers and AI power users working in agent-capable tools such as Claude Code, Codex, Cursor, and VS Code.
+
 ## Partnership Placements
 
 ### Lead Sponsor
 
 A prominent placement for one primary partner whose product has a strong fit with PPT Master's users.
+
+**From $1,000/month.**
 
 Potential placement includes:
 
@@ -22,6 +30,8 @@ Potential placement includes:
 
 For services that solve a real need in the PPT Master workflow, such as agent or model access, AI image generation, narration, cloud infrastructure, or hosted execution.
 
+**From $500/month.**
+
 Potential placement includes:
 
 - A listing in the repository and standalone Skill sponsor pages.
@@ -32,11 +42,15 @@ Potential placement includes:
 
 For providers whose API or hosted service is genuinely supported by an existing PPT Master integration boundary.
 
+**Pricing is agreed individually, since scope depends on the integration.**
+
 Technical integration requires compatibility review and must remain optional. Sponsorship alone does not make a provider a default, bypass validation, or justify provider-specific behavior inside the presentation workflow.
 
 ### Supporting Sponsor
 
 A compact logo and link placement for organizations that support ongoing maintenance without requiring a workflow integration.
+
+**From $200/month.**
 
 ## Partnership Requirements
 
@@ -79,7 +93,7 @@ To discuss sponsorship, email **heyug3@gmail.com** with:
 - Requested placement and sponsorship period.
 - Brand assets and approved description.
 
-Terms, placement, and duration are agreed individually. Please do not open a public bug report for sponsorship discussions.
+Rates above are starting points. Final terms, placement, and duration are agreed individually. Please do not open a public bug report for sponsorship discussions.
 
 ## Individual Support
 
