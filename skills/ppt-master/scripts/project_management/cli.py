@@ -2,7 +2,8 @@
 """PPT Master project-management CLI implementation.
 
 Usage:
-    python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir <path>] [--quick-generate]
+    python3 scripts/project_manager.py init <project_name> [--format <registered_format>]
+        [--dir <path>] [--quick-generate]
     python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
     python3 scripts/project_manager.py scaffold-spec <project_path>
     python3 scripts/project_manager.py scaffold-lock <project_path>
@@ -12,7 +13,8 @@ Usage:
     python3 scripts/project_manager.py page-context-report <project_path>
 
 Examples:
-    python3 scripts/project_manager.py init demo --format ppt169
+    python3 scripts/project_manager.py init demo
+    python3 scripts/project_manager.py init widescreen --format ppt169
     python3 scripts/project_manager.py validate projects/demo
 
 Dependencies:
@@ -97,6 +99,10 @@ BITMAP_IMAGE_SUFFIXES = {
 IMAGE_ASSET_SUFFIXES = BITMAP_IMAGE_SUFFIXES | {
     ".emf", ".wmf", ".svg",
 }
+DEFERRED_CANVAS_MESSAGE = (
+    "Canvas is determined during authoring and recorded in spec_lock.md "
+    "(Default) or the first SVG (Quick)."
+)
 
 
 def _validate_image_manifest(
@@ -233,7 +239,7 @@ class ProjectManager:
     def init_project(
         self,
         project_name: str,
-        canvas_format: str = "ppt169",
+        canvas_format: str | None = None,
         base_dir: str | None = None,
         *,
         quick_generate: bool = False,
@@ -251,22 +257,28 @@ class ProjectManager:
                 "Project name must be a single, non-absolute path component"
             )
 
-        normalized_format = normalize_canvas_format(canvas_format)
-        if normalized_format not in self.CANVAS_FORMATS:
-            available = ", ".join(sorted(self.CANVAS_FORMATS.keys()))
-            raise ValueError(
-                f"Unsupported canvas format: {canvas_format} "
-                f"(available: {available}; common alias: xhs -> xiaohongshu)"
-            )
+        normalized_format: str | None = None
+        if canvas_format is not None:
+            normalized_format = normalize_canvas_format(canvas_format)
+            if normalized_format not in self.CANVAS_FORMATS:
+                available = ", ".join(sorted(self.CANVAS_FORMATS.keys()))
+                raise ValueError(
+                    f"Unsupported canvas format: {canvas_format} "
+                    f"(available: {available}; common alias: xhs -> xiaohongshu)"
+                )
 
         date_str = datetime.now().strftime("%Y%m%d")
-        # A name already carrying a `_<format>_<YYYYMMDD>` suffix (e.g. a full
-        # project dir name pasted back into init) is used as-is — re-appending
-        # would produce `name_ppt169_20260101_ppt169_20260102`.
-        if re.search(rf"_{re.escape(normalized_format)}_\d{{8}}$", project_name):
-            project_dir_name = project_name
+        if normalized_format is None:
+            project_dir_name = f"{project_name}_{date_str}"
         else:
-            project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
+            # A name already carrying a `_<format>_<YYYYMMDD>` suffix (e.g. a
+            # full project dir name pasted back into init) is used as-is —
+            # re-appending would produce
+            # `name_ppt169_20260101_ppt169_20260102`.
+            if re.search(rf"_{re.escape(normalized_format)}_\d{{8}}$", project_name):
+                project_dir_name = project_name
+            else:
+                project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
         project_path = base_path / project_dir_name
 
         if not is_within_path(project_path, base_path):
@@ -296,13 +308,17 @@ class ProjectManager:
         for rel_path in project_dirs:
             (project_path / rel_path).mkdir(parents=True, exist_ok=True)
 
-        canvas_info = self.CANVAS_FORMATS[normalized_format]
         if not quick_generate:
+            canvas_summary = (
+                f"- Canvas format: {normalized_format}\n"
+                if normalized_format is not None
+                else f"- {DEFERRED_CANVAS_MESSAGE}\n"
+            )
             readme_path = project_path / "README.md"
             readme_path.write_text(
                 (
                     f"# {project_name}\n\n"
-                    f"- Canvas format: {normalized_format}\n"
+                    f"{canvas_summary}"
                     f"- Created: {date_str}\n\n"
                     "## Directories\n\n"
                     "- `svg_output/`: raw SVG output\n"
@@ -322,7 +338,11 @@ class ProjectManager:
             )
 
         print(f"Project created: {project_path}")
-        print(f"Canvas: {canvas_info['name']} ({canvas_info['dimensions']})")
+        if normalized_format is None:
+            print(DEFERRED_CANVAS_MESSAGE)
+        else:
+            canvas_info = self.CANVAS_FORMATS[normalized_format]
+            print(f"Canvas: {canvas_info['name']} ({canvas_info['dimensions']})")
         return str(project_path)
 
     def _source_dir(self, project_path: Path) -> Path:
@@ -1046,6 +1066,11 @@ class ProjectManager:
 
     def get_project_info(self, project_path: str) -> dict[str, object]:
         shared = get_project_info_common(project_path)
+        canvas_format = (
+            "Not encoded in the project directory name"
+            if shared.get("format") == "unknown"
+            else shared.get("format_name", "Unknown")
+        )
         return {
             "name": shared.get("name", Path(project_path).name),
             "path": shared.get("path", str(project_path)),
@@ -1054,7 +1079,7 @@ class ProjectManager:
             "has_spec": shared.get("has_spec", False),
             "has_source": shared.get("has_source", False),
             "source_count": shared.get("source_count", 0),
-            "canvas_format": shared.get("format_name", "Unknown"),
+            "canvas_format": canvas_format,
             "create_date": shared.get("date_formatted", "Unknown"),
         }
 
@@ -1065,7 +1090,8 @@ def build_parser() -> argparse.ArgumentParser:
         description="PPT Master project management helpers.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
-  python3 scripts/project_manager.py init demo --format ppt169
+  python3 scripts/project_manager.py init demo
+  python3 scripts/project_manager.py init widescreen --format ppt169
   python3 scripts/project_manager.py import-sources projects/demo file.md
   python3 scripts/project_manager.py scaffold-spec projects/demo_ppt169_20260718
   python3 scripts/project_manager.py scaffold-lock projects/demo_ppt169_20260718
@@ -1079,7 +1105,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     init = subparsers.add_parser("init", help="Create a project directory")
     init.add_argument("project_name", help="Project name")
-    init.add_argument("--format", default="ppt169", help="Canvas format (default: ppt169)")
+    init.add_argument(
+        "--format",
+        default=None,
+        help="Registered canvas format; omit to determine the canvas during authoring",
+    )
     init.add_argument("--dir", default=None, help="Base directory for the project")
     init.add_argument(
         "--quick-generate",
@@ -1179,10 +1209,15 @@ def main(argv: list[str] | None = None) -> int:
                 print("3. Generate SVG files into svg_output/")
                 profile = "default"
             try:
+                canvas_note = (
+                    f"; canvas={args.format}"
+                    if args.format is not None
+                    else ""
+                )
                 append_note(
                     project_path,
-                    f"Project initialized: profile={profile}; "
-                    f"canvas={args.format}; path={project_path}",
+                    f"Project initialized: profile={profile}{canvas_note}; "
+                    f"path={project_path}",
                 )
             except OSError as exc:
                 print(

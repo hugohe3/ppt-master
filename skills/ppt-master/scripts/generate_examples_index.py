@@ -178,8 +178,12 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("Refer to existing project structures, or use the project management tool:\n")
     content.append("```bash")
     content.append(
-        "python3 scripts/project_manager.py init my_project --format ppt169")
+        "python3 scripts/project_manager.py init my_project")
     content.append("```\n")
+    content.append(
+        "Pass `--format <registered_format>` only when the canvas exactly "
+        "matches a registered format.\n"
+    )
 
     # Contribution guidelines
     content.append("## [Contribute] Contributing Example Projects\n")
@@ -188,7 +192,11 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("1. Follow the standard project structure")
     content.append("2. Include a complete README.md and design specification")
     content.append("3. SVG files must comply with technical specifications")
-    content.append("4. Directory naming format: `{project_name}_{format}_{YYYYMMDD}`\n")
+    content.append(
+        "4. Directory naming format: `{project_name}_{YYYYMMDD}`, or "
+        "`{project_name}_{format}_{YYYYMMDD}` when initialized with a "
+        "registered `--format`\n"
+    )
 
     content.append("### Submission Process\n")
     content.append("1. Create a project under the `examples/` directory")

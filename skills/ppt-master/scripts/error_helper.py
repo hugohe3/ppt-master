@@ -68,9 +68,10 @@ class ErrorHelper:
             'message': 'Project directory missing date suffix',
             'solutions': [
                 'Rename the project directory to add a date suffix: _YYYYMMDD',
-                'Format: {project_name}_{format}_{YYYYMMDD}',
-                'Example: my_project_ppt169_20251116',
-                'Command: mv old_name new_name_ppt169_20251116'
+                'Format: {project_name}_{YYYYMMDD}',
+                'An explicit registered format may use: {project_name}_{format}_{YYYYMMDD}',
+                'Example: my_project_20251116 or my_project_ppt169_20251116',
+                'Command: mv old_name new_name_20251116'
             ],
             'severity': 'warning'
         },

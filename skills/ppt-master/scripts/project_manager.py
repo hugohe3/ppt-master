@@ -6,12 +6,13 @@ Stable CLI entry point for project creation, source import, validation, and
 page-context diagnostics. Implementation lives in ``project_management/``.
 
 Usage:
-    python3 scripts/project_manager.py init <project_name> [--format ppt169]
+    python3 scripts/project_manager.py init <project_name> [--format <registered_format>]
     python3 scripts/project_manager.py import-sources <project_path> <sources...>
     python3 scripts/project_manager.py validate <project_path>
 
 Examples:
-    python3 scripts/project_manager.py init demo --format ppt169
+    python3 scripts/project_manager.py init demo
+    python3 scripts/project_manager.py init widescreen --format ppt169
     python3 scripts/project_manager.py validate projects/demo
 
 Dependencies:
