@@ -3,12 +3,17 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
+import hashlib
 import json
 from xml.etree import ElementTree as ET
 
 
 EFFECT_STATUS_ATTR = "data-pptx-effect-status"
 EFFECT_REASON_ATTR = "data-pptx-effect-reason"
+NATIVE_EFFECT_ATTR = "data-pptx-effect-ooxml"
+NATIVE_EFFECT_SHA256_ATTR = "data-pptx-effect-ooxml-sha256"
 UNSUPPORTED_EFFECT_STATUS = "unsupported"
 _EFFECT_OBJECT_IDENTITY_ATTRS = (
     "data-pptx-object",
@@ -25,6 +30,13 @@ _RUN_EFFECT_CONTAINER_TAGS = frozenset({
     f"{{{_DML_NAMESPACE}}}effectLst",
     f"{{{_DML_NAMESPACE}}}effectDag",
 })
+_NATIVE_EFFECT_CONTAINER_TAGS = frozenset({
+    f"{{{_DML_NAMESPACE}}}effectLst",
+    f"{{{_DML_NAMESPACE}}}effectDag",
+})
+_RELATIONSHIPS_NAMESPACE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
 
 
 def project_effect_status_errors(root: ET.Element) -> list[str]:
@@ -38,7 +50,14 @@ def project_effect_status_errors(root: ET.Element) -> list[str]:
     for elem in root.iter():
         raw_status = elem.get(EFFECT_STATUS_ATTR)
         raw_reason = elem.get(EFFECT_REASON_ATTR)
-        if raw_status is None and raw_reason is None:
+        raw_native = elem.get(NATIVE_EFFECT_ATTR)
+        raw_native_sha256 = elem.get(NATIVE_EFFECT_SHA256_ATTR)
+        if (
+            raw_status is None
+            and raw_reason is None
+            and raw_native is None
+            and raw_native_sha256 is None
+        ):
             continue
         parent = parents.get(elem)
         if (
@@ -64,8 +83,73 @@ def project_effect_status_errors(root: ET.Element) -> list[str]:
                 f'{label} {EFFECT_REASON_ATTR} requires a non-empty reason'
             )
             continue
+        if raw_native is not None or raw_native_sha256 is not None:
+            try:
+                preserved_native_effect_xml(elem)
+            except ValueError as exc:
+                errors.add(f"{label} has invalid preserved PPTX effect: {exc}")
+            else:
+                # The complete native effect container is the registered
+                # round-trip fallback for effects outside the SVG subset.
+                continue
         errors.add(f'{label} has unsupported source PPTX effect: {reason}')
     return sorted(errors)
+
+
+def native_effect_metadata(effect_container: ET.Element) -> dict[str, str]:
+    """Encode one relationship-free DrawingML effect container for round-trip."""
+    _validate_native_effect_container(effect_container)
+    raw = ET.tostring(effect_container, encoding="utf-8")
+    return {
+        NATIVE_EFFECT_ATTR: base64.b64encode(raw).decode("ascii"),
+        NATIVE_EFFECT_SHA256_ATTR: hashlib.sha256(raw).hexdigest(),
+    }
+
+
+def preserved_native_effect_xml(elem: ET.Element) -> str | None:
+    """Decode and validate one preserved DrawingML effect container."""
+    encoded = elem.get(NATIVE_EFFECT_ATTR)
+    expected_sha256 = elem.get(NATIVE_EFFECT_SHA256_ATTR)
+    if encoded is None and expected_sha256 is None:
+        return None
+    if not encoded or not expected_sha256:
+        raise ValueError(
+            f"{NATIVE_EFFECT_ATTR} and {NATIVE_EFFECT_SHA256_ATTR} must appear together"
+        )
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise ValueError(f"{NATIVE_EFFECT_ATTR} must be canonical base64") from exc
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+    if actual_sha256 != expected_sha256.strip().lower():
+        raise ValueError(
+            f"{NATIVE_EFFECT_SHA256_ATTR} does not match the preserved payload"
+        )
+    try:
+        effect_container = ET.fromstring(raw)
+    except ET.ParseError as exc:
+        raise ValueError(f"preserved effect OOXML is malformed: {exc}") from exc
+    _validate_native_effect_container(effect_container)
+    return raw.decode("utf-8")
+
+
+def _validate_native_effect_container(effect_container: ET.Element) -> None:
+    """Require a standalone, relationship-free DrawingML effect container."""
+    if effect_container.tag not in _NATIVE_EFFECT_CONTAINER_TAGS:
+        raise ValueError(
+            "preserved effect root must be a DrawingML effectLst or effectDag"
+        )
+    for node in effect_container.iter():
+        if not isinstance(node.tag, str) or not node.tag.startswith(
+            f"{{{_DML_NAMESPACE}}}"
+        ):
+            raise ValueError("preserved effect payload must contain only DrawingML")
+        if any(
+            isinstance(name, str)
+            and name.startswith(f"{{{_RELATIONSHIPS_NAMESPACE}}}")
+            for name in node.attrib
+        ):
+            raise ValueError("preserved effect payload cannot contain relationships")
 
 
 def unsupported_effect_metadata(*reasons: str) -> dict[str, str]:

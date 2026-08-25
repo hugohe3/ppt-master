@@ -16,6 +16,13 @@ from collections.abc import Iterator
 from decimal import Decimal, ROUND_HALF_UP
 from xml.etree import ElementTree as ET
 
+from pptx_gradients import (
+    NATIVE_GRADIENT_ATTR,
+    NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+    NATIVE_GRADIENT_SHA256_ATTR,
+    preserved_native_gradient_xml,
+)
+
 from pptx_shapes import (
     OOXML_COORDINATE_MAX,
     resolve_preset_preview_hash,
@@ -2143,6 +2150,17 @@ def project_marker_errors(root: ET.Element) -> list[str]:
             else:
                 marker_channel = 'fill'
                 marker_paint = marker_fill
+            gradient_id = resolve_url_id(stroke_value)
+            gradient = definitions.get(gradient_id) if gradient_id else None
+            if gradient is not None:
+                try:
+                    native_gradient = preserved_native_gradient_xml(gradient)
+                except ValueError:
+                    native_gradient = None
+                if native_gradient is not None:
+                    # The original DrawingML line owns both gradient stroke
+                    # and arrowhead paint; the solid SVG marker is its preview.
+                    continue
             stroke_color, _stroke_alpha = parse_svg_color(stroke_value or '')
             marker_color, _marker_alpha = parse_svg_color(marker_paint)
             if stroke_color is None or marker_color is None:
@@ -2408,6 +2426,21 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
             continue
         gradient_id = gradient.get('id')
         label = f'<{tag} id="{gradient_id}">' if gradient_id else f'<{tag}>'
+        if any(
+            gradient.get(name) is not None
+            for name in (
+                NATIVE_GRADIENT_ATTR,
+                NATIVE_GRADIENT_SHA256_ATTR,
+                NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+            )
+        ):
+            try:
+                native = preserved_native_gradient_xml(gradient)
+            except ValueError as exc:
+                errors.add(f'{label} has invalid imported gradient payload: {exc}')
+                continue
+            if native is not None:
+                continue
         attribute_names = {
             name.rsplit('}', 1)[-1]
             for name in gradient.attrib

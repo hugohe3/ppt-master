@@ -41,7 +41,10 @@ def snapshot_native_fallback_freshness(root: ET.Element) -> None:
     for elem in root.iter():
         if elem.tag.rsplit("}", 1)[-1] == "metadata":
             continue
-        if not native_replacement_kind(elem):
+        if (
+            not native_replacement_kind(elem)
+            and elem.get("data-pptx-roundtrip-object") is None
+        ):
             continue
         expected, invalid = _expected_native_fallback_hash(elem)
         if invalid:

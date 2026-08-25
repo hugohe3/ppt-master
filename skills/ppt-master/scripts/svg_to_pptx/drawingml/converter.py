@@ -105,6 +105,7 @@ from ..native_objects import (
     native_metadata_payload_matches,
     native_replacement_kind,
     native_marker_transform,
+    require_fresh_native_fallback,
     snapshot_native_fallback_freshness,
 )
 from ..native_objects.marker_status import native_marker_status_errors
@@ -198,6 +199,8 @@ def _native_replacement_enabled(elem: ET.Element, ctx: ConvertContext) -> bool:
     kind = native_replacement_kind(elem)
     if kind == 'formula':
         return True
+    if elem.get('data-pptx-roundtrip-object') == 'source-chart-package':
+        return kind == 'chart'
     return ctx.native_objects_enabled and kind in {'chart', 'table'}
 
 
@@ -567,6 +570,16 @@ def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
     return None
 
 
+def _placeholder_sp_pr_metadata(elem: ET.Element) -> ET.Element | None:
+    for child in elem:
+        if (
+            child.tag.replace(f'{{{SVG_NS}}}', '') == 'metadata'
+            and child.get('data-pptx-part') == 'placeholder-sppr'
+        ):
+            return child
+    return None
+
+
 _TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
 _PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
 
@@ -689,6 +702,56 @@ def _append_shape_text(
     )
 
 
+def _restore_placeholder_sp_pr(
+    shape: ShapeResult,
+    group: ET.Element,
+) -> ShapeResult:
+    """Restore an unchanged imported placeholder's local p:spPr container."""
+    metadata = _placeholder_sp_pr_metadata(group)
+    if metadata is None:
+        return shape
+    if metadata.get('data-pptx-encoding') != 'base64':
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata requires base64 encoding'
+        )
+    expected_hash = metadata.get('data-pptx-ooxml-sha256')
+    if not expected_hash or not re.fullmatch(r'[0-9a-f]{64}', expected_hash):
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata requires a lowercase SHA-256 digest'
+        )
+    try:
+        raw = base64.b64decode((metadata.text or '').strip(), validate=True)
+        sp_pr = ET.fromstring(raw)
+        decoded = raw.decode('utf-8')
+    except (ValueError, binascii.Error, UnicodeDecodeError, ET.ParseError) as exc:
+        raise SvgNativeConversionError(
+            f'Invalid placeholder spPr metadata: {exc}'
+        ) from exc
+    if hashlib.sha256(raw).hexdigest() != expected_hash:
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata hash does not match its payload'
+        )
+    if sp_pr.tag != (
+        '{http://schemas.openxmlformats.org/presentationml/2006/main}spPr'
+    ):
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata payload must be p:spPr'
+        )
+    if has_relationship_attributes(sp_pr):
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata cannot contain relationships'
+        )
+    pattern = re.compile(r'<p:spPr>.*?</p:spPr>', re.DOTALL)
+    if pattern.search(shape.xml) is None:
+        raise SvgNativeConversionError(
+            'placeholder spPr metadata can only attach to p:sp'
+        )
+    return ShapeResult(
+        xml=pattern.sub(lambda _match: decoded, shape.xml, count=1),
+        bounds_emu=shape.bounds_emu,
+    )
+
+
 def preserved_native_text_body(
     group: ET.Element,
     *,
@@ -724,6 +787,7 @@ def preserved_native_text_body(
     has_foreign_visual = any(
         child.tag.replace(f'{{{SVG_NS}}}', '') not in {'text', 'metadata'}
         and child.get('data-pptx-part') not in allowed_parts
+        and not _is_import_text_flip_compensation(child)
         for child in group
     )
     if decoded_text is None:
@@ -740,6 +804,120 @@ def preserved_native_text_body(
     return carrier_children[0], native_text
 
 
+def _is_import_text_flip_compensation(elem: ET.Element) -> bool:
+    """Recognize the importer-only wrapper that keeps flipped text upright."""
+    if (
+        elem.tag.replace(f'{{{SVG_NS}}}', '') != 'g'
+        or elem.get('data-pptx-text-flip-compensation') != 'true'
+    ):
+        return False
+    return all(
+        child.tag.replace(f'{{{SVG_NS}}}', '') in {'g', 'text', 'tspan', 'a'}
+        for child in elem.iter()
+        if child is not elem
+    )
+
+
+def _roundtrip_graphic_frame(
+    elem: ET.Element,
+    ctx: ConvertContext,
+) -> ShapeResult | None:
+    """Restore an unchanged relationship-free imported graphicFrame."""
+    if elem.get('data-pptx-roundtrip-object') != 'graphic-frame':
+        return None
+    if elem.get('data-pptx-object') != 'graphic-frame':
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame metadata requires '
+            'data-pptx-object="graphic-frame"'
+        )
+    require_fresh_native_fallback(
+        elem,
+        use_runtime_snapshot=True,
+    )
+    metadata = next(
+        (
+            child
+            for child in elem
+            if child.tag.replace(f'{{{SVG_NS}}}', '') == 'metadata'
+            and child.get('data-pptx-part') == 'roundtrip-graphic-frame'
+        ),
+        None,
+    )
+    if metadata is None or metadata.get('data-pptx-encoding') != 'base64':
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame metadata requires a base64 payload'
+        )
+    expected_hash = metadata.get('data-pptx-ooxml-sha256')
+    if not expected_hash or not re.fullmatch(r'[0-9a-f]{64}', expected_hash):
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame metadata requires a lowercase SHA-256'
+        )
+    try:
+        raw = base64.b64decode((metadata.text or '').strip(), validate=True)
+        frame = ET.fromstring(raw)
+    except (ValueError, binascii.Error, ET.ParseError) as exc:
+        raise SvgNativeConversionError(
+            f'Invalid round-trip graphic-frame metadata: {exc}'
+        ) from exc
+    if hashlib.sha256(raw).hexdigest() != expected_hash:
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame metadata hash does not match its payload'
+        )
+    pml_namespace = (
+        'http://schemas.openxmlformats.org/presentationml/2006/main'
+    )
+    if frame.tag != f'{{{pml_namespace}}}graphicFrame':
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame payload must be p:graphicFrame'
+        )
+    if has_relationship_attributes(frame):
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame payload cannot contain relationships'
+        )
+    shape_id = ctx.claim_shape_id(
+        elem.get('data-pptx-shape-id'),
+        elem.get('data-pptx-shape-scope'),
+    )
+    c_nv_pr = frame.find(
+        f'{{{pml_namespace}}}nvGraphicFramePr/'
+        f'{{{pml_namespace}}}cNvPr'
+    )
+    if c_nv_pr is None:
+        raise SvgNativeConversionError(
+            'round-trip graphic-frame payload has no p:cNvPr'
+        )
+    c_nv_pr.set('id', str(shape_id))
+    raw_frame = elem.get('data-pptx-frame')
+    try:
+        values = tuple(
+            float(value)
+            for value in re.split(r'[\s,]+', (raw_frame or '').strip())
+        )
+    except ValueError as exc:
+        raise SvgNativeConversionError(
+            f'Invalid round-trip graphic-frame bounds: {raw_frame!r}'
+        ) from exc
+    if (
+        len(values) != 4
+        or not all(math.isfinite(value) for value in values)
+        or values[2] <= 0
+        or values[3] <= 0
+    ):
+        raise SvgNativeConversionError(
+            f'Invalid round-trip graphic-frame bounds: {raw_frame!r}'
+        )
+    bounds = (
+        round(values[0] * EMU_PER_PX),
+        round(values[1] * EMU_PER_PX),
+        round((values[0] + values[2]) * EMU_PER_PX),
+        round((values[1] + values[3]) * EMU_PER_PX),
+    )
+    return ShapeResult(
+        xml=ET.tostring(frame, encoding='unicode'),
+        bounds_emu=bounds,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Group handling
 # ---------------------------------------------------------------------------
@@ -753,6 +931,10 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     Uses identity coordinate mapping (chOff/chExt == off/ext) so child shapes
     keep their absolute slide coordinates unchanged.
     """
+    exact_graphic_frame = _roundtrip_graphic_frame(elem, ctx)
+    if exact_graphic_frame is not None:
+        return exact_graphic_frame
+
     transform = elem.get('transform', '')
     native_subtree_active = _contains_enabled_native_replacement(elem, ctx)
     if native_subtree_active:
@@ -889,6 +1071,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             geometry_result,
             native_text,
         )
+        restored = _restore_placeholder_sp_pr(restored, elem)
         if should_animate_group and elem_id:
             shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
             if shape_match:
@@ -932,11 +1115,12 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             or logical_picture_effect_group
         )
     ):
+        restored_child = _restore_placeholder_sp_pr(child_results[0], elem)
         if should_animate_group and elem_id:
-            shape_match = re.search(r'<p:cNvPr id="(\d+)"', child_results[0].xml)
+            shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored_child.xml)
             if shape_match:
                 ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
-        return child_results[0]
+        return restored_child
 
     # Multiple children, or a top-level semantic one-child group: wrap in
     # <p:grpSp> so PowerPoint can animate the group as one unit.
@@ -1564,7 +1748,11 @@ def convert_svg_to_slide_shapes(
         ) from exc
     _mark_unchanged_txbody_groups(root)
     _mark_unchanged_preset_previews(root)
-    if native_objects:
+    has_roundtrip_object = any(
+        elem.get('data-pptx-roundtrip-object') is not None
+        for elem in root.iter()
+    )
+    if native_objects or has_roundtrip_object:
         try:
             snapshot_native_fallback_freshness(root)
         except NativeMarkerAttributeError as exc:

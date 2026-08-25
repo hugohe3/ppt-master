@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass
 from xml.etree import ElementTree as ET
 
-from pptx_effects import unsupported_effect_metadata
+from pptx_effects import native_effect_metadata, unsupported_effect_metadata
 from pptx_shapes.formula import OOXML_COORDINATE_MAX
 
 from .color_resolver import COLOR_TAGS, ColorPalette, resolve_color
@@ -57,8 +57,15 @@ class EffectResult:
     metadata: tuple[tuple[str, str], ...] = ()
 
     @classmethod
-    def unsupported(cls, reason: str) -> "EffectResult":
-        return cls(metadata=tuple(unsupported_effect_metadata(reason).items()))
+    def unsupported(
+        cls,
+        reason: str,
+        effect_container: ET.Element | None = None,
+    ) -> "EffectResult":
+        metadata = unsupported_effect_metadata(reason)
+        if effect_container is not None:
+            metadata.update(native_effect_metadata(effect_container))
+        return cls(metadata=tuple(metadata.items()))
 
 
 def unsupported_target_effect_metadata(
@@ -86,9 +93,20 @@ def unsupported_target_effect_metadata(
         )
     if not effect_names:
         return {}
-    return unsupported_effect_metadata(
+    metadata = unsupported_effect_metadata(
         f"unsupported-effect-target:{target}:" + ",".join(effect_names)
     )
+    containers = [
+        child
+        for child in sp_pr
+        if isinstance(child.tag, str)
+        and _local_name(child) in _EFFECT_CONTAINER_NAMES
+    ]
+    if len(containers) == 1 and containers[0].tag.startswith(
+        _DRAWINGML_TAG_PREFIX
+    ):
+        metadata.update(native_effect_metadata(containers[0]))
+    return metadata
 
 
 def convert_effects(
@@ -122,7 +140,10 @@ def convert_effects(
             f"invalid-effect-container-namespace:{container_name}"
         )
     if container_name == "effectDag":
-        return EffectResult.unsupported("unsupported-effect-container:effectDag")
+        return EffectResult.unsupported(
+            "unsupported-effect-container:effectDag",
+            container,
+        )
     effects = [
         child
         for child in container
@@ -133,7 +154,8 @@ def convert_effects(
     names = [child.tag.split("}", 1)[-1] for child in effects]
     if len(effects) != 1:
         return EffectResult.unsupported(
-            "multiple-effects:" + ",".join(names)
+            "multiple-effects:" + ",".join(names),
+            container,
         )
 
     effect = effects[0]
@@ -151,18 +173,21 @@ def convert_effects(
             if unsupported_attributes:
                 return EffectResult.unsupported(
                     "unsupported-effect-attributes:outerShdw:"
-                    + ",".join(unsupported_attributes)
+                    + ",".join(unsupported_attributes),
+                    container,
                 )
             primitives = _outer_shadow(effect, palette)
         elif effect_name == "glow":
             primitives = _glow(effect, palette)
         else:
             return EffectResult.unsupported(
-                f"unsupported-effect:{effect_name}"
+                f"unsupported-effect:{effect_name}",
+                container,
             )
     except (OverflowError, TypeError, ValueError) as exc:
         return EffectResult.unsupported(
-            f"invalid-effect:{effect_name}:{exc}"
+            f"invalid-effect:{effect_name}:{exc}",
+            container,
         )
 
     if id_seq is None:

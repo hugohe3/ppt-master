@@ -13,6 +13,8 @@ loads the package and reports basic per-slide structure to verify wiring.
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import os
 import re
@@ -23,10 +25,29 @@ from dataclasses import dataclass, field
 from html import unescape
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
+from xml.etree import ElementTree as ET
+from xml.sax.saxutils import quoteattr
 
+from pptx_embedded_fonts import (
+    FONT_BUNDLE_DIR,
+    EmbeddedFontBundle,
+    EmbeddedFontError,
+    capture_embedded_fonts,
+    write_embedded_font_bundle,
+)
 from svg_to_pptx.animation_config import (
     validate_animation_config_errors,
     validate_transition_config,
+)
+from template_import.manifest import (
+    count_drawable_shapes,
+    extract_placeholders,
+    part_display_name,
+)
+from template_import.native_structure import (
+    CONTRACT_NAME as NATIVE_STRUCTURE_NAME,
+    SOURCE_TEMPLATE_NAME,
+    build_native_structure,
 )
 
 from .animation_import import (
@@ -164,6 +185,10 @@ class ConvertOptions:
           that wants self-contained slides (preview pages, screenshot pipelines).
     strict: stop on the first unsupported or malformed source construct.
         Default False keeps usable content and records structured diagnostics.
+    roundtrip: preserve a validated source-package structure sidecar and mark
+        layered slide SVG roots with their exact source Layout identities.
+        This is an opt-in diagnostic path for reconstructing the imported deck;
+        it does not make SVG a lossless container for arbitrary PPTX semantics.
     """
 
     media_subdir: str = "assets"
@@ -172,6 +197,7 @@ class ConvertOptions:
     inheritance_mode: str = "both"
     asset_name_map: dict[str, str] = field(default_factory=dict)
     strict: bool = False
+    roundtrip: bool = False
 
 
 @dataclass
@@ -214,6 +240,10 @@ class ConvertResult:
     canvas_px: tuple[float, float] = (1280.0, 720.0)
     theme_colors: dict[str, str] = field(default_factory=dict)
     theme_fonts: dict[str, str] = field(default_factory=dict)
+    theme_xml: bytes | None = None
+    embedded_fonts: EmbeddedFontBundle | None = None
+    native_structure: dict[str, object] | None = None
+    source_pptx_path: Path | None = None
     layouts: list[PartArtifact] = field(default_factory=list)
     masters: list[PartArtifact] = field(default_factory=list)
     flat_slides: list[SlideArtifact] = field(default_factory=list)
@@ -256,6 +286,137 @@ def _palette_diagnostic_sink(
         )
 
     return _record
+
+
+def _roundtrip_native_structure(
+    pkg: OoxmlPackage,
+    pptx_path: Path,
+) -> dict[str, object]:
+    """Build the existing validated source-structure contract without assets."""
+    masters = list(pkg.iter_all_masters())
+    layouts_with_parents = list(pkg.iter_all_layouts_with_parent())
+    slides = list(pkg.iter_slides())
+    used_layouts: dict[str, list[int]] = {}
+    used_masters: dict[str, list[int]] = {}
+    for slide in slides:
+        if slide.layout is not None:
+            used_layouts.setdefault(slide.layout.path, []).append(slide.index)
+        if slide.master is not None:
+            used_masters.setdefault(slide.master.path, []).append(slide.index)
+
+    manifest: dict[str, object] = {
+        "slideSize": {
+            "width_emu": pkg.slide_size_emu[0],
+            "height_emu": pkg.slide_size_emu[1],
+            "width_px": pkg.slide_size_px[0],
+            "height_px": pkg.slide_size_px[1],
+        },
+        "masters": [
+            {
+                "path": master.path,
+                "displayName": part_display_name(master.xml, master.path),
+                "drawableShapeCount": count_drawable_shapes(master.xml),
+                "usedBySlides": used_masters.get(master.path, []),
+            }
+            for master in masters
+        ],
+        "layouts": [
+            {
+                "path": layout.path,
+                "displayName": part_display_name(layout.xml, layout.path),
+                "parentPath": master.path,
+                "showMasterShapes": part_show_master_sp(layout),
+                "drawableShapeCount": count_drawable_shapes(layout.xml),
+                "placeholders": extract_placeholders(layout.xml),
+                "usedBySlides": used_layouts.get(layout.path, []),
+            }
+            for layout, master in layouts_with_parents
+        ],
+        "slides": [
+            {
+                "index": slide.index,
+                "layoutPath": slide.layout.path if slide.layout else None,
+                "masterPath": slide.master.path if slide.master else None,
+                "showInheritedShapes": part_show_master_sp(slide.part),
+                "placeholders": extract_placeholders(slide.part.xml),
+                "svgFile": f"slide_{slide.index:02d}.svg",
+            }
+            for slide in slides
+        ],
+    }
+    contract = build_native_structure(pptx_path, manifest)
+    if not contract["strategy"]["preservationEligible"]:
+        raise RuntimeError(
+            "Round-trip mode requires a complete source master/layout graph"
+        )
+    return contract
+
+
+def _annotate_roundtrip_slide_roots(
+    slides: list[SlideArtifact],
+    contract: dict[str, object],
+) -> None:
+    """Attach exact Layout identity to layered SVG roots for reverse export."""
+    raw_layouts = contract.get("layouts")
+    raw_masters = contract.get("masters")
+    raw_slides = contract.get("slides")
+    if not all(isinstance(value, list) for value in (
+        raw_layouts,
+        raw_masters,
+        raw_slides,
+    )):
+        raise RuntimeError("Generated round-trip source structure is incomplete")
+    layouts = {
+        str(item.get("key")): item
+        for item in raw_layouts
+        if isinstance(item, dict)
+    }
+    masters = {
+        str(item.get("key")): item
+        for item in raw_masters
+        if isinstance(item, dict)
+    }
+    slide_rows = {
+        int(item["index"]): item
+        for item in raw_slides
+        if isinstance(item, dict) and isinstance(item.get("index"), int)
+    }
+    for slide in slides:
+        row = slide_rows.get(slide.index)
+        if row is None:
+            raise RuntimeError(
+                f"Round-trip source structure has no slide {slide.index}"
+            )
+        layout_key = str(row.get("layoutKey") or "")
+        master_key = str(row.get("masterKey") or "")
+        layout = layouts.get(layout_key)
+        master = masters.get(master_key)
+        if layout is None or master is None:
+            raise RuntimeError(
+                f"Round-trip slide {slide.index} has an unresolved Layout/Master"
+            )
+        attrs = {
+            "data-pptx-layout": layout_key,
+            "data-pptx-layout-name": str(layout.get("name") or layout_key),
+            "data-pptx-master": master_key,
+            "data-pptx-master-name": str(master.get("name") or master_key),
+            "data-pptx-show-master-shapes": (
+                "true" if layout.get("showMasterShapes", True) else "false"
+            ),
+            "data-pptx-show-inherited-shapes": (
+                "true" if row.get("showInheritedShapes", True) else "false"
+            ),
+        }
+        marker = slide.svg.find(">")
+        if not slide.svg.startswith("<svg ") or marker < 0:
+            raise RuntimeError(
+                f"Round-trip slide {slide.index} does not have a canonical SVG root"
+            )
+        serialized = "".join(
+            f" {name}={quoteattr(value)}"
+            for name, value in attrs.items()
+        )
+        slide.svg = slide.svg[:marker] + serialized + slide.svg[marker:]
 
 
 def _make_palette(
@@ -306,6 +467,11 @@ def convert_pptx_to_svg(
             f"inheritance_mode must be 'flat', 'layered', or 'both', "
             f"got {options.inheritance_mode!r}"
         )
+    if options.roundtrip and options.inheritance_mode == "flat":
+        raise ValueError(
+            "roundtrip requires inheritance_mode 'layered' or 'both' so source "
+            "Master/Layout visuals are not duplicated on regenerated slides"
+        )
     if not options.embed_images:
         _validate_media_subdir(options.media_subdir)
     emit_layered = options.inheritance_mode in {"layered", "both"}
@@ -332,6 +498,29 @@ def convert_pptx_to_svg(
         )
         if default_theme is not None:
             result.theme_colors, result.theme_fonts = _extract_theme_info(default_theme, palette)
+            result.theme_xml = ET.tostring(default_theme.xml, encoding="utf-8")
+        if pkg.presentation is not None and pkg.zip is not None:
+            try:
+                result.embedded_fonts = capture_embedded_fonts(
+                    pkg.presentation.xml,
+                    pkg.presentation.rels,
+                    pkg.zip.read,
+                )
+            except EmbeddedFontError as exc:
+                if options.strict:
+                    raise
+                append_diagnostic(
+                    result.diagnostics,
+                    ImportDiagnostic(
+                        code="embedded-fonts-omitted",
+                        message=str(exc),
+                        fallback=(
+                            "keep editable text and rely on an installed or "
+                            "substitute font"
+                        ),
+                        part_path=pkg.presentation.path,
+                    ),
+                )
 
         for master in pkg.iter_all_masters():
             theme = pkg.resolve_theme(master) or default_theme
@@ -369,7 +558,11 @@ def convert_pptx_to_svg(
                 part_path=slide.part.path,
                 slide_index=slide.index,
             )
-            _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
+            _colors, slide_fonts = (
+                _extract_theme_info(slide_theme, slide_palette)
+                if slide_theme is not None
+                else ({}, result.theme_fonts)
+            )
             artifact = _convert_slide(
                 pkg,
                 slide,
@@ -398,7 +591,11 @@ def convert_pptx_to_svg(
                     part_path=slide.part.path,
                     slide_index=slide.index,
                 )
-                _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
+                _colors, slide_fonts = (
+                    _extract_theme_info(slide_theme, slide_palette)
+                    if slide_theme is not None
+                    else ({}, result.theme_fonts)
+                )
                 artifact = _convert_slide(
                     pkg,
                     slide,
@@ -413,6 +610,13 @@ def convert_pptx_to_svg(
         # Layered mode: also render each master / layout once.
         if emit_layered:
             _convert_inheritance_parts(pkg, default_theme, options, result)
+        if options.roundtrip:
+            result.native_structure = _roundtrip_native_structure(pkg, pptx_path)
+            result.source_pptx_path = pptx_path
+            _annotate_roundtrip_slide_roots(
+                result.slides,
+                result.native_structure,
+            )
 
     if output_dir is not None:
         _write_artifacts(output_dir, result, options)
@@ -545,6 +749,9 @@ def _convert_slide(
         asset_name_map=options.asset_name_map,
         strict=options.strict,
         diagnostics=diagnostics,
+        preserve_placeholder_inheritance=(
+            options.roundtrip and mode == "layered"
+        ),
     )
     return SlideArtifact(
         index=slide.index,
@@ -704,6 +911,29 @@ def _managed_report_artifact_paths(output_dir: Path) -> set[Path]:
         return set()
 
     managed = {Path("animations.json")}
+    if artifacts.get("sourceTemplate") == SOURCE_TEMPLATE_NAME:
+        managed.add(Path(SOURCE_TEMPLATE_NAME))
+    if artifacts.get("nativeStructure") == NATIVE_STRUCTURE_NAME:
+        managed.add(Path(NATIVE_STRUCTURE_NAME))
+    embedded_font_paths = [artifacts.get("embeddedFontManifest")]
+    raw_font_parts = artifacts.get("embeddedFontParts")
+    if isinstance(raw_font_parts, list):
+        embedded_font_paths.extend(raw_font_parts)
+    font_prefix = FONT_BUNDLE_DIR.parts
+    for value in embedded_font_paths:
+        if not isinstance(value, str):
+            continue
+        path = Path(value)
+        if (
+            path.drive
+            or path.anchor
+            or path.is_absolute()
+            or ".." in path.parts
+            or path.parts[:len(font_prefix)] != font_prefix
+            or path.suffix.lower() not in {".json", ".fntdata"}
+        ):
+            continue
+        managed.add(path)
     animation_media = artifacts.get("animationMedia")
     if not isinstance(animation_media, list):
         return managed
@@ -1011,7 +1241,34 @@ def _write_artifact_tree(
             _collect_media(art.media_files)
 
     _write_animation_config(output_dir, result)
-    _write_conversion_report(output_dir, result, options)
+    if result.native_structure is not None:
+        if result.source_pptx_path is None:
+            raise RuntimeError(
+                "Round-trip source structure is missing its source PPTX path"
+            )
+        shutil.copy2(result.source_pptx_path, output_dir / SOURCE_TEMPLATE_NAME)
+        (output_dir / NATIVE_STRUCTURE_NAME).write_text(
+            json.dumps(
+                result.native_structure,
+                ensure_ascii=False,
+                indent=2,
+            ) + "\n",
+            encoding="utf-8",
+        )
+    embedded_fonts_descriptor: dict[str, object] | None = None
+    embedded_font_paths: tuple[str, ...] = ()
+    if result.embedded_fonts is not None:
+        (
+            embedded_fonts_descriptor,
+            embedded_font_paths,
+        ) = write_embedded_font_bundle(output_dir, result.embedded_fonts)
+    _write_conversion_report(
+        output_dir,
+        result,
+        options,
+        embedded_fonts_descriptor=embedded_fonts_descriptor,
+        embedded_font_paths=embedded_font_paths,
+    )
     if media_written:
         media_dir.mkdir(parents=True, exist_ok=True)
     for filename, blob in media_written.items():
@@ -1053,12 +1310,44 @@ def _write_conversion_report(
     output_dir: Path,
     result: ConvertResult,
     options: ConvertOptions,
+    *,
+    embedded_fonts_descriptor: dict[str, object] | None = None,
+    embedded_font_paths: tuple[str, ...] = (),
 ) -> None:
     """Write the user-visible tolerant-import report."""
     animation_media = [
         (PurePosixPath(options.media_subdir) / filename).as_posix()
         for filename in sorted(result.animation_media_files)
     ]
+    source_theme: dict[str, object] = {
+        "colors": result.theme_colors,
+        "fonts": result.theme_fonts,
+    }
+    if result.theme_xml is not None:
+        source_theme["ooxml"] = {
+            "encoding": "base64",
+            "sha256": hashlib.sha256(result.theme_xml).hexdigest(),
+            "payload": base64.b64encode(result.theme_xml).decode("ascii"),
+        }
+    source_document: dict[str, object] = {
+        "canvasPx": {
+            "width": result.canvas_px[0],
+            "height": result.canvas_px[1],
+        },
+        "theme": source_theme,
+    }
+    if embedded_fonts_descriptor is not None:
+        source_document["embeddedFonts"] = embedded_fonts_descriptor
+    artifacts: dict[str, object] = {
+        "animationConfig": "animations.json",
+        "animationMedia": animation_media,
+    }
+    if embedded_font_paths:
+        artifacts["embeddedFontManifest"] = embedded_font_paths[-1]
+        artifacts["embeddedFontParts"] = list(embedded_font_paths[:-1])
+    if result.native_structure is not None:
+        artifacts["sourceTemplate"] = SOURCE_TEMPLATE_NAME
+        artifacts["nativeStructure"] = NATIVE_STRUCTURE_NAME
     report = {
         "schemaVersion": 1,
         "source": result.source_file,
@@ -1067,10 +1356,8 @@ def _write_conversion_report(
             "slides": len(result.slides),
             "warnings": len(result.diagnostics),
         },
-        "artifacts": {
-            "animationConfig": "animations.json",
-            "animationMedia": animation_media,
-        },
+        "artifacts": artifacts,
+        "sourceDocument": source_document,
         "diagnostics": [item.to_dict() for item in result.diagnostics],
     }
     (output_dir / "conversion-report.json").write_text(

@@ -7,6 +7,8 @@ payload when the chart XML cache can be mapped to the current chart schema.
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import math
 import re
 from dataclasses import dataclass
@@ -2002,16 +2004,56 @@ def _apply_plot_data_labels(
     *,
     palette: ColorPalette | None = None,
 ) -> None:
-    if plot.find("c:ser/c:dLbls", C_NS) is not None:
-        if palette is None or palette.strict:
-            raise _UnsupportedChart("unsupported-chart-series-data-labels")
-        palette._diagnose(
-            "chart-series-data-labels-omitted",
-            "Per-series or per-point chart data-label placement is outside "
-            "the native chart contract",
-            "keep the chart data and any supported plot-level labels",
-        )
-    data_labels = _data_labels_payload(plot.find("c:dLbls", C_NS))
+    chart_type = str(payload.get("type") or "")
+    series_nodes = plot.findall("c:ser", C_NS)
+    series_payloads = payload.get("series")
+    if not isinstance(series_payloads, list) or len(series_payloads) != len(series_nodes):
+        raise _UnsupportedChart("unsupported-chart-series-data-labels")
+
+    for series_node, series_payload in zip(series_nodes, series_payloads):
+        dlabels = series_node.find("c:dLbls", C_NS)
+        if dlabels is None:
+            continue
+        if chart_type not in {"area", "bar", "column", "line"}:
+            if palette is None or palette.strict:
+                raise _UnsupportedChart("unsupported-chart-series-data-labels")
+            palette._diagnose(
+                "chart-series-data-labels-omitted",
+                "Per-series chart data labels are outside the native contract "
+                f"for {chart_type} charts",
+                "keep the chart data and any supported plot-level labels",
+            )
+            continue
+        point_count = len(series_payload.get("values") or [])
+        try:
+            series_labels = _data_labels_payload(
+                dlabels,
+                palette=palette,
+                point_count=point_count,
+                preserve_source=True,
+            )
+            if not series_labels:
+                continue
+            validate_data_label_position(
+                series_labels.get("position"),
+                chart_type,
+                payload.get("grouping"),
+            )
+        except (_UnsupportedChart, RuntimeError):
+            if palette is None or palette.strict:
+                raise _UnsupportedChart("unsupported-chart-series-data-labels") from None
+            palette._diagnose(
+                "chart-series-data-labels-omitted",
+                "Source per-series chart data labels could not be normalized",
+                "keep the chart data and any supported plot-level labels",
+            )
+            continue
+        series_payload["data_labels"] = series_labels
+
+    data_labels = _data_labels_payload(
+        plot.find("c:dLbls", C_NS),
+        palette=palette,
+    )
     if not data_labels:
         return
     if payload["type"] not in {"area", "bar", "column", "line"}:
@@ -2360,13 +2402,181 @@ def _data_label_text_style(tx_pr: ET.Element) -> dict[str, Any]:
     return style
 
 
-def _data_labels_payload(dlabels: ET.Element | None) -> dict[str, Any] | None:
+_DATA_LABEL_POSITION_ALIASES = {
+    "bestFit": "best_fit",
+    "ctr": "center",
+    "inBase": "inside_base",
+    "inEnd": "inside_end",
+    "outEnd": "outside_end",
+    "t": "above",
+}
+
+
+def _data_label_position_payload(owner: ET.Element) -> str | None:
+    position = _element_val(owner.find("c:dLblPos", C_NS))
+    if not position:
+        return None
+    normalized = _DATA_LABEL_POSITION_ALIASES.get(position)
+    if normalized is None:
+        raise _UnsupportedChart("unsupported-chart-data-labels")
+    return normalized
+
+
+def _data_label_flag_payload(
+    owner: ET.Element,
+    *,
+    include_missing: bool,
+) -> dict[str, bool]:
+    config: dict[str, bool] = {}
+    for tag, field in (
+        ("showVal", "show_value"),
+        ("showCatName", "show_category"),
+        ("showSerName", "show_series"),
+        ("showPercent", "show_percent"),
+    ):
+        elem = owner.find(f"c:{tag}", C_NS)
+        if elem is not None:
+            config[field] = ooxml_bool(elem.attrib.get("val"), True)
+        elif include_missing:
+            config[field] = False
+    return config
+
+
+def _source_data_label_text_style(
+    owner: ET.Element,
+    palette: ColorPalette | None,
+) -> dict[str, Any]:
+    """Read visible label run properties without requiring canonical OOXML."""
+    r_pr = owner.find(".//a:defRPr", C_NS)
+    if r_pr is None:
+        r_pr = owner.find(".//a:rPr", C_NS)
+    if r_pr is None:
+        return {}
+
+    style: dict[str, Any] = {}
+    raw_size = r_pr.attrib.get("sz")
+    if raw_size is not None:
+        try:
+            size_px = float(raw_size) / 75.0
+        except ValueError:
+            size_px = 0.0
+        if size_px > 0 and math.isfinite(size_px):
+            style["font_size"] = (
+                int(size_px) if size_px.is_integer() else round(size_px, 3)
+            )
+    if r_pr.attrib.get("b") is not None:
+        style["bold"] = ooxml_bool(r_pr.attrib.get("b"), True)
+
+    solid_fill = r_pr.find("a:solidFill", C_NS)
+    color_elem = find_color_elem(solid_fill)
+    if color_elem is not None:
+        color, alpha = resolve_color(color_elem, palette)
+        if alpha > 0:
+            style["color"] = color
+
+    latin = r_pr.find("a:latin", C_NS)
+    east_asian = r_pr.find("a:ea", C_NS)
+    latin_face = latin.attrib.get("typeface", "").strip() if latin is not None else ""
+    east_asian_face = (
+        east_asian.attrib.get("typeface", "").strip()
+        if east_asian is not None else ""
+    )
+    font_face = (
+        f"{latin_face}, {east_asian_face}"
+        if latin_face and east_asian_face and latin_face != east_asian_face
+        else latin_face or east_asian_face
+    )
+    if font_face:
+        style["font_family"] = font_face
+    return style
+
+
+def _point_data_label_payload(
+    dlabel: ET.Element,
+    *,
+    palette: ColorPalette | None,
+    point_count: int,
+) -> dict[str, Any]:
+    allowed_children = {
+        "dLblPos", "delete", "extLst", "idx", "numFmt", "showBubbleSize",
+        "showCatName", "showLegendKey", "showPercent", "showSerName",
+        "showVal", "spPr", "tx", "txPr",
+    }
+    if any(_local_name(child.tag) not in allowed_children for child in dlabel):
+        raise _UnsupportedChart("unsupported-chart-point-labels")
+    idx = _element_val(dlabel.find("c:idx", C_NS))
+    if idx is None or not idx.isdigit():
+        raise _UnsupportedChart("unsupported-chart-point-labels")
+    point_index = int(idx)
+    if point_index < 0 or point_index >= point_count:
+        raise _UnsupportedChart("unsupported-chart-point-labels")
+
+    for tag in ("showLegendKey", "showBubbleSize"):
+        elem = dlabel.find(f"c:{tag}", C_NS)
+        if elem is not None and ooxml_bool(elem.attrib.get("val"), True):
+            raise _UnsupportedChart("unsupported-chart-point-labels")
+
+    item: dict[str, Any] = {"idx": point_index}
+    delete = dlabel.find("c:delete", C_NS)
+    if delete is not None:
+        item["delete"] = ooxml_bool(delete.attrib.get("val"), True)
+    item.update(_data_label_flag_payload(dlabel, include_missing=False))
+    position = _data_label_position_payload(dlabel)
+    if position:
+        item["position"] = position
+    num_fmt = dlabel.find("c:numFmt", C_NS)
+    if num_fmt is not None and num_fmt.attrib.get("formatCode"):
+        item["number_format"] = num_fmt.attrib["formatCode"]
+    tx_pr = dlabel.find("c:txPr", C_NS)
+    if tx_pr is not None:
+        item.update(_source_data_label_text_style(tx_pr, palette))
+
+    tx = dlabel.find("c:tx", C_NS)
+    if tx is not None:
+        rich = tx.find("c:rich", C_NS)
+        if rich is None or len(list(tx)) != 1:
+            raise _UnsupportedChart("unsupported-chart-point-labels")
+        paragraphs = rich.findall("a:p", C_NS)
+        if not paragraphs:
+            raise _UnsupportedChart("unsupported-chart-point-labels")
+        lines = ["".join(node.text or "" for node in p.findall(".//a:t", C_NS)) for p in paragraphs]
+        text = "\n".join(lines)
+        if not text:
+            raise _UnsupportedChart("unsupported-chart-point-labels")
+        item["text"] = text
+        item.update(_source_data_label_text_style(rich, palette))
+    return item
+
+
+def _source_data_labels_ooxml(dlabels: ET.Element) -> dict[str, str]:
+    if any(
+        isinstance(name, str) and name.startswith(f"{{{NS['r']}}}")
+        for node in dlabels.iter()
+        for name in node.attrib
+    ):
+        raise _UnsupportedChart("unsupported-chart-series-data-labels")
+    payload = ET.tostring(dlabels, encoding="utf-8")
+    return {
+        "encoding": "base64",
+        "payload": base64.b64encode(payload).decode("ascii"),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+    }
+
+
+def _data_labels_payload(
+    dlabels: ET.Element | None,
+    *,
+    palette: ColorPalette | None = None,
+    point_count: int | None = None,
+    preserve_source: bool = False,
+) -> dict[str, Any] | None:
     if dlabels is None:
         return None
-    if dlabels.find("c:dLbl", C_NS) is not None:
+    point_nodes = dlabels.findall("c:dLbl", C_NS)
+    if point_nodes and point_count is None:
         raise _UnsupportedChart("unsupported-chart-point-labels")
     allowed_children = {
-        "numFmt", "txPr", "dLblPos", "showLegendKey", "showVal",
+        "dLbl", "extLst", "numFmt", "spPr", "txPr", "dLblPos", "showLegendKey", "showVal",
         "showCatName", "showSerName", "showPercent", "showBubbleSize",
         "showLeaderLines",
     }
@@ -2380,20 +2590,10 @@ def _data_labels_payload(dlabels: ET.Element | None) -> dict[str, Any] | None:
         if elem is not None and ooxml_bool(elem.attrib.get("val"), True):
             raise _UnsupportedChart("unsupported-chart-data-labels")
 
-    config: dict[str, Any] = {}
-    for tag, field in (
-        ("showVal", "show_value"),
-        ("showCatName", "show_category"),
-        ("showSerName", "show_series"),
-        ("showPercent", "show_percent"),
-    ):
-        elem = dlabels.find(f"c:{tag}", C_NS)
-        config[field] = (
-            ooxml_bool(elem.attrib.get("val"), True)
-            if elem is not None else False
-        )
-    if not any(config.values()):
-        return None
+    config: dict[str, Any] = _data_label_flag_payload(
+        dlabels,
+        include_missing=True,
+    )
 
     leader_lines = dlabels.find("c:showLeaderLines", C_NS)
     if leader_lines is not None:
@@ -2402,26 +2602,40 @@ def _data_labels_payload(dlabels: ET.Element | None) -> dict[str, Any] | None:
             True,
         )
 
-    position = _element_val(dlabels.find("c:dLblPos", C_NS))
+    position = _data_label_position_payload(dlabels)
     if position:
-        position_aliases = {
-            "bestFit": "best_fit",
-            "ctr": "center",
-            "inBase": "inside_base",
-            "inEnd": "inside_end",
-            "outEnd": "outside_end",
-            "t": "above",
-        }
-        normalized_position = position_aliases.get(position)
-        if normalized_position is None:
-            raise _UnsupportedChart("unsupported-chart-data-labels")
-        config["position"] = normalized_position
+        config["position"] = position
     num_fmt = dlabels.find("c:numFmt", C_NS)
     if num_fmt is not None and num_fmt.attrib.get("formatCode"):
         config["number_format"] = num_fmt.attrib["formatCode"]
     tx_pr = dlabels.find("c:txPr", C_NS)
     if tx_pr is not None:
-        config.update(_data_label_text_style(tx_pr))
+        try:
+            config.update(_data_label_text_style(tx_pr))
+        except _UnsupportedChart:
+            config.update(_source_data_label_text_style(tx_pr, palette))
+    if point_nodes:
+        assert point_count is not None
+        points = [
+            _point_data_label_payload(
+                point,
+                palette=palette,
+                point_count=point_count,
+            )
+            for point in point_nodes
+        ]
+        if len({point["idx"] for point in points}) != len(points):
+            raise _UnsupportedChart("unsupported-chart-point-labels")
+        config["points"] = points
+        if preserve_source:
+            config["source_ooxml"] = _source_data_labels_ooxml(dlabels)
+    if not any(
+        config.get(field)
+        for field in (
+            "points", "show_category", "show_percent", "show_series", "show_value",
+        )
+    ):
+        return None
     return config
 
 

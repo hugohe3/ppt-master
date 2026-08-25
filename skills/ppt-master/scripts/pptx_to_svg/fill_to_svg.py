@@ -18,6 +18,8 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from xml.etree import ElementTree as ET
 
+from pptx_gradients import native_gradient_metadata
+
 from .color_resolver import (
     COLOR_TAGS,
     ColorPalette,
@@ -182,7 +184,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                        prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
     _validate_gradient_attributes(elem)
-    _validate_gradient_rotation(elem)
+    _validate_gradient_rotation(elem, palette)
     _validate_gradient_flip(elem)
     _validate_or_normalize_gradient_tile_rect(elem, palette)
     if seq is None:
@@ -317,10 +319,21 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             + "</linearGradient>"
         )
 
+    defs_xml = _attach_native_gradient_metadata(defs_xml, elem)
     return FillResult(
         attrs={"fill": f"url(#{grad_id})"},
         defs=[defs_xml],
     )
+
+
+def _attach_native_gradient_metadata(
+    svg_gradient_xml: str,
+    grad_fill: ET.Element,
+) -> str:
+    """Bind the normalized SVG preview to its exact source gradFill."""
+    preview = ET.fromstring(svg_gradient_xml)
+    preview.attrib.update(native_gradient_metadata(grad_fill, preview))
+    return ET.tostring(preview, encoding="unicode")
 
 
 def _gradient_stop_position(gs: ET.Element) -> float:
@@ -431,17 +444,28 @@ def _validate_or_normalize_linear_gradient_scaling(
         )
 
 
-def _validate_gradient_rotation(gradient: ET.Element) -> None:
-    """Require a gradient that rotates with its containing shape."""
+def _validate_gradient_rotation(
+    gradient: ET.Element,
+    palette: ColorPalette | None,
+) -> None:
+    """Normalize fixed-page gradient rotation only in tolerant import mode."""
     rotates_with_shape = _parse_ooxml_boolean(
         gradient.get("rotWithShape"),
         default=True,
         label="gradient rotWithShape value",
     )
     if not rotates_with_shape:
-        raise ValueError(
+        message = (
             "DrawingML gradients that do not rotate with their shape are "
             "not representable by the local SVG mapping"
+        )
+        if palette is None or palette.strict:
+            raise ValueError(message)
+        palette._diagnose(
+            "gradient-rotation-normalized",
+            message,
+            "render the gradient in the shape-local SVG box and preserve "
+            "the exact DrawingML gradient for unchanged round-trip",
         )
 
 

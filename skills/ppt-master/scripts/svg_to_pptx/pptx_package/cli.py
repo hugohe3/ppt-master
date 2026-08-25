@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import math
@@ -26,6 +28,11 @@ from language_tags import (  # noqa: E402
     normalize_language_tag,
 )
 from native_payloads import PAYLOAD_STORE_RELATIVE_PATH  # noqa: E402
+from pptx_embedded_fonts import (  # noqa: E402
+    EmbeddedFontBundle,
+    EmbeddedFontError,
+    load_embedded_font_bundle,
+)
 from pptx_animations import (  # noqa: E402
     ANIMATIONS,
     animation_seconds_to_milliseconds,
@@ -58,7 +65,11 @@ from ..native_objects import (
     native_replacement_status,
 )
 from ..native_objects.marker_status import native_marker_release_block_reason
-from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
+from ..drawingml.theme_colors import (
+    ThemeColorError,
+    ThemeColorSpec,
+    load_theme_color_spec,
+)
 from ..drawingml.context import (
     TEXT_FLOW_PRESERVE,
     TEXT_FLOW_REFLOW,
@@ -66,6 +77,8 @@ from ..drawingml.context import (
 )
 from ..drawingml.theme_fonts import (
     ThemeFontError,
+    ThemeFontFace,
+    ThemeFontSpec,
     load_master_text_style_spec,
     load_theme_font_spec,
 )
@@ -77,7 +90,9 @@ from .narration import (
     probe_audio_duration,
 )
 from .template_structure import (
+    PptxStructureLock,
     TemplateStructureError,
+    load_native_structure_contract,
     load_pptx_structure_lock,
     parse_template_slides,
     structured_layout_definition_files,
@@ -90,6 +105,10 @@ from ..animation_config import (
     validate_animation_config,
     validate_animation_config_errors,
     validate_transition_config,
+)
+from template_import.native_structure import (
+    CONTRACT_NAME as NATIVE_STRUCTURE_NAME,
+    SOURCE_TEMPLATE_NAME,
 )
 
 
@@ -129,6 +148,145 @@ _CSS_GENERIC_FONT_FAMILIES = frozenset({
 
 class PptxPostflightValidationError(RuntimeError):
     """Reject a generated PPTX that fails package postflight validation."""
+
+
+def _load_diagnostic_import_source(
+    project_path: Path,
+) -> tuple[
+    ThemeColorSpec | None,
+    ThemeFontSpec | None,
+    bytes | None,
+    EmbeddedFontBundle | None,
+]:
+    """Load source-document evidence emitted for diagnostic round-trip."""
+    report_path = project_path / 'conversion-report.json'
+    if not report_path.is_file():
+        return None, None, None, None
+    try:
+        report = json.loads(report_path.read_text(encoding='utf-8'))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ThemeColorError(
+            f'Cannot read diagnostic import theme from {report_path}: {exc}'
+        ) from exc
+    if not isinstance(report, dict):
+        raise ThemeColorError(
+            f'Diagnostic import report must be a JSON object: {report_path}'
+        )
+    source_document = report.get('sourceDocument')
+    if not isinstance(source_document, dict):
+        return None, None, None, None
+    theme = source_document.get('theme')
+    if not isinstance(theme, dict):
+        color_spec = None
+        font_spec = None
+        theme_xml = None
+    else:
+        color_spec = _diagnostic_theme_color_spec(theme.get('colors'))
+        font_spec = _diagnostic_theme_font_spec(theme.get('fonts'))
+        theme_xml = _diagnostic_theme_xml(theme.get('ooxml'))
+    embedded_fonts = load_embedded_font_bundle(
+        project_path,
+        source_document.get('embeddedFonts'),
+    )
+    return color_spec, font_spec, theme_xml, embedded_fonts
+
+
+def _diagnostic_theme_color_spec(value: object) -> ThemeColorSpec | None:
+    """Build an exact source color scheme without semantic role promotion."""
+    if not isinstance(value, dict):
+        return None
+    required_slots = {
+        'dk1', 'lt1', 'dk2', 'lt2',
+        'accent1', 'accent2', 'accent3',
+        'accent4', 'accent5', 'accent6',
+        'hlink', 'folHlink',
+    }
+    slots: dict[str, str] = {}
+    for slot, raw_color in value.items():
+        if slot not in required_slots or not isinstance(raw_color, str):
+            continue
+        color = raw_color.strip().lstrip('#').upper()
+        if re.fullmatch(r'[0-9A-F]{6}', color):
+            slots[slot] = color
+    if not required_slots.issubset(slots):
+        return None
+    return ThemeColorSpec(
+        slots=slots,
+        roles={},
+        role_slots={},
+    )
+
+
+def _diagnostic_theme_font_spec(value: object) -> ThemeFontSpec | None:
+    """Build exact major/minor theme faces from importer evidence."""
+    if not isinstance(value, dict):
+        return None
+
+    def face(prefix: str) -> ThemeFontFace | None:
+        latin = value.get(f'{prefix}Latin')
+        east_asian = (
+            value.get(f'{prefix}EastAsia')
+            or value.get(f'{prefix}ScriptHans')
+            or latin
+        )
+        complex_script = value.get(f'{prefix}ComplexScript') or latin
+        if not all(
+            isinstance(item, str) and item.strip()
+            for item in (latin, east_asian, complex_script)
+        ):
+            return None
+        return ThemeFontFace(
+            latin=latin.strip(),
+            ea=east_asian.strip(),
+            cs=complex_script.strip(),
+        )
+
+    major = face('major')
+    minor = face('minor')
+    if major is None or minor is None:
+        return None
+    return ThemeFontSpec(
+        major=major,
+        minor=minor,
+        major_family=major.ea,
+        minor_family=minor.ea,
+    )
+
+
+def _diagnostic_theme_xml(value: object) -> bytes | None:
+    """Validate the complete source theme part stored by pptx_to_svg."""
+    if not isinstance(value, dict):
+        return None
+    if value.get('encoding') != 'base64':
+        raise ThemeColorError('Diagnostic source theme OOXML must use base64')
+    payload = value.get('payload')
+    expected_sha256 = value.get('sha256')
+    if not isinstance(payload, str) or not isinstance(expected_sha256, str):
+        raise ThemeColorError(
+            'Diagnostic source theme OOXML requires payload and sha256'
+        )
+    try:
+        raw = base64.b64decode(payload, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise ThemeColorError(
+            'Diagnostic source theme OOXML payload is not canonical base64'
+        ) from exc
+    if hashlib.sha256(raw).hexdigest() != expected_sha256.strip().lower():
+        raise ThemeColorError(
+            'Diagnostic source theme OOXML sha256 does not match its payload'
+        )
+    try:
+        root = ET.fromstring(raw)
+    except ET.ParseError as exc:
+        raise ThemeColorError(
+            f'Diagnostic source theme OOXML is malformed: {exc}'
+        ) from exc
+    dml_namespace = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+    if root.tag != f'{{{dml_namespace}}}theme':
+        raise ThemeColorError(
+            'Diagnostic source theme OOXML root must be a:theme'
+        )
+    return raw
 
 
 @dataclass
@@ -909,6 +1067,17 @@ Recorded narration:
             'and support normal export capabilities.'
         ),
     )
+    parser.add_argument(
+        '--roundtrip',
+        action='store_true',
+        help=(
+            'Diagnostic only: rebuild layered slide_*.svg against the validated '
+            'source_template.pptx/native_structure.json emitted by '
+            'pptx_to_svg.py --roundtrip, including unchanged validated source '
+            'chart packages. Requires -s svg and does not alter normal '
+            'flat/structured release export.'
+        ),
+    )
 
     text_flow_group = parser.add_mutually_exclusive_group()
     text_flow_group.add_argument(
@@ -1128,6 +1297,7 @@ Recorded narration:
     raw_argv = list(argv) if argv is not None else sys.argv[1:]
     legacy_native_objects = '--native-objects' in raw_argv
     args = parser.parse_args(raw_argv)
+    diagnostic_source = args.source not in {None, 'output'}
     if legacy_native_objects:
         print(
             'Warning: --native-objects is deprecated; use '
@@ -1153,6 +1323,23 @@ Recorded narration:
         )
         return 1
 
+    if args.roundtrip:
+        conflicts: list[str] = []
+        if args.quick_generate:
+            conflicts.append('--quick-generate')
+        if args.source != 'svg':
+            conflicts.append('-s/--source must be svg')
+        if args.pptx_structure is not None:
+            conflicts.append('--pptx-structure must be omitted')
+        if conflicts:
+            print(
+                "Error: --roundtrip cannot be used because "
+                + ", ".join(conflicts),
+                file=sys.stderr,
+            )
+            return 1
+        args.pptx_structure = 'preserve'
+
     if args.quick_generate:
         conflicts: list[str] = []
         if args.source not in {None, 'output'}:
@@ -1169,6 +1356,15 @@ Recorded narration:
         if not args.with_notes:
             args.no_notes = True
         args.pptx_structure = 'flat'
+    elif diagnostic_source and not args.roundtrip:
+        if args.pptx_structure not in {None, 'flat'}:
+            print(
+                "Error: a non-output diagnostic --source supports only "
+                "--pptx-structure flat",
+                file=sys.stderr,
+            )
+            return 1
+        args.pptx_structure = 'flat'
 
     project_path = Path(args.project_path)
     if not project_path.exists():
@@ -1179,7 +1375,7 @@ Recorded narration:
     native_structure_contract = None
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
-    if not args.quick_generate and not lock_path.is_file():
+    if not args.quick_generate and not diagnostic_source and not lock_path.is_file():
         print(
             "Error: spec_lock.md is required for release SVG export",
             file=sys.stderr,
@@ -1187,11 +1383,11 @@ Recorded narration:
         return 1
     declared_structure_mode = (
         None
-        if args.quick_generate
+        if args.quick_generate or diagnostic_source
         else _declared_pptx_structure_mode(project_path)
     )
     primary_language = None
-    if not args.quick_generate:
+    if not args.quick_generate and not diagnostic_source:
         try:
             primary_language = _declared_primary_language(project_path)
         except LanguageTagError as exc:
@@ -1204,7 +1400,10 @@ Recorded narration:
                 "language detection.",
                 file=sys.stderr,
             )
-    if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
+    if (
+        pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES
+        and not (args.roundtrip and pptx_structure == 'preserve')
+    ):
         _print_structure_contract_error(pptx_structure)
         return 1
     if (
@@ -1230,6 +1429,20 @@ Recorded narration:
         )
         return 1
 
+    if args.roundtrip:
+        structure_lock = PptxStructureLock(
+            mode='preserve',
+            source_template=project_path / SOURCE_TEMPLATE_NAME,
+            native_structure=project_path / NATIVE_STRUCTURE_NAME,
+        )
+        try:
+            native_structure_contract = load_native_structure_contract(
+                structure_lock,
+            )
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+
     if (
         pptx_structure in _RELEASE_PPTX_STRUCTURE_MODES
         and declared_structure_mode == pptx_structure
@@ -1250,7 +1463,13 @@ Recorded narration:
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure in {'flat', 'structured'} and not args.quick_generate:
+    source_theme_xml = None
+    source_embedded_fonts = None
+    if (
+        pptx_structure in {'flat', 'structured'}
+        and not args.quick_generate
+        and not diagnostic_source
+    ):
         try:
             theme_font_spec = load_theme_font_spec(project_path)
             master_text_style_spec = load_master_text_style_spec(project_path)
@@ -1273,6 +1492,17 @@ Recorded narration:
                 file=sys.stderr,
             )
             return 1
+    elif pptx_structure in {'flat', 'preserve'} and diagnostic_source:
+        try:
+            (
+                theme_color_spec,
+                theme_font_spec,
+                source_theme_xml,
+                source_embedded_fonts,
+            ) = _load_diagnostic_import_source(project_path)
+        except (EmbeddedFontError, ThemeFontError, ThemeColorError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
     if args.image_max_dimension < 1:
         print("Error: --image-max-dimension must be >= 1", file=sys.stderr)
         return 1
@@ -1292,10 +1522,10 @@ Recorded narration:
     canvas_format = args.format
     expected_viewbox = (
         None
-        if args.quick_generate
+        if args.quick_generate or diagnostic_source
         else _declared_canvas_viewbox(project_path)
     )
-    if expected_viewbox is None and not args.quick_generate:
+    if expected_viewbox is None and not args.quick_generate and not diagnostic_source:
         print(
             "Error: spec_lock.md must contain canvas.viewBox for release export",
             file=sys.stderr,
@@ -1310,6 +1540,12 @@ Recorded narration:
         native_source,
         allow_fallback=args.source is None and not args.quick_generate,
     )
+    if args.roundtrip:
+        native_files = [
+            path
+            for path in native_files
+            if re.fullmatch(r'slide_\d+\.svg', path.name)
+        ]
     ref_files = native_files
     if not native_files:
         if args.quick_generate:
@@ -1952,6 +2188,8 @@ Recorded narration:
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,
+        source_theme_xml=source_theme_xml,
+        source_embedded_fonts=source_embedded_fonts,
         primary_language=primary_language,
     )
 

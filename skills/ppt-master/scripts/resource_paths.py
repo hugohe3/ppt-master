@@ -26,7 +26,13 @@ from urllib.parse import unquote, unquote_to_bytes, urlsplit
 from xml.etree import ElementTree as ET
 
 
-SVG_WORK_DIR_NAMES = frozenset({'svg_output', 'svg_final', 'svg-flat', 'svg_flat'})
+SVG_WORK_DIR_NAMES = frozenset({
+    'svg',
+    'svg_output',
+    'svg_final',
+    'svg-flat',
+    'svg_flat',
+})
 SVG_FINAL_CANDIDATE_PREFIX = '.svg_final.candidate-'
 TEMPLATE_SOURCE_DIR_NAME = 'templates'
 TEMPLATE_SPEC_FILENAME = 'design_spec.md'

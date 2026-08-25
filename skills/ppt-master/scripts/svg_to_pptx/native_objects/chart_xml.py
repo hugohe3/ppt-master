@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
+import hashlib
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -150,6 +153,88 @@ def _data_label_flags_xml(config: dict[str, Any]) -> str:
     )
 
 
+def _source_data_labels_xml(config: dict[str, Any]) -> str | None:
+    source = config.get("source_ooxml")
+    if source is None:
+        return None
+    if not isinstance(source, dict) or source.get("encoding") != "base64":
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml must be base64 metadata"
+        )
+    encoded = source.get("payload")
+    expected_sha = source.get("sha256")
+    if not isinstance(encoded, str) or not isinstance(expected_sha, str):
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml is incomplete"
+        )
+    try:
+        payload = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml payload is invalid base64"
+        ) from exc
+    if len(payload) > 2_000_000:
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml payload is too large"
+        )
+    if hashlib.sha256(payload).hexdigest() != expected_sha.lower():
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml checksum mismatch"
+        )
+    try:
+        root = ET.fromstring(payload)
+    except ET.ParseError as exc:
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml is malformed"
+        ) from exc
+    chart_ns = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+    rel_ns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    if root.tag != f"{{{chart_ns}}}dLbls":
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml root must be c:dLbls"
+        )
+    if any(
+        isinstance(name, str) and name.startswith(f"{{{rel_ns}}}")
+        for node in root.iter()
+        for name in node.attrib
+    ):
+        raise RuntimeError(
+            "Native PPTX chart data_labels.source_ooxml cannot contain relationships"
+        )
+    return ET.tostring(root, encoding="unicode")
+
+
+def _data_label_custom_text_xml(
+    text: str,
+    *,
+    font_size: int,
+    color: str | None,
+    bold: bool,
+    font_face: str | None,
+    language: str | None,
+) -> str:
+    fill_xml = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
+    bold_attr = ' b="1"' if bold else ""
+    paragraphs: list[str] = []
+    for line in text.split("\n"):
+        lang = detect_text_lang(line, language)
+        rtl_attr = ' rtl="1"' if text_uses_rtl(line, language) else ""
+        run_rtl = '<a:rtl val="1"/>' if text_has_rtl_characters(line) else ""
+        paragraphs.append(
+            f'<a:p><a:pPr{rtl_attr}/><a:r><a:rPr lang="{lang}" '
+            f'sz="{font_size}"{bold_attr}>{fill_xml}{_font_face_xml(font_face)}'
+            f'{run_rtl}</a:rPr><a:t>{_xml_escape(line)}</a:t></a:r></a:p>'
+        )
+    return (
+        "<c:tx><c:rich><a:bodyPr/><a:lstStyle/>"
+        + "".join(paragraphs)
+        + "</c:rich></c:tx>"
+    )
+
+
 def _data_labels_xml(
     config: dict[str, Any] | None,
     *,
@@ -163,6 +248,9 @@ def _data_labels_xml(
 ) -> str:
     if config is None:
         return ""
+    source_xml = _source_data_labels_xml(config)
+    if source_xml is not None:
+        return source_xml
     show_leader_lines = _chart_bool(
         _first_present(
             config.get("show_leader_lines"),
@@ -208,6 +296,9 @@ def _data_labels_xml(
             if item is None:
                 point_label_xml += f'<c:dLbl><c:idx val="{idx}"/><c:delete val="1"/></c:dLbl>'
                 continue
+            if item.get("delete") is True:
+                point_label_xml += f'<c:dLbl><c:idx val="{idx}"/><c:delete val="1"/></c:dLbl>'
+                continue
             item_font_size_raw = _first_present(item.get("font_size"), item.get("fontSize"))
             item_font_size = (
                 _font_size_hpt(item_font_size_raw, 12)
@@ -239,8 +330,19 @@ def _data_labels_xml(
                 font_face=item_font_face,
                 language=language,
             )
+            custom_text_xml = ""
+            if item.get("text") is not None:
+                custom_text_xml = _data_label_custom_text_xml(
+                    str(item["text"]),
+                    font_size=item_font_size,
+                    color=item_color,
+                    bold=item_bold,
+                    font_face=item_font_face,
+                    language=language,
+                )
             point_label_xml += (
                 f'<c:dLbl><c:idx val="{idx}"/>'
+                f"{custom_text_xml}"
                 f"{item_num_fmt_xml}"
                 f"{item_text_properties_xml}"
                 f"{item_position_xml}"
@@ -399,9 +501,13 @@ def _series_xml(
                 )
             marker_xml = _marker_xml(radar_marker_style)
         invert_xml = '<c:invertIfNegative val="0"/>' if chart_type in {"bar", "column"} else ""
+        item_data_labels = _data_labels_config(item)
+        effective_data_labels = (
+            item_data_labels if item_data_labels is not None else data_labels
+        )
         data_labels_xml = (
             _data_labels_xml(
-                data_labels,
+                effective_data_labels,
                 chart_type=chart_type,
                 grouping=grouping,
                 point_count=len(item["values"]),
@@ -410,7 +516,10 @@ def _series_xml(
                 default_font_face=data_label_font_face,
                 language=language,
             )
-            if _series_scoped_data_labels(data_labels)
+            if (
+                item_data_labels is not None
+                or _series_scoped_data_labels(data_labels)
+            )
             and chart_type in {"area", "bar", "column", "line"}
             else ""
         )

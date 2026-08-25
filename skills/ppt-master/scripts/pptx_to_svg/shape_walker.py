@@ -164,10 +164,30 @@ def _adjust_for_group(child_xfrm: Xfrm, group_xfrm: Xfrm) -> Xfrm:
     ch_x = group_xfrm.ch_x or 0.0
     ch_y = group_xfrm.ch_y or 0.0
 
-    new_x = group_xfrm.x + (child_xfrm.x - ch_x) * sx
-    new_y = group_xfrm.y + (child_xfrm.y - ch_y) * sy
-    new_w = child_xfrm.w * sx
-    new_h = child_xfrm.h * sy
+    center_x = group_xfrm.x + (
+        child_xfrm.x + child_xfrm.w / 2.0 - ch_x
+    ) * sx
+    center_y = group_xfrm.y + (
+        child_xfrm.y + child_xfrm.h / 2.0 - ch_y
+    ) * sy
+
+    # A parent group's child-frame scaling is applied after the child's own
+    # rotation.  For a quarter-turn, the child's local x axis therefore lands
+    # on the parent's y axis (and vice versa).  Scaling the unrotated frame by
+    # ``sx``/``sy`` before retaining the rotation reverses that order and can
+    # visibly stretch nested 90-degree groups under a non-uniform parent.
+    quarter_turn = round(child_xfrm.rot / 90.0) % 2 == 1
+    exact_quarter_turn = abs(
+        child_xfrm.rot - round(child_xfrm.rot / 90.0) * 90.0
+    ) < 1e-7
+    if quarter_turn and exact_quarter_turn:
+        new_w = child_xfrm.w * sy
+        new_h = child_xfrm.h * sx
+    else:
+        new_w = child_xfrm.w * sx
+        new_h = child_xfrm.h * sy
+    new_x = center_x - new_w / 2.0
+    new_y = center_y - new_h / 2.0
 
     return Xfrm(
         x=new_x, y=new_y, w=new_w, h=new_h,

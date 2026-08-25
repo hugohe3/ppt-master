@@ -535,7 +535,6 @@ def _render_bars(
     category_span = (plot.h if horizontal else plot.w) / max(len(categories), 1)
     cluster = category_span * 0.72
     bar_span = cluster if stacked else cluster / max(len(series), 1)
-    labels = payload.get("data_labels") if isinstance(payload.get("data_labels"), dict) else None
     for series_index, (item, style, row) in enumerate(zip(series, styles, segments)):
         fill = style.fill or "none"
         stroke = style.stroke or "none"
@@ -566,6 +565,7 @@ def _render_bars(
                 f'stroke="{stroke}" stroke-opacity="{_fmt(style.stroke_opacity)}" '
                 f'stroke-width="{_fmt(max(0.4, style.stroke_width))}"/>'
             )
+            labels = _point_data_labels(payload, item, category_index)
             if labels:
                 value = float(item["values"][category_index])
                 normalized_percent = end - start if percent else None
@@ -585,7 +585,16 @@ def _render_bars(
                         tx = x + w / 2
                         ty = y1 - 4.0 if end >= start else y1 + label_size + 3.0
                         anchor = "middle"
-                    parts.append(_text(tx, ty, label, size=max(6.0, label_size - 1), anchor=anchor))
+                    parts.append(_text(
+                        tx,
+                        ty,
+                        label,
+                        size=_label_font_size(labels, label_size),
+                        anchor=anchor,
+                        fill=_entry_color(labels, "#444444"),
+                        weight="600" if labels.get("bold") else None,
+                        font_family=str(labels.get("font_family") or "Arial"),
+                    ))
     return parts
 
 
@@ -608,7 +617,6 @@ def _render_lines_or_areas(
         _category_point_x(plot, idx, count)
         for idx in range(count)
     ]
-    labels = payload.get("data_labels") if isinstance(payload.get("data_labels"), dict) else None
     show_markers = chart_type == "line" and payload.get("line_style") == "lineMarker"
     for series_index, (item, style, row) in enumerate(zip(series, styles, segments)):
         fill_color = style.fill or "none"
@@ -648,8 +656,9 @@ def _render_lines_or_areas(
                     f'stroke-opacity="{_fmt(style.marker_stroke_opacity)}" '
                     f'stroke-width="{_fmt(max(0.6, style.marker_stroke_width))}"/>'
                 )
-        if labels:
-            for idx, (x, y) in enumerate(top):
+        for idx, (x, y) in enumerate(top):
+            labels = _point_data_labels(payload, item, idx)
+            if labels:
                 value = float(item["values"][idx])
                 start, end = row[idx]
                 normalized_percent = end - start if percent else None
@@ -661,7 +670,16 @@ def _render_lines_or_areas(
                     percent_value=normalized_percent,
                 )
                 if label:
-                    parts.append(_text(x, y - 5.0, label, size=max(6.0, label_size - 1), anchor="middle"))
+                    parts.append(_text(
+                        x,
+                        y - 5.0,
+                        label,
+                        size=_label_font_size(labels, label_size),
+                        anchor="middle",
+                        fill=_entry_color(labels, "#444444"),
+                        weight="600" if labels.get("bold") else None,
+                        font_family=str(labels.get("font_family") or "Arial"),
+                    ))
     return parts
 
 
@@ -1132,6 +1150,8 @@ def _data_label(
     *,
     percent_value: float | None,
 ) -> str:
+    if config.get("text") is not None:
+        return str(config["text"])
     fields: list[str] = []
     if config.get("show_series"):
         fields.append(series)
@@ -1159,6 +1179,54 @@ def _data_label(
             percent_format,
         ))
     return " · ".join(field for field in fields if field)
+
+
+def _point_data_labels(
+    payload: dict[str, Any],
+    series: dict[str, Any],
+    point_index: int,
+) -> dict[str, Any] | None:
+    root_labels = payload.get("data_labels")
+    series_labels = series.get("data_labels")
+    config = series_labels if isinstance(series_labels, dict) else root_labels
+    if not isinstance(config, dict):
+        return None
+    points = config.get("points")
+    if not isinstance(points, list):
+        return config
+    point = next(
+        (
+            item for item in points
+            if isinstance(item, dict) and item.get("idx") == point_index
+        ),
+        None,
+    )
+    if point is None:
+        inherited = {
+            key: value
+            for key, value in config.items()
+            if key not in {"points", "source_ooxml"}
+        }
+        return inherited if any(
+            inherited.get(field)
+            for field in (
+                "show_category",
+                "show_percent",
+                "show_series",
+                "show_value",
+            )
+        ) else None
+    if point.get("delete") is True:
+        return None
+    return {**config, **point}
+
+
+def _label_font_size(config: dict[str, Any], fallback: float) -> float:
+    try:
+        size = float(config.get("font_size", fallback - 1.0))
+    except (TypeError, ValueError, OverflowError):
+        size = fallback - 1.0
+    return max(6.0, min(size, 24.0))
 
 
 def _format_data_label_value(value: float, number_format: Any) -> str:
@@ -1314,11 +1382,13 @@ def _text(
     anchor: str = "start",
     fill: str = "#444444",
     weight: str | None = None,
+    font_family: str = "Arial",
 ) -> str:
     weight_attr = f' font-weight="{weight}"' if weight else ""
     return (
         f'<text x="{_fmt(x)}" y="{_fmt(y)}" text-anchor="{anchor}" '
-        f'font-family="Arial" font-size="{_fmt(size)}" fill="{fill}"{weight_attr}>'
+        f'font-family="{html.escape(font_family, quote=True)}" '
+        f'font-size="{_fmt(size)}" fill="{fill}"{weight_attr}>'
         f'{html.escape(str(value))}</text>'
     )
 

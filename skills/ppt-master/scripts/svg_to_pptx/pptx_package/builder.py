@@ -27,6 +27,15 @@ from xml.sax.saxutils import escape, quoteattr
 from pptx import Presentation
 from pptx.util import Emu
 
+from pptx_embedded_fonts import (
+    FONT_CONTENT_TYPE,
+    FONT_REL_TYPE,
+    PML_NS as EMBEDDED_FONT_PML_NS,
+    REL_NS as EMBEDDED_FONT_REL_NS,
+    EmbeddedFontBundle,
+    EmbeddedFontError,
+    embedded_font_typefaces,
+)
 from pptx_transitions import (
     MorphPairExpectation,
     NATIVE_TRANSITIONS,
@@ -69,6 +78,7 @@ from ..animation_config import (
 from ..drawingml.context import resolve_text_flow
 from ..drawingml.converter import convert_svg_to_slide_shapes
 from ..drawingml.theme_colors import (
+    ThemeColorError,
     ThemeColorSpec,
     apply_theme_color_spec,
     rewrite_chart_accent_colors,
@@ -151,6 +161,7 @@ P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 A14_NS = "http://schemas.microsoft.com/office/drawing/2010/main"
 MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 
 for _prefix, _uri in (
     ("p", PML_NS),
@@ -4796,6 +4807,135 @@ def _clear_preserved_slide_collections(extract_dir: Path) -> None:
     _write_xml_tree(presentation_path, tree)
 
 
+def _install_source_theme_xml(extract_dir: Path, payload: bytes) -> None:
+    """Install a validated imported theme into the generated flat package."""
+    try:
+        root = ET.fromstring(payload)
+    except ET.ParseError as exc:
+        raise ThemeColorError(f"Imported source theme is malformed: {exc}") from exc
+    if root.tag != f"{{{DML_NS}}}theme":
+        raise ThemeColorError("Imported source theme root must be a:theme")
+    if any(
+        isinstance(name, str) and name.startswith(f"{{{REL_NS}}}")
+        for node in root.iter()
+        for name in node.attrib
+    ):
+        raise ThemeColorError("Imported source theme cannot contain relationships")
+
+    theme_paths = sorted((extract_dir / "ppt" / "theme").glob("theme*.xml"))
+    if not theme_paths:
+        raise ThemeColorError("Generated PPTX package has no theme part")
+    for theme_path in theme_paths:
+        theme_path.write_bytes(payload)
+
+
+def _install_source_embedded_fonts(
+    extract_dir: Path,
+    bundle: EmbeddedFontBundle,
+) -> tuple[str, ...]:
+    """Install validated source font parts into the generated PPTX package."""
+    typefaces = embedded_font_typefaces(bundle)
+    try:
+        font_list = ET.fromstring(bundle.font_list_xml)
+    except ET.ParseError as exc:
+        raise EmbeddedFontError(
+            f"Embedded font list XML is malformed: {exc}"
+        ) from exc
+
+    ppt_dir = extract_dir / "ppt"
+    presentation_path = ppt_dir / "presentation.xml"
+    presentation_rels_path = ppt_dir / "_rels" / "presentation.xml.rels"
+    presentation_tree = ET.parse(presentation_path)
+    presentation_root = presentation_tree.getroot()
+    rels_tree = ET.parse(presentation_rels_path)
+    rels_root = rels_tree.getroot()
+
+    fonts_dir = ppt_dir / "fonts"
+    fonts_dir.mkdir(exist_ok=True)
+    for relationship in list(rels_root):
+        if relationship.attrib.get("Type") != FONT_REL_TYPE:
+            continue
+        target = relationship.attrib.get("Target", "")
+        target_path = PurePosixPath(target)
+        if (
+            not target_path.is_absolute()
+            and target_path.parts[:1] == ("fonts",)
+            and target_path.suffix.lower() == ".fntdata"
+        ):
+            candidate = ppt_dir.joinpath(*target_path.parts)
+            if candidate.is_file():
+                candidate.unlink()
+        rels_root.remove(relationship)
+
+    rid_numbers = [
+        int(match.group(1))
+        for relationship in rels_root
+        if (match := re.fullmatch(
+            r"rId(\d+)",
+            relationship.attrib.get("Id", ""),
+        ))
+    ]
+    next_rid = max(rid_numbers, default=0) + 1
+    relationship_mapping: dict[str, str] = {}
+    for index, part in enumerate(bundle.parts, start=1):
+        filename = f"font{index}.fntdata"
+        (fonts_dir / filename).write_bytes(part.payload)
+        relationship_id = f"rId{next_rid}"
+        next_rid += 1
+        ET.SubElement(
+            rels_root,
+            f"{{{PACKAGE_REL_NS}}}Relationship",
+            {
+                "Id": relationship_id,
+                "Type": FONT_REL_TYPE,
+                "Target": f"fonts/{filename}",
+            },
+        )
+        relationship_mapping[part.relationship_id] = relationship_id
+
+    for node in font_list.iter():
+        relationship_attr = f"{{{EMBEDDED_FONT_REL_NS}}}id"
+        original_id = node.attrib.get(relationship_attr)
+        if original_id is None:
+            continue
+        replacement_id = relationship_mapping.get(original_id)
+        if replacement_id is None:
+            raise EmbeddedFontError(
+                f"Embedded font list references an unknown part: {original_id}"
+            )
+        node.set(relationship_attr, replacement_id)
+
+    existing = presentation_root.find(
+        f"{{{EMBEDDED_FONT_PML_NS}}}embeddedFontLst"
+    )
+    if existing is not None:
+        insertion_index = list(presentation_root).index(existing)
+        presentation_root.remove(existing)
+    else:
+        default_text_style = presentation_root.find(
+            f"{{{EMBEDDED_FONT_PML_NS}}}defaultTextStyle"
+        )
+        insertion_index = (
+            list(presentation_root).index(default_text_style)
+            if default_text_style is not None
+            else len(presentation_root)
+        )
+    presentation_root.insert(insertion_index, font_list)
+    _write_xml_tree(presentation_path, presentation_tree)
+    _write_xml_tree(presentation_rels_path, rels_tree)
+
+    content_types_path = extract_dir / "[Content_Types].xml"
+    content_types_path.write_text(
+        _add_default_content_type(
+            content_types_path.read_text(encoding="utf-8"),
+            "fntdata",
+            FONT_CONTENT_TYPE,
+        ),
+        encoding="utf-8",
+    )
+    return typefaces
+
+
 def create_pptx_with_native_svg(
     svg_files: list[Path],
     output_path: Path,
@@ -4835,6 +4975,8 @@ def create_pptx_with_native_svg(
     theme_font_spec: ThemeFontSpec | None = None,
     master_text_style_spec: MasterTextStyleSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
+    source_theme_xml: bytes | None = None,
+    source_embedded_fonts: EmbeddedFontBundle | None = None,
     structured_baseline: bool = False,
     baseline_layout_specs: list[TemplateSlideSpec] | None = None,
     layout_definition_files: list[Path] | None = None,
@@ -4926,6 +5068,10 @@ def create_pptx_with_native_svg(
             callers may omit it; other routes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
             flat/structured theme inheritance. Preserve mode ignores this value.
+        source_theme_xml: Complete validated source theme used only by an
+            explicit PPTX-import diagnostic round-trip.
+        source_embedded_fonts: Validated source font-list metadata and font
+            parts used only by an explicit PPTX-import diagnostic round-trip.
         primary_language: Canonical BCP-47 deck content language. ``None``
             preserves legacy per-run language detection.
         structured_baseline: Obsolete compatibility argument; must remain false.
@@ -5112,9 +5258,18 @@ def create_pptx_with_native_svg(
             )
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
+            native_object_mode = (
+                "Enabled"
+                if native_objects
+                else (
+                    "Exact round-trip source packages only"
+                    if native_structure_contract is not None
+                    else "Disabled"
+                )
+            )
             print(
                 "  Native table/chart objects: "
-                f"{'Enabled' if native_objects else 'Disabled'}"
+                f"{native_object_mode}"
             )
             print(f"  PPTX structure: {pptx_structure}")
             if image_optimize:
@@ -5214,6 +5369,22 @@ def create_pptx_with_native_svg(
         )
         if active_theme_color_spec is not None:
             apply_theme_color_spec(extract_dir, active_theme_color_spec)
+        if (
+            source_theme_xml is not None
+            and native_structure_contract is None
+        ):
+            _install_source_theme_xml(extract_dir, source_theme_xml)
+        if source_embedded_fonts is not None:
+            installed_typefaces = _install_source_embedded_fonts(
+                extract_dir,
+                source_embedded_fonts,
+            )
+            if verbose:
+                print(
+                    "  Embedded fonts: preserved "
+                    f"{len(source_embedded_fonts.parts)} part(s) for "
+                    + ", ".join(installed_typefaces)
+                )
         structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'

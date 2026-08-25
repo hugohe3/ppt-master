@@ -135,6 +135,30 @@ def _chart_data_labels(
         raise RuntimeError("Native PPTX chart data_labels.colors must match point count")
     if any(_hex_or_none(color) is None for color in colors):
         raise RuntimeError("Native PPTX chart data_labels.colors entries must be colors")
+    source_ooxml = config.get("source_ooxml")
+    if source_ooxml is not None:
+        if not isinstance(source_ooxml, dict):
+            raise RuntimeError(
+                "Native PPTX chart data_labels.source_ooxml must be an object"
+            )
+        if source_ooxml.get("encoding") != "base64":
+            raise RuntimeError(
+                "Native PPTX chart data_labels.source_ooxml encoding must be base64"
+            )
+        payload_text = source_ooxml.get("payload")
+        checksum = source_ooxml.get("sha256")
+        if not isinstance(payload_text, str) or not payload_text:
+            raise RuntimeError(
+                "Native PPTX chart data_labels.source_ooxml payload must be non-empty"
+            )
+        if (
+            not isinstance(checksum, str)
+            or len(checksum) != 64
+            or any(char not in "0123456789abcdef" for char in checksum.lower())
+        ):
+            raise RuntimeError(
+                "Native PPTX chart data_labels.source_ooxml sha256 is invalid"
+            )
     return config
 
 
@@ -172,6 +196,16 @@ def _data_label_point_items(
             chart_type,
             grouping,
         )
+        if data.get("delete") is not None and not isinstance(data["delete"], bool):
+            raise RuntimeError(
+                "Native PPTX chart data_labels.points delete must be a boolean"
+            )
+        if data.get("text") is not None and (
+            not isinstance(data["text"], str) or not data["text"]
+        ):
+            raise RuntimeError(
+                "Native PPTX chart data_labels.points text must be a non-empty string"
+            )
         seen.add(index)
         data["idx"] = index
         items.append(data)
@@ -696,7 +730,13 @@ def _radar_style(payload: dict[str, Any], alias_style: str | None) -> tuple[str,
     return style
 
 
-def _category_series(payload: dict[str, Any], categories: list[Any]) -> list[dict[str, Any]]:
+def _category_series(
+    payload: dict[str, Any],
+    categories: list[Any],
+    *,
+    chart_type: str,
+    grouping: str | None,
+) -> list[dict[str, Any]]:
     raw_series = payload.get("series", [])
     if not categories or not isinstance(raw_series, list) or not raw_series:
         raise RuntimeError("Native PPTX chart requires non-empty categories and series")
@@ -752,6 +792,14 @@ def _category_series(payload: dict[str, Any], categories: list[Any]) -> list[dic
                 raise RuntimeError("Native PPTX chart series line_width must be positive")
             _powerpoint_line_width_emu(line_width, "series line_width")
             series_item["line_width"] = line_width
+        data_labels = _chart_data_labels(
+            item,
+            chart_type,
+            grouping,
+            len(categories),
+        )
+        if data_labels is not None:
+            series_item["data_labels"] = data_labels
         series.append(series_item)
     return series
 
@@ -783,7 +831,17 @@ def _category_chart_data(
     )
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
 
-    series = _category_series(payload, categories)
+    grouping = (
+        _chart_grouping(chart_type, payload, alias_grouping)
+        if chart_type in {"bar", "column", "line", "area"}
+        else None
+    )
+    series = _category_series(
+        payload,
+        categories,
+        chart_type=chart_type,
+        grouping=grouping,
+    )
     if chart_type in {"doughnut", "of_pie", "pie"}:
         if len(series) != 1:
             raise RuntimeError("Native PPTX pie-family charts support exactly one series")
@@ -816,11 +874,6 @@ def _category_chart_data(
     if alias_style == "exploded" or payload.get("exploded"):
         raise RuntimeError("Native PPTX exploded pie/doughnut is outside current basic chart support")
 
-    grouping = (
-        _chart_grouping(chart_type, payload, alias_grouping)
-        if chart_type in {"bar", "column", "line", "area"}
-        else None
-    )
     return {
         "kind": "category",
         "type": chart_type,
@@ -953,11 +1006,16 @@ def _combo_plot_entry(
     )
     if not plot_categories:
         raise RuntimeError("Native PPTX combo plot categories must be non-empty")
-    plot_series = fallback_series or _category_series(plot_payload, plot_categories)
     grouping = (
         _chart_grouping(chart_type, plot_payload, alias_grouping)
         if chart_type in {"area", "column", "line"}
         else None
+    )
+    plot_series = fallback_series or _category_series(
+        plot_payload,
+        plot_categories,
+        chart_type=chart_type,
+        grouping=grouping,
     )
     entry: dict[str, Any] = {
         "axis": axis,
@@ -1031,7 +1089,18 @@ def _combo_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
                     "Native PPTX combo typed series with plot-scoped metadata "
                     "must use plots"
                 )
-            one_series = _category_series({"series": [item]}, categories)
+            typed_chart_type, typed_grouping_alias, _typed_style = _combo_plot_type(item)
+            typed_grouping = (
+                _chart_grouping(typed_chart_type, item, typed_grouping_alias)
+                if typed_chart_type in {"area", "column", "line"}
+                else None
+            )
+            one_series = _category_series(
+                {"series": [item]},
+                categories,
+                chart_type=typed_chart_type,
+                grouping=typed_grouping,
+            )
             plot = _combo_plot_entry(
                 item,
                 categories,
@@ -1289,7 +1358,12 @@ def _stock_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
             {"name": default_name, "values": payload.get(field_name, [])}
             for field_name, default_name in field_names
         ]
-    series = _category_series({"series": raw_series}, categories)
+    series = _category_series(
+        {"series": raw_series},
+        categories,
+        chart_type="stock",
+        grouping=None,
+    )
     if len(series) != 4:
         raise RuntimeError("Native PPTX stock chart requires exactly four series: open, high, low, close")
     return {

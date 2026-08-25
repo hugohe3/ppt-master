@@ -12,6 +12,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
+from pptx_gradients import (
+    NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+    gradient_preview_fingerprint,
+)
 from pptx_shapes.formula import validate_ooxml_line_width
 
 from .color_resolver import (
@@ -22,6 +26,7 @@ from .color_resolver import (
     validate_no_fill,
 )
 from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
+from .fill_to_svg import resolve_fill
 
 
 @dataclass
@@ -74,6 +79,7 @@ def resolve_stroke(
     id_prefix: str = "m",
     id_seq: list[int] | None = None,
     style_stroke_default: str | None = None,
+    gradient_frame: tuple[float, float, float, float] | None = None,
 ) -> StrokeResult:
     """Resolve <a:ln> child of <p:spPr>.
 
@@ -91,6 +97,7 @@ def resolve_stroke(
 
     attrs: dict[str, str] = {}
     defs: list[str] = []
+    marker_color_override: str | None = None
 
     compound = ln.attrib.get("cmpd")
     if compound not in {None, "sng"}:
@@ -140,21 +147,30 @@ def resolve_stroke(
         if alpha < 1.0:
             attrs["stroke-opacity"] = format_ooxml_alpha(alpha)
     elif paint_name == "gradFill":
-        # Approximate gradient stroke as the first stop color (SVG supports
-        # gradient strokes via fill="url()" but it adds a lot of plumbing;
-        # first-stop is the registered import normalization).
-        first_gs = paint.find("a:gsLst/a:gs", NS)
-        if first_gs is None:
+        first_stop = paint.find("a:gsLst/a:gs", NS)
+        if first_stop is None:
             raise ValueError("DrawingML gradient line requires a color stop")
-        color_elem = find_color_elem(first_gs)
-        hex_, alpha = resolve_color(color_elem, palette)
-        if hex_ is None:
-            raise ValueError(
-                "DrawingML gradient line first color cannot be resolved"
+        marker_color, _marker_alpha = resolve_color(
+            find_color_elem(first_stop),
+            palette,
+        )
+        marker_color_override = marker_color
+        gradient = resolve_fill(
+            paint,
+            palette,
+            id_prefix=f"{id_prefix}stroke",
+            id_seq=id_seq,
+        )
+        attrs["stroke"] = gradient.attrs["fill"]
+        if "fill-opacity" in gradient.attrs:
+            attrs["stroke-opacity"] = gradient.attrs["fill-opacity"]
+        defs.extend(
+            _project_degenerate_stroke_gradients(
+                gradient.defs,
+                gradient_frame,
+                float(attrs.get("stroke-width", "1") or "1"),
             )
-        attrs["stroke"] = hex_
-        if alpha < 1.0:
-            attrs["stroke-opacity"] = format_ooxml_alpha(alpha)
+        )
 
     # Dash pattern
     preset_tag = f"{{{NS['a']}}}prstDash"
@@ -261,7 +277,12 @@ def resolve_stroke(
             or (end_elem.text or "").strip()
         ):
             raise ValueError(f"Invalid DrawingML {which} structure")
-        marker_color = attrs.get("stroke") or style_stroke_default or "#000000"
+        marker_color = (
+            marker_color_override
+            or attrs.get("stroke")
+            or style_stroke_default
+            or "#000000"
+        )
         marker_id, marker_def = _build_arrow_marker(
             end_elem,
             marker_color,
@@ -275,6 +296,68 @@ def resolve_stroke(
         attrs[attr] = f"url(#{marker_id})"
 
     return StrokeResult(attrs=attrs, defs=defs)
+
+
+def _project_degenerate_stroke_gradients(
+    definitions: list[str],
+    frame: tuple[float, float, float, float] | None,
+    stroke_width: float,
+) -> list[str]:
+    """Use page coordinates when objectBoundingBox has a degenerate axis."""
+    if frame is None:
+        return definitions
+    x, y, width, height = frame
+    if width > 0 and height > 0:
+        return definitions
+
+    projected: list[str] = []
+    safe_width = width if width > 0 else max(stroke_width, 1.0)
+    safe_height = height if height > 0 else max(stroke_width, 1.0)
+    origin_x = x if width > 0 else x - safe_width / 2
+    origin_y = y if height > 0 else y - safe_height / 2
+    for definition in definitions:
+        gradient = ET.fromstring(definition)
+        tag = gradient.tag.rsplit("}", 1)[-1]
+        gradient.set("gradientUnits", "userSpaceOnUse")
+        if tag == "linearGradient":
+            for name, origin, span in (
+                ("x1", origin_x, safe_width),
+                ("x2", origin_x, safe_width),
+                ("y1", origin_y, safe_height),
+                ("y2", origin_y, safe_height),
+            ):
+                gradient.set(
+                    name,
+                    fmt_num(origin + float(gradient.get(name, "0")) * span, 5),
+                )
+        elif tag == "radialGradient":
+            for name, origin, span, default in (
+                ("cx", origin_x, safe_width, "0.5"),
+                ("fx", origin_x, safe_width, gradient.get("cx", "0.5")),
+                ("cy", origin_y, safe_height, "0.5"),
+                ("fy", origin_y, safe_height, gradient.get("cy", "0.5")),
+            ):
+                gradient.set(
+                    name,
+                    fmt_num(
+                        origin + float(gradient.get(name, default)) * span,
+                        5,
+                    ),
+                )
+            gradient.set(
+                "r",
+                fmt_num(
+                    float(gradient.get("r", "0.5"))
+                    * max(safe_width, safe_height),
+                    5,
+                ),
+            )
+        gradient.set(
+            NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+            gradient_preview_fingerprint(gradient),
+        )
+        projected.append(ET.tostring(gradient, encoding="unicode"))
+    return projected
 
 
 # ---------------------------------------------------------------------------

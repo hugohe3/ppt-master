@@ -5,6 +5,7 @@ Usage:
     python3 pptx_to_svg.py <pptx_file> [-o <output_dir>] [--embed-images]
                                        [--media-subdir <name>] [--keep-hidden]
                                        [--inheritance-mode {both,layered,flat}]
+                                       [--roundtrip]
                                        [--strict]
 
 Output structure (default --inheritance-mode both):
@@ -115,6 +116,15 @@ def parse_args() -> argparse.Namespace:
             "of the default tolerant conversion with diagnostics"
         ),
     )
+    parser.add_argument(
+        "--roundtrip",
+        action="store_true",
+        help=(
+            "Also preserve a validated source package/Layout sidecar for the "
+            "diagnostic SVG-to-PPTX --roundtrip path. Requires layered or both "
+            "inheritance output."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -140,6 +150,7 @@ def main() -> int:
         keep_hidden=args.keep_hidden,
         inheritance_mode=args.inheritance_mode,
         strict=args.strict,
+        roundtrip=args.roundtrip,
     )
 
     try:
@@ -201,6 +212,9 @@ def main() -> int:
     print(f"Output: {output_dir}")
     print(f"Animation config: {output_dir / 'animations.json'}")
     print(f"Conversion report: {output_dir / 'conversion-report.json'}")
+    if result.native_structure is not None:
+        print(f"Round-trip source: {output_dir / 'source_template.pptx'}")
+        print(f"Round-trip structure: {output_dir / 'native_structure.json'}")
     return 0
 
 

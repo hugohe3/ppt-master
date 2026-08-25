@@ -698,6 +698,18 @@ def _parse_paragraph(
             diagnostic_sink=diagnostic_sink,
         )
 
+    def append_resolved_text(text: str, rpr: ET.Element | None) -> None:
+        """Preserve literal newlines inside a:t as explicit DrawingML breaks."""
+        normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+        segments = normalized.split("\n")
+        for index, segment in enumerate(segments):
+            if segment or len(segments) == 1:
+                para.runs.append(resolved_run(segment, rpr))
+            if index < len(segments) - 1:
+                line_break = resolved_run("", rpr)
+                line_break.is_break = True
+                para.runs.append(line_break)
+
     for child in list(p_elem):
         if not isinstance(child.tag, str):
             continue
@@ -706,7 +718,7 @@ def _parse_paragraph(
             rpr = child.find("a:rPr", NS)
             text_elem = child.find("a:t", NS)
             text = text_elem.text or "" if text_elem is not None else ""
-            para.runs.append(resolved_run(text, rpr))
+            append_resolved_text(text, rpr)
         elif local == "br":
             break_rpr = child.find("a:rPr", NS)
             para.runs.append(TextRun(
@@ -731,7 +743,7 @@ def _parse_paragraph(
             if field_type == "slidenum" and slide_number is not None:
                 text = str(slide_number)
             if text:
-                para.runs.append(resolved_run(text, rpr))
+                append_resolved_text(text, rpr)
         elif (
             child.tag
             == "{http://schemas.microsoft.com/office/drawing/2010/main}m"

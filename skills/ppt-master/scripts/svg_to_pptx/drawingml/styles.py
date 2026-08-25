@@ -6,6 +6,7 @@ import math
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import validate_ooxml_line_width
+from pptx_gradients import preserved_native_gradient_xml
 
 from .context import ConvertContext
 from .theme_colors import ThemeColorSpec, color_node_xml
@@ -47,6 +48,9 @@ def build_gradient_fill(
     usage: str = "fill",
 ) -> str:
     """Build <a:gradFill> from SVG linearGradient or radialGradient element."""
+    native = preserved_native_gradient_xml(grad_elem)
+    if native is not None:
+        return native
     tag = grad_elem.tag.replace(f'{{{SVG_NS}}}', '')
 
     stops_xml = []

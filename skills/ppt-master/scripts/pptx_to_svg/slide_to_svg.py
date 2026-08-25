@@ -26,6 +26,7 @@ import base64
 import copy
 import hashlib
 import json
+import posixpath
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
@@ -39,6 +40,8 @@ from pptx_shapes import (
 from pptx_effects import (
     EFFECT_REASON_ATTR,
     EFFECT_STATUS_ATTR,
+    NATIVE_EFFECT_ATTR,
+    NATIVE_EFFECT_SHA256_ATTR,
     txbody_has_run_effects,
     unsupported_effect_metadata,
 )
@@ -122,6 +125,7 @@ class AssemblyContext:
     strict: bool = False
     group_id_prefix: str = ""
     render_graphic_previews: bool = True
+    preserve_placeholder_inheritance: bool = False
     asset_name_map: dict[str, str] = field(default_factory=dict)
     diagnostics: list[ImportDiagnostic] = field(default_factory=list)
     source_slide_index: int | None = None
@@ -228,6 +232,7 @@ def assemble_slide(
     asset_name_map: dict[str, str] | None = None,
     strict: bool = False,
     diagnostics: list[ImportDiagnostic] | None = None,
+    preserve_placeholder_inheritance: bool = False,
 ) -> tuple[str, dict[str, bytes]]:
     """Convert one slide to a complete SVG string + media files map.
 
@@ -252,6 +257,7 @@ def assemble_slide(
         keep_hidden=keep_hidden,
         strict=strict,
         render_graphic_previews=(inheritance_mode == "flat"),
+        preserve_placeholder_inheritance=preserve_placeholder_inheritance,
         asset_name_map=asset_name_map or {},
         diagnostics=diagnostics if diagnostics is not None else [],
         source_slide_index=slide.index,
@@ -571,6 +577,21 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     inherited_has_run_effects = txbody_has_run_effects(
         *node.inherited_lst_styles
     )
+    metadata_tx_body, inherited_styles_materialized = (
+        _materialize_inherited_list_styles(
+            tx_body,
+            node.inherited_lst_styles,
+        )
+    )
+    export_tx_body = (
+        source_tx_body
+        if (
+            ctx.preserve_placeholder_inheritance
+            and node.placeholder is not None
+            and source_tx_body is not None
+        )
+        else metadata_tx_body
+    )
     has_run_effects = local_has_run_effects or inherited_has_run_effects
     if geom is not None and has_run_effects:
         if is_vertical:
@@ -581,7 +602,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             geom.attrs.update(unsupported_effect_metadata(
                 "unsupported-run-effect-route:relationship-bearing-text"
             ))
-        elif inherited_has_run_effects:
+        elif inherited_has_run_effects and not inherited_styles_materialized:
             geom.attrs.update(unsupported_effect_metadata(
                 "unsupported-run-effect-route:inherited-text-style"
             ))
@@ -640,6 +661,11 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         text_result = TextResult()
     if text_result.defs:
         ctx.defs.extend(text_result.defs)
+    visible_text_svg = (
+        text_result.svg
+        if is_vertical
+        else _counter_reflected_text_svg(text_result.svg, node.xfrm)
+    )
 
     if is_vertical:
         # Vertical text: geometry + image in one group, text in separate group
@@ -651,12 +677,12 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             top_level=top_level,
             extra_attrs=_geometry_group_attrs(geom),
         )
-        if not text_result.svg:
+        if not visible_text_svg:
             return shape_xml
         text_group = (
             f'<g id="{ctx.group_id_prefix}shape-{node.spid or ctx.shape_seq[0]}-text"'
             f' data-name="{_xml_escape(node.name)} text">\n'
-            f"{text_result.svg}\n</g>"
+            f"{visible_text_svg}\n</g>"
         )
         return f"{shape_xml}\n{text_group}"
 
@@ -667,18 +693,21 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     if geom_xml:
         inner_parts.append(geom_xml)
     if (
-        source_tx_body is not None
+        export_tx_body is not None
         and geom is not None
         and not text_result.contains_inline_formula
     ):
         inner_parts.append(
             _txbody_metadata(
-                source_tx_body,
-                text_result.svg,
+                export_tx_body,
+                visible_text_svg,
             )
         )
-    if text_result.svg:
-        inner_parts.append(text_result.svg)
+    placeholder_sp_pr = _placeholder_sp_pr_metadata(node, ctx)
+    if placeholder_sp_pr:
+        inner_parts.append(placeholder_sp_pr)
+    if visible_text_svg:
+        inner_parts.append(visible_text_svg)
     inner = "\n".join(inner_parts) if inner_parts else ""
     return _wrap_shape_group(
         inner,
@@ -732,6 +761,114 @@ def _effective_placeholder_tx_body(
                 body_pr.append(copy.deepcopy(inherited_child))
                 local_names.add(inherited_child.tag.rsplit("}", 1)[-1])
     return effective
+
+
+def _materialize_inherited_list_styles(
+    tx_body: ET.Element | None,
+    inherited_lst_styles: tuple[ET.Element, ...],
+) -> tuple[ET.Element | None, bool]:
+    """Flatten placeholder list-style inheritance into the preserved txBody."""
+    if not inherited_lst_styles:
+        return tx_body, True
+    if tx_body is None:
+        return None, False
+
+    effective = copy.deepcopy(tx_body)
+    lst_style = effective.find("a:lstStyle", NS)
+    if lst_style is None:
+        lst_style = ET.Element(f"{{{NS['a']}}}lstStyle")
+        body_pr = effective.find("a:bodyPr", NS)
+        insert_at = list(effective).index(body_pr) + 1 if body_pr is not None else 0
+        effective.insert(insert_at, lst_style)
+
+    for level in range(1, 10):
+        local_level = lst_style.find(f"a:lvl{level}pPr", NS)
+        inherited_levels = [
+            level_pr
+            for inherited in inherited_lst_styles
+            if (level_pr := inherited.find(f"a:lvl{level}pPr", NS)) is not None
+        ]
+        if local_level is None and not inherited_levels:
+            continue
+
+        merged = ET.Element(f"{{{NS['a']}}}lvl{level}pPr")
+        for source in reversed(inherited_levels):
+            _merge_text_property_element(merged, source)
+        if local_level is not None:
+            _merge_text_property_element(merged, local_level)
+
+        if local_level is None:
+            lst_style.append(merged)
+        else:
+            index = list(lst_style).index(local_level)
+            lst_style.remove(local_level)
+            lst_style.insert(index, merged)
+
+    return effective, True
+
+
+def _merge_text_property_element(
+    target: ET.Element,
+    source: ET.Element,
+) -> None:
+    """Overlay one DrawingML paragraph/run property node by choice group."""
+    target.attrib.update(source.attrib)
+    for source_child in source:
+        key = _text_property_child_key(source_child)
+        target_child = next(
+            (
+                child
+                for child in target
+                if _text_property_child_key(child) == key
+            ),
+            None,
+        )
+        if (
+            source_child.tag == f"{{{NS['a']}}}defRPr"
+            and target_child is not None
+        ):
+            _merge_text_property_element(target_child, source_child)
+            continue
+        if target_child is not None:
+            index = list(target).index(target_child)
+            target.remove(target_child)
+            target.insert(index, copy.deepcopy(source_child))
+        else:
+            target.append(copy.deepcopy(source_child))
+
+
+def _text_property_child_key(child: ET.Element) -> str:
+    """Return the OOXML choice-group key for one text-property child."""
+    name = child.tag.rsplit("}", 1)[-1]
+    groups = (
+        ("fill", {
+            "noFill", "solidFill", "gradFill", "blipFill", "pattFill", "grpFill",
+        }),
+        ("effect", {"effectLst", "effectDag"}),
+        ("bullet-color", {"buClrTx", "buClr"}),
+        ("bullet-size", {"buSzTx", "buSzPct", "buSzPts"}),
+        ("bullet-font", {"buFontTx", "buFont"}),
+        ("bullet-kind", {"buNone", "buAutoNum", "buChar", "buBlip"}),
+        ("underline-line", {"uLnTx", "uLn"}),
+        ("underline-fill", {"uFillTx", "uFill"}),
+    )
+    for key, names in groups:
+        if name in names:
+            return key
+    return name
+
+
+def _counter_reflected_text_svg(text_svg: str, xfrm: Xfrm) -> str:
+    """Keep text upright when DrawingML flips its owning shape geometry."""
+    if not text_svg or xfrm.rot or not (xfrm.flip_h or xfrm.flip_v):
+        return text_svg
+    transform = xfrm.to_svg_transform()
+    if not transform:
+        return text_svg
+    return (
+        '<g data-pptx-text-flip-compensation="true" '
+        f'transform="{_xml_escape(transform)}">\n{text_svg}\n</g>'
+    )
 
 
 def _block_formula_zone(tx_body: ET.Element | None) -> ET.Element | None:
@@ -963,6 +1100,29 @@ def _txbody_metadata(
     )
 
 
+def _placeholder_sp_pr_metadata(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+) -> str:
+    """Preserve relationship-free local placeholder geometry for inheritance."""
+    if (
+        not ctx.preserve_placeholder_inheritance
+        or node.placeholder is None
+        or node.kind != SHAPE
+    ):
+        return ""
+    sp_pr = node.xml.find("p:spPr", NS)
+    if sp_pr is None or has_relationship_attributes(sp_pr):
+        return ""
+    raw = ET.tostring(sp_pr, encoding="utf-8")
+    return (
+        '<metadata data-pptx-part="placeholder-sppr" '
+        'data-pptx-encoding="base64" '
+        f'data-pptx-ooxml-sha256="{hashlib.sha256(raw).hexdigest()}">'
+        f'{base64.b64encode(raw).decode("ascii")}</metadata>'
+    )
+
+
 def _resolve_geometry(node: ShapeNode, sp_pr: ET.Element | None) -> GeomResult | None:
     """Resolve a DrawingML shape geometry into an absolute SVG geometry model."""
     prst_geom = sp_pr.find("a:prstGeom", NS) if sp_pr is not None else None
@@ -1054,6 +1214,12 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
             id_prefix="m",
             id_seq=ctx.marker_seq,
             style_stroke_default=style_defaults.get("stroke"),
+            gradient_frame=(
+                node.xfrm.x,
+                node.xfrm.y,
+                node.xfrm.w,
+                node.xfrm.h,
+            ),
         )
     except ValueError as exc:
         if ctx.strict:
@@ -1557,12 +1723,22 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 if payload_metadata
                 else rendered
             )
+            roundtrip_metadata, roundtrip_attrs = (
+                _roundtrip_graphic_frame_metadata(
+                    node,
+                    ctx,
+                    inner,
+                    top_level=top_level,
+                )
+            )
+            if roundtrip_metadata:
+                inner = f"{roundtrip_metadata}\n{inner}"
             return _wrap_shape_group(
                 inner,
                 node,
                 ctx,
                 top_level=top_level,
-                extra_attrs=replacement_attrs,
+                extra_attrs=replacement_attrs + roundtrip_attrs,
             )
 
     preview_svg = ""
@@ -1668,6 +1844,174 @@ def _replacement_payload_metadata(payload: object) -> str:
     )
 
 
+def _package_rels_path(part_name: str) -> str:
+    parent, name = posixpath.split(part_name)
+    return f"{parent}/_rels/{name}.rels" if parent else f"_rels/{name}.rels"
+
+
+def _package_content_types(ctx: AssemblyContext) -> tuple[dict[str, str], dict[str, str]]:
+    payload = ctx.pkg.read_part_bytes("[Content_Types].xml")
+    if payload is None:
+        raise RuntimeError("source package has no [Content_Types].xml")
+    try:
+        root = ET.fromstring(payload)
+    except ET.ParseError as exc:
+        raise RuntimeError("source package content types are malformed") from exc
+    defaults = {
+        item.attrib.get("Extension", "").lower(): item.attrib.get("ContentType", "")
+        for item in root.findall(f"{{{NS['ct']}}}Default")
+    }
+    overrides = {
+        item.attrib.get("PartName", "").lstrip("/"): item.attrib.get("ContentType", "")
+        for item in root.findall(f"{{{NS['ct']}}}Override")
+    }
+    return defaults, overrides
+
+
+def _roundtrip_chart_package(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    graphic_data: ET.Element | None,
+) -> dict[str, Any] | None:
+    """Collect the closed source chart dependency graph for exact round-trip."""
+    if not ctx.preserve_placeholder_inheritance or graphic_data is None:
+        return None
+    chart_ref = graphic_data.find(f"{{{CHART_URI}}}chart")
+    if chart_ref is None:
+        return None
+    rel_id = chart_ref.attrib.get(f"{{{NS['r']}}}id")
+    chart_part = ctx.slide_part.resolve_rel(rel_id or "")
+    if not chart_part or not chart_part.startswith("ppt/charts/"):
+        return None
+
+    try:
+        defaults, overrides = _package_content_types(ctx)
+        pending = [chart_part]
+        seen: set[str] = set()
+        parts: list[dict[str, str]] = []
+        while pending:
+            part_name = pending.pop()
+            if part_name in seen:
+                continue
+            if not part_name.startswith(
+                ("ppt/charts/", "ppt/embeddings/", "ppt/theme/")
+            ):
+                return None
+            payload = ctx.pkg.read_part_bytes(part_name)
+            if payload is None:
+                return None
+            seen.add(part_name)
+            content_type = overrides.get(part_name) or defaults.get(
+                posixpath.splitext(part_name)[1].lstrip(".").lower(),
+                "",
+            )
+            parts.append({
+                "content_type": content_type,
+                "encoding": "base64",
+                "name": part_name,
+                "payload": base64.b64encode(payload).decode("ascii"),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            })
+
+            rels_name = _package_rels_path(part_name)
+            rels_payload = ctx.pkg.read_part_bytes(rels_name)
+            if rels_payload is None:
+                continue
+            try:
+                rels_root = ET.fromstring(rels_payload)
+            except ET.ParseError:
+                return None
+            for relationship in rels_root.findall(
+                f"{{{NS['rel']}}}Relationship"
+            ):
+                if relationship.attrib.get("TargetMode") == "External":
+                    return None
+                target = relationship.attrib.get("Target")
+                if not target:
+                    return None
+                resolved = posixpath.normpath(
+                    posixpath.join(posixpath.dirname(part_name), target)
+                ).lstrip("/")
+                if resolved.startswith("../"):
+                    return None
+                pending.append(resolved)
+            parts.append({
+                "content_type": "",
+                "encoding": "base64",
+                "name": rels_name,
+                "payload": base64.b64encode(rels_payload).decode("ascii"),
+                "sha256": hashlib.sha256(rels_payload).hexdigest(),
+            })
+    except RuntimeError:
+        return None
+
+    frame = copy.deepcopy(node.xml)
+    nv_pr = frame.find("p:nvGraphicFramePr/p:nvPr", NS)
+    custom_data = nv_pr.find("p:custDataLst", NS) if nv_pr is not None else None
+    if custom_data is not None:
+        nv_pr.remove(custom_data)
+    relationship_attrs = [
+        (owner, name)
+        for owner in frame.iter()
+        for name in owner.attrib
+        if isinstance(name, str) and name.startswith(f"{{{NS['r']}}}")
+    ]
+    if len(relationship_attrs) != 1 or relationship_attrs[0][0].tag != f"{{{CHART_URI}}}chart":
+        return None
+    frame_payload = ET.tostring(frame, encoding="utf-8")
+    return {
+        "chart_part": chart_part,
+        "frame": {
+            "encoding": "base64",
+            "payload": base64.b64encode(frame_payload).decode("ascii"),
+            "sha256": hashlib.sha256(frame_payload).hexdigest(),
+        },
+        "parts": sorted(parts, key=lambda item: item["name"]),
+    }
+
+
+def _roundtrip_graphic_frame_metadata(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    visible_markup: str,
+    *,
+    top_level: bool,
+) -> tuple[str, list[str]]:
+    """Preserve one relationship-free native frame behind its SVG fallback."""
+    if not ctx.preserve_placeholder_inheritance or not top_level:
+        return "", []
+    native_frame = copy.deepcopy(node.xml)
+    nv_pr = native_frame.find("p:nvGraphicFramePr/p:nvPr", NS)
+    custom_data = (
+        nv_pr.find("p:custDataLst", NS)
+        if nv_pr is not None else None
+    )
+    if custom_data is not None:
+        # Office tags are non-visual, slide-relationship-bound metadata. The
+        # validated source package sidecar retains them; the portable native
+        # frame omits them so it stays relationship-free on a regenerated slide.
+        nv_pr.remove(custom_data)
+    if has_relationship_attributes(native_frame):
+        return "", []
+    raw = ET.tostring(native_frame, encoding="utf-8")
+    transform = node.xfrm.to_svg_transform()
+    fallback_hash = svg_native_fallback_markup_fingerprint(
+        visible_markup,
+        root_transform=transform,
+        external_markup="".join(ctx.defs),
+    )
+    metadata = (
+        '<metadata data-pptx-part="roundtrip-graphic-frame" '
+        'data-pptx-encoding="base64" '
+        f'data-pptx-ooxml-sha256="{hashlib.sha256(raw).hexdigest()}">'
+        f'{base64.b64encode(raw).decode("ascii")}</metadata>'
+    )
+    return metadata, [
+        'data-pptx-roundtrip-object="graphic-frame"',
+        f'{NATIVE_FALLBACK_SHA256_ATTR}="{fallback_hash}"',
+    ]
+
+
 def _render_graphic_table(
     node: ShapeNode,
     ctx: AssemblyContext,
@@ -1735,10 +2079,26 @@ def _render_graphic_chart(
     )
     replacement_attrs: list[str] = ['data-pptx-import-source="pptx"']
     payload_metadata = ""
-    if result.native_payload:
-        if node.name and not result.native_payload.get("name"):
-            result.native_payload["name"] = node.name
-        payload_metadata = _replacement_payload_metadata(result.native_payload)
+    source_package = _roundtrip_chart_package(
+        node,
+        ctx,
+        graphic_data,
+    )
+    if result.native_payload or source_package is not None:
+        payload = result.native_payload or {
+            "height": round(node.xfrm.h, 3),
+            "width": round(node.xfrm.w, 3),
+            "x": round(node.xfrm.x, 3),
+            "y": round(node.xfrm.y, 3),
+        }
+        if node.name and not payload.get("name"):
+            payload["name"] = node.name
+        if source_package is not None:
+            payload["source_package"] = source_package
+            replacement_attrs.append(
+                'data-pptx-roundtrip-object="source-chart-package"'
+            )
+        payload_metadata = _replacement_payload_metadata(payload)
         replacement_attrs.append('data-pptx-replace-with="chart"')
     elif result.native_status:
         replacement_attrs.append(
@@ -2047,8 +2407,6 @@ def _wrap_shape_group(
     )
     if node.name:
         attrs.append(f'data-name="{_xml_escape(node.name)}"')
-    if node.placeholder is not None and node.placeholder.type:
-        attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
     if node.placeholder is not None and node.kind == SHAPE:
         sp_pr = node.xml.find("p:spPr", NS)
         if sp_pr is not None and any(
@@ -2060,6 +2418,9 @@ def _wrap_shape_group(
         attrs.extend(extra_attrs)
         if any(
             attribute.split("=", 1)[0] == "data-pptx-replace-with"
+            for attribute in extra_attrs
+        ) and not any(
+            attribute.split("=", 1)[0] == NATIVE_FALLBACK_SHA256_ATTR
             for attribute in extra_attrs
         ):
             fallback_hash = svg_native_fallback_markup_fingerprint(
@@ -2131,6 +2492,8 @@ def _geometry_group_attrs(geom: GeomResult | None) -> list[str]:
         "data-pptx-geometry-reason",
         EFFECT_STATUS_ATTR,
         EFFECT_REASON_ATTR,
+        NATIVE_EFFECT_ATTR,
+        NATIVE_EFFECT_SHA256_ATTR,
     )
     attrs: list[str] = []
     for key, value in geom.attrs.items():
@@ -2168,6 +2531,15 @@ def _object_metadata(
     }
     if node.name:
         attrs["data-pptx-shape-name"] = node.name
+    if node.placeholder is not None:
+        if node.placeholder.type:
+            attrs["data-ph-type"] = node.placeholder.type
+        if node.placeholder.idx is not None:
+            attrs["data-pptx-placeholder-index"] = node.placeholder.idx
+        if node.placeholder.sz is not None:
+            attrs["data-pptx-placeholder-size"] = node.placeholder.sz
+        if node.placeholder.orient is not None:
+            attrs["data-pptx-placeholder-orientation"] = node.placeholder.orient
     if node.kind == CONNECTOR:
         attrs.update(_connector_metadata(node, _shape_scope(ctx)))
     return attrs

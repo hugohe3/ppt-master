@@ -553,6 +553,8 @@ python3 scripts/svg_to_pptx.py <project_path> --no-image-optimize
 python3 scripts/svg_to_pptx.py <project_path> --native-charts-and-tables
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # deck/layout template override
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-design/brand-only override
+# Exact source-structure diagnostic emitted by pptx_to_svg.py --roundtrip:
+python3 scripts/svg_to_pptx.py <pptx_import_output> -s svg --roundtrip
 # Template-import visual round-trip diagnostic only:
 python3 scripts/svg_to_pptx.py <template_import_output> -s svg-flat
 # Post-processed-source comparison diagnostic only (never a release export):
@@ -634,6 +636,7 @@ Behavior:
   - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
   - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`. `-s final` is an explicit diagnostic override for comparing conversion behavior against post-processed SVGs; it does not change artifact ownership or create a supported release path.
+- `-s svg --roundtrip` consumes only the validated source package, structure sidecar, and layered `slide_*.svg` files emitted by `pptx_to_svg.py --roundtrip`. An unchanged imported chart with a closed validated source package automatically restores its original chart XML, style/color parts, workbook, and theme override without enabling ordinary semantic Chart/Table replacement. Its visible-fallback fingerprint remains authoritative: editing the SVG fallback disables stale exact replacement instead of discarding that edit.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export
