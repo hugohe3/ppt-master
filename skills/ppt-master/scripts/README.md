@@ -27,7 +27,7 @@ python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
 # or
 python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
 python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
-python3 scripts/project_manager.py init <project_name> --format ppt169
+python3 scripts/project_manager.py init <project_name>
 python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
@@ -79,7 +79,7 @@ python3 scripts/pptx_to_svg.py <deck.pptx> -o <output_dir>  # reconstruction/ref
 Project setup:
 
 ```bash
-python3 scripts/project_manager.py init <project_name> --format ppt169
+python3 scripts/project_manager.py init <project_name> [--format <registered_format>]
 python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>
 python3 scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
 python3 scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper
@@ -87,6 +87,11 @@ python3 scripts/project_manager.py validate <project_path>
 python3 scripts/project_manager.py page-context <project_path> P07 --record-usage
 python3 scripts/project_manager.py page-context-report <project_path>
 ```
+
+`--format` is optional and accepts registered canvas keys only. Pass it when
+the actual canvas exactly matches one of those keys; otherwise omit it. Without
+the flag, `init` creates `<name>_<YYYYMMDD>`, and authoring records the canvas
+in `spec_lock.md` for Default Generate or the first SVG for Quick Generate.
 
 `page-context` is an on-demand read-only current-page projection for diagnostics,
 routing checks, or context measurement; normal generation retains the complete
@@ -172,7 +177,7 @@ The destination must be empty, and the command does not write
 Template fill (direct PPTX, no SVG conversion):
 
 ```bash
-python3 scripts/project_manager.py init <project_name> --format ppt169
+python3 scripts/project_manager.py init <project_name>
 python3 scripts/project_manager.py import-sources <project_path> <source.pptx> <material...>
 # Manual fallback when import-sources did not produce analysis/<stem>.slide_library.json:
 python3 scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/<stem>.slide_library.json

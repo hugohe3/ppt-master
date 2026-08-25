@@ -75,7 +75,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
 [Source Processing & Factual Sufficiency] → source_to_md.py dispatches by type; topic-only or planning-critical factual gaps enter topic-research
     └── Raw or converted content is ready; research writes supplemental Markdown and fact provenance for project import
     ↓
-[Create Project] → project_manager.py init <project_name> --format <format>
+[Create Project] → project_manager.py init <project_name> [--format <registered_format>]
     ↓
 [Archive Sources & Project Analysis (when source files exist; conversation text skips)] → project_manager.py import-sources <project_path> <sources...>
     ├── First move/copy supplied files into sources/ under the ownership boundary
@@ -339,6 +339,10 @@ Two converter design choices still shape the system:
 ## Project Structure & Lifecycle
 
 `project_manager.py init` creates the standard project working directories;
+`--format` is optional and is passed only when the actual canvas exactly
+matches a registered format. Without it, the directory is named
+`<name>_<YYYYMMDD>`; Default Generate records the confirmed viewBox in
+`spec_lock.md`, while Quick Generate takes it from the first SVG.
 `--quick-generate` creates `svg_output/` plus the cold
 `validation/workflow.log` audit log, omits the project README, and leaves
 other directories on demand. The explicit

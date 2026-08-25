@@ -11,7 +11,7 @@ Project tools create, validate, and inspect the standard PPT Master workspace.
 Main entry point for project setup and validation.
 
 ```bash
-python3 scripts/project_manager.py init <project_name> --format ppt169
+python3 scripts/project_manager.py init <project_name> [--format <registered_format>]
 python3 scripts/project_manager.py import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...]
 python3 scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
 python3 scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper
@@ -22,6 +22,13 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
+- `--format` is optional and accepts registered canvas keys only. Pass it only
+  when the actual canvas exactly matches a registered format.
+- Without `--format`, `init` creates `<name>_<YYYYMMDD>`; authoring records the
+  canvas in `spec_lock.md` for Default Generate or the first SVG for Quick
+  Generate.
+- With `--format`, `init` preserves the registered form
+  `<name>_<format>_<YYYYMMDD>` and normalizes aliases such as `xhs`.
 - `init --quick-generate`: `svg_output/` plus
   `validation/workflow.log`; no README
 - Files outside `projects/` are always copied into `sources/`
@@ -45,7 +52,8 @@ Notes:
 - Optional `scaffold-spec` creates `design_spec.md` from
   `templates/scaffolds/design_spec.md`; `scaffold-lock` creates `spec_lock.md`
   from `templates/scaffolds/spec_lock.md`. Both substitute project/canvas
-  metadata deterministically and refuse to overwrite an existing artifact.
+  metadata deterministically, require a registered format in the project
+  directory name, and refuse to overwrite an existing artifact.
 - `validate` parses the existing Markdown artifacts against
   `templates/schemas/design_spec.schema.json` and
   `templates/schemas/spec_lock.schema.json`. It reports missing sections and
@@ -138,13 +146,14 @@ Common formats:
 Examples:
 
 ```bash
-python3 scripts/project_manager.py init my_presentation --format ppt169
-python3 scripts/project_manager.py scaffold-spec projects/my_presentation_ppt169_20251116  # optional
-python3 scripts/project_manager.py scaffold-lock projects/my_presentation_ppt169_20251116  # optional
-python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
-python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
-python3 scripts/project_manager.py page-context projects/my_presentation_ppt169_20251116 P07 --record-usage
-python3 scripts/project_manager.py page-context-report projects/my_presentation_ppt169_20251116
+python3 scripts/project_manager.py init my_presentation
+python3 scripts/project_manager.py validate projects/my_presentation_20251116
+python3 scripts/project_manager.py info projects/my_presentation_20251116
+python3 scripts/project_manager.py init my_widescreen --format ppt169
+python3 scripts/project_manager.py scaffold-spec projects/my_widescreen_ppt169_20251116  # optional
+python3 scripts/project_manager.py scaffold-lock projects/my_widescreen_ppt169_20251116  # optional
+python3 scripts/project_manager.py page-context projects/my_widescreen_ppt169_20251116 P07 --record-usage
+python3 scripts/project_manager.py page-context-report projects/my_widescreen_ppt169_20251116
 ```
 
 ## `workflow_transcript.py` and `workflow_log.py`

@@ -152,19 +152,25 @@ ordinary Quick and other compatible profiles.
   its kind/canvas, and run that stage's read-only schema/structured preflight.
   Do not scan the library, fuzzy-match a name, or open a selector. Explicit user
   canvas wins; otherwise use the selected structure owner (Layout before Deck)
-  canvas when present, then fall back to `ppt169`.
+  canvas when present. Pass that choice to `init --format` only when it exactly
+  matches a registered canvas; otherwise retain its viewBox for authoring.
 - **Free design**: no exact root was supplied. Continue immediately with the
-  requested canvas or `ppt169`. A bare template name, brand mention, style
-  phrase, or vague request to choose a template is ordinary brief input, not a
-  workspace reference.
+  requested canvas when one exists. If no canvas is specified, decide the
+  viewBox during SVG authoring instead of assigning an initialization default.
+  A bare template name, brand mention, style phrase, or vague request to choose
+  a template is ordinary brief input, not a workspace reference.
 
 Neither branch creates anything under `confirm_ui/` or executes
 `confirm_ui/server.py`. Initialize the minimal workspace with:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
-  --format <format> --quick-generate
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --quick-generate
 ```
+
+**Hard rule — truthful canvas token**: append
+`--format <registered_format>` only when the branch above resolved an exact
+registered canvas. Otherwise omit it; the first SVG root viewBox becomes the
+canvas authority. Never encode custom dimensions as a format token.
 
 It creates `svg_output/` plus the cold
 `validation/workflow.log` command/outcome audit log, and no root README. After

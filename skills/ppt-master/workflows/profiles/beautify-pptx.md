@@ -60,20 +60,20 @@ two fidelity profiles never compose.
 
 ## 3. Create the Project Workspace
 
-Match the canvas to the source so 1:1 pages and paste-back align. Determine the source aspect first — before the project exists, run `beautify_identity.py <source.pptx>` to **stdout** and read `canvas.aspect` (the formal standard intake bundle is written in Step 4, after `init`) — then `init` with the matching format:
+Match the canvas to the source so 1:1 pages and paste-back align. Determine the source aspect first — before the project exists, run `beautify_identity.py <source.pptx>` to **stdout** and read `canvas.aspect` (the formal standard intake bundle is written in Step 4, after `init`) — then select the source-faithful canvas, passing `--format` only for an exact registered match:
 
-| Source aspect | Format |
+| Source aspect | Canvas |
 |---|---|
 | ≈1.778 (16:9) | `ppt169` |
 | ≈1.333 (4:3) | `ppt43` |
-| other | nearest format in [`canvas-formats.md`](../../references/canvas-formats.md); record the source pixel size in the spec |
+| other | the exact source `width_px`x`height_px`; omit `--format` |
 
 ```bash
 # Default runtime:
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> [--format <format>]
 
 # Quick runtime instead:
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format> --quick-generate
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> [--format <format>] --quick-generate
 
 # Both runtimes then import once:
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source.pptx>

@@ -42,7 +42,11 @@ Yes. Besides the standard **16:9** and **4:3** presentation formats, PPT Master 
 | WeChat Article Header | WeChat article cover images |
 | A4 Print | Print posters, flyers |
 
-Just specify the format when starting a project (e.g., `--format xhs`). The output is still a `.pptx` file containing native shapes.
+When the canvas exactly matches a registered format, pass that key during
+initialization (for example, `--format xhs`). For any other canvas, omit
+`--format`; Default Generate records the confirmed viewBox in `spec_lock.md`,
+and Quick Generate uses the first SVG as the canvas authority. The output is
+still a `.pptx` file containing native shapes.
 
 ## Q: What AI tools work with PPT Master?
 

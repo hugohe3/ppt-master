@@ -42,7 +42,10 @@ DOCX 转换会把内嵌图片素材抽取到配套素材目录，并写入图片
 | 微信文章头图 | 公众号文章封面 |
 | A4 印刷 | 印刷海报、传单 |
 
-创建项目时指定格式即可（如 `--format xhs`）。输出仍然是包含原生形状的 `.pptx` 文件。
+实际画布与已注册格式完全一致时，初始化可传对应键（如 `--format xhs`）。
+其他画布应省略 `--format`；Default Generate 会把确认后的 viewBox 记录到
+`spec_lock.md`，Quick Generate 则以第一张 SVG 为画布真值。输出仍然是包含原生形状的
+`.pptx` 文件。
 
 ## Q: PPT Master 支持哪些 AI 工具？
 

@@ -119,8 +119,13 @@ final confirmation.
 🚧 **GATE**: Step 1 complete; source content is ready (Markdown file, user-provided text, or requirements described in conversation are all valid).
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name>
 ```
+
+**Hard rule — truthful canvas token**: append
+`--format <registered_format>` only when an explicit user/source fact already
+establishes an exact registered canvas before initialization. Otherwise omit
+the flag; Stage 1 confirms the canvas and `spec_lock.md` records its viewBox.
 
 Project initialization creates `<project_path>/validation/workflow.log` and
 records the initialization milestone. After the project exists, run each

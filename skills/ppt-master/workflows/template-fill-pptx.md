@@ -56,9 +56,13 @@ If the content material is only a topic with no supporting facts, gather or ask 
 Create a dedicated project directory under `projects/`. Do not write outputs directly into `projects/` root. Reuse the standard project manager so source import rules stay consistent with the rest of the repository:
 
 ```bash
-python3 skills/ppt-master/scripts/project_manager.py init "<project_name>" --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py init "<project_name>"
 python3 skills/ppt-master/scripts/project_manager.py import-sources "<project_dir>" "<source.pptx>" "<material...>"
 ```
+
+The source PPTX slide size remains the native canvas authority. Do not add an
+initialization `--format` unless that source canvas has already been verified
+as an exact registered format.
 
 **Source import rule**: `project_manager.py import-sources` moves only sources under repository `projects/` and copies all others. `--copy` preserves a projects-local input; `--move` never widens that scope. Reuse this path.
 

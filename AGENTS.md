@@ -60,7 +60,8 @@ Convenience summary only — route selection starts in [`SKILL.md`](skills/ppt-m
 python3 skills/ppt-master/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]
 
 # Project management
-python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
+# Add --format <registered_format> only for an exact registered canvas.
+python3 skills/ppt-master/scripts/project_manager.py init <project_name>
 python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs_or_URLs...>
 python3 skills/ppt-master/scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
 python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper

@@ -48,7 +48,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 [源内容处理与事实充分性检查] → source_to_md.py 按类型分派转换器；topic-only 或关键事实缺口进入 topic-research
     └── 原始或转换后内容就绪；研究分支形成补充 Markdown 与 facts provenance，随后作为来源导入项目
     ↓
-[创建项目] → project_manager.py init <项目名> --format <格式>
+[创建项目] → project_manager.py init <项目名> [--format <已注册格式>]
     ↓
 [归档来源与项目级分析（有来源文件时；纯对话文本跳过）] → project_manager.py import-sources <项目路径> <来源...>
     ├── 先按所有权边界把传入文件 move/copy 到 sources/
@@ -297,7 +297,10 @@ SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可�
 
 ## 项目结构与生命周期
 
-`project_manager.py init` 默认创建标准项目工作目录；使用
+`project_manager.py init` 默认创建标准项目工作目录。`--format` 为可选参数，
+只有实际画布与已注册格式完全一致时才传入；省略时目录名为
+`<名称>_<YYYYMMDD>`，Default Generate 将确认后的 viewBox 记录到
+`spec_lock.md`，Quick Generate 则以第一张 SVG 为准。使用
 `--quick-generate` 时创建 `svg_output/` 与冷审计日志
 `validation/workflow.log`，省略项目 README，其他目录按需产生。
 显式
