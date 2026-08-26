@@ -1232,7 +1232,10 @@ def _roman_number(value: int) -> str:
 def _has_visible_text(paragraphs: list[TextParagraph]) -> bool:
     for p in paragraphs:
         for r in p.runs:
-            if r.text.strip():
+            # Structured export writes U+200B only to keep a visually blank
+            # placeholder carrier alive in DrawingML. Restore that transport
+            # sentinel to an empty SVG carrier on re-import.
+            if r.text.replace("\u200b", "").strip():
                 return True
     return False
 
