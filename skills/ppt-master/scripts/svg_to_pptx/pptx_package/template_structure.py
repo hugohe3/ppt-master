@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import copy
 import hashlib
 import json
 import math
@@ -44,7 +45,11 @@ from ..geometry_properties import (
     GeometryStyleError,
     materialize_inline_geometry_properties,
 )
-from ..native_objects import NativeMarkerAttributeError, native_replacement_kind
+from ..native_objects import (
+    NativeMarkerAttributeError,
+    native_json_is_authoritative,
+    native_replacement_kind,
+)
 
 
 _NON_VISUAL_TAGS = frozenset({"defs", "title", "desc", "metadata", "style"})
@@ -2455,6 +2460,7 @@ def _element_tree_signature(
     svg_path: Path | None = None,
     asset_identity: bool = False,
     ignore_structure_attrs: bool = False,
+    ignore_json_native_preview: bool = False,
 ) -> tuple[object, ...]:
     """Return a stable structural or literal-visual SVG subtree signature."""
     text = (elem.text or "") if include_text else ""
@@ -2482,6 +2488,14 @@ def _element_tree_signature(
             )
         )
     ))
+    children = (
+        _mirror_comparison_children(elem)
+        if ignore_json_native_preview
+        else tuple(elem)
+    )
+    json_native_marker = (
+        ignore_json_native_preview and _is_json_first_native_marker(elem)
+    )
     return (
         elem.tag,
         attrs,
@@ -2490,14 +2504,57 @@ def _element_tree_signature(
             _element_tree_signature(
                 child,
                 include_skin=include_skin,
-                include_text=include_text,
+                include_text=(
+                    include_text
+                    or (
+                        json_native_marker
+                        and _local_tag(child) == "metadata"
+                    )
+                ),
                 svg_path=svg_path,
                 asset_identity=asset_identity,
                 ignore_structure_attrs=ignore_structure_attrs,
+                ignore_json_native_preview=ignore_json_native_preview,
             )
-            for child in elem
+            for child in children
         ),
     )
+
+
+def _is_json_first_native_marker(elem: ET.Element) -> bool:
+    """Return whether this element directly owns JSON-first Chart/Table data."""
+    try:
+        replacement_kind = native_replacement_kind(elem)
+    except NativeMarkerAttributeError:
+        return False
+    return (
+        native_json_is_authoritative(elem)
+        and replacement_kind in {"chart", "table"}
+    )
+
+
+def _mirror_comparison_children(elem: ET.Element) -> tuple[ET.Element, ...]:
+    """Exclude only the derived preview below a JSON-first native marker."""
+    if not _is_json_first_native_marker(elem):
+        return tuple(elem)
+    return tuple(child for child in elem if _local_tag(child) == "metadata")
+
+
+def _mirror_resource_projection(elem: ET.Element) -> ET.Element:
+    """Copy one comparison subtree without JSON-first derived previews."""
+    projected = copy.deepcopy(elem)
+
+    def prune(node: ET.Element) -> None:
+        if _is_json_first_native_marker(node):
+            for child in list(node):
+                if _local_tag(child) != "metadata":
+                    node.remove(child)
+            return
+        for child in node:
+            prune(child)
+
+    prune(projected)
+    return projected
 
 
 def _svg_reference_ids(elem: ET.Element) -> set[str]:
@@ -2700,10 +2757,17 @@ def _scope_visual_resources_signature(
     root: ET.Element,
     elements: tuple[ET.Element, ...],
     svg_path: Path,
+    *,
+    ignore_json_native_preview: bool = False,
 ) -> tuple[object, ...]:
     """Capture root inheritance, relevant CSS, and the referenced defs closure."""
     if not elements:
         return ()
+    comparison_elements = (
+        tuple(_mirror_resource_projection(element) for element in elements)
+        if ignore_json_native_preview
+        else elements
+    )
     root_attrs = tuple(sorted(
         (
             name,
@@ -2720,9 +2784,9 @@ def _scope_visual_resources_signature(
             and not name.rsplit("}", 1)[-1].startswith("data-")
         )
     ))
-    css_rules = _scope_css_signature(root, elements, svg_path)
+    css_rules = _scope_css_signature(root, comparison_elements, svg_path)
     references: set[str] = set()
-    for element in elements:
+    for element in comparison_elements:
         references.update(_svg_reference_ids(element))
     for _selector, declarations in css_rules:
         references.update(
@@ -2773,6 +2837,7 @@ def _structure_subtree_signature(
     include_skin: bool = False,
     include_text: bool = True,
     asset_identity: bool = False,
+    ignore_json_native_preview: bool = False,
 ) -> tuple[tuple[str, tuple[object, ...]], ...]:
     """Read structural or literal-visual signatures for direct SVG children."""
     try:
@@ -2803,6 +2868,7 @@ def _structure_subtree_signature(
                 include_text=include_text,
                 svg_path=svg_path,
                 asset_identity=asset_identity,
+                ignore_json_native_preview=ignore_json_native_preview,
             ),
         ))
     if include_skin:
@@ -2813,7 +2879,12 @@ def _structure_subtree_signature(
         )
         signatures.append((
             "__visual_resources__",
-            _scope_visual_resources_signature(root, selected, svg_path),
+            _scope_visual_resources_signature(
+                root,
+                selected,
+                svg_path,
+                ignore_json_native_preview=ignore_json_native_preview,
+            ),
         ))
     return tuple(signatures)
 
@@ -2849,8 +2920,9 @@ def _mirror_slide_local_signature(
 ) -> tuple[tuple[object, ...], tuple[object, ...]]:
     """Capture literal mirror visuals that are Slide-local on either page.
 
-    Visible text values may change, but their element topology, attributes,
-    grouping, paint, geometry, and referenced asset bytes remain literal.
+    Visible text values and JSON-first native preview children may change, but
+    other element topology, attributes, grouping, paint, geometry, and
+    referenced asset bytes remain literal.
     Structure metadata may change when adaptive template authoring assigns an
     evolved Layout identity to the same stable SVG id.
     """
@@ -2879,12 +2951,14 @@ def _mirror_slide_local_signature(
                 svg_path=spec.svg_path,
                 asset_identity=True,
                 ignore_structure_attrs=True,
+                ignore_json_native_preview=True,
             )
         )
     resources = _scope_visual_resources_signature(
         root,
         tuple(slide_elements),
         spec.svg_path,
+        ignore_json_native_preview=True,
     )
     return resources, tuple(slide_visuals)
 
@@ -2970,6 +3044,11 @@ def _mirror_element_difference(
     actual_tag = _local_tag(actual)
     if expected_tag != actual_tag:
         return f"{path}: expected <{expected_tag}>, found <{actual_tag}>"
+    if (
+        expected_tag == "metadata"
+        and (expected.text or "") != (actual.text or "")
+    ):
+        return f"{path}: metadata payload differs"
 
     expected_attrs = _mirror_comparable_attributes(
         expected,
@@ -2991,8 +3070,8 @@ def _mirror_element_difference(
                     f"{expected_value!r}, found {actual_value!r}"
                 )
 
-    expected_children = list(expected)
-    actual_children = list(actual)
+    expected_children = list(_mirror_comparison_children(expected))
+    actual_children = list(_mirror_comparison_children(actual))
     if len(expected_children) != len(actual_children):
         expected_tspans = sum(
             _local_tag(child) == "tspan" for child in expected_children
@@ -3076,10 +3155,12 @@ def _mirror_slide_local_difference(
         expected_root,
         tuple(expected_children),
         expected_spec.svg_path,
+        ignore_json_native_preview=True,
     ) != _scope_visual_resources_signature(
         actual_root,
         tuple(actual_children),
         actual_spec.svg_path,
+        ignore_json_native_preview=True,
     ):
         return "svg: referenced defs, CSS, root styling, or asset identity differs"
     return None
@@ -3180,12 +3261,14 @@ def template_prototype_errors(
                 prototype.master_elements,
                 include_skin=literal_visual,
                 asset_identity=literal_visual,
+                ignore_json_native_preview=literal_visual,
             )
             actual_master_structure = _structure_subtree_signature(
                 spec.svg_path,
                 spec.master_elements,
                 include_skin=literal_visual,
                 asset_identity=literal_visual,
+                ignore_json_native_preview=literal_visual,
             )
         except TemplateStructureError as exc:
             errors.append(str(exc))
@@ -3246,7 +3329,8 @@ def template_prototype_errors(
                     f"{spec.svg_path.name}: mirror Slide-local non-text visuals "
                     f"differ from prototype {reference.svg_path.name}; preserve "
                     "grouping, geometry, paint, effects, and referenced asset "
-                    "identity, changing only visible text content"
+                    "identity; only visible text content and JSON-first derived "
+                    "preview children may change"
                     + (f"; first difference: {difference}" if difference else "")
                 )
 
@@ -3256,12 +3340,14 @@ def template_prototype_errors(
                 prototype.layout_elements,
                 include_skin=literal_visual,
                 asset_identity=literal_visual,
+                ignore_json_native_preview=literal_visual,
             )
             actual_layout_structure = _structure_subtree_signature(
                 spec.svg_path,
                 spec.layout_elements,
                 include_skin=literal_visual,
                 asset_identity=literal_visual,
+                ignore_json_native_preview=literal_visual,
             )
             if literal_visual:
                 expected_placeholder_visual = _structure_subtree_signature(
@@ -3270,6 +3356,7 @@ def template_prototype_errors(
                     include_skin=True,
                     include_text=False,
                     asset_identity=True,
+                    ignore_json_native_preview=True,
                 )
                 actual_placeholder_visual = _structure_subtree_signature(
                     spec.svg_path,
@@ -3277,6 +3364,7 @@ def template_prototype_errors(
                     include_skin=True,
                     include_text=False,
                     asset_identity=True,
+                    ignore_json_native_preview=True,
                 )
             else:
                 expected_placeholder_visual = ()

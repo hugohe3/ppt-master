@@ -6,7 +6,7 @@ import math
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from .marker_attributes import native_import_source
+from .marker_attributes import native_import_source, native_json_is_authoritative
 
 from ..drawingml.context import ConvertContext
 from ..drawingml.utils import (
@@ -121,19 +121,32 @@ def _classic_chart_style(
     inherited_styles: dict[str, str] | None = None,
 ) -> dict[str, str | None]:
     inherited_styles = inherited_styles or {}
-    fallback_background = _inferred_chart_background(elem)
-    text_color = _most_common_color(
-        _fallback_text_colors(elem, inherited_styles.get("fill"))
+    json_authority = native_json_is_authoritative(elem)
+    fallback_background = None if json_authority else _inferred_chart_background(elem)
+    text_color = (
+        None
+        if json_authority
+        else _most_common_color(
+            _fallback_text_colors(elem, inherited_styles.get("fill"))
+        )
     ) or "404040"
-    stroke_colors = _fallback_stroke_colors(elem, inherited_styles.get("stroke"))
+    stroke_colors = (
+        []
+        if json_authority
+        else _fallback_stroke_colors(elem, inherited_styles.get("stroke"))
+    )
     darkest_stroke = min(stroke_colors, key=_relative_luminance) if stroke_colors else None
     lightest_stroke = max(stroke_colors, key=_relative_luminance) if stroke_colors else None
     raw_font_face = _chart_style_value(payload, "font_family", "fontFamily", "font_face", "fontFace")
-    fallback_font_face = _most_common_value(
-        _fallback_text_attr_values(
-            elem,
-            "font-family",
-            inherited_styles.get("font-family"),
+    fallback_font_face = (
+        None
+        if json_authority
+        else _most_common_value(
+            _fallback_text_attr_values(
+                elem,
+                "font-family",
+                inherited_styles.get("font-family"),
+            )
         )
     )
     font_face = str(raw_font_face).strip() if raw_font_face is not None else fallback_font_face
@@ -190,6 +203,8 @@ def _chart_text_sizes(
 ) -> dict[str, int]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     inherited_styles = inherited_styles or {}
+    if elem is not None and native_json_is_authoritative(elem):
+        elem = None
     fallback_font_size = (
         _most_common_font_size(
             _fallback_text_attr_values(
@@ -485,6 +500,8 @@ def _metadata_text(value: Any) -> str | None:
 
 
 def _native_chart_chrome_errors(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
+    if native_json_is_authoritative(elem):
+        return []
     fallback_texts = set(_visible_fallback_texts(elem))
     missing: list[str] = []
 
@@ -515,7 +532,7 @@ def _native_chart_export_payload(
     elem: ET.Element,
     payload: dict[str, Any],
 ) -> tuple[dict[str, Any], list[str]]:
-    if native_import_source(elem) == "pptx":
+    if native_import_source(elem) == "pptx" or native_json_is_authoritative(elem):
         return payload, []
     fallback_texts = set(_visible_fallback_texts(elem))
     output = payload

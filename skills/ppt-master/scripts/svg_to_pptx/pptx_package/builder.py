@@ -5644,8 +5644,8 @@ def create_pptx_with_native_svg(
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used when opaque rasters are re-encoded.
         native_objects: Replace opt-in ``data-pptx-replace-with`` chart/table
-            fallback groups with native PowerPoint Chart/Table objects. Semantic
-            authoring tables are intrinsically native. Default off for other markers.
+            fallback groups with native PowerPoint Chart/Table objects. Formula
+            markers remain intrinsically native; Chart/Table markers stay off otherwise.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         dangerous_nonconforming_export: Apply narrowly defined compatibility
             normalizations before strict SVG conversion. Actual contract,
@@ -5927,13 +5927,9 @@ def create_pptx_with_native_svg(
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
             native_object_mode = (
-                "All registered markers enabled"
+                "Chart/Table replacement enabled"
                 if native_objects
-                else (
-                    "Semantic tables; exact round-trip source charts"
-                    if native_structure_contract is not None
-                    else "Semantic tables only"
-                )
+                else "Chart/Table replacement disabled"
             )
             print(
                 "  Native table/chart objects: "

@@ -1131,6 +1131,7 @@ def _source_proxy_element(
         "data-pptx-av-adj1",
         "data-pptx-av-adj2",
         "data-pptx-import-source",
+        "data-pptx-native-authority",
         "data-pptx-replacement-status",
         "data-pptx-replace-with",
         "data-pptx-placeholder",

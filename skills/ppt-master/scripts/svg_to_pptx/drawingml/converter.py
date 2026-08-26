@@ -34,7 +34,6 @@ from resource_paths import icon_dir_for_project
 from svg_authoring_view import (
     SEMANTIC_OBJECT_ATTRIBUTE,
     SEMANTIC_SHAPE_KIND,
-    SEMANTIC_TABLE_KIND,
 )
 from svg_compatibility import normalize_single_child_group_filters
 
@@ -206,13 +205,6 @@ def _native_replacement_enabled(elem: ET.Element, ctx: ConvertContext) -> bool:
     kind = native_replacement_kind(elem)
     if kind == 'formula':
         return True
-    if (
-        kind == 'table'
-        and elem.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_TABLE_KIND
-    ):
-        return True
-    if elem.get('data-pptx-roundtrip-object') == 'source-chart-package':
-        return kind == 'chart'
     return ctx.native_objects_enabled and kind in {'chart', 'table'}
 
 
@@ -973,6 +965,12 @@ def _roundtrip_graphic_frame(
 ) -> ShapeResult | None:
     """Restore an unchanged relationship-free imported graphicFrame."""
     if elem.get('data-pptx-roundtrip-object') != 'graphic-frame':
+        return None
+    if native_replacement_kind(elem) in {'chart', 'table'}:
+        # Eligible data objects follow the public authority/activation route:
+        # default export keeps their SVG fallback, while explicit native export
+        # rebuilds them from inline JSON. The opaque round-trip payload must not
+        # bypass either decision.
         return None
     if elem.get('data-pptx-object') != 'graphic-frame':
         raise SvgNativeConversionError(
@@ -1860,9 +1858,8 @@ def convert_svg_to_slide_shapes(
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert opt-in ``data-pptx-replace-with`` chart/table
-            markers to native PowerPoint Chart/Table objects. Formula markers and
-            semantic authoring tables are intrinsically native. Default off for
-            other markers.
+            markers to native PowerPoint Chart/Table objects. Formula markers
+            remain intrinsically native; Chart/Table markers stay off otherwise.
         animation_group_overrides: Explicit top-level SVG group ids from
             ``animations.json`` that override the legacy chrome-name fallback.
             Explicit structural layer/role/placeholder markers remain excluded.

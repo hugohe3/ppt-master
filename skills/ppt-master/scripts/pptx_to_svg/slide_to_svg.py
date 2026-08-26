@@ -2051,6 +2051,7 @@ def _render_graphic_table(
             result.native_payload["name"] = node.name
         payload_metadata = _replacement_payload_metadata(result.native_payload)
         replacement_attrs.append('data-pptx-replace-with="table"')
+        replacement_attrs.append('data-pptx-native-authority="json"')
     elif result.native_status:
         replacement_attrs.append(
             'data-pptx-replacement-status="'
@@ -2100,6 +2101,7 @@ def _render_graphic_chart(
             )
         payload_metadata = _replacement_payload_metadata(payload)
         replacement_attrs.append('data-pptx-replace-with="chart"')
+        replacement_attrs.append('data-pptx-native-authority="json"')
     elif result.native_status:
         replacement_attrs.append(
             'data-pptx-replacement-status="'

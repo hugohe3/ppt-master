@@ -62,10 +62,13 @@ from .marker_common import (
     native_marker_transform,
 )
 from .marker_attributes import (
+    JSON_NATIVE_AUTHORITY,
+    NATIVE_AUTHORITY_ATTR,
     NativeMarkerAttributeError,
     native_fallback_kind,
     native_import_source,
     native_metadata_payload_matches,
+    native_json_is_authoritative,
     native_marker_legacy_warnings,
     native_replacement_kind,
     native_replacement_status,
@@ -86,16 +89,20 @@ __all__ = [
     "convert_native_object",
     "estimate_inline_formula_vertical_extent",
     "INLINE_FORMULA_ATTR",
+    "JSON_NATIVE_AUTHORITY",
+    "NATIVE_AUTHORITY_ATTR",
     "NativeMarkerAttributeError",
     "native_fallback_kind",
     "native_import_source",
     "native_metadata_payload_matches",
+    "native_json_is_authoritative",
     "native_marker_legacy_warnings",
     "native_object_marker_warnings",
     "native_replacement_kind",
     "native_replacement_status",
     "native_marker_transform",
     "inline_formula_marker_errors",
+    "require_fresh_native_fallback",
     "snapshot_native_fallback_freshness",
     "stamp_native_fallback_baseline",
     "validate_native_object_marker",
@@ -432,6 +439,16 @@ def _validate_native_object_marker_payload(
         payload = _load_payload(elem, kind)
     except NativeMarkerAttributeError as exc:
         raise RuntimeError(str(exc)) from exc
+    if native_json_is_authoritative(elem):
+        missing_bounds = [
+            key for key in ("x", "y", "width", "height")
+            if payload.get(key) is None
+        ]
+        if missing_bounds:
+            raise RuntimeError(
+                "JSON-authoritative Chart/Table metadata requires explicit "
+                "x/y/width/height; missing " + ", ".join(missing_bounds)
+            )
     bounds_ctx = ctx or _native_marker_validation_context(elem, ancestors)
     off_x, off_y, ext_cx, ext_cy, _ = _validate_bounds_inputs(elem, payload, bounds_ctx)
     validated_data: list[list[Any]] | FormulaSpec | None = None
@@ -505,6 +522,8 @@ def validate_native_object_marker_with_warnings(
         )
         if kind in {"chart", "table"} else []
     )
+    if native_json_is_authoritative(elem):
+        return warnings
     if kind == "table" and isinstance(validated_data, list):
         warnings.extend(_native_table_warnings(elem, validated_data))
     elif kind == "chart":

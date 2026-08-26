@@ -230,6 +230,7 @@ try:
         native_marker_legacy_warnings as _native_marker_legacy_warnings,
         native_replacement_kind as _native_replacement_kind,
         native_replacement_status as _native_replacement_status,
+        require_fresh_native_fallback as _require_fresh_native_fallback,
     )
 except ImportError:
     _INLINE_FORMULA_ATTR = 'data-pptx-inline-formula'
@@ -239,6 +240,7 @@ except ImportError:
     _native_marker_legacy_warnings = None
     _native_replacement_kind = None
     _native_replacement_status = None
+    _require_fresh_native_fallback = None
 
 try:
     from svg_to_pptx.native_objects.marker_status import (
@@ -4093,6 +4095,7 @@ class SVGQualityChecker:
                     'data-pptx-route-status',
                     'data-pptx-replacement-status',
                     'data-pptx-native-status',
+                    'data-pptx-native-authority',
                     'data-pptx-import-source',
                     'data-pptx-native-source',
                 )
@@ -4199,6 +4202,26 @@ class SVGQualityChecker:
 
         for marker in markers:
             marker_id = marker.get('id') or '<unnamed>'
+            replacement_kind = _native_replacement_kind(marker)
+            if (
+                self.canonical_authoring
+                and replacement_kind in {'chart', 'table'}
+            ):
+                if _require_fresh_native_fallback is None:
+                    result['errors'].append(
+                        "Unable to import native fallback freshness validator; "
+                        f"cannot verify canonical marker {marker_id}"
+                    )
+                else:
+                    try:
+                        _require_fresh_native_fallback(
+                            marker,
+                            document_root=root,
+                        )
+                    except RuntimeError as exc:
+                        result['errors'].append(
+                            f"Canonical SVG-first native marker {marker_id}: {exc}"
+                        )
             ancestors = []
             parent = parent_map.get(marker)
             while parent is not None and parent is not root:

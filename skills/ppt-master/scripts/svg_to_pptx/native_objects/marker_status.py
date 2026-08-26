@@ -12,6 +12,8 @@ from .marker_attributes import (
     LEGACY_REPLACEMENT_STATUS_ATTR,
     LEGACY_REPLACE_WITH_ATTR,
     LEGACY_ROUTE_STATUS_ATTR,
+    JSON_NATIVE_AUTHORITY,
+    NATIVE_AUTHORITY_ATTR,
     REPLACEMENT_STATUS_ATTR,
     REPLACE_WITH_ATTR,
     NativeMarkerAttributeError,
@@ -102,6 +104,7 @@ def native_marker_status_errors(elem: ET.Element) -> list[str]:
     visual_raw = elem.get(FALLBACK_KIND_ATTR)
     legacy_visual_raw = elem.get(LEGACY_FALLBACK_KIND_ATTR)
     route_raw = elem.get(LEGACY_ROUTE_STATUS_ATTR)
+    authority_raw = elem.get(NATIVE_AUTHORITY_ATTR)
     try:
         visual = native_fallback_kind(elem)
         native = native_replacement_kind(elem)
@@ -137,6 +140,15 @@ def native_marker_status_errors(elem: ET.Element) -> list[str]:
         )
     if route_raw is not None and route_raw != route:
         errors.append(f"{LEGACY_ROUTE_STATUS_ATTR} must not contain surrounding whitespace")
+    if authority_raw is not None:
+        if authority_raw != authority_raw.strip():
+            errors.append(
+                f"{NATIVE_AUTHORITY_ATTR} must not contain surrounding whitespace"
+            )
+        elif authority_raw != JSON_NATIVE_AUTHORITY:
+            errors.append(
+                f"{NATIVE_AUTHORITY_ATTR} must equal {JSON_NATIVE_AUTHORITY!r}"
+            )
     if visual is not None and visual not in VISUAL_STATUSES:
         errors.append(f"unsupported {FALLBACK_KIND_ATTR} value: {visual!r}")
     if route is not None and route not in ROUTE_STATUSES:
@@ -173,6 +185,11 @@ def native_marker_status_errors(elem: ET.Element) -> list[str]:
     if native and fallback:
         errors.append(
             f"data-pptx-replace-with and {REPLACEMENT_STATUS_ATTR} are mutually exclusive"
+        )
+    if authority_raw is not None and native not in {"chart", "table"}:
+        errors.append(
+            f"{NATIVE_AUTHORITY_ATTR} is allowed only on "
+            f"data-pptx-replace-with chart/table markers"
         )
     return errors
 

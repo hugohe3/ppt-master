@@ -10,6 +10,8 @@ REPLACE_WITH_ATTR = "data-pptx-replace-with"
 LEGACY_REPLACE_WITH_ATTR = "data-pptx-native"
 REPLACEMENT_STATUS_ATTR = "data-pptx-replacement-status"
 LEGACY_REPLACEMENT_STATUS_ATTR = "data-pptx-native-status"
+NATIVE_AUTHORITY_ATTR = "data-pptx-native-authority"
+JSON_NATIVE_AUTHORITY = "json"
 IMPORT_SOURCE_ATTR = "data-pptx-import-source"
 LEGACY_IMPORT_SOURCE_ATTR = "data-pptx-native-source"
 FALLBACK_KIND_ATTR = "data-pptx-fallback-kind"
@@ -64,6 +66,11 @@ def native_replacement_status(elem: ET.Element) -> str:
         )
         or ""
     )
+
+
+def native_json_is_authoritative(elem: ET.Element) -> bool:
+    """Return whether embedded JSON is the declared Chart/Table authority."""
+    return elem.get(NATIVE_AUTHORITY_ATTR) == JSON_NATIVE_AUTHORITY
 
 
 def native_import_source(elem: ET.Element) -> str:

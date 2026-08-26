@@ -1594,8 +1594,7 @@ Recorded narration:
         help=(
             'Replace opt-in data-pptx-replace-with chart/table groups with '
             'PowerPoint native Chart/Table objects. This data-object route may '
-            'normalize styling or omit fallback-only visuals. Semantic authoring '
-            'tables are always native; default off applies to other markers, which '
+            'normalize styling or omit fallback-only visuals. Default-off markers '
             'export as editable SVG-derived DrawingML shapes. The default-flow '
             'output uses <project>_<ts>_native_charts_tables.pptx.'
         ),

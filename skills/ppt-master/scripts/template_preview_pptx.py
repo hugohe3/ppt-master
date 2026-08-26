@@ -389,6 +389,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace an existing review PPTX after an intentional re-export.",
     )
+    parser.add_argument(
+        "--native-charts-and-tables",
+        action="store_true",
+        help=(
+            "Replace eligible SVG chart/table fallbacks with PowerPoint-native "
+            "objects. Default review export keeps the visible SVG fallbacks."
+        ),
+    )
     return parser
 
 
@@ -470,7 +478,7 @@ def main(argv: list[str] | None = None) -> int:
                 enable_notes=False,
                 animation=None,
                 image_optimize=False,
-                native_objects=True,
+                native_objects=args.native_charts_and_tables,
                 pptx_structure="structured",
                 use_layout_placeholder_frames=use_full_placeholder_frames,
                 master_text_style_spec=text_style,

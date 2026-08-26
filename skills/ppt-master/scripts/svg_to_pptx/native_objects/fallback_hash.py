@@ -11,7 +11,10 @@ from pptx_shapes import (
     svg_native_fallback_fingerprint,
 )
 
-from .marker_attributes import native_import_source, native_replacement_kind
+from .marker_attributes import (
+    native_json_is_authoritative,
+    native_replacement_kind,
+)
 
 
 NATIVE_FALLBACK_RUNTIME_ATTR = "data-pptx-runtime-fallback-unchanged"
@@ -46,6 +49,10 @@ def snapshot_native_fallback_freshness(root: ET.Element) -> None:
             and elem.get("data-pptx-roundtrip-object") is None
         ):
             continue
+        if native_json_is_authoritative(elem):
+            elem.attrib.pop(NATIVE_FALLBACK_RUNTIME_ATTR, None)
+            elem.attrib.pop(_NATIVE_FALLBACK_RUNTIME_TOKEN_ATTR, None)
+            continue
         expected, invalid = _expected_native_fallback_hash(elem)
         if invalid:
             elem.set(NATIVE_FALLBACK_RUNTIME_ATTR, "invalid")
@@ -72,7 +79,7 @@ def native_fallback_contract_warnings(
     document_root: ET.Element | None = None,
 ) -> list[str]:
     """Return non-blocking diagnostics for default/checker compatibility."""
-    if elem.get("data-pptx-semantic-object") == "table":
+    if native_json_is_authoritative(elem):
         return []
     expected, invalid = _expected_native_fallback_hash(elem)
     if invalid:
@@ -82,12 +89,10 @@ def native_fallback_contract_warnings(
             "--native-charts-and-tables will fail"
         ]
     if expected is None:
-        if native_import_source(elem) != "pptx":
-            return []
         return [
-            f"imported marker has no {NATIVE_FALLBACK_SHA256_ATTR} baseline; "
-            "the marker remains compatible with Chart/Table replacement, but "
-            "stale fallback edits cannot be detected"
+            f"SVG-authoritative marker has no {NATIVE_FALLBACK_SHA256_ATTR} "
+            "baseline; the shape-based SVG fallback remains available, but "
+            "--native-charts-and-tables will fail"
         ]
     if _native_fallback_is_fresh(
         elem,
@@ -110,13 +115,19 @@ def require_fresh_native_fallback(
     document_root: ET.Element | None = None,
 ) -> None:
     """Fail Chart/Table replacement when a recorded fallback is stale."""
+    if native_json_is_authoritative(elem):
+        return
     expected, invalid = _expected_native_fallback_hash(elem)
     if invalid:
         raise RuntimeError(
             f"{NATIVE_FALLBACK_SHA256_ATTR} must be a 64-digit SHA-256"
         )
     if expected is None:
-        return
+        raise RuntimeError(
+            f"SVG-authoritative native-object marker requires "
+            f"{NATIVE_FALLBACK_SHA256_ATTR}; --native-charts-and-tables "
+            "stopped because the embedded JSON is not bound to the visible SVG"
+        )
     if _native_fallback_is_fresh(
         elem,
         expected,

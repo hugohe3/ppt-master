@@ -4,8 +4,9 @@ PPT Master - Mirror Template Materializer
 
 Materialize a deterministic structured SVG template workspace from one Type A
 PPTX import workspace. The editable authoring IR is the only authoring input;
-lossless SVG files are consulted solely to restore unchanged supported source
-objects. Final templates and imported vectors contain no IR-only source refs.
+lossless SVG files are consulted solely to validate source identity and recover
+small non-visible semantics. Final templates keep the compact authoring tree and
+contain no IR-only source refs.
 
 Usage:
     python3 scripts/mirror_template_materialize.py \
@@ -213,6 +214,8 @@ class SlotPlan:
 
 @dataclass
 class RestorationStats:
+    # Retained for report compatibility. Mirror materialization no longer
+    # rehydrates visible source subtrees, so this counter remains zero.
     rehydrated_refs: int = 0
     fallback_refs: int = 0
     structural_refs: int = 0
@@ -1149,16 +1152,16 @@ def _absolutize_local_hrefs(root: ET.Element, base_dir: Path) -> None:
             )
 
 
-def _rehydrate_tree(
+def _validate_authoring_tree(
     root: ET.Element,
     document: AuthoringDocument,
     *,
     excluded_refs: set[str],
 ) -> RestorationStats:
-    source_root = _parse_svg(document.source_path)
+    """Inspect source-ref hashes while preserving the compact authoring tree."""
     stats = RestorationStats()
 
-    def restore(element: ET.Element) -> ET.Element:
+    def validate(element: ET.Element) -> None:
         source_ref = element.get(SOURCE_REF_ATTRIBUTE)
         record = document.source_refs.get(source_ref or "")
         contains_semantic_object = any(
@@ -1169,35 +1172,24 @@ def _rehydrate_tree(
             raise MirrorMaterializationError(
                 f"{document.name} contains unknown source ref {source_ref!r}"
             )
-        if source_ref and source_ref in excluded_refs:
-            stats.structural_refs += 1
-        elif source_ref and contains_semantic_object:
-            stats.semantic_refs += 1
-        elif source_ref and record is not None:
+        if source_ref and record is not None:
             actual_hash = semantic_subtree_sha256(
                 element,
                 ignored_attributes=frozenset({SOURCE_REF_ATTRIBUTE}),
             )
-            if actual_hash == record.initial_authoring_subtree_sha256:
-                restored = copy.deepcopy(_source_element(source_root, record.source_path))
-                for marker in _fresh_native_fallbacks(restored):
-                    marker.set(_FRESH_NATIVE_FALLBACK_ATTR, "true")
-                _absolutize_local_hrefs(restored, document.source_path.parent)
-                stats.rehydrated_refs += 1
-                return restored
-            stats.fallback_refs += 1
+            hash_changed = actual_hash != record.initial_authoring_subtree_sha256
 
-        children = list(element)
-        for index, child in enumerate(children):
-            replacement = restore(child)
-            if replacement is child:
-                continue
-            replacement.tail = child.tail
-            element.remove(child)
-            element.insert(index, replacement)
-        return element
+            if source_ref in excluded_refs:
+                stats.structural_refs += 1
+            elif contains_semantic_object:
+                stats.semantic_refs += 1
+            elif hash_changed:
+                stats.fallback_refs += 1
 
-    restore(root)
+        for child in element:
+            validate(child)
+
+    validate(root)
     return stats
 
 
@@ -1345,9 +1337,13 @@ def _prepared_document(
 ) -> tuple[ET.Element, RestorationStats]:
     root = _parse_svg(document.authoring_path)
     fresh_native_fallbacks = _fresh_native_fallbacks(root)
+    stats = _validate_authoring_tree(root, document, excluded_refs=excluded_refs)
+    _annotate_unchanged_explicit_text_breaks(
+        root,
+        document,
+        set(document.source_refs),
+    )
     _absolutize_local_hrefs(root, document.authoring_path.parent)
-    stats = _rehydrate_tree(root, document, excluded_refs=excluded_refs)
-    _annotate_unchanged_explicit_text_breaks(root, document, excluded_refs)
     for marker in fresh_native_fallbacks & set(root.iter()):
         marker.set(_FRESH_NATIVE_FALLBACK_ATTR, "true")
     return root, stats
@@ -2737,8 +2733,8 @@ def _materialize_icon(
             f"expected {record.expected_sha256}, found {actual_sha256}"
         )
     root = _parse_svg(record.asset_path)
+    stats = _validate_authoring_tree(root, document, excluded_refs=set())
     _absolutize_local_hrefs(root, record.asset_path.parent)
-    stats = _rehydrate_tree(root, document, excluded_refs=set())
     _strip_source_refs(root)
     return root, stats
 
