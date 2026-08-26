@@ -84,7 +84,7 @@
 | 关注点 | 状态 | 说明 |
 |---|---|---|
 | 画布尺寸 | 系统化 | 画布契约选定演示文稿格式；SVG `viewBox` 是页面几何的唯一真值，配 fail-closed 校验，且同一 deck 的所有页面必须使用同一格式 |
-| Theme | 系统化 | 有锁的 Default 导出根据配色与字体合同逐 deck 派生 `clrScheme`、major/minor 字体与 Master 标题/正文默认字号；无锁的 Quick 保留转换器默认 Theme 脚手架，SVG 派生的页面颜色与字体仍按直接值写入 |
+| Theme | 系统化 | 有锁的 Default 导出根据配色与字体合同逐 deck 派生 `clrScheme`、major/minor 字体与 Master 标题／正文默认字号。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值；SVG 派生的页面颜色与字体仍按直接值写入 |
 | 字体嵌入 | 有意边界 | 从不在包内嵌入字体；品牌 / 网络字体只有确认目标系统可用后才领衔，否则导出安全字体族，并把原意向字体记录在 Design Spec 中 |
 | 幻灯片节 | 有意的不对称 | 源保留型原生路线把既有节元数据作为未改动的包结构保留；生成或重建页面列表的路线不创作 PowerPoint 原生节，因为页面角色与可选的 Design Spec Part 并不构成所有路线都具备的必需章节合同。节只改变缩略图栏的组织方式，从不改变任何页面外观；长 deck 需要分组时，在 PowerPoint 里手动分节约一分钟，且只做一次 |
 | Master / Layout | 系统化 | 结构化路线输出真实的 `p:sldMaster` / `p:sldLayout` part |
@@ -169,7 +169,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 会做：通过 prompt 精简 / 缓存命中率提升带来的间接改善。
 
-显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist、确认和首屏 gate，随后创作 SVG、运行一次无锁最终质量门，再导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，包内保留转换器默认 Theme 脚手架，而不是从 lock 派生主题色、字体与 Master 标题/正文默认字号。由于没有已确认的设计契约、首屏校准或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
+显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist、确认和首屏 gate，随后创作 SVG、运行一次无锁最终质量门，再导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约、首屏校准或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 默认 Generate 流程仍坚持质量优先。
 

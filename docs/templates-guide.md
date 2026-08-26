@@ -65,9 +65,10 @@ not infer a specific template from the topic.
 > request are validated and used directly, with at most one contribution per
 > kind. Layout and Deck may coexist, with Layout taking structural precedence;
 > a multi-kind root contributes all of its specs.
-> No exact root means free design. Bare names still do not resolve. Quick remains
-> a lockless flat export, so Layout/Deck prototypes are authoring inputs rather
-> than reusable native Master/Layout output.
+> No exact root means free design. Bare names still do not resolve. Quick is
+> lockless, not structureless: free design and Brand/Style-only output stays
+> flat, while an installed Layout/Deck structure owner remains explicit
+> Master/Layout/slot metadata in the authored SVGs and exported PPTX.
 
 ### How to use the selector
 
@@ -100,6 +101,16 @@ workspaces into the project's `templates/`, `images/`, and `icons/`. Final
 Stage 2 then compares the confirmed communication contract with that installed
 state; `template_application` describes **how** to use it and never chooses
 **which** template to use.
+
+`template_application` is one natural-language paragraph, not a mode selector.
+Explicit user instructions win; otherwise the AI reads every installed template
+SVG, decides from the current content, and defaults to reference-led use when no
+stronger fit exists. Reference-led use may redesign after studying the full
+roster; augment-only preserves existing non-slot objects, permits slot edits,
+and only adds; replacement-only changes information carriers while preserving
+the rest. These are examples, not fixed options. Any prototype-specific exception
+names the exact SVG basename. Quick makes and freezes the same paragraph only in
+its active context instead of writing confirmation/spec artifacts.
 
 > **Current-workspace preflight:** Step 3 accepts only a workspace root exposing its Design Spec under `templates/`. Flat-root, former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
 

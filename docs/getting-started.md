@@ -114,8 +114,12 @@ Quick mode never opens the Confirm UI template selector. Give it up to one exact
 Brand / Style / Layout / Deck workspace root per kind and it validates,
 installs, and uses them directly; give it no exact root and it uses free design.
 A bare template name or style phrase is still only a design brief. Quick keeps
-its lockless flat export, so Layout / Deck prototypes guide the authored pages
-but do not compile into reusable native Master / Layout objects.
+its lockless workflow but preserves template capability: free design and
+Brand / Style-only output stays flat, while a supplied Layout / Deck workspace
+keeps explicit Master / Layout / slot metadata in the authored SVGs and compiles
+it into reusable native structure. Before P01, the agent reads every installed
+template SVG and freezes one natural-language application paragraph in active
+context; no confirmation/spec artifact is created.
 
 It does not skip capabilities: source conversion, research on identified factual gaps, shared aesthetic guidance, image / icon preparation, and native-shape / chart / table authoring still run as needed. Structural formulas are authored directly as native PowerPoint markers rather than prepared as image assets. A missing explicitly selected manual asset or other irreplaceable file dependency blocks until you provide it. If automated AI generation or required dependent slicing is exhausted, Quick removes the failed jobs and stale manifest entries, replans with native editable text/SVG or already-prepared non-AI assets, continues the same run, and reports the replacement in its final handoff.
 

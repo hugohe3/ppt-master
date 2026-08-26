@@ -1875,9 +1875,15 @@
             },
             {
               "path": "skills/ppt-master/workflows/stages/apply-template-workspace.md",
-              "role": "compatibility",
-              "fingerprint": "4375357b2252",
-              "reason": "This site documents a legacy or omission compatibility boundary."
+              "role": "consumer",
+              "fingerprint": "2a2c42538a76",
+              "reason": "This stage documents how each Generate runtime consumes the prototype mapping."
+            },
+            {
+              "path": "skills/ppt-master/references/shared-standards-core.md",
+              "role": "reference",
+              "fingerprint": "846de4145cbe",
+              "reason": "This reference distinguishes durable Default mappings from Quick active-context use."
             }
           ]
         },
@@ -1906,7 +1912,7 @@
             {
               "path": "skills/ppt-master/references/shared-standards-core.md",
               "role": "reference",
-              "fingerprint": "8afb713e37e8",
+              "fingerprint": "e27448d68611",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {

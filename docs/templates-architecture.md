@@ -23,7 +23,7 @@ Every newly created Layout/Deck SVG is a complete preview with root Master/Layou
 
 The four are **parallel reusable-rule bundles**, not PowerPoint package-object types. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
-Each installed spec keeps its own `kind` and id; there is no merged project spec and no combined capability label. The routing consequence is derived while reading: structure comes from an installed Layout or Deck, identity from an installed Brand or Deck, direction from an installed Style. A project-local Brand + Layout pair therefore has both capabilities installed without being promoted into a reusable library Deck or inventing application context. The current project's Stage-1 communication contract supplies that context. Strategist derives the template application plan internally; the confirmation page exposes no template mode controls.
+Each installed spec keeps its own `kind` and id; there is no merged project spec and no combined capability label. The routing consequence is derived while reading: structure comes from an installed Layout or Deck, identity from an installed Brand or Deck, direction from an installed Style. A project-local Brand + Layout pair therefore has both capabilities installed without being promoted into a reusable library Deck or inventing application context. The current project's Stage-1 communication contract supplies that context. Strategist derives the template application plan internally; confirmation exposes the editable natural-language plan, not internal reuse/adherence mode controls.
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -417,7 +417,8 @@ ownership.
 ### Segment ownership is resolved while reading
 
 The consuming role — Default final Stage 2, or Quick's agent before authoring —
-reads every installed spec and resolves these segments in context:
+reads every installed spec and, when Layout/Deck owns structure, every installed
+SVG prototype, then resolves these segments in context:
 
 | Segment | Starting owner |
 |---|---|
@@ -503,7 +504,22 @@ Bitmaps share the workspace `images/` pool and template SVGs reference them thro
 
 ### Strategist confirmation stage behavior per kind
 
-Installing a template does not narrow away the communication question. Stage 1 confirms the same open communication contract together with, but independently from, the template choice. The communication recommendation uses only the current request, source facts, conversation constraints, and project initialization; even template canvas is excluded. Only after Stage 1 closes and any selection is installed does final Stage 2 inspect that state and confirm the complete solution and production plan. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck contributes descriptive reusable application context for comparison, not the current project's contract. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. It otherwise inspects the effective prototypes—Layout when present, otherwise Deck—and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. Confirm UI exposes Free design / Use templates and candidate selectors, but not internal reuse/adherence fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
+Installing a template does not narrow away the communication question. Stage 1 confirms the same open communication contract together with, but independently from, the template choice. The communication recommendation uses only the current request, source facts, conversation constraints, and project initialization; even template canvas is excluded. Only after Stage 1 closes and any selection is installed does final Stage 2 inspect that state and confirm the complete solution and production plan. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck contributes descriptive reusable application context for comparison, not the current project's contract. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. It otherwise inspects every effective prototype—Layout when present, otherwise Deck—and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it.
+
+Default confirms one natural-language `template_application` paragraph; Quick
+freezes the same decision only in active context. Explicit user wording wins,
+otherwise the agent decides from content and the complete SVG roster, with
+reference-led use as the fallback. Reference, augment-only, and
+replacement-only are descriptive patterns rather than fixed fields. Every
+prototype-specific exception names the exact SVG basename. Runtime choice does
+not change structural capability: free/Brand/Style-only output is flat, while
+Layout/Deck output preserves explicit Master/Layout/slot metadata unless the
+user explicitly requests visual-only use. Confirm UI exposes Free design / Use
+templates and the prose field, but not internal reuse/adherence fields. Planning
+semantics live in `references/strategist.md` and
+`references/strategist-template.md`; `templates/schemas/spec_lock.schema.json`
+owns the durable Default machine structure, while Quick validates the all-page
+SVG structure contract directly.
 
 ---
 

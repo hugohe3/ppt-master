@@ -123,8 +123,8 @@ After that root-level copy, kinds have these downstream effects:
 | Kind | Consumption behavior |
 |---|---|
 | `brand` | Identity is constrained; structure remains free unless the selected set also includes Layout or Deck. |
-| `style` | Expose reusable direction/method without identity truth, page prototypes, or native structure. Default Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. Quick always realizes the resolved combination as flat pages. A Style workspace never activates visual review. |
-| `layout` | Expose the actual reusable structure and take structural precedence over Deck; Default Strategist later inspects these prototypes, while Quick's current agent uses them for immediate flat authoring decisions in active context. |
+| `style` | Expose direction/method without identity, prototypes, or structure. Style-only and Style + Brand stay flat; Style + Layout/Deck follows that structure owner. Style never activates visual review. |
+| `layout` | Expose reusable structure and take precedence over Deck; Default plans against its prototypes, while Quick reads the complete roster and authors its Master/Layout/slot contract directly. |
 | `deck` | Expose descriptive application context and identity. It also supplies structure and the actual prototype roster only when no Layout is selected. |
 
 **Atomic install preflight**:
@@ -151,8 +151,11 @@ is installation input, not a later prompt source. If source and target are the
 same project root, that in-place root already satisfies this boundary.
 
 Template SVGs are complete Slide authoring prototypes, not export-time overlays. They already resolve Master + Layout context, so `page_layouts` selects one directly. Standalone Master/Layout definition SVGs are invalid; an unselected authored Slide prototype may still back a reusable Layout definition.
-Quick instead realizes the selected prototypes into complete flat, Slide-local
-SVGs and never writes `page_layouts` or Master/Layout/placeholder metadata.
+Default records `page_layouts` and the durable structure lock. Quick has no such
+planning artifact: it freezes the natural-language application paragraph in
+active context and writes the selected Master/Layout/slot contract directly
+into the complete output SVG pages. Quick stays flat only without a Layout/Deck
+structure owner or under an explicit visual-only instruction.
 
 For a template-owned Chart/Table carrying
 `data-pptx-native-authority="json"`, the installed inline JSON remains the

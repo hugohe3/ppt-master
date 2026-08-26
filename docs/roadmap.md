@@ -84,7 +84,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Concern | Status | Notes |
 |---|---|---|
 | Slide size | Systematized | The canvas contract selects the presentation format; the SVG `viewBox` is the single geometry truth with fail-closed validation, and every page in a deck must agree on one format |
-| Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Lockless Quick keeps converter-default Theme scaffolding while writing SVG-derived page colors and fonts as direct values |
+| Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Flat Quick keeps converter-default Theme scaffolding. Structured Quick retains installed per-Master source Themes when available and infers Master title/body size defaults from semantic slot carriers; SVG-derived page colors and fonts remain direct values |
 | Font embedding | Bounded by design | Fonts are never embedded in the package; a brand or web face leads only after confirmed availability on the target system, otherwise export uses a safe family and keeps the intended face recorded in the Design Spec |
 | Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
 | Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
@@ -177,9 +177,10 @@ planning phase no longer happens — the Strategist reference load, the
 trip — its token cost disappears with it, while per-page SVG authoring is
 unchanged. It keeps the same page-level visual and resource-authoring
 capabilities and the shared SVG/resource blocking standards. It does not run
-Spec Lock alignment checks; its package keeps converter-default Theme
-scaffolding instead of deriving Theme colors, fonts, and Master title/body size
-defaults from a lock. Without a confirmed design contract, first-page
+Spec Lock alignment checks or derive a current-project Theme from a lock. Flat
+Quick keeps converter-default Theme scaffolding; structured Quick retains
+installed per-Master source Themes when available and infers Master title/body
+size defaults from semantic slot carriers. Without a confirmed design contract, first-page
 calibration, or resumable decision history it does not promise the same design
 decisions or wall-clock time as Default.
 

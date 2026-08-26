@@ -361,9 +361,11 @@ Quick omits the separate planning phase, but the repository does not document
 a measured or guaranteed token reduction; per-page SVG authoring remains.
 Quick keeps the same page-level visual and
 resource-authoring capabilities and the shared SVG/resource blocking
-standards. It does not run Spec Lock alignment checks; its package keeps
-converter-default Theme scaffolding instead of deriving Theme colors, fonts,
-and Master title/body size defaults from a lock. It does not promise the same
+standards. It does not run Spec Lock alignment checks or derive a
+current-project Theme from a lock. Flat Quick keeps converter-default Theme
+scaffolding; structured Quick retains installed per-Master source Themes when
+available and infers Master title/body size defaults from semantic slot
+carriers. It does not promise the same
 design decisions or wall-clock time as Default because it has no confirmed
 design contract, first-page calibration, or resumable decision history.
 

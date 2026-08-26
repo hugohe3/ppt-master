@@ -709,8 +709,11 @@ python3 scripts/svg_to_pptx.py <project_path> --quick-generate
 
 This direct-export flag takes `svg_output/` as its authored page source, resolves
 valid project-local resources referenced by those pages, infers one consistent
-canvas, uses flat converter-default package scaffolding, and does not read or
-require `spec_lock.md`. Notes, motion, narration, native objects, conversion
+canvas, and does not read or require `spec_lock.md`. It infers one all-page PPTX
+structure mode from the authored SVGs: no structure metadata creates clean flat
+package scaffolding; any structure metadata requires every page to satisfy the
+complete Master/Layout/slot contract and creates structured output. A mixed or
+partial roster fails closed. Notes, motion, narration, native objects, conversion
 trace, and other ordinary exporter capabilities remain available; notes,
 custom object animation, and narration start off in Quick and may be enabled
 when needed. The exporter refuses a missing, blocking, non-final, or stale

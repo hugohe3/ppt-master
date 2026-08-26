@@ -45,7 +45,7 @@ PowerPoint 意图
 | 对象位置与尺寸 | SVG 绝对坐标与元素边界 | `a:xfrm` 偏移和范围 | 经坐标换算后为 `Native-normalized` | 数值必须有限，并使用已登记坐标语法 |
 | Z 顺序 | SVG 源码顺序，由后到前 | PowerPoint shape tree 顺序 | 按 shape tree 顺序重建 | 不得依赖浏览器专属堆叠行为 |
 | 旋转、缩放、平移与镜像 | 受支持的 SVG transform 形式 | DrawingML transform 或归一化几何 | `Native-normalized`；matrix 可能被分解 | 已登记 transform 合同以外的倾斜与错切不可接受 |
-| 主题颜色与字体 | Default 使用 `spec_lock.md` 锚定的稳定角色；Quick 在当前上下文维持临时设计锚点，但不持久化 lock | Default 派生包内 Theme，并在精确匹配锚点角色时保留 theme token，否则写直接 DrawingML 值；Quick 使用转换器默认 Theme 脚手架，并把 SVG 派生的页面颜色与字体写成直接值 | 已登记角色与直接值为 `Native-stable` | Default 校验 lock 对齐，Quick 跳过该比较；两者都拒绝非法值，字体可移植性与目标系统可用性仅作提示；情境色和 export-safe 一次性字体仍然允许 |
+| 主题颜色与字体 | Default 使用 `spec_lock.md` 锚定的稳定角色；Quick 在当前上下文维持临时设计锚点，但不持久化 lock | Default 派生包内 Theme，并在精确匹配锚点角色时保留 theme token，否则写直接 DrawingML 值。Flat Quick 使用转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值；SVG 页面颜色与字体仍写成直接值 | 已登记角色与直接值为 `Native-stable` | Default 校验 lock 对齐，Quick 跳过该比较；两者都拒绝非法值，字体可移植性与目标系统可用性仅作提示；情境色和 export-safe 一次性字体仍然允许 |
 | PowerPoint 包身份 | `spec_lock.md` 结构声明与打包器 | Presentation、Master、Layout、relationship 与 content type 注册 | 从包结构读回，不从页面外观推断 | 最终包读回必须与声明的 roster 一致 |
 
 受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards-core.md` §4.1](../../skills/ppt-master/references/shared-standards-core.md#41-semantic-svg-marker-contract)。

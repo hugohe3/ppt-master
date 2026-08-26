@@ -113,8 +113,11 @@ Default Generate 把模板选择放在 Stage 1，与沟通契约同屏确认；�
 快速模式不会打开 Confirm UI 的模板选择页。每个 kind 最多给出一个精确的
 Brand / Style / Layout / Deck 工作区 root，它会直接校验、安装并使用；没有
 给出精确 root，就直接自由设计。只写模板名或风格词仍然只是设计说明。
-Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创作，但不会
-编译成可复用的原生 Master / Layout 对象。
+Quick 保持无锁流程，但不丢失模板能力：自由设计及仅 Brand / Style 的输出
+保持 flat；一旦提供 Layout / Deck 工作区，创作 SVG 中的显式 Master /
+Layout / slot 元数据会保留，并编译成可复用原生结构。P01 前，agent 会读取
+全部已安装模板 SVG，并在当前上下文冻结一段自然语言应用方案；不创建确认页
+或 spec 工件。
 
 它不跳过能力：来源转换、事实缺口研究、共享美学规范、图片 / 图标准备，以及原生形状 / 图表 / 表格创作仍按需运行。结构性公式直接写成 PowerPoint 原生 marker，不再作为图片素材准备。显式选择的 manual 素材或其他不可替代的文件依赖缺失时，Quick 会阻塞并索取文件；自动 AI 生成或其必需切片路径耗尽时，Quick 会移除失败任务与过期 manifest 条目，改用原生可编辑文字 / SVG 或已经备好的非 AI 素材，继续本次运行，并在最终交接中披露替代结果。
 

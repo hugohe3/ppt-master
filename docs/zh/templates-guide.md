@@ -56,8 +56,9 @@ root 时会预选，多 root 仍只作为未选候选。系统不会根据主题
 > 校验并使用，每个 kind 最多一份；Layout 与 Deck 可以共存，结构由 Layout
 > 优先提供。多 kind root
 > 会原子地贡献其全部 spec。没有精确 root 就直接自由设计，裸模板名仍不会
-> 被解析。Quick 继续采用无锁 flat 导出，因此 Layout/Deck 原型是页面创作
-> 输入，不会变成可复用的原生 Master/Layout 输出。
+> 被解析。Quick 是无锁而不是无结构：自由设计和仅 Brand/Style 的输出保持
+> flat；一旦由 Layout/Deck 提供结构，创作 SVG 与导出的 PPTX 都保留显式
+> Master/Layout/slot 元数据。
 
 ### 怎么使用选择器
 
@@ -82,6 +83,15 @@ Layout 提供结构。指定地址最多选一个，并原子携带
 运行统一 apply 阶段，把所选工作区分别校验并安装到当前项目的 `templates/`、
 `images/`、`icons/`。最终 Stage 2 再把已确认沟通契约与安装状态适配；
 `template_application` 只描述**如何使用**，不负责决定**选哪个模板**。
+
+`template_application` 是一段自然语言，不是模式选择器。用户有明确要求时以
+用户要求为准；没有时，AI 阅读全部已安装模板 SVG，根据当前内容判断；没有
+更强理由时，默认按参照型使用。参照型是在读完整套 SVG 后允许重新设计；增强型
+冻结已有非 slot 对象、允许修改 slot，并且只新增；替换型只更换信息载体，
+其余内容保持不动。这些只是常见意图表达，不是固定选项。任何只针对某一原型的
+规则都必须写出精确 SVG 文件名。Quick
+也形成并冻结同样的一段方案，只是保留在当前上下文，不写确认页、Design Spec
+或 lock。
 
 > **当前工作区预检：** Step 3 只接受在 `templates/` 下提供 Design Spec 的工作区根目录。根目录平铺、旧的原子 placeholder、未映射 Master/Layout 等语义旧包都会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
 

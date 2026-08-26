@@ -69,12 +69,14 @@ loads both runtimes.
 stays inside Generate PPTX but owns an explicit SVG → PPTX short circuit. Page
 count alone never activates or blocks it. Conversion, bounded research, and
 project-local resources remain available. Package capabilities may be requested
-or agent-selected. Quick may consume exact Brand/Style/Layout/Deck workspaces as
-flat authoring inputs, with at most one contribution per kind. All four kinds
-may combine; Layout takes structural precedence over Deck. A multi-kind project
-root contributes all of its specs atomically;
-compiling reusable Master/Layout/placeholder structure still requires the
-default lock-backed Generate pipeline. Once selected, Quick
+or agent-selected. Quick may consume exact Brand/Style/Layout/Deck workspaces,
+with at most one contribution per kind. All four kinds may combine; Layout takes
+structural precedence over Deck. A multi-kind project root contributes all of
+its specs atomically. Brand/Style-only and free-design Quick pages remain flat;
+when Layout or Deck owns structure, Quick authors the complete explicit
+Master/Layout/slot metadata and its lockless checker/exporter infers structured
+output from that all-page SVG contract. Runtime choice controls interaction and
+durable planning, not whether an installed structural template survives. Once selected, Quick
 is the complete runtime procedure and never loads `generate-pptx.md`; Default
 never loads `quick-generate.md`. Image to PPTX is the narrow profile-owned
 Quick activation; Beautify may select either runtime, but never both.
@@ -86,7 +88,7 @@ Quick activation; Beautify may select either runtime, but never both.
 **Hard rule — no direct structure grafting**: An existing PPTX or SVG is never upgraded in place by adding Master/Layout/placeholder structure. If reusable native structure is required:
 
 1. Run [`create-template`](./create-template.md) to produce a separate validated workspace.
-2. Pass that workspace root to [`generate-pptx`](./generate-pptx.md) as a Stage-1 template candidate.
+2. Pass that workspace root to Default as a Stage-1 template candidate, or supply its exact root directly to explicit Quick Generate.
 3. Author new structured SVG pages whose Master/Layout contract exists from their first generated draft.
 4. Export a new PPTX from those pages.
 
@@ -99,7 +101,7 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | One or more images containing page frames + explicit final-deck reconstruction intent | Generate PPTX with the Codex-supported, Quick-only [`image-to-pptx`](./profiles/image-to-pptx.md); normalize page frames first and do not infer reusable native structure from pixels |
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
-| Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Stage-1 template choice |
+| Current template workspace root + content | Default: [`generate-pptx`](./generate-pptx.md) Stage-1 template choice; explicit Quick: direct validated workspace application |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
 | Request to add a master directly to an existing PPTX/SVG | Unsupported; explain the Create Template → Generate PPTX lifecycle |
 

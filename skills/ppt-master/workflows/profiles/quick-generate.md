@@ -27,7 +27,7 @@ never change CWD or inherit a prior shell working directory.
 | Interaction | The current main agent decides content, design, resources, and implementation without Strategist, Confirm UI, or approval stops |
 | Execution memory | Keep routine page, visual, and resource decisions only in the current active context; losing that context restarts Quick instead of reconstructing a plan from project files |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
-| Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
+| Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; before P01, inspect the complete installed template SVG roster and freeze one natural-language application paragraph in active context; when none are supplied, use free design without catalog selection or Confirm UI |
 | Resources | Prepare every project-local image, icon, and required provenance/manifest artifact before its SVG; author native formula markers and hyperlink anchors directly in the affected SVG; sound waits for §4 |
 | Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; installed `templates/design_spec.<kind>.<id>.md` files remain template input |
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
@@ -249,18 +249,30 @@ the project-local asset pools. All later reads use that installed state, never
 the original roots.
 
 Before writing P01, read every installed
-`templates/design_spec.<kind>.<id>.md` once and, for Layout/Deck, inspect the
-relevant SVG prototypes. Apply Brand identity, Style direction/method, the
-selected structure owner's useful prototype geometry, and Deck application
-context directly in the active context under the existing segment precedence
+`templates/design_spec.<kind>.<id>.md` once and, for Layout/Deck, inspect every
+SVG prototype in the installed roster. Apply Brand identity, Style
+direction/method, the selected structure owner's prototype geometry, and Deck
+application context directly in the active context under the existing segment precedence
 ([`apply-template-workspace`](../stages/apply-template-workspace.md) §5). A
 segment owner's instruction about how a value should dominate, recede, or stay
 rare binds as strongly as the value itself; a Style composition or whitespace
 tendency never demotes a Brand's declared dominant color to an incidental
-accent. Follow explicit instructions about literal or visual-only
-use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
-while authoring. Persist no separate template-application artifact. If no
-template was installed, make the same design choices freely.
+accent.
+
+Resolve one concise **Template Application** paragraph before P01 and freeze it
+for this run. Explicit user instructions win. Otherwise decide from the current
+content and the complete installed roster; when no stronger fit exists, default
+to reference-led use of the template's design and structural system. Common
+readings are: reference-led may redesign after full-roster study; augment-only
+freezes existing non-slot objects, permits slot edits, and only adds; replacement-only
+changes information carriers while preserving the rest. These are examples,
+not enum values or a menu. The paragraph states which prototypes may be used, skipped, repeated,
+reordered, or adapted and what stays fixed versus replaceable. Any exceptional
+rule names the exact SVG basename instead of a semantic label such as “cover”.
+Keep the paragraph only in active context; do not create a substitute planning
+artifact. If a detail becomes uncertain later, re-read the exact installed SVG
+instead of relying on memory or reopening the source PPTX. If no template was
+installed, make the same design choices freely.
 
 Before resolving the one-pass design, read this fixed planning-capability batch
 in one pass:
@@ -649,15 +661,25 @@ viewBox. Template canvas is a default, not a compatibility gate; an explicit
 user canvas may adapt the installed visual system. The first SVG establishes
 the export canvas; every remaining page must match it exactly.
 
-**PPTX structure**: author flat, Slide-local SVG only, including when a Layout or
-Deck workspace is installed. In that branch, visibly realize the resolved
-template rules and prototype geometry in the complete pages; do not fall back to
-free design or merely explain how the template could be used. Include the
-complete visible page and all resource references in each SVG; set one root
-`data-pptx-page-role` from `cover`, `toc`, `section`, `content`, or `ending`,
-and omit Master/Layout/layer/placeholder metadata. A request that specifically
-requires reusable native Master/Layout/placeholder output is incompatible with
-the lockless Quick exporter and must use the default lock-backed profile.
+**PPTX structure**: runtime speed does not flatten template structure. Free
+design and Brand/Style-only use author flat, Slide-local SVG and omit
+Master/Layout/layer/placeholder metadata. When Layout or Deck owns structure,
+author every page as a complete structured Slide SVG: preserve or deliberately
+adapt the selected prototype's root Master/Layout identity, fixed layers, and
+semantic slots, then place current Slide content on top. A Style contribution
+never strips that structure. Only an explicit instruction to use the workspace
+as visual language while discarding its structure permits flat output.
+
+Structured Quick pages use the same all-or-none SVG contract as Default: once
+any page declares PPTX structure metadata, every page root declares non-empty
+Master/Layout keys and picker names, and every reused Layout repeats an
+identical fixed-layer/slot contract. The current agent may author a new complete
+Layout under the selected Master when the frozen application paragraph calls
+for adaptation; it never infers ownership from repeated Slide-local geometry.
+The lockless final checker and exporter derive `structured` solely from that
+complete SVG roster. Include all visible content and resource references in each
+SVG, and set one root `data-pptx-page-role` from `cover`, `toc`, `section`,
+`content`, or `ending` independently of the native structure metadata.
 
 **Typography**: name a concrete target-installed/approved PowerPoint family
 under [`shared-standards-core.md`](../../references/shared-standards-core.md)
@@ -764,8 +786,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
 
 `--quick-generate` reads `svg_output/` as the page source and resolves the
 project-local assets referenced by those SVGs. It infers one consistent canvas,
-uses a lockless flat PowerPoint package, and does not force-disable ordinary
-export options. Notes, Custom Animations, and narration remain off unless
+then infers one all-page structure mode: no structure metadata produces a clean
+flat package, while complete explicit Master/Layout/slot metadata produces a
+structured package. It does not read or require `spec_lock.md` and does not
+force-disable ordinary export options. Notes, Custom Animations, and narration remain off unless
 selected by the agent or required by the Quick video rule above. Append
 `--native-charts-and-tables` only when the effective delivery decision
 explicitly requires native Chart/Table objects; marker presence, imported
@@ -801,6 +825,8 @@ or lock.
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
 - [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
 - [x] Resolved SVG pages and their project-local references exist
+- [x] The frozen Template Application paragraph was applied; every installed Layout/Deck SVG was read, and any page-specific exception names an exact SVG basename
+- [x] Quick structure matches the installed template capability: free/Brand/Style-only pages are flat, while a Layout/Deck structure owner remains explicit and all-page consistent unless the user explicitly requested visual-only use
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
 - [x] The current final report's carrier receipt was compared with the retained page jobs and any factual contradiction was repaired before export, without treating counts as quotas
