@@ -766,7 +766,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
 project-local assets referenced by those SVGs. It infers one consistent canvas,
 uses a lockless flat PowerPoint package, and does not force-disable ordinary
 export options. Notes, Custom Animations, and narration remain off unless
-selected by the agent or required by the Quick video rule above. Do not run
+selected by the agent or required by the Quick video rule above. Append
+`--native-charts-and-tables` only when the effective delivery decision
+explicitly requires native Chart/Table objects; marker presence, imported
+origin, and semantic tables never activate replacement implicitly. Do not run
 `finalize_svg.py`. After the validated base export, run
 [`generate-audio`](../stages/generate-audio.md) when Narration Audio is enabled;
 it owns page audio/SRT, narrated PPTX, the optional raw native MP4, and the

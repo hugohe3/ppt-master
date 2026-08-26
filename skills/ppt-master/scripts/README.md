@@ -52,7 +52,7 @@ python3 scripts/update_repo.py
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `workflow_log.py`, `workflow_transcript.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py`, `pptx_delivery_check.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `preset_shape_svg.py`, `shape_boolean_svg.py`, `svg_authoring_view.py`, `authoring_roundtrip.py`, `compact_svg_coordinates.py`, `compact_svg_styles.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py`, `narration_sync.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native shape authoring](../references/native-shape-authoring.md) |
+| SVG pipeline | `preset_shape_svg.py`, `shape_boolean_svg.py`, `svg_authoring_view.py`, `authoring_roundtrip.py`, `compact_svg_coordinates.py`, `compact_svg_styles.py`, `stamp_native_fallbacks.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py`, `narration_sync.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native shape authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Animation resources | `sound_sync.py` | [sound vocabulary and sync](../templates/sounds/README.md); [docs/pptx-animations.md](./docs/pptx-animations.md) |
@@ -118,6 +118,7 @@ python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
 python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
+python3 scripts/stamp_native_fallbacks.py <svg-file-or-directory> --write
 python3 scripts/svg_quality_checker.py <template_workspace>/templates --template-mode --canonical-authoring
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>
 python3 scripts/svg_to_pptx.py <import_workspace> --roundtrip
@@ -166,12 +167,15 @@ deterministic extraction baseline, restores unchanged refs from the immutable
 layered backing, and sends the temporary result through preserve export while
 leaving edited/deleted/new authoring content in place.
 
-`mirror_template_materialize.py` is the deterministic Type A mirror compiler.
-It consumes only the layered `authoring-svg/` IR as editable input, loads its
-tool-only manifest internally, and validates it against immutable `svg/`,
+`mirror_template_materialize.py` is the deterministic Type A mirror
+validator/publisher. Template_Designer first reviews and authors the compact
+layered `authoring-svg/` tree. The command loads its tool-only manifest and
+validates it against immutable `svg/`,
 `analysis/native_structure.json`,
 `svg/inheritance.json`, `sources/source.pptx`, and any extracted-vector
-inventory, then publishes a structured Slide roster atomically. Mirror retains
+inventory, then publishes the current visible authoring tree atomically. It
+never replaces an unchanged visible subtree with lossless source XML; that
+backing supplies provenance and supported non-visible semantics only. Mirror retains
 only the Layout/Master chain reachable from each source Slide. Every output SVG
 resolves Master + Layout + Slide context while keeping layer ownership explicit;
 source identities unused by every Slide produce no SVG.
@@ -375,7 +379,16 @@ Supported parsed column/bar/line/area, pie/doughnut, scatter, and bubble charts 
 
 The ChartEx importer accepts exactly the validated treemap, sunburst, histogram, pareto, box-whisker, waterfall, and funnel data models. Supported hierarchy/category/value/series/subtotal data round-trips to native output; source style, axes, labels, and binning may normalize. Numeric caches must be non-empty and finite with exact contiguous point topology. This is not arbitrary ChartEx import or presentation fidelity, and the ChartEx native writer still only promises valid payload palette entries rather than full source styling.
 
-Active imported table/chart markers carry `data-pptx-fallback-sha256`. Visible fallback edits, reachable SVG fragment-definition changes, marker-local reference-target changes, and marker transforms make the baseline stale: the mandatory quality checker warns, default export remains available, and `--native-charts-and-tables` fails instead of discarding the SVG edit. Generated authoring and reusable templates omit import provenance and a static baseline without warning. Hashless legacy imported markers that still carry PPTX import provenance remain convertible with a checker/replacement-route warning. Legacy `data-pptx-native*`, `data-pptx-visual-status`, and `data-pptx-route-status` spellings and the `--native-objects` option remain read-compatible; generated output and canonical commands use the replacement/fallback names and `--native-charts-and-tables`.
+Imported/template-owned table/chart markers carry
+`data-pptx-native-authority="json"`; their inline JSON is authoritative and the
+visible fallback is a derived preview, so fallback freshness does not veto
+native export. Free-designed markers omit the authority attribute and are
+SVG-first. After their visible fallback and JSON are synchronized, run
+`stamp_native_fallbacks.py ... --write`; missing, invalid, or stale baselines
+leave default fallback export available but make `--native-charts-and-tables`
+fail closed. Only that explicit flag activates Chart/Table replacement; marker
+presence, semantic tables, and imported chart packages do not. Legacy marker
+spellings and `--native-objects` remain read-compatible.
 
 Exporter-canonical classic charts also recover canonical solid series/slice
 colors and exact one- or two-paragraph title styling; two paragraphs retain

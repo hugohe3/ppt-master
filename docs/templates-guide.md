@@ -244,24 +244,24 @@ strategy so deterministic tools can run:
 
 - a compact reusable system when the request calls for distillation;
 - broader source-aligned coverage when the source itself contains useful variants;
-- literal materialization when the request calls for preservation and the source has a complete supported structure contract.
+- compact mirror authoring when the request calls for preservation and the source has a complete supported structure contract.
 
 Layout/Deck frontmatter still records `replication_mode: standard|fidelity|mirror` for tool compatibility and audit. It is an implementation record, not a user-facing choice. Style frontmatter intentionally has no replication/native-structure fields. A brand-neutral Layout cannot literally preserve brand/application facts; the AI either re-authors it as a Layout or keeps those facts in a Deck according to the requested result.
 
 **About sprite sheets**: PPTX-exported assets are often a single large image referenced from multiple slides, each cropping a different region via nested `<svg viewBox=...>` wrappers. In `fidelity` and `mirror` modes this nesting must be preserved — you cannot flatten it to a bare `<image>`, or the crop is lost and the page misaligns. The workflow validates this automatically.
 
-**About native PowerPoint shapes**: the lossless import SVG stays immutable in the temporary analysis workspace as native-payload backing. Template creation uses the lightweight editable `authoring-svg/` IR and its source-ref/hash manifest. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror materializes final template SVGs from the IR, reusing converter-supported payload only for unchanged Slide-local/slot refs; fixed Master/Layout layers remain direct atoms, unsupported or edited objects keep the current SVG fallback, and final templates contain no IR-only refs.
+**About native PowerPoint shapes**: the lossless import SVG stays immutable as source/package evidence and supported non-visible payload backing. Template creation uses the new compact editable `authoring-svg/` tree and its source-ref/hash manifest. Template_Designer reviews/authors that tree for mirror, preserving structure, meaning, and similar presentation without requiring identical SVG code. The publisher validates/composes the current visible tree and never restores ordinary lossless subtrees; final templates contain no IR-only refs. Imported/template-owned Chart/Table JSON remains inline and authoritative, while its compact preview may be approximate.
 
-For a PPTX-backed Type A mirror, that final step is one deterministic command:
+For a PPTX-backed Type A mirror, final validation/publication uses one deterministic command after the authoring review:
 
 ```bash
 python3 skills/ppt-master/scripts/mirror_template_materialize.py \
   "<import_workspace>" "<template_workspace>"
 ```
 
-It validates the IR manifest, immutable hashes for source Slides, their reachable
-native graph and visibility facts, and the corresponding imported-vector closure before atomically publishing the
-source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
+It validates source SHA/known refs, the authoring manifest, reachable native
+graph, visibility/assignment facts, and imported-vector closure before atomically publishing the
+current source-ordered SVG roster and assets. It never
 requires or uses the opt-in `svg-flat/` verification tree as the template source
 and never generates a Design Spec; the designer writes the resolved spec
 against the published roster.
@@ -272,7 +272,7 @@ The Design Spec gives every emitted Slide prototype its normal roster row. When 
 
 Template use is Slide-first: each generated-page SVG already resolves its Master and Layout visuals, so normal authoring selects that complete Slide prototype. The workspace contains no standalone Master/Layout definition SVGs.
 
-“Slide-only” describes the editable SVG roster. A PPTX-backed mirror may also carry tool-only structural sidecars such as `source_themes.json` and `native_payloads.json.gz`; they preserve exact reachable Theme/native data during export and are not page prototypes or AI authoring inputs.
+“Slide-only” describes the editable SVG roster. A PPTX-backed mirror may also carry tool-only structural sidecars such as `source_themes.json` and `native_payloads.json.gz`; they preserve exact reachable Theme plus supported opaque restoration payloads/attribute records and are not page prototypes or AI authoring inputs. Semantic Chart/Table JSON always stays inline in its SVG marker.
 
 **How a mirror-authored workspace is consumed**: source-to-workspace `replication_mode: mirror` is a capability, not a project choice. Strategist inspects the actual prototypes, current content, and any explicit instruction, then decides which pages to select, repeat, skip, or reorder and whether literal, structural, or visual-only reuse is appropriate. Literal reuse copies a complete prototype and edits only allowed visible text values while preserving decoration, sprite crops, geometry, and normalized structured declarations. This never requires the source page count or order.
 

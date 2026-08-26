@@ -109,7 +109,10 @@ leave the rest of the document untouched. An in-place root is not rewritten:
 - If the root contributes the effective structural owner, copy its declared
   SVG roster and other non-bitmap structural files once, including mirror
   `source_themes.json` when present. Do not copy a Deck roster when Layout is
-  selected; its structure is shadowed by design.
+  selected; its structure is shadowed by design. Preserve inline
+  `<metadata type="application/json">` and
+  `data-pptx-native-authority="json"` exactly; semantic Chart/Table JSON never
+  moves into a sidecar during installation.
 - Copy the root's real package-owned `images/` and `icons/` files once. A
   Style-only root has none; reject a Style-only library package carrying asset
   or review payloads.
@@ -150,6 +153,14 @@ same project root, that in-place root already satisfies this boundary.
 Template SVGs are complete Slide authoring prototypes, not export-time overlays. They already resolve Master + Layout context, so `page_layouts` selects one directly. Standalone Master/Layout definition SVGs are invalid; an unselected authored Slide prototype may still back a reusable Layout definition.
 Quick instead realizes the selected prototypes into complete flat, Slide-local
 SVGs and never writes `page_layouts` or Master/Layout/placeholder metadata.
+
+For a template-owned Chart/Table carrying
+`data-pptx-native-authority="json"`, the installed inline JSON remains the
+object's data/native authority. A generated page may retain its existing compact
+preview or regenerate an approximate preview from updated JSON, but it must not
+derive replacement JSON from that preview. Keep the authority marker and JSON
+inside the generated SVG so default fallback and explicit native export remain
+two renderings of one object contract.
 
 
 ## 5. Segment Precedence Is Resolved While Reading

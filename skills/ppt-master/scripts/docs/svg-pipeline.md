@@ -367,8 +367,9 @@ The default run is a dry-run JSON report. `--inplace` atomically replaces only
 changed legacy SVG files. `--keep-native-frames` compacts `data-pptx-bounds`,
 translation values, rotation centers, and matrix `e/f`, while preserving canonical
 authored-preset or inline native frames. `svg_authoring_view.py` separately
-compacts imported model-facing frames because unchanged mirror refs can recover
-their exact coordinates from immutable lossless backing.
+compacts imported model-facing frames because the compact authoring tree owns
+visible coordinates; lossless backing only validates identity and recovers
+supported non-visible semantics.
 
 The compactor never rounds path/points geometry, normalized crop or nested
 `viewBox` ratios, gradient offsets, opacity, scale arguments, rotation angles,
@@ -442,20 +443,34 @@ not progressively extract their remaining parent or sibling geometry. An
 in-place pass over an authoring bundle refreshes `authoring_summary.json`
 automatically.
 
+## `stamp_native_fallbacks.py`
+
+After an SVG-first Chart/Table fallback and its inline JSON projection are
+updated together, validate and bind the visible subtree explicitly:
+
+```bash
+python3 scripts/stamp_native_fallbacks.py <svg-or-directory> --write
+```
+
+Omit `--write` for a read-only preview. The command prevalidates every direct
+Chart/Table marker, skips JSON-first markers, and atomically adds/updates only
+`data-pptx-fallback-sha256` without reformatting the document. The fingerprint
+detects later visible edits; it is not a semantic-equivalence proof.
+
 ## `mirror_template_materialize.py`
 
-Compile one Type A PPTX import workspace into a deterministic structured mirror
-template after the layered authoring IR has been reviewed and edited:
+Validate and publish one Type A PPTX import workspace as a deterministic
+structured mirror after Template_Designer has reviewed/authored the new compact
+layered SVG:
 
 ```bash
 python3 scripts/mirror_template_materialize.py \
   <import_workspace> <template_workspace>
 ```
 
-The command treats `<import_workspace>/authoring-svg/` as the sole editable
-source. It reads the tool-only layered authoring manifest internally and
-validates it against immutable lossless SVG
-hashes, source PPTX hash, the source Slide roster and reachable Master/Layout
+The command treats `<import_workspace>/authoring-svg/` as the sole visible
+editable source. It reads the tool-only layered authoring manifest internally
+and validates source SVG/PPTX hashes, known refs, the source Slide roster and reachable Master/Layout
 graph, inheritance visibility facts, source-ref closure, and extracted-vector inventory before it
 writes anything. It accepts an absent/empty destination or a project
 `templates/` containing unique qualified Brand/Style specs plus, for a
@@ -476,9 +491,10 @@ Theme bytes keyed by retained Master. Structured export validates that sidecar
 against the Master roster and installs one Theme per Master; it is not an SVG
 prototype or page-authoring input.
 It mechanically expands fixed Master/Layout group wrappers into direct atoms,
-rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
-current SVG fallback for edited refs, preserves explicit text hard breaks, and
-removes every IR-only source ref. Imported axis-flipped groups retain their
+publishes the current compact visible authoring tree for both changed and
+unchanged refs, recovers only supported non-visible semantics such as explicit
+text hard breaks, and removes every IR-only source ref. It never replaces an
+ordinary visible subtree with lossless source XML. Imported axis-flipped groups retain their
 geometry reflection while descendant SVG text receives a matching
 counter-reflection, preserving PowerPoint's upright glyph appearance in browser
 previews. Supported opaque `p:txBody`,
@@ -506,7 +522,9 @@ text/tspan topology and attributes. These records are deterministic tool
 diagnostics, not page-authoring inputs. Page-context emits only the complete
 prototype's path and SHA for that reference, so the model reads the SVG once
 per execution context and reuses it until the SHA changes. The model chooses
-semantics and edits only existing visible text values, while checker and
+semantics and edits only permitted visible text values; a direct JSON-first
+Chart/Table may regenerate its derived preview children while keeping marker,
+metadata, bounds, and structure. Checker and
 structured export validate output attributes, text/tspan topology, and
 referenced-resource hashes against
 the prototype.
@@ -517,7 +535,7 @@ files to `native-payloads/imported/`. The JSON report
 reports payload occurrence, native-record, unique-byte, and compressed-store
 counts and is written to stdout only. The command intentionally does not create
 `templates/design_spec.md`; Template_Designer writes the package-specific rules
-and page roster after materialization. This compiler is for Type A mirror materialization,
+and page roster after publication. This validator/publisher is for Type A mirror,
 not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
 or export.
 

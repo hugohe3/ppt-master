@@ -1808,12 +1808,6 @@
           "owner_fingerprint": "0edfe64300c1",
           "projections": [
             {
-              "path": "skills/ppt-master/references/executor-structured.md",
-              "role": "compatibility",
-              "fingerprint": "a6ae3dfb6e6a",
-              "reason": "This site documents a legacy or omission compatibility boundary."
-            },
-            {
               "path": "skills/ppt-master/references/executor-visualization.md",
               "role": "compatibility",
               "fingerprint": "055ab59c533e",
@@ -1864,7 +1858,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "60f4c8b8d08a",
+              "fingerprint": "2db6a34d15d7",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -1894,7 +1888,7 @@
             {
               "path": "skills/ppt-master/references/artifact-ownership.md",
               "role": "reference",
-              "fingerprint": "f91ef56378bb",
+              "fingerprint": "ebe98e6a11a9",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -1906,7 +1900,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "b4596417aeec",
+              "fingerprint": "3061c1488d1d",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -1964,12 +1958,6 @@
           "owner_fingerprint": "b3cdf822635a",
           "projections": [
             {
-              "path": "skills/ppt-master/references/executor-structured.md",
-              "role": "consumer",
-              "fingerprint": "105f5e4ce2ce",
-              "reason": "This consumer needs the field contract for deterministic execution."
-            },
-            {
               "path": "skills/ppt-master/references/executor-visualization.md",
               "role": "consumer",
               "fingerprint": "8b173848afa7",
@@ -2014,7 +2002,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "6f93a0561460",
+              "fingerprint": "f1339baac6db",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2050,7 +2038,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "92a978e5d229",
+              "fingerprint": "d35af1a163ac",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {

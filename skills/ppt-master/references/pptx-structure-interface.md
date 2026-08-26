@@ -8,7 +8,7 @@ Conditional interface for PowerPoint Master, Layout, fixed-layer, and placeholde
 
 ## 1. PPTX Structure Routing
 
-Every new SVG project declares one deterministic route. Free-design, brand-only, and `template_reuse_scope: style` projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export keeps all represented content Slide-local while materializing one clean project-owned Master plus one Blank Layout from the current color/typography lock; stock content placeholders and unused built-in Layouts are removed, while the standard date/footer/slide-number capability hooks remain. Deck/layout template projects whose AI-derived lock records `template_reuse_scope: mirror|layout` use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use the validated source identities and parentage declared by the newly materialized workspace.
+Every new SVG project declares one deterministic route. Free-design, brand-only, and `template_reuse_scope: style` projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export keeps all represented content Slide-local while materializing one clean project-owned Master plus one Blank Layout from the current color/typography lock; stock content placeholders and unused built-in Layouts are removed, while the standard date/footer/slide-number capability hooks remain. Deck/layout template projects whose AI-derived lock records `template_reuse_scope: mirror|layout` use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use the validated source identities and parentage declared by the newly authored compact workspace.
 
 **Hard rule — no structure inference**: Flat export performs no promotion or deduplication; every object stays Slide-local. Structured template export compiles only declared root identities, atomic fixed layers, and slot groups—it does not assign Layout families, cluster pages, infer placeholders, repair missing metadata, or migrate legacy contracts. Create a new current workspace through [`create-template`](../workflows/create-template.md) before generating structured pages.
 
@@ -24,7 +24,7 @@ Every new SVG project declares one deterministic route. Free-design, brand-only,
 
 **Project lock**: A Master row is `<master_key>: <PowerPoint picker name>`. A unique Layout row is `<layout_key>: <master_key> | <PowerPoint picker name> | <prototype source>`, where the source is a generated `P<NN>` or installed `template:<basename>`. A page assignment is `P<NN>: <layout_key>` under `page_pptx_layouts`. The SVG root values MUST match the assigned definition. A Layout key belongs to exactly one Master and must be globally unique. Reuse one key only when prototypes share identical ordered Layout atoms and slot ids/types/effective indices/default bounds/binding modes. An unused Layout uses a template SVG source and remains registered without a published carrier slide. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows.
 
-**Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and realizes the current or new Layout key/name declared by Strategist. A construction-discovered change to fixed Layout atoms or slot topology/bounds returns upstream for plan/lock repair, readback, and validation before authoring resumes. Mirror-created prototypes preserve validated source identity, literal paint, typography, effects, atomic geometry, and referenced assets in a new workspace. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology or fill missing facts.
+**Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and realizes the current or new Layout key/name declared by Strategist. A construction-discovered change to fixed Layout atoms or slot topology/bounds returns upstream for plan/lock repair, readback, and validation before authoring resumes. Mirror-created prototypes preserve validated source identity, parentage, slots, meaning, and similar presentation in compact new SVG; paint/geometry nodes need not be isomorphic. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology or fill missing facts.
 
 Imported inherited-shape visibility remains an immutable analysis fact until a
 structured mirror is materialized. The final mirror root carries that fact with
@@ -119,6 +119,11 @@ and visible-stroke rects also remain ordinary objects.
 | `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
 | `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
 
+A template-owned chart/table carrier may declare
+`data-pptx-native-authority="json"`. Its inline metadata, marker identity,
+bounds, and slot binding remain structural facts; its non-metadata SVG preview
+children are derived and may be regenerated without changing that contract.
+
 **Text slot carrier**: A multiline text placeholder must remain one native text
 frame. Default export and `--reflow-text` do; `--no-merge` cannot supply several
 line shapes as one PowerPoint placeholder prototype/binding. Leave strict-line
@@ -194,9 +199,9 @@ Existing structured/template projects or source-analysis packages that carry `an
 
 | Available source | Allowed create-template behavior |
 |---|---|
-| Original PPTX Type A | `standard` / `fidelity` author new topology; `mirror` preserves supported Master/Layout/placeholder facts that still exist in the package |
+| Original PPTX Type A | `standard` / `fidelity` author new topology; `mirror` authors compact SVG from parsed evidence while preserving supported Master/Layout/placeholder facts that still exist in the package |
 | Legacy or unstructured SVG Type B | `standard` / `fidelity` use pages as visual/contextual reference and author a complete new contract; old metadata is not output topology |
-| Complete current SVG Type B | `mirror` may preserve the explicit current contract in a new workspace; authored modes may replace it |
+| Complete current SVG Type B | `mirror` may author a compact equivalent while preserving the explicit current contract in a new workspace; authored modes may replace it |
 
 Without an original PPTX or complete current Type B contract, do not claim mirror or source-topology recovery. After template creation, Generate PPTX Step 3 authors new structured `svg_output/` pages; the exporter only compiles those declarations and never derives, repairs, or migrates structure.
 

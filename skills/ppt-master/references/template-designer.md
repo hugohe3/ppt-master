@@ -32,7 +32,7 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `svg/slide_NN.svg` — immutable slide-local native-payload backing; do not bulk-read because opaque native payload is retained
 - `svg/inheritance.json` — which layout / master each slide consumes
 - optional `svg-flat/slide_NN.svg` — immutable complete-page verification backing generated only when explicitly requested; do not use it as the editable source
-- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles published by `pptx_template_import.py` for Type A input or created by the standalone `svg_authoring_view.py` migration path; each contains editable SVGs, model-readable `authoring_summary.json`, and tool-only `authoring_manifest.json`
+- `authoring-svg/` and optional `authoring-svg-flat/` — new compact SVG bundles generated from parsed PPTX evidence by `pptx_template_import.py` for Type A input or by the standalone `svg_authoring_view.py` migration path; the layered bundle is Template_Designer's editable authoring surface and also contains model-readable `authoring_summary.json` plus tool-only `authoring_manifest.json`
 - optional screenshots for visual cross-checking
 
 PPTX import interpretation:
@@ -46,7 +46,7 @@ Input priority for PPTX-backed template creation depends on the AI-derived inter
 | Mode | Authoritative inputs | Model-facing inputs |
 |---|---|---|
 | `standard` / `fidelity` | Finalized brief for the newly designed output; `analysis/manifest.json` for factual canvas/theme/resources | `authoring-svg/authoring_summary.json`, every layered source Master/Layout as structural and visual evidence, layered source Slides, optional flat spot checks, and exported resources. Do not read `authoring_manifest.json`. `standard` authors a compact result; `fidelity` authors broader useful source-aligned coverage. Neither copies source identities merely because they exist. |
-| `mirror` | `analysis/manifest.json`, `analysis/native_structure.json`, and `svg/inheritance.json`; the compiler validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus layered authoring SVGs as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
+| `mirror` | Inline native Chart/Table JSON plus `analysis/manifest.json`, `analysis/native_structure.json`, and `svg/inheritance.json`; the publisher validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus every reachable layered compact SVG as the editable authoring source; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` only for source/package validation and supported non-visible payload recovery, never visible-subtree copying. |
 
 **Mandatory — authored construction bundle**: As soon as `replication_mode`
 resolves to `standard` or `fidelity`, and before selecting any page or template
@@ -67,14 +67,15 @@ behavior. Deck identity owns paint, typeface identity, and fixed identity
 assets; its application context describes the recurring presentation family. Under
 downstream `layout` scope, resolve final placeholder formatting from the Layout
 roles plus the confirmed identity, reading mode, and type scale; downstream
-`mirror` scope preserves literal source formatting and text topology. Compile
+`mirror` scope preserves source structure and comparable presentation while
+allowing compact SVG spelling. Compile
 the applicable rules into the same native graph without merging their source
 ownership.
 
 | Mode | Output structure contract |
 |---|---|
 | `standard` / `fidelity` | Review the complete source Master/Layout inventory, then author complete project-canonical Slide SVG prototypes and an intentional new Master/Layout/slot system. Every retained Layout has at least one Slide prototype. `standard` stays compact; `fidelity` retains broader useful source-aligned families. Source identities do not define the output topology. Choose page-fit contours from the full native vocabulary before their authoring forms; keep exact native atoms independent, materialize a Boolean result only where one contour requires it, and use freeform last. |
-| `mirror` | Materialize one complete SVG per validated source Slide, retaining only its referenced Layout and parent Master. Keep reachable identities, parentage, assignment, placeholder facts, and supported visual/native facts. Mechanical normalization completes inherited context and maps fixed-layer source groups into direct atoms while preserving ownership, paint order, and appearance; it must not invent missing facts or semantically redesign the reachable graph. |
+| `mirror` | Review and author one complete compact SVG per validated source Slide, retaining only its referenced Layout and parent Master. Keep reachable identities, parentage, assignment, placeholder facts, inline JSON native authority, and source meaning. Presentation should remain recognizably similar, but SVG nodes and code need not be isomorphic. Publication completes inherited context and maps fixed-layer groups into direct atoms without inventing facts or semantically redesigning the reachable graph. |
 
 Every output is a complete standalone Slide SVG preview that resolves Master +
 Layout + Slide context. Explicit layer markers retain ownership; standalone
@@ -90,8 +91,9 @@ Master/Layout fixed-layer ownership. This is the only `<g>` exception to the
 fixed-layer atomicity rule; ordinary groups remain forbidden there. Preset
 paint comes from the confirmed brief and `<design_spec_path>`
 color scheme. Do not copy an expanded import carrier/preview/fingerprint
-bundle into an authored template. `mirror` instead preserves the supported
-expanded lossless source representation. The exact syntax and validation
+bundle into an authored template. `mirror` instead uses the new compact parsed
+SVG as its visible authoring source and never transplants the expanded lossless
+visible subtree. The exact syntax and validation
 contract remain owned by
 [`shared-standards-core.md`](./shared-standards-core.md) and the native-shape reference.
 When one preset is insufficient, apply the same reference's compound-page gate:
@@ -120,9 +122,9 @@ The output page set is determined by the confirmed natural-language creation int
 |------|-------------|--------|
 | `standard` (default internal strategy) | The requested result is a clean, reusable, compact system | Cover, chapter, ending, optional TOC, and one or a small explicitly required set of distinct content Layouts; typically 4–6 prototypes |
 | `fidelity` | The natural-language intent calls for broader, source-aligned but newly designed coverage | Canonical roles plus intentionally designed variants that cover the useful source composition range |
-| `mirror` | The natural-language intent calls for preserving validated native source facts | One SVG prototype materialized from the authoring IR per source slide, named `<NNN>_<page_type>.svg` by source order |
+| `mirror` | The natural-language intent calls for preserving validated native source facts and a similar presentation | One compact SVG prototype reviewed/authored from parsed evidence per source slide, named `<NNN>_<page_type>.svg` by source order |
 
-**Hard rule — mode controls authorship**: `standard` and `fidelity` inspect the complete source structure but create new SVG documents and their own Master/Layout system. `mirror` maps validated source Slides and their reachable structure into a new workspace and must not reauthor, distill, reinterpret, or supplement that closure.
+**Hard rule — mode controls authorship**: `standard` and `fidelity` inspect the complete source structure but create new SVG documents and their own Master/Layout system. `mirror` also authors compact new SVG from parsed evidence, but it must retain the validated reachable identities, assignments, slots, meaning, and similar presentation rather than distilling, supplementing, or redesigning that closure. Code and node identity are not preservation requirements.
 
 ### Standard mode
 
@@ -165,21 +167,21 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 
 ### Mirror mode
 
-When the derived implementation writes `replication_mode: mirror`, materialize a new template workspace from validated imported facts rather than designing a new system:
+When the derived implementation writes `replication_mode: mirror`, author a new compact template workspace from validated parsed evidence rather than designing a different system:
 
 - Kind eligibility: Create Layout mirror is legal only when the validated source contract is already brand-neutral and application-neutral. If supported source facts retain organization-specific identity or reusable application policy, stop and return to Create Template dispatch: use `standard` / `fidelity` to author a new Layout, or Create Deck to retain those facts. Removing, repainting, retyping, or discarding application rules is never mirror.
-- Model-facing authoring source: `authoring-svg/authoring_summary.json`, layered `authoring-svg/*.svg`, `svg/inheritance.json`, and `analysis/native_structure.json`. Do not read `authoring-svg/authoring_manifest.json`; materialization validates it internally. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
+- Model-facing authoring source: `authoring-svg/authoring_summary.json`, every reachable layered `authoring-svg/*.svg`, `svg/inheritance.json`, and `analysis/native_structure.json`. Template_Designer must actually inspect and, where needed, redraw/normalize these new compact SVGs before publication. Do not read `authoring-svg/authoring_manifest.json`; the publisher validates it internally. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` files are immutable source/package evidence and non-visible payload backing, never visible authoring input.
 - Precondition: the import evidence identifies every source Slide and its referenced Layout/Master, picker names, placeholder contract, and fixed visual layers. Stop when required reachable facts or supported mirrored geometry are missing; unused source identities are out of scope.
 - Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source Slide and no standalone Master/Layout SVG. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` comes from `analysis/manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`, falling back to `content`. Preserve source Slide order.
 - Context completion: each source-page SVG resolves Master + Layout + Slide context while retaining explicit layer markers, so completion does not flatten ownership.
-- Required preservation: within the reachable closure, preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, supported native-object metadata, geometry, decoration, sprite-sheet wrappers, original example text, chart previews, fonts, effects, and paint order whenever the importer represents them.
-- Allowed normalization: add or normalize explicit root declarations and asset paths, complete inherited context, and recursively expand fixed Master/Layout group wrappers into direct atoms. The mapping must remain one-to-one at the ownership level and must not change paint order or appearance.
-- Forbidden: commonality extraction, semantic synthesis, merging, splitting, promotion, demotion, renaming, re-parenting, decorative simplification, placeholder invention, or replacement of supported source-native metadata / SVG fallback with a model-authored approximation.
+- Required preservation: within the reachable closure, preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, original example meaning, sprite-sheet crop behavior, and supported native facts. Imported/template-owned Chart/Table inline JSON is authoritative; its compact SVG preview may be approximate.
+- Allowed authoring: redraw or normalize visible SVG geometry, paint spelling, grouping, root declarations, asset paths, and fixed-layer wrappers when the resulting presentation remains similar and ownership/paint intent stays intact. Complete inherited context and emit direct structural atoms; code, node count, and exact path identity need not match the import.
+- Forbidden: commonality extraction, semantic synthesis, promotion/demotion, renaming, re-parenting, placeholder invention, changes to authoritative Chart/Table JSON without matching intent, or any visible redesign that changes the source communication result.
 - `<design_spec_path>` §V gives each emitted source-Slide prototype a roster row. If relevant, one sentence notes source Master/Layout identities outside the mirror closure; `Source Preservation Map` records each retained source-Slide assignment.
 
 **Mirror consumption boundary**: `replication_mode: mirror` describes source-to-workspace fidelity and only makes literal downstream reuse technically possible. Strategist independently derives the application plan from the current communication contract, content, actual prototype roster, and any explicit natural-language instruction. It may select, repeat, skip, reorder, or reorganize prototypes; no internal scope forces source page count, source order, or one output slide per source slide.
 
-**What mirror is not**: a redesign, topology-cleanup, or recovery mode. It may mechanically complete inheritance and transcode the imported representation into the current explicit SVG/package contract, so byte identity is not promised. Charts, SmartArt, OLE objects, and EMF / WMF media that fail to round-trip in `pptx_template_import.py` will fail the same way in mirror. If the import workspace has missing media or unsupported objects, mirror inherits those gaps — report them before materialization begins.
+**What mirror is not**: a redesign, topology-cleanup, or recovery mode. It is a new compact SVG authoring pass over parsed evidence, followed by deterministic validation/publication; neither byte identity nor SVG-code identity is promised. Charts, SmartArt, OLE objects, and EMF / WMF media that fail to enter the parsed evidence cannot be recovered by mirror. If the import workspace has missing media or unsupported objects, mirror inherits those gaps — report them before authoring begins.
 
 ---
 
@@ -360,7 +362,7 @@ If PPTX import output exists:
 
 - For `standard`, inspect the complete lightweight source Master/Layout inventory plus enough complete-page IR documents to understand the requested visual direction, structural vocabulary, and reusable assets. Author a compact new structure; source identities are evidence, not output requirements.
 - For `fidelity`, inspect every lightweight source Master/Layout and complete-page IR document so the newly designed roster covers the useful source structure and composition range. Author broader source-aligned families without automatically copying every source identity.
-- For `mirror`, verify every source Slide and its referenced Layout/Master against `authoring_summary.json`, `analysis/native_structure.json`, and `svg/inheritance.json`, then materialize only that reachable graph from the IR with matching lossless payload backing. Before materialization begins, report source Slide indexes plus retained and omitted Master/Layout identities.
+- For `mirror`, verify every source Slide and its referenced Layout/Master against `authoring_summary.json`, `analysis/native_structure.json`, and `svg/inheritance.json`; then review/author every reachable compact SVG and publish only that graph. Lossless backing may validate provenance and recover supported non-visible payload, but never replaces the visible authored tree. Before authoring begins, report source Slide indexes plus retained and omitted Master/Layout identities.
 
 ### 2.1 PPTX Import Mode Rule
 
@@ -370,28 +372,31 @@ The imported PPTX has a different authority level in each replication mode.
 |---|---|
 | `standard` | Review the complete source Master/Layout and visual evidence, then author a compact project-canonical roster and its Master/Layout/slot structure from the confirmed brief. Do not preserve source identities merely because they exist. |
 | `fidelity` | Review the complete source Master/Layout and visual roster, then author a broader canonical roster and its own useful source-aligned Master/Layout/slot families. Match the source visual language closely without implying one-to-one identity retention. |
-| `mirror` | Preserve validated source Slides and their reachable inheritance, placeholders, native objects, and visuals while creating a new workspace. Complete each standalone SVG's inherited context, but do not simplify, redesign, rename retained structure, infer new common structure, or fill semantic gaps. |
+| `mirror` | Preserve validated source Slides and their reachable inheritance, placeholders, native facts, meaning, and similar presentation while authoring a compact new workspace. Complete each standalone SVG's inherited context; visible SVG may be redrawn/normalized without code isomorphism, but retained structure cannot be renamed and semantic gaps cannot be invented. |
 
-**Hard rule — mirror materialization is mechanical**: Mirror may normalize namespaces,
-portable asset paths, explicit root declarations, and fixed-layer group wrappers
-required by the current compiler. Expanding a source Master/Layout group must
-produce direct atoms with the same ownership, transforms, paint order, and
-appearance. A maintainability preference is not authority to alter the source
-template.
+**Hard rule — mirror publication is mechanical, visual authoring is not**:
+Template_Designer owns the compact visible SVG created from parsed evidence.
+The materializer validates source identity/SHA, refs, graph, assignments, and
+closure; composes inherited context; strips IR-only refs; and publishes that
+current tree. It must never replace an unchanged visible subtree with lossless
+source XML. Redrawing for compactness is allowed only while structure, meaning,
+ownership, and a similar presentation remain intact.
 
 ### 2.2 Native Shape Payload and Authoring IR
 
 | Representation | Purpose | Payload rule |
 |---|---|---|
-| Lossless import SVG | Native-payload backing | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity. Keep it immutable and resolve it only through validated source refs. |
-| Authoring IR bundle | Editable template-creation source | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. Models read `authoring_summary.json`; tools read `authoring_manifest.json` for source paths and initial hashes. |
+| Lossless import SVG | Immutable source/package evidence | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity for validation and supported non-visible payload recovery. Never copy its ordinary visible subtree into final templates. |
+| Authoring IR bundle | Editable template-creation source | New compact SVG generated from parsed PPTX evidence. Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. Models read `authoring_summary.json`; tools read `authoring_manifest.json` for source paths and initial hashes. |
 | `standard` / `fidelity` output | Newly authored contract | Use editable basic primitives directly and `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches. Keep faithful atoms independently composed when one contour is unnecessary; use `shape_boolean_svg.py` only where one compound closed contour must become an object, then allow a necessary freeform only if neither construction is faithful. Paint comes from the confirmed brief / `<design_spec_path>`. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
-| `mirror` output | Materialized preserved contract | Preserve currently supported imported metadata on unchanged Slide-local/slot refs, use the edited SVG fallback otherwise, and normalize fixed structural layers into semantic atoms. Strip IR-only source refs from final templates. |
+| `mirror` output | Authored compact preservation contract | Publish the reviewed current authoring SVG, preserve validated structure/native facts, recover only supported non-visible semantics, and normalize fixed structural layers into semantic atoms. Strip IR-only source refs; never rehydrate ordinary visible source subtrees. |
 
 **Validation**: Mirror does not silently use stale metadata. Materialization
-validates source-document hashes and each referenced object's initial authoring
-hash before reusing native payload. If an imported object cannot use the
-converter's supported native metadata after normalization, keep its current SVG fallback and report the
+validates source-document hashes, known refs, graph/assignment closure, and
+classifies authoring subtree hashes; a changed subtree is a legitimate authored
+edit, not permission to copy the old visible tree back. If an imported object
+cannot use the converter's supported non-visible metadata after normalization,
+keep its current SVG fallback and report the
 limitation. For exact registered preset matches, `standard` / `fidelity`
 regenerate the compact helper group instead of transplanting opaque source
 payload; otherwise they keep faithful atoms independently composed unless one
@@ -405,7 +410,7 @@ Chart/Table replacement markers.
 |---|---|
 | Master/Layout identity | Root `data-pptx-master` / `data-pptx-master-name` plus `data-pptx-layout` / `data-pptx-layout-name`; authored keys for `standard` / `fidelity`, source keys for `mirror` |
 | Authored Master/Layout visual | In `standard` / `fidelity`, use a direct atomic child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"`. An ordinary `<g>` is forbidden; one validated compact canonical authored-preset `<g>` is a semantic atom and is the sole group exception. |
-| Preserved source Master/Layout visual | In `mirror`, recursively expand each fixed-layer source group into direct atoms with the same Master/Layout ownership, transforms, styles, paint order, and appearance; semantic regrouping is forbidden |
+| Preserved source Master/Layout visual | In `mirror`, author direct atoms with the same Master/Layout ownership and comparable paint order/presentation. Compact grouping, geometry, and style spelling may differ; semantic regrouping or ownership changes are forbidden. |
 | Content slot | Direct `<g id>` with `data-pptx-placeholder` and explicit `data-pptx-bounds`; `standard` / `fidelity` author the slot, while `mirror` preserves source type/index/bounds and carrier identity |
 | Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
 | Structural page-frame hint | Optional `data-pptx-role` only when background/decoration/header/footer/logo/watermark/chrome/page-number behavior is not already expressed by layer/placeholder metadata; stable unique `id` required |
@@ -573,13 +578,13 @@ Mirror mode emits one SVG per source slide, named by source order:
 └── 050_ending.svg
 ```
 
-Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `analysis/manifest.json` `pageTypeCandidates`. Literal source text and validated native structure facts are preserved when the authoring IR is materialized into the new workspace; IR-only refs and its manifest are not copied into the template output.
+Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `analysis/manifest.json` `pageTypeCandidates`. Source meaning and validated native structure facts are preserved while Template_Designer authors the compact new SVG; code/node identity is not required, and IR-only refs plus its manifest are not copied into template output.
 
 **Hard rule — common routing**: Keep `<design_spec_path>`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` when explicitly requested and always for a multi-Master package gate. Create Template must not create optional directories or placeholder files solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and omit it from completion unless real template files were written or adopted there. Do not branch asset placement by output scope.
 
 ### Template Preview
 
-When the user requests a PowerPoint review file or the validated roster declares multiple Masters, run `template_preview_pptx.py <template_workspace>` after SVG validation. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. In authored modes, it shortens canonical marker text only in ephemeral review copies so prompts remain readable without changing the source SVG, carrier typography, or placeholder frames. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
+When the user requests a PowerPoint review file or the validated roster declares multiple Masters, run `template_preview_pptx.py <template_workspace>` after SVG validation. The default review keeps visible SVG Chart/Table fallbacks. To verify JSON-first native capability, write a separately named review with `--native-charts-and-tables -o <distinct_path>`; marker presence alone never activates replacement. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. In authored modes, it shortens canonical marker text only in ephemeral review copies so prompts remain readable without changing the source SVG, carrier typography, or placeholder frames. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
 
 When a review deck was generated, include its path in the completion summary. Omit `exports/` only for an unrequested one-Master package.
 

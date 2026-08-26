@@ -683,7 +683,7 @@ sidecars, or guessed family paths.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Native shapes are Executor-local authoring capabilities, not planned resources: follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), read the complete current preset vocabulary before the first page, choose page-fit contours before their authoring forms, keep exact native atoms independent when possible, materialize a Merge Shapes Boolean result only where contour semantics require it, and use necessary freeform last. Diagram relationships follow the same Shape-first gate; do not infer a preset from contour similarity.
+Each completed SVG MUST contain the slide's complete visible design; export never reaches back to templates or planning artifacts for omitted visible objects. A Chart/Table marked `data-pptx-native-authority="json"` is the sole object-local exception: its inline JSON is authoritative and its visible subtree is an approximate derived preview. Notes, animation, narration, transitions, and direct native-PPTX workflows remain separate. Native shapes are Executor-local capabilities: follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), read the full preset vocabulary before page one, prefer independent native atoms, use Merge Shapes only when contour semantics require it, and use freeform last. Diagram relationships follow the same Shape-first gate; never infer a preset from contour similarity.
 
 **Motion-ready image composition**: Only when an explicit user motion
 instruction, the effective Custom Animations outcome in `design_spec.md §I` is
@@ -702,9 +702,17 @@ custom animation. A page-transition-only request requires no extra visible
 layer; deterministic Morph still needs the continuing object as a direct-root
 group on both pages.
 
-`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
+`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG and preserve inherited visuals, root Master/Layout identity, atoms, and slots. Strict keeps that contract; `layout` may apply authorized carrier text/tspan reflow within unchanged slot bounds. Adaptive uses a Strategist-declared Layout. If construction requires fixed-atom or slot topology/bounds changes, return upstream for plan/lock repair and validation; Executor never edits `spec_lock.md`. `mirror` changes only permitted text while preserving ordinary text/tspan topology/attributes. A JSON-first Chart/Table preserves marker id/kind/authority, metadata schema/bounds, and structure; its preview children may regenerate from the same JSON. `style` follows the flat rule below.
 
-`template_reuse_scope: style`, Style-only, free-design, and brand-only pages use `pptx_structure.mode: flat`. A Style-only workspace always derives `template_reuse_scope: style`; Style never supplies prototype mappings. When installed alongside Layout/Deck, Style changes only Direction / method and follows the selected non-Style structure plan. On a flat page, draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
+`template_reuse_scope: style`, Style-only, free-design, and brand-only pages use
+`pptx_structure.mode: flat`. Style supplies no prototype mappings; beside
+Layout/Deck it changes only Direction/method and follows that structure plan.
+Draw the complete flat page as ordinary Slide-local SVG. Omit
+`pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, root Master/Layout
+identity, layers, and placeholders; group logical content with top-level
+`<g id>`. Export creates one project Master plus Blank Layout, applies locked
+theme defaults, removes stock placeholders/Layouts, retains standard
+date/footer/slide-number hooks, and never promotes/deduplicates page content.
 
 Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-replace-with`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](../references/semantic-svg.md).
 
@@ -737,6 +745,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --canonical-authoring --stage final --json
 ```
 - **MUST**: Before this gate, every §IX `Native-ready` entry `<object-key>=yes` already has one matching draw-time marker group and JSON metadata child; `=no` and incidental microvisuals remain ordinary SVG. A legacy bare `yes|no` is readable only when that page has exactly one eligible object; it never derives from §VII.
+- **Authority gate**: JSON-first Chart/Table validates inline schema/bounds; its preview has no freshness authority. SVG-first native-ready markers require a current `data-pptx-fallback-sha256`, stamped after SVG/JSON synchronization. Missing/stale baselines block canonical/native export, not fallback export.
 - Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.
 - On failure, review all `blocking` errors and all advisory warnings from that run before editing. Choose which warnings merit work, fix every blocking error and the selected warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never run the checker between individual fixes or use repeated invocations to discover one next issue at a time. If terminal output is truncated, extract only `categories.blocking.issues` and, when needed, `categories.introduced.issues` from the report written by that same run.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
@@ -834,6 +843,11 @@ Choose exactly one notes mode:
 |---|---|
 | Speaker Notes `enabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
 | Speaker Notes `disabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --no-notes` |
+
+Append `--native-charts-and-tables` only for an explicit editable PowerPoint
+Chart/Table delivery decision. Templates, markers, semantic tables, and imported
+charts never activate it. Without the flag, Chart/Table uses its SVG fallback;
+formula native behavior remains intrinsic.
 
 For deck-wide motion settings, append the resolved flags from
 [`animations.md`](../references/animations.md). When the conditional custom

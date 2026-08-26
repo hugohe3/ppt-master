@@ -312,7 +312,8 @@ preview/text hashes, connector endpoints, payload references, and adjustment
 formulas—into short `data-pptx-native-ref` records in the same store. Checker,
 template-structure validation, and export validate and hydrate both layers in
 memory. Keep Master/Layout, placeholder, layer, editable-object, diagnostic,
-and editable chart/table metadata inline. Legacy inline Base64 and v1
+and editable chart/table metadata inline; authoritative Chart/Table JSON stays
+inside its SVG marker, never in the payload store. Legacy inline Base64 and v1
 payload-only stores remain readable.
 
 One effect reason remains its existing plain token. If one imported object has
@@ -328,13 +329,13 @@ one. This array is still diagnostic metadata, not an authoring surface.
 | Lossless import SVG | Immutable native payload and preview evidence in the temporary analysis workspace; never editable template source. |
 | Authoring IR bundle | Editable SVG plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Keep visible intent and document-local `data-pptx-source-ref`, but omit opaque/duplicate carriers. Before hashing, compact safe imported frame/transform coordinates to two decimals. Summary indexes current files; manifest owns source paths/hashes and stays outside model context. |
 | `standard` / `fidelity` output | Use §1.5 compact presets; never transplant opaque payload or source topology. |
-| `mirror` output | Materialize edited IR. Rehydrate supported metadata only for a matching Slide-local/slot ref and initial hash; otherwise keep SVG fallback. Expand fixed Master/Layout wrappers to direct semantic atoms without changing ownership, paint order, or appearance. |
+| `mirror` output | Template_Designer reviews/authors the compact parsed IR; materialization validates refs/graph and publishes that tree without restoring visible lossless subtrees. Recover only supported non-visible semantics; expand fixed Master/Layout wrappers without changing ownership or intended presentation. |
 
 **Hard rule — model-facing page-coordinate precision**:
 
 | Surface | Precision contract |
 |---|---|
-| Imported `data-pptx-frame` in authoring IR | At most two decimals; an unchanged mirror ref recovers the exact lossless frame before native-record externalization. |
+| Imported `data-pptx-frame` in authoring IR | At most two decimals; the compact frame owns visible geometry. |
 | `data-pptx-bounds` in generated and final template SVG | At most two decimals. |
 | `translate(...)`, `rotate(... cx cy)`, and `matrix(... e f)` | Translation/center values use at most two decimals; keep angle and matrix `a b c d` unchanged. |
 | Protected values | Never compact path/points geometry, crop/nested-`viewBox` ratios, gradient offsets, opacity, scale, canonical preset frames, or lossless/tool-side frames. |
@@ -368,12 +369,12 @@ otherwise retaining the visible SVG fallback. A newly authored compact preset
 to exactly one native shape/connector. Do not use this normalization to change
 ownership or appearance.
 
-**Hard rule — selective payload**: Do not copy every imported metadata block into
-an authored template. Keep the full lossless import SVG separately as immutable
-audit/fallback backing. Mirror may reuse only metadata already supported by the
-converter on source-ref/hash-matching Slide-local/slot objects; unsupported or
-edited objects use the current SVG fallback. `data-pptx-replace-with` remains reserved for the
-optional PowerPoint-native Chart/Table replacement contract.
+**Hard rule — selective payload**: Keep the lossless import SVG as immutable
+evidence; do not copy every metadata block into a template. Mirror publishes the
+compact authored subtree and recovers only converter-supported non-visible
+metadata, never ordinary visible source XML. Unsupported/edited objects use the
+SVG fallback. `data-pptx-replace-with` remains reserved for optional native
+Chart/Table replacement.
 
 **Registry and rendering rules**:
 
@@ -603,7 +604,11 @@ Use the already locked canvas id and exact viewBox. [`canvas-formats.md`](canvas
 | PPTX translation | The exporter may map represented SVG content to DrawingML/native objects and deduplicate represented elements into Master/Layout/Slide parts. It MUST NOT invent visible slide content absent from the SVG. |
 | Excluded package behavior | Speaker notes, animations, transitions, narration audio, PPTX relationships, and direct native-PPTX workflows remain separately owned. They are not part of the SVG page-design contract. |
 
-**Hard rule — page-design closure**: A final page SVG is the sole visual/design authority for that page on every SVG-authoring route. SVG is not the authority for the entire PPTX package.
+**Hard rule — page-design closure**: A final page SVG is complete but does not
+own the whole PPTX package. Its ordinary content and SVG-first Chart/Table
+markers are authoritative. For `data-pptx-native-authority="json"`, inline JSON
+is authoritative and the visible subtree is a derived, possibly approximate
+preview; authority never moves to a sidecar.
 
 ### 4.1 Semantic SVG Marker Contract
 

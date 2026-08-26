@@ -222,23 +222,23 @@ Create Style 会直接写入已确认的方向/方法 spec，不进入 SVG 创�
 
 - 需要精炼时，创建紧凑的可复用系统；
 - 来源本身包含有价值的多种版式时，创建更广的来源对齐原型；
-- 明确要求原样保留、且来源结构完整受支持时，进行字面物化。
+- 明确保留且来源结构完整受支持时，基于解析证据创作紧凑 mirror。
 
 Layout/Deck frontmatter 仍会记录 `replication_mode: standard|fidelity|mirror` 以兼容工具并保留审计信息；它是实现记录，不是用户选项。Style frontmatter 有意不写 replication/native-structure 字段。品牌中立的 Layout 不能同时字面保留品牌/应用事实，AI 会按目标重新创作 Layout，或把这些事实留在 Deck 中。
 
 **关于精灵图**：PPTX 导出的素材常常是**一张大图 + 多页通过 viewBox 裁剪不同区域**。`fidelity` 和 `mirror` 模式下必须保留这层嵌套 `<svg viewBox=...>` 包装，不能扁平化为单张 `<image>`——否则裁剪信息丢失，画面会错位。工作流会自动校验这一点。
 
-**关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
+**关于 PowerPoint 原生形状**：完整导入 SVG 作为不可变来源/包证据与受支持非可见载荷后备；模板创建使用新生成的紧凑可编辑 `authoring-svg/` 及其 source-ref/hash manifest。Template_Designer 会实际审阅/创作该 SVG，保持结构、语义和相似展示，但不要求代码同构。publisher 只校验、合成并发布当前可见作者树，绝不回填普通 lossless 可见子树。导入/模板拥有的 Chart/Table JSON 始终内嵌且为权威，其 preview 可以近似。
 
-对于 PPTX 来源的 Type A mirror，最终物化统一使用一个确定性命令：
+对于 PPTX 来源的 Type A mirror，完成作者审阅后，最终校验/发布统一使用一个确定性命令：
 
 ```bash
 python3 skills/ppt-master/scripts/mirror_template_materialize.py \
   "<import_workspace>" "<template_workspace>"
 ```
 
-它会先校验来源 Slide 的 IR manifest 与不可变 hash、可达原生图谱、
-可见性事实和对应的导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
+它会先校验来源 SHA/已知 ref、作者 manifest、可达原生图谱、
+可见性/分配事实和导入向量闭包，再原子发布当前按源顺序排列的 SVG roster 及
 `icons/imported/`、`images/` 素材。它不要求、也不会把按需生成的
 `svg-flat/` 校验视图当成模板来源，并且不会生成 Design Spec；设计角色必须针对物化后的 roster 写入已解析的 spec 路径。
 
@@ -248,7 +248,7 @@ Design Spec 对每个输出 Slide 原型按正常 roster 说明。若来源还�
 
 模板使用以 Slide 为主：生成页面 SVG 已经补齐 Master 与 Layout 视觉，正常创作直接选择完整 Slide 原型；工作区不再存放独立 Master/Layout 定义 SVG。
 
-“只生成 Slide”描述的是可编辑 SVG roster。PPTX 来源的 mirror 仍可携带 `source_themes.json`、`native_payloads.json.gz` 等仅供工具使用的结构 sidecar，用于导出时恢复可达结构的精确 Theme/原生数据；它们不是页面原型，也不进入 AI 创作上下文。
+“只生成 Slide”描述的是可编辑 SVG roster。PPTX 来源的 mirror 仍可携带 `source_themes.json`、`native_payloads.json.gz` 等仅供工具使用的结构 sidecar，用于保存可达结构的精确 Theme 及受支持的不透明恢复 payload/属性记录；它们不是页面原型，也不进入 AI 创作上下文。语义 Chart/Table JSON 始终内联在对应 SVG marker 中。
 
 **按 mirror 创建的工作区怎么消费**：从来源到工作区的 `replication_mode: mirror` 是一种能力，不是项目选择。Strategist 会读取真实原型、当前内容和用户明确要求，自动决定选哪些页、哪些重复/跳过/重排，以及采用字面、结构还是仅视觉参考。字面复用时，Executor 复制完整 SVG，只修改允许变更的可见文字，同时保留装饰、精灵图裁剪、几何坐标和规范化结构声明；仍不要求沿用来源页数或页序。
 
