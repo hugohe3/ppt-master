@@ -63,9 +63,10 @@ AUTHORING_SUMMARY_SCHEMA = "ppt-master.svg-authoring-summary.v1"
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
 SOURCE_PROXY_ATTRIBUTE = "data-pptx-source-proxy"
 SOURCE_PROXY_KIND = "native-restore"
-# Keep ordinary text and shape groups inline. Objects beyond one filesystem
-# block are treated as atomic source-backed visuals in round-trip flat pages.
+# Keep ordinary text and vectors inline. Large semantic/native payload objects
+# that cannot move to an editable vector asset become atomic source proxies.
 SOURCE_PROXY_MIN_BYTES = 4096
+_SEMANTIC_CONTENT_TAGS = frozenset({"foreignObject", "text", "tspan"})
 _DRAWABLE_TAGS = frozenset({
     "circle",
     "ellipse",
@@ -80,16 +81,36 @@ _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
 
-# These fields identify the source OOXML object or guard its exact imported
-# fallback. They belong in the complete import SVG, not its lightweight view.
-IMPORT_SOURCE_ATTRIBUTES = {
+# These fields identify source OOXML objects or carry opaque paint/effect
+# payloads. They belong in the complete import SVG, not its lightweight view.
+AUTHORING_OMITTED_SOURCE_ATTRIBUTES = {
     "data-name",
+    "data-pptx-effect-ooxml",
+    "data-pptx-effect-ooxml-sha256",
+    "data-pptx-effect-reason",
+    "data-pptx-effect-status",
+    "data-pptx-gradient-ooxml",
+    "data-pptx-gradient-ooxml-sha256",
+    "data-pptx-gradient-preview-sha256",
     "data-pptx-preview-sha256",
     "data-pptx-shape-id",
     "data-pptx-shape-name",
     "data-pptx-shape-scope",
     "data-pptx-shape-style",
 }
+
+_TSPAN_INHERITED_ATTRIBUTES = frozenset({
+    "fill",
+    "fill-opacity",
+    "font-family",
+    "font-size",
+    "font-style",
+    "font-weight",
+    "stroke",
+    "stroke-opacity",
+    "text-anchor",
+    "text-decoration",
+})
 
 # Compact native-shape intent is intentionally not in the removal set:
 # data-pptx-object, data-pptx-prst, and data-pptx-frame remain useful while
@@ -270,6 +291,8 @@ class ProjectionStats:
     compatibility_normalizations: int = 0
     asset_references_rewritten: int = 0
     coordinate_attributes_compacted: int = 0
+    inherited_text_attributes_compacted: int = 0
+    single_tspans_collapsed: int = 0
     source_object_proxies: int = 0
     source_object_proxy_bytes: int = 0
     unused_definitions_pruned: int = 0
@@ -285,6 +308,10 @@ class ProjectionStats:
             "source_attributes": dict(sorted(self.source_attributes.items())),
             "asset_references_rewritten": self.asset_references_rewritten,
             "coordinate_attributes_compacted": self.coordinate_attributes_compacted,
+            "inherited_text_attributes_compacted": (
+                self.inherited_text_attributes_compacted
+            ),
+            "single_tspans_collapsed": self.single_tspans_collapsed,
             "source_object_proxies": self.source_object_proxies,
             "source_object_proxy_bytes": self.source_object_proxy_bytes,
             "unused_definitions_pruned": self.unused_definitions_pruned,
@@ -300,6 +327,10 @@ class ProjectionStats:
         self.coordinate_attributes_compacted += (
             other.coordinate_attributes_compacted
         )
+        self.inherited_text_attributes_compacted += (
+            other.inherited_text_attributes_compacted
+        )
+        self.single_tspans_collapsed += other.single_tspans_collapsed
         self.source_object_proxies += other.source_object_proxies
         self.source_object_proxy_bytes += other.source_object_proxy_bytes
         self.unused_definitions_pruned += other.unused_definitions_pruned
@@ -391,10 +422,42 @@ def _unwrap_preview(parent: ET.Element, wrapper: ET.Element) -> bool:
 
 def _strip_import_attributes(element: ET.Element, stats: ProjectionStats) -> None:
     for name in list(element.attrib):
-        if name not in IMPORT_SOURCE_ATTRIBUTES:
+        if name not in AUTHORING_OMITTED_SOURCE_ATTRIBUTES:
             continue
         stats.source_attributes[name] += 1
         del element.attrib[name]
+
+
+def _compact_text_runs(root: ET.Element, stats: ProjectionStats) -> None:
+    """Remove redundant run paint while preserving directly editable text."""
+    for text in root.iter():
+        if _local_name(text.tag) != "text":
+            continue
+        for span in list(text):
+            if _local_name(span.tag) != "tspan":
+                continue
+            for name in list(span.attrib):
+                if (
+                    name in _TSPAN_INHERITED_ATTRIBUTES
+                    and span.get(name) == text.get(name)
+                ):
+                    del span.attrib[name]
+                    stats.inherited_text_attributes_compacted += 1
+
+        if len(text) != 1:
+            continue
+        span = text[0]
+        if (
+            _local_name(span.tag) != "tspan"
+            or span.attrib
+            or len(span)
+            or text.text not in {None, ""}
+            or span.tail not in {None, ""}
+        ):
+            continue
+        text.text = span.text
+        text.remove(span)
+        stats.single_tspans_collapsed += 1
 
 
 def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
@@ -608,6 +671,10 @@ def _source_proxy_element(
         "id",
         "data-pptx-object",
         "data-pptx-frame",
+        "data-pptx-prst",
+        "data-pptx-av-adj",
+        "data-pptx-av-adj1",
+        "data-pptx-av-adj2",
         "data-pptx-import-source",
         "data-pptx-replacement-status",
         "data-pptx-replace-with",
@@ -628,6 +695,24 @@ def _source_proxy_element(
     proxy.set(SOURCE_PROXY_ATTRIBUTE, SOURCE_PROXY_KIND)
     proxy.tail = source.tail
     return proxy
+
+
+def _prefer_editable_vector_asset(element: ET.Element) -> bool:
+    """Keep pure vector decorations available for later `<use>` extraction."""
+    if any(
+        _local_name(item.tag) in _SEMANTIC_CONTENT_TAGS
+        for item in element.iter()
+    ):
+        return False
+    if any(
+        "chart" in (item.get("id") or "").lower()
+        for item in element.iter()
+    ):
+        return False
+    return any(
+        _local_name(item.tag) in _DRAWABLE_TAGS
+        for item in element.iter()
+    )
 
 
 def _externalize_large_source_objects(
@@ -655,7 +740,10 @@ def _externalize_large_source_objects(
     assets: dict[Path, bytes] = {}
     for parent, element in candidates:
         original_bytes = len(ET.tostring(element, encoding="utf-8"))
-        if original_bytes < SOURCE_PROXY_MIN_BYTES:
+        if (
+            original_bytes < SOURCE_PROXY_MIN_BYTES
+            or _prefer_editable_vector_asset(element)
+        ):
             continue
         source_ref = element.get(SOURCE_REF_ATTRIBUTE)
         if not source_ref or source_ref not in reference_by_id:
@@ -723,6 +811,7 @@ def _render_projection(
     source_references = _stamp_source_references(root)
     stats = ProjectionStats()
     _project_subtree(root, stats)
+    _compact_text_runs(root, stats)
     stats.compatibility_normalizations += len(
         normalize_single_child_group_filters(root)
     )

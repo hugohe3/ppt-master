@@ -295,6 +295,10 @@ python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inpl
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>  # Type A mirror only; destination owns no roster
 ```
 
+Round-trip import runs the flat vector extraction automatically after creating
+`authoring-svg-flat/`; the manual two-pass commands above remain the
+create-template path.
+
 `extract_svg_assets.py` fingerprints each extracted subtree before generated-ID
 namespacing. Process the layered authoring view first, then pass its inventory to
 the flat view with `--reuse-inventory`; matching flat subtrees reference the

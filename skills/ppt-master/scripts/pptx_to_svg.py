@@ -11,6 +11,9 @@ Usage:
 Output structure (``--roundtrip``):
     <output_dir>/
         authoring-svg-flat/     sole editable SVG page source
+        icons/imported/         on-demand complex vector decorations
+        authoring-svg-flat_vector_asset_inventory.json
+                                extracted-decoration source mapping
         animations.json         normalized transition/object-motion sidecar
         images/                 raster/SVG/EMF/WMF picture resources
         sounds/                 transition/object cue audio, when present

@@ -39,6 +39,7 @@ from pptx_transitions import (
     NATIVE_TRANSITIONS,
     create_transition_xml,
     normalize_transition_effect_request,
+    serialize_source_xml,
     set_directory_use_timings,
     validate_generated_transition_xml,
     validate_pptx_morph_pairs,
@@ -1296,7 +1297,9 @@ def _apply_roundtrip_slide_overlay(
                 "animations.json explicitly: "
                 + ", ".join(sorted(missing_timing_targets, key=int))
             )
-    _write_xml_tree(generated_slide_path, ET.ElementTree(source_root))
+    generated_slide_path.write_bytes(
+        serialize_source_xml(source_root, source_slide)
+    )
 
 
 def _remove_relationships_by_type(rels_path: Path, rel_type: str) -> int:

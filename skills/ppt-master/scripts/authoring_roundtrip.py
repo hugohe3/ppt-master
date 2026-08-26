@@ -33,6 +33,7 @@ from extract_svg_assets import extract_file
 from pptx_workspace import ROUNDTRIP_MANIFEST_PATH
 from slide_roster import discover_slide_svgs
 from svg_authoring_view import (
+    AUTHORING_OMITTED_SOURCE_ATTRIBUTES,
     AUTHORING_MANIFEST_NAME,
     AUTHORING_SCHEMA,
     SOURCE_REF_ATTRIBUTE,
@@ -49,6 +50,12 @@ XLINK_NS = "http://www.w3.org/1999/xlink"
 VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v1"
 IMPORTED_ICON_NAMESPACE = "imported"
 _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
+_PRESERVED_EFFECT_ATTRIBUTES = frozenset({
+    "data-pptx-effect-ooxml",
+    "data-pptx-effect-ooxml-sha256",
+    "data-pptx-effect-reason",
+    "data-pptx-effect-status",
+})
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -656,6 +663,11 @@ def _normalized_hash(
     asset: VectorAssetRecord | None = None,
 ) -> str:
     normalized = copy.deepcopy(element)
+    if asset is not None and not asset.unchanged:
+        normalized.set(
+            "data-pptx-edited-vector-asset-sha256",
+            asset.actual_asset_sha256,
+        )
     prefix = f"{asset.element_prefix}_" if asset is not None else None
 
     def rewrite_url(match: re.Match[str]) -> str:
@@ -675,6 +687,22 @@ def _normalized_hash(
                     rewritten = "#" + rewritten[len(prefix) + 1:]
                 if rewritten != value:
                     item.set(name, rewritten)
+        if asset is not None:
+            for name, value in list(item.attrib.items()):
+                if _local_name(name) != "href" or value.startswith(("#", "data:")):
+                    continue
+                parsed = urlsplit(value)
+                if parsed.scheme or parsed.netloc or not parsed.path:
+                    continue
+                resolved = (
+                    asset.asset_path.parent / unquote(parsed.path)
+                ).resolve()
+                normalized_ref = f"asset-resource:{resolved.as_posix()}"
+                if parsed.query:
+                    normalized_ref += f"?{parsed.query}"
+                if parsed.fragment:
+                    normalized_ref += f"#{parsed.fragment}"
+                item.set(name, normalized_ref)
         icon = item.get("data-icon")
         record = assets.get(icon or "")
         if record is not None:
@@ -863,6 +891,15 @@ def _merge_defs(
         definition_id = clone.get("id")
         if definition_id and definition_id in by_id:
             index, previous = by_id[definition_id]
+            projected_previous = copy.deepcopy(previous)
+            for item in projected_previous.iter():
+                for name in AUTHORING_OMITTED_SOURCE_ATTRIBUTES:
+                    item.attrib.pop(name, None)
+            if (
+                semantic_subtree_sha256(projected_previous)
+                == semantic_subtree_sha256(clone)
+            ):
+                continue
             merged.remove(previous)
             merged.insert(index, clone)
             by_id[definition_id] = (index, clone)
@@ -920,6 +957,30 @@ def _rebase_resource_references(
             node.set(name, urlunsplit(("", "", relative, "", "")))
 
 
+def _restore_preserved_effect_metadata(
+    target: ET.Element,
+    source: ET.Element,
+) -> None:
+    """Keep source-native effects when an author edits other object semantics."""
+    source_by_id = {
+        item_id: item
+        for item in source.iter()
+        if (item_id := item.get("id"))
+    }
+    for item in target.iter():
+        source_item = (
+            source
+            if item is target
+            else source_by_id.get(item.get("id") or "")
+        )
+        if source_item is None:
+            continue
+        for name in _PRESERVED_EFFECT_ATTRIBUTES:
+            value = source_item.get(name)
+            if value is not None and item.get(name) is None:
+                item.set(name, value)
+
+
 def _materialize_document(
     project_path: Path,
     document: AuthoringDocument,
@@ -931,6 +992,10 @@ def _materialize_document(
     current_root = _parse_svg(document.authoring_path)
     baseline_root = _parse_svg(baseline_path)
     layered_root = _parse_svg(document.layered_source_path)
+    document_unchanged = (
+        _normalized_hash(current_root, current_assets)
+        == _normalized_hash(baseline_root, baseline_assets)
+    )
     layered_index = _layered_ref_index(layered_root)
     current_referenced_assets = _referenced_assets(
         current_root,
@@ -1049,28 +1114,11 @@ def _materialize_document(
             "slide cannot delete shared structure"
         )
 
-    baseline_use_counts: Counter[tuple[str, str]] = Counter()
-    for use in baseline_root.iter():
-        icon = (use.get("data-icon") or "").strip()
-        record = baseline_assets.get(icon)
-        if record is None:
-            continue
-        baseline_use_counts[
-            (record.baseline_key, _normalized_hash(use, baseline_assets))
-        ] += 1
-    unchanged_use_ids: set[int] = set()
-    for use in current_root.iter():
-        icon = (use.get("data-icon") or "").strip()
-        record = current_assets.get(icon)
-        if record is None or not record.unchanged:
-            continue
-        key = (record.baseline_key, _normalized_hash(use, current_assets))
-        if baseline_use_counts[key] <= 0:
-            continue
-        baseline_use_counts[key] -= 1
-        unchanged_use_ids.add(id(use))
-
-    def restore_nodes(element: ET.Element) -> list[ET.Element]:
+    def restore_nodes(
+        element: ET.Element,
+        source_dir: Path | None = None,
+    ) -> list[ET.Element]:
+        source_dir = source_dir or document.authoring_path.parent
         source_ref = element.get(SOURCE_REF_ATTRIBUTE)
         if source_ref in unchanged_refs:
             scope = source_ref.split(":", 1)[0]
@@ -1096,19 +1144,20 @@ def _materialize_document(
             referenced = current_referenced_assets.get(icon)
             if referenced is not None:
                 record, asset_root = referenced
-                if record.unchanged and id(element) in unchanged_use_ids:
-                    outer_refs = _outer_source_ref_elements(asset_root)
-                    if outer_refs:
-                        restored: list[ET.Element] = []
-                        for outer in outer_refs:
-                            restored.extend(restore_nodes(outer))
-                        return restored
+                outer_refs = _outer_source_ref_elements(asset_root)
+                if outer_refs:
+                    restored: list[ET.Element] = []
+                    for outer in outer_refs:
+                        restored.extend(
+                            restore_nodes(outer, record.asset_path.parent)
+                        )
+                    return restored
 
         clone = copy.deepcopy(element)
         for child in list(clone):
             clone.remove(child)
         for original_child in element:
-            replacements = restore_nodes(original_child)
+            replacements = restore_nodes(original_child, source_dir)
             if replacements:
                 replacements[-1].tail = original_child.tail
             for replacement in replacements:
@@ -1116,22 +1165,24 @@ def _materialize_document(
         clone.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
         _rebase_resource_references(
             clone,
-            document.authoring_path.parent,
+            source_dir,
             output_path.parent,
             project_path,
             recursive=False,
         )
-        if source_ref and source_ref.startswith("slide:"):
+        if source_ref:
             source = layered_index.get(source_ref)
             if source is not None:
-                for name in (
-                    "data-pptx-shape-id",
-                    "data-pptx-shape-scope",
-                    "data-pptx-shape-name",
-                    "data-name",
-                ):
-                    if clone.get(name) is None and source.get(name) is not None:
-                        clone.set(name, str(source.get(name)))
+                if source_ref.startswith("slide:"):
+                    for name in (
+                        "data-pptx-shape-id",
+                        "data-pptx-shape-scope",
+                        "data-pptx-shape-name",
+                        "data-name",
+                    ):
+                        if clone.get(name) is None and source.get(name) is not None:
+                            clone.set(name, str(source.get(name)))
+                _restore_preserved_effect_metadata(clone, source)
         return [clone]
 
     baseline_unreferenced = Counter(
@@ -1169,6 +1220,47 @@ def _materialize_document(
         current_defs_root,
         include_authoring_changes=defs_changed or bool(edited_refs),
     )
+    merged_definition_ids = {
+        definition_id
+        for definition in (list(merged_defs) if merged_defs is not None else [])
+        if (definition_id := definition.get("id"))
+    }
+    merged_definition_hashes = {
+        semantic_subtree_sha256(definition)
+        for definition in (list(merged_defs) if merged_defs is not None else [])
+    }
+    for record, asset_root in current_referenced_assets.values():
+        asset_defs = _direct_defs(asset_root)
+        if (
+            record.unchanged
+            or asset_defs is None
+            or not _outer_source_ref_elements(asset_root)
+        ):
+            continue
+        if merged_defs is None:
+            merged_defs = ET.Element(f"{{{SVG_NS}}}defs")
+        for definition in asset_defs:
+            clone = copy.deepcopy(definition)
+            _rebase_resource_references(
+                clone,
+                record.asset_path.parent,
+                output_path.parent,
+                project_path,
+                recursive=True,
+            )
+            definition_id = clone.get("id")
+            definition_hash = semantic_subtree_sha256(clone)
+            if definition_hash in merged_definition_hashes:
+                continue
+            if definition_id and definition_id in merged_definition_ids:
+                raise AuthoringRoundtripError(
+                    f"{document.name} edited vector asset definition id "
+                    f"collides with page definitions: {definition_id!r}"
+                )
+            merged_defs.append(clone)
+            merged_definition_hashes.add(definition_hash)
+            if definition_id:
+                merged_definition_ids.add(definition_id)
     if merged_defs is not None and list(merged_defs):
         output_root.append(merged_defs)
 
@@ -1204,10 +1296,7 @@ def _materialize_document(
     output_path.write_bytes(_serialize_svg(output_root))
     return {
         "file": document.name,
-        "document_unchanged": (
-            _sha256_file(document.authoring_path)
-            == document.initial_authoring_sha256
-        ),
+        "document_unchanged": document_unchanged,
         "source_ref_count": len(expected_refs),
         "source_ref_ids": sorted(expected_refs),
         "unchanged_refs": len(unchanged_refs),

@@ -335,15 +335,23 @@ machine manifest. Moving a referenced subtree into
 the vector inventory; re-inlining re-establishes the same mapping. Final materialized
 template SVGs and normal project `svg_output/` must not contain this attribute.
 
-A round-trip flat bundle may represent one large imported logical object as an
-atomic `<image data-pptx-source-proxy="native-restore">` whose hashed SVG preview
-lives under `images/source-object-previews/`. The page keeps only the outer
-source ref; descendant source identity remains in immutable backing. An
-unchanged proxy restores the complete native object. Complete removal deletes a
-Slide-local object; an inherited Master/Layout proxy must remain because one
-flat page cannot delete shared structure. Any proxy or preview edit must fail
-export rather than downgrade the object. This compaction is round-trip-only and
-does not apply to layered create-template authoring IR.
+**Hard rule — round-trip decoration extraction**: move text-free
+vector decorations from `authoring-svg-flat/` into `icons/imported/` and leave
+a `<use data-icon="imported/...">` reference in the page. Retain refs
+in the inventory. The live editor expands the reference; an unchanged asset
+restores native source objects, while an edited asset is one page-local vector
+edit unit.
+
+**Hard rule — round-trip source proxy fallback**: represent a
+semantic/native-payload object that cannot safely become an editable vector
+asset as an atomic `<image data-pptx-source-proxy="native-restore">` whose
+SVG preview lives under `images/source-object-previews/`. The page keeps only
+the outer source ref; descendant identity remains in immutable backing. An
+unchanged proxy restores the native object. Complete removal deletes a
+Slide-local object; an inherited Master/Layout proxy must remain
+because a flat page cannot delete shared structure. Proxy or preview edits must
+fail export rather than downgrade the object. Both compactions are
+round-trip-only and do not apply to layered create-template authoring IR.
 
 **Hard rule — structural-layer boundary**: An unchanged imported logical object
 may keep currently supported metadata while it remains Slide-local or inside a

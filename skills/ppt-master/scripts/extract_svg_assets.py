@@ -886,40 +886,65 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    args = build_parser().parse_args(argv)
-    svg_dir = Path(args.svg_dir)
-    if not svg_dir.is_dir():
-        print(f"[ERROR] svg_dir not found: {svg_dir}", file=sys.stderr)
-        return 1
+def extract_directory(
+    svg_dir: Path,
+    icons_dir: Path,
+    icon_namespace: str,
+    *,
+    min_drawables: int = DEFAULT_MIN_DRAWABLES,
+    min_bytes: int = DEFAULT_MIN_BYTES,
+    min_decoration_bytes: int = DEFAULT_MIN_DECORATION_BYTES,
+    inplace: bool = False,
+    id_prefix: str = "",
+    rewritten_dir: Path | None = None,
+    inventory_path: Path | None = None,
+    reuse_inventory_path: Path | None = None,
+    clean_stale: bool = False,
+    skip_unparseable: bool = False,
+) -> tuple[dict, Path | None, tuple[tuple[Path, str], ...]]:
+    """Extract one SVG directory and publish its deterministic inventory.
 
-    icons_dir = Path(args.icons_dir) if args.icons_dir else svg_dir.parent / "icons"
-    icons_dir.mkdir(parents=True, exist_ok=True)
-    icon_namespace = args.icon_namespace.strip()
+    Thresholds select vector groups or decoration runs. In-place authoring
+    bundles also refresh their model-readable summary. Returns the inventory,
+    optional summary path, and any parse failures skipped by the CLI mode.
+    """
+    svg_dir = Path(svg_dir)
+    icons_dir = Path(icons_dir)
+    if not svg_dir.is_dir():
+        raise ValueError(f"svg_dir not found: {svg_dir}")
     if icon_namespace and not ICON_NAMESPACE_RE.fullmatch(icon_namespace):
-        print(
-            "[ERROR] --icon-namespace must be one lower-case ASCII directory name "
-            "using only letters, digits, '_' or '-'",
-            file=sys.stderr,
+        raise ValueError(
+            "icon_namespace must be one lower-case ASCII directory name "
+            "using only letters, digits, '_' or '-'"
         )
-        return 1
-    reusable_assets: dict[str, dict] = {}
-    reuse_inventory_path = Path(args.reuse_inventory) if args.reuse_inventory else None
-    if reuse_inventory_path is not None:
-        try:
-            reusable_assets = _load_reusable_assets(reuse_inventory_path, icons_dir)
-        except ValueError as exc:
-            print(f"[ERROR] {exc}", file=sys.stderr)
-            return 1
-    rewritten_dir = Path(args.rewritten_dir) if args.rewritten_dir else None
+    if min(min_drawables, min_bytes, min_decoration_bytes) < 0:
+        raise ValueError("vector extraction thresholds must be non-negative")
+
+    icons_dir.mkdir(parents=True, exist_ok=True)
+    reusable_assets = (
+        _load_reusable_assets(reuse_inventory_path, icons_dir)
+        if reuse_inventory_path is not None
+        else {}
+    )
     inventory_path = (
-        Path(args.inventory)
-        if args.inventory
+        Path(inventory_path)
+        if inventory_path is not None
         else svg_dir.parent / f"{svg_dir.name}_vector_asset_inventory.json"
     )
-    svg_paths = sorted(svg_dir.glob("*.svg"))
 
+    def manifest_path(path: Path | None) -> str | None:
+        if path is None:
+            return None
+        try:
+            return path.resolve().relative_to(
+                inventory_path.parent.resolve()
+            ).as_posix()
+        except ValueError:
+            return str(path)
+
+    svg_paths = sorted(svg_dir.glob("*.svg"))
     inventory: list[dict] = []
+    skipped: list[tuple[Path, str]] = []
     for svg_path in svg_paths:
         try:
             inventory.extend(
@@ -927,20 +952,24 @@ def main(argv: Optional[list[str]] = None) -> int:
                     svg_path,
                     icons_dir,
                     icon_namespace,
-                    args.min_drawables,
-                    args.min_bytes,
-                    args.min_decoration_bytes,
-                    args.inplace,
-                    args.id_prefix,
+                    min_drawables,
+                    min_bytes,
+                    min_decoration_bytes,
+                    inplace,
+                    id_prefix,
                     rewritten_dir,
                     reusable_assets,
                 )
             )
         except ET.ParseError as exc:
-            print(f"[WARN] skip unparseable {svg_path.name}: {exc}", file=sys.stderr)
+            if not skip_unparseable:
+                raise
+            skipped.append((svg_path, str(exc)))
 
     extracted_count = sum(entry.get("source") == "extracted" for entry in inventory)
-    reused_count = sum(entry.get("source") == "reused-inventory" for entry in inventory)
+    reused_count = sum(
+        entry.get("source") == "reused-inventory" for entry in inventory
+    )
     known_assets = {str(entry["asset"]) for entry in inventory}
     inventory.extend(
         _existing_placeholder_entries(
@@ -952,31 +981,37 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
 
     stale_removed: list[str] = []
-    if args.clean_stale:
+    if clean_stale:
         keep_assets = {str(entry["asset"]) for entry in inventory}
         keep_assets.update(_referenced_icon_assets(svg_paths, icon_namespace))
         stale_removed = _clean_stale_assets(
             icons_dir,
             icon_namespace,
             svg_paths,
-            args.id_prefix,
+            id_prefix,
             keep_assets,
         )
 
     manifest = {
         "schema": "vector_asset_inventory.v1",
-        "svg_dir": str(svg_dir),
-        "icons_dir": str(icons_dir),
+        "svg_dir": manifest_path(svg_dir),
+        "icons_dir": manifest_path(icons_dir),
         "icon_namespace": icon_namespace or None,
         "rewritten_dir": (
             None
-            if args.inplace
-            else str(_rewritten_path(svg_dir / "_sample.svg", rewritten_dir, False).parent)
+            if inplace
+            else manifest_path(
+                _rewritten_path(
+                    svg_dir / "_sample.svg",
+                    rewritten_dir,
+                    False,
+                ).parent
+            )
         ),
-        "reuse_inventory": str(reuse_inventory_path) if reuse_inventory_path is not None else None,
-        "min_drawables": args.min_drawables,
-        "min_bytes": args.min_bytes,
-        "min_decoration_bytes": args.min_decoration_bytes,
+        "reuse_inventory": manifest_path(reuse_inventory_path),
+        "min_drawables": min_drawables,
+        "min_bytes": min_bytes,
+        "min_decoration_bytes": min_decoration_bytes,
         "extracted_count": extracted_count,
         "reused_count": reused_count,
         "asset_count": len(inventory),
@@ -984,18 +1019,55 @@ def main(argv: Optional[list[str]] = None) -> int:
         "assets": inventory,
     }
     inventory_path.parent.mkdir(parents=True, exist_ok=True)
-    inventory_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    summary_path: Path | None = None
-    if args.inplace and (svg_dir / AUTHORING_MANIFEST_NAME).is_file():
-        try:
-            summary_path = write_authoring_summary(svg_dir)
-        except (OSError, ValueError) as exc:
-            print(
-                f"[ERROR] vector extraction succeeded but authoring summary "
-                f"refresh failed: {exc}",
-                file=sys.stderr,
-            )
-            return 1
+    inventory_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    summary_path = (
+        write_authoring_summary(svg_dir)
+        if inplace and (svg_dir / AUTHORING_MANIFEST_NAME).is_file()
+        else None
+    )
+    return manifest, summary_path, tuple(skipped)
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    args = build_parser().parse_args(argv)
+    svg_dir = Path(args.svg_dir)
+    icons_dir = Path(args.icons_dir) if args.icons_dir else svg_dir.parent / "icons"
+    icon_namespace = args.icon_namespace.strip()
+    reuse_inventory_path = Path(args.reuse_inventory) if args.reuse_inventory else None
+    rewritten_dir = Path(args.rewritten_dir) if args.rewritten_dir else None
+    inventory_path = (
+        Path(args.inventory)
+        if args.inventory
+        else svg_dir.parent / f"{svg_dir.name}_vector_asset_inventory.json"
+    )
+    try:
+        manifest, summary_path, skipped = extract_directory(
+            svg_dir,
+            icons_dir,
+            icon_namespace,
+            min_drawables=args.min_drawables,
+            min_bytes=args.min_bytes,
+            min_decoration_bytes=args.min_decoration_bytes,
+            inplace=args.inplace,
+            id_prefix=args.id_prefix,
+            rewritten_dir=rewritten_dir,
+            inventory_path=inventory_path,
+            reuse_inventory_path=reuse_inventory_path,
+            clean_stale=args.clean_stale,
+            skip_unparseable=True,
+        )
+    except (OSError, ValueError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
+    for svg_path, reason in skipped:
+        print(f"[WARN] skip unparseable {svg_path.name}: {reason}", file=sys.stderr)
+    extracted_count = int(manifest["extracted_count"])
+    reused_count = int(manifest["reused_count"])
+    inventory = list(manifest["assets"])
+    stale_removed = list(manifest["stale_removed"])
     print(
         f"[OK] extracted {extracted_count} new asset(s), reused {reused_count} asset(s), "
         f"inventoried {len(inventory)} asset reference(s) -> "

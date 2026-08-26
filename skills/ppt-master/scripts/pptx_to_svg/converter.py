@@ -28,6 +28,7 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
+from extract_svg_assets import extract_directory
 from pptx_embedded_fonts import (
     FONT_BUNDLE_DIR,
     EmbeddedFontBundle,
@@ -95,6 +96,9 @@ _MANAGED_FLAT_SVG_RE = re.compile(r"slide_\d+\.svg")
 _MANAGED_TRANSITION_SOUND_RE = re.compile(
     r"transition_sound_[0-9a-f]{16}\.wav"
 )
+_ROUNDTRIP_VECTOR_MIN_DRAWABLES = 2
+_ROUNDTRIP_VECTOR_MIN_BYTES = 512
+_ROUNDTRIP_VECTOR_MIN_DECORATION_BYTES = 512
 _SVG_HREF_RE = re.compile(
     r"\b(?:href|xlink:href)\s*=\s*[\"']([^\"']+)[\"']"
 )
@@ -1469,6 +1473,20 @@ def _write_artifact_tree(
             force=False,
             projection_kind="flat",
             source_proxy_dir=source_proxy_dir,
+        )
+        extract_directory(
+            authoring_dir,
+            output_dir / "icons",
+            "imported",
+            min_drawables=_ROUNDTRIP_VECTOR_MIN_DRAWABLES,
+            min_bytes=_ROUNDTRIP_VECTOR_MIN_BYTES,
+            min_decoration_bytes=_ROUNDTRIP_VECTOR_MIN_DECORATION_BYTES,
+            inplace=True,
+            id_prefix="flat",
+            inventory_path=(
+                output_dir
+                / f"{authoring_dir.name}_vector_asset_inventory.json"
+            ),
         )
         _write_roundtrip_manifest(output_dir, result, options)
 

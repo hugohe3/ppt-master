@@ -46,24 +46,33 @@ The projected copy:
 - compacts imported model-facing frames and safe transform page coordinates to
   at most two decimals.
 
-Round-trip flat projection additionally replaces any large source-backed
-logical object with one compact
-`<image data-pptx-source-proxy="native-restore">`. Its hashed SVG preview is
-stored under `images/source-object-previews/`, while the complete imported SVG
-and source PPTX remain the semantic authority. This keeps tables and complex
-group geometry out of model-facing page files without changing their browser
-rendering. A source proxy is atomic: leave it unchanged to restore the original
-native PowerPoint object. A complete Slide-local proxy may be removed to delete
-that object; an inherited Master/Layout proxy must remain because one flat page
-cannot delete shared structure. Editing the proxy or its preview asset fails
-round-trip export instead of silently rasterizing or flattening the object.
+Round-trip publication applies two object-level compactions after projection:
+
+- text-free vector decorations that cross the readability threshold move to
+  editable `icons/imported/*.svg` assets; the page retains one compact
+  `<use data-icon="imported/...">`, and
+  `authoring-svg-flat_vector_asset_inventory.json` reconnects its source refs;
+- large semantic/native-payload objects that cannot safely become editable
+  vector assets become
+  `<image data-pptx-source-proxy="native-restore">` references whose hashed SVG
+  previews live under `images/source-object-previews/`.
+
+The live editor expands `data-icon` references for complete-page preview. Read
+an imported vector asset only when editing that decoration. An unchanged asset
+restores its native source objects; editing the asset rebuilds only its owning
+slide as one vector edit unit. A source proxy remains atomic: leave it unchanged
+to restore the original native PowerPoint object. A complete Slide-local proxy
+may be removed to delete that object; an inherited Master/Layout proxy must
+remain because one flat page cannot delete shared structure. Editing the proxy
+or its preview asset fails round-trip export instead of silently rasterizing or
+flattening the object.
 
 The summary stores the current SVG roster plus compact per-file canvas, size,
-text, image, vector, placeholder, icon, source-ref, and source-proxy counts. Models read the
-summary and editable SVGs; they do not read the machine manifest. The manifest
-stores relative source/authoring filenames, source and initial authoring hashes,
-source element paths, and immutable preview hashes for source proxies. It
-deliberately does not copy the opaque payload.
+text, image, vector, placeholder, icon, source-ref, and source-proxy counts.
+Models read the summary and editable SVGs; they do not read the machine
+manifest. The manifest stores relative source/authoring filenames, source and initial authoring
+hashes, source element paths, and immutable preview hashes for source proxies.
+It deliberately does not copy the opaque payload.
 The layered authoring bundle remains the editable source for template creation;
 the complete imported SVG remains immutable native-payload backing. Final
 `templates/*.svg` files are materialized and validated from that pair. A
@@ -73,10 +82,12 @@ imported-deck round-trip. `pptx_to_svg.py --roundtrip` places image media in
 directories, opaque payloads in `native-payloads/`, the source package in
 `sources/`, and tool-owned backing/contracts in `analysis/`; `assets/` is
 invalid. `svg_to_pptx.py --roundtrip` always reads `authoring-svg-flat/`,
-restores unchanged source refs from `analysis/roundtrip-svg/`, and retains
-edits/deletions/new content without rewriting the bundle. Unchanged slides and
-resources pass through byte-for-byte; an edit rebuilds only its owner. Resource
-hrefs resolve exactly relative to the SVG and must remain inside the workspace.
+restores unchanged source refs from `analysis/roundtrip-svg/`, expands imported
+vector edit units from `icons/imported/`, and retains edits/deletions/new
+content without rewriting the bundle. Unchanged slides and resources pass
+through byte-for-byte; an edit rebuilds only its owner. Resource hrefs resolve
+exactly relative to the page or extracted asset and must remain inside the
+workspace.
 
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:
@@ -376,6 +387,12 @@ python3 scripts/extract_svg_assets.py <flat_svg_dir> \
   --reuse-inventory <layered_inventory.json> \
   --inplace --id-prefix flat
 ```
+
+`pptx_to_svg.py --roundtrip` invokes the same extractor automatically for
+`authoring-svg-flat/` after source-proxy projection. It uses the imported
+namespace and records the thresholds in the adjacent vector inventory so
+`svg_to_pptx.py --roundtrip` can regenerate the same baseline before comparing
+edits.
 
 The first pass records a source fingerprint before namespacing each extracted
 asset's internal ids. The second pass reuses a fingerprint-matched asset and
