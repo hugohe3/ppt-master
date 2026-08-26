@@ -19,10 +19,8 @@ from __future__ import annotations
 
 import argparse
 import contextlib
-import math
 import re
 import shutil
-import statistics
 import sys
 import tempfile
 from collections.abc import Iterator
@@ -38,9 +36,8 @@ configure_utf8_stdio()
 from pptx import Presentation  # noqa: E402
 
 from svg_to_pptx.drawingml.theme_fonts import (  # noqa: E402
-    MasterTextStyleSpec,
+    infer_master_text_style_spec,
 )
-from svg_to_pptx.drawingml.utils import font_px_to_hpt  # noqa: E402
 from svg_to_pptx.pptx_package.builder import (  # noqa: E402
     create_pptx_with_native_svg,
 )
@@ -61,18 +58,8 @@ _CANVAS_VIEWBOX_RE = re.compile(
     r"^canvas_viewbox\s*:\s*[\"']?([^\"'\r\n]+?)[\"']?\s*$",
     re.MULTILINE,
 )
-_FONT_SIZE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)(?:px)?$")
 _FILENAME_UNSAFE_RE = re.compile(r"[\\/:*?\"<>|\x00-\x1f]+")
 _PLACEHOLDER_MARKER_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
-_TITLE_PLACEHOLDERS = frozenset({"title", "subtitle"})
-_BODY_PLACEHOLDERS = frozenset({
-    "body",
-    "date",
-    "footer",
-    "slide-number",
-})
-_DEFAULT_TITLE_PX = 40.0
-_DEFAULT_BODY_PX = 24.0
 
 
 def _review_marker_text(match: re.Match[str]) -> str:
@@ -248,65 +235,6 @@ def _canvas_viewbox(spec_path: Path) -> str | None:
     return match.group(1).strip() if match else None
 
 
-def _style_property(style: str, name: str) -> str | None:
-    """Return one inline CSS declaration value."""
-    for declaration in style.split(";"):
-        key, separator, value = declaration.partition(":")
-        if separator and key.strip().lower() == name:
-            return value.strip()
-    return None
-
-
-def _font_size_px(element: ET.Element) -> float | None:
-    """Read one finite positive SVG font size in px."""
-    raw = element.get("font-size")
-    if raw is None:
-        raw = _style_property(element.get("style", ""), "font-size")
-    if raw is None:
-        return None
-    match = _FONT_SIZE_RE.fullmatch(raw.strip())
-    if match is None:
-        return None
-    value = float(match.group(1))
-    return value if math.isfinite(value) and value > 0 else None
-
-
-def _carrier_sizes(svg_files: list[Path]) -> tuple[list[float], list[float]]:
-    """Collect authored title/body sizes from semantic placeholder carriers."""
-    title_sizes: list[float] = []
-    body_sizes: list[float] = []
-    for svg_path in svg_files:
-        root = ET.parse(svg_path).getroot()
-        for slot in root.iter():
-            placeholder = slot.get("data-pptx-placeholder")
-            if placeholder not in _TITLE_PLACEHOLDERS | _BODY_PLACEHOLDERS:
-                continue
-            for carrier in slot.iter():
-                if carrier.get("data-pptx-carrier") != "true":
-                    continue
-                size = _font_size_px(carrier)
-                if size is None:
-                    continue
-                target = title_sizes if placeholder in _TITLE_PLACEHOLDERS else body_sizes
-                target.append(size)
-    return title_sizes, body_sizes
-
-
-def _master_text_style(svg_files: list[Path]) -> tuple[MasterTextStyleSpec, float, float]:
-    """Build review-only Master text defaults without requiring a project lock."""
-    title_sizes, body_sizes = _carrier_sizes(svg_files)
-    title_px = float(statistics.median(title_sizes)) if title_sizes else _DEFAULT_TITLE_PX
-    body_px = float(statistics.median(body_sizes)) if body_sizes else _DEFAULT_BODY_PX
-    return (
-        MasterTextStyleSpec(
-            title_hpt=font_px_to_hpt(title_px),
-            body_hpt=font_px_to_hpt(body_px),
-        ),
-        title_px,
-        body_px,
-    )
-
-
 def _verify_output(
     output_path: Path,
     *,
@@ -449,7 +377,9 @@ def main(argv: list[str] | None = None) -> int:
                 f"output already exists: {output_path}; use --force to replace it"
             )
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        text_style, title_px, body_px = _master_text_style(all_svg_files)
+        text_style, title_px, body_px = infer_master_text_style_spec(
+            all_svg_files
+        )
 
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")

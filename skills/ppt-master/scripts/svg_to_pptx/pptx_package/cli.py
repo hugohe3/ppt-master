@@ -95,6 +95,7 @@ from ..drawingml.theme_fonts import (
     ThemeFontError,
     ThemeFontFace,
     ThemeFontSpec,
+    infer_master_text_style_spec,
     load_master_text_style_spec,
     load_theme_font_spec,
 )
@@ -112,6 +113,7 @@ from .template_structure import (
     load_native_structure_contract,
     load_pptx_structure_lock,
     load_template_source_themes,
+    parse_optional_layout_slides,
     parse_template_slides,
     structured_layout_definition_files,
     template_lock_errors,
@@ -1432,7 +1434,7 @@ def main(argv: list[str] | None = None) -> int:
 Examples:
     %(prog)s projects/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s projects/ppt169_demo -o out.pptx            # Explicit path (no backup/)
-    %(prog)s projects/quick_generate_demo --quick-generate # Lockless flat export with normal postflight
+    %(prog)s projects/quick_generate_demo --quick-generate # Lockless inferred structure + postflight
     %(prog)s <import_workspace> --roundtrip               # authoring-svg-flat/ with source restoration
 
     # Disable transition / change transition effect
@@ -1519,8 +1521,8 @@ Recorded narration:
         help=(
             'Export a Quick Generate SVG roster from svg_output/ without '
             'spec_lock.md. Require a matching final quality report, infer one '
-            'consistent canvas, use a flat package with converter defaults, '
-            'and support normal export capabilities.'
+            'consistent canvas, infer flat versus structured output from the '
+            'complete SVG roster, and support normal export capabilities.'
         ),
     )
     parser.add_argument(
@@ -1619,7 +1621,9 @@ Recorded narration:
         help=(
             'PPTX structure strategy for native export. Omitting this flag reads '
             'spec_lock.md; a legacy lock without pptx_structure.mode defaults to '
-            'flat. Flat is the style-reference/free-design/brand-only release mode and '
+            'flat. Quick Generate requires omission and infers flat/structured '
+            'from its complete SVG roster. Flat is the style-reference/free-design/'
+            'brand-only release mode and '
             'builds one clean project-owned Master plus Blank Layout while keeping '
             'all SVG objects slide-local; structured is the mirror/layout reuse '
             'mode and requires complete explicit metadata. baseline, template, '
@@ -1839,8 +1843,10 @@ Recorded narration:
         conflicts: list[str] = []
         if args.source not in {None, 'output'}:
             conflicts.append('--source must be omitted or output')
-        if args.pptx_structure not in {None, 'flat'}:
-            conflicts.append('--pptx-structure must be omitted or flat')
+        if args.pptx_structure is not None:
+            conflicts.append(
+                '--pptx-structure must be omitted; Quick infers it from svg_output/'
+            )
         if conflicts:
             print(
                 "Error: --quick-generate cannot be combined with: "
@@ -1850,7 +1856,6 @@ Recorded narration:
             return 1
         if not args.with_notes:
             args.no_notes = True
-        args.pptx_structure = 'flat'
     elif (diagnostic_source or compatibility_export) and not args.roundtrip:
         if args.pptx_structure not in {None, 'flat'}:
             print(
@@ -1914,7 +1919,9 @@ Recorded narration:
         _print_structure_contract_error(declared_structure_mode)
         return 1
     if pptx_structure is None:
-        if declared_structure_mode is None:
+        if args.quick_generate:
+            pass
+        elif declared_structure_mode is None:
             pptx_structure = 'flat'
             print(
                 "Warning: spec_lock.md has no pptx_structure.mode; using flat "
@@ -2026,7 +2033,11 @@ Recorded narration:
         and structure_lock.mode == "structured"
         and structure_lock.template_reuse_scope == "mirror"
     )
-    if source_themes_path.exists() and not mirror_source_themes:
+    if (
+        source_themes_path.exists()
+        and not mirror_source_themes
+        and not args.quick_generate
+    ):
         print(
             "Error: templates/source_themes.json is allowed only for a "
             "structured mirror contract",
@@ -2107,6 +2118,73 @@ Recorded narration:
         else:
             print("Error: No SVG files found", file=sys.stderr)
         return 1
+
+    quick_template_specs = None
+    if args.quick_generate:
+        try:
+            quick_template_specs = parse_optional_layout_slides(native_files)
+        except TemplateStructureError as exc:
+            print(
+                "Error: Quick Generate SVG structure inference failed: "
+                f"{exc}",
+                file=sys.stderr,
+            )
+            return 1
+        pptx_structure = (
+            'structured' if quick_template_specs is not None else 'flat'
+        )
+        print(
+            "  Quick PPTX structure: "
+            f"{pptx_structure} (inferred from {len(native_files)} SVG page(s))"
+        )
+        if quick_template_specs is not None:
+            try:
+                (
+                    master_text_style_spec,
+                    quick_title_px,
+                    quick_body_px,
+                ) = infer_master_text_style_spec(native_files)
+            except ThemeFontError as exc:
+                print(f"Error: {exc}", file=sys.stderr)
+                return 1
+            print(
+                "  Quick Master text defaults: "
+                f"title {quick_title_px:g}px, body {quick_body_px:g}px "
+                "(inferred from structured SVG pages)"
+            )
+        if source_themes_path.exists():
+            if quick_template_specs is None:
+                print(
+                    "Warning: templates/source_themes.json is ignored because "
+                    "Quick SVG pages declare no structured Master/Layout contract.",
+                    file=sys.stderr,
+                )
+            else:
+                try:
+                    available_source_themes = load_template_source_themes(
+                        project_path / "templates"
+                    ) or {}
+                except TemplateStructureError as exc:
+                    print(f"Error: {exc}", file=sys.stderr)
+                    return 1
+                used_master_keys = {
+                    spec.master_key for spec in quick_template_specs
+                }
+                missing_source_themes = sorted(
+                    used_master_keys - set(available_source_themes)
+                )
+                if missing_source_themes:
+                    print(
+                        "Error: Quick structured SVG pages reference Master(s) "
+                        "missing from templates/source_themes.json: "
+                        + ", ".join(missing_source_themes),
+                        file=sys.stderr,
+                    )
+                    return 1
+                source_theme_xml_by_master = {
+                    master_key: available_source_themes[master_key]
+                    for master_key in used_master_keys
+                }
 
     ref_files = native_files
     authoring_roundtrip_temporary: tempfile.TemporaryDirectory[str] | None = None
@@ -2280,12 +2358,16 @@ Recorded narration:
     structured_baseline = False
     baseline_layout_specs = None
     layout_definition_files: list[Path] = []
+    if pptx_structure == 'structured':
+        if quick_template_specs is not None:
+            template_specs = quick_template_specs
+        else:
+            try:
+                template_specs = parse_template_slides(native_files)
+            except TemplateStructureError as exc:
+                print(f"Error: {exc}", file=sys.stderr)
+                return 1
     if pptx_structure == 'structured' and structure_lock is not None:
-        try:
-            template_specs = parse_template_slides(native_files)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
         lock_errors = template_lock_errors(template_specs, structure_lock)
         if lock_errors:
             print("Error: PPTX structure does not match spec_lock.md:", file=sys.stderr)

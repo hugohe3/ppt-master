@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import math
 import re
+import statistics
 from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -13,7 +15,17 @@ from .utils import font_px_to_hpt, parse_font_family
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
+_SVG_FONT_SIZE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)(?:px)?$")
 _CJK_THEME_SCRIPTS = frozenset({"Hans", "Hant", "Jpan", "Hang"})
+_TITLE_PLACEHOLDER_TYPES = frozenset({"title", "subtitle"})
+_BODY_PLACEHOLDER_TYPES = frozenset({
+    "body",
+    "date",
+    "footer",
+    "slide-number",
+})
+_DEFAULT_MASTER_TITLE_PX = 40.0
+_DEFAULT_MASTER_BODY_PX = 24.0
 
 
 class ThemeFontError(RuntimeError):
@@ -60,6 +72,79 @@ class MasterTextStyleSpec:
             scaled = round((self.body_hpt * factor / 16) / 50) * 50
             sizes.append(max(minimum, scaled))
         return tuple(sizes)
+
+
+def _inline_style_property(style: str, name: str) -> str | None:
+    """Return one inline SVG style declaration value."""
+    for declaration in style.split(";"):
+        key, separator, value = declaration.partition(":")
+        if separator and key.strip().lower() == name:
+            return value.strip()
+    return None
+
+
+def _svg_font_size_px(element: ET.Element) -> float | None:
+    """Read one finite positive SVG font size in px."""
+    raw = element.get("font-size")
+    if raw is None:
+        raw = _inline_style_property(element.get("style", ""), "font-size")
+    if raw is None:
+        return None
+    match = _SVG_FONT_SIZE_RE.fullmatch(raw.strip())
+    if match is None:
+        return None
+    value = float(match.group(1))
+    return value if math.isfinite(value) and value > 0 else None
+
+
+def infer_master_text_style_spec(
+    svg_files: list[Path],
+) -> tuple[MasterTextStyleSpec, float, float]:
+    """Infer structured Master title/body defaults from SVG slot carriers."""
+    title_sizes: list[float] = []
+    body_sizes: list[float] = []
+    placeholder_types = _TITLE_PLACEHOLDER_TYPES | _BODY_PLACEHOLDER_TYPES
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError) as exc:
+            raise ThemeFontError(
+                f"Cannot infer Master text defaults from {svg_path}: {exc}"
+            ) from exc
+        for slot in root.iter():
+            placeholder = slot.get("data-pptx-placeholder")
+            if placeholder not in placeholder_types:
+                continue
+            target = (
+                title_sizes
+                if placeholder in _TITLE_PLACEHOLDER_TYPES
+                else body_sizes
+            )
+            for carrier in slot.iter():
+                if carrier.get("data-pptx-carrier") != "true":
+                    continue
+                size = _svg_font_size_px(carrier)
+                if size is not None:
+                    target.append(size)
+
+    title_px = (
+        float(statistics.median(title_sizes))
+        if title_sizes
+        else _DEFAULT_MASTER_TITLE_PX
+    )
+    body_px = (
+        float(statistics.median(body_sizes))
+        if body_sizes
+        else _DEFAULT_MASTER_BODY_PX
+    )
+    return (
+        MasterTextStyleSpec(
+            title_hpt=font_px_to_hpt(title_px),
+            body_hpt=font_px_to_hpt(body_px),
+        ),
+        title_px,
+        body_px,
+    )
 
 
 def _font_face(font_family: str) -> ThemeFontFace:

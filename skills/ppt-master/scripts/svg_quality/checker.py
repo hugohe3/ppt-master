@@ -288,6 +288,7 @@ try:
         TemplateStructureError as _TemplateStructureError,
         _is_authored_preset_atom as _is_authored_preset_atom,
         load_pptx_structure_lock as _load_pptx_structure_lock,
+        parse_optional_layout_slides as _parse_optional_layout_slides,
         parse_template_slide as _parse_template_structure_slide,
         parse_template_slides as _parse_template_structure_slides,
         _structure_subtree_signature as _structure_subtree_signature,
@@ -299,6 +300,7 @@ except ImportError:
     _TemplateStructureError = None
     _is_authored_preset_atom = None
     _load_pptx_structure_lock = None
+    _parse_optional_layout_slides = None
     _parse_template_structure_slide = None
     _parse_template_structure_slides = None
     _structure_subtree_signature = None
@@ -4274,21 +4276,18 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate the intrinsic structured Master/Layout SVG contract."""
-        if self.quick_generate:
-            forbidden_attrs = sorted({
-                attr
-                for elem in root.iter()
-                for attr in _PPTX_STRUCTURE_ATTRS
-                if elem.get(attr) is not None
-            })
-            if forbidden_attrs:
-                result['errors'].append(
-                    f"{svg_path.name}: Quick Generate uses flat export and "
-                    "forbids Master/Layout/layer/placeholder metadata; remove "
-                    + ', '.join(forbidden_attrs)
-                )
+        has_structure_metadata = any(
+            elem.get(attr) is not None
+            for elem in root.iter()
+            for attr in _PPTX_STRUCTURE_ATTRS
+        )
+        if self.quick_generate and not has_structure_metadata:
             return
-        if not self.template_mode and svg_path.parent.name == 'svg_output':
+        if (
+            not self.quick_generate
+            and not self.template_mode
+            and svg_path.parent.name == 'svg_output'
+        ):
             declared_mode = _declared_pptx_structure_mode(
                 self._resolve_project_path(svg_path)
             )
@@ -4310,11 +4309,6 @@ class SVGQualityChecker:
                 # The project-level gate emits one actionable migration error.
                 # Avoid burying it under repeated per-page structure failures.
                 return
-        has_structure_metadata = any(
-            elem.get(attr) is not None
-            for elem in root.iter()
-            for attr in _PPTX_STRUCTURE_ATTRS
-        )
         require_structure = bool(
             self.template_mode
             or svg_path.parent.name == 'svg_output'
@@ -5594,6 +5588,31 @@ class SVGQualityChecker:
     ) -> None:
         """Validate the all-page structured lock and reusable contracts."""
         if self.quick_generate:
+            if (
+                _parse_optional_layout_slides is None
+                or _TemplateStructureError is None
+            ):
+                self._pptx_structure_issues.append((
+                    'error',
+                    'Quick PPTX structure inference is unavailable because '
+                    'the template_structure module could not be imported.',
+                ))
+                return
+            try:
+                specs = _parse_optional_layout_slides(svg_files)
+            except _TemplateStructureError as exc:
+                self._pptx_structure_issues.append(('error', str(exc)))
+                return
+            if specs is None:
+                return
+            self._pptx_structure_issues.extend(
+                ('error', message)
+                for message in self._shared_fixed_layer_errors(specs)
+            )
+            self._pptx_structure_issues.extend(
+                ('warning', message)
+                for message in self._duplicate_layout_key_warnings(specs)
+            )
             return
         project_path = self._resolve_project_path(target_path)
         standard_project = bool(

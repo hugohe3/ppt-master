@@ -5676,9 +5676,9 @@ def create_pptx_with_native_svg(
             exact source package parts after slide conversion.
         theme_font_spec: Locked project major/minor fonts for flat/structured
             release-theme inheritance. Direct diagnostic flat callers may omit it.
-        master_text_style_spec: Required declared title/body anchors for structured
-            and release flat slide-master text styles. Direct diagnostic flat
-            callers may omit it; other routes ignore this value.
+        master_text_style_spec: Required declared or inferred title/body anchors
+            for structured and release flat slide-master text styles. Direct
+            diagnostic flat callers may omit it; other routes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
             flat/structured theme inheritance. Preserve mode ignores this value.
         source_theme_xml: Complete validated source theme used only by an
@@ -5850,8 +5850,8 @@ def create_pptx_with_native_svg(
         )
     if pptx_structure == "structured" and master_text_style_spec is None:
         raise ValueError(
-            "Structured export requires declared typography title/body anchors "
-            "in master_text_style_spec"
+            "Structured export requires declared or inferred typography "
+            "title/body anchors in master_text_style_spec"
         )
     if use_native_shapes and pptx_structure == "structured":
         template_specs = parse_template_slides(svg_files)
