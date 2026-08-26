@@ -1451,9 +1451,9 @@ def _write_artifact_tree(
             continue
         target.write_bytes(blob)
     if result.native_structure is not None:
-        _write_roundtrip_manifest(output_dir, result, options)
         flat_dir = output_dir / ROUNDTRIP_FLAT_SVG_DIR
         authoring_dir = output_dir / AUTHORING_SVG_FLAT_DIR
+        source_proxy_dir = media_dir / "source-object-previews"
         mapping = [
             (source, authoring_dir / source.name)
             for source in sorted(flat_dir.glob("slide_*.svg"))
@@ -1468,7 +1468,9 @@ def _write_artifact_tree(
             authoring_dir,
             force=False,
             projection_kind="flat",
+            source_proxy_dir=source_proxy_dir,
         )
+        _write_roundtrip_manifest(output_dir, result, options)
 
 
 def _sha256_file(path: Path) -> str:
@@ -1583,6 +1585,9 @@ def _write_roundtrip_manifest(
             row["flatSvg"] = flat_path.as_posix()
             row["flatSvgSha256"] = _sha256_file(output_dir / flat_path)
             referenced_svg_paths.append(output_dir / flat_path)
+        authoring_path = AUTHORING_SVG_FLAT_DIR / f"slide_{slide.index:02d}.svg"
+        if (output_dir / authoring_path).is_file():
+            referenced_svg_paths.append(output_dir / authoring_path)
         derived_paths = sorted(
             _referenced_local_paths(output_dir, referenced_svg_paths)
             - materialized_resource_paths,
@@ -1642,6 +1647,9 @@ def _write_roundtrip_manifest(
                 else None
             ),
             "images": options.images_subdir,
+            "sourceObjectPreviews": (
+                Path(options.images_subdir) / "source-object-previews"
+            ).as_posix(),
             "sounds": options.sound_subdir,
             "audio": "audio",
             "video": "video",

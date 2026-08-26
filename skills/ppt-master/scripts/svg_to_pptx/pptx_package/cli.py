@@ -1528,7 +1528,8 @@ Recorded narration:
             'Source-preserving import export from authoring-svg-flat/ against '
             'the validated sources/source.pptx and analysis contracts emitted '
             'by pptx_to_svg.py --roundtrip. Unchanged authoring objects recover '
-            'their source semantics; edited objects remain authored SVG. No '
+            'their source semantics; edited inline objects remain authored SVG, '
+            'while atomic source-proxy edits fail closed. No '
             'other -s/--source directory is accepted in round-trip mode.'
         ),
     )

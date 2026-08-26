@@ -36,6 +36,8 @@ from svg_authoring_view import (
     AUTHORING_MANIFEST_NAME,
     AUTHORING_SCHEMA,
     SOURCE_REF_ATTRIBUTE,
+    SOURCE_PROXY_ATTRIBUTE,
+    SOURCE_PROXY_KIND,
     project_svg_batch,
     semantic_subtree_sha256,
 )
@@ -60,6 +62,9 @@ class AuthoringRoundtripError(RuntimeError):
 class SourceRefRecord:
     source_path: tuple[int, ...]
     initial_authoring_subtree_sha256: str
+    representation: str
+    proxy_asset: Path | None = None
+    proxy_asset_sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -189,7 +194,7 @@ def is_flat_authoring_bundle(authoring_dir: Path) -> bool:
 def _load_documents(
     project_path: Path,
     authoring_dir: Path,
-) -> tuple[Path, dict[str, AuthoringDocument], dict[str, Any]]:
+) -> tuple[Path, Path, dict[str, AuthoringDocument], dict[str, Any]]:
     manifest_path = authoring_dir / AUTHORING_MANIFEST_NAME
     manifest = _load_json(manifest_path, context="flat authoring manifest")
     if manifest.get("schema") != AUTHORING_SCHEMA:
@@ -241,6 +246,7 @@ def _load_documents(
         )
     flat_root_raw = directories.get("flatSvg")
     layered_root_raw = directories.get("layeredSvg")
+    proxy_root_raw = directories.get("sourceObjectPreviews")
     if not isinstance(flat_root_raw, str) or not flat_root_raw:
         raise AuthoringRoundtripError(
             "Round-trip workspace manifest has no flat SVG backing directory"
@@ -248,6 +254,10 @@ def _load_documents(
     if not isinstance(layered_root_raw, str) or not layered_root_raw:
         raise AuthoringRoundtripError(
             "Round-trip workspace manifest has no layered SVG backing directory"
+        )
+    if not isinstance(proxy_root_raw, str) or not proxy_root_raw:
+        raise AuthoringRoundtripError(
+            "Round-trip workspace manifest has no source-object preview directory"
         )
     flat_root = _resolve_inside(
         project_path,
@@ -258,6 +268,11 @@ def _load_documents(
         project_path,
         layered_root_raw,
         context="round-trip layered SVG backing directory",
+    )
+    proxy_root = _resolve_inside(
+        project_path,
+        proxy_root_raw,
+        context="round-trip source-object preview directory",
     )
     if source_root != flat_root:
         raise AuthoringRoundtripError(
@@ -359,6 +374,46 @@ def _load_documents(
                 raise AuthoringRoundtripError(
                     f"{authoring_name} source ref {source_ref!r} has no initial hash"
                 )
+            representation = ref_raw.get("representation")
+            if representation not in {"inline", "source-proxy"}:
+                raise AuthoringRoundtripError(
+                    f"{authoring_name} source ref {source_ref!r} has an "
+                    "unsupported representation"
+                )
+            proxy_asset: Path | None = None
+            proxy_asset_sha256: str | None = None
+            if representation == "source-proxy":
+                proxy_asset_raw = ref_raw.get("proxy_asset")
+                proxy_asset_sha256_raw = ref_raw.get("proxy_asset_sha256")
+                if (
+                    not isinstance(proxy_asset_raw, str)
+                    or not proxy_asset_raw
+                    or not isinstance(proxy_asset_sha256_raw, str)
+                    or re.fullmatch(r"[0-9a-f]{64}", proxy_asset_sha256_raw) is None
+                ):
+                    raise AuthoringRoundtripError(
+                        f"{authoring_name} source proxy {source_ref!r} has "
+                        "incomplete asset metadata"
+                    )
+                proxy_asset = (authoring_dir / proxy_asset_raw).resolve()
+                try:
+                    proxy_asset.relative_to(proxy_root)
+                except ValueError as exc:
+                    proxy_root_name = proxy_root.relative_to(project_path).as_posix()
+                    raise AuthoringRoundtripError(
+                        f"{authoring_name} source proxy {source_ref!r} must use "
+                        f"{proxy_root_name}/"
+                    ) from exc
+                if (
+                    not proxy_asset.is_file()
+                    or proxy_asset.suffix.lower() != ".svg"
+                    or _sha256_file(proxy_asset) != proxy_asset_sha256_raw
+                ):
+                    raise AuthoringRoundtripError(
+                        f"{authoring_name} source proxy asset is missing or changed: "
+                        f"{proxy_asset}"
+                    )
+                proxy_asset_sha256 = proxy_asset_sha256_raw
             source_path_tuple = tuple(source_path_raw)
             source_element = _source_element(flat_root, source_path_tuple)
             if _source_identity(source_element) != source_ref:
@@ -369,6 +424,9 @@ def _load_documents(
             refs[source_ref] = SourceRefRecord(
                 source_path=source_path_tuple,
                 initial_authoring_subtree_sha256=initial_hash,
+                representation=representation,
+                proxy_asset=proxy_asset,
+                proxy_asset_sha256=proxy_asset_sha256,
             )
         documents[authoring_name] = AuthoringDocument(
             name=authoring_name,
@@ -399,7 +457,7 @@ def _load_documents(
         raise AuthoringRoundtripError(
             "authoring_manifest.json source_ref_count does not match documents"
         )
-    return source_root, documents, manifest
+    return source_root, proxy_root, documents, manifest
 
 
 def _load_current_assets(
@@ -506,6 +564,7 @@ def _baseline_assets(
 def _generate_baseline_bundle(
     project_path: Path,
     source_root: Path,
+    source_proxy_dir: Path,
     documents: dict[str, AuthoringDocument],
     inventory: dict[str, Any] | None,
 ) -> tuple[tempfile.TemporaryDirectory[str], Path, dict[str, VectorAssetRecord]]:
@@ -525,6 +584,8 @@ def _generate_baseline_bundle(
             baseline_root,
             force=False,
             projection_kind="flat",
+            source_proxy_dir=source_proxy_dir,
+            publish_source_proxies=False,
         )
         if inventory is None:
             return temporary, baseline_root, {}
@@ -905,6 +966,22 @@ def _materialize_document(
             f"{document.name} regenerated baseline has duplicate source refs: "
             + ", ".join(baseline_duplicates)
         )
+    manifest_proxy_refs = {
+        source_ref
+        for source_ref, record in document.source_refs.items()
+        if record.representation == "source-proxy"
+    }
+    baseline_proxy_refs = {
+        source_ref
+        for source_ref, occurrences in baseline_occurrences.items()
+        if occurrences[0].element.get(SOURCE_PROXY_ATTRIBUTE) == SOURCE_PROXY_KIND
+    }
+    if baseline_proxy_refs != manifest_proxy_refs:
+        raise AuthoringRoundtripError(
+            f"{document.name} regenerated source-proxy roster differs; "
+            f"missing={sorted(manifest_proxy_refs - baseline_proxy_refs)}, "
+            f"extra={sorted(baseline_proxy_refs - manifest_proxy_refs)}"
+        )
     current_unknown = sorted(set(current_occurrences) - expected_refs)
     if current_unknown:
         raise AuthoringRoundtripError(
@@ -950,6 +1027,27 @@ def _materialize_document(
         else:
             edited_refs.add(source_ref)
     deleted_refs = expected_refs - set(current_occurrences)
+    edited_proxy_refs = sorted(edited_refs & manifest_proxy_refs)
+    if edited_proxy_refs:
+        raise AuthoringRoundtripError(
+            f"{document.name} edits source-backed proxy object(s): "
+            + ", ".join(edited_proxy_refs)
+            + "; keep each proxy unchanged to restore its native PowerPoint "
+            "object; only a complete Slide-local proxy may be removed to "
+            "delete that object"
+        )
+    deleted_inherited_proxy_refs = sorted(
+        source_ref
+        for source_ref in deleted_refs & manifest_proxy_refs
+        if not source_ref.startswith("slide:")
+    )
+    if deleted_inherited_proxy_refs:
+        raise AuthoringRoundtripError(
+            f"{document.name} deletes inherited source-backed proxy object(s): "
+            + ", ".join(deleted_inherited_proxy_refs)
+            + "; Master/Layout proxies must remain unchanged because a flat "
+            "slide cannot delete shared structure"
+        )
 
     baseline_use_counts: Counter[tuple[str, str]] = Counter()
     for use in baseline_root.iter():
@@ -1150,7 +1248,10 @@ def materialize_flat_authoring_roundtrip(
         )
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    source_root, documents, manifest = _load_documents(project_path, authoring_dir)
+    source_root, source_proxy_dir, documents, manifest = _load_documents(
+        project_path,
+        authoring_dir,
+    )
     current_assets, inventory = _load_current_assets(
         project_path,
         authoring_dir,
@@ -1159,6 +1260,7 @@ def materialize_flat_authoring_roundtrip(
     baseline_temporary, baseline_root, baseline_assets = _generate_baseline_bundle(
         project_path,
         source_root,
+        source_proxy_dir,
         documents,
         inventory,
     )

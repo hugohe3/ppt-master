@@ -33,9 +33,11 @@ destination set unchanged.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -59,6 +61,11 @@ AUTHORING_SUMMARY_NAME = "authoring_summary.json"
 AUTHORING_SCHEMA = "ppt-master.svg-authoring-ir.v1"
 AUTHORING_SUMMARY_SCHEMA = "ppt-master.svg-authoring-summary.v1"
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
+SOURCE_PROXY_ATTRIBUTE = "data-pptx-source-proxy"
+SOURCE_PROXY_KIND = "native-restore"
+# Keep ordinary text and shape groups inline. Objects beyond one filesystem
+# block are treated as atomic source-backed visuals in round-trip flat pages.
+SOURCE_PROXY_MIN_BYTES = 4096
 _DRAWABLE_TAGS = frozenset({
     "circle",
     "ellipse",
@@ -68,6 +75,7 @@ _DRAWABLE_TAGS = frozenset({
     "polyline",
     "rect",
 })
+_URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -99,12 +107,24 @@ class SourceReference:
     source_ref: str
     source_path: tuple[int, ...]
     initial_authoring_subtree_sha256: str | None = None
+    representation: str = "inline"
+    proxy_asset: Path | None = None
+    proxy_asset_sha256: str | None = None
 
-    def as_dict(self) -> dict[str, object]:
-        return {
+    def as_dict(self, output_dir: Path) -> dict[str, object]:
+        payload: dict[str, object] = {
             "source_path": list(self.source_path),
             "initial_authoring_subtree_sha256": self.initial_authoring_subtree_sha256,
+            "representation": self.representation,
         }
+        if self.representation == "source-proxy":
+            if self.proxy_asset is None or self.proxy_asset_sha256 is None:
+                raise ValueError(
+                    f"Source proxy {self.source_ref} has no immutable asset record"
+                )
+            payload["proxy_asset"] = _portable_path(self.proxy_asset, output_dir)
+            payload["proxy_asset_sha256"] = self.proxy_asset_sha256
+        return payload
 
 
 def _semantic_text(value: str | None) -> str | None:
@@ -250,6 +270,9 @@ class ProjectionStats:
     compatibility_normalizations: int = 0
     asset_references_rewritten: int = 0
     coordinate_attributes_compacted: int = 0
+    source_object_proxies: int = 0
+    source_object_proxy_bytes: int = 0
+    unused_definitions_pruned: int = 0
     source_attributes: Counter[str] = field(default_factory=Counter)
 
     def as_dict(self) -> dict[str, object]:
@@ -262,6 +285,9 @@ class ProjectionStats:
             "source_attributes": dict(sorted(self.source_attributes.items())),
             "asset_references_rewritten": self.asset_references_rewritten,
             "coordinate_attributes_compacted": self.coordinate_attributes_compacted,
+            "source_object_proxies": self.source_object_proxies,
+            "source_object_proxy_bytes": self.source_object_proxy_bytes,
+            "unused_definitions_pruned": self.unused_definitions_pruned,
         }
 
     def merge(self, other: "ProjectionStats") -> None:
@@ -274,6 +300,9 @@ class ProjectionStats:
         self.coordinate_attributes_compacted += (
             other.coordinate_attributes_compacted
         )
+        self.source_object_proxies += other.source_object_proxies
+        self.source_object_proxy_bytes += other.source_object_proxy_bytes
+        self.unused_definitions_pruned += other.unused_definitions_pruned
         self.source_attributes.update(other.source_attributes)
 
 
@@ -430,7 +459,258 @@ def _rewrite_asset_references(
                 stats.asset_references_rewritten += 1
 
 
-def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, bytes]:
+def _definition_references(element: ET.Element) -> set[str]:
+    references: set[str] = set()
+    for item in element.iter():
+        for name, value in item.attrib.items():
+            references.update(match.group(2) for match in _URL_ID_RE.finditer(value))
+            if _local_name(name) == "href" and value.startswith("#"):
+                references.add(value[1:])
+        if item.text:
+            references.update(
+                match.group(2) for match in _URL_ID_RE.finditer(item.text)
+            )
+    return references
+
+
+def _definition_closure(
+    root: ET.Element,
+    content: list[ET.Element],
+) -> tuple[list[ET.Element], set[int]]:
+    definitions = [
+        child for child in root
+        if _local_name(child.tag) == "defs"
+    ]
+    owner_by_id: dict[str, ET.Element] = {}
+    for definitions_root in definitions:
+        for child in definitions_root:
+            for item in child.iter():
+                definition_id = item.get("id")
+                if definition_id:
+                    owner_by_id.setdefault(definition_id, child)
+
+    required_ids: set[str] = set()
+    pending = [
+        reference
+        for element in content
+        for reference in _definition_references(element)
+    ]
+    selected_owners: set[int] = set()
+    while pending:
+        definition_id = pending.pop()
+        if definition_id in required_ids:
+            continue
+        required_ids.add(definition_id)
+        owner = owner_by_id.get(definition_id)
+        if owner is None or id(owner) in selected_owners:
+            continue
+        selected_owners.add(id(owner))
+        pending.extend(_definition_references(owner) - required_ids)
+    return definitions, selected_owners
+
+
+def _selected_definitions(
+    root: ET.Element,
+    content: list[ET.Element],
+) -> list[ET.Element]:
+    definitions, selected_owners = _definition_closure(root, content)
+    selected: list[ET.Element] = []
+    for definitions_root in definitions:
+        clone = ET.Element(definitions_root.tag, dict(definitions_root.attrib))
+        clone.text = definitions_root.text
+        for child in definitions_root:
+            always_keep = _local_name(child.tag) == "style" or not child.get("id")
+            if always_keep or id(child) in selected_owners:
+                clone.append(copy.deepcopy(child))
+        if list(clone) or (clone.text and clone.text.strip()):
+            selected.append(clone)
+    return selected
+
+
+def _prune_unreferenced_definitions(
+    root: ET.Element,
+    stats: ProjectionStats,
+) -> None:
+    definitions = [
+        child for child in root
+        if _local_name(child.tag) == "defs"
+    ]
+    if not definitions:
+        return
+    visible_content = [child for child in root if child not in definitions]
+    _, selected_owners = _definition_closure(root, visible_content)
+    for definitions_root in definitions:
+        for child in list(definitions_root):
+            always_keep = _local_name(child.tag) == "style" or not child.get("id")
+            if always_keep or id(child) in selected_owners:
+                continue
+            definitions_root.remove(child)
+            stats.unused_definitions_pruned += 1
+        if not list(definitions_root) and not (
+            definitions_root.text and definitions_root.text.strip()
+        ):
+            root.remove(definitions_root)
+
+
+def _proxy_canvas_attributes(root: ET.Element) -> dict[str, str]:
+    view_box = (root.get("viewBox") or "").split()
+    if len(view_box) == 4:
+        x, y, width, height = view_box
+    else:
+        x = y = "0"
+        width = root.get("width") or "1"
+        height = root.get("height") or "1"
+    return {
+        "x": x,
+        "y": y,
+        "width": width,
+        "height": height,
+        "preserveAspectRatio": "none",
+    }
+
+
+def _source_proxy_asset_bytes(
+    root: ET.Element,
+    element: ET.Element,
+    authoring_dir: Path,
+    proxy_dir: Path,
+    stats: ProjectionStats,
+) -> bytes:
+    asset_root = ET.Element(root.tag, dict(root.attrib))
+    for definitions in _selected_definitions(root, [element]):
+        asset_root.append(definitions)
+    asset_root.append(copy.deepcopy(element))
+    for item in asset_root.iter():
+        item.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
+        item.attrib.pop(SOURCE_PROXY_ATTRIBUTE, None)
+    _rewrite_asset_references(
+        asset_root,
+        authoring_dir,
+        proxy_dir,
+        stats,
+    )
+    stats.coordinate_attributes_compacted += compact_svg_tree(
+        asset_root,
+    ).changed_attributes
+    payload = ET.tostring(asset_root, encoding="utf-8", xml_declaration=False)
+    return payload if payload.endswith(b"\n") else payload + b"\n"
+
+
+def _source_proxy_element(
+    root: ET.Element,
+    source: ET.Element,
+    source_ref: str,
+    asset_path: Path,
+    output_dir: Path,
+) -> ET.Element:
+    proxy = ET.Element(f"{{{SVG_NS}}}image")
+    for name in (
+        "id",
+        "data-pptx-object",
+        "data-pptx-frame",
+        "data-pptx-import-source",
+        "data-pptx-replacement-status",
+        "data-pptx-replace-with",
+        "data-pptx-placeholder",
+        "data-pptx-placeholder-type",
+        "data-pptx-placeholder-idx",
+        "data-pptx-structure-role",
+    ):
+        value = source.get(name)
+        if value is not None:
+            proxy.set(name, value)
+    proxy.attrib.update(_proxy_canvas_attributes(root))
+    proxy.set(
+        "href",
+        os.path.relpath(asset_path, output_dir).replace(os.sep, "/"),
+    )
+    proxy.set(SOURCE_REF_ATTRIBUTE, source_ref)
+    proxy.set(SOURCE_PROXY_ATTRIBUTE, SOURCE_PROXY_KIND)
+    proxy.tail = source.tail
+    return proxy
+
+
+def _externalize_large_source_objects(
+    root: ET.Element,
+    references: list[SourceReference],
+    output_dir: Path,
+    proxy_dir: Path,
+    stats: ProjectionStats,
+) -> dict[Path, bytes]:
+    reference_by_id = {
+        reference.source_ref: reference
+        for reference in references
+    }
+    candidates: list[tuple[ET.Element, ET.Element]] = []
+
+    def visit(parent: ET.Element, inside_source_ref: bool) -> None:
+        for child in list(parent):
+            source_ref = child.get(SOURCE_REF_ATTRIBUTE)
+            if source_ref and not inside_source_ref:
+                candidates.append((parent, child))
+                continue
+            visit(child, inside_source_ref or bool(source_ref))
+
+    visit(root, False)
+    assets: dict[Path, bytes] = {}
+    for parent, element in candidates:
+        original_bytes = len(ET.tostring(element, encoding="utf-8"))
+        if original_bytes < SOURCE_PROXY_MIN_BYTES:
+            continue
+        source_ref = element.get(SOURCE_REF_ATTRIBUTE)
+        if not source_ref or source_ref not in reference_by_id:
+            raise ValueError("Large source object has no manifest reference")
+        payload = _source_proxy_asset_bytes(
+            root,
+            element,
+            output_dir,
+            proxy_dir,
+            stats,
+        )
+        digest = hashlib.sha256(payload).hexdigest()
+        asset_path = proxy_dir / f"source-object-{digest}.svg"
+        previous = assets.get(asset_path)
+        if previous is not None and previous != payload:
+            raise ValueError(f"Source proxy hash collision: {asset_path.name}")
+        assets[asset_path] = payload
+
+        reference = reference_by_id[source_ref]
+        reference.representation = "source-proxy"
+        reference.proxy_asset = asset_path
+        reference.proxy_asset_sha256 = digest
+        proxy = _source_proxy_element(
+            root,
+            element,
+            source_ref,
+            asset_path,
+            output_dir,
+        )
+        siblings = list(parent)
+        index = siblings.index(element)
+        parent.remove(element)
+        parent.insert(index, proxy)
+        stats.source_object_proxies += 1
+        stats.source_object_proxy_bytes += original_bytes
+
+    _prune_unreferenced_definitions(root, stats)
+    active_refs = {
+        source_ref
+        for element in root.iter()
+        if (source_ref := element.get(SOURCE_REF_ATTRIBUTE))
+    }
+    references[:] = [
+        reference
+        for reference in references
+        if reference.source_ref in active_refs
+    ]
+    return assets
+
+
+def _render_projection(
+    source: Path,
+    output: Path,
+    source_proxy_dir: Path | None = None,
+) -> tuple[ProjectionReport, bytes, dict[Path, bytes]]:
     """Build one projection in memory without changing source or destination."""
     original = source.read_bytes()
     parser = ET.XMLParser(
@@ -451,6 +731,15 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
     stats.coordinate_attributes_compacted = compact_svg_tree(
         root,
     ).changed_attributes
+    source_proxy_assets: dict[Path, bytes] = {}
+    if source_proxy_dir is not None:
+        source_proxy_assets = _externalize_large_source_objects(
+            root,
+            source_references,
+            output.parent,
+            source_proxy_dir,
+            stats,
+        )
     _index_initial_authoring_references(root, source_references)
 
     projected = ET.tostring(root, encoding="utf-8", xml_declaration=False)
@@ -467,7 +756,7 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
         initial_authoring_sha256=hashlib.sha256(projected).hexdigest(),
         source_references=source_references,
     )
-    return report, projected
+    return report, projected, source_proxy_assets
 
 
 def _portable_path(path: Path, base: Path) -> str:
@@ -491,7 +780,7 @@ def _authoring_manifest_bytes(
             "source_sha256": report.source_sha256,
             "initial_authoring_sha256": report.initial_authoring_sha256,
             "source_refs": {
-                reference.source_ref: reference.as_dict()
+                reference.source_ref: reference.as_dict(output_dir)
                 for reference in sorted(
                     report.source_references,
                     key=lambda item: item.source_ref,
@@ -577,6 +866,10 @@ def _authoring_summary_document(
         ),
         "inline_source_refs": sum(
             element.get(SOURCE_REF_ATTRIBUTE) is not None
+            for element in elements
+        ),
+        "source_proxies": sum(
+            element.get(SOURCE_PROXY_ATTRIBUTE) == SOURCE_PROXY_KIND
             for element in elements
         ),
     }
@@ -678,6 +971,10 @@ def _authoring_summary_bytes(authoring_dir: Path) -> bytes:
             int(document["inline_source_refs"])
             for document in documents
         ),
+        "source_proxies": sum(
+            int(document["source_proxies"])
+            for document in documents
+        ),
         "machine_source_refs": manifest.get("source_ref_count"),
     }
     payload = {
@@ -690,6 +987,19 @@ def _authoring_summary_bytes(authoring_dir: Path) -> bytes:
         "totals": totals,
         "documents": documents,
     }
+    if totals["source_proxies"]:
+        payload["source_proxy_policy"] = {
+            "marker": f'{SOURCE_PROXY_ATTRIBUTE}="{SOURCE_PROXY_KIND}"',
+            "purpose": (
+                "Atomic visual preview of an immutable source-backed "
+                "PowerPoint object"
+            ),
+            "editing": (
+                "Keep unchanged to restore the native object; a Slide-local "
+                "proxy may be removed to delete it; inherited proxies must "
+                "remain; do not edit the proxy or its asset"
+            ),
+        }
     return (
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
     ).encode("utf-8")
@@ -839,9 +1149,32 @@ def project_svg_batch(
     *,
     force: bool,
     projection_kind: str,
+    source_proxy_dir: Path | None = None,
+    publish_source_proxies: bool = True,
 ) -> list[ProjectionReport]:
     """Build and publish one complete authoring bundle transactionally."""
-    rendered = [_render_projection(source, output) for source, output in mapping]
+    if source_proxy_dir is not None and _is_within(
+        source_proxy_dir.resolve(),
+        output_dir.resolve(),
+    ):
+        raise ValueError("Source proxy assets must live outside the authoring bundle")
+    rendered = [
+        _render_projection(source, output, source_proxy_dir)
+        for source, output in mapping
+    ]
+    proxy_assets: dict[Path, bytes] = {}
+    for _, _, rendered_assets in rendered:
+        for target, payload in rendered_assets.items():
+            previous = proxy_assets.get(target)
+            if previous is not None and previous != payload:
+                raise ValueError(f"Source proxy collision: {target}")
+            proxy_assets[target] = payload
+    if source_proxy_dir is not None and not publish_source_proxies:
+        for target, payload in proxy_assets.items():
+            if not target.is_file() or target.read_bytes() != payload:
+                raise ValueError(
+                    f"Source proxy asset is missing or stale: {target}"
+                )
     staging_parent = _nearest_existing_directory(output_dir.parent)
 
     with tempfile.TemporaryDirectory(
@@ -852,7 +1185,7 @@ def project_svg_batch(
         new_root = staging_root / "projected"
         staged: list[tuple[Path, Path]] = []
 
-        for report, projected in rendered:
+        for report, projected, _ in rendered:
             relative = report.output.relative_to(output_dir)
             staged_file = new_root / relative
             staged_file.parent.mkdir(parents=True, exist_ok=True)
@@ -863,7 +1196,7 @@ def project_svg_batch(
         staged_manifest = new_root / AUTHORING_MANIFEST_NAME
         staged_manifest.write_bytes(
             _authoring_manifest_bytes(
-                [report for report, _ in rendered],
+                [report for report, _, _ in rendered],
                 source_root,
                 output_dir,
                 projection_kind,
@@ -878,7 +1211,32 @@ def project_svg_batch(
             )
         )
 
-        if not output_dir.exists():
+        if publish_source_proxies:
+            proxy_staging = staging_root / "source-proxies"
+            for index, (target, payload) in enumerate(sorted(
+                proxy_assets.items(),
+                key=lambda item: item[0].as_posix(),
+            )):
+                if os.path.lexists(target):
+                    if (
+                        target.is_symlink()
+                        or not target.is_file()
+                        or target.read_bytes() != payload
+                    ):
+                        raise FileExistsError(
+                            f"Source proxy target has different content: {target}"
+                        )
+                    continue
+                staged_proxy = proxy_staging / f"{index:06d}.svg"
+                staged_proxy.parent.mkdir(parents=True, exist_ok=True)
+                staged_proxy.write_bytes(payload)
+                staged.append((target, staged_proxy))
+
+        has_external_targets = any(
+            not _is_within(target.resolve(), output_dir.resolve())
+            for target, _ in staged
+        )
+        if not output_dir.exists() and not has_external_targets:
             created: list[Path] = []
             try:
                 _ensure_directory(output_dir.parent, created)
@@ -906,7 +1264,7 @@ def project_svg_batch(
                 force=force,
             )
 
-    return [report for report, _ in rendered]
+    return [report for report, _, _ in rendered]
 
 
 def _is_within(path: Path, parent: Path) -> bool:
