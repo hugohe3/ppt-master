@@ -86,8 +86,8 @@ class ConvertContext:
     content_type_overrides: dict[str, str] = field(default_factory=dict)
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
     svg_dir: Path | None = None
-    # Explicit project boundary for deterministic resource resolution. Direct
-    # library callers may omit it and retain directory-name inference.
+    # Explicit project boundary for deterministic resource resolution. Public
+    # conversion entry points require it; recursive child contexts retain it.
     resource_root: Path | None = None
     inherited_styles: dict[str, str] = field(default_factory=dict)
     # Effective SVG font sizes keyed by element identity. Shared resolution

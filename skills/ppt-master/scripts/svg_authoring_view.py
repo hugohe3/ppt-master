@@ -24,8 +24,8 @@ The output directory is an authoring bundle: editable SVGs plus one
 model-readable `authoring_summary.json` and one tool-only
 `authoring_manifest.json` provenance sidecar. Layered IR remains the
 template-creation input; final templates are materialized from it. A flat
-authoring bundle may also be selected explicitly by the SVG exporter through
-its dangerous compatibility mode. Directory runs prepare and stage the
+authoring bundle at ``authoring-svg-flat/`` is the sole editable source for
+``svg_to_pptx.py --roundtrip``. Directory runs prepare and stage the
 complete batch before publishing it, so a failed page leaves the existing
 destination set unchanged.
 """

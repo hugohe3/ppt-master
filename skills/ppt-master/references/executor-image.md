@@ -24,7 +24,7 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 
 **Reference syntax**: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
-**Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
+**Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Every page, including `mirror`, must rebase the same bytes to exact `../images/<name>`; this transport rewrite is not a visual edit. Never retain a bare or source-template href: preview, validation, and export resolve the written path exactly.
 
 **Default — active image integration (may override when plain placement is
 stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)

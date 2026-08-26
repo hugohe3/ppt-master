@@ -11,7 +11,6 @@ Usage:
 Examples:
     python3 scripts/template_preview_pptx.py projects/my_template
     python3 scripts/template_preview_pptx.py templates/decks/my_template -o review.pptx
-    python3 scripts/template_preview_pptx.py templates/decks/legacy --visual-only
 
 Dependencies:
     python-pptx
@@ -146,12 +145,8 @@ def _review_svg_sources(
 
 def _partition_svg_prototypes(
     svg_files: list[Path],
-    *,
-    visual_only: bool,
 ) -> tuple[list[Path], list[Path]]:
     """Separate public pages from canonical definition-only Layout SVGs."""
-    if visual_only:
-        return svg_files, []
     public_files: list[Path] = []
     definition_files: list[Path] = []
     for path in svg_files:
@@ -221,33 +216,34 @@ def _resolve_workspace(path: Path) -> tuple[Path, Path]:
     candidate = path.expanduser().resolve()
     if _roster_spec(candidate / "templates") is not None:
         return candidate, candidate / "templates"
-
-    if _roster_spec(candidate) is not None:
-        if candidate.name == "templates" and (candidate.parent / "exports").is_dir():
-            return candidate.parent, candidate
-        return candidate, candidate
-
     raise ValueError(
-        "template workspace must contain templates/design_spec.md, "
-        "templates/design_spec.<layout|deck>.<id>.md, or a legacy flat "
-        "design_spec.md"
+        "template workspace root must contain templates/design_spec.md or "
+        "templates/design_spec.<layout|deck>.<id>.md"
     )
 
 
-def _template_id(spec_path: Path, workspace: Path) -> str:
-    """Read a portable template id, falling back to the workspace directory name."""
+def _template_id(spec_path: Path) -> str:
+    """Read the required portable template id."""
     text = spec_path.read_text(encoding="utf-8")
     match = _FRONTMATTER_ID_RE.search(text)
-    raw = match.group(1).strip().strip("'\"") if match else workspace.name
+    if match is None:
+        raise ValueError(
+            f"{spec_path.name} frontmatter must declare layout_id or deck_id"
+        )
+    raw = match.group(1).strip().strip("'\"")
     safe = _FILENAME_UNSAFE_RE.sub("_", raw).strip(" ._")
     return safe or "template"
 
 
 def _replication_mode(spec_path: Path) -> str:
-    """Read the template replication mode, defaulting legacy packages to standard."""
+    """Read the required template replication mode."""
     text = spec_path.read_text(encoding="utf-8")
     match = _REPLICATION_MODE_RE.search(text)
-    return match.group(1) if match else "standard"
+    if match is None:
+        raise ValueError(
+            f"{spec_path.name} frontmatter must declare replication_mode"
+        )
+    return match.group(1)
 
 
 def _canvas_viewbox(spec_path: Path) -> str | None:
@@ -388,10 +384,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "template_workspace",
-        help=(
-            "Workspace containing templates/design_spec.md; legacy flat template "
-            "directories are also accepted."
-        ),
+        help="Workspace root containing templates/design_spec.md.",
     )
     parser.add_argument(
         "-o",
@@ -405,14 +398,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--force",
         action="store_true",
         help="Replace an existing review PPTX after an intentional re-export.",
-    )
-    parser.add_argument(
-        "--visual-only",
-        action="store_true",
-        help=(
-            "Export a legacy SVG roster as slide-local DrawingML for visual review. "
-            "This does not validate or claim a reusable Master/Layout contract."
-        ),
     )
     return parser
 
@@ -429,7 +414,6 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"template directory has no SVG prototypes: {template_dir}")
         svg_files, layout_definition_files = _partition_svg_prototypes(
             all_svg_files,
-            visual_only=args.visual_only,
         )
         if not svg_files:
             raise ValueError(
@@ -438,16 +422,14 @@ def main(argv: list[str] | None = None) -> int:
             )
 
         spec_path = _roster_spec(template_dir)
-        template_id = _template_id(spec_path, workspace)
+        template_id = _template_id(spec_path)
         replication_mode = _replication_mode(spec_path)
         locked_canvas = _canvas_viewbox(spec_path)
-        if locked_canvas is None and not args.visual_only:
+        if locked_canvas is None:
             raise ValueError(
                 "design_spec.md frontmatter must declare canvas_viewbox"
             )
-        use_full_placeholder_frames = (
-            not args.visual_only and replication_mode != "mirror"
-        )
+        use_full_placeholder_frames = replication_mode != "mirror"
         output_path = (
             Path(args.output).expanduser().resolve()
             if args.output
@@ -460,9 +442,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"output already exists: {output_path}; use --force to replace it"
             )
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        text_style: MasterTextStyleSpec | None = None
-        if not args.visual_only:
-            text_style, title_px, body_px = _master_text_style(all_svg_files)
+        text_style, title_px, body_px = _master_text_style(all_svg_files)
 
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")
@@ -473,9 +453,7 @@ def main(argv: list[str] | None = None) -> int:
                 "  Definition-only Layout prototypes: "
                 f"{len(layout_definition_files)}"
             )
-        if args.visual_only:
-            print("  Review mode: visual-only legacy compatibility")
-        elif replication_mode == "mirror":
+        if replication_mode == "mirror":
             print("  Review placeholder frames: preserved source Slide geometry")
         else:
             print(f"  Review Master defaults: title {title_px:g}px, body {body_px:g}px")
@@ -490,12 +468,12 @@ def main(argv: list[str] | None = None) -> int:
             review_svg_files, review_layout_definition_files = (
                 _partition_svg_prototypes(
                     review_all_svg_files,
-                    visual_only=args.visual_only,
                 )
             )
             success = create_pptx_with_native_svg(
                 svg_files=review_svg_files,
                 output_path=output_path,
+                resource_root=workspace,
                 canvas_format=None,
                 expected_viewbox=locked_canvas,
                 verbose=True,
@@ -504,7 +482,7 @@ def main(argv: list[str] | None = None) -> int:
                 animation=None,
                 image_optimize=False,
                 native_objects=True,
-                pptx_structure="flat" if args.visual_only else "structured",
+                pptx_structure="structured",
                 use_layout_placeholder_frames=use_full_placeholder_frames,
                 master_text_style_spec=text_style,
                 structure_name=template_id,
@@ -526,14 +504,13 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 1
 
-        label = "Visual-only template preview" if args.visual_only else "Template preview"
         placeholder_status = (
             f", {placeholder_count} full-frame placeholder(s)"
             if use_full_placeholder_frames
             else ""
         )
         print(
-            f"[OK] {label} verified: "
+            "[OK] Template preview verified: "
             f"{slide_count} slides, {master_count} master(s), "
             f"{layout_count} layout(s){placeholder_status}"
         )

@@ -83,7 +83,7 @@ Layout 提供结构。指定地址最多选一个，并原子携带
 `images/`、`icons/`。最终 Stage 2 再把已确认沟通契约与安装状态适配；
 `template_application` 只描述**如何使用**，不负责决定**选哪个模板**。
 
-> **兼容性预检：** Step 3 也接受 `design_spec.md` 直接位于所给根目录、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。旧的原子 placeholder、未映射 Master/Layout 等语义旧包会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
+> **当前工作区预检：** Step 3 只接受在 `templates/` 下提供 Design Spec 的工作区根目录。根目录平铺、旧的原子 placeholder、未映射 Master/Layout 等语义旧包都会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
 
 ### 什么**不会**自动选中模板
 

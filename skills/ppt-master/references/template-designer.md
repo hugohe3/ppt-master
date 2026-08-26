@@ -23,11 +23,11 @@ Generate reusable structured page templates inside the workspace selected by Cre
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
 - finalized template brief
-- `manifest.json` — single source of truth for source-deck facts (slide size, theme, per-master themes, assets, asset map, placeholders, layouts, masters, slides, SVG file paths, page-type candidates)
-- `native_structure.json` — stable source master/layout keys, picker names, parent-master relationships, placeholder type/index/geometry, source hash, and source-graph quality facts
-- `source_template.pptx` — byte-preserved analysis copy for visual/package cross-checking; never a final template asset
-- `conversion-report.json` — source-recovery and fidelity diagnostics, when present
-- exported `assets/`
+- `analysis/manifest.json` — source-deck facts (slide size, theme, per-master themes, resources, image map, placeholders, layouts, masters, slides, SVG file paths, page-type candidates)
+- `analysis/native_structure.json` — stable source master/layout keys, picker names, parent-master relationships, placeholder type/index/geometry, source hash, and source-graph quality facts
+- `sources/source.pptx` — byte-preserved backing package for visual/package cross-checking; never a final template asset
+- `validation/conversion-report.json` — source-recovery and fidelity diagnostics, when present
+- exported `images/` plus other populated semantic resource directories
 - `svg/master_*.svg` / `svg/layout_*.svg` — immutable layered native-payload backing; every master / layout in the deck rendered once, including ones no sample slide references
 - `svg/slide_NN.svg` — immutable slide-local native-payload backing; do not bulk-read because opaque native payload is retained
 - `svg/inheritance.json` — which layout / master each slide consumes
@@ -37,7 +37,7 @@ When the workflow provides a PPTX reference source, the effective input package 
 
 PPTX import interpretation:
 
-- Placeholder guides in master / layout SVGs are layout signals. Use `manifest.json` placeholder records for type / index / geometry / base style; do not copy dashed guide boxes into final templates unless the visual design truly uses dashed boxes.
+- Placeholder guides in master / layout SVGs are layout signals. Use `analysis/manifest.json` placeholder records for type / index / geometry / base style; do not copy dashed guide boxes into final templates unless the visual design truly uses dashed boxes.
 - Charts, SmartArt, diagrams, and OLE objects may appear as typed placeholders in layered SVGs. In flat SVGs they may show preview images. Treat them as source intent markers, not reusable decorative assets.
 - The asset filenames referenced by SVGs are governed by the manifest asset map. Prefer those references over inventing duplicate asset names.
 
@@ -45,8 +45,8 @@ Input priority for PPTX-backed template creation depends on the AI-derived inter
 
 | Mode | Authoritative inputs | Model-facing inputs |
 |---|---|---|
-| `standard` / `fidelity` | Finalized brief for the newly designed output; `manifest.json` for factual canvas/theme/assets | `authoring-svg/authoring_summary.json`, layered authoring SVGs, optional flat spot checks, and exported assets as visual references. Do not read `authoring_manifest.json`. Source Master/Layout topology is informational only and is not mined into output structure. |
-| `mirror` | `manifest.json`, `native_structure.json`, and `svg/inheritance.json`; the compiler validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus layered authoring SVGs as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
+| `standard` / `fidelity` | Finalized brief for the newly designed output; `analysis/manifest.json` for factual canvas/theme/resources | `authoring-svg/authoring_summary.json`, layered authoring SVGs, optional flat spot checks, and exported resources as visual references. Do not read `authoring_manifest.json`. Source Master/Layout topology is informational only and is not mined into output structure. |
+| `mirror` | `analysis/manifest.json`, `analysis/native_structure.json`, and `svg/inheritance.json`; the compiler validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus layered authoring SVGs as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
 
 **Mandatory — authored construction bundle**: As soon as `replication_mode`
 resolves to `standard` or `fidelity`, and before selecting any page or template
@@ -56,7 +56,7 @@ retain both for the active authoring context. Do not load this bundle for
 `mirror`; it preserves source-owned geometry and never selects or authors
 replacement contours.
 
-Use the compact facts in `manifest.json` for orientation. Open screenshots or the original PPTX only for visual cross-checking.
+Use the compact facts in `analysis/manifest.json` for orientation. Open screenshots or the original PPTX only for visual cross-checking.
 
 **Native structure output**: Always set `native_structure_mode: structured`.
 
@@ -169,9 +169,9 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 When the derived implementation writes `replication_mode: mirror`, materialize a new template workspace from validated imported facts rather than designing a new system:
 
 - Kind eligibility: Create Layout mirror is legal only when the validated source contract is already brand-neutral and application-neutral. If supported source facts retain organization-specific identity or reusable application policy, stop and return to Create Template dispatch: use `standard` / `fidelity` to author a new Layout, or Create Deck to retain those facts. Removing, repainting, retyping, or discarding application rules is never mirror.
-- Model-facing authoring source: `authoring-svg/authoring_summary.json`, layered `authoring-svg/*.svg`, `svg/inheritance.json`, and `native_structure.json`. Do not read `authoring-svg/authoring_manifest.json`; materialization validates it internally. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
+- Model-facing authoring source: `authoring-svg/authoring_summary.json`, layered `authoring-svg/*.svg`, `svg/inheritance.json`, and `analysis/native_structure.json`. Do not read `authoring-svg/authoring_manifest.json`; materialization validates it internally. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
 - Precondition: the import evidence identifies every source Master/Layout, parent relationship, picker name, placeholder contract, and fixed visual layer. Stop only when required facts or supported geometry are missing; unused identities are not a stop condition.
-- Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source slide, plus `layout_<layout_key>.svg` for every source Layout unused by all source slides. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix; definition-only files are not generated pages.
+- Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source slide, plus `layout_<layout_key>.svg` for every source Layout unused by all source slides. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `analysis/manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix; definition-only files are not generated pages.
 - Required preservation: preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, supported native-object metadata, geometry, decoration, sprite-sheet wrappers, original example text, chart previews, fonts, effects, and paint order whenever the importer represents them.
 - Allowed normalization: add or normalize explicit root declarations and asset paths, and recursively expand fixed Master/Layout group wrappers into direct atoms. The mapping must remain one-to-one at the ownership level and must not change paint order or appearance.
 - Forbidden: commonality extraction, semantic synthesis, merging, splitting, promotion, demotion, renaming, re-parenting, decorative simplification, placeholder invention, or replacement of supported source-native metadata / SVG fallback with a model-authored approximation.
@@ -353,14 +353,14 @@ Templates must strictly follow the finalized template brief and the generated `<
 
 If PPTX import output exists:
 - Prefer imported theme colors and fonts over visually guessed values
-- Reuse exported `assets/` images directly — `<image>` references in `svg/` already point at canonical files
-- Treat page-type candidates from `manifest.pageTypeCandidates` as hints, not guarantees
+- Reuse exported `images/` directly — raster images and SVG/EMF/WMF image media use the same canonical pool, and `<image>` references in `svg/` already point at it
+- Treat page-type candidates from `analysis/manifest.json.pageTypeCandidates` as hints, not guarantees
 
 **Precondition**:
 
 - For `standard`, inspect enough lightweight complete-page IR documents to understand the requested visual direction and reusable assets; do not analyze source topology.
 - For `fidelity`, inspect every lightweight complete-page IR document so the newly designed roster covers the useful source composition range; do not derive output ownership from source Master/Layout recurrence.
-- For `mirror`, verify every authoring Master, Layout, and Slide listed by `authoring_summary.json` against `native_structure.json` and `svg/inheritance.json`, then materialize from the IR with matching lossless payload backing. The compiler validates each machine-manifest record. Before materialization begins, report the verified source slide indexes.
+- For `mirror`, verify every authoring Master, Layout, and Slide listed by `authoring_summary.json` against `analysis/native_structure.json` and `svg/inheritance.json`, then materialize from the IR with matching lossless payload backing. The compiler validates each machine-manifest record. Before materialization begins, report the verified source slide indexes.
 
 ### 2.1 PPTX Import Mode Rule
 
@@ -573,7 +573,7 @@ Mirror mode emits one SVG per source slide, named by source order:
 └── 050_ending.svg
 ```
 
-Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text and validated native structure facts are preserved when the authoring IR is materialized into the new workspace; IR-only refs and its manifest are not copied into the template output.
+Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `analysis/manifest.json` `pageTypeCandidates`. Literal source text and validated native structure facts are preserved when the authoring IR is materialized into the new workspace; IR-only refs and its manifest are not copied into the template output.
 
 **Hard rule — common routing**: Keep `<design_spec_path>`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` when explicitly requested and always for a multi-Master package gate. Create Template must not create optional directories or placeholder files solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and omit it from completion unless real template files were written or adopted there. Do not branch asset placement by output scope.
 

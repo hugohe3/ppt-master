@@ -27,6 +27,10 @@ from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
 from native_payloads import NativePayloadError, hydrate_native_payload_refs
+from pptx_workspace import (
+    NATIVE_STRUCTURE_PATH,
+    SOURCE_PPTX_PATH,
+)
 from slide_roster import discover_slide_svgs
 
 from . import svg_contracts
@@ -328,13 +332,13 @@ except ImportError:
 try:
     from resource_paths import (
         SVG_WORK_DIR_NAMES as _SVG_WORK_DIR_NAMES,
-        icon_search_dirs_for_svg as _icon_search_dirs_for_svg,
+        icon_dir_for_svg as _icon_dir_for_svg,
         project_root_for_svg_path as _project_root_for_svg_path,
         resolve_external_image_reference as _resolve_external_image_reference,
     )
 except ImportError:
     _SVG_WORK_DIR_NAMES = frozenset()
-    _icon_search_dirs_for_svg = None
+    _icon_dir_for_svg = None
     _project_root_for_svg_path = None
     _resolve_external_image_reference = None
 
@@ -3441,20 +3445,14 @@ class SVGQualityChecker:
                 "post-processing/export will still validate them."
             )
             return
-        if _icon_search_dirs_for_svg is None:
+        if _icon_dir_for_svg is None:
             result['warnings'].append(
-                "Detected data-icon placeholders, but shared icon search helper could not be imported; "
+                "Detected data-icon placeholders, but the project icon helper could not be imported; "
                 "post-processing/export will still validate them."
             )
             return
 
-        icons_dir, fallback_dir = _icon_search_dirs_for_svg(svg_path)
-        require_project_local = self._requires_project_local_icons(svg_path)
-        project_icons_dir = (
-            _project_root_for_svg_path(svg_path) / 'icons'
-            if _project_root_for_svg_path is not None
-            else None
-        )
+        icons_dir = _icon_dir_for_svg(svg_path)
         seen = set()
         for elem in placeholders:
             icon_name = (elem.get('data-icon') or '').strip()
@@ -3465,25 +3463,14 @@ class SVGQualityChecker:
                 continue
             seen.add(icon_name)
 
-            if require_project_local and project_icons_dir is not None:
-                local_path, _ = _resolve_icon_path(
-                    icon_name,
-                    project_icons_dir,
-                    None,
-                )
-                if not local_path.exists():
-                    result['errors'].append(
-                        f"Icon is not prepared in the project: {icon_name} "
-                        f"(expected under {project_icons_dir}); return to "
-                        "Strategist preparation instead of using the global fallback"
-                    )
-                    continue
-
-            icon_path, _ = _resolve_icon_path(icon_name, icons_dir, fallback_dir)
+            try:
+                icon_path, _ = _resolve_icon_path(icon_name, icons_dir)
+            except ValueError as exc:
+                result['errors'].append(str(exc))
+                continue
             if not icon_path.exists():
-                fallback_msg = f", then {fallback_dir}" if fallback_dir else ""
                 suggestion = (
-                    _suggest_icon_name(icon_name, icons_dir, fallback_dir)
+                    _suggest_icon_name(icon_name, icons_dir)
                     if _suggest_icon_name is not None else None
                 )
                 hint = (
@@ -3491,8 +3478,8 @@ class SVGQualityChecker:
                     if suggestion else ""
                 )
                 result['errors'].append(
-                    f"Icon not found: {icon_name} (searched {icons_dir}"
-                    f"{fallback_msg}){hint}"
+                    f"Project-local icon not found: {icon_name} "
+                    f"(expected under {icons_dir}){hint}"
                 )
                 continue
             try:
@@ -3512,31 +3499,6 @@ class SVGQualityChecker:
                 result['info']['native_icon_payload_refs'] = (
                     result['info'].get('native_icon_payload_refs', 0) + hydrated
                 )
-
-    @staticmethod
-    def _requires_project_local_icons(svg_path: Path) -> bool:
-        """Return whether a generated page belongs to a versioned project."""
-        if svg_path.parent.name != 'svg_output' or _project_root_for_svg_path is None:
-            return False
-        lock_path = _project_root_for_svg_path(svg_path) / 'spec_lock.md'
-        try:
-            first_line = next(
-                (
-                    line.strip()
-                    for line in lock_path.read_text(encoding='utf-8-sig').splitlines()
-                    if line.strip()
-                ),
-                '',
-            )
-        except OSError:
-            return False
-        return bool(
-            re.fullmatch(
-                r'<!--[ \t]+ppt-master-schema:[ \t]*spec-lock/v[1-9][0-9]*[ \t]+-->',
-                first_line,
-                re.IGNORECASE,
-            )
-        )
 
     def _check_unsupported_visual_elements(
         self,
@@ -6967,8 +6929,8 @@ class SVGQualityChecker:
                 "workspaces must be re-created through create-template",
             ))
         if check_structure:
-            native_contract_path = dir_path / 'native_structure.json'
-            source_template_path = dir_path / 'source_template.pptx'
+            native_contract_path = dir_path / NATIVE_STRUCTURE_PATH
+            source_template_path = dir_path / SOURCE_PPTX_PATH
             legacy_structure_detected = False
             for svg_file in svg_files:
                 try:
@@ -7039,8 +7001,9 @@ class SVGQualityChecker:
                 self._template_issues.append((
                     'error',
                     'legacy_native_structure_pair',
-                    "legacy native_structure.json/source_template.pptx template "
-                    "contracts must be replaced through "
+                    "source-analysis native_structure/source.pptx contracts "
+                    "must not be packaged as reusable template inputs; rebuild "
+                    "through "
                     "skills/ppt-master/workflows/create-template.md",
                 ))
 

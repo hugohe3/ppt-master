@@ -14,8 +14,7 @@ in ``templates/README.md``; each kind's schema lives in its directory README:
 Current workspaces keep ``design_spec.md`` and any SVG roster under
 ``<workspace>/templates/``. Assets live in optional ``images/`` / ``icons/``
 directories. Explicitly generated review artifacts go to the optional, ignored
-``exports/`` directory. Legacy flat roots remain readable for Brand/Layout/Deck;
-Style uses only the current nested one-file contract.
+``exports/`` directory. Every kind uses this nested workspace contract.
 
 Index entry schemas (the JSON file is the single source of truth — README
 files describe the kind and usage in prose but do **not** enumerate templates;
@@ -434,15 +433,13 @@ def _has_qualified_roster_spec(template_dir: Path) -> bool:
 
 
 def _template_content_dir(template_root: Path) -> Path:
-    """Resolve the canonical source directory, with legacy-flat compatibility."""
+    """Resolve the only canonical template source directory."""
     nested = template_root / "templates"
     if (nested / "design_spec.md").is_file() or _has_kind_qualified_spec(nested):
         return nested
-    if (template_root / "design_spec.md").is_file():
-        return template_root
     raise SpecParseError(
-        "missing templates/design_spec.md, templates/design_spec.<kind>.<id>.md, "
-        f"or legacy design_spec.md in {template_root}"
+        "missing templates/design_spec.md or "
+        f"templates/design_spec.<kind>.<id>.md in {template_root}"
     )
 
 
@@ -1161,12 +1158,7 @@ def _extract_entry(
     """Build the index entry + extras for a single template."""
     template_root = template_dir
     template_dir = _template_content_dir(template_root)
-    if kind == "style" and template_dir == template_root:
-        raise SpecParseError(
-            "Style workspaces require templates/design_spec.md; "
-            "legacy-flat design_spec.md is not supported"
-        )
-    if template_id is not None and template_dir != template_root:
+    if template_id is not None:
         exact_spec = template_dir / "design_spec.md"
         if not exact_spec.is_file():
             raise SpecParseError(
@@ -1268,7 +1260,7 @@ def _extract_entry(
     extras = OrderedDict(
         pages=pages,
         primary_color=str(primary_color),
-        page_prefix="templates/" if template_dir != template_root else "",
+        page_prefix="templates/",
         preview=(
             f"exports/{resolved_template_id}_template_preview.pptx"
             if (
@@ -1364,10 +1356,7 @@ def _enumerate_ids(kind: str) -> list[str]:
     return sorted(
         p.name for p in base.iterdir()
         if p.is_dir()
-        and (
-            (p / "templates" / "design_spec.md").is_file()
-            or (p / "design_spec.md").is_file()
-        )
+        and (p / "templates" / "design_spec.md").is_file()
     )
 
 

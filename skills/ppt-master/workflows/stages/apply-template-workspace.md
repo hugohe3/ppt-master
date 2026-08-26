@@ -18,7 +18,6 @@ resolve to one of these current contracts:
 | Input shape | Spec and SVG source | Asset source |
 |---|---|---|
 | Current workspace root | `<root>/templates/design_spec.md`, or one `design_spec.<kind>.<id>.md` per kind, plus `<root>/templates/` | Existing `<root>/images/` and `<root>/icons/` |
-| Compatible legacy-flat Brand/Layout/Deck root | `<root>/design_spec.md`; Layout/Deck also require current-contract SVGs under `<root>/` | Package-local files |
 | Current Create Template handoff | Its exact validated library or project workspace root | Existing portable sibling `images/` and `icons/`; already installed only when the root is the target project |
 
 Spec naming and kind declaration follow [`templates/README.md`](../../templates/README.md); a root exposing several kind-qualified specs contributes all of them. Do not accept only another project's inner `templates/` directory because that omits sibling assets.
@@ -45,7 +44,7 @@ duplicate kinds before validation.
 
 **Hard rule — raw source boundary**: A raw PPTX is not a template workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first; its validated workspace-root handoff becomes a Stage-1 candidate and is preselected only when it is the sole supplied root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
-**Compatibility gate**: Reject semantic-legacy or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved. A legacy-flat Brand/Layout/Deck directory is readable only when it satisfies its current kind contract; Layout/Deck also require a current structured SVG contract. Style has no legacy-flat form.
+**Current-contract gate**: Reject flat-root, semantic-legacy, or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved.
 
 ## 2. Read the Matching Schema
 
@@ -69,8 +68,7 @@ roster, and a shadowed Deck still validates its declared contract:
 python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode
 ```
 
-Any error blocks installation. A compatible legacy-flat root uses its own root
-as the checker target.
+Any error blocks installation.
 
 ## 3. Structured Preflight
 
@@ -86,8 +84,8 @@ Before copying a Deck or Layout workspace, inspect every SVG root and slot. Bran
 
 Validate each normalized root once. Resolve the effective structural owner as
 Layout when selected, otherwise Deck; install only its SVG/non-bitmap
-structural payload, but install every selected spec. A library or
-compatible legacy-flat root contributes one bare `design_spec.md`; install it
+structural payload, but install every selected spec. A library root contributes
+one bare `templates/design_spec.md`; install it
 as `design_spec.<kind>.<id>.md`, where `<id>` comes from the matching
 frontmatter id field. A current project root may contribute several qualified
 specs; preserve each validated qualified filename. Never merge spec bodies,
@@ -96,7 +94,7 @@ and never copy one multi-kind root's shared SVG or asset pool once per kind.
 | Installed file | Meaning |
 |---|---|
 | `templates/design_spec.<kind>.<id>.md` | A template contribution installed into or authored in this project |
-| `templates/design_spec.md` | Library or compatible legacy-flat source shape only; never valid beside qualified project specs |
+| `templates/design_spec.md` | Library source shape only; never valid beside qualified project specs |
 
 For every copied spec, prepend exactly one provenance line under its H1, then
 leave the rest of the document untouched. An in-place root is not rewritten:
@@ -124,8 +122,6 @@ After that root-level copy, kinds have these downstream effects:
 | `style` | Expose reusable direction/method without identity truth, page prototypes, or native structure. Default Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. Quick always realizes the resolved combination as flat pages. A Style workspace never activates visual review. |
 | `layout` | Expose the actual reusable structure and take structural precedence over Deck; Default Strategist later inspects these prototypes, while Quick's current agent uses them for immediate flat authoring decisions in active context. |
 | `deck` | Expose descriptive application context and identity. It also supplies structure and the actual prototype roster only when no Layout is selected. |
-
-For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `templates/`, bitmaps to project `images/`, and declared icons to project `icons/`. Do not infer legacy Master/Layout semantics from the flat directory shape.
 
 **Atomic install preflight**:
 

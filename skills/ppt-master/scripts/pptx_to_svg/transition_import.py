@@ -112,6 +112,7 @@ def import_slide_transition(
     slide: SlideRef,
     *,
     media_subdir: str,
+    resource_path_map: dict[str, str] | None = None,
 ) -> TransitionImport | None:
     """Read one slide transition and resolve its optional WAV relationship."""
     slide_xml = pkg.read_part_bytes(slide.part.path)
@@ -127,15 +128,19 @@ def import_slide_transition(
     media_files: dict[str, bytes] = {}
     relationship_id = readback.summary.sound_relationship_id
     if relationship_id is not None:
-        sound_path, sound_bytes = _resolve_transition_sound(
+        source_part, sound_path, sound_bytes = _resolve_transition_sound(
             pkg,
             slide,
             relationship_id,
         )
-        media_files[sound_path] = sound_bytes
-        config["sound"] = (
-            PurePosixPath(media_subdir) / sound_path
-        ).as_posix()
+        mapped_path = (resource_path_map or {}).get(source_part)
+        if mapped_path is not None:
+            config["sound"] = mapped_path
+        else:
+            media_files[sound_path] = sound_bytes
+            config["sound"] = (
+                PurePosixPath(media_subdir) / sound_path
+            ).as_posix()
     return TransitionImport(config=config, media_files=media_files)
 
 
@@ -160,7 +165,7 @@ def _resolve_transition_sound(
     pkg: OoxmlPackage,
     slide: SlideRef,
     relationship_id: str,
-) -> tuple[str, bytes]:
+) -> tuple[str, str, bytes]:
     relationship = slide.part.rels.get(relationship_id)
     if relationship is None:
         raise TransitionImportError(
@@ -189,7 +194,7 @@ def _resolve_transition_sound(
             f"transition sound part is not a valid WAV file: {target}"
         )
     digest = hashlib.sha256(payload).hexdigest()[:16]
-    return f"transition_sound_{digest}.wav", payload
+    return target, f"transition_sound_{digest}.wav", payload
 
 
 __all__ = [

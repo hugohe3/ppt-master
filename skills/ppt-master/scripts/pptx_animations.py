@@ -3569,9 +3569,11 @@ def validate_pptx_animation_package(
     pptx_path: str | Path,
     *,
     require_supported_effects: bool = False,
+    skip_slide_numbers: set[int] | None = None,
 ) -> None:
-    """Validate timing placement and shape references for every slide part."""
+    """Validate generated timing, excluding byte-preserved source slides."""
     path = Path(pptx_path)
+    skipped = skip_slide_numbers or set()
     errors: list[str] = []
     try:
         with zipfile.ZipFile(path) as package:
@@ -3581,6 +3583,9 @@ def validate_pptx_animation_package(
                 if re.fullmatch(r'ppt/slides/slide\d+\.xml', name)
             )
             for name in names:
+                match = re.search(r'slide(\d+)\.xml$', name)
+                if match is not None and int(match.group(1)) in skipped:
+                    continue
                 slide_data = package.read(name)
                 try:
                     root = ET.fromstring(slide_data)

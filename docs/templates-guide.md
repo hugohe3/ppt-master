@@ -101,7 +101,7 @@ Stage 2 then compares the confirmed communication contract with that installed
 state; `template_application` describes **how** to use it and never chooses
 **which** template to use.
 
-> **Compatibility preflight:** Step 3 also accepts a legacy-flat Brand/Layout/Deck workspace with `design_spec.md` directly at the supplied root when it satisfies the current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. Former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
+> **Current-workspace preflight:** Step 3 accepts only a workspace root exposing its Design Spec under `templates/`. Flat-root, former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
 
 ### What does NOT select a template automatically
 

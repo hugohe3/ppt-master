@@ -22,10 +22,12 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from pptx_workspace import NATIVE_STRUCTURE_PATH, SOURCE_PPTX_PATH
+
 
 SCHEMA = "ppt-master.native-structure.v1"
-SOURCE_TEMPLATE_NAME = "source_template.pptx"
-CONTRACT_NAME = "native_structure.json"
+SOURCE_TEMPLATE_NAME = SOURCE_PPTX_PATH.as_posix()
+CONTRACT_NAME = NATIVE_STRUCTURE_PATH.as_posix()
 
 
 def _sha256(path: Path) -> str:
@@ -39,6 +41,7 @@ def _sha256(path: Path) -> str:
 def _copy_source_template(source: Path, destination: Path) -> None:
     if source.resolve() == destination.resolve():
         return
+    destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 
 
@@ -152,6 +155,7 @@ def build_native_structure(
     for slide in slides:
         slide_contracts.append({
             "index": slide["index"],
+            "packagePart": slide.get("slidePath"),
             "pageType": slide.get("pageType"),
             "layoutKey": layout_key_by_path.get(slide.get("layoutPath")),
             "masterKey": master_key_by_path.get(slide.get("masterPath")),
@@ -194,7 +198,9 @@ def write_native_structure_bundle(
     source_copy = output_dir / SOURCE_TEMPLATE_NAME
     _copy_source_template(source_pptx, source_copy)
     contract = build_native_structure(source_pptx, manifest)
-    (output_dir / CONTRACT_NAME).write_text(
+    contract_path = output_dir / CONTRACT_NAME
+    contract_path.parent.mkdir(parents=True, exist_ok=True)
+    contract_path.write_text(
         json.dumps(contract, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

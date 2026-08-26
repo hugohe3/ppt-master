@@ -248,6 +248,15 @@ class NativeLayoutSpec:
 
 
 @dataclass(frozen=True)
+class NativeSlideSpec:
+    """One source slide retained by index for exact round-trip passthrough."""
+
+    index: int
+    package_part: str
+    layout_key: str
+
+
+@dataclass(frozen=True)
 class NativeStructureContract:
     """Validated portable contract for a preserved source PPTX package."""
 
@@ -256,6 +265,7 @@ class NativeStructureContract:
     source_sha256: str
     slide_size_emu: tuple[int, int]
     layouts: tuple[NativeLayoutSpec, ...]
+    slides: tuple[NativeSlideSpec, ...]
 
     def layout(self, key: str) -> NativeLayoutSpec:
         for layout in self.layouts:
@@ -263,6 +273,15 @@ class NativeStructureContract:
                 return layout
         raise TemplateStructureError(
             f"native_structure.json has no layout key {key!r}"
+        )
+
+    def slide(self, index: int) -> NativeSlideSpec:
+        """Return one source slide contract by presentation-order index."""
+        for slide in self.slides:
+            if slide.index == index:
+                return slide
+        raise TemplateStructureError(
+            f"native_structure.json has no source slide {index}"
         )
 
 
@@ -1150,6 +1169,59 @@ def load_native_structure_contract(
         seen_keys.add(key)
         seen_parts.add(package_part)
 
+    raw_slides = raw.get("slides")
+    if not isinstance(raw_slides, list) or not raw_slides:
+        raise TemplateStructureError(
+            f"{contract_path.name} must contain at least one source slide"
+        )
+    slides: list[NativeSlideSpec] = []
+    seen_slide_indices: set[int] = set()
+    slide_parts: set[str] = set()
+    for position, item in enumerate(raw_slides, start=1):
+        context = f"{contract_path.name} slides[{position}]"
+        if not isinstance(item, dict):
+            raise TemplateStructureError(f"{context} must be an object")
+        try:
+            slide_index = int(item.get("index"))
+        except (TypeError, ValueError) as exc:
+            raise TemplateStructureError(f"{context} index must be an integer") from exc
+        if slide_index <= 0 or slide_index in seen_slide_indices:
+            raise TemplateStructureError(
+                f"{context} index must be unique and positive"
+            )
+        layout_key = str(item.get("layoutKey") or "")
+        if layout_key not in seen_keys:
+            raise TemplateStructureError(
+                f"{context} references unknown layout key {layout_key!r}"
+            )
+        raw_package_part = item.get("packagePart")
+        if not isinstance(raw_package_part, str) or not raw_package_part:
+            raise TemplateStructureError(
+                f"{context} packagePart must be a non-empty string"
+            )
+        package_part = raw_package_part
+        if (
+            not package_part.startswith("ppt/slides/")
+            or ".." in Path(package_part).parts
+            or not package_part.endswith(".xml")
+            or package_part in slide_parts
+        ):
+            raise TemplateStructureError(
+                f"{context} packagePart must be a unique ppt/slides/*.xml part"
+            )
+        slides.append(NativeSlideSpec(
+            index=slide_index,
+            package_part=package_part,
+            layout_key=layout_key,
+        ))
+        seen_slide_indices.add(slide_index)
+        slide_parts.add(package_part)
+    expected_indices = set(range(1, len(slides) + 1))
+    if seen_slide_indices != expected_indices:
+        raise TemplateStructureError(
+            f"{contract_path.name} source slide indices must be contiguous from 1"
+        )
+
     try:
         with zipfile.ZipFile(source_template, "r") as package:
             package_parts = set(package.namelist())
@@ -1157,7 +1229,7 @@ def load_native_structure_contract(
         raise TemplateStructureError(
             f"Cannot open preserved source template {source_template}: {exc}"
         ) from exc
-    missing_parts = sorted(seen_parts - package_parts)
+    missing_parts = sorted((seen_parts | slide_parts) - package_parts)
     if missing_parts:
         raise TemplateStructureError(
             f"{source_template.name} is missing layout part(s): " + ", ".join(missing_parts)
@@ -1169,6 +1241,7 @@ def load_native_structure_contract(
         source_sha256=expected_sha,
         slide_size_emu=slide_size_emu,
         layouts=tuple(layouts),
+        slides=tuple(sorted(slides, key=lambda item: item.index)),
     )
 
 

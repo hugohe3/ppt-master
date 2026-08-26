@@ -63,6 +63,13 @@ from template_text_slots import (
     analyze_template_text_slots,
     text_slot_integrity_sha256,
 )
+from pptx_workspace import (
+    AUDIO_EXTENSIONS,
+    IMAGE_EXTENSIONS,
+    VIDEO_EXTENSIONS,
+    conversion_report_path,
+    native_structure_path,
+)
 
 configure_utf8_stdio()
 
@@ -86,17 +93,6 @@ ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
 
 _NON_VISUAL_TAGS = frozenset({"defs", "desc", "metadata", "style", "title"})
-_BITMAP_EXTENSIONS = frozenset({
-    ".avif",
-    ".bmp",
-    ".gif",
-    ".jpeg",
-    ".jpg",
-    ".png",
-    ".tif",
-    ".tiff",
-    ".webp",
-})
 _INHERITED_PRESENTATION_ATTRIBUTES = frozenset({
     "color",
     "fill",
@@ -302,7 +298,7 @@ def _template_execution_manifest_files(
 
 def _source_import_summary(import_workspace: Path) -> dict[str, object] | None:
     """Summarize source-owned tolerant-import diagnostics by stable code."""
-    report_path = import_workspace / "conversion-report.json"
+    report_path = conversion_report_path(import_workspace)
     try:
         report = json.loads(report_path.read_text(encoding="utf-8"))
     except FileNotFoundError:
@@ -792,7 +788,7 @@ def _validate_source_ref_closure(
 
 
 def _load_native_graph(workspace: Path) -> dict[str, Any]:
-    native_path = workspace / "native_structure.json"
+    native_path = native_structure_path(workspace)
     native = _load_json(native_path, context="native structure")
     if native.get("schema") != NATIVE_STRUCTURE_SCHEMA:
         raise MirrorMaterializationError(
@@ -2440,10 +2436,16 @@ def _rewrite_packaged_assets(
                     else f"{source.stem}{detected_extension}"
                 )
                 relative_target = Path("images") / packaged_name
-            elif source.suffix.lower() in _BITMAP_EXTENSIONS:
+            elif source.suffix.lower() in IMAGE_EXTENSIONS:
                 relative_target = Path("images") / source.name
+            elif source.suffix.lower() in VIDEO_EXTENSIONS:
+                relative_target = Path("video") / source.name
+            elif source.suffix.lower() in AUDIO_EXTENSIONS:
+                relative_target = Path("audio") / source.name
             else:
-                relative_target = Path("templates") / "assets" / source.name
+                relative_target = (
+                    Path("native-payloads") / "imported" / source.name
+                )
             previous = asset_sources.get(relative_target)
             if previous is not None and _sha256_file(previous) != _sha256_file(source):
                 raise MirrorMaterializationError(

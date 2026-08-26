@@ -100,7 +100,6 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
 | Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Stage-1 template choice |
-| Legacy-flat Brand/Layout/Deck root satisfying its current kind contract; Layout/Deck also require current structured SVGs | [`apply-template-workspace`](./stages/apply-template-workspace.md) compatibility reader; Style has no flat form |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
 | Request to add a master directly to an existing PPTX/SVG | Unsupported; explain the Create Template → Generate PPTX lifecycle |
 

@@ -51,6 +51,16 @@ from pptx_transitions import (  # noqa: E402
     normalize_transition_effect_request,
     validate_seconds,
 )
+from pptx_workspace import (  # noqa: E402
+    AUTHORING_SVG_FLAT_DIR,
+    WorkspaceResourceSpec,
+    conversion_report_path,
+    load_roundtrip_manifest,
+    native_structure_path,
+    slide_animation_config_sha256,
+    source_pptx_path,
+    workspace_resource_specs,
+)
 
 configure_utf8_stdio()
 
@@ -64,7 +74,7 @@ if __package__ in {None, ''}:
 
 from .dimensions import CANVAS_FORMATS, get_project_info
 from .discovery import NotesFileReadError, find_notes_files, find_svg_files
-from .builder import create_pptx_with_native_svg
+from .builder import RoundtripSlidePatch, create_pptx_with_native_svg
 from ..native_objects import (
     native_fallback_kind,
     native_replacement_kind,
@@ -112,14 +122,385 @@ from ..animation_config import (
     validate_animation_config_errors,
     validate_transition_config,
 )
-from template_import.native_structure import (
-    CONTRACT_NAME as NATIVE_STRUCTURE_NAME,
-    SOURCE_TEMPLATE_NAME,
-)
-
-
 def _as_dict(value: object) -> dict:
     return value if isinstance(value, dict) else {}
+
+
+def _path_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open('rb') as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _roundtrip_slide_parts(
+    row: dict[str, object],
+    *,
+    include_structure: bool,
+) -> set[str]:
+    """Return package owners that make one semantic sidecar slide-relevant."""
+    keys = ["sourcePart"]
+    if include_structure:
+        keys.extend(["layoutPart", "masterPart"])
+    parts = {
+        str(row[key])
+        for key in keys
+        if isinstance(row.get(key), str) and row.get(key)
+    }
+    note = row.get("notes")
+    if isinstance(note, dict) and isinstance(note.get("sourcePart"), str):
+        parts.add(str(note["sourcePart"]))
+    return parts
+
+
+def _resource_owner_parts(item: dict[str, object]) -> set[str]:
+    raw = item.get("ownerParts")
+    if not isinstance(raw, list):
+        raw = item.get("sourceParts")
+    return {
+        str(value)
+        for value in raw or []
+        if isinstance(value, str) and value
+    }
+
+
+def _resource_slide_indices(
+    item: dict[str, object],
+    slide_rows: dict[int, dict[str, object]],
+    *,
+    include_structure: bool,
+) -> set[int]:
+    owners = _resource_owner_parts(item)
+    return {
+        index
+        for index, row in slide_rows.items()
+        if owners & _roundtrip_slide_parts(
+            row,
+            include_structure=include_structure,
+        )
+    }
+
+
+def _roundtrip_passthrough_candidates(
+    project_path: Path,
+    native_files: list[Path],
+    *,
+    source_dir: str,
+    authoring_report: dict[str, object] | None,
+) -> set[int]:
+    """Return source slides whose visual and editable sidecars are unchanged."""
+    manifest = load_roundtrip_manifest(project_path)
+    if manifest is None or manifest.get('schema') != 'ppt-master.roundtrip-workspace.v1':
+        raise RuntimeError(
+            "Round-trip export requires analysis/roundtrip_manifest.json "
+            "with schema ppt-master.roundtrip-workspace.v1"
+        )
+    raw_slides = manifest.get('slides')
+    if not isinstance(raw_slides, list):
+        return set()
+    slide_rows = {
+        int(row['index']): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get('index'), int)
+    }
+    if len(slide_rows) != len(native_files):
+        return set()
+
+    candidates: set[int] = set()
+    if authoring_report is not None:
+        raw_documents = authoring_report.get('documents')
+        if not isinstance(raw_documents, list):
+            return set()
+        reports = {
+            str(row.get('file')): row
+            for row in raw_documents
+            if isinstance(row, dict) and isinstance(row.get('file'), str)
+        }
+        for index in slide_rows:
+            report = reports.get(f'slide_{index:02d}.svg')
+            if not isinstance(report, dict):
+                continue
+            if (
+                report.get('document_unchanged') is True
+                and
+                isinstance(report.get('source_ref_count'), int)
+                and report.get('source_ref_count') == report.get('unchanged_refs')
+                and int(report.get('edited_refs') or 0) == 0
+                and int(report.get('deleted_refs') or 0) == 0
+                and int(report.get('authored_unreferenced') or 0) == 0
+                and report.get('defs_changed') is False
+            ):
+                candidates.add(index)
+    elif source_dir == 'svg':
+        files_by_name = {path.name: path for path in native_files}
+        for index, row in slide_rows.items():
+            relative = row.get('layeredSvg')
+            expected = row.get('layeredSvgSha256')
+            if not isinstance(relative, str) or not isinstance(expected, str):
+                continue
+            path = files_by_name.get(Path(relative).name)
+            if path is not None and _path_sha256(path) == expected:
+                candidates.add(index)
+    else:
+        return set()
+
+    sidecars = manifest.get('sidecars')
+    animation = sidecars.get('animations') if isinstance(sidecars, dict) else None
+    if not isinstance(animation, dict):
+        return set()
+    animation_file = animation.get('file')
+    if not isinstance(animation_file, str):
+        raise RuntimeError(
+            "Round-trip manifest must declare sidecars.animations.file"
+        )
+    current_animation = project_path / animation_file
+    if not current_animation.is_file():
+        return set()
+    try:
+        current_animation_config = json.loads(
+            current_animation.read_text(encoding="utf-8")
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"Cannot read round-trip animation sidecar {current_animation}: {exc}"
+        ) from exc
+    if not isinstance(current_animation_config, dict):
+        raise RuntimeError(
+            f"Round-trip animation sidecar must be a JSON object: {current_animation}"
+        )
+    for index in tuple(candidates):
+        expected = slide_rows[index].get("animationSha256")
+        if not isinstance(expected, str):
+            raise RuntimeError(
+                f"Round-trip manifest slide {index} lacks animationSha256"
+            )
+        actual = slide_animation_config_sha256(
+            current_animation_config,
+            f"slide_{index:02d}",
+        )
+        if actual != expected:
+            candidates.discard(index)
+
+    notes_dir = project_path / 'notes'
+    for index in tuple(candidates):
+        row = slide_rows[index]
+        note = row.get('notes')
+        canonical_note = notes_dir / f'slide_{index:02d}.md'
+        if isinstance(note, dict):
+            note_file = note.get('file')
+            note_sha = note.get('sha256')
+            if not isinstance(note_file, str) or not isinstance(note_sha, str):
+                candidates.discard(index)
+                continue
+            current_note = project_path / note_file
+            if not current_note.is_file() or _path_sha256(current_note) != note_sha:
+                candidates.discard(index)
+        elif canonical_note.is_file():
+            candidates.discard(index)
+        derived = row.get("derivedResources")
+        if not isinstance(derived, list):
+            raise RuntimeError(
+                f"Round-trip manifest slide {index} lacks derivedResources"
+            )
+        for resource_index, raw in enumerate(derived):
+            if not isinstance(raw, dict):
+                raise RuntimeError(
+                    f"Round-trip slide {index} derivedResources[{resource_index}] "
+                    "must be an object"
+                )
+            relative = raw.get("file")
+            expected_sha = raw.get("sha256")
+            if not isinstance(relative, str) or not isinstance(expected_sha, str):
+                raise RuntimeError(
+                    f"Round-trip slide {index} derived resource is incomplete"
+                )
+            path = (project_path / relative).resolve()
+            try:
+                path.relative_to(project_path.resolve())
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"Round-trip derived resource escapes the project: {relative}"
+                ) from exc
+            if not path.is_file() or _path_sha256(path) != expected_sha:
+                candidates.discard(index)
+                break
+    return candidates
+
+
+def _roundtrip_note_changed(
+    project_path: Path,
+    row: dict[str, object],
+    index: int,
+) -> bool:
+    """Return whether one canonical per-slide notes source changed."""
+    note = row.get("notes")
+    if isinstance(note, dict):
+        relative = note.get("file")
+        expected_sha = note.get("sha256")
+        if not isinstance(relative, str) or not isinstance(expected_sha, str):
+            raise RuntimeError(
+                f"Round-trip manifest slide {index} has incomplete notes metadata"
+            )
+        current = project_path / relative
+        return not current.is_file() or _path_sha256(current) != expected_sha
+    return (project_path / "notes" / f"slide_{index:02d}.md").is_file()
+
+
+def _roundtrip_slide_patches(
+    project_path: Path,
+    authoring_report: dict[str, object] | None,
+    passthrough_slides: set[int],
+    *,
+    force_motion_changed: bool,
+    force_notes_changed: bool,
+) -> dict[int, RoundtripSlidePatch]:
+    """Build strict source-overlay metadata for edited authoring slides."""
+    if authoring_report is None:
+        return {}
+    manifest = load_roundtrip_manifest(project_path)
+    if manifest is None:
+        raise RuntimeError("Round-trip manifest is missing")
+    raw_slides = manifest.get("slides")
+    if not isinstance(raw_slides, list):
+        raise RuntimeError("Round-trip manifest slides must be an array")
+    slide_rows = {
+        int(row["index"]): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get("index"), int)
+    }
+    sidecars = manifest.get("sidecars")
+    animation = sidecars.get("animations") if isinstance(sidecars, dict) else None
+    animation_file = animation.get("file") if isinstance(animation, dict) else None
+    if not isinstance(animation_file, str):
+        raise RuntimeError(
+            "Round-trip manifest must declare sidecars.animations.file"
+        )
+    try:
+        animation_config = json.loads(
+            (project_path / animation_file).read_text(encoding="utf-8")
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"Cannot read round-trip animation sidecar: {exc}"
+        ) from exc
+    if not isinstance(animation_config, dict):
+        raise RuntimeError("Round-trip animation sidecar must be a JSON object")
+
+    documents = authoring_report.get("documents")
+    if not isinstance(documents, list):
+        raise RuntimeError("Authoring round-trip report documents must be an array")
+    patches: dict[int, RoundtripSlidePatch] = {}
+    for raw in documents:
+        if not isinstance(raw, dict) or not isinstance(raw.get("file"), str):
+            raise RuntimeError("Authoring round-trip document report is incomplete")
+        match = re.fullmatch(r"slide_(\d+)\.svg", str(raw["file"]))
+        if match is None:
+            raise RuntimeError(
+                f"Unexpected authoring round-trip slide name: {raw['file']}"
+            )
+        index = int(match.group(1))
+        if index in passthrough_slides:
+            continue
+        row = slide_rows.get(index)
+        if row is None:
+            raise RuntimeError(
+                f"Round-trip manifest has no slide {index} for authoring overlay"
+            )
+        expected_animation = row.get("animationSha256")
+        if not isinstance(expected_animation, str):
+            raise RuntimeError(
+                f"Round-trip manifest slide {index} lacks animationSha256"
+            )
+        motion_changed = force_motion_changed or (
+            slide_animation_config_sha256(
+                animation_config,
+                f"slide_{index:02d}",
+            )
+            != expected_animation
+        )
+
+        def _ref_set(field: str) -> frozenset[str]:
+            value = raw.get(field)
+            if not isinstance(value, list) or not all(
+                isinstance(item, str) for item in value
+            ):
+                raise RuntimeError(
+                    f"Authoring round-trip slide {index} has invalid {field}"
+                )
+            return frozenset(value)
+
+        patches[index] = RoundtripSlidePatch(
+            source_ref_ids=_ref_set("source_ref_ids"),
+            edited_ref_ids=_ref_set("edited_ref_ids"),
+            deleted_ref_ids=_ref_set("deleted_ref_ids"),
+            motion_changed=motion_changed,
+            notes_changed=(
+                force_notes_changed
+                or _roundtrip_note_changed(project_path, row, index)
+            ),
+        )
+    return patches
+
+
+def _opaque_roundtrip_slide_dependencies(
+    project_path: Path,
+) -> dict[int, list[str]]:
+    """Map source slides that own video/audio/opaque relationships."""
+    manifest = load_roundtrip_manifest(project_path)
+    if manifest is None:
+        return {}
+    resources = manifest.get('resources')
+    items = resources.get('items') if isinstance(resources, dict) else None
+    if not isinstance(items, list):
+        return {}
+    raw_slides = manifest.get("slides")
+    if not isinstance(raw_slides, list):
+        return {}
+    slide_rows = {
+        int(row["index"]): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get("index"), int)
+    }
+    dependencies: dict[int, list[str]] = {}
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        kind = item.get('kind')
+        owners = _resource_owner_parts(item)
+        notes_owned = any(
+            owner.startswith("ppt/notesSlides/notesSlide")
+            for owner in owners
+        )
+        source_parts = item.get('sourceParts')
+        chart_native_payload = (
+            kind == 'native-payload'
+            and isinstance(source_parts, list)
+            and bool(source_parts)
+            and all(
+                isinstance(source_part, str)
+                and source_part.startswith('ppt/charts/')
+                for source_part in source_parts
+            )
+        )
+        if (
+            not notes_owned
+            and kind not in {'audio', 'native-payload', 'video'}
+        ) or chart_native_payload:
+            continue
+        workspace_path = item.get('workspacePath')
+        if not isinstance(workspace_path, str):
+            continue
+        for index in _resource_slide_indices(
+            item,
+            slide_rows,
+            include_structure=False,
+        ):
+            dependencies.setdefault(index, []).append(workspace_path)
+    return {
+        index: sorted(set(paths))
+        for index, paths in dependencies.items()
+    }
 
 
 _PPTX_STRUCTURE_SECTION_RE = re.compile(
@@ -165,7 +546,7 @@ def _load_diagnostic_import_source(
     EmbeddedFontBundle | None,
 ]:
     """Load source-document evidence emitted for diagnostic round-trip."""
-    report_path = project_path / 'conversion-report.json'
+    report_path = conversion_report_path(project_path)
     if not report_path.is_file():
         return None, None, None, None
     try:
@@ -1050,8 +1431,7 @@ Examples:
     %(prog)s projects/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s projects/ppt169_demo -o out.pptx            # Explicit path (no backup/)
     %(prog)s projects/quick_generate_demo --quick-generate # Lockless flat export with normal postflight
-    %(prog)s <import_workspace> -s authoring-svg-flat \\
-      --roundtrip                                         # Editable IR with source restoration
+    %(prog)s <import_workspace> --roundtrip               # authoring-svg-flat/ with source restoration
 
     # Disable transition / change transition effect
     %(prog)s projects/ppt169_demo -t none
@@ -1145,12 +1525,11 @@ Recorded narration:
         '--roundtrip',
         action='store_true',
         help=(
-            'Source-preserving import export: rebuild layered slide_*.svg, or '
-            'materialize a flat authoring IR selected with -s, against the '
-            'validated source_template.pptx/native_structure.json emitted by '
-            'pptx_to_svg.py --roundtrip. Unchanged authoring objects recover '
-            'their source semantics; edited objects remain authored SVG. Does '
-            'not alter normal flat/structured release export.'
+            'Source-preserving import export from authoring-svg-flat/ against '
+            'the validated sources/source.pptx and analysis contracts emitted '
+            'by pptx_to_svg.py --roundtrip. Unchanged authoring objects recover '
+            'their source semantics; edited objects remain authored SVG. No '
+            'other -s/--source directory is accepted in round-trip mode.'
         ),
     )
     parser.add_argument(
@@ -1383,7 +1762,6 @@ Recorded narration:
     raw_argv = list(argv) if argv is not None else sys.argv[1:]
     legacy_native_objects = '--native-objects' in raw_argv
     args = parser.parse_args(raw_argv)
-    diagnostic_source = args.source not in {None, 'output'}
     compatibility_export = args.enable_dangerous_nonconforming_svg_export
     if legacy_native_objects:
         print(
@@ -1436,8 +1814,10 @@ Recorded narration:
         conflicts: list[str] = []
         if args.quick_generate:
             conflicts.append('--quick-generate')
-        if args.source is None:
-            conflicts.append('-s/--source is required')
+        if args.source not in {None, AUTHORING_SVG_FLAT_DIR.as_posix()}:
+            conflicts.append(
+                '-s/--source must be omitted or authoring-svg-flat'
+            )
         if args.pptx_structure is not None:
             conflicts.append('--pptx-structure must be omitted')
         if conflicts:
@@ -1447,7 +1827,10 @@ Recorded narration:
                 file=sys.stderr,
             )
             return 1
+        args.source = AUTHORING_SVG_FLAT_DIR.as_posix()
         args.pptx_structure = 'preserve'
+
+    diagnostic_source = args.source not in {None, 'output'}
 
     if args.quick_generate:
         conflicts: list[str] = []
@@ -1482,6 +1865,7 @@ Recorded narration:
 
     structure_lock = None
     native_structure_contract = None
+    roundtrip_resources: tuple[WorkspaceResourceSpec, ...] = ()
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
     lockless_export = (
@@ -1546,14 +1930,27 @@ Recorded narration:
     if args.roundtrip:
         structure_lock = PptxStructureLock(
             mode='preserve',
-            source_template=project_path / SOURCE_TEMPLATE_NAME,
-            native_structure=project_path / NATIVE_STRUCTURE_NAME,
+            source_template=source_pptx_path(project_path),
+            native_structure=native_structure_path(project_path),
         )
         try:
             native_structure_contract = load_native_structure_contract(
                 structure_lock,
             )
         except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        try:
+            roundtrip_manifest = load_roundtrip_manifest(project_path)
+            if roundtrip_manifest is None:
+                raise RuntimeError(
+                    "Round-trip export requires analysis/roundtrip_manifest.json"
+                )
+            roundtrip_resources = workspace_resource_specs(
+                project_path,
+                roundtrip_manifest,
+            )
+        except RuntimeError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
 
@@ -1689,12 +2086,12 @@ Recorded narration:
     ref_files = native_files
     authoring_roundtrip_temporary: tempfile.TemporaryDirectory[str] | None = None
     authoring_roundtrip_report: dict[str, object] | None = None
-    if args.roundtrip and args.source != 'svg':
+    if args.roundtrip:
         authoring_source_dir = project_path / native_source_dir
         if not is_flat_authoring_bundle(authoring_source_dir):
             print(
-                "Error: --roundtrip with a source other than svg requires a "
-                "flat authoring bundle with authoring_manifest.json: "
+                "Error: --roundtrip requires authoring-svg-flat/ with "
+                "authoring_manifest.json: "
                 f"{authoring_source_dir}",
                 file=sys.stderr,
             )
@@ -1724,6 +2121,106 @@ Recorded narration:
                 f"{totals.get('edited_refs', 0)} edited ref(s), "
                 f"{totals.get('deleted_refs', 0)} deleted ref(s)"
             )
+
+    roundtrip_passthrough_slides: set[int] = set()
+    roundtrip_slide_patches: dict[int, RoundtripSlidePatch] = {}
+    roundtrip_passthrough_overridden = any((
+        args.no_notes,
+        args.no_animations,
+        args.transition is not None,
+        args.transition_duration is not None,
+        args.auto_advance is not None,
+        args.animation is not None,
+        args.animation_duration is not None,
+        args.animation_stagger is not None,
+        args.animation_trigger is not None,
+        args.animation_config is not None,
+        args.recorded_narration is not None,
+        args.narration_audio_dir is not None,
+        args.use_narration_timings,
+        args.inherit_motion_from is not None,
+        args.image_sizing == 'display',
+        args.text_flow != TEXT_FLOW_PRESERVE,
+    ))
+    if args.roundtrip and not roundtrip_passthrough_overridden:
+        try:
+            roundtrip_passthrough_slides = _roundtrip_passthrough_candidates(
+                project_path.resolve(),
+                native_files,
+                source_dir=args.source or native_source_dir,
+                authoring_report=authoring_roundtrip_report,
+            )
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        if roundtrip_passthrough_slides:
+            print(
+                "  Source slide passthrough: "
+                f"{len(roundtrip_passthrough_slides)}/{len(native_files)} "
+                "slide(s) retain original XML and relationships"
+            )
+        if authoring_roundtrip_report is not None:
+            authoring_roundtrip_report['source_slide_passthrough'] = {
+                'count': len(roundtrip_passthrough_slides),
+                'slides': sorted(roundtrip_passthrough_slides),
+            }
+    if args.roundtrip:
+        roundtrip_motion_overridden = any((
+            args.no_animations,
+            args.transition is not None,
+            args.transition_duration is not None,
+            args.auto_advance is not None,
+            args.animation is not None,
+            args.animation_duration is not None,
+            args.animation_stagger is not None,
+            args.animation_trigger is not None,
+            args.animation_config is not None,
+            args.recorded_narration is not None,
+            args.narration_audio_dir is not None,
+            args.use_narration_timings,
+            args.inherit_motion_from is not None,
+        ))
+        try:
+            roundtrip_slide_patches = _roundtrip_slide_patches(
+                project_path.resolve(),
+                authoring_roundtrip_report,
+                roundtrip_passthrough_slides,
+                force_motion_changed=roundtrip_motion_overridden,
+                force_notes_changed=args.no_notes,
+            )
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        try:
+            opaque_dependencies = _opaque_roundtrip_slide_dependencies(
+                project_path.resolve()
+            )
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        blocked_dependencies = {
+            index: paths
+            for index, paths in opaque_dependencies.items()
+            if index not in roundtrip_passthrough_slides
+            and index not in roundtrip_slide_patches
+        }
+        if blocked_dependencies:
+            print(
+                "Error: direct layered-SVG rebuild would drop source video, "
+                "audio, or opaque native payload relationships:",
+                file=sys.stderr,
+            )
+            for index, paths in sorted(blocked_dependencies.items()):
+                print(
+                    f"  slide {index}: " + ", ".join(paths),
+                    file=sys.stderr,
+                )
+            print(
+                "Use the imported authoring-svg-flat bundle so edited objects "
+                "can overlay the preserved source slide.",
+                file=sys.stderr,
+            )
+            return 1
 
     release_quality_gate = (
         args.quick_generate
@@ -2351,6 +2848,9 @@ Recorded narration:
         baseline_layout_specs=baseline_layout_specs,
         layout_definition_files=layout_definition_files,
         native_structure_contract=native_structure_contract,
+        roundtrip_passthrough_slides=roundtrip_passthrough_slides,
+        roundtrip_slide_patches=roundtrip_slide_patches,
+        roundtrip_resources=roundtrip_resources,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,

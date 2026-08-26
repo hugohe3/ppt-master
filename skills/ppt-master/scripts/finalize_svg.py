@@ -51,7 +51,7 @@ configure_utf8_stdio()
 
 # Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
-from resource_paths import icon_search_dirs_for_project  # noqa: E402
+from resource_paths import icon_dir_for_project  # noqa: E402
 from svg_finalize.align_embed_images import (
     align_and_embed_images_in_svg,
     count_office_vector_refs_in_svg,
@@ -182,7 +182,6 @@ def _process_candidate_directory(
     max_dimension: int | None,
     image_scale: float,
     icons_dir: Path,
-    icons_fallback_dir: Path | None,
 ) -> bool:
     """Run every selected finalization pass against one unpublished candidate."""
     # Core normalization: downstream image/rect processors read XML geometry.
@@ -207,7 +206,6 @@ def _process_candidate_directory(
                 icons_dir,
                 dry_run=False,
                 verbose=False,
-                fallback_dir=icons_fallback_dir,
             )
             icons_count += count
         for svg_file in candidate_dir.glob('*.svg'):
@@ -342,7 +340,7 @@ def finalize_project(
     """
     svg_output = project_dir / 'svg_output'
     svg_final = project_dir / 'svg_final'
-    icons_dir, icons_fallback_dir = icon_search_dirs_for_project(project_dir)
+    icons_dir = icon_dir_for_project(project_dir)
 
     # Check if svg_output exists
     if not svg_output.exists():
@@ -381,7 +379,6 @@ def finalize_project(
                 max_dimension=max_dimension,
                 image_scale=image_scale,
                 icons_dir=icons_dir,
-                icons_fallback_dir=icons_fallback_dir,
             )
         except Exception as exc:
             safe_print(

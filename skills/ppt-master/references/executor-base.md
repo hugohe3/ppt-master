@@ -274,7 +274,7 @@ Format: `<index>_<page_name>.svg`. Use one roster-wide zero-padded index width s
 
 Strategist chooses at most one primary bundled stylistic library and may select `simple-icons` alone or alongside it; Executor implements from the complete prepared project-local pool. Library details and selection rules: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
 
-> **Prepared-project boundary.** Any SVG already under `<project_path>/icons/<lib>/` is valid execution material, whether selected from a bundled library or supplied by the user, a template, or an import workflow. New authoring must resolve there. The global fallback in `finalize_svg.py embed-icons` is legacy compatibility, not permission for Executor to discover or use an unprepared global icon.
+> **Prepared-project boundary.** Any SVG under `<project_path>/icons/<lib>/` is valid prepared material. Authoring, preview, finalization, and export resolve only complete case-sensitive `library/name` references there; no global or template-source fallback exists.
 
 > **Icon identifiers are case-sensitive filenames.** Every `data-icon` value must use the exact project-local relative basename (`tabler-outline/award`, never `tabler-outline/Award`). Strategist records its curated bundled pool in `spec_lock.md`; Executor need not add other already-prepared project-local icons to that inventory. Custom identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 

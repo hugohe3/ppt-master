@@ -29,7 +29,7 @@ from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
 )
-from resource_paths import icon_search_dirs_for_project, icon_search_dirs_for_svg
+from resource_paths import icon_dir_for_project
 from svg_compatibility import normalize_single_child_group_filters
 
 from .context import (
@@ -1642,6 +1642,8 @@ def collect_unsupported_visuals(
 
 def convert_svg_to_slide_shapes(
     svg_path: str | Path,
+    *,
+    resource_root: Path,
     slide_num: int = 1,
     slide_count: int | None = None,
     verbose: bool = False,
@@ -1660,7 +1662,6 @@ def convert_svg_to_slide_shapes(
     promote_background: bool = True,
     text_flow: str | None = None,
     dangerous_nonconforming_export: bool = False,
-    resource_root: Path | None = None,
 ) -> tuple[
     str,
     dict[str, bytes],
@@ -1853,27 +1854,27 @@ def convert_svg_to_slide_shapes(
         expand_use_data_icons,
     )
 
-    icons_dir, icons_fallback_dir = (
-        icon_search_dirs_for_project(resource_root)
-        if resource_root is not None
-        else icon_search_dirs_for_svg(svg_path)
-    )
-    if icons_dir.exists():
-        expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
-        if expanded:
-            trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
-        if verbose and expanded:
-            print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
-        if expanded:
-            hydrated = _hydrate_native_payloads(root, svg_path)
-            if hydrated:
-                trace_steps.append({
-                    'action': 'hydrate-native-payloads-from-icons',
-                    'count': hydrated,
-                })
-            _mark_unchanged_txbody_groups(root)
-            _mark_unchanged_preset_previews(root)
-            _require_project_freeform_geometry(root, svg_path)
+    icons_dir = icon_dir_for_project(resource_root)
+    try:
+        expanded = expand_use_data_icons(root, icons_dir)
+    except UseExpansionError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: icon expansion failed: {exc}'
+        ) from exc
+    if expanded:
+        trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
+    if verbose and expanded:
+        print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
+    if expanded:
+        hydrated = _hydrate_native_payloads(root, svg_path)
+        if hydrated:
+            trace_steps.append({
+                'action': 'hydrate-native-payloads-from-icons',
+                'count': hydrated,
+            })
+        _mark_unchanged_txbody_groups(root)
+        _mark_unchanged_preset_previews(root)
+        _require_project_freeform_geometry(root, svg_path)
 
     try:
         injected_geometry_count = materialize_inline_geometry_properties(root)

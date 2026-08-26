@@ -3,12 +3,13 @@
 
 Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace:
 
-- `manifest.json` — single source of truth for slide size, theme colors, fonts,
-  asset inventory, and per-slide / per-layout / per-master metadata
-- `native_structure.json` + `source_template.pptx` — source-structure facts and
-  a byte-identical analysis copy used to rebuild explicit SVG structure
-- `assets/` — extracted reusable image assets
-- `conversion-report.json` — source-recovery and fidelity diagnostics emitted
+- `analysis/manifest.json` — source of truth for slide size, theme, resources,
+  image inventory, and per-slide / per-layout / per-master metadata
+- `analysis/native_structure.json` + `sources/source.pptx` — source-structure
+  facts and a byte-identical backing package
+- `images/`, `audio/`, `sounds/`, `video/`, and `native-payloads/` — semantic
+  source resources, created only when populated
+- `validation/conversion-report.json` — source-recovery diagnostics emitted
   with SVG conversion
 - `svg/` — canonical layered template view (every master
   and layout in the deck rendered once each as `master_*.svg` /
@@ -30,6 +31,12 @@ from xml.etree import ElementTree as ET
 from zipfile import BadZipFile
 
 from console_encoding import configure_utf8_stdio
+from pptx_workspace import (
+    CONVERSION_REPORT_PATH,
+    TEMPLATE_MANIFEST_PATH,
+    reject_removed_workspace_layout,
+    template_manifest_path,
+)
 from template_import.manifest import build_manifest
 from template_import.native_structure import (
     CONTRACT_NAME,
@@ -39,8 +46,8 @@ from template_import.native_structure import (
 
 configure_utf8_stdio()
 
-_MANIFEST_NAME = "manifest.json"
-_CONVERSION_REPORT_NAME = "conversion-report.json"
+_MANIFEST_NAME = TEMPLATE_MANIFEST_PATH.as_posix()
+_CONVERSION_REPORT_NAME = CONVERSION_REPORT_PATH.as_posix()
 
 
 def parse_args() -> argparse.Namespace:
@@ -66,14 +73,14 @@ def parse_args() -> argparse.Namespace:
         "--manifest-only",
         action="store_true",
         help=(
-            "Only extract manifest.json + reusable assets + the native "
-            "structure/source pair, without exporting slides to SVG"
+            "Only extract analysis manifests, semantic resources, and the "
+            "source-package bundle, without exporting slides to SVG"
         ),
     )
     parser.add_argument(
         "--embed-images",
         action="store_true",
-        help="Inline images as data: URIs instead of writing files to assets/",
+        help="Inline images as data: URIs instead of writing files to images/",
     )
     parser.add_argument(
         "--inheritance-mode",
@@ -86,42 +93,53 @@ def parse_args() -> argparse.Namespace:
             "'both': also emit svg-flat/ with self-contained per-slide "
             "verification files. In this mode svg/ still holds the layered "
             "renderings (template designers see master/layout/slide as "
-            "separate files). 'flat': emit only self-contained slide SVGs "
-            "in svg/, the round-trip view used by svg_to_pptx."
+            "separate files). 'flat': emit only projection-only, "
+            "self-contained slide SVGs in svg/. Imported-deck round-trip "
+            "uses the separate authoring-svg-flat/ contract."
         ),
     )
     return parser.parse_args()
 
 
-def _managed_asset_paths(output_dir: Path) -> set[Path]:
-    """Read the previous manifest's exact exported-asset roster."""
-    manifest_path = output_dir / _MANIFEST_NAME
+def _managed_resource_paths(output_dir: Path) -> set[Path]:
+    """Read the previous manifest's exact semantic-resource roster."""
+    manifest_path = template_manifest_path(output_dir)
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
         return set()
     if not isinstance(manifest, dict):
         return set()
-    assets = manifest.get("assets")
-    if not isinstance(assets, dict):
-        return set()
-    export_dir = assets.get("exportDir")
-    asset_names = assets.get("allAssets")
-    if export_dir != "assets" or not isinstance(asset_names, list):
-        return set()
-    if any(
-        not isinstance(name, str)
-        or not name
-        or name in {".", ".."}
-        or "/" in name
-        or "\\" in name
-        for name in asset_names
-    ):
-        return set()
-    return {
-        Path("assets") / name
-        for name in asset_names
-    }
+    resources = manifest.get("resources")
+    if isinstance(resources, dict) and isinstance(resources.get("items"), list):
+        paths: set[Path] = set()
+        allowed_roots = {
+            "audio",
+            "images",
+            "native-payloads",
+            "sounds",
+            "video",
+        }
+        for item in resources["items"]:
+            if not isinstance(item, dict):
+                return set()
+            value = item.get("workspacePath")
+            if not isinstance(value, str):
+                return set()
+            path = Path(value)
+            if (
+                path.drive
+                or path.anchor
+                or path.is_absolute()
+                or not path.parts
+                or ".." in path.parts
+                or path.parts[0] not in allowed_roots
+            ):
+                return set()
+            paths.add(path)
+        return paths
+
+    return set()
 
 
 def main() -> int:
@@ -145,7 +163,12 @@ def main() -> int:
         print("Error: --skip-manifest and --manifest-only cannot be used together")
         return 1
 
-    previous_assets = _managed_asset_paths(output_dir)
+    try:
+        reject_removed_workspace_layout(output_dir)
+    except RuntimeError as exc:
+        print(f"Error: {exc}")
+        return 1
+    previous_resources = _managed_resource_paths(output_dir)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     staging_root = Path(tempfile.mkdtemp(
         prefix=f".{output_dir.name}.import-",
@@ -171,6 +194,7 @@ def main() -> int:
                 print(f"Error: failed to extract PPTX metadata: {exc}")
                 return 1
 
+            manifest_path.parent.mkdir(parents=True, exist_ok=True)
             manifest_path.write_text(
                 json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
@@ -192,12 +216,12 @@ def main() -> int:
             from pptx_to_svg.converter import ConvertOptions
 
             options = ConvertOptions(
-                media_subdir="assets",
+                images_subdir="images",
                 embed_images=args.embed_images,
                 keep_hidden=False,
                 inheritance_mode=args.inheritance_mode,
                 asset_name_map=(
-                    manifest.get("assets", {}).get("assetMap", {})
+                    manifest.get("images", {}).get("imageMap", {})
                     if manifest else {}
                 ),
             )
@@ -223,7 +247,7 @@ def main() -> int:
                     SOURCE_TEMPLATE_NAME,
                     _CONVERSION_REPORT_NAME,
                 },
-                managed_relative_paths=previous_assets,
+                managed_relative_paths=previous_resources,
             )
         except (OSError, RuntimeError, ValueError) as exc:
             print(f"Error: failed to publish PPTX template workspace: {exc}")
@@ -233,7 +257,7 @@ def main() -> int:
             print(f"Imported PPTX template source: {pptx_path.name}")
             print(f"Output directory: {output_dir}")
             if manifest is not None:
-                print(f"Manifest: {manifest_path.name}")
+                print(f"Manifest: {_MANIFEST_NAME}")
                 print(f"Native structure: {CONTRACT_NAME}")
                 print(f"Source package analysis copy: {SOURCE_TEMPLATE_NAME}")
                 print(
@@ -241,8 +265,8 @@ def main() -> int:
                     f"{native_structure['strategy']['recommendedMode']}"
                 )
                 print("Template output mode: explicit SVG structure")
-                print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
-                print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
+                print(f"Images exported: {len(manifest['images']['allImages'])}")
+                print(f"Common images: {len(manifest['images']['commonImages'])}")
                 print(f"Slides analyzed: {len(manifest['slides'])}")
                 print(f"Layouts (unique): {len(manifest.get('layouts', []))}")
                 print(f"Masters (unique): {len(manifest.get('masters', []))}")

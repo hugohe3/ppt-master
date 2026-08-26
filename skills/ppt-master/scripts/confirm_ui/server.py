@@ -206,13 +206,11 @@ _TEMPLATE_SPEC_NAME_RE = re.compile(
 def _template_design_specs(workspace_root: Path) -> list[Path]:
     """Return every Design Spec one template workspace root exposes.
 
-    A single-kind workspace keeps the exact ``templates/design_spec.md``, and a
-    compatible legacy-flat root keeps ``design_spec.md`` beside its pages. A
+    A single-kind workspace keeps the exact ``templates/design_spec.md``. A
     multi-kind workspace keeps one ``templates/design_spec.<kind>.<id>.md`` per
-    kind — the same shape the apply stage installs into a consuming project — so
-    one root can carry, for example, a Brand plus a Style. Order is stable so
-    candidate keys and the options digest do not depend on directory listing
-    order.
+    kind — the same shape the apply stage installs into a consuming project.
+    Order is stable so candidate keys and the options digest do not depend on
+    directory listing order.
     """
     templates_dir = workspace_root / 'templates'
     current = templates_dir / 'design_spec.md'
@@ -231,12 +229,9 @@ def _template_design_specs(workspace_root: Path) -> list[Path]:
         return [current]
     if multi:
         return multi
-    legacy = workspace_root / 'design_spec.md'
-    if legacy.is_file():
-        return [legacy]
     raise ValueError(
         'template workspace is missing templates/design_spec.md, '
-        'templates/design_spec.<kind>.<id>.md, or legacy design_spec.md: '
+        'or templates/design_spec.<kind>.<id>.md: '
         f'{workspace_root}'
     )
 

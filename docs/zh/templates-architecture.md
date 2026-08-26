@@ -19,7 +19,7 @@
 | **Layout** | `templates/layouts/<id>/` | 仅品牌中立的结构段：canvas / page structure / 语义文字角色 / page types / SVG roster | 不写品牌身份，也不拥有可重复沟通场景 | `workflows/create-template/create-layout.md` |
 | **Deck** | `templates/decks/<id>/` | 一类可重复演示：描述性应用语境 + 一体化身份与结构 | —— | `workflows/create-template/create-deck.md` |
 
-每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。Create Template 根据自然语言意图与来源证据在内部推导 `standard` / `fidelity` / `mirror`；Strategist 再根据真实原型与当前内容推导 strict/adaptive 导出行为。这些实现值都不是用户必选项。仅 Brand/Layout/Deck 的旧式平铺目录可在满足当前 kind 合同时继续读取；Style 没有平铺兼容形态。带旧结构语义的包必须替换为新建模板工作区，不能原地升级。
+每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。Create Template 根据自然语言意图与来源证据在内部推导 `standard` / `fidelity` / `mirror`；Strategist 再根据真实原型与当前内容推导 strict/adaptive 导出行为。这些实现值都不是用户必选项。Generate 只接受当前嵌套工作区合同；旧平铺或带旧结构语义的包必须通过 Create Template 重建，不能原地升级。
 
 四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与前置元数据中的 `kind` 字段双向对齐：
 
@@ -418,7 +418,7 @@ Default Generate 的 [Step 3](../../skills/ppt-master/workflows/generate-pptx.md
 普通请求默认自由设计并收起详细控件；明确要求使用模板或提供任意精确 root 时
 默认展开模板模式。只提供一个 root 时会预选，多 root 仍只作为未选候选。裸
 模板/品牌名称或风格词不会解析或预选工作区。对于每个已选 root，确认后的
-apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md`、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，apply 阶段必须拒绝；先由 `create-template` 产出新工作区，再继续生成。`kind` 字段决定**AI 如何处理已选路径**：
+apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；根目录直接包含 `<workspace>/design_spec.md` 的平铺包不是模板工作区。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，apply 阶段必须拒绝；先由 `create-template` 产出新工作区，再继续生成。`kind` 字段决定**AI 如何处理已选路径**：
 
 | 用户路径指向 | Stage-1 确认后的 apply 行为（按 kind 分支）|
 |---|---|

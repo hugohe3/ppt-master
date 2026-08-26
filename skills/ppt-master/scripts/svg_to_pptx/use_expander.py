@@ -8,7 +8,7 @@ expansion in memory so ``svg_to_pptx`` can consume ``svg_output/`` directly
 without first running the on-disk finalize step.
 
 Public API:
-    expand_use_data_icons(root, icons_dir, fallback_dir=None) -> int
+    expand_use_data_icons(root, icons_dir) -> int
         Walk the SVG element tree, replace every ``<use data-icon="...">``
         with its expanded ``<g>`` group of primitive shapes, and return
         the number of replacements made.
@@ -230,7 +230,10 @@ class _LocalUseExpander:
         for index, child in enumerate(list(parent)):
             if _local_tag(child) == 'defs':
                 continue
-            if _local_tag(child) == 'use' and not child.get('data-icon'):
+            if (
+                _local_tag(child) == 'use'
+                and child.get('data-icon') is None
+            ):
                 replacement = self._materialize_use(child, stack)
                 parent.remove(child)
                 parent.insert(index, replacement)
@@ -484,33 +487,36 @@ def _import_embed_icons():
 def _build_replacement_g(
     use_elem: ET.Element,
     icons_dir: Path,
-    fallback_dir: Path | None,
     embed_icons_mod,
-) -> ET.Element | None:
+) -> ET.Element:
     """Resolve a single ``<use data-icon="...">`` into an expanded ``<g>``.
 
-    Returns None when the icon name is missing, unresolved, or the icon
-    file cannot be parsed. Callers should leave the original ``<use>`` in
-    place in that case (matching the on-disk finalize_svg behaviour, which
-    also leaves unresolvable placeholders untouched).
+    Invalid or unresolved project-local references are blocking input errors.
     """
     use_str = ET.tostring(use_elem, encoding='unicode')
     attrs = embed_icons_mod.parse_use_element(use_str)
     if 'icon' not in attrs:
-        return None
+        raise UseExpansionError('Icon placeholder has no data-icon identifier')
 
-    icon_path, _base_size = embed_icons_mod.resolve_icon_path(
-        attrs['icon'], icons_dir, fallback_dir,
-    )
+    try:
+        icon_path, _base_size = embed_icons_mod.resolve_icon_path(
+            attrs['icon'], icons_dir,
+        )
+    except ValueError as exc:
+        raise UseExpansionError(str(exc)) from exc
     if not icon_path.exists():
-        return None
+        raise UseExpansionError(
+            f'Project-local icon is not prepared: {attrs["icon"]}'
+        )
 
     color = attrs.get('fill', '#000000')
     elements, style, base_size = embed_icons_mod.extract_paths_from_icon(
         icon_path, color,
     )
     if not elements:
-        return None
+        raise UseExpansionError(
+            f'Project-local icon has no renderable geometry: {attrs["icon"]}'
+        )
 
     g_xml = embed_icons_mod.generate_icon_group(attrs, elements, style, base_size)
 
@@ -519,34 +525,32 @@ def _build_replacement_g(
     wrapped = f'<svg xmlns="{SVG_NS}">{g_xml}</svg>'
     try:
         parsed_root = ET.fromstring(wrapped)
-    except ET.ParseError:
-        return None
+    except ET.ParseError as exc:
+        raise UseExpansionError(
+            f'Expanded icon is invalid SVG: {attrs["icon"]}'
+        ) from exc
 
     for child in parsed_root:
         local = child.tag.split('}')[-1] if '}' in child.tag else child.tag
         if local == 'g':
             return child
-    return None
+    raise UseExpansionError(
+        f'Expanded icon has no group root: {attrs["icon"]}'
+    )
 
 
 def expand_use_data_icons(
     root: ET.Element,
     icons_dir: Path,
-    fallback_dir: Path | None = None,
 ) -> int:
     """Replace every ``<use data-icon="...">`` in *root* with its expansion.
 
     Walks the tree, finds use elements that carry a ``data-icon`` attribute,
-    builds a new ``<g>`` subtree from the project icon library (falling back to
-    the global library when supplied), and swaps it into the parent element at
-    the same position.
+    builds a new ``<g>`` subtree from the prepared project icon library, and
+    swaps it into the parent element at the same position.
 
-    Returns the number of placeholders successfully expanded. Unresolvable
-    placeholders are left in place so callers can decide whether to warn.
+    Returns the number of placeholders successfully expanded.
     """
-    if not icons_dir.exists():
-        return 0
-
     embed_icons_mod = _import_embed_icons()
 
     # ElementTree elements don't carry a parent reference, so build a map.
@@ -558,17 +562,19 @@ def expand_use_data_icons(
     targets: list[ET.Element] = []
     for elem in root.iter():
         local = elem.tag.split('}')[-1] if '}' in elem.tag else elem.tag
-        if local == 'use' and elem.get('data-icon'):
+        if local == 'use' and elem.get('data-icon') is not None:
             targets.append(elem)
+    if targets and not icons_dir.is_dir():
+        raise UseExpansionError(
+            f'Project-local icon directory is missing: {icons_dir}'
+        )
 
     expanded = 0
     for use_elem in targets:
         parent = parent_of.get(use_elem)
         if parent is None:
             continue
-        replacement = _build_replacement_g(use_elem, icons_dir, fallback_dir, embed_icons_mod)
-        if replacement is None:
-            continue
+        replacement = _build_replacement_g(use_elem, icons_dir, embed_icons_mod)
         idx = list(parent).index(use_elem)
         parent.remove(use_elem)
         parent.insert(idx, replacement)

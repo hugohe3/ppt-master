@@ -8,7 +8,7 @@ source objects recover their original round-trip metadata; edited objects stay
 as authored SVG and are converted normally.
 
 Usage:
-    Imported by svg_to_pptx.py for ``-s <flat-authoring-dir> --roundtrip``.
+    Imported by svg_to_pptx.py for ``--roundtrip``.
 
 Dependencies:
     None (standard library and sibling PPT Master modules only).
@@ -19,15 +19,18 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import re
 import tempfile
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from extract_svg_assets import extract_file
+from pptx_workspace import ROUNDTRIP_MANIFEST_PATH
 from slide_roster import discover_slide_svgs
 from svg_authoring_view import (
     AUTHORING_MANIFEST_NAME,
@@ -65,6 +68,7 @@ class AuthoringDocument:
     authoring_path: Path
     flat_source_path: Path
     layered_source_path: Path
+    initial_authoring_sha256: str
     source_refs: dict[str, SourceRefRecord]
 
 
@@ -221,13 +225,56 @@ def _load_documents(
             f"Flat authoring backing SVG directory is missing: {source_root}"
         )
 
+    roundtrip_manifest = _load_json(
+        project_path / ROUNDTRIP_MANIFEST_PATH,
+        context="round-trip workspace manifest",
+    )
+    if roundtrip_manifest.get("schema") != "ppt-master.roundtrip-workspace.v1":
+        raise AuthoringRoundtripError(
+            "Unsupported round-trip workspace manifest schema: "
+            f"{roundtrip_manifest.get('schema')!r}"
+        )
+    directories = roundtrip_manifest.get("directories")
+    if not isinstance(directories, dict):
+        raise AuthoringRoundtripError(
+            "Round-trip workspace manifest directories must be an object"
+        )
+    flat_root_raw = directories.get("flatSvg")
+    layered_root_raw = directories.get("layeredSvg")
+    if not isinstance(flat_root_raw, str) or not flat_root_raw:
+        raise AuthoringRoundtripError(
+            "Round-trip workspace manifest has no flat SVG backing directory"
+        )
+    if not isinstance(layered_root_raw, str) or not layered_root_raw:
+        raise AuthoringRoundtripError(
+            "Round-trip workspace manifest has no layered SVG backing directory"
+        )
+    flat_root = _resolve_inside(
+        project_path,
+        flat_root_raw,
+        context="round-trip flat SVG backing directory",
+    )
+    layered_root = _resolve_inside(
+        project_path,
+        layered_root_raw,
+        context="round-trip layered SVG backing directory",
+    )
+    if source_root != flat_root:
+        raise AuthoringRoundtripError(
+            "Authoring manifest source_root does not match the round-trip flat "
+            "SVG backing directory"
+        )
+    if not layered_root.is_dir():
+        raise AuthoringRoundtripError(
+            f"Round-trip layered SVG backing directory is missing: {layered_root}"
+        )
+
     documents_raw = manifest.get("documents")
     if not isinstance(documents_raw, list):
         raise AuthoringRoundtripError(
             "authoring_manifest.json documents must be an array"
         )
     documents: dict[str, AuthoringDocument] = {}
-    layered_root = project_path / "svg"
     for index, raw in enumerate(documents_raw):
         if not isinstance(raw, dict):
             raise AuthoringRoundtripError(f"documents[{index}] must be an object")
@@ -278,6 +325,11 @@ def _load_documents(
                 f"Flat backing SVG changed: {flat_source_path.name}; expected "
                 f"{expected_source_sha}, found {actual_source_sha}"
             )
+        initial_authoring_sha = raw.get("initial_authoring_sha256")
+        if not isinstance(initial_authoring_sha, str) or not initial_authoring_sha:
+            raise AuthoringRoundtripError(
+                f"documents[{index}].initial_authoring_sha256 must be a non-empty string"
+            )
 
         refs_raw = raw.get("source_refs")
         if not isinstance(refs_raw, dict):
@@ -323,6 +375,7 @@ def _load_documents(
             authoring_path=authoring_path,
             flat_source_path=flat_source_path,
             layered_source_path=layered_source_path,
+            initial_authoring_sha256=initial_authoring_sha,
             source_refs=refs,
         )
 
@@ -765,7 +818,49 @@ def _serialize_svg(root: ET.Element) -> bytes:
     return payload if payload.endswith(b"\n") else payload + b"\n"
 
 
+def _rebase_resource_references(
+    element: ET.Element,
+    source_dir: Path,
+    target_dir: Path,
+    project_path: Path,
+    *,
+    recursive: bool,
+) -> None:
+    """Rebase exact local SVG resource hrefs without path guessing."""
+    nodes = element.iter() if recursive else (element,)
+    project_root = project_path.resolve()
+    for node in nodes:
+        if _local_name(node.tag) == "a":
+            continue
+        for name in ("href", f"{{{XLINK_NS}}}href"):
+            raw = node.get(name)
+            if raw is None or not raw or raw.startswith("#") or raw.startswith("data:"):
+                continue
+            parsed = urlsplit(raw)
+            if (
+                parsed.scheme
+                or parsed.netloc
+                or parsed.query
+                or parsed.fragment
+                or not parsed.path
+                or Path(unquote(parsed.path)).is_absolute()
+            ):
+                raise AuthoringRoundtripError(
+                    f"Unsupported SVG resource reference in {element.tag}: {raw!r}"
+                )
+            resolved = (source_dir / unquote(parsed.path)).resolve()
+            try:
+                resolved.relative_to(project_root)
+            except ValueError as exc:
+                raise AuthoringRoundtripError(
+                    f"SVG resource reference escapes the project: {raw!r}"
+                ) from exc
+            relative = os.path.relpath(resolved, target_dir).replace(os.sep, "/")
+            node.set(name, urlunsplit(("", "", relative, "", "")))
+
+
 def _materialize_document(
+    project_path: Path,
     document: AuthoringDocument,
     baseline_path: Path,
     output_path: Path,
@@ -888,7 +983,15 @@ def _materialize_document(
                 raise AuthoringRoundtripError(
                     f"{document.name} cannot find {source_ref!r} in layered source"
                 )
-            return [copy.deepcopy(source)]
+            restored = copy.deepcopy(source)
+            _rebase_resource_references(
+                restored,
+                document.layered_source_path.parent,
+                output_path.parent,
+                project_path,
+                recursive=True,
+            )
+            return [restored]
 
         if _local_name(element.tag) == "use":
             icon = (element.get("data-icon") or "").strip()
@@ -913,6 +1016,13 @@ def _materialize_document(
             for replacement in replacements:
                 clone.append(replacement)
         clone.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
+        _rebase_resource_references(
+            clone,
+            document.authoring_path.parent,
+            output_path.parent,
+            project_path,
+            recursive=False,
+        )
         if source_ref and source_ref.startswith("slide:"):
             source = layered_index.get(source_ref)
             if source is not None:
@@ -940,9 +1050,25 @@ def _materialize_document(
         value = current_root.get(name)
         if value is not None:
             output_root.set(name, value)
+    layered_defs_root = copy.deepcopy(layered_root)
+    current_defs_root = copy.deepcopy(current_root)
+    _rebase_resource_references(
+        layered_defs_root,
+        document.layered_source_path.parent,
+        output_path.parent,
+        project_path,
+        recursive=True,
+    )
+    _rebase_resource_references(
+        current_defs_root,
+        document.authoring_path.parent,
+        output_path.parent,
+        project_path,
+        recursive=True,
+    )
     merged_defs = _merge_defs(
-        layered_root,
-        current_root,
+        layered_defs_root,
+        current_defs_root,
         include_authoring_changes=defs_changed or bool(edited_refs),
     )
     if merged_defs is not None and list(merged_defs):
@@ -980,8 +1106,14 @@ def _materialize_document(
     output_path.write_bytes(_serialize_svg(output_root))
     return {
         "file": document.name,
+        "document_unchanged": (
+            _sha256_file(document.authoring_path)
+            == document.initial_authoring_sha256
+        ),
         "source_ref_count": len(expected_refs),
+        "source_ref_ids": sorted(expected_refs),
         "unchanged_refs": len(unchanged_refs),
+        "unchanged_ref_ids": sorted(unchanged_refs),
         "edited_refs": len(edited_refs),
         "edited_ref_ids": sorted(edited_refs),
         "deleted_refs": len(deleted_refs),
@@ -1041,6 +1173,7 @@ def materialize_flat_authoring_roundtrip(
             )
         document_reports = [
             _materialize_document(
+                project_path,
                 document,
                 baseline_root / document.name,
                 output_dir / document.name,

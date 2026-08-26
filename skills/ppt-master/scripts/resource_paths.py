@@ -33,7 +33,6 @@ SVG_WORK_DIR_NAMES = frozenset({
     'svg_output',
     'svg_final',
     'svg-flat',
-    'svg_flat',
 })
 SVG_FINAL_CANDIDATE_PREFIX = '.svg_final.candidate-'
 TEMPLATE_SOURCE_DIR_NAME = 'templates'
@@ -85,23 +84,14 @@ def project_root_for_svg_path(svg_path: Path) -> Path:
     return base
 
 
-def global_icons_dir() -> Path:
-    """Return the skill-level icon library directory."""
-    return Path(__file__).resolve().parent.parent / 'templates' / 'icons'
+def icon_dir_for_project(project_path: Path) -> Path:
+    """Return the only valid icon root for a project."""
+    return Path(project_path) / 'icons'
 
 
-def icon_search_dirs_for_project(project_path: Path) -> tuple[Path, Path | None]:
-    """Return project-first icon dirs plus the global fallback when needed."""
-    global_dir = global_icons_dir()
-    project_icons_dir = Path(project_path) / 'icons'
-    if project_icons_dir.is_dir():
-        return project_icons_dir, global_dir
-    return global_dir, None
-
-
-def icon_search_dirs_for_svg(svg_path: Path) -> tuple[Path, Path | None]:
-    """Return icon dirs for an SVG file path or SVG directory path."""
-    return icon_search_dirs_for_project(project_root_for_svg_path(svg_path))
+def icon_dir_for_svg(svg_path: Path) -> Path:
+    """Return the project-local icon root for one SVG input."""
+    return icon_dir_for_project(project_root_for_svg_path(svg_path))
 
 
 def _decode_svg_data_uri(raw: str) -> tuple[bytes | None, str | None]:
@@ -244,43 +234,31 @@ def svg_data_uri_payload_error(raw: str) -> str | None:
     return f'inline SVG data URI is not closed: {nested_error}'
 
 
-def external_image_reference_candidates(
+def external_image_reference_path(
     svg_dir: Path,
     href: str,
     *,
     project_root: Path | None = None,
-) -> list[Path]:
-    """Return deterministic project-local candidates for an SVG image href."""
+) -> Path | None:
+    """Resolve one exact SVG-relative image reference inside the project."""
     parsed = urlsplit(href)
-    if parsed.scheme and parsed.scheme not in {'file'}:
-        return []
-    decoded = unquote(
-        parsed.path
-        if parsed.scheme
-        else href.split('?', 1)[0].split('#', 1)[0]
-    )
+    if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
+        return None
+    decoded = unquote(parsed.path)
+    if not decoded or Path(decoded).is_absolute():
+        return None
     svg_dir = Path(svg_dir)
     resolved_project_root = (
         Path(project_root).resolve()
         if project_root is not None
         else project_root_for_svg_path(svg_dir).resolve()
     )
-    candidates = [
-        svg_dir / decoded,
-        resolved_project_root / decoded,
-        resolved_project_root / 'images' / decoded,
-        resolved_project_root / 'templates' / decoded,
-    ]
-    safe_candidates: list[Path] = []
-    for candidate in candidates:
-        resolved = candidate.resolve()
-        try:
-            resolved.relative_to(resolved_project_root)
-        except ValueError:
-            continue
-        if resolved not in safe_candidates:
-            safe_candidates.append(resolved)
-    return safe_candidates
+    resolved = (svg_dir / decoded).resolve()
+    try:
+        resolved.relative_to(resolved_project_root)
+    except ValueError:
+        return None
+    return resolved
 
 
 def resolve_external_image_reference(
@@ -289,29 +267,10 @@ def resolve_external_image_reference(
     *,
     project_root: Path | None = None,
 ) -> Path | None:
-    """Resolve an SVG image href to an existing file, or return None."""
-    for candidate in external_image_reference_candidates(
-        svg_dir,
-        href,
-        project_root=project_root,
-    ):
-        if candidate.is_file():
-            return candidate
-    return None
-
-
-def unresolved_external_image_reference_path(
-    svg_dir: Path,
-    href: str,
-    *,
-    project_root: Path | None = None,
-) -> Path:
-    """Return the first candidate path for diagnostics when resolution fails."""
-    candidates = external_image_reference_candidates(
+    """Resolve an exact SVG-relative image href, or return None."""
+    candidate = external_image_reference_path(
         svg_dir,
         href,
         project_root=project_root,
     )
-    if candidates:
-        return candidates[0].resolve()
-    return (Path(svg_dir) / href).resolve()
+    return candidate if candidate is not None and candidate.is_file() else None

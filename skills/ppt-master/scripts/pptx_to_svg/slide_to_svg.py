@@ -119,7 +119,7 @@ class AssemblyContext:
     slide_part: PartRef
     slide_number: int | None = None
     theme_fonts: dict[str, str] = field(default_factory=dict)
-    media_subdir: str = "assets"
+    media_subdir: str = "images"
     embed_images: bool = False
     keep_hidden: bool = False
     strict: bool = False
@@ -225,7 +225,7 @@ def assemble_slide(
     palette: ColorPalette | None,
     *,
     theme_fonts: dict[str, str] | None = None,
-    media_subdir: str = "assets",
+    media_subdir: str = "images",
     embed_images: bool = False,
     keep_hidden: bool = False,
     inheritance_mode: str = "flat",
@@ -337,7 +337,7 @@ def assemble_part_solo(
     role: str,
     parent_master: PartRef | None = None,
     theme_fonts: dict[str, str] | None = None,
-    media_subdir: str = "assets",
+    media_subdir: str = "images",
     embed_images: bool = False,
     keep_hidden: bool = False,
     asset_name_map: dict[str, str] | None = None,

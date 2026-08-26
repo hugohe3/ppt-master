@@ -315,7 +315,7 @@ profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已�
 | `sources/` | 原件归档、归一化 Markdown、转换器伴随文件 |
 | `analysis/` | 机器抽取事实：PPTX intake bundle 与按需重算的图片分析 |
 | `images/` | 单一运行时图片池：用户图、抽取图、网络图、AI 图、切片图、EMF/WMF |
-| `icons/` | 由 `icon_sync.py` 复制的项目级图标集；导出时的全局库回退仅用于 legacy compatibility |
+| `icons/` | 由 `icon_sync.py` 复制或由当前工作区提供的项目级图标集；预览、校验、后处理与导出只解析此根目录下完整的 `library/name` 引用 |
 | `templates/` | 复制进项目的模板 spec / SVG reference / 非图片模板资产 |
 | `svg_output/` | 唯一手写 SVG 源目录 |
 | `svg_final/` | 强制派生的视觉预览 SVG；尝试内联受支持位图 / SVG，保留 EMF/WMF 外链例外；服务 IDE / 浏览器，也可手动作为 SVG 图片插入 PowerPoint |
@@ -366,7 +366,7 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 
 **为什么保留自由设计选项。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），最终选择仍由用户完成。
 
-**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。Library 工作区解析 `templates/design_spec.md`，project root 解析全部 `templates/design_spec.<kind>.<id>.md`；服务端解析每个 explicit root 的真实 kind 集合，来源标签本身不参与优先级。自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。旧平铺 Brand/Layout/Deck 目录只有在满足当前 kind 合同时，才兼容从根目录读取 `design_spec.md`；Layout/Deck 还必须满足当前 structured SVG 合同。Style 不存在旧平铺形态。目录形态从不授权结构迁移；带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
+**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。Library 工作区解析 `templates/design_spec.md`，project root 解析全部 `templates/design_spec.<kind>.<id>.md`；服务端解析每个 explicit root 的真实 kind 集合，来源标签本身不参与优先级。自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。根目录平铺的包不属于模板工作区；目录形态从不授权结构迁移。带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
 
 当前 Brand/Style/Layout/Deck 都采用同一工作区路由合同；Brand 与 Style 不含 SVG roster，空的可选目录直接省略：
 

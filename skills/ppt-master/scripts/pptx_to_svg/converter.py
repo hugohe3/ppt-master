@@ -21,10 +21,10 @@ import re
 import shutil
 import tempfile
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from html import unescape
 from pathlib import Path, PurePosixPath
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
@@ -35,6 +35,22 @@ from pptx_embedded_fonts import (
     capture_embedded_fonts,
     write_embedded_font_bundle,
 )
+from pptx_workspace import (
+    AUTHORING_SVG_FLAT_DIR,
+    CONVERSION_REPORT_PATH,
+    NATIVE_STRUCTURE_PATH,
+    ROUNDTRIP_FLAT_SVG_DIR,
+    ROUNDTRIP_LAYERED_SVG_DIR,
+    ROUNDTRIP_MANIFEST_PATH,
+    SOURCE_PPTX_PATH,
+    PackageResourceInventory,
+    conversion_report_path,
+    inventory_package_resources,
+    reject_removed_workspace_layout,
+    slide_animation_config_sha256,
+    write_workspace_resources,
+)
+from svg_authoring_view import project_svg_batch
 from svg_to_pptx.animation_config import (
     validate_animation_config_errors,
     validate_transition_config,
@@ -63,6 +79,7 @@ from .ooxml_loader import (
     SlideRef,
     part_show_master_sp,
 )
+from .notes_import import ImportedSpeakerNote, import_speaker_notes
 from .slide_to_svg import assemble_part_solo, assemble_slide
 from .transition_import import (
     TransitionImportError,
@@ -81,14 +98,18 @@ _MANAGED_TRANSITION_SOUND_RE = re.compile(
 _SVG_HREF_RE = re.compile(
     r"\b(?:href|xlink:href)\s*=\s*[\"']([^\"']+)[\"']"
 )
+_SVG_HREF_ATTRIBUTE_RE = re.compile(
+    r"(?P<prefix>\b(?:href|xlink:href)\s*=\s*)"
+    r"(?P<quote>[\"'])(?P<value>[^\"']+)(?P=quote)"
+)
 
 
-def _validate_media_subdir(value: str) -> None:
+def _validate_resource_subdir(value: str) -> None:
     """Reject media output paths that can escape the conversion workspace."""
     path = Path(value)
     if path.drive or path.anchor or path.is_absolute() or ".." in path.parts:
         raise ValueError(
-            f"media_subdir must stay within the output workspace: {value!r}"
+            f"resource subdirectory must stay within the output workspace: {value!r}"
         )
 
 
@@ -166,8 +187,10 @@ def _extract_theme_info(
 class ConvertOptions:
     """Convert behavior knobs.
 
-    media_subdir: where to write media files relative to output_dir. SVG image
-        href will use './<media_subdir>/<filename>'.
+    images_subdir: where to write image files relative to output_dir. SVG image
+        href will use './<images_subdir>/<filename>'.
+    sound_subdir: where to write transition/object cue audio relative to
+        output_dir. New workspaces use ``sounds``.
     embed_images: when True, base64-encode images inline instead of writing
         files. Default False (matches svg_to_pptx default of external images).
     keep_hidden: include shapes marked hidden="1". Default False.
@@ -181,17 +204,15 @@ class ConvertOptions:
           svg/inheritance.json describing the reuse graph. Optimised for
           template authors who need to see "what is shared vs. unique".
         - "flat": inline the inherited shapes visible under the source
-          ``showMasterSp`` flags. Used by svg_to_pptx round-trip and any caller
-          that wants self-contained slides (preview pages, screenshot pipelines).
+          ``showMasterSp`` flags for preview pages and screenshot pipelines.
     strict: stop on the first unsupported or malformed source construct.
         Default False keeps usable content and records structured diagnostics.
-    roundtrip: preserve a validated source-package structure sidecar and mark
-        layered slide SVG roots with their exact source Layout identities.
-        This is an opt-in diagnostic path for reconstructing the imported deck;
-        it does not make SVG a lossless container for arbitrary PPTX semantics.
+    roundtrip: create the fixed semantic workspace and source-preserving
+        package contracts used by the editable ``authoring-svg-flat/`` route.
     """
 
-    media_subdir: str = "assets"
+    images_subdir: str = "images"
+    sound_subdir: str = "sounds"
     embed_images: bool = False
     keep_hidden: bool = False
     inheritance_mode: str = "both"
@@ -242,6 +263,10 @@ class ConvertResult:
     theme_fonts: dict[str, str] = field(default_factory=dict)
     theme_xml: bytes | None = None
     embedded_fonts: EmbeddedFontBundle | None = None
+    resource_inventory: PackageResourceInventory = field(
+        default_factory=PackageResourceInventory
+    )
+    speaker_notes: tuple[ImportedSpeakerNote, ...] = ()
     native_structure: dict[str, object] | None = None
     source_pptx_path: Path | None = None
     layouts: list[PartArtifact] = field(default_factory=list)
@@ -335,6 +360,7 @@ def _roundtrip_native_structure(
         "slides": [
             {
                 "index": slide.index,
+                "slidePath": slide.part.path,
                 "layoutPath": slide.layout.path if slide.layout else None,
                 "masterPath": slide.master.path if slide.master else None,
                 "showInheritedShapes": part_show_master_sp(slide.part),
@@ -467,13 +493,23 @@ def convert_pptx_to_svg(
             f"inheritance_mode must be 'flat', 'layered', or 'both', "
             f"got {options.inheritance_mode!r}"
         )
-    if options.roundtrip and options.inheritance_mode == "flat":
+    if options.roundtrip and options.inheritance_mode != "both":
         raise ValueError(
-            "roundtrip requires inheritance_mode 'layered' or 'both' so source "
-            "Master/Layout visuals are not duplicated on regenerated slides"
+            "roundtrip requires inheritance_mode 'both' so the editable flat "
+            "authoring view and layered source backing are both complete"
+        )
+    if options.roundtrip and (
+        options.images_subdir != "images"
+        or options.sound_subdir != "sounds"
+        or options.embed_images
+    ):
+        raise ValueError(
+            "roundtrip uses fixed images/ and sounds/ resource directories "
+            "and does not support inline images"
         )
     if not options.embed_images:
-        _validate_media_subdir(options.media_subdir)
+        _validate_resource_subdir(options.images_subdir)
+    _validate_resource_subdir(options.sound_subdir)
     emit_layered = options.inheritance_mode in {"layered", "both"}
     emit_flat = options.inheritance_mode in {"flat", "both"}
     result = ConvertResult(
@@ -482,6 +518,12 @@ def convert_pptx_to_svg(
     )
 
     with OoxmlPackage(pptx_path) as pkg:
+        if pkg.zip is not None:
+            result.resource_inventory = inventory_package_resources(pkg.zip)
+            image_name_map = result.resource_inventory.image_name_map()
+            image_name_map.update(options.asset_name_map)
+            options = replace(options, asset_name_map=image_name_map)
+        result.speaker_notes = import_speaker_notes(pkg)
         result.canvas_px = pkg.slide_size_px
 
         # Default theme summary is kept for compatibility; conversion itself
@@ -635,7 +677,8 @@ def _read_back_slide_transition(
         transition = import_slide_transition(
             pkg,
             slide,
-            media_subdir=options.media_subdir,
+            media_subdir=options.sound_subdir,
+            resource_path_map=result.resource_inventory.path_map(),
         )
     except TransitionImportError as exc:
         message = f"Slide transition was not reconstructed: {exc}"
@@ -742,7 +785,7 @@ def _convert_slide(
     svg, media = assemble_slide(
         pkg, slide, palette,
         theme_fonts=theme_fonts,
-        media_subdir=options.media_subdir,
+        media_subdir=options.images_subdir,
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
         inheritance_mode=mode,
@@ -841,7 +884,7 @@ def _render_part(
         role=role,
         parent_master=parent_master,
         theme_fonts=theme_fonts,
-        media_subdir=options.media_subdir,
+        media_subdir=options.images_subdir,
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
         asset_name_map=options.asset_name_map,
@@ -873,11 +916,14 @@ def _path_lexists(path: Path) -> bool:
 def _managed_svg_paths(output_dir: Path) -> list[Path]:
     """Return converter-owned SVG files without traversing user directories."""
     managed: list[Path] = []
-    for dirname, filename_re in (
-        ("svg", _MANAGED_PRIMARY_SVG_RE),
-        ("svg-flat", _MANAGED_FLAT_SVG_RE),
+    for relative_dir, filename_re, carries_inheritance in (
+        (Path("svg"), _MANAGED_PRIMARY_SVG_RE, True),
+        (Path("svg-flat"), _MANAGED_FLAT_SVG_RE, False),
+        (ROUNDTRIP_LAYERED_SVG_DIR, _MANAGED_PRIMARY_SVG_RE, True),
+        (ROUNDTRIP_FLAT_SVG_DIR, _MANAGED_FLAT_SVG_RE, False),
+        (AUTHORING_SVG_FLAT_DIR, _MANAGED_FLAT_SVG_RE, False),
     ):
-        svg_dir = output_dir / dirname
+        svg_dir = output_dir / relative_dir
         if svg_dir.is_symlink():
             managed.append(svg_dir)
             continue
@@ -890,14 +936,22 @@ def _managed_svg_paths(output_dir: Path) -> list[Path]:
             and (path.is_file() or path.is_symlink())
         )
         inheritance = svg_dir / "inheritance.json"
-        if dirname == "svg" and _path_lexists(inheritance):
+        if carries_inheritance and _path_lexists(inheritance):
             managed.append(inheritance)
+        if relative_dir == AUTHORING_SVG_FLAT_DIR:
+            for filename in (
+                "authoring_manifest.json",
+                "authoring_summary.json",
+            ):
+                sidecar = svg_dir / filename
+                if _path_lexists(sidecar):
+                    managed.append(sidecar)
     return managed
 
 
 def _managed_report_artifact_paths(output_dir: Path) -> set[Path]:
     """Return optional artifacts owned by the previous conversion report."""
-    report_path = output_dir / "conversion-report.json"
+    report_path = conversion_report_path(output_dir)
     if report_path.is_symlink() or not report_path.is_file():
         return set()
     try:
@@ -911,10 +965,14 @@ def _managed_report_artifact_paths(output_dir: Path) -> set[Path]:
         return set()
 
     managed = {Path("animations.json")}
-    if artifacts.get("sourceTemplate") == SOURCE_TEMPLATE_NAME:
-        managed.add(Path(SOURCE_TEMPLATE_NAME))
-    if artifacts.get("nativeStructure") == NATIVE_STRUCTURE_NAME:
-        managed.add(Path(NATIVE_STRUCTURE_NAME))
+    source_template = artifacts.get("sourceTemplate")
+    if source_template == SOURCE_TEMPLATE_NAME:
+        managed.add(Path(str(source_template)))
+    native_structure = artifacts.get("nativeStructure")
+    if native_structure == NATIVE_STRUCTURE_NAME:
+        managed.add(Path(str(native_structure)))
+    if artifacts.get("roundtripManifest") == ROUNDTRIP_MANIFEST_PATH.as_posix():
+        managed.add(ROUNDTRIP_MANIFEST_PATH)
     embedded_font_paths = [artifacts.get("embeddedFontManifest")]
     raw_font_parts = artifacts.get("embeddedFontParts")
     if isinstance(raw_font_parts, list):
@@ -935,6 +993,32 @@ def _managed_report_artifact_paths(output_dir: Path) -> set[Path]:
             continue
         managed.add(path)
     animation_media = artifacts.get("animationMedia")
+    managed_lists = [animation_media, artifacts.get("resources"), artifacts.get("notes")]
+    managed_resource_roots = {
+        "audio",
+        "images",
+        "native-payloads",
+        "notes",
+        "sounds",
+        "video",
+    }
+    for values in managed_lists:
+        if not isinstance(values, list):
+            continue
+        for value in values:
+            if not isinstance(value, str):
+                continue
+            path = Path(value)
+            if (
+                path.drive
+                or path.anchor
+                or path.is_absolute()
+                or not path.parts
+                or ".." in path.parts
+                or path.parts[0] not in managed_resource_roots
+            ):
+                continue
+            managed.add(path)
     if not isinstance(animation_media, list):
         return managed
     for value in animation_media:
@@ -1144,7 +1228,7 @@ def publish_staged_workspace(
             for path in managed_svg
         }
         relative_paths.update(_referenced_local_paths(output_dir, managed_svg))
-        relative_paths.add(Path("conversion-report.json"))
+        relative_paths.add(CONVERSION_REPORT_PATH)
         relative_paths.update(_managed_report_artifact_paths(output_dir))
         relative_paths.update(_validated_relative_paths(managed_root_files or set()))
         relative_paths.update(_validated_relative_paths(managed_relative_paths or set()))
@@ -1190,15 +1274,51 @@ def _write_artifact_tree(
     """Write a complete converter roster into an empty staging directory.
 
     Layout:
-      - ``svg/``        primary view (layered when emitted, otherwise flat)
-      - ``svg-flat/``   self-contained per-slide renders (only in "both" mode)
-      - ``<media_subdir>/`` shared image assets, referenced by both views
+      - normal conversion uses ``svg/`` and optional ``svg-flat/``
+      - round-trip conversion keeps immutable SVG backing under ``analysis/``
+        and publishes only ``authoring-svg-flat/`` as the editable page source
+      - ``images/``     shared image assets, referenced by both views
+      - semantic resource directories for sounds, audio, video, and opaque
+        native payloads when the source package contains them
     """
     output_dir.mkdir(parents=True, exist_ok=True)
-    svg_dir = output_dir / "svg"
-    svg_dir.mkdir(exist_ok=True)
-    media_dir = output_dir / options.media_subdir
+    svg_dir = output_dir / (
+        ROUNDTRIP_LAYERED_SVG_DIR if options.roundtrip else Path("svg")
+    )
+    svg_dir.mkdir(parents=True, exist_ok=True)
+    media_dir = output_dir / options.images_subdir
+    sound_dir = output_dir / options.sound_subdir
     media_written: dict[str, bytes] = {}
+    sounds_written: dict[str, bytes] = {}
+
+    def _svg_for_target(svg: str, target_dir: Path) -> str:
+        """Rebase generated local hrefs from the normal one-level SVG root."""
+        source_dir = output_dir / "svg"
+        project_root = output_dir.resolve()
+
+        def replace_href(match: re.Match[str]) -> str:
+            raw = unescape(match.group("value"))
+            parsed = urlsplit(raw)
+            if (
+                not raw
+                or raw.startswith("#")
+                or parsed.scheme
+                or parsed.netloc
+                or not parsed.path
+            ):
+                return match.group(0)
+            resolved = (source_dir / unquote(parsed.path)).resolve()
+            try:
+                resolved.relative_to(project_root)
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"Generated SVG resource escapes the workspace: {raw!r}"
+                ) from exc
+            relative = os.path.relpath(resolved, target_dir).replace(os.sep, "/")
+            rebased = urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+            return f"{match.group('prefix')}{quoteattr(rebased)}"
+
+        return _SVG_HREF_ATTRIBUTE_RE.sub(replace_href, svg)
 
     def _collect_media(media: dict[str, bytes]) -> None:
         for filename, blob in media.items():
@@ -1213,18 +1333,34 @@ def _write_artifact_tree(
 
     # Layered mode: write masters and layouts first so they sort ahead of slides.
     for art in result.masters:
-        (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
+        (svg_dir / art.filename).write_text(
+            _svg_for_target(art.svg, svg_dir),
+            encoding="utf-8",
+        )
         _collect_media(art.media_files)
     for art in result.layouts:
-        (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
+        (svg_dir / art.filename).write_text(
+            _svg_for_target(art.svg, svg_dir),
+            encoding="utf-8",
+        )
         _collect_media(art.media_files)
 
     # Slides (primary view).
     for art in result.slides:
         target = svg_dir / f"slide_{art.index:02d}.svg"
-        target.write_text(art.svg, encoding="utf-8")
+        target.write_text(
+            _svg_for_target(art.svg, target.parent),
+            encoding="utf-8",
+        )
         _collect_media(art.media_files)
-    _collect_media(result.animation_media_files)
+    for filename, blob in result.animation_media_files.items():
+        _validate_media_filename(filename)
+        existing = sounds_written.get(filename)
+        if existing is not None and existing != blob:
+            raise RuntimeError(
+                f"Sound filename collision with different bytes: {filename}"
+            )
+        sounds_written[filename] = blob
 
     # Inheritance graph alongside the layered SVGs (only meaningful when we
     # actually emitted a layered view).
@@ -1233,21 +1369,31 @@ def _write_artifact_tree(
 
     # Flat companion view (only when result.flat_slides is populated).
     if result.flat_slides:
-        flat_dir = output_dir / "svg-flat"
-        flat_dir.mkdir(exist_ok=True)
+        flat_dir = output_dir / (
+            ROUNDTRIP_FLAT_SVG_DIR if options.roundtrip else Path("svg-flat")
+        )
+        flat_dir.mkdir(parents=True, exist_ok=True)
         for art in result.flat_slides:
             target = flat_dir / f"slide_{art.index:02d}.svg"
-            target.write_text(art.svg, encoding="utf-8")
+            target.write_text(
+                _svg_for_target(art.svg, target.parent),
+                encoding="utf-8",
+            )
             _collect_media(art.media_files)
 
     _write_animation_config(output_dir, result)
+    _write_speaker_notes(output_dir, result)
     if result.native_structure is not None:
         if result.source_pptx_path is None:
             raise RuntimeError(
                 "Round-trip source structure is missing its source PPTX path"
             )
-        shutil.copy2(result.source_pptx_path, output_dir / SOURCE_TEMPLATE_NAME)
-        (output_dir / NATIVE_STRUCTURE_NAME).write_text(
+        source_target = output_dir / SOURCE_TEMPLATE_NAME
+        source_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(result.source_pptx_path, source_target)
+        structure_target = output_dir / NATIVE_STRUCTURE_NAME
+        structure_target.parent.mkdir(parents=True, exist_ok=True)
+        structure_target.write_text(
             json.dumps(
                 result.native_structure,
                 ensure_ascii=False,
@@ -1269,6 +1415,11 @@ def _write_artifact_tree(
         embedded_fonts_descriptor=embedded_fonts_descriptor,
         embedded_font_paths=embedded_font_paths,
     )
+    write_workspace_resources(
+        output_dir,
+        result.resource_inventory,
+        include_images=not options.embed_images,
+    )
     if media_written:
         media_dir.mkdir(parents=True, exist_ok=True)
     for filename, blob in media_written.items():
@@ -1284,6 +1435,228 @@ def _write_artifact_tree(
                 )
             continue
         target.write_bytes(blob)
+    if sounds_written:
+        sound_dir.mkdir(parents=True, exist_ok=True)
+    for filename, blob in sounds_written.items():
+        target = sound_dir / filename
+        if _path_lexists(target):
+            if (
+                target.is_symlink()
+                or not target.is_file()
+                or target.read_bytes() != blob
+            ):
+                raise RuntimeError(
+                    f"Sound filename collision with different bytes: {filename}"
+                )
+            continue
+        target.write_bytes(blob)
+    if result.native_structure is not None:
+        _write_roundtrip_manifest(output_dir, result, options)
+        flat_dir = output_dir / ROUNDTRIP_FLAT_SVG_DIR
+        authoring_dir = output_dir / AUTHORING_SVG_FLAT_DIR
+        mapping = [
+            (source, authoring_dir / source.name)
+            for source in sorted(flat_dir.glob("slide_*.svg"))
+        ]
+        if len(mapping) != len(result.slides):
+            raise RuntimeError(
+                "Round-trip flat backing roster does not match the slide roster"
+            )
+        project_svg_batch(
+            mapping,
+            flat_dir,
+            authoring_dir,
+            force=False,
+            projection_kind="flat",
+        )
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _write_speaker_notes(output_dir: Path, result: ConvertResult) -> None:
+    """Write imported notes into the standard per-slide Markdown contract."""
+    if not result.speaker_notes:
+        return
+    notes_dir = output_dir / "notes"
+    notes_dir.mkdir(parents=True, exist_ok=True)
+    combined = ["# Speaker Notes"]
+    for note in result.speaker_notes:
+        content = note.markdown.strip() + "\n"
+        (notes_dir / note.filename).write_text(content, encoding="utf-8")
+        combined.extend([
+            "",
+            f"## Slide {note.slide_index:02d}",
+            "",
+            note.markdown.strip(),
+        ])
+    (notes_dir / "total.md").write_text(
+        "\n".join(combined).rstrip() + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_roundtrip_manifest(
+    output_dir: Path,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Record immutable source, editable sidecars, and semantic resources."""
+    source_path = output_dir / SOURCE_PPTX_PATH
+    animation_path = output_dir / "animations.json"
+    resource_manifest = result.resource_inventory.manifest(
+        include_images=not options.embed_images,
+    )
+    materialized_resource_paths = {
+        Path(str(item["workspacePath"]))
+        for item in resource_manifest["items"]
+        if isinstance(item, dict)
+        and item.get("materialized") is True
+        and isinstance(item.get("workspacePath"), str)
+    }
+    notes_by_index = {
+        note.slide_index: note
+        for note in result.speaker_notes
+    }
+    flat_by_index = {
+        slide.index: slide
+        for slide in result.flat_slides
+    }
+    native_slides = []
+    if isinstance(result.native_structure, dict):
+        raw_slides = result.native_structure.get("slides")
+        if isinstance(raw_slides, list):
+            native_slides = raw_slides
+    native_by_index = {
+        int(item.get("index")): item
+        for item in native_slides
+        if isinstance(item, dict) and isinstance(item.get("index"), int)
+    }
+    native_masters = (
+        result.native_structure.get("masters")
+        if isinstance(result.native_structure, dict)
+        else None
+    )
+    master_parts = {
+        str(item.get("key")): str(item.get("packagePart"))
+        for item in native_masters or []
+        if isinstance(item, dict)
+        and item.get("key")
+        and item.get("packagePart")
+    }
+    native_layouts = (
+        result.native_structure.get("layouts")
+        if isinstance(result.native_structure, dict)
+        else None
+    )
+    layout_parts = {
+        str(item.get("key")): str(item.get("packagePart"))
+        for item in native_layouts or []
+        if isinstance(item, dict)
+        and item.get("key")
+        and item.get("packagePart")
+    }
+    slides: list[dict[str, object]] = []
+    for slide in result.slides:
+        layered_path = ROUNDTRIP_LAYERED_SVG_DIR / f"slide_{slide.index:02d}.svg"
+        native_slide = native_by_index.get(slide.index, {})
+        row: dict[str, object] = {
+            "index": slide.index,
+            "sourcePart": native_slide.get("packagePart"),
+            "layoutPart": layout_parts.get(str(native_slide.get("layoutKey"))),
+            "masterPart": master_parts.get(str(native_slide.get("masterKey"))),
+            "layeredSvg": layered_path.as_posix(),
+            "layeredSvgSha256": _sha256_file(output_dir / layered_path),
+            "animationSha256": slide_animation_config_sha256(
+                result.animation_config,
+                f"slide_{slide.index:02d}",
+            ),
+        }
+        referenced_svg_paths = [output_dir / layered_path]
+        if slide.index in flat_by_index:
+            flat_path = ROUNDTRIP_FLAT_SVG_DIR / f"slide_{slide.index:02d}.svg"
+            row["flatSvg"] = flat_path.as_posix()
+            row["flatSvgSha256"] = _sha256_file(output_dir / flat_path)
+            referenced_svg_paths.append(output_dir / flat_path)
+        derived_paths = sorted(
+            _referenced_local_paths(output_dir, referenced_svg_paths)
+            - materialized_resource_paths,
+            key=lambda path: path.as_posix(),
+        )
+        derived_resources: list[dict[str, str]] = []
+        for relative in derived_paths:
+            target = output_dir / relative
+            if not target.is_file():
+                raise RuntimeError(
+                    "Round-trip SVG references a missing derived resource: "
+                    f"{relative.as_posix()}"
+                )
+            derived_resources.append({
+                "file": relative.as_posix(),
+                "sha256": _sha256_file(target),
+            })
+        row["derivedResources"] = derived_resources
+        note = notes_by_index.get(slide.index)
+        if note is not None:
+            note_path = Path("notes") / note.filename
+            row["notes"] = {
+                "file": note_path.as_posix(),
+                "sha256": _sha256_file(output_dir / note_path),
+                "sourcePart": note.source_part,
+                "sourceSha256": note.source_sha256,
+            }
+        slides.append(row)
+    payload = {
+        "schema": "ppt-master.roundtrip-workspace.v1",
+        "source": {
+            "file": SOURCE_PPTX_PATH.as_posix(),
+            "sha256": _sha256_file(source_path),
+        },
+        "structure": NATIVE_STRUCTURE_PATH.as_posix(),
+        "conversionReport": CONVERSION_REPORT_PATH.as_posix(),
+        "sidecars": {
+            "animations": {
+                "file": "animations.json",
+                "sha256": _sha256_file(animation_path),
+            },
+            "notesTotal": (
+                {
+                    "file": "notes/total.md",
+                    "sha256": _sha256_file(output_dir / "notes/total.md"),
+                }
+                if result.speaker_notes
+                else None
+            ),
+        },
+        "directories": {
+            "authoringSvg": AUTHORING_SVG_FLAT_DIR.as_posix(),
+            "layeredSvg": ROUNDTRIP_LAYERED_SVG_DIR.as_posix(),
+            "flatSvg": (
+                ROUNDTRIP_FLAT_SVG_DIR.as_posix()
+                if result.flat_slides
+                else None
+            ),
+            "images": options.images_subdir,
+            "sounds": options.sound_subdir,
+            "audio": "audio",
+            "video": "video",
+            "notes": "notes",
+            "nativePayloads": "native-payloads",
+        },
+        "slides": slides,
+        "resources": resource_manifest,
+    }
+    target = output_dir / ROUNDTRIP_MANIFEST_PATH
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _write_artifacts(
@@ -1293,6 +1666,7 @@ def _write_artifacts(
 ) -> None:
     """Stage a complete conversion, then atomically publish its exact roster."""
     output_dir = output_dir.absolute()
+    reject_removed_workspace_layout(output_dir)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     staging_root = Path(tempfile.mkdtemp(
         prefix=f".{output_dir.name}.convert-",
@@ -1316,7 +1690,7 @@ def _write_conversion_report(
 ) -> None:
     """Write the user-visible tolerant-import report."""
     animation_media = [
-        (PurePosixPath(options.media_subdir) / filename).as_posix()
+        (PurePosixPath(options.sound_subdir) / filename).as_posix()
         for filename in sorted(result.animation_media_files)
     ]
     source_theme: dict[str, object] = {
@@ -1341,6 +1715,15 @@ def _write_conversion_report(
     artifacts: dict[str, object] = {
         "animationConfig": "animations.json",
         "animationMedia": animation_media,
+        "resources": [
+            resource.workspace_path
+            for resource in result.resource_inventory.resources
+            if not (options.embed_images and resource.kind == "image")
+        ],
+        "notes": [
+            (Path("notes") / note.filename).as_posix()
+            for note in result.speaker_notes
+        ] + (["notes/total.md"] if result.speaker_notes else []),
     }
     if embedded_font_paths:
         artifacts["embeddedFontManifest"] = embedded_font_paths[-1]
@@ -1348,6 +1731,7 @@ def _write_conversion_report(
     if result.native_structure is not None:
         artifacts["sourceTemplate"] = SOURCE_TEMPLATE_NAME
         artifacts["nativeStructure"] = NATIVE_STRUCTURE_NAME
+        artifacts["roundtripManifest"] = ROUNDTRIP_MANIFEST_PATH.as_posix()
     report = {
         "schemaVersion": 1,
         "source": result.source_file,
@@ -1360,7 +1744,9 @@ def _write_conversion_report(
         "sourceDocument": source_document,
         "diagnostics": [item.to_dict() for item in result.diagnostics],
     }
-    (output_dir / "conversion-report.json").write_text(
+    report_path = output_dir / CONVERSION_REPORT_PATH
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

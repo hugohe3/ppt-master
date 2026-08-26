@@ -120,7 +120,7 @@ python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --pr
 python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
 python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inplace --keep-native-frames
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>
-python3 scripts/svg_to_pptx.py <import_workspace> -s authoring-svg-flat --roundtrip
+python3 scripts/svg_to_pptx.py <import_workspace> --roundtrip
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
 ```
@@ -128,7 +128,7 @@ python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-on
 Template import defaults to the canonical layered `svg/` tree. Use
 `--inheritance-mode both` only when a separate self-contained `svg-flat/`
 verification tree is required. No derived narrative digest is generated
-because `manifest.json` already owns those facts.
+because `analysis/manifest.json` already owns those facts.
 
 `svg_authoring_view.py` creates a lightweight, non-destructive editable IR
 bundle from PPTX-imported SVGs. It removes embedded `txbody` payloads,
@@ -148,7 +148,7 @@ IR edits. The full imported SVG remains unchanged as native-payload backing.
 Template creation edits the IR and materializes validated `templates/*.svg`;
 the layered IR directory itself is not a final template or direct release
 export source. A complete-page flat IR may be selected with
-`-s authoring-svg-flat --roundtrip`: `authoring_roundtrip.py` regenerates its
+`--roundtrip`: `authoring_roundtrip.py` reads `authoring-svg-flat/`, regenerates its
 deterministic extraction baseline, restores unchanged refs from the immutable
 layered backing, and sends the temporary result through preserve export while
 leaving edited/deleted/new authoring content in place.
@@ -156,8 +156,8 @@ leaving edited/deleted/new authoring content in place.
 `mirror_template_materialize.py` is the deterministic Type A mirror compiler.
 It consumes only the layered `authoring-svg/` IR as editable input, loads its
 tool-only manifest internally, and validates it against immutable `svg/`,
-`native_structure.json`,
-`svg/inheritance.json`, `source_template.pptx`, and any extracted-vector
+`analysis/native_structure.json`,
+`svg/inheritance.json`, `sources/source.pptx`, and any extracted-vector
 inventory, then publishes a complete structured template roster atomically.
 Unchanged supported Slide-local/slot refs may recover native payload; edited
 refs keep their current SVG fallback. Fixed Master/Layout wrappers are expanded
@@ -173,7 +173,8 @@ readable. The v1 execution manifest points to per-prototype
 tool metadata and are not injected into model context. Checker and export
 validate output attributes, topology, and resource hashes against the complete
 prototype internally. Bitmap assets
-go to `images/`; other referenced source assets go to `templates/assets/`.
+and Office vector image media go to `images/`; audio, video, and opaque source
+payloads go to their semantic workspace directories.
 The destination must be empty, and the command does not write
 `templates/design_spec.md`; Template_Designer owns that authored brief.
 

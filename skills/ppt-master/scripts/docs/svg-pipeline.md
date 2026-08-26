@@ -55,19 +55,15 @@ The layered authoring bundle remains the editable source for template creation;
 the complete imported SVG remains immutable native-payload backing. Final
 `templates/*.svg` files are materialized and validated from that pair. A
 complete-page `authoring-svg-flat/` bundle is the user's editable source for an
-imported-deck round-trip. Keep its SVGs in that directory, its corresponding
-bitmaps in the sibling `assets/` pool, and its extracted vectors in the sibling
-`icons/` pool; do not duplicate those resources into a second `images/` tree.
-With `-s authoring-svg-flat --roundtrip`, export verifies the manifest and
-immutable backing graph, regenerates the deterministic extraction baseline,
-restores every unchanged source-referenced object into a temporary layered
-slide, and retains edited/deleted/new authoring content. It then enters the
-same source-preserving package route as `-s svg --roundtrip`; the temporary
-materialization never rewrites the authoring bundle. The dangerous exporter is
-a separate flat compatibility mechanism and does not restore source objects.
-More generally, an SVG may reference a resource anywhere under the project
-root through an exact SVG-relative or project-root-relative path; export never
-recursively guesses among files with the same name.
+imported-deck round-trip. `pptx_to_svg.py --roundtrip` places image media in
+`images/`, vectors in `icons/imported/`, cues/audio/video/notes in their named
+directories, opaque payloads in `native-payloads/`, the source package in
+`sources/`, and tool-owned backing/contracts in `analysis/`; `assets/` is
+invalid. `svg_to_pptx.py --roundtrip` always reads `authoring-svg-flat/`,
+restores unchanged source refs from `analysis/roundtrip-svg/`, and retains
+edits/deletions/new content without rewriting the bundle. Unchanged slides and
+resources pass through byte-for-byte; an edit rebuilds only its owner. Resource
+hrefs resolve exactly relative to the SVG and must remain inside the workspace.
 
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:
@@ -444,8 +440,9 @@ structured export validate output attributes, text/tspan topology, and
 referenced-resource hashes against
 the prototype.
 
-The output routes reusable vectors once to `icons/imported/`, bitmaps to
-`images/`, and other referenced files to `templates/assets/`. The JSON report
+The output routes reusable vectors once to `icons/imported/`, image media to
+`images/`, audio and video to their semantic directories, and opaque referenced
+files to `native-payloads/imported/`. The JSON report
 reports payload occurrence, native-record, unique-byte, and compressed-store
 counts and is written to stdout only. The command intentionally does not create
 `templates/design_spec.md`; Template_Designer writes the package-specific rules
@@ -574,13 +571,10 @@ python3 scripts/svg_to_pptx.py <project_path> --no-image-optimize
 python3 scripts/svg_to_pptx.py <project_path> --native-charts-and-tables
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # deck/layout template override
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-design/brand-only override
-# Exact source-structure diagnostic emitted by pptx_to_svg.py --roundtrip:
-python3 scripts/svg_to_pptx.py <pptx_import_output> -s svg --roundtrip
 # Template-import visual round-trip diagnostic only:
 python3 scripts/svg_to_pptx.py <template_import_output> -s svg-flat
-# Editable authoring-svg-flat -> source-preserving PPTX round-trip:
-python3 scripts/svg_to_pptx.py <pptx_import_output> -s authoring-svg-flat \
-  --roundtrip --no-notes --no-animations
+# Editable authoring-svg-flat/ -> source-preserving PPTX round-trip:
+python3 scripts/svg_to_pptx.py <pptx_import_output> --roundtrip
 # The same compatibility mode defaults to svg_output/ when -s is omitted:
 python3 scripts/svg_to_pptx.py <project_path> \
   --enable-dangerous-nonconforming-svg-export
@@ -664,7 +658,7 @@ Behavior:
   - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
   - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`; `-s <directory>` selects another project-relative SVG source. `-s final` remains an explicit diagnostic comparison against post-processed SVGs and does not change artifact ownership. `--enable-dangerous-nonconforming-svg-export` is a separate, explicitly requested flat compatibility path for either the default or selected source; it forces flat structure, restores no imported source object, and cannot combine with `--roundtrip` or `--quick-generate`.
-- `--roundtrip` consumes the validated source package and structure sidecar emitted by `pptx_to_svg.py --roundtrip`. With `-s svg`, it reads the layered `slide_*.svg` files directly. With another `-s`, that directory must be a flat authoring IR with a valid `authoring_manifest.json`; export deterministically regenerates its pre-edit projection/extraction baseline, restores unchanged source refs from the layered backing, keeps edits/deletions/new elements, and records those counts in postflight. An unchanged imported chart with a closed validated source package automatically restores its original chart XML, style/color parts, workbook, and theme override without enabling ordinary semantic Chart/Table replacement. Its visible-fallback fingerprint remains authoritative: editing the SVG fallback disables stale exact replacement instead of discarding that edit.
+- `--roundtrip` accepts only `authoring-svg-flat/` and the source/contracts emitted by `pptx_to_svg.py --roundtrip`; predecessor root sidecars and alternate `-s` inputs fail. It restores unchanged refs from `analysis/roundtrip-svg/`, preserves unchanged Slide XML/relationships and source resources byte-for-byte, and rebuilds only edited owners. Closed unchanged chart packages recover exactly; editing their fallback disables stale replacement.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export
@@ -862,7 +856,10 @@ python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 python3 scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
 ```
 
-Replaces `<use data-icon="chunk-filled/name" .../>`, `<use data-icon="tabler-filled/name" .../>` and `<use data-icon="tabler-outline/name" .../>` placeholders with actual SVG path elements. Use for manual icon embedding checks outside `finalize_svg.py`.
+Replaces project-local `<use data-icon="library/name" .../>` placeholders with
+SVG paths. The exact case-sensitive file must exist under the workspace
+`icons/`; bare, aliased, template-source, and unsynced references fail. Use
+this only for manual checks outside `finalize_svg.py`.
 
 ## SVG Compatibility Contract
 

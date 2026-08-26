@@ -104,11 +104,8 @@ def _resolve_external_image(
 ) -> Path:
     """Resolve a non-data-URI image href to a file on disk.
 
-    Search order: next to the SVG (``svg_output/``), the project root, the
-    project's ``images/`` (the single runtime image pool — template-bundled
-    bitmaps plus AI / web / user images all live here), then ``templates/``
-    (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
-    of these exist.
+    The href is interpreted exactly relative to the owning SVG and must remain
+    inside the project. No root, ``images/``, or template-path guessing occurs.
     """
     candidate = resolve_external_image_reference(
         svg_dir,

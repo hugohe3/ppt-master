@@ -60,7 +60,7 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
-from resource_paths import icon_search_dirs_for_project  # noqa: E402
+from resource_paths import icon_dir_for_project  # noqa: E402
 from slide_roster import discover_slide_svgs  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
@@ -166,11 +166,10 @@ def _inline_icons(
     content: str,
     icons_dir: Path,
     target_dir: Path,
-    fallback_dir: Optional[Path] = None,
 ) -> tuple[str, list[dict]]:
     """Replace <use data-icon="..."/> with rendered <g> for browser preview.
 
-    Resolve icons from the project directory first, then the shared library.
+    Resolve icons only from the prepared project directory.
     Returns (rewritten_content, warnings). Each warning is
     ``{"icon": <name>, "reason": <str>}`` so the frontend can surface
     "icon X not found" to the user instead of silently dropping it.
@@ -189,7 +188,7 @@ def _inline_icons(
             if not icon_name:
                 warnings.append({'icon': '', 'reason': 'missing data-icon attribute'})
                 continue
-            icon_path, _ = resolve_icon_path(icon_name, icons_dir, fallback_dir)
+            icon_path, _ = resolve_icon_path(icon_name, icons_dir)
             color = str(attrs.get('fill', '#000000'))
             elements, style, base_size = extract_paths_from_icon(
                 icon_path,
@@ -436,8 +435,7 @@ def create_app(
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
     images_dir = project_path / 'images'
-    assets_dir = project_path / 'assets'
-    icons_dir, icons_fallback_dir = icon_search_dirs_for_project(project_path)
+    icons_dir = icon_dir_for_project(project_path)
 
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['PROJECT_PATH'] = project_path
@@ -541,42 +539,6 @@ def create_app(
         if not target.exists() or not target.is_file():
             return jsonify({'error': 'not found'}), 404
         return send_from_directory(str(images_dir), filename)
-
-    @app.route('/assets/<path:filename>')
-    def serve_asset(filename: str):
-        """Serve media extracted by pptx_to_svg.py as `../assets/*`."""
-        if not assets_dir.exists():
-            return jsonify({'error': 'assets directory not found'}), 404
-        target = (assets_dir / filename).resolve()
-        try:
-            target.relative_to(assets_dir.resolve())
-        except ValueError:
-            return jsonify({'error': 'invalid path'}), 400
-        if not target.exists() or not target.is_file():
-            return jsonify({'error': 'not found'}), 404
-        return send_from_directory(str(assets_dir), filename)
-
-    @app.route('/<path:filename>')
-    def serve_bare_asset(filename: str):
-        """Resolve a template SVG's bare image href (e.g. `href="cover_bg.png"`).
-
-        Mirror templates copy hrefs verbatim, so a bare filename reaches the
-        browser as `/<filename>` (no `../images/` prefix). Resolve it against the
-        project's images/ then assets/. Every real route (`/api/*`, `/images/*`,
-        `/assets/*`, `/static/*`, `/`) is more specific and matches first; this
-        only catches the leftover bare references and 404s otherwise.
-        """
-        for base in (images_dir, assets_dir):
-            if not base.exists():
-                continue
-            target = (base / filename).resolve()
-            try:
-                target.relative_to(base.resolve())
-            except ValueError:
-                continue
-            if target.exists() and target.is_file():
-                return send_from_directory(str(base), filename)
-        return jsonify({'error': 'not found'}), 404
 
     @app.route('/api/slides')
     def get_slides():
@@ -719,7 +681,6 @@ def create_app(
                 content,
                 icons_dir,
                 svg_file.parent,
-                icons_fallback_dir,
             )
             if not pending_edits:
                 _cache_put(

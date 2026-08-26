@@ -24,7 +24,7 @@ This directory is the **global library**. The active resource owner copies chose
 python3 skills/ppt-master/scripts/icon_sync.py <project_path> tabler-outline/home tabler-outline/bulb simple-icons/github
 ```
 
-Missing names and a single selection batch that mixes the four stylistic libraries exit non-zero; `simple-icons` may coexist for real brand marks. Once files are under `<project>/icons/`, they form the prepared project asset pool and may be combined freely with user-provided, custom, or imported icons. `finalize_svg.py embed-icons` embeds **project-first**; its per-icon global fallback exists for legacy compatibility, not new asset discovery.
+Missing names and a single selection batch that mixes the four stylistic libraries exit non-zero; `simple-icons` may coexist for real brand marks. Once files are under `<project>/icons/`, they form the prepared project asset pool and may be combined freely with user-provided, custom, or imported icons. `finalize_svg.py embed-icons`, preview, validation, and native export resolve only this project-local pool.
 
 **Custom icons**: drop your own `.svg` into `<project>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any library icon.
 
@@ -62,6 +62,11 @@ Use placeholder syntax **during SVG generation**:
 - `fill` — Color
 
 `data-icon` is case-sensitive because it resolves a real filename. Bundled library directories and basenames are canonical lowercase: use `tabler-outline/award`, not `tabler-outline/Award`. Custom icons retain the exact case of their files; the resolver intentionally does not lowercase identifiers.
+
+Every placeholder resolves only against `<project_path>/icons/`. A complete
+`library/name` identifier is mandatory; bare names, abbreviated namespaces,
+paths into `templates/icons/`, and unsynced bundled-library files fail instead
+of falling back to another root.
 
 `finalize_svg.py` auto-embeds all placeholders during post-processing. To run manually:
 

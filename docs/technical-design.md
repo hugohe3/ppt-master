@@ -361,7 +361,7 @@ lifecycle is:
 | `sources/` | archived originals, normalized Markdown, and converter companion files |
 | `analysis/` | machine-extracted facts: PPTX intake bundles and regenerated image analysis |
 | `images/` | single runtime image pool for user, extracted, web, AI, sliced, and EMF/WMF assets |
-| `icons/` | project-local icon set copied by `icon_sync.py`; global library fallback at export exists only for legacy compatibility |
+| `icons/` | project-local icon set copied by `icon_sync.py` or supplied by the active workspace; preview, validation, finalization, and export resolve only complete `library/name` references under this root |
 | `templates/` | copied template specs / SVG references / non-image template assets |
 | `svg_output/` | the only hand-authored SVG source directory |
 | `svg_final/` | mandatory normal-flow derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
@@ -427,13 +427,12 @@ remain valid, and an exact path matching a registered canonical root may be
 displayed as `library`; an unregistered root remains `explicit`. Current
 library workspaces resolve `templates/design_spec.md`, while project roots
 resolve every `templates/design_spec.<kind>.<id>.md`; the server parses every
-explicit root's real kinds, while the source label remains provenance only. Compatible flat Brand/Layout/Deck
-packages may resolve direct `design_spec.md` only when they satisfy the current
-kind contract, including current structured SVGs for Layout/Deck. Style has no
-legacy-flat form. A free-form style brief remains ordinary Stage-2 input and
-does not activate a Style workspace. Directory shape never authorizes structure
-migration. A package with legacy Master/Layout/placeholder semantics must be
-replaced by a newly created template workspace before Step 3.
+explicit root's real kinds, while the source label remains provenance only.
+Flat-root packages are not template workspaces. A free-form style brief remains
+ordinary Stage-2 input and does not activate a Style workspace. Directory shape
+never authorizes structure migration. A package with legacy
+Master/Layout/placeholder semantics must be replaced by a newly created
+template workspace before Step 3.
 
 All current Brand/Style/Layout/Deck packages use one workspace routing contract. Brand and Style workspaces omit the SVG roster; empty optional directories are omitted:
 
@@ -806,6 +805,8 @@ These direct routes share some analysis primitives with the main pipeline, but a
 **Why per-element dispatch, not whole-file translation.** SVG's hierarchical model maps cleanly onto DrawingML's group / shape / picture types — there's no need for a holistic optimizer that re-plans the slide. Each shape kind gets its own narrow translator, which keeps each translator simple enough to debug and unit-test in isolation. The output quality of a slide is the sum of independent local conversions; that property is fragile under whole-file translation but robust under element dispatch.
 
 **Why imported and authored shape metadata are separate.** A lossless imported SVG may need native-shape metadata, hidden carriers, and preview fingerprints to recover an advanced PowerPoint shape. That representation stays immutable in the temporary analysis workspace as native-payload backing. `svg_authoring_view.py` creates the editable template-creation IR: lightweight SVGs with document-local source refs plus an `authoring_manifest.json` containing paths and initial hashes, not duplicated payload. `standard` / `fidelity` author project-canonical SVG and use the compact authored-preset group only for exact registered preset matches. Mirror materializes validated templates from the IR and rehydrates converter-supported metadata only for unchanged Slide-local/slot refs; fixed structural layers remain direct atoms, unsupported or edited objects keep their current SVG fallback, and IR-only refs do not enter final template SVGs.
+
+**Why PPTX round-trip uses a semantic workspace rather than a ZIP-shaped tree.** The editable page source is `authoring-svg-flat/`; PowerPoint image media, imported reusable vectors, cues, audio, video, notes, and opaque payloads live under `images/`, `icons/imported/`, `sounds/`, `audio/`, `video/`, `notes/`, and `native-payloads/`. The exact backing package stays at `sources/source.pptx`, structural and ownership contracts stay under `analysis/`, diagnostics stay under `validation/`, and published decks stay under `exports/`. This keeps authoring paths aligned with normal projects while `analysis/roundtrip_manifest.json` maps semantic files back to package ownership. Import and export use this one contract: root `source_template.pptx`, `native_structure.json`, `conversion-report.json`, and `assets/` are invalid rather than compatibility inputs.
 
 **Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; when requested, create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is only a derived visual-preview / SVG-picture artifact rather than a PPTX source; PowerPoint's manual Convert to Shape command remains outside the supported contract.
 

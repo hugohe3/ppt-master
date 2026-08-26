@@ -181,7 +181,7 @@ video or audio media from a decorative SVG group.
 
 ## 3. Legacy Template Input Boundary
 
-Existing structured/template projects or packages that carry `native_structure.json` / `source_template.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or an incomplete root Master identity are not generation/export inputs and are never upgraded in place. Create a separate current workspace through [`create-template`](../workflows/create-template.md). A project explicitly declaring `pptx_structure.mode: flat` is the current free-design/brand-only route and needs no conversion merely because it has no Master/Layout metadata.
+Existing structured/template projects or source-analysis packages that carry `analysis/native_structure.json` / `sources/source.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or an incomplete root Master identity are not generation/export inputs and are never upgraded in place. Create a separate current workspace through [`create-template`](../workflows/create-template.md). A project explicitly declaring `pptx_structure.mode: flat` is the current free-design/brand-only route and needs no conversion merely because it has no Master/Layout metadata.
 
 | Available source | Allowed create-template behavior |
 |---|---|

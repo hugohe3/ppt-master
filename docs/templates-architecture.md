@@ -19,7 +19,7 @@
 | **Layout** | `templates/layouts/<id>/` | Brand-neutral structure segment only: canvas / page structure / semantic text roles / page types / SVG roster | No brand identity and no recurring communication application | `workflows/create-template/create-layout.md` |
 | **Deck** | `templates/decks/<id>/` | A recurring presentation family: descriptive application context + integrated identity + structure | — | `workflows/create-template/create-deck.md` |
 
-Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. Create Template derives `standard` / `fidelity` / `mirror` internally from the natural-language intent and source evidence. Authored strategies create new SVGs and structure; mirror materializes validated source facts. Strategist later derives strict/adaptive exporter behavior from the actual prototypes and current content. None of these implementation values is a required user choice. A legacy-flat Brand/Layout/Deck directory with `design_spec.md` at its root remains readable only when it satisfies the current kind contract; Style has no legacy-flat form. Semantic-legacy packages must be replaced by a newly created template workspace; they are never upgraded in place.
+Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. Create Template derives `standard` / `fidelity` / `mirror` internally from the natural-language intent and source evidence. Authored strategies create new SVGs and structure; mirror materializes validated source facts. Strategist later derives strict/adaptive exporter behavior from the actual prototypes and current content. None of these implementation values is a required user choice. Generate accepts only the current nested workspace contract; older flat or semantic-legacy packages must be rebuilt through Create Template and are never upgraded in place.
 
 The four are **parallel reusable-rule bundles**, not PowerPoint package-object types. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
@@ -479,11 +479,8 @@ exact root starts in template mode. Exactly one supplied root is preselected,
 while multiple roots remain unselected candidates. A bare template/brand name
 or style phrase never resolves to or preselects a workspace. For every selected
 root, the post-confirmation apply stage resolves either one library bare spec or
-all project-qualified specs; for directory-shape compatibility, it also accepts
-a legacy-flat Brand/Layout/Deck root containing
-`<workspace>/design_spec.md` when the package satisfies its current kind
-contract. Layout/Deck additionally require current structured SVGs; Style has
-no flat form. Packages using legacy semantics such as
+all project-qualified specs. Flat-root packages are not template workspaces.
+Packages using legacy semantics such as
 `native_structure_mode: template`, missing Master identity, direct atomic
 placeholders, or distillation-era markers are rejected; `create-template` must
 produce a new workspace before generation continues. The `kind` field decides

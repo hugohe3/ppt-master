@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Internal helper: extract lightweight template assets and style metadata from a PPTX file.
+"""Internal helper: extract template resources and style metadata from a PPTX file.
 
 This helper is intentionally limited in scope:
 - extract reusable media assets
@@ -10,8 +10,8 @@ This helper is intentionally limited in scope:
 It does NOT try to convert arbitrary PPTX shapes into SVG templates.
 
 Output contract (single source of truth):
-    <workspace>/manifest.json   — all factual metadata (theme, assets, slides, layouts, masters)
-    <workspace>/assets/         — extracted reusable image assets
+    <workspace>/analysis/manifest.json — factual metadata and resource inventory
+    <workspace>/images/                — reusable image assets
 
 This module is a pure library. The CLI entry point lives in
 ``pptx_template_import.py`` at the scripts root.
@@ -19,10 +19,8 @@ This module is a pure library. The CLI entry point lives in
 
 from __future__ import annotations
 
-import json
 import posixpath
 import re
-import shutil
 import zipfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -33,6 +31,10 @@ from xml.etree import ElementTree as ET
 from pptx_to_svg.ooxml_loader import (
     blip_embed_relationship_ids,
     parse_ooxml_boolean,
+)
+from pptx_workspace import (
+    inventory_package_resources,
+    write_workspace_resources,
 )
 
 
@@ -175,11 +177,6 @@ def parse_relationships(zf: zipfile.ZipFile, part_path: str) -> dict[str, dict[s
 def emu_to_pixels(value: int) -> int:
     # PowerPoint uses 96 dpi; enough for summary output.
     return int(round(value / EMU_PER_INCH * 96))
-
-
-def sanitize_filename(value: str) -> str:
-    value = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip())
-    return value.strip("._") or "asset"
 
 
 def part_svg_filename(role: str, seq: int, part_path: str) -> str:
@@ -560,27 +557,9 @@ def build_manifest(
                     layout_parent[layout_path] = master_path
                     layout_parts.append(layout_path)
 
-        asset_dir = output_dir / "assets"
-        if asset_dir.exists():
-            shutil.rmtree(asset_dir)
-        asset_dir.mkdir(parents=True, exist_ok=True)
-
-        copied_assets: dict[str, str] = {}
-        for info in zf.infolist():
-            if not info.filename.startswith("ppt/media/") or info.is_dir():
-                continue
-            original_name = PurePosixPath(info.filename).name
-            safe_name = sanitize_filename(original_name)
-            destination = asset_dir / safe_name
-            stem = destination.stem
-            suffix = destination.suffix
-            counter = 2
-            while destination.exists():
-                destination = asset_dir / f"{stem}_{counter}{suffix}"
-                counter += 1
-            with zf.open(info.filename) as src, open(destination, "wb") as dst:
-                shutil.copyfileobj(src, dst)
-            copied_assets[info.filename] = destination.name
+        resource_inventory = inventory_package_resources(zf)
+        write_workspace_resources(output_dir, resource_inventory)
+        copied_assets = resource_inventory.image_name_map()
 
         slide_records: list[SlideRecord] = []
         asset_usage: Counter[str] = Counter()
@@ -788,12 +767,13 @@ def build_manifest(
             },
             "slideSize": slide_size,
             "theme": theme_summary,
-            "assets": {
-                "exportDir": "assets",
-                "commonAssets": common_assets,
-                "allAssets": sorted(copied_assets.values()),
-                "assetMap": copied_assets,
+            "images": {
+                "exportDir": "images",
+                "commonImages": common_assets,
+                "allImages": sorted(copied_assets.values()),
+                "imageMap": copied_assets,
             },
+            "resources": resource_inventory.manifest(),
             "pageTypeCandidates": dict(sorted(page_type_map.items())),
             "layouts": layouts_top,
             "masters": masters_top,

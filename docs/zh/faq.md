@@ -434,7 +434,7 @@ Create Template 会先确认简报，再写入已注册、可发现的 `library`
 
 **第三步 — 等待完成**
 
-AI 代理会自动完成后续工作——分析参考、写入 kind 专属规范，仅为 Layout/Deck 构建结构定义，并验证工作区。Brand/Style 不生成预览 PPTX；Layout/Deck 可按请求生成 `exports/<id>_template_preview.pptx`，多 Master 时必须生成。两种范围都要求 `templates/`；Brand/Layout/Deck 可使用包自有 `images/` 和 `icons/`，Style 只贡献自己的 Design Spec。`library` 在 `skills/ppt-master/templates/<kind>/<id>/` 写入裸 `templates/design_spec.md` 并完成全局注册；`project` 在 `projects/<name>/` 写入 `templates/design_spec.<kind>.<id>.md` 并跳过注册，四种 kind 均可各自共存一份；Layout 与 Deck 同时存在时，Layout 拥有有效 SVG roster。空的可选目录直接省略。把这个工作区 root 交给 Step 3 时，项目 root 会原子贡献其中全部 spec，安装不会复制 `exports/`。兼容的旧平铺 Brand/Layout/Deck 工作区只有在满足当前 kind 合同时才可读取，Layout/Deck 还必须满足当前 structured SVG 合同；Style 不存在旧平铺形态，语义旧包必须通过 `create-template` 替换，不能原地升级。
+AI 代理会自动完成后续工作——分析参考、写入 kind 专属规范，仅为 Layout/Deck 构建结构定义，并验证工作区。Brand/Style 不生成预览 PPTX；Layout/Deck 可按请求生成 `exports/<id>_template_preview.pptx`，多 Master 时必须生成。两种范围都要求 `templates/`；Brand/Layout/Deck 可使用包自有 `images/` 和 `icons/`，Style 只贡献自己的 Design Spec。`library` 在 `skills/ppt-master/templates/<kind>/<id>/` 写入裸 `templates/design_spec.md` 并完成全局注册；`project` 在 `projects/<name>/` 写入 `templates/design_spec.<kind>.<id>.md` 并跳过注册，四种 kind 均可各自共存一份；Layout 与 Deck 同时存在时，Layout 拥有有效 SVG roster。空的可选目录直接省略。把这个工作区 root 交给 Step 3 时，项目 root 会原子贡献其中全部 spec，安装不会复制 `exports/`。旧平铺或语义旧包只能作为参考输入，必须通过 `create-template` 重建为当前工作区后才能被 Generate 选择。
 
 > **提示**：对风格和使用场景描述得越具体，生成的模板就越符合你的预期。
 

@@ -35,23 +35,34 @@ from console_encoding import configure_utf8_stdio
 
 configure_utf8_stdio()
 
-_LIB_ALIASES = {"chunk": "chunk-filled"}
 _STYLISTIC_LIBRARIES = {
     "chunk-filled",
     "phosphor-duotone",
     "tabler-filled",
     "tabler-outline",
 }
+_SYNC_LIBRARIES = _STYLISTIC_LIBRARIES | {"simple-icons"}
 _GLOBAL_ICONS_DIR = Path(__file__).resolve().parent.parent / "templates" / "icons"
 
 
 def _split_name(icon_name: str) -> tuple[str, str]:
-    """`lib/name` -> (lib, name), applying the chunk→chunk-filled alias."""
-    if "/" not in icon_name:
-        # legacy un-prefixed names live in chunk-filled/
-        return "chunk-filled", icon_name
+    """Validate and split one complete bundled ``library/name`` id."""
+    if icon_name.count("/") != 1:
+        raise ValueError(
+            f"icon id must use the complete library/name form: {icon_name!r}"
+        )
     lib, name = icon_name.split("/", 1)
-    return _LIB_ALIASES.get(lib, lib), name
+    if lib not in _SYNC_LIBRARIES:
+        raise ValueError(f"unsupported bundled icon library: {lib!r}")
+    if (
+        not name
+        or name in {".", ".."}
+        or "/" in name
+        or "\\" in name
+        or Path(name).name != name
+    ):
+        raise ValueError(f"invalid icon name: {name!r}")
+    return lib, name
 
 
 def sync_icons(project_path: Path, icon_names: list[str], global_dir: Path = _GLOBAL_ICONS_DIR) -> tuple[list[str], list[str]]:
@@ -97,7 +108,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"[ERROR] project not found: {project}", file=sys.stderr)
         return 1
 
-    requested_libraries = {_split_name(raw)[0] for raw in args.icons}
+    try:
+        requested_libraries = {_split_name(raw)[0] for raw in args.icons}
+    except ValueError as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
     stylistic_libraries = sorted(requested_libraries & _STYLISTIC_LIBRARIES)
     if len(stylistic_libraries) > 1:
         print(

@@ -4,16 +4,12 @@ SVG Icon Embedding Tool
 
 Replaces icon placeholders in SVG files with actual icon code.
 
-Placeholder syntax (new SVGs must include a library prefix):
+Placeholder syntax (every SVG must include the exact project-local namespace):
     <use data-icon="chunk-filled/rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8" stroke-width="3"/>
     <use data-icon="imported/layered_slide_06_ill01"/>
-
-Legacy compatibility accepted by the resolver:
-    <use data-icon="rocket" .../> -> chunk-filled/rocket
-    <use data-icon="chunk/rocket" .../> -> chunk-filled/rocket
 
 Optional `stroke-width` (stroke-style libraries only — e.g. tabler-outline):
     Default 2 (matches the source). Pass 1.5 for thin, 3 for bold.
@@ -24,20 +20,22 @@ After replacement:
       <path d="..."/>
     </g>
 
-Icon libraries (subdirectories of templates/icons/):
-    chunk-filled/      - 640+ fill icons, 16x16 viewBox  (use prefix: chunk-filled/name; legacy 'chunk/' also accepted)
+Project icon namespaces (subdirectories of <project>/icons/):
+    chunk-filled/      - 640+ fill icons, 16x16 viewBox
     tabler-filled/     - 1000+ fill icons, 24x24 viewBox (use prefix: tabler-filled/name)
     tabler-outline/    - 5000+ stroke icons, 24x24 viewBox (use prefix: tabler-outline/name)
     phosphor-duotone/  - 1200+ duotone icons, 256x256 viewBox (single color + 0.2-opacity backplate)
     simple-icons/      - 3400+ brand logos, 24x24 viewBox (brand-inset library — used alongside the chosen primary library, NOT as a standalone library for generic icons)
-    imported/          - project-local extracted vector illustrations with data-icon-style="preserve-color"; preserve source colors and natural viewBox aspect ratio
+    imported/          - extracted vector illustrations with data-icon-style="preserve-color"; preserve source colors and natural viewBox aspect ratio
+
+Bundled icons must first be copied into the project with icon_sync.py. This
+tool never reads templates/icons directly and never accepts a bare icon name.
 
 Usage:
     python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
     python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 
 Options:
-    --icons-dir <path>    Icon directory path (default: templates/icons/)
     --dry-run             Only show what would be replaced, without modifying files
     --verbose             Show detailed information
 """
@@ -50,31 +48,30 @@ import sys
 import argparse
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
-from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from resource_paths import icon_dir_for_svg  # noqa: E402
 from svg_to_pptx.drawingml.utils import parse_project_geometry_length  # noqa: E402
 
 configure_utf8_stdio()
 
 
-# Default icon directory
-DEFAULT_ICONS_DIR = Path(__file__).parent.parent.parent / 'templates' / 'icons'
-
 # Icon base size per library
 ICON_BASE_SIZES = {
     'chunk-filled': 16,
-    'chunk': 16,          # backward compat alias → chunk-filled/
     'tabler-filled': 24,
     'tabler-outline': 24,
     'phosphor-duotone': 256,
     'simple-icons': 24,
+    'imported': 24,
 }
-_ICON_LIBRARY_ALIASES = {'chunk': 'chunk-filled'}
+_ICON_IDENTIFIER_RE = re.compile(
+    r'(?P<library>[a-z0-9][a-z0-9-]*)/(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)'
+)
 DEFAULT_ICON_BASE_SIZE = 24
 BaseGeometry = float | tuple[float, float, float, float]
 
@@ -112,7 +109,7 @@ def _format_number(value: object) -> str:
 
 
 def _base_geometry(base_size: BaseGeometry) -> tuple[float, float, float, float]:
-    """Normalize legacy square icon size and full viewBox geometry."""
+    """Normalize scalar icon size and full viewBox geometry."""
     if isinstance(base_size, tuple):
         return base_size
     return 0.0, 0.0, float(base_size), float(base_size)
@@ -169,22 +166,24 @@ def _extract_shape_elements(content: str, color: str) -> list[str]:
     return elements
 
 
-def _resolve_in_dir(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
-    """Resolve `icon_name` against a single icons dir (no fallback)."""
-    if '/' in icon_name:
-        lib, name = icon_name.split('/', 1)
-        lib = _ICON_LIBRARY_ALIASES.get(lib, lib)  # resolve aliases
-        icon_path = icons_dir / lib / f'{name}.svg'
-        base_size = ICON_BASE_SIZES.get(lib, 24)
-    else:
-        # Backward compatibility: un-prefixed names fall back to legacy chunk-filled/ library
-        icon_path = icons_dir / 'chunk-filled' / f'{icon_name}.svg'
-        base_size = 16
-        if not icon_path.exists():
-            icon_path = icons_dir / f'{icon_name}.svg'  # legacy flat layout
-            base_size = 16
+def _split_icon_identifier(icon_name: str) -> tuple[str, str]:
+    """Parse one complete canonical ``library/name`` identifier."""
+    match = _ICON_IDENTIFIER_RE.fullmatch(icon_name)
+    if match is None:
+        raise ValueError(
+            "data-icon must be a complete project-local library/name identifier: "
+            f"{icon_name!r}"
+        )
+    return match.group('library'), match.group('name')
 
-    return icon_path, base_size
+
+def _resolve_in_dir(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
+    """Resolve one canonical identifier against exactly one icon root."""
+    library, name = _split_icon_identifier(icon_name)
+    return (
+        icons_dir / library / f'{name}.svg',
+        ICON_BASE_SIZES.get(library, DEFAULT_ICON_BASE_SIZE),
+    )
 
 
 def _casefold_icon_name_in_dir(icon_name: str, icons_dir: Path) -> str | None:
@@ -192,24 +191,11 @@ def _casefold_icon_name_in_dir(icon_name: str, icons_dir: Path) -> str | None:
     if not icons_dir.is_dir():
         return None
 
-    search_dirs: list[Path] = []
-    expected_name = icon_name
-    if '/' in icon_name:
-        raw_lib, expected_name = icon_name.split('/', 1)
-        requested_lib = _ICON_LIBRARY_ALIASES.get(raw_lib.casefold(), raw_lib)
-        library_dir = icons_dir / requested_lib
-        if not library_dir.is_dir():
-            library_dir = next(
-                (
-                    path for path in icons_dir.iterdir()
-                    if path.is_dir()
-                    and path.name.casefold() == requested_lib.casefold()
-                ),
-                library_dir,
-            )
-        search_dirs.append(library_dir)
-    else:
-        search_dirs.extend((icons_dir / 'chunk-filled', icons_dir))
+    try:
+        requested_lib, expected_name = _split_icon_identifier(icon_name)
+    except ValueError:
+        return None
+    search_dirs = [icons_dir / requested_lib]
 
     expected_filename = f'{expected_name}.svg'.casefold()
     for search_dir in search_dirs:
@@ -231,31 +217,21 @@ def _casefold_icon_name_in_dir(icon_name: str, icons_dir: Path) -> str | None:
 def suggest_icon_name(
     icon_name: str,
     icons_dir: Path,
-    fallback_dir: Path | None = None,
 ) -> str | None:
-    """Suggest an exact project-first icon identifier without auto-correcting it."""
-    suggestion = _casefold_icon_name_in_dir(icon_name, icons_dir)
-    if suggestion is None and fallback_dir is not None:
-        suggestion = _casefold_icon_name_in_dir(icon_name, fallback_dir)
-    return suggestion
+    """Suggest exact casing inside the declared project-local namespace."""
+    return _casefold_icon_name_in_dir(icon_name, icons_dir)
 
 
-def resolve_icon_path(icon_name: str, icons_dir: Path, fallback_dir: Path | None = None) -> tuple[Path, float]:
-    """
-    Resolve icon name to file path and base size, e.g. "chunk-filled/home" →
-    icons_dir/chunk-filled/home.svg. "chunk/" is a backward-compat alias; an
-    un-prefixed name falls back to chunk-filled/ then a legacy flat layout.
-
-    Resolution is project-first: if the icon is absent under ``icons_dir`` and a
-    ``fallback_dir`` (the global library) is given, the fallback's path is
-    returned instead. Returns (path, base_size); the path may not exist when
-    neither dir has the icon.
-    """
+def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
+    """Resolve one complete identifier only under the supplied icon root."""
     icon_path, base_size = _resolve_in_dir(icon_name, icons_dir)
-    if fallback_dir is not None and not icon_path.exists():
-        fb_path, fb_size = _resolve_in_dir(icon_name, fallback_dir)
-        if fb_path.exists():
-            return fb_path, fb_size
+    resolved_root = icons_dir.resolve()
+    try:
+        icon_path.resolve().relative_to(resolved_root)
+    except ValueError as exc:
+        raise ValueError(
+            f"data-icon escapes the project-local icon root: {icon_name!r}"
+        ) from exc
     return icon_path, base_size
 
 
@@ -473,7 +449,12 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
   </g>'''
 
 
-def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, verbose: bool = False, fallback_dir: Path | None = None) -> int:
+def process_svg_file(
+    svg_path: Path,
+    icons_dir: Path,
+    dry_run: bool = False,
+    verbose: bool = False,
+) -> int:
     """
     Process a single SVG file, replacing all icon placeholders.
 
@@ -487,8 +468,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         Number of icons replaced
     """
     if not svg_path.exists():
-        print(f"[ERROR] File not found: {svg_path}")
-        return 0
+        raise FileNotFoundError(f"SVG file not found: {svg_path}")
     
     content = svg_path.read_text(encoding='utf-8')
     
@@ -512,20 +492,24 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         
         icon_name = attrs.get('icon')
         if not icon_name:
-            continue
+            raise ValueError(
+                f'{svg_path.name}: icon placeholder has an empty data-icon value'
+            )
 
-        icon_path, _ = resolve_icon_path(str(icon_name), icons_dir, fallback_dir)
+        try:
+            icon_path, _ = resolve_icon_path(str(icon_name), icons_dir)
+        except ValueError as exc:
+            raise ValueError(f'{svg_path.name}: {exc}') from exc
         if not icon_path.exists():
-            suggestion = suggest_icon_name(str(icon_name), icons_dir, fallback_dir)
+            suggestion = suggest_icon_name(str(icon_name), icons_dir)
             hint = (
                 f"; identifiers are case-sensitive; use '{suggestion}'"
                 if suggestion else ""
             )
-            print(
-                f"[WARN] Icon not found: {icon_name}{hint} "
-                f"(in {svg_path.name})"
+            raise FileNotFoundError(
+                f'{svg_path.name}: project-local icon not found: '
+                f'{icon_name}{hint}'
             )
-            continue
 
         elements, style, base_size = extract_paths_from_icon(
             icon_path,
@@ -533,11 +517,9 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         )
         color = resolve_icon_color(attrs, style)
         if not elements:
-            print(
-                f"[WARN] Icon has no embeddable shapes: {icon_name} "
-                f"(in {svg_path.name})"
+            raise ValueError(
+                f'{svg_path.name}: icon has no embeddable shapes: {icon_name}'
             )
-            continue
         
         replacement = generate_icon_group(attrs, elements, style, base_size)
         
@@ -557,7 +539,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
     return replaced_count
 
 
-def main() -> None:
+def main() -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='Replace icon placeholders in SVG files with actual icon code',
@@ -567,13 +549,10 @@ Examples:
   python3 scripts/svg_finalize/embed_icons.py svg_output/01_cover.svg
   python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
   python3 scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
-  python3 scripts/svg_finalize/embed_icons.py --icons-dir my_icons/ output.svg
         '''
     )
     
     parser.add_argument('files', nargs='+', help='SVG files to process')
-    parser.add_argument('--icons-dir', type=Path, default=DEFAULT_ICONS_DIR,
-                        help=f'Icon directory path (default: {DEFAULT_ICONS_DIR})')
     parser.add_argument('--dry-run', action='store_true',
                         help='Only show what would be replaced, without modifying files')
     parser.add_argument('--verbose', '-v', action='store_true',
@@ -581,12 +560,6 @@ Examples:
     
     args = parser.parse_args()
     
-    # Validate icon directory
-    if not args.icons_dir.exists():
-        print(f"[ERROR] Icon directory not found: {args.icons_dir}")
-        sys.exit(1)
-
-    print(f"[DIR] Icon directory: {args.icons_dir}")
     if args.dry_run:
         print("[PREVIEW] Preview mode (no files will be modified)")
     print()
@@ -594,18 +567,28 @@ Examples:
     total_replaced = 0
     total_files = 0
     
-    for file_pattern in args.files:
-        svg_path = Path(file_pattern)
-        if svg_path.exists():
-            count = process_svg_file(svg_path, args.icons_dir, args.dry_run, args.verbose)
+    try:
+        for file_pattern in args.files:
+            svg_path = Path(file_pattern)
+            icons_dir = icon_dir_for_svg(svg_path)
+            count = process_svg_file(
+                svg_path,
+                icons_dir,
+                args.dry_run,
+                args.verbose,
+            )
             total_replaced += count
             if count > 0:
                 total_files += 1
+    except (OSError, ValueError) as exc:
+        print(f'[ERROR] {exc}', file=sys.stderr)
+        return 1
     
     print()
     print(f"[Summary] Total: {total_files} file(s), {total_replaced} icon(s)" +
           (" (preview)" if args.dry_run else " replaced"))
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
