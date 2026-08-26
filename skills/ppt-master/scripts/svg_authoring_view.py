@@ -22,10 +22,12 @@ Dependencies:
 
 The output directory is an authoring bundle: editable SVGs plus one
 model-readable `authoring_summary.json` and one tool-only
-`authoring_manifest.json` provenance sidecar. It is the template-creation
-input, not a release SVG directory; final templates are materialized from this
-IR. Directory runs prepare and stage the complete batch before publishing it,
-so a failed page leaves the existing destination set unchanged.
+`authoring_manifest.json` provenance sidecar. Layered IR remains the
+template-creation input; final templates are materialized from it. A flat
+authoring bundle may also be selected explicitly by the SVG exporter through
+its dangerous compatibility mode. Directory runs prepare and stage the
+complete batch before publishing it, so a failed page leaves the existing
+destination set unchanged.
 """
 
 from __future__ import annotations
@@ -46,6 +48,7 @@ from xml.etree import ElementTree as ET
 
 from compact_svg_coordinates import compact_svg_tree
 from console_encoding import configure_utf8_stdio
+from svg_compatibility import normalize_single_child_group_filters
 
 configure_utf8_stdio()
 
@@ -244,6 +247,7 @@ class ProjectionStats:
     hidden_geometry_carriers: int = 0
     geometry_preview_wrappers: int = 0
     geometry_detail_markers: int = 0
+    compatibility_normalizations: int = 0
     asset_references_rewritten: int = 0
     coordinate_attributes_compacted: int = 0
     source_attributes: Counter[str] = field(default_factory=Counter)
@@ -254,6 +258,7 @@ class ProjectionStats:
             "hidden_geometry_carriers": self.hidden_geometry_carriers,
             "geometry_preview_wrappers": self.geometry_preview_wrappers,
             "geometry_detail_markers": self.geometry_detail_markers,
+            "compatibility_normalizations": self.compatibility_normalizations,
             "source_attributes": dict(sorted(self.source_attributes.items())),
             "asset_references_rewritten": self.asset_references_rewritten,
             "coordinate_attributes_compacted": self.coordinate_attributes_compacted,
@@ -264,6 +269,7 @@ class ProjectionStats:
         self.hidden_geometry_carriers += other.hidden_geometry_carriers
         self.geometry_preview_wrappers += other.geometry_preview_wrappers
         self.geometry_detail_markers += other.geometry_detail_markers
+        self.compatibility_normalizations += other.compatibility_normalizations
         self.asset_references_rewritten += other.asset_references_rewritten
         self.coordinate_attributes_compacted += (
             other.coordinate_attributes_compacted
@@ -382,6 +388,9 @@ def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
 
         if part == "geometry-preview":
             child.attrib.pop("data-pptx-part", None)
+            stats.compatibility_normalizations += len(
+                normalize_single_child_group_filters(child)
+            )
             if _unwrap_preview(parent, child):
                 stats.geometry_preview_wrappers += 1
         elif part == "geometry-detail":
@@ -434,6 +443,9 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
     source_references = _stamp_source_references(root)
     stats = ProjectionStats()
     _project_subtree(root, stats)
+    stats.compatibility_normalizations += len(
+        normalize_single_child_group_filters(root)
+    )
     _strip_import_attributes(root, stats)
     _rewrite_asset_references(root, source.parent, output.parent, stats)
     stats.coordinate_attributes_compacted = compact_svg_tree(

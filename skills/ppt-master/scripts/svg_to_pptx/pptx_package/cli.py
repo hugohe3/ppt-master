@@ -11,6 +11,7 @@ import math
 import re
 import shutil
 import sys
+import tempfile
 import zipfile
 from dataclasses import dataclass
 from datetime import datetime
@@ -22,6 +23,11 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from attribution_guard import require_skill_integrity  # noqa: E402
+from authoring_roundtrip import (  # noqa: E402
+    AuthoringRoundtripError,
+    is_flat_authoring_bundle,
+    materialize_flat_authoring_roundtrip,
+)
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from language_tags import (  # noqa: E402
     LanguageTagError,
@@ -516,6 +522,8 @@ def _postflight_warning_summaries(
     external_image_count: int,
     generic_font_stack_count: int,
     unsafe_font_face_count: int,
+    dangerous_nonconforming_export: bool,
+    dangerous_normalization_count: int,
 ) -> tuple[str, ...]:
     """Return stable warning summaries for the terminal receipt."""
     warnings: list[str] = []
@@ -531,7 +539,41 @@ def _postflight_warning_summaries(
         warnings.append(f'generic_only_font_stacks={generic_font_stack_count}')
     if unsafe_font_face_count:
         warnings.append(f'unsafe_exported_font_faces={unsafe_font_face_count}')
+    if dangerous_nonconforming_export:
+        warnings.append('dangerous_nonconforming_svg_export=enabled')
+    if dangerous_normalization_count:
+        warnings.append(
+            f'dangerous_compatibility_normalizations={dangerous_normalization_count}'
+        )
     return tuple(warnings)
+
+
+def _conversion_trace_dangerous_normalization_count(
+    conversion_trace_path: Path | None,
+) -> int:
+    """Count compatibility normalizations retained in a conversion trace."""
+    if conversion_trace_path is None or not conversion_trace_path.is_file():
+        return 0
+    try:
+        payload = json.loads(conversion_trace_path.read_text(encoding='utf-8'))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return 0
+    if not isinstance(payload, dict):
+        return 0
+    count = 0
+    slides = payload.get('slides')
+    if isinstance(slides, list):
+        for slide in slides:
+            if not isinstance(slide, dict):
+                continue
+            normalizations = slide.get('dangerous_normalizations')
+            if not isinstance(normalizations, list):
+                continue
+            count += sum(
+                1 for normalization in normalizations
+                if isinstance(normalization, dict)
+            )
+    return count
 
 
 def _write_postflight_report(
@@ -544,6 +586,8 @@ def _write_postflight_report(
     backup_path: Path | None,
     conversion_trace_path: Path | None,
     deck_motion: dict[str, object],
+    dangerous_nonconforming_export: bool,
+    authoring_roundtrip: dict[str, object] | None,
 ) -> _PostflightReceipt:
     """Write the unified package/resource audit for a successful PPTX."""
     try:
@@ -569,6 +613,11 @@ def _write_postflight_report(
     external_image_count = source_audit['images']['external']
     generic_only_font_stacks = source_audit['fonts']['generic_only_stacks']
     unsafe_font_faces = source_audit['fonts']['unsafe_exported_faces']
+    dangerous_normalization_count = (
+        _conversion_trace_dangerous_normalization_count(
+            conversion_trace_path
+        )
+    )
     if quality_gate == 'failed':
         report_status = 'failed'
     elif (
@@ -578,6 +627,7 @@ def _write_postflight_report(
         and not unsafe_font_faces
         and not introduced_warning_count
         and quality_gate == 'passed'
+        and not dangerous_nonconforming_export
     ):
         report_status = 'passed'
     else:
@@ -596,6 +646,7 @@ def _write_postflight_report(
             'svg_slide_count': len(svg_files),
             'layout_definition_count': len(layout_definition_files),
             'fingerprint': source_fingerprint,
+            'authoring_roundtrip': authoring_roundtrip,
         },
         'package': package,
         'checks': {
@@ -609,6 +660,17 @@ def _write_postflight_report(
             ),
             'transitions': 'enforced-at-build',
             'animations': 'enforced-at-build',
+            'project_svg_contract': 'enforced-at-build',
+            'compatibility_normalization': (
+                'warning'
+                if dangerous_nonconforming_export
+                else 'not-applicable'
+            ),
+            'authoring_roundtrip': (
+                'materialized-from-flat-authoring'
+                if authoring_roundtrip is not None
+                else 'not-applicable'
+            ),
             'quality_gate': quality_gate,
             'quality_warnings': (
                 'passed' if not introduced_warning_count else 'warning'
@@ -627,6 +689,14 @@ def _write_postflight_report(
         },
         'quality': quality,
         'resources': source_audit,
+        'export_policy': {
+            'project_svg_contract': (
+                'strict-after-dangerous-normalization'
+                if dangerous_nonconforming_export
+                else 'strict'
+            ),
+            'dangerous_normalization_count': dangerous_normalization_count,
+        },
         'deck_motion': deck_motion,
         'backup_path': str(backup_path.resolve()) if backup_path else None,
         'conversion_trace_path': (
@@ -647,6 +717,8 @@ def _write_postflight_report(
         external_image_count=external_image_count,
         generic_font_stack_count=len(generic_only_font_stacks),
         unsafe_font_face_count=len(unsafe_font_faces),
+        dangerous_nonconforming_export=dangerous_nonconforming_export,
+        dangerous_normalization_count=dangerous_normalization_count,
     )
     return _PostflightReceipt(
         output_path=output_path,
@@ -978,6 +1050,8 @@ Examples:
     %(prog)s projects/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s projects/ppt169_demo -o out.pptx            # Explicit path (no backup/)
     %(prog)s projects/quick_generate_demo --quick-generate # Lockless flat export with normal postflight
+    %(prog)s <import_workspace> -s authoring-svg-flat \\
+      --roundtrip                                         # Editable IR with source restoration
 
     # Disable transition / change transition effect
     %(prog)s projects/ppt169_demo -t none
@@ -1051,8 +1125,8 @@ Recorded narration:
     parser.add_argument('project_path', type=str, help='Project directory path')
     parser.add_argument('-o', '--output', type=str, default=None, help='Output file path')
     parser.add_argument('-s', '--source', type=str, default=None,
-                        help='Native SVG source directory. Default: svg_output/. '
-                             'Pass output/final/<name> only for diagnostics.')
+                        help='Project-relative SVG source directory. Default: '
+                             'svg_output/. Pass another directory explicitly.')
     parser.add_argument('-f', '--format', type=str,
                         choices=list(CANVAS_FORMATS.keys()), default=None,
                         help='Require SVG canvases to match this registered format')
@@ -1071,11 +1145,23 @@ Recorded narration:
         '--roundtrip',
         action='store_true',
         help=(
-            'Diagnostic only: rebuild layered slide_*.svg against the validated '
-            'source_template.pptx/native_structure.json emitted by '
-            'pptx_to_svg.py --roundtrip, including unchanged validated source '
-            'chart packages. Requires -s svg and does not alter normal '
-            'flat/structured release export.'
+            'Source-preserving import export: rebuild layered slide_*.svg, or '
+            'materialize a flat authoring IR selected with -s, against the '
+            'validated source_template.pptx/native_structure.json emitted by '
+            'pptx_to_svg.py --roundtrip. Unchanged authoring objects recover '
+            'their source semantics; edited objects remain authored SVG. Does '
+            'not alter normal flat/structured release export.'
+        ),
+    )
+    parser.add_argument(
+        '--enable-dangerous-nonconforming-svg-export',
+        action='store_true',
+        help=(
+            'Apply supported compatibility normalizations to svg_output/ or an '
+            'explicit -s/--source, then run the ordinary strict converter. '
+            'Cannot be combined with --roundtrip or --quick-generate. '
+            'Unnormalized contract, resource, conversion, relationship, and '
+            'package failures remain blocking.'
         ),
     )
 
@@ -1298,6 +1384,7 @@ Recorded narration:
     legacy_native_objects = '--native-objects' in raw_argv
     args = parser.parse_args(raw_argv)
     diagnostic_source = args.source not in {None, 'output'}
+    compatibility_export = args.enable_dangerous_nonconforming_svg_export
     if legacy_native_objects:
         print(
             'Warning: --native-objects is deprecated; use '
@@ -1323,12 +1410,34 @@ Recorded narration:
         )
         return 1
 
+    if compatibility_export:
+        conflicts: list[str] = []
+        if args.roundtrip:
+            conflicts.append('--roundtrip')
+        if args.quick_generate:
+            conflicts.append('--quick-generate')
+        if args.pptx_structure not in {None, 'flat'}:
+            conflicts.append('--pptx-structure must be omitted or flat')
+        if conflicts:
+            print(
+                'Error: --enable-dangerous-nonconforming-svg-export cannot '
+                'be used because ' + ', '.join(conflicts),
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            'Warning: dangerous nonconforming SVG export is enabled. Supported '
+            'compatibility rewrites will run before strict conversion; visual '
+            'fidelity must be reviewed.',
+            file=sys.stderr,
+        )
+
     if args.roundtrip:
         conflicts: list[str] = []
         if args.quick_generate:
             conflicts.append('--quick-generate')
-        if args.source != 'svg':
-            conflicts.append('-s/--source must be svg')
+        if args.source is None:
+            conflicts.append('-s/--source is required')
         if args.pptx_structure is not None:
             conflicts.append('--pptx-structure must be omitted')
         if conflicts:
@@ -1356,11 +1465,11 @@ Recorded narration:
         if not args.with_notes:
             args.no_notes = True
         args.pptx_structure = 'flat'
-    elif diagnostic_source and not args.roundtrip:
+    elif (diagnostic_source or compatibility_export) and not args.roundtrip:
         if args.pptx_structure not in {None, 'flat'}:
             print(
-                "Error: a non-output diagnostic --source supports only "
-                "--pptx-structure flat",
+                "Error: a diagnostic or dangerous compatibility source "
+                "supports only --pptx-structure flat",
                 file=sys.stderr,
             )
             return 1
@@ -1375,7 +1484,12 @@ Recorded narration:
     native_structure_contract = None
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
-    if not args.quick_generate and not diagnostic_source and not lock_path.is_file():
+    lockless_export = (
+        args.quick_generate
+        or diagnostic_source
+        or compatibility_export
+    )
+    if not lockless_export and not lock_path.is_file():
         print(
             "Error: spec_lock.md is required for release SVG export",
             file=sys.stderr,
@@ -1383,11 +1497,11 @@ Recorded narration:
         return 1
     declared_structure_mode = (
         None
-        if args.quick_generate or diagnostic_source
+        if lockless_export
         else _declared_pptx_structure_mode(project_path)
     )
     primary_language = None
-    if not args.quick_generate and not diagnostic_source:
+    if not lockless_export:
         try:
             primary_language = _declared_primary_language(project_path)
         except LanguageTagError as exc:
@@ -1467,8 +1581,7 @@ Recorded narration:
     source_embedded_fonts = None
     if (
         pptx_structure in {'flat', 'structured'}
-        and not args.quick_generate
-        and not diagnostic_source
+        and not lockless_export
     ):
         try:
             theme_font_spec = load_theme_font_spec(project_path)
@@ -1492,7 +1605,10 @@ Recorded narration:
                 file=sys.stderr,
             )
             return 1
-    elif pptx_structure in {'flat', 'preserve'} and diagnostic_source:
+    elif (
+        pptx_structure in {'flat', 'preserve'}
+        and (diagnostic_source or compatibility_export)
+    ):
         try:
             (
                 theme_color_spec,
@@ -1522,23 +1638,23 @@ Recorded narration:
     canvas_format = args.format
     expected_viewbox = (
         None
-        if args.quick_generate or diagnostic_source
+        if lockless_export
         else _declared_canvas_viewbox(project_path)
     )
-    if expected_viewbox is None and not args.quick_generate and not diagnostic_source:
+    if expected_viewbox is None and not lockless_export:
         print(
             "Error: spec_lock.md must contain canvas.viewBox for release export",
             file=sys.stderr,
         )
         return 1
 
-    # Native DrawingML is the only PPTX product. A non-output ``-s`` remains a
-    # diagnostic source override; default and explicit output use release rules.
+    # Native DrawingML is the only PPTX product. ``svg_output/`` is the default;
+    # ``-s`` selects another project-relative SVG directory.
     native_source = args.source or 'output'
     native_files, native_source_dir = find_svg_files(
         project_path,
         native_source,
-        allow_fallback=args.source is None and not args.quick_generate,
+        allow_fallback=False,
     )
     if args.roundtrip:
         native_files = [
@@ -1546,11 +1662,16 @@ Recorded narration:
             for path in native_files
             if re.fullmatch(r'slide_\d+\.svg', path.name)
         ]
-    ref_files = native_files
     if not native_files:
         if args.quick_generate:
             print(
                 "Error: No SVG files found for --quick-generate in: "
+                f"{project_path / 'svg_output'}",
+                file=sys.stderr,
+            )
+        elif compatibility_export and args.source is None:
+            print(
+                "Error: No SVG files found for dangerous compatibility export in: "
                 f"{project_path / 'svg_output'}",
                 file=sys.stderr,
             )
@@ -1565,7 +1686,49 @@ Recorded narration:
             print("Error: No SVG files found", file=sys.stderr)
         return 1
 
-    release_quality_gate = args.quick_generate or args.source in {None, 'output'}
+    ref_files = native_files
+    authoring_roundtrip_temporary: tempfile.TemporaryDirectory[str] | None = None
+    authoring_roundtrip_report: dict[str, object] | None = None
+    if args.roundtrip and args.source != 'svg':
+        authoring_source_dir = project_path / native_source_dir
+        if not is_flat_authoring_bundle(authoring_source_dir):
+            print(
+                "Error: --roundtrip with a source other than svg requires a "
+                "flat authoring bundle with authoring_manifest.json: "
+                f"{authoring_source_dir}",
+                file=sys.stderr,
+            )
+            return 1
+        authoring_roundtrip_temporary = tempfile.TemporaryDirectory(
+            prefix='.authoring-roundtrip-',
+            dir=project_path.resolve(),
+        )
+        try:
+            materialized = materialize_flat_authoring_roundtrip(
+                project_path.resolve(),
+                authoring_source_dir.resolve(),
+                Path(authoring_roundtrip_temporary.name),
+            )
+        except (AuthoringRoundtripError, OSError) as exc:
+            authoring_roundtrip_temporary.cleanup()
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        native_files = list(materialized.svg_files)
+        authoring_roundtrip_report = materialized.report
+        totals = materialized.report.get('totals')
+        if isinstance(totals, dict):
+            print(
+                "  Authoring round-trip materialized: "
+                f"{len(native_files)} slide(s), "
+                f"{totals.get('unchanged_refs', 0)} unchanged ref(s), "
+                f"{totals.get('edited_refs', 0)} edited ref(s), "
+                f"{totals.get('deleted_refs', 0)} deleted ref(s)"
+            )
+
+    release_quality_gate = (
+        args.quick_generate
+        or args.source in {None, 'output'}
+    ) and not compatibility_export
     if release_quality_gate:
         source_fingerprint = _svg_source_fingerprint(native_files)
         quality = _quality_report_context(project_path, source_fingerprint)
@@ -1704,8 +1867,11 @@ Recorded narration:
         native_tag = "_native_charts_tables" if args.native_objects else ""
         narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
         native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}.pptx"
-        # Preserve the authored svg_output/ beside every default-path export.
-        backup_dir = project_path / "backup" / timestamp
+        # Preserve svg_output/ only when it is the actual source. A custom -s
+        # directory remains the caller-owned source and is not copied under a
+        # misleading svg_output backup name.
+        if not diagnostic_source:
+            backup_dir = project_path / "backup" / timestamp
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -2191,6 +2357,10 @@ Recorded narration:
         source_theme_xml=source_theme_xml,
         source_embedded_fonts=source_embedded_fonts,
         primary_language=primary_language,
+        dangerous_nonconforming_export=(
+            compatibility_export
+        ),
+        resource_root=project_path.resolve(),
     )
 
     if verbose:
@@ -2214,6 +2384,10 @@ Recorded narration:
             conversion_trace_path = (
                 project_path / 'validation' / f'{native_path.stem}.trace.json'
             )
+    elif compatibility_export:
+        conversion_trace_path = (
+            project_path / 'validation' / f'{native_path.stem}.trace.json'
+        )
     try:
         success = create_pptx_with_native_svg(
             output_path=native_path,
@@ -2269,6 +2443,10 @@ Recorded narration:
                 backup_path=backup_path,
                 conversion_trace_path=conversion_trace_path,
                 deck_motion=deck_motion,
+                dangerous_nonconforming_export=(
+                    compatibility_export
+                ),
+                authoring_roundtrip=authoring_roundtrip_report,
             )
         except PptxPostflightValidationError as exc:
             print(

@@ -27,6 +27,8 @@ from xml.etree import ElementTree as ET
 
 
 SVG_WORK_DIR_NAMES = frozenset({
+    'authoring-svg',
+    'authoring-svg-flat',
     'svg',
     'svg_output',
     'svg_final',
@@ -242,8 +244,13 @@ def svg_data_uri_payload_error(raw: str) -> str | None:
     return f'inline SVG data URI is not closed: {nested_error}'
 
 
-def external_image_reference_candidates(svg_dir: Path, href: str) -> list[Path]:
-    """Return candidate paths for a non-data-URI SVG image href."""
+def external_image_reference_candidates(
+    svg_dir: Path,
+    href: str,
+    *,
+    project_root: Path | None = None,
+) -> list[Path]:
+    """Return deterministic project-local candidates for an SVG image href."""
     parsed = urlsplit(href)
     if parsed.scheme and parsed.scheme not in {'file'}:
         return []
@@ -253,18 +260,22 @@ def external_image_reference_candidates(svg_dir: Path, href: str) -> list[Path]:
         else href.split('?', 1)[0].split('#', 1)[0]
     )
     svg_dir = Path(svg_dir)
-    project_root = project_root_for_svg_path(svg_dir).resolve()
+    resolved_project_root = (
+        Path(project_root).resolve()
+        if project_root is not None
+        else project_root_for_svg_path(svg_dir).resolve()
+    )
     candidates = [
         svg_dir / decoded,
-        project_root / decoded,
-        project_root / 'images' / decoded,
-        project_root / 'templates' / decoded,
+        resolved_project_root / decoded,
+        resolved_project_root / 'images' / decoded,
+        resolved_project_root / 'templates' / decoded,
     ]
     safe_candidates: list[Path] = []
     for candidate in candidates:
         resolved = candidate.resolve()
         try:
-            resolved.relative_to(project_root)
+            resolved.relative_to(resolved_project_root)
         except ValueError:
             continue
         if resolved not in safe_candidates:
@@ -272,17 +283,35 @@ def external_image_reference_candidates(svg_dir: Path, href: str) -> list[Path]:
     return safe_candidates
 
 
-def resolve_external_image_reference(svg_dir: Path, href: str) -> Path | None:
+def resolve_external_image_reference(
+    svg_dir: Path,
+    href: str,
+    *,
+    project_root: Path | None = None,
+) -> Path | None:
     """Resolve an SVG image href to an existing file, or return None."""
-    for candidate in external_image_reference_candidates(svg_dir, href):
+    for candidate in external_image_reference_candidates(
+        svg_dir,
+        href,
+        project_root=project_root,
+    ):
         if candidate.is_file():
             return candidate
     return None
 
 
-def unresolved_external_image_reference_path(svg_dir: Path, href: str) -> Path:
+def unresolved_external_image_reference_path(
+    svg_dir: Path,
+    href: str,
+    *,
+    project_root: Path | None = None,
+) -> Path:
     """Return the first candidate path for diagnostics when resolution fails."""
-    candidates = external_image_reference_candidates(svg_dir, href)
+    candidates = external_image_reference_candidates(
+        svg_dir,
+        href,
+        project_root=project_root,
+    )
     if candidates:
         return candidates[0].resolve()
     return (Path(svg_dir) / href).resolve()

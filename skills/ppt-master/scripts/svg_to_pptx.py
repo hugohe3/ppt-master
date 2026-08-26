@@ -4,6 +4,15 @@
 Delegates to the svg_to_pptx package. ``-s final`` remains a native-export
 diagnostic override; the standard pipeline reads ``svg_output/``:
     python3 scripts/svg_to_pptx.py <project_path> -s final
+
+An imported flat authoring bundle rehydrates unchanged source objects before
+the source-preserving export:
+    python3 scripts/svg_to_pptx.py <project_path> -s authoring-svg-flat \
+        --roundtrip
+
+An explicit compatibility export may normalize the default ``svg_output/`` or
+another project-relative source selected with ``-s`` before strict flat
+conversion. It does not provide source-object restoration.
 """
 
 import sys

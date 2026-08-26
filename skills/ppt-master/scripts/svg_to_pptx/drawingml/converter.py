@@ -29,7 +29,8 @@ from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
 )
-from resource_paths import icon_search_dirs_for_svg
+from resource_paths import icon_search_dirs_for_project, icon_search_dirs_for_svg
+from svg_compatibility import normalize_single_child_group_filters
 
 from .context import (
     TEXT_FLOW_PRESERVE,
@@ -267,10 +268,15 @@ def _require_project_clip_paths(
 def _require_project_images(
     root: ET.Element,
     svg_path: Path | str,
+    resource_root: Path | None = None,
 ) -> None:
     """Reject invalid picture frames and unresolved or corrupt sources."""
     path = Path(svg_path)
-    errors = project_image_errors(root, path.parent)
+    errors = project_image_errors(
+        root,
+        path.parent,
+        resource_root=resource_root,
+    )
     if not errors:
         return
     preview = '; '.join(errors[:8])
@@ -1653,6 +1659,8 @@ def convert_svg_to_slide_shapes(
     trace_out: list[dict[str, Any]] | None = None,
     promote_background: bool = True,
     text_flow: str | None = None,
+    dangerous_nonconforming_export: bool = False,
+    resource_root: Path | None = None,
 ) -> tuple[
     str,
     dict[str, bytes],
@@ -1696,6 +1704,11 @@ def convert_svg_to_slide_shapes(
         promote_background: Promote the first eligible full-canvas rectangle
             into native ``p:bg``. Structured export disables this generic pass
             and applies its narrower explicit background contract later.
+        dangerous_nonconforming_export: Apply narrowly defined compatibility
+            normalizations before the ordinary strict project preflight.
+            Parsing, resource, conversion, and package failures remain blocking.
+        resource_root: Explicit project boundary for local images and icons.
+            Omit only for direct library calls that require legacy inference.
 
     Returns:
         (slide_xml, media_files, rel_entries, anim_targets,
@@ -1713,6 +1726,15 @@ def convert_svg_to_slide_shapes(
     """
     text_flow = resolve_text_flow(text_flow, merge_paragraphs)
     svg_path = Path(svg_path)
+    if resource_root is not None:
+        resource_root = Path(resource_root).resolve()
+        try:
+            svg_path.resolve().relative_to(resource_root)
+        except ValueError as exc:
+            raise SvgNativeConversionError(
+                f'{svg_path.name}: SVG source is outside resource root '
+                f'{resource_root}'
+            ) from exc
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
     _hydrate_native_payloads(root, svg_path)
@@ -1723,6 +1745,16 @@ def convert_svg_to_slide_shapes(
         )
     except CanvasContractError as exc:
         raise SvgNativeConversionError(str(exc)) from exc
+    dangerous_normalizations = (
+        normalize_single_child_group_filters(root)
+        if dangerous_nonconforming_export
+        else []
+    )
+    if dangerous_normalizations and verbose:
+        print(
+            '  [DANGEROUS][NORMALIZED] '
+            f'{len(dangerous_normalizations)} single-child group filter(s)'
+        )
     _require_native_marker_attributes(root, svg_path)
     _require_inline_formula_markers(root, svg_path)
     _require_project_hyperlinks(
@@ -1821,7 +1853,11 @@ def convert_svg_to_slide_shapes(
         expand_use_data_icons,
     )
 
-    icons_dir, icons_fallback_dir = icon_search_dirs_for_svg(svg_path)
+    icons_dir, icons_fallback_dir = (
+        icon_search_dirs_for_project(resource_root)
+        if resource_root is not None
+        else icon_search_dirs_for_svg(svg_path)
+    )
     if icons_dir.exists():
         expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
         if expanded:
@@ -1875,6 +1911,17 @@ def convert_svg_to_slide_shapes(
         if verbose:
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
+    if dangerous_nonconforming_export:
+        expanded_normalizations = normalize_single_child_group_filters(root)
+        if expanded_normalizations:
+            dangerous_normalizations.extend(expanded_normalizations)
+            if verbose:
+                print(
+                    '  [DANGEROUS][NORMALIZED] '
+                    f'{len(expanded_normalizations)} expanded-resource '
+                    'group filter(s)'
+                )
+
     _require_inline_formula_markers(root, svg_path)
     _require_project_hyperlinks(
         root,
@@ -1884,7 +1931,7 @@ def convert_svg_to_slide_shapes(
 
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
     _require_project_nested_svg_crops(root, svg_path)
-    _require_project_images(root, svg_path)
+    _require_project_images(root, svg_path, resource_root)
     _require_project_clip_paths(root, svg_path)
     _require_project_text_properties(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
@@ -1975,7 +2022,6 @@ def convert_svg_to_slide_shapes(
         svg_path,
         slide_count=slide_count,
     )
-
     _require_project_text_properties(root, svg_path)
     try:
         text_font_sizes = resolve_project_font_sizes(root)
@@ -2007,6 +2053,7 @@ def convert_svg_to_slide_shapes(
         viewport_width=viewport_width,
         viewport_height=viewport_height,
         svg_dir=Path(svg_path).parent,
+        resource_root=resource_root,
         text_flow=text_flow,
         image_optimize=image_optimize,
         image_max_dimension=image_max_dimension,
@@ -2118,7 +2165,7 @@ def convert_svg_to_slide_shapes(
         print(f'  Converted {converted} elements, skipped {skipped}{promoted}')
 
     if trace_out is not None:
-        trace_out.append({
+        trace_entry = {
             'slide_num': slide_num,
             'svg': str(svg_path),
             'page_role': root.get('data-pptx-page-role'),
@@ -2133,7 +2180,10 @@ def convert_svg_to_slide_shapes(
             },
             'preprocess': trace_steps,
             'events': trace_events or [],
-        })
+        }
+        if dangerous_nonconforming_export:
+            trace_entry['dangerous_normalizations'] = dangerous_normalizations
+        trace_out.append(trace_entry)
 
     shapes_xml = '\n'.join(shapes)
 

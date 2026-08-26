@@ -4967,6 +4967,8 @@ def create_pptx_with_native_svg(
     image_quality: int = 85,
     native_objects: bool = False,
     conversion_trace_path: Path | None = None,
+    dangerous_nonconforming_export: bool = False,
+    resource_root: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
     structure_name: str | None = None,
     pptx_structure: str = "structured",
@@ -5045,6 +5047,11 @@ def create_pptx_with_native_svg(
         native_objects: Replace explicit ``data-pptx-replace-with`` chart/table
             fallback groups with native PowerPoint Chart/Table objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
+        dangerous_nonconforming_export: Apply narrowly defined compatibility
+            normalizations before strict SVG conversion. Actual contract,
+            conversion, and package failures remain blocking.
+        resource_root: Explicit project boundary for SVG-local resource paths.
+            Direct library callers may omit it to retain legacy inference.
         structure_name: Current deck identity used to name a flat Master, Layout,
             and theme.
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
@@ -5613,6 +5620,10 @@ def create_pptx_with_native_svg(
                             theme_color_spec=active_theme_color_spec,
                             primary_language=primary_language,
                             promote_background=pptx_structure != "structured",
+                            dangerous_nonconforming_export=(
+                                dangerous_nonconforming_export
+                            ),
+                            resource_root=resource_root,
                             trace_out=conversion_trace
                             if conversion_trace is not None
                             else structure_trace,
@@ -6411,6 +6422,13 @@ def create_pptx_with_native_svg(
             payload = {
                 'output': str(output_path),
                 'slide_count': public_slide_count,
+                'project_contract': {
+                    'mode': (
+                        'strict-after-dangerous-normalization'
+                        if dangerous_nonconforming_export
+                        else 'strict'
+                    ),
+                },
                 'slides': [
                     entry
                     for entry in conversion_trace

@@ -97,7 +97,11 @@ from .paths import (
 )
 
 
-def _resolve_external_image(svg_dir: Path, href: str) -> Path:
+def _resolve_external_image(
+    svg_dir: Path,
+    href: str,
+    resource_root: Path | None = None,
+) -> Path:
     """Resolve a non-data-URI image href to a file on disk.
 
     Search order: next to the SVG (``svg_output/``), the project root, the
@@ -106,7 +110,11 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
     of these exist.
     """
-    candidate = resolve_external_image_reference(svg_dir, href)
+    candidate = resolve_external_image_reference(
+        svg_dir,
+        href,
+        project_root=resource_root,
+    )
     if candidate is not None:
         return candidate
     raise FileNotFoundError(f'External image not found: {href}')
@@ -362,6 +370,7 @@ def _project_image_href(elem: ET.Element) -> str:
 def load_project_image_source(
     elem: ET.Element,
     svg_dir: Path | None,
+    resource_root: Path | None = None,
 ) -> ProjectImageSource:
     """Load one exact SVG image source or raise a contract error."""
     if elem.tag != f'{{{SVG_NS}}}image':
@@ -380,7 +389,7 @@ def load_project_image_source(
     if svg_dir is None:
         raise ValueError('external image requires an SVG directory context')
     try:
-        img_path = _resolve_external_image(svg_dir, href)
+        img_path = _resolve_external_image(svg_dir, href, resource_root)
     except FileNotFoundError as exc:
         raise ValueError(str(exc)) from exc
     img_format = _normalize_project_image_format(img_path.suffix)
@@ -405,6 +414,7 @@ def project_image_errors(
     svg_dir: Path | None,
     *,
     allow_template_placeholders: bool = False,
+    resource_root: Path | None = None,
 ) -> list[str]:
     """Return source and frame errors for exact SVG image elements."""
     errors: list[str] = []
@@ -449,7 +459,7 @@ def project_image_errors(
         ):
             continue
         try:
-            load_project_image_source(elem, svg_dir)
+            load_project_image_source(elem, svg_dir, resource_root)
         except ValueError as exc:
             errors.append(f'{label} invalid image source: {exc}')
     return sorted(errors)
@@ -2628,7 +2638,11 @@ def _build_text_fill_xml(
             )
         if paint_tag == 'pattern':
             mode, image = resolve_project_text_image_fill(paint)
-            source = load_project_image_source(image, ctx.svg_dir)
+            source = load_project_image_source(
+                image,
+                ctx.svg_dir,
+                ctx.resource_root,
+            )
             r_id = _register_image_media(
                 ctx,
                 source.img_format,
@@ -4593,7 +4607,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     to DrawingML picture geometry (prstGeom or custGeom) so the image is
     natively clipped in PowerPoint.
     """
-    source = load_project_image_source(elem, ctx.svg_dir)
+    source = load_project_image_source(elem, ctx.svg_dir, ctx.resource_root)
 
     # Raw coordinates (pre-context-transform) for clip path calculations
     raw_x = svg_length_x(elem.get('x'), ctx)
@@ -5220,7 +5234,11 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
     """
     crop = parse_project_nested_svg_crop(elem)
     image_elem = crop.image
-    source = load_project_image_source(image_elem, ctx.svg_dir)
+    source = load_project_image_source(
+        image_elem,
+        ctx.svg_dir,
+        ctx.resource_root,
+    )
 
     svg_x = crop.x
     svg_y = crop.y
