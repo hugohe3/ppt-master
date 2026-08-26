@@ -810,19 +810,30 @@ These direct routes share some analysis primitives with the main pipeline, but a
 
 **Why PPTX round-trip uses a semantic workspace rather than a ZIP-shaped tree.** The editable page source is `authoring-svg-flat/`; PowerPoint image media, imported reusable vectors, cues, audio, video, notes, and opaque payloads live under `images/`, `icons/imported/`, `sounds/`, `audio/`, `video/`, `notes/`, and `native-payloads/`. The exact backing package stays at `sources/source.pptx`, structural and ownership contracts stay under `analysis/`, diagnostics stay under `validation/`, and published decks stay under `exports/`. This keeps authoring paths aligned with normal projects while `analysis/roundtrip_manifest.json` maps semantic files back to package ownership. Import and export use this one contract: root `source_template.pptx`, `native_structure.json`, `conversion-report.json`, and `assets/` are invalid rather than compatibility inputs.
 
+**Why compact SVG expands into verbose PPTX.** Both direct generation and PPTX
+import publish canonical SVG source from the start: standard SVG elements,
+descriptive groups, readable semantic metadata, root typography defaults, and
+group-local paint defaults. The source never uses CSS classes, private aliases,
+encoded payloads, or lossy numeric shortening. The quality checker verifies
+this form without rewriting it. During export, the compiler resolves inherited
+values and expands semantic tables, shapes, and other supported objects in
+memory into the repetitive DrawingML required by PowerPoint; that verbosity is
+confined to the ZIP-compressed compiled artifact.
+
 Supported imported native tables remain one semantic marker rather than
 thousands of model-facing SVG nodes. Their `ppt-master.semantic-table.v2`
 payload factors repeated cell, paragraph, and run formatting into defaults and
 named cell styles; native export expands those values in memory. Exact browser
-previews are hashed under `images/source-object-previews/`. Complex groups and
-tables outside the closed semantic schema instead stay source-backed:
-`authoring-svg-flat/` keeps one compact `native-restore` image proxy plus the
-outer source reference. An unchanged proxy rehydrates the complete source
-OOXML object; deleting a Slide-local proxy deletes that object. Inherited
-Master/Layout proxies must remain because one flat page cannot delete shared
-structure. Editing either the proxy or its preview fails closed because
-silently compiling it as a picture or SVG-derived shapes would violate
-round-trip intent.
+previews are hashed under `images/source-object-previews/`. Meaning-bearing
+groups and tables outside the closed semantic schema remain inline as readable
+SVG and report an explicit conversion gap; they never hide behind an imported
+asset. Only an unsupported, text-free, schema-free source ornament may stay
+source-backed as one compact `native-restore` image proxy plus its outer source
+reference. An unchanged proxy rehydrates the complete source OOXML object;
+deleting a Slide-local proxy deletes that object. Inherited Master/Layout
+proxies must remain because one flat page cannot delete shared structure.
+Editing either the proxy or its preview fails closed because silently compiling
+it as a picture or SVG-derived shapes would violate round-trip intent.
 
 **Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; when requested, create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is only a derived visual-preview / SVG-picture artifact rather than a PPTX source; PowerPoint's manual Convert to Shape command remains outside the supported contract.
 

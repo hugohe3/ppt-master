@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG Coordinate Compactor
+PPT Master - Legacy SVG Coordinate Migration
 
-Compact model-facing page-space SVG coordinates to at most two decimal places
-without rounding normalized crop ratios or transform linear coefficients.
+Diagnose or migrate older model-facing page-space SVG coordinates without
+rounding normalized crop ratios or transform linear coefficients. New
+authoring code calls the tree-level implementation before its first write.
 
 Usage:
     python3 scripts/compact_svg_coordinates.py <svg-file-or-directory> [--inplace]
 
 Examples:
-    python3 scripts/compact_svg_coordinates.py projects/example/templates --inplace
+    python3 scripts/compact_svg_coordinates.py imported/legacy-templates --inplace
     python3 scripts/compact_svg_coordinates.py imported/authoring-svg
 
 Dependencies:
@@ -246,8 +247,8 @@ def _write_atomic(path: Path, payload: str) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Compact safe page-space SVG coordinates to at most two decimal "
-            "places. Runs as a dry-run unless --inplace is supplied."
+            "Diagnose or migrate older page-space SVG coordinates to at most "
+            "two decimal places. Runs as a dry-run unless --inplace is supplied."
         ),
     )
     parser.add_argument("input", type=Path, help="SVG file or directory")

@@ -37,6 +37,7 @@ from pptx_embedded_fonts import (
     write_embedded_font_bundle,
 )
 from pptx_workspace import (
+    AUTHORING_SVG_DIR,
     AUTHORING_SVG_FLAT_DIR,
     CONVERSION_REPORT_PATH,
     NATIVE_STRUCTURE_PATH,
@@ -925,6 +926,7 @@ def _managed_svg_paths(output_dir: Path) -> list[Path]:
         (Path("svg-flat"), _MANAGED_FLAT_SVG_RE, False),
         (ROUNDTRIP_LAYERED_SVG_DIR, _MANAGED_PRIMARY_SVG_RE, True),
         (ROUNDTRIP_FLAT_SVG_DIR, _MANAGED_FLAT_SVG_RE, False),
+        (AUTHORING_SVG_DIR, _MANAGED_PRIMARY_SVG_RE, False),
         (AUTHORING_SVG_FLAT_DIR, _MANAGED_FLAT_SVG_RE, False),
     ):
         svg_dir = output_dir / relative_dir
@@ -942,7 +944,7 @@ def _managed_svg_paths(output_dir: Path) -> list[Path]:
         inheritance = svg_dir / "inheritance.json"
         if carries_inheritance and _path_lexists(inheritance):
             managed.append(inheritance)
-        if relative_dir == AUTHORING_SVG_FLAT_DIR:
+        if relative_dir in {AUTHORING_SVG_DIR, AUTHORING_SVG_FLAT_DIR}:
             for filename in (
                 "authoring_manifest.json",
                 "authoring_summary.json",
@@ -950,6 +952,66 @@ def _managed_svg_paths(output_dir: Path) -> list[Path]:
                 sidecar = svg_dir / filename
                 if _path_lexists(sidecar):
                     managed.append(sidecar)
+    return managed
+
+
+def _managed_vector_asset_paths(output_dir: Path) -> set[Path]:
+    """Return the previous converter-owned decoration inventory and assets."""
+    managed: set[Path] = set()
+    for authoring_dir in (AUTHORING_SVG_DIR, AUTHORING_SVG_FLAT_DIR):
+        inventory_path = (
+            output_dir / f"{authoring_dir.name}_vector_asset_inventory.json"
+        )
+        if not _path_lexists(inventory_path):
+            continue
+        managed.add(inventory_path)
+        if inventory_path.is_symlink() or not inventory_path.is_file():
+            continue
+        try:
+            payload = json.loads(inventory_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        icons_dir_value = (
+            payload.get("icons_dir") if isinstance(payload, dict) else None
+        )
+        icons_dir = (
+            Path(icons_dir_value)
+            if isinstance(icons_dir_value, str) and icons_dir_value
+            else Path("icons")
+        )
+        if (
+            icons_dir.drive
+            or icons_dir.anchor
+            or icons_dir.is_absolute()
+            or ".." in icons_dir.parts
+        ):
+            continue
+        assets = payload.get("assets") if isinstance(payload, dict) else None
+        if not isinstance(assets, list):
+            continue
+        for item in assets:
+            value = item.get("asset") if isinstance(item, dict) else None
+            if not isinstance(value, str):
+                continue
+            asset_path = Path(value)
+            if (
+                asset_path.drive
+                or asset_path.anchor
+                or asset_path.is_absolute()
+                or ".." in asset_path.parts
+                or not asset_path.parts
+            ):
+                continue
+            path = (
+                asset_path
+                if asset_path.parts[0] == "icons"
+                else icons_dir / asset_path
+            )
+            if not path.parts or path.parts[0] != "icons":
+                continue
+            target = output_dir / path
+            if _path_lexists(target):
+                managed.add(target)
     return managed
 
 
@@ -1231,6 +1293,10 @@ def publish_staged_workspace(
             path.relative_to(output_dir)
             for path in managed_svg
         }
+        relative_paths.update(
+            path.relative_to(output_dir)
+            for path in _managed_vector_asset_paths(output_dir)
+        )
         relative_paths.update(_referenced_local_paths(output_dir, managed_svg))
         relative_paths.add(CONVERSION_REPORT_PATH)
         relative_paths.update(_managed_report_artifact_paths(output_dir))

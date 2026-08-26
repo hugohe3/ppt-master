@@ -35,6 +35,7 @@ ROUNDTRIP_MANIFEST_PATH = Path("analysis/roundtrip_manifest.json")
 TEMPLATE_MANIFEST_PATH = Path("analysis/manifest.json")
 CONVERSION_REPORT_PATH = Path("validation/conversion-report.json")
 AUTHORING_SVG_FLAT_DIR = Path("authoring-svg-flat")
+AUTHORING_SVG_DIR = Path("authoring-svg")
 ROUNDTRIP_SVG_ROOT = Path("analysis/roundtrip-svg")
 ROUNDTRIP_LAYERED_SVG_DIR = ROUNDTRIP_SVG_ROOT / "layered"
 ROUNDTRIP_FLAT_SVG_DIR = ROUNDTRIP_SVG_ROOT / "flat"

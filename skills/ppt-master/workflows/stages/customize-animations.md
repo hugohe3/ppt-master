@@ -146,7 +146,7 @@ changed. Use the owning route's checker form; Quick Generate must add its
 lockless profile flag:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --stage final --json
+python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --canonical-authoring --stage final --json
 # Quick Generate: insert --quick-generate before --stage.
 ```
 

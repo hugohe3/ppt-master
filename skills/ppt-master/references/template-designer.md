@@ -32,7 +32,7 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `svg/slide_NN.svg` — immutable slide-local native-payload backing; do not bulk-read because opaque native payload is retained
 - `svg/inheritance.json` — which layout / master each slide consumes
 - optional `svg-flat/slide_NN.svg` — immutable complete-page verification backing generated only when explicitly requested; do not use it as the editable source
-- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles created by `svg_authoring_view.py`; each contains editable SVGs, model-readable `authoring_summary.json`, and tool-only `authoring_manifest.json`
+- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles published by `pptx_template_import.py` for Type A input or created by the standalone `svg_authoring_view.py` migration path; each contains editable SVGs, model-readable `authoring_summary.json`, and tool-only `authoring_manifest.json`
 - optional screenshots for visual cross-checking
 
 PPTX import interpretation:
@@ -465,7 +465,7 @@ Use clear placeholder markers for replaceable content:
 
 This is the **default vocabulary** used across template packages. Newly created templates SHOULD prefer these names so downstream projects find familiar slots; designers MAY substitute or extend them when a style genuinely needs different vocabulary (e.g. consulting decks lead with `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`; a brand cover may need `{{BRAND_LOGO}}`).
 
-`svg_quality_checker.py --template-mode` emits **advisory warnings** when a page lacks the conventional placeholder for its type. To silence those warnings — and document the template's actual contract — declare a `placeholders:` map in `<design_spec_path>` frontmatter:
+`svg_quality_checker.py --template-mode --canonical-authoring` emits **advisory warnings** when a page lacks the conventional placeholder for its type. To silence those warnings — and document the template's actual contract — declare a `placeholders:` map in `<design_spec_path>` frontmatter:
 
 ```yaml
 placeholders:

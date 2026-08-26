@@ -170,11 +170,11 @@ family 与信息模型：Chart 的数值映射、Table 的行 × 列事实网格
 
 | 做法 | 要求 |
 |---|---|
-| 字体继承 | 公共 `font-family` 放在根 `<svg>` 或清楚的父 `<g>` |
-| 属性继承 | 同组重复的 `fill`、`stroke`、字号或锚点可提升到父组 |
+| 字体继承 | 公共 `font-family` 放在根 `<svg>`；局部差异放在清楚的父 `<g>` |
+| 属性继承 | 同组重复的 `fill`、`stroke`、字号或锚点提升到父组；根节点不放 paint |
 | 注释 | 保留结构、语义和机器标记；删除色名、营销解释和重复说明 |
 | 文本 | 普通单行直接写在 `<text>`；只有多 run/多行需要 `<tspan>` |
-| 坐标 | 页面坐标使用必要精度；按上游合同运行 `compact_svg_coordinates.py` |
+| 坐标 | 页面坐标从写入时就使用必要精度；质量检查只读验证，不在之后改写 |
 | ID | 使用 `chart-area`、`series-1`、`card-1` 等结构名称，避免示例业务名 |
 
 ### 4.2 禁止的压缩
@@ -450,15 +450,14 @@ Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`
 ```bash
 # 单文件 SVG 合同
 python3 skills/ppt-master/scripts/svg_quality_checker.py \
-  skills/ppt-master/templates/<family-directory>/<key>.svg
+  skills/ppt-master/templates/<family-directory>/<key>.svg \
+  --canonical-authoring
 
 # Canonical family/key
 python3 skills/ppt-master/scripts/visualization_recall.py validate \
   <family>/<key>
 
-# 可安全压缩的页面坐标（默认 dry-run）
-python3 skills/ppt-master/scripts/compact_svg_coordinates.py \
-  skills/ppt-master/templates/<family-directory>/<key>.svg
+# 作者态必须已紧凑；Checker 只读验证，不在检查后重写
 ```
 
 **验证**：修改后至少完成 XML 解析、独立 SVG 渲染、Checker、默认 Shape-first 导出，以及 marker 模板的 native Chart/Table 导出。

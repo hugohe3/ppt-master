@@ -710,8 +710,8 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 
 **First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
 ```bash
-python3 ${SKILL_DIR}/scripts/compact_svg_styles.py <project_path>/svg_output --inplace
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page --json
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
+  --canonical-authoring --stage first-page --json
 ```
 Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
 
@@ -733,8 +733,8 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
-python3 ${SKILL_DIR}/scripts/compact_svg_styles.py <project_path>/svg_output --inplace
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
+  --canonical-authoring --stage final --json
 ```
 - **MUST**: Before this gate, every §IX `Native-ready` entry `<object-key>=yes` already has one matching draw-time marker group and JSON metadata child; `=no` and incidental microvisuals remain ordinary SVG. A legacy bare `yes|no` is readable only when that page has exactly one eligible object; it never derives from §VII.
 - Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.

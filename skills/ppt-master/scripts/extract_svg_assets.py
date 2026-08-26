@@ -55,12 +55,24 @@ from svg_authoring_view import (
     SEMANTIC_OBJECT_ATTRIBUTE,
     write_authoring_summary,
 )
+from svg_authoring_contract import normalize_compact_authoring_tree
 
 configure_utf8_stdio()
 
 SVG_NS = "http://www.w3.org/2000/svg"
 DRAWABLE = {"path", "polygon", "polyline", "rect", "circle", "ellipse", "line"}
 SEMANTIC_CONTENT = {"text", "tspan", "foreignObject"}
+SEMANTIC_MARKER_ATTRIBUTES = {
+    "data-pptx-carrier",
+    "data-pptx-inline-formula",
+    "data-pptx-layer",
+    "data-pptx-page-role",
+    "data-pptx-placeholder",
+    "data-pptx-replace-with",
+    "data-pptx-role",
+    "data-pptx-shape-hyperlink",
+    SEMANTIC_OBJECT_ATTRIBUTE,
+}
 DEFINITION_CONTAINERS = {"defs"}
 DEFAULT_MIN_DRAWABLES = 20
 DEFAULT_MIN_BYTES = 3000
@@ -102,9 +114,15 @@ def _has_semantic_content(elem: ET.Element) -> bool:
 
 def _has_semantic_object(elem: ET.Element) -> bool:
     """Semantic authoring objects must never move into imported decoration."""
-    return any(
-        item.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
-        for item in elem.iter()
+    return any(_is_semantic_owner(item) for item in elem.iter())
+
+
+def _is_semantic_owner(elem: ET.Element) -> bool:
+    if any(elem.get(name) is not None for name in SEMANTIC_MARKER_ATTRIBUTES):
+        return True
+    return (
+        _local(elem.tag) == "metadata"
+        and elem.get("type") == "application/json"
     )
 
 
@@ -350,7 +368,7 @@ def _find_extractable(root: ET.Element, min_drawables: int, min_bytes: int) -> l
     def walk(elem: ET.Element) -> None:
         if (
             _local(elem.tag) in DEFINITION_CONTAINERS
-            or elem.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
+            or _is_semantic_owner(elem)
         ):
             return
         for child in list(elem):
@@ -398,7 +416,7 @@ def _find_extractable_runs(
     def walk(elem: ET.Element) -> None:
         if (
             _local(elem.tag) in DEFINITION_CONTAINERS
-            or elem.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
+            or _is_semantic_owner(elem)
         ):
             return
         run: list[ET.Element] = []
@@ -448,6 +466,7 @@ def _asset_svg(
         for dependency in dependencies:
             defs.append(dependency)
     svg.append(group)
+    normalize_compact_authoring_tree(svg)
     return ET.tostring(svg, encoding="utf-8", xml_declaration=True)
 
 
@@ -746,6 +765,20 @@ def _fresh_native_fallback_markers(root: ET.Element) -> set[ET.Element]:
     return fresh
 
 
+def _normalize_authoring_tree(
+    root: ET.Element,
+    fresh_native_markers: set[ET.Element],
+) -> None:
+    """Normalize first, then hash the final visible native fallbacks."""
+    normalize_compact_authoring_tree(root)
+    live_elements = set(root.iter())
+    for marker in fresh_native_markers & live_elements:
+        marker.set(
+            NATIVE_FALLBACK_SHA256_ATTR,
+            svg_native_fallback_fingerprint(marker, document_root=root),
+        )
+
+
 def extract_file(
     svg_path: Path,
     icons_dir: Path,
@@ -773,6 +806,7 @@ def extract_file(
     # progressively factoring their remaining parent/sibling geometry.
     if _has_namespace_placeholder(root, icon_namespace):
         if definitions_changed or not inplace:
+            _normalize_authoring_tree(root, fresh_native_markers)
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
@@ -807,6 +841,7 @@ def extract_file(
 
     if not targets:
         if definitions_changed or not inplace:
+            _normalize_authoring_tree(root, fresh_native_markers)
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
@@ -910,12 +945,7 @@ def extract_file(
         })
 
     _optimize_definitions(root)
-    live_elements = set(root.iter())
-    for marker in fresh_native_markers & live_elements:
-        marker.set(
-            NATIVE_FALLBACK_SHA256_ATTR,
-            svg_native_fallback_fingerprint(marker, document_root=root),
-        )
+    _normalize_authoring_tree(root, fresh_native_markers)
     rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
     rewritten.parent.mkdir(parents=True, exist_ok=True)
     tree.write(rewritten, encoding="utf-8", xml_declaration=True)

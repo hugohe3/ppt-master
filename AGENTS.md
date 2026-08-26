@@ -89,10 +89,9 @@ python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --im
 # Spot illustrations — slice one AI grid sheet into individual elements (see image-generator.md §4.3):
 python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
-# Shared create-template coordinate compaction before template validation
-python3 skills/ppt-master/scripts/compact_svg_coordinates.py "<template_workspace>/templates" --inplace --keep-native-frames
-python3 skills/ppt-master/scripts/compact_svg_styles.py "<template_workspace>/templates" --inplace
+python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --canonical-authoring
+# Canonical compact template validation (read-only)
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
 # Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
 python3 skills/ppt-master/scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
 # Type A create-template mirror: validated authoring IR -> deterministic structured template workspace

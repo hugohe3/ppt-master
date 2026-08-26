@@ -693,7 +693,9 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么 PPTX 往返使用语义工作区，而不是照搬 ZIP 目录。** 可编辑页面源是 `authoring-svg-flat/`；PowerPoint 图片媒体、导入的可复用矢量、提示音、音频、视频、备注和不透明载荷分别位于 `images/`、`icons/imported/`、`sounds/`、`audio/`、`video/`、`notes/` 和 `native-payloads/`。精确来源包保存在 `sources/source.pptx`，结构与归属契约保存在 `analysis/`，诊断保存在 `validation/`，发布文件保存在 `exports/`。这样既让作者路径与普通项目一致，又由 `analysis/roundtrip_manifest.json` 把语义文件映射回 package 归属。导入与导出只接受这一份契约；根目录下的 `source_template.pptx`、`native_structure.json`、`conversion-report.json` 与 `assets/` 都不是兼容输入。
 
-受支持的导入原生表格保持为一个语义 marker，而不是在模型可见 SVG 中展开成数千个节点。其 `ppt-master.semantic-table.v2` payload 会把重复的单元格、段落和 run 格式归纳成默认值及命名单元格样式，原生导出时再在内存中展开。精确浏览器预览以 hash 命名存放在 `images/source-object-previews/`。复杂组合及封闭语义 schema 以外的表格则继续由来源支撑：`authoring-svg-flat/` 只保留一个紧凑的 `native-restore` 图片代理和外层 source ref。未修改的代理会恢复完整来源 OOXML 对象；删除 Slide-local 代理会删除该对象。继承自 Master/Layout 的代理必须保留，因为单个 flat 页面不能删除共享结构。修改代理或预览会直接阻止导出，因为静默编译为图片或 SVG 派生形状会违背往返意图。
+**为什么紧凑 SVG 可以展开为丰富 PPTX。** 无论直接生成还是从 PPTX 导入，第一次发布的作者源就必须是规范化紧凑 SVG：使用标准 SVG 元素、可读分组和语义 metadata，根节点只保存字体类默认值，颜色与线型放在语义组中。源码不使用 CSS class、私有缩写、编码载荷或有损精度裁剪，质量检查只读验证而不回写。导出时，编译器在内存中解析继承，并把语义表格、原生形状及其他受支持对象展开为 PowerPoint 需要的重复 DrawingML；冗余只存在于最终经 ZIP 压缩的编译产物中。
+
+受支持的导入原生表格保持为一个语义 marker，而不是在模型可见 SVG 中展开成数千个节点。其 `ppt-master.semantic-table.v2` payload 会把重复的单元格、段落和 run 格式归纳成默认值及命名单元格样式，原生导出时再在内存中展开。精确浏览器预览以 hash 命名存放在 `images/source-object-previews/`。封闭语义 schema 以外但承载含义的组合、表格和图表继续以内联可读 SVG 表达，并显式记录转换缺口，不能藏进 imported。只有不含文字、没有语义 marker、schema 也无法识别的来源装饰，才允许在 `authoring-svg-flat/` 中成为一个紧凑的 `native-restore` 图片代理和外层 source ref。未修改的代理会恢复完整来源 OOXML 对象；删除 Slide-local 代理会删除该对象。继承自 Master/Layout 的代理必须保留，因为单个 flat 页面不能删除共享结构。修改代理或预览会直接阻止导出，因为静默编译为图片或 SVG 派生形状会违背往返意图。
 
 **为什么只有一条 PPTX 编译路线。** Native 导出把作者 SVG 中受支持的元素逐个翻译成 DrawingML 形状。常规 deck 路线读取 `svg_output/`；用户需要时，create-template 对通过校验的模板原型调用同一 structured 编译器，生成 `exports/<id>_template_preview.pptx` 作为审阅证据。项目不会把整页 SVG 媒体或另一套位图渲染打包成第二类 PPTX。`svg_final/` 仍由常规 deck 的强制后处理生成，但只承担派生视觉预览和 SVG 图片插入，不为 PowerPoint 手工“转换为形状”提供兼容兜底。
 

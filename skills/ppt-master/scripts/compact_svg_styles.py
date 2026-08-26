@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG Inherited Style Compactor
+PPT Master - Legacy SVG Inherited Style Migration
 
-Normalize generated SVG authoring files to root/group defaults plus local
-overrides. The compactor promotes one common page font to the SVG root and
-removes presentation declarations that repeat an inherited value.
+Diagnose or migrate older SVG authoring files to root/group defaults plus local
+overrides. New authoring code calls the tree-level implementation before its
+first write; the CLI is not a standard post-generation step.
 
 Usage:
     python3 scripts/compact_svg_styles.py <svg-file-or-directory> [--inplace]
@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import stat
 import sys
 import tempfile
@@ -49,6 +50,23 @@ _DEFINITION_SUBTREES = frozenset({
     "radialGradient",
     "symbol",
 })
+_UNSAFE_PRESENTATION_VALUE_TOKENS = (
+    "!important",
+    "var(",
+)
+_CSS_WIDE_VALUES = frozenset({
+    "inherit",
+    "initial",
+    "revert",
+    "revert-layer",
+    "unset",
+})
+_CONTEXT_DEPENDENT_VALUES = frozenset({
+    "context-fill",
+    "context-stroke",
+    "currentcolor",
+})
+_URL_FUNCTION_RE = re.compile(r"url\([^)]*\)", re.IGNORECASE)
 
 ET.register_namespace("", SVG_NS)
 
@@ -59,6 +77,8 @@ class StyleCompactionStats:
 
     root_font_defaults: int = 0
     root_style_declarations_normalized: int = 0
+    container_style_declarations_normalized: int = 0
+    group_defaults_promoted: int = 0
     shadowed_attributes_removed: int = 0
     redundant_attributes_removed: int = 0
     redundant_style_declarations_removed: int = 0
@@ -68,6 +88,8 @@ class StyleCompactionStats:
         return (
             self.root_font_defaults
             + self.root_style_declarations_normalized
+            + self.container_style_declarations_normalized
+            + self.group_defaults_promoted
             + self.shadowed_attributes_removed
             + self.redundant_attributes_removed
             + self.redundant_style_declarations_removed
@@ -78,6 +100,10 @@ class StyleCompactionStats:
         self.root_style_declarations_normalized += (
             other.root_style_declarations_normalized
         )
+        self.container_style_declarations_normalized += (
+            other.container_style_declarations_normalized
+        )
+        self.group_defaults_promoted += other.group_defaults_promoted
         self.shadowed_attributes_removed += other.shadowed_attributes_removed
         self.redundant_attributes_removed += other.redundant_attributes_removed
         self.redundant_style_declarations_removed += (
@@ -90,6 +116,10 @@ class StyleCompactionStats:
             "root_style_declarations_normalized": (
                 self.root_style_declarations_normalized
             ),
+            "container_style_declarations_normalized": (
+                self.container_style_declarations_normalized
+            ),
+            "group_defaults_promoted": self.group_defaults_promoted,
             "shadowed_attributes_removed": self.shadowed_attributes_removed,
             "redundant_attributes_removed": self.redundant_attributes_removed,
             "redundant_style_declarations_removed": (
@@ -108,6 +138,32 @@ class _StyleDeclaration:
 
 def _local_name(name: object) -> str:
     return name.rsplit("}", 1)[-1] if isinstance(name, str) else ""
+
+
+def is_canonical_presentation_value(
+    value: str,
+    *,
+    property_name: str | None = None,
+) -> bool:
+    """Return whether a value can move to a presentation attribute safely."""
+    normalized = value.strip().lower()
+    context_dependent = False
+    if property_name in {"fill", "stroke"}:
+        outside_urls = _URL_FUNCTION_RE.sub(" ", normalized)
+        tokens = {
+            token for token in re.split(r"[\s,]+", outside_urls)
+            if token
+        }
+        context_dependent = bool(tokens & _CONTEXT_DEPENDENT_VALUES)
+    return (
+        bool(normalized)
+        and normalized not in _CSS_WIDE_VALUES
+        and not context_dependent
+        and not any(
+            token in normalized
+            for token in _UNSAFE_PRESENTATION_VALUE_TOKENS
+        )
+    )
 
 
 def _style_declarations(value: str | None) -> list[_StyleDeclaration] | None:
@@ -195,6 +251,11 @@ def _normalize_root_font_family(
     style_values = _style_values(declarations)
     style_family = style_values.get("font-family")
     if style_family is not None:
+        if not is_canonical_presentation_value(
+            style_family,
+            property_name="font-family",
+        ):
+            return
         root.set("font-family", style_family)
         retained = [
             item for item in declarations
@@ -212,20 +273,15 @@ def _normalize_root_font_family(
         for child in parent
     }
 
-    def inside_definition(element: ET.Element) -> bool:
-        current = parents.get(element)
-        while current is not None:
-            if _local_name(current.tag) in _DEFINITION_SUBTREES:
-                return True
-            current = parents.get(current)
-        return False
-
+    # Include definition text conservatively. A local <use> can make it
+    # visible, and promoting a font while ignoring that text could change its
+    # inherited rendering. Unused definitions are pruned by import projection;
+    # legacy migration prefers no promotion over a visual change.
     text_elements = [
         element
         for element in root.iter()
         if _local_name(element.tag) == "text"
         and "".join(element.itertext()).strip()
-        and not inside_definition(element)
     ]
     if not text_elements:
         return
@@ -250,6 +306,98 @@ def _normalize_root_font_family(
     stats.root_font_defaults += 1
 
 
+def _normalize_container_inherited_styles(
+    root: ET.Element,
+    stats: StyleCompactionStats,
+) -> None:
+    """Spell inherited root/group defaults as presentation attributes."""
+    for element in root.iter():
+        if _local_name(element.tag) not in {"svg", "g"}:
+            continue
+        declarations = _style_declarations(element.get("style"))
+        if declarations is None:
+            continue
+        retained: list[_StyleDeclaration] = []
+        for declaration in declarations:
+            if (
+                declaration.name not in INHERITABLE_ATTRIBUTES
+                or not is_canonical_presentation_value(
+                    declaration.value,
+                    property_name=declaration.name,
+                )
+            ):
+                retained.append(declaration)
+                continue
+            element.set(declaration.name, declaration.value)
+            stats.container_style_declarations_normalized += 1
+        _write_style(element, retained)
+
+
+def _promote_common_group_defaults(
+    element: ET.Element,
+    stats: StyleCompactionStats,
+) -> None:
+    """Factor proven direct-child repetition into an existing SVG group."""
+    if _local_name(element.tag) in _DEFINITION_SUBTREES:
+        return
+    for child in element:
+        _promote_common_group_defaults(child, stats)
+    if _local_name(element.tag) != "g":
+        return
+
+    children = [
+        child for child in element
+        if isinstance(child.tag, str)
+        and _local_name(child.tag) not in {
+            "desc",
+            "metadata",
+            "title",
+        }
+    ]
+    if len(children) < 2:
+        return
+
+    element_styles = _style_declarations(element.get("style"))
+    if element_styles is None:
+        return
+    element_style_values = _style_values(element_styles)
+    for name in INHERITABLE_ATTRIBUTES:
+        if element.get(name) is not None or name in element_style_values:
+            continue
+        declarations_by_child: list[list[_StyleDeclaration]] = []
+        values: list[str] = []
+        for child in children:
+            declarations = _style_declarations(child.get("style"))
+            if declarations is None:
+                break
+            declarations_by_child.append(declarations)
+            value = _style_values(declarations).get(name)
+            if value is None:
+                value = child.get(name)
+            if value is None or not is_canonical_presentation_value(
+                value,
+                property_name=name,
+            ):
+                break
+            values.append(value)
+        if len(values) != len(children) or len(set(values)) != 1:
+            continue
+
+        element.set(name, values[0])
+        stats.group_defaults_promoted += 1
+        for child, declarations in zip(children, declarations_by_child):
+            removed_style = sum(item.name == name for item in declarations)
+            if removed_style:
+                _write_style(
+                    child,
+                    [item for item in declarations if item.name != name],
+                )
+                stats.redundant_style_declarations_removed += removed_style
+            if child.get(name) is not None:
+                child.attrib.pop(name, None)
+                stats.redundant_attributes_removed += 1
+
+
 def _remove_redundant_inherited_styles(
     element: ET.Element,
     inherited: dict[str, str],
@@ -271,7 +419,13 @@ def _remove_redundant_inherited_styles(
             if attribute_value is not None:
                 element.attrib.pop(name, None)
                 stats.shadowed_attributes_removed += 1
-            if style_value == inherited.get(name):
+            if (
+                style_value == inherited.get(name)
+                and is_canonical_presentation_value(
+                    style_value,
+                    property_name=name,
+                )
+            ):
                 remove_style_names.add(name)
                 stats.redundant_style_declarations_removed += sum(
                     item.name == name for item in declarations
@@ -281,7 +435,13 @@ def _remove_redundant_inherited_styles(
             continue
         if attribute_value is None:
             continue
-        if attribute_value == inherited.get(name):
+        if (
+            attribute_value == inherited.get(name)
+            and is_canonical_presentation_value(
+                attribute_value,
+                property_name=name,
+            )
+        ):
             element.attrib.pop(name, None)
             stats.redundant_attributes_removed += 1
         else:
@@ -304,7 +464,9 @@ def compact_svg_style_tree(root: ET.Element) -> StyleCompactionStats:
     if _local_name(root.tag) != "svg":
         raise ValueError("Style compaction requires an SVG root element")
     stats = StyleCompactionStats()
+    _normalize_container_inherited_styles(root, stats)
     _normalize_root_font_family(root, stats)
+    _promote_common_group_defaults(root, stats)
     _remove_redundant_inherited_styles(root, {}, stats)
     return stats
 
@@ -361,8 +523,8 @@ def _write_atomic(path: Path, payload: bytes) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Promote a common page font and remove redundant inherited SVG "
-            "presentation declarations."
+            "Diagnose or migrate older SVG by promoting a common page font "
+            "and removing redundant inherited presentation declarations."
         ),
     )
     parser.add_argument("input", type=Path, help="SVG file or directory")

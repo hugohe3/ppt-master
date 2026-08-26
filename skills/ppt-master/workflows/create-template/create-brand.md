@@ -143,7 +143,7 @@ Return these facts to Create Template:
 For both scopes, Create Template Step 5 validates the portable Brand contract without registration:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
 ```
 
 For `library` scope, additionally validate the directory/index identity with:

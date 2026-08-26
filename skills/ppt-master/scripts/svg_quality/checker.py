@@ -32,6 +32,7 @@ from pptx_workspace import (
     SOURCE_PPTX_PATH,
 )
 from slide_roster import discover_slide_svgs
+from svg_authoring_contract import canonical_authoring_errors
 
 from . import svg_contracts
 from .xml_support import (
@@ -1105,9 +1106,11 @@ class SVGQualityChecker:
         *,
         template_mode: bool = False,
         quick_generate: bool = False,
+        canonical_authoring: bool = False,
     ):
         self.template_mode = template_mode
         self.quick_generate = quick_generate
+        self.canonical_authoring = canonical_authoring
         self.results = []
         self.summary = {
             'total': 0,
@@ -1232,6 +1235,7 @@ class SVGQualityChecker:
             # produce misleading errors on a broken document.
             root = self._parse_xml_root(content, result)
             if root is not None:
+                self._check_canonical_authoring(root, result)
                 try:
                     hydrated_payloads = hydrate_native_payload_refs(root, svg_path)
                 except NativePayloadError as exc:
@@ -1390,6 +1394,27 @@ class SVGQualityChecker:
 
         self.results.append(result)
         return result
+
+    def _check_canonical_authoring(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Fail standard generation when SVG was not compact when authored."""
+        if not self.canonical_authoring:
+            return
+        errors = canonical_authoring_errors(
+            root,
+            # Authored-preset/native frames can intentionally retain the
+            # helper's exact precision. Imported projections compact their
+            # model-facing frames before publication, where provenance is
+            # still known.
+            compact_native_frames=False,
+        )
+        result['errors'].extend(
+            f"Noncanonical compact authoring: {error}"
+            for error in errors
+        )
 
     def _parse_xml_root(self, content: str, result: Dict) -> ET.Element | None:
         """Parse the SVG content as well-formed XML.

@@ -79,6 +79,8 @@ def print_usage() -> None:
     print("  --output <path>                Override the plain-text report path")
     print("  --quick-generate               Validate lockless flat Quick Generate SVGs;")
     print("                                  ignore design_spec.md and spec_lock.md.")
+    print("  --canonical-authoring          Require compact authoring syntax as written;")
+    print("                                  the checker never rewrites source SVG.")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
     print("                                  Brand/Style validate their portable workspace contracts;")
     print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
@@ -109,12 +111,14 @@ def main() -> None:
 
     template_mode = "--template-mode" in sys.argv
     quick_generate = "--quick-generate" in sys.argv
+    canonical_authoring = "--canonical-authoring" in sys.argv
     if template_mode and quick_generate:
         print("[ERROR] --template-mode cannot be combined with --quick-generate")
         sys.exit(1)
     checker = SVGQualityChecker(
         template_mode=template_mode,
         quick_generate=quick_generate,
+        canonical_authoring=canonical_authoring,
     )
 
     target = sys.argv[1]

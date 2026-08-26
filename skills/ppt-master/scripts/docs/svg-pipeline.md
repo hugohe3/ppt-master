@@ -48,13 +48,14 @@ The projected copy:
 - compacts model-facing coordinates, promotes a common page font to the root,
   and removes descendant presentation declarations equal to inherited values.
 
-Round-trip publication applies two object-level compactions after projection:
+PPTX authoring publication applies two object-level reductions inside its
+staging transaction, before the editable bundle first appears:
 
 - non-semantic vector decorations that cross the readability threshold may
   move to `icons/imported/*.svg`; the asset, placeholder, and v2 inventory all
   declare the fixed `decoration` role. Any subtree containing semantic
   authoring content remains inline;
-- unsupported opaque source objects that do not yet have a closed semantic IR
+- unsupported, text-free, schema-free source ornaments with no semantic marker
   may become
   `<image data-pptx-source-proxy="native-restore">` references whose hashed SVG
   previews live under `images/source-object-previews/`.
@@ -79,7 +80,9 @@ The layered authoring bundle remains the editable source for template creation;
 the complete imported SVG remains immutable native-payload backing. Final
 `templates/*.svg` files are materialized and validated from that pair. A
 complete-page `authoring-svg-flat/` bundle is the user's editable source for an
-imported-deck round-trip. `pptx_to_svg.py --roundtrip` places image media in
+imported-deck round-trip. `pptx_template_import.py` publishes its compact
+layered authoring bundle and decoration inventory in the same transaction as
+its immutable backing. `pptx_to_svg.py --roundtrip` places image media in
 `images/`, decoration-only vectors in `icons/imported/`, cues/audio/video/notes in their named
 directories, opaque payloads in `native-payloads/`, the source package in
 `sources/`, and tool-owned backing/contracts in `analysis/`; `assets/` is
@@ -361,10 +364,8 @@ python3 scripts/compact_svg_coordinates.py <template-directory> \
 ```
 
 The default run is a dry-run JSON report. `--inplace` atomically replaces only
-changed SVG files. The shared create-template final pass uses
-`--keep-native-frames`: it compacts `data-pptx-bounds`, translation values,
-rotation centers, and
-matrix `e/f`, while preserving canonical
+changed legacy SVG files. `--keep-native-frames` compacts `data-pptx-bounds`,
+translation values, rotation centers, and matrix `e/f`, while preserving canonical
 authored-preset or inline native frames. `svg_authoring_view.py` separately
 compacts imported model-facing frames because unchanged mirror refs can recover
 their exact coordinates from immutable lossless backing.
@@ -372,13 +373,13 @@ their exact coordinates from immutable lossless backing.
 The compactor never rounds path/points geometry, normalized crop or nested
 `viewBox` ratios, gradient offsets, opacity, scale arguments, rotation angles,
 or matrix `a/b/c/d` coefficients. Type A mirror materialization invokes the
-same compactor before native-record externalization; `standard` and `fidelity`
-use the shared final pass before template validation.
+same tree-level implementation before its first write. The CLI is a migration
+and diagnostic tool; standard authoring is checked read-only.
 
 ## `compact_svg_styles.py`
 
-Normalize generated authoring SVG to shared root/group defaults plus local
-overrides:
+Diagnose or migrate older authoring SVG to shared root/group defaults plus
+local overrides:
 
 ```bash
 python3 scripts/compact_svg_styles.py <svg-file-or-directory>
@@ -393,12 +394,13 @@ exceptions. The same pass removes any supported inheritable presentation
 attribute or inline declaration that exactly repeats its effective parent
 value; it never invents a paint, size, weight, or other non-font default.
 
-Default Generate runs it before the first-page and final checks, Quick runs it
-before its final check, and Create Template runs it before structured-template
-validation. PPTX import projections and mirror materialization call the same
-tree-level implementation directly. SVG-to-PPTX continues to accept valid
-explicit declarations; this is the canonical generated-authoring form, not a
-compatibility restriction on external SVG input.
+PPTX import projections and mirror materialization call the same tree-level
+implementation before publishing their authoring SVG. Standard workflows do
+not rewrite completed SVG: they pass `--canonical-authoring` to
+`svg_quality_checker.py`, which reports any remaining deterministic change as a
+blocking error. SVG-to-PPTX continues to accept valid explicit declarations;
+canonical compact authoring is a generated-source contract, not a compatibility
+restriction on external SVG input.
 
 ## `extract_svg_assets.py`
 
@@ -415,11 +417,12 @@ python3 scripts/extract_svg_assets.py <flat_svg_dir> \
   --inplace --id-prefix flat
 ```
 
-`pptx_to_svg.py --roundtrip` invokes the same extractor automatically for
-`authoring-svg-flat/` after source-proxy projection. It uses the imported
-namespace and records the thresholds in the adjacent vector inventory so
-`svg_to_pptx.py --roundtrip` can regenerate the same baseline before comparing
-edits.
+`pptx_template_import.py` and `pptx_to_svg.py --roundtrip` invoke the same
+extractor automatically inside their staging transactions. They use the
+imported namespace and record thresholds in the adjacent vector inventory so
+template materialization and round-trip export can regenerate the same
+baseline before comparing edits. The CLI form is for external SVG and legacy
+migration input, not a standard post-generation rewrite.
 
 The first pass records a source fingerprint before namespacing each extracted
 asset's internal ids. The second pass reuses a fingerprint-matched asset and
@@ -827,6 +830,7 @@ python3 scripts/svg_quality_checker.py projects/project/svg_output
 python3 scripts/svg_quality_checker.py projects/project
 python3 scripts/svg_quality_checker.py projects/project --stage first-page
 python3 scripts/svg_quality_checker.py projects/project --stage final --json
+python3 scripts/svg_quality_checker.py projects/project --canonical-authoring --stage final --json
 python3 scripts/svg_quality_checker.py projects/project --format ppt169
 python3 scripts/svg_quality_checker.py --all projects
 python3 scripts/svg_quality_checker.py projects/project --export

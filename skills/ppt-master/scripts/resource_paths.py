@@ -37,6 +37,9 @@ SVG_WORK_DIR_NAMES = frozenset({
 SVG_FINAL_CANDIDATE_PREFIX = '.svg_final.candidate-'
 TEMPLATE_SOURCE_DIR_NAME = 'templates'
 TEMPLATE_SPEC_FILENAME = 'design_spec.md'
+_TEMPLATE_QUALIFIED_SPEC_RE = re.compile(
+    r'design_spec\.(?:brand|style|layout|deck)\.[^/\\]+\.md'
+)
 _SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 _SVG_URL_REFERENCE_RE = re.compile(r'url\(\s*([^)]+?)\s*\)', re.IGNORECASE)
 _SVG_CSS_URL_ATTRIBUTES = frozenset({
@@ -78,7 +81,14 @@ def project_root_for_svg_path(svg_path: Path) -> Path:
         return base.parent
     if (
         base.name == TEMPLATE_SOURCE_DIR_NAME
-        and (base / TEMPLATE_SPEC_FILENAME).is_file()
+        and (
+            (base / TEMPLATE_SPEC_FILENAME).is_file()
+            or any(
+                path.is_file()
+                and _TEMPLATE_QUALIFIED_SPEC_RE.fullmatch(path.name)
+                for path in base.glob('design_spec.*.md')
+            )
+        )
     ):
         return base.parent
     return base

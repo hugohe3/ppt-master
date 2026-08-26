@@ -125,6 +125,7 @@ def build_native_structure(
             "imageAssets": master.get("imageAssets", []),
             "shapeImageAssets": master.get("shapeImageAssets", []),
             "drawableShapeCount": master.get("drawableShapeCount", 0),
+            "placeholders": master.get("placeholders", []),
             "layoutKeys": [
                 layout_key_by_path[layout["path"]]
                 for layout in layouts

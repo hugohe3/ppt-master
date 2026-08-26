@@ -171,17 +171,13 @@ It is an analysis aid, not a final direct template conversion.
 
 **Lossless payload backing + editable authoring IR**:
 
-Keep `<import_workspace>/svg/` unchanged as lossless native-payload backing. If the optional `<import_workspace>/svg-flat/` verification tree was requested, keep it unchanged too. Before the Template_Designer reads or edits any imported page SVG, create the canonical non-destructive authoring IR bundle:
-
-```bash
-python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg" -o "<import_workspace>/authoring-svg" --projection-kind layered
-```
-
-Only when the import explicitly used `--inheritance-mode both`, create the optional complete-page verification IR:
-
-```bash
-python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg-flat" -o "<import_workspace>/authoring-svg-flat" --projection-kind flat
-```
+Keep `<import_workspace>/svg/` unchanged as lossless native-payload backing. If
+the optional `<import_workspace>/svg-flat/` verification tree was requested,
+keep it unchanged too. The same `pptx_template_import.py` transaction writes
+the canonical compact `authoring-svg/` bundle before publishing the workspace;
+`--inheritance-mode both` also writes `authoring-svg-flat/`. A successful Type A
+import therefore never requires a second compaction/projection command before
+the Template_Designer reads the authoring IR.
 
 Each bundle contains editable SVGs, a model-readable `authoring_summary.json`, and a tool-only `authoring_manifest.json`. The projection removes opaque text payload, duplicate hidden geometry carriers, and import-only identity attributes while keeping visible shape intent, compact preset/frame metadata, structure markers, logical ids, valid asset references, and a reserved `data-pptx-source-ref` on each imported logical object. Model-facing `data-pptx-frame` values and safe transform page coordinates use at most two decimals; normalized crop ratios, path geometry, transform linear coefficients, and the immutable lossless source retain their required precision. The summary lists the current SVG roster plus per-file canvas, size, text, image, vector, placeholder, and source-ref counts. The machine manifest records relative source files, document hashes, source paths, and initial authoring-subtree hashes; it does not duplicate opaque payload and MUST NOT enter model context. Source refs are unique within one document and are interpreted by tools together with that document's manifest record.
 
@@ -201,20 +197,30 @@ only after the confirmed IR edits and vector-readability pass described below.
 `standard` / `fidelity` remain newly authored Template_Designer output and do
 not use this compiler.
 
-**Vector illustration readability pass**:
+**Creation-time vector readability**:
 
-Factor only large non-semantic decorative vector groups out of the lightweight IR documents so the model-facing SVGs stay readable while export remains native shapes. Never run this in place on the lossless import SVGs:
+`pptx_template_import.py` factors only large non-semantic decorative vector
+groups while the import workspace is still staged. The first published
+`authoring-svg/` files therefore already contain compact
+`<use data-icon="imported/..." data-pptx-asset-role="decoration"/>`
+references; do not run a second in-place readability or compaction pass.
+`--inheritance-mode both` reuses the layered inventory while creating the
+optional flat view, so only genuinely flat-only vectors create another asset.
 
-```bash
-# layered view — primary read surface and canonical extracted-vector inventory
-python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --icon-namespace imported --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
-
-# optional flat verification view — run only when authoring-svg-flat/ exists;
-# reuse matching layered assets so only genuinely flat-only vectors create files
-python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --icon-namespace imported --reuse-inventory "<import_workspace>/authoring-svg_vector_asset_inventory.json" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
-```
-
-The authoring SVGs in `<import_workspace>/authoring-svg/` and, when requested, `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..." data-pptx-asset-role="decoration"/>` placeholders. Each in-place extraction refreshes that bundle's `authoring_summary.json` automatically. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. Every imported asset root, placeholder, and v2 inventory record declares the `decoration` role. Any subtree containing a semantic marker, text, table, chart, relationship, or other meaning-bearing content remains inline; extraction and both consumers fail closed if that boundary is crossed. Eligible decoration records may retain `data-pptx-source-ref`, so re-inlining re-establishes their object mapping before materialization. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path decorations are factored out too. Pure-vector decoration runs beside text use a lower size threshold without moving the text or its semantic ancestor. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
+Extracted assets have one canonical copy under
+`<import_workspace>/icons/imported/`; never duplicate them under
+`templates/icons/`. The root `icons/` directory remains a namespace container
+and must not contain rewritten page SVGs or inventories. Every imported asset
+root, placeholder, and v2 inventory record declares the `decoration` role. Any
+subtree containing a semantic marker, text, table, chart, relationship, or
+other meaning-bearing content remains inline; extraction and both consumers
+fail closed if that boundary is crossed. Eligible decoration records may
+retain `data-pptx-source-ref`, so re-inlining re-establishes their object
+mapping before materialization. The existing icon embedding path re-inlines
+the extracted assets before final export, preserving multi-color artwork and
+non-square viewBox geometry as native SVG shapes. Referenced defs (`gradient`
+/ `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and
+namespaced so the asset is self-contained after re-inline.
 
 The layered pass owns the canonical extracted-vector pool. Each new asset records a source fingerprint before generated ID namespacing. The flat pass MUST consume the layered inventory through `--reuse-inventory`: an exact fingerprint match writes only a `<use>` reference to the existing layered asset, while an unmatched flat-only subtree may create one new asset under the `flat` prefix. Do not independently extract the two views into parallel asset sets. With `--clean-stale`, a rerun also removes obsolete generated `flat_*` duplicates while retaining every reused layered reference.
 
@@ -611,10 +617,12 @@ paint changes require a new helper render. When actual `standard` / `fidelity`
 construction needs a Boolean result over supported shape/text operands, Template_Designer
 decides whether to use `shape_boolean_svg.py` under
 [`native-shape-authoring.md`](../references/native-shape-authoring.md) §6; a
-brief/reference suggestion does not lock the operation. `mirror` preserves the expanded
-lossless source contract in a new workspace and may only normalize transport details required by
-the current compiler. Mirror never performs commonality extraction, semantic
-synthesis, merge/split, promotion/demotion, renaming, or re-parenting.
+brief/reference suggestion does not lock the operation. `mirror` preserves the
+source structure ownership, visible result, and supported semantics in a new
+workspace while spelling them in the same compact authoring contract used by
+other modes. It may normalize equivalent inheritance, safe page-space metadata,
+and compiler transport without changing object meaning. Mirror never performs
+semantic synthesis, merge/split, promotion/demotion, renaming, or re-parenting.
 
 **Hard rule — multi-Master package boundary**: More than one Master is valid only when `mirror` preserves an existing source graph in the new workspace or an authored template intentionally defines distinct reusable design families. `standard` / `fidelity` must not create one Master per Layout or duplicate equivalent Masters merely for organization. Every declared Master must own at least one emitted Layout, and every declared Layout must be selected by at least one prototype SVG so the complete graph can be compiled and verified.
 
@@ -696,7 +704,7 @@ becomes the prototype Slide placeholder, while
 **Create Brand branch**: run the child workflow's §4 checklist and the shared project-safe validator below in both scopes. It detects `kind: brand`, validates the identity-only frontmatter/sections/colors/provenance/asset references, and does not require an SVG roster or touch a global index. Any failure blocks completion.
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
 ```
 
 In `library` scope, additionally run the registrar dry-run so `brand_id` is checked against the library directory/index key:
@@ -714,7 +722,7 @@ and fallback values, portable ID, and one-file roster-free package boundary.
 The child checklist remains authoritative for semantic scope and provenance.
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
 ```
 
 In `library` scope, additionally run the registrar dry-run so `style_id` is
@@ -735,14 +743,14 @@ ls -la "<template_source>"
 ls -la "<authoring_workspace>/images" "<authoring_workspace>/icons"
 ```
 
-Compact safe page-space metadata, transform coordinates, and repeated inherited
-presentation declarations, then run SVG validation on the template directory.
-Keep canonical authored-preset and native record frames unchanged:
+Run read-only SVG validation on the template directory. The Template Designer
+must write canonical compact SVG directly; mirror materialization applies the
+same normalization in memory before its first template write. Keep canonical
+authored-preset and native record frames unchanged:
 
 ```bash
-python3 skills/ppt-master/scripts/compact_svg_coordinates.py "<template_source>" --inplace --keep-native-frames
-python3 skills/ppt-master/scripts/compact_svg_styles.py "<template_source>" --inplace
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_source>" --template-mode --format <canvas_format>
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_source>" \
+  --template-mode --canonical-authoring --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:

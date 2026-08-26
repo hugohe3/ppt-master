@@ -118,22 +118,25 @@ python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
 python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
-python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inplace --keep-native-frames
-python3 scripts/compact_svg_styles.py <template_workspace>/templates --inplace
+python3 scripts/svg_quality_checker.py <template_workspace>/templates --template-mode --canonical-authoring
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>
 python3 scripts/svg_to_pptx.py <import_workspace> --roundtrip
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
 ```
 
-Template import defaults to the canonical layered `svg/` tree. Use
+Template import defaults to the canonical layered `svg/` backing tree and
+creates compact `authoring-svg/` in the same transaction. Use
 `--inheritance-mode both` only when a separate self-contained `svg-flat/`
-verification tree is required. No derived narrative digest is generated
-because `analysis/manifest.json` already owns those facts.
+verification tree plus `authoring-svg-flat/` is required. No derived narrative
+digest is generated because `analysis/manifest.json` already owns those facts.
 
-`svg_authoring_view.py` creates a lightweight, non-destructive editable IR
-bundle from PPTX-imported SVGs. Recognized native shapes become one visible
-geometry carrier plus at most one structured text body; recognized tables keep
+`pptx_template_import.py` creates the lightweight authoring bundle in the same
+transaction as its immutable backing. `svg_authoring_view.py` remains the
+standalone projection entry point for external SVG and migrations. Before the
+transaction publishes, it also factors eligible non-semantic decoration into
+`icons/imported/`. Recognized native shapes become one visible geometry carrier
+plus at most one structured text body; recognized tables keep
 one compact semantic JSON payload plus a preview cache. The projection removes
 duplicate render geometry and import-only identity/payload attributes while
 retaining text, images, stable ids, root Master/Layout markers, native-shape
@@ -144,8 +147,8 @@ Relative local image references are rewritten so the projected copy still
 renders from its new location. The bundle's `authoring_summary.json` is the
 model-readable current-file index; `authoring_manifest.json` records
 source/authoring hashes and object paths for tools without duplicating opaque
-payload and does not enter model context. Unsupported opaque source objects may
-become compact `native-restore` image proxies whose
+payload and does not enter model context. Only unsupported, text-free,
+schema-free source ornaments may become compact `native-restore` image proxies whose
 hashed SVG previews live under `images/source-object-previews/`. Unchanged
 proxies restore the original native PowerPoint objects; complete removal deletes
 a Slide-local source object, while inherited-proxy removal and any proxy or
@@ -296,20 +299,19 @@ result remains editable freeform geometry but is no longer editable text. See
 [`references/native-shape-authoring.md`](../references/native-shape-authoring.md)
 §6 for the closed operand and failure contract.
 
-Create-template/source normalization (optional; never part of automatic export):
+External-source migration and explicit picture normalization:
 
 ```bash
 python3 scripts/extract_svg_assets.py <layered_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --inplace --id-prefix layered
 python3 scripts/extract_svg_assets.py <flat_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
 python3 scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<picture_assets_dir>" --inplace  # optional create-template normalization: one selected group -> one SVG picture
-python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inplace --keep-native-frames
-python3 scripts/compact_svg_styles.py <template_workspace>/templates --inplace
+python3 scripts/svg_quality_checker.py <template_workspace>/templates --template-mode --canonical-authoring
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>  # Type A mirror only; destination owns no roster
 ```
 
-Round-trip import runs the flat vector extraction automatically after creating
-`authoring-svg-flat/`; the manual two-pass commands above remain the
-create-template path.
+PPTX template import and round-trip import run vector readability extraction in
+their staging transaction before the first authoring bundle is published. The
+manual extraction commands above are only for external SVG/migration input.
 
 `extract_svg_assets.py` extracts only non-semantic decoration. Any subtree that
 contains a semantic object, text, table, chart, relationship, or other

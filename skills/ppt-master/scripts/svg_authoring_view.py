@@ -51,13 +51,16 @@ from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from compact_svg_coordinates import compact_svg_tree
-from compact_svg_styles import compact_svg_style_tree
 from console_encoding import configure_utf8_stdio
 from pptx_shapes import (
     NATIVE_FALLBACK_SHA256_ATTR,
     svg_native_fallback_fingerprint,
 )
 from svg_compatibility import normalize_single_child_group_filters
+from svg_authoring_contract import (
+    canonical_authoring_errors,
+    normalize_compact_authoring_tree,
+)
 
 configure_utf8_stdio()
 
@@ -77,6 +80,15 @@ SEMANTIC_TABLE_KIND = "table"
 # that cannot move to an editable vector asset become atomic source proxies.
 SOURCE_PROXY_MIN_BYTES = 4096
 _SEMANTIC_CONTENT_TAGS = frozenset({"foreignObject", "text", "tspan"})
+_SEMANTIC_AUTHORING_ATTRIBUTES = frozenset({
+    "data-pptx-inline-formula",
+    "data-pptx-page-role",
+    "data-pptx-placeholder",
+    "data-pptx-replace-with",
+    "data-pptx-role",
+    "data-pptx-shape-hyperlink",
+    SEMANTIC_OBJECT_ATTRIBUTE,
+})
 _DRAWABLE_TAGS = frozenset({
     "circle",
     "ellipse",
@@ -85,6 +97,12 @@ _DRAWABLE_TAGS = frozenset({
     "polygon",
     "polyline",
     "rect",
+})
+_SEMANTIC_CARRIER_OWNER_ATTRIBUTES = frozenset({
+    "data-pptx-frame",
+    "data-pptx-geometry-kind",
+    "data-pptx-object",
+    "data-pptx-prst",
 })
 _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
 _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
@@ -763,6 +781,19 @@ def _compact_semantic_shapes(root: ET.Element, stats: ProjectionStats) -> None:
             raise ValueError("Semantic shape requires exactly one geometry carrier")
         carrier = carriers[0]
         stats.compatibility_normalizations += _make_geometry_carrier_visible(carrier)
+        for name in list(carrier.attrib):
+            if (
+                name not in _SEMANTIC_CARRIER_OWNER_ATTRIBUTES
+                and not name.startswith("data-pptx-av-")
+            ):
+                continue
+            owner_value = shape.get(name)
+            if owner_value is None or owner_value != carrier.get(name):
+                raise ValueError(
+                    f"Semantic shape owner/carrier values differ for {name}"
+                )
+            carrier.attrib.pop(name, None)
+            stats.compatibility_normalizations += 1
 
         direct_texts = [
             child for child in shape
@@ -1205,6 +1236,21 @@ def _prefer_editable_vector_asset(element: ET.Element) -> bool:
     )
 
 
+def _contains_authoring_semantics(element: ET.Element) -> bool:
+    """Keep meaning-bearing content inline and editable for the model."""
+    for item in element.iter():
+        if _local_name(item.tag) in _SEMANTIC_CONTENT_TAGS:
+            return True
+        if any(item.get(name) is not None for name in _SEMANTIC_AUTHORING_ATTRIBUTES):
+            return True
+        if (
+            _local_name(item.tag) == "metadata"
+            and item.get("type") == "application/json"
+        ):
+            return True
+    return False
+
+
 def _externalize_large_source_objects(
     root: ET.Element,
     references: list[SourceReference],
@@ -1237,6 +1283,7 @@ def _externalize_large_source_objects(
         original_bytes = len(ET.tostring(element, encoding="utf-8"))
         if (
             original_bytes < SOURCE_PROXY_MIN_BYTES
+            or _contains_authoring_semantics(element)
             or _prefer_editable_vector_asset(element)
         ):
             continue
@@ -1315,12 +1362,6 @@ def _render_projection(
     )
     _strip_import_attributes(root, stats)
     _rewrite_asset_references(root, source.parent, output.parent, stats)
-    stats.coordinate_attributes_compacted = compact_svg_tree(
-        root,
-    ).changed_attributes
-    stats.style_declarations_compacted = compact_svg_style_tree(
-        root,
-    ).changed_declarations
     source_proxy_assets: dict[Path, bytes] = {}
     if source_proxy_dir is not None:
         source_proxy_assets.update(_compact_semantic_tables(
@@ -1337,6 +1378,13 @@ def _render_projection(
             source_proxy_dir,
             stats,
         ))
+    normalization = normalize_compact_authoring_tree(root)
+    stats.coordinate_attributes_compacted = (
+        normalization.coordinates.changed_attributes
+    )
+    stats.style_declarations_compacted = (
+        normalization.styles.changed_declarations
+    )
     live_elements = set(root.iter())
     for marker in fresh_native_markers & live_elements:
         if marker.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_TABLE_KIND:
@@ -1347,6 +1395,13 @@ def _render_projection(
             svg_native_fallback_fingerprint(marker, document_root=root),
         )
     _index_initial_authoring_references(root, source_references)
+
+    contract_errors = canonical_authoring_errors(root)
+    if contract_errors:
+        raise ValueError(
+            "Canonical authoring projection failed: "
+            + "; ".join(contract_errors)
+        )
 
     projected = ET.tostring(root, encoding="utf-8", xml_declaration=False)
     if not projected.endswith(b"\n"):

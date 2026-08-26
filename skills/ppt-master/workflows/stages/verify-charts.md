@@ -140,7 +140,7 @@ After updating any page, follow the active profile's checker order. Default
 reruns its quality checker to confirm nothing broke:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --canonical-authoring
 ```
 
 Quick completes every chart comparison/repair first, then returns to

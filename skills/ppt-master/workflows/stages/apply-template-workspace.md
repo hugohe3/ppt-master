@@ -65,7 +65,7 @@ registration: Brand/Style are roster-free, the active structure validates its
 roster, and a shadowed Deck still validates its declared contract:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode --canonical-authoring
 ```
 
 Any error blocks installation.

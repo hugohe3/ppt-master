@@ -32,6 +32,8 @@ from zipfile import BadZipFile
 
 from console_encoding import configure_utf8_stdio
 from pptx_workspace import (
+    AUTHORING_SVG_DIR,
+    AUTHORING_SVG_FLAT_DIR,
     CONVERSION_REPORT_PATH,
     TEMPLATE_MANIFEST_PATH,
     reject_removed_workspace_layout,
@@ -48,6 +50,53 @@ configure_utf8_stdio()
 
 _MANIFEST_NAME = TEMPLATE_MANIFEST_PATH.as_posix()
 _CONVERSION_REPORT_NAME = CONVERSION_REPORT_PATH.as_posix()
+
+
+def _project_authoring_directory(
+    staged_dir: Path,
+    *,
+    source_dir: Path,
+    output_dir: Path,
+    projection_kind: str,
+    id_prefix: str,
+    reuse_inventory_path: Path | None = None,
+) -> int:
+    """Create one compact, readable authoring bundle in the transaction."""
+    from extract_svg_assets import extract_directory
+    from svg_authoring_view import project_svg_batch
+
+    source_root = staged_dir / source_dir
+    authoring_root = staged_dir / output_dir
+    sources = sorted(source_root.rglob("*.svg"))
+    if not sources:
+        raise ValueError(f"No SVG files found under {source_root}")
+    mapping = [
+        (source, authoring_root / source.relative_to(source_root))
+        for source in sources
+    ]
+    reports = project_svg_batch(
+        mapping,
+        source_root,
+        authoring_root,
+        force=False,
+        projection_kind=projection_kind,
+        source_proxy_dir=(
+            staged_dir / "images" / "source-object-previews"
+        ),
+    )
+    extract_directory(
+        authoring_root,
+        staged_dir / "icons",
+        "imported",
+        min_decoration_bytes=3000,
+        inplace=True,
+        id_prefix=id_prefix,
+        inventory_path=(
+            staged_dir / f"{output_dir.name}_vector_asset_inventory.json"
+        ),
+        reuse_inventory_path=reuse_inventory_path,
+    )
+    return len(reports)
 
 
 def parse_args() -> argparse.Namespace:
@@ -211,6 +260,8 @@ def main() -> int:
 
         result = None
         total_bytes = 0
+        authoring_files = 0
+        flat_authoring_files = 0
         if not args.manifest_only:
             from pptx_to_svg import convert_pptx_to_svg
             from pptx_to_svg.converter import ConvertOptions
@@ -234,6 +285,31 @@ def main() -> int:
                 len(art.svg.encode("utf-8"))
                 for art in result.slides
             )
+            try:
+                authoring_files = _project_authoring_directory(
+                    staged_dir,
+                    source_dir=Path("svg"),
+                    output_dir=AUTHORING_SVG_DIR,
+                    projection_kind=(
+                        "flat" if args.inheritance_mode == "flat" else "layered"
+                    ),
+                    id_prefix="layered",
+                )
+                if args.inheritance_mode == "both":
+                    flat_authoring_files = _project_authoring_directory(
+                        staged_dir,
+                        source_dir=Path("svg-flat"),
+                        output_dir=AUTHORING_SVG_FLAT_DIR,
+                        projection_kind="flat",
+                        id_prefix="flat",
+                        reuse_inventory_path=(
+                            staged_dir
+                            / f"{AUTHORING_SVG_DIR.name}_vector_asset_inventory.json"
+                        ),
+                    )
+            except (ET.ParseError, OSError, RuntimeError, ValueError) as exc:
+                print(f"Error: failed to create compact authoring SVG: {exc}")
+                return 1
 
         from pptx_to_svg.converter import publish_staged_workspace
 
@@ -274,12 +350,21 @@ def main() -> int:
 
         print(f"Inheritance mode: {args.inheritance_mode}")
         print(f"Exported SVG slides: {len(result.slides)}")
+        print(
+            f"Compact authoring files: {authoring_files} "
+            f"({AUTHORING_SVG_DIR}/)"
+        )
         if args.inheritance_mode in {"layered", "both"}:
             print(f"Exported masters: {len(result.masters)}")
             print(f"Exported layouts: {len(result.layouts)}")
             print("Inheritance graph: svg/inheritance.json")
         if result.flat_slides:
             print(f"Flat companion slides: {len(result.flat_slides)} (svg-flat/)")
+        if flat_authoring_files:
+            print(
+                f"Flat compact authoring files: {flat_authoring_files} "
+                f"({AUTHORING_SVG_FLAT_DIR}/)"
+            )
         if result.diagnostics:
             print(
                 f"Source recovery warnings: {len(result.diagnostics)} "

@@ -133,6 +133,24 @@ _INHERITED_PRESENTATION_ATTRIBUTES = frozenset({
     "text-decoration",
     "word-spacing",
 })
+_ROOT_TYPOGRAPHY_ATTRIBUTES = (
+    "font-family",
+    "font-size",
+    "font-style",
+    "font-weight",
+    "letter-spacing",
+    "text-anchor",
+    "text-decoration",
+    "word-spacing",
+)
+_TEXT_PRESENTATION_ATTRIBUTES = frozenset(_ROOT_TYPOGRAPHY_ATTRIBUTES)
+_TEXT_PRESENTATION_CONTAINERS = frozenset({
+    "a",
+    "g",
+    "svg",
+    "text",
+    "tspan",
+})
 _AGGREGATE_GROUP_ATTRIBUTES = frozenset({
     "clip-path",
     "filter",
@@ -1460,15 +1478,29 @@ def _visible_leaf(element: ET.Element) -> bool:
 
 
 def _merge_group_inheritance(parent: ET.Element, child: ET.Element) -> None:
+    child_tag = _local_name(child.tag)
     for name in _INHERITED_PRESENTATION_ATTRIBUTES:
+        if (
+            name in _TEXT_PRESENTATION_ATTRIBUTES
+            and child_tag not in _TEXT_PRESENTATION_CONTAINERS
+        ):
+            continue
         if parent.get(name) is not None and child.get(name) is None:
             child.set(name, parent.get(name, ""))
     parent_style = _parse_style(parent.get("style"))
     child_style = _parse_style(child.get("style"))
     if parent_style:
-        merged = dict(parent_style)
+        merged = {
+            name: value
+            for name, value in parent_style.items()
+            if (
+                name not in _TEXT_PRESENTATION_ATTRIBUTES
+                or child_tag in _TEXT_PRESENTATION_CONTAINERS
+            )
+        }
         merged.update(child_style)
-        child.set("style", _style_text(merged))
+        if merged:
+            child.set("style", _style_text(merged))
     parent_transform = (parent.get("transform") or "").strip()
     child_transform = (child.get("transform") or "").strip()
     if parent_transform:
@@ -1559,13 +1591,15 @@ def _fixed_atoms(
             continue
         if not _visible_leaf(child):
             continue
+        item = copy.deepcopy(child)
+        _merge_group_inheritance(root, item)
         if tag == "g":
             expanded = _flatten_fixed_group(
-                child,
+                item,
                 context=f"{scope} {key} element {child.get('id') or '<g>'}",
             )
         else:
-            expanded = [copy.deepcopy(child)]
+            expanded = [item]
         expanded = _flatten_fixed_text_atoms(expanded)
         source_ref = child.get(SOURCE_REF_ATTRIBUTE)
         source_token = source_ref.split(":", 1)[-1] if source_ref else str(serial + 1)
@@ -2387,6 +2421,18 @@ def _compose_template(
         },
     )
 
+    typography_roots = [
+        candidate
+        for candidate in (master_root, layout_root, slide_root)
+        if candidate is not None
+    ]
+    for name in _ROOT_TYPOGRAPHY_ATTRIBUTES:
+        for candidate in typography_roots:
+            value = candidate.get(name)
+            if value is not None:
+                root.set(name, value)
+                break
+
     roots = [master_root, layout_root]
     if slide_root is not None:
         roots.append(slide_root)
@@ -2427,9 +2473,12 @@ def _compose_template(
                 continue
             source_ref = child.get(SOURCE_REF_ATTRIBUTE)
             if source_ref in placeholder_refs:
-                source_placeholder_elements[source_ref] = child
+                item = copy.deepcopy(child)
+                _merge_group_inheritance(slide_root, item)
+                source_placeholder_elements[source_ref] = item
                 continue
             item = copy.deepcopy(child)
+            _merge_group_inheritance(slide_root, item)
             if _is_full_canvas_rect(item, width, height):
                 item.set("id", item.get("id") or f"slide-{slide['index']}-background")
                 item.set("data-pptx-layer", "slide")

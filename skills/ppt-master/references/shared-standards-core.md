@@ -140,17 +140,18 @@ text uses a non-empty `font-family`, a finite positive unitless-px `font-size`,
 underline/strike, text outline/alpha, gradient text, or text filter effects.
 Unknown or unmapped declarations fail Checker preflight and native export.
 
-**Hard rule — compact inherited authoring**: Generated SVG expresses shared
-presentation values once at the nearest useful common scope. Put the page's
-common `font-family` on the root `<svg>`; a meaningful `<g>` may override a
-shared value for its subtree. Descendant `<text>` / `<tspan>` and drawing
-elements write only values that differ from their inherited effective value.
-Do not repeat the same font, size, weight, paint, stroke, anchor, or spacing on
-every child for self-containment: root/group inheritance is part of the native
-export contract. Keep true exceptions explicit. Run `compact_svg_styles.py`
-on generated or materialized SVG before its quality gate; this normalization
-does not authorize CSS classes, embedded stylesheets, or any otherwise
-unsupported property.
+**Hard rule — compact inherited authoring**: Author canonical compact SVG on
+first publish. Put common typography presentation attributes on `<svg>`, with a
+direct `font-family` whenever text is visible; root paint/effects are forbidden.
+Put shared typography or paint on the nearest meaningful `<g>` and keep true
+child overrides explicit. Inheritance is part of native export, not a lossy
+post-process.
+
+The source stays valid, browser-visible, semantic, locally editable SVG;
+meaning and deterministic export outrank bytes. Never use classes/stylesheets,
+aliases/private keys, encoded payloads, precision loss, or unrelated
+indirection. `--canonical-authoring` is its read-only gate;
+`compact_svg_styles.py` is legacy migration/diagnosis only.
 
 > **`marker-start` / `marker-end` is conditional** — see §1.1.
 >
@@ -324,46 +325,38 @@ one. This array is still diagnostic metadata, not an authoring surface.
 
 | Representation | Contract |
 |---|---|
-| Lossless import SVG | Keep complete native payload, hidden carriers, and preview evidence in the temporary analysis workspace. It is immutable native-payload backing, not the editable template source. |
-| Authoring IR bundle | Keep editable SVGs plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and a stable document-local `data-pptx-source-ref` on each imported logical object. Compact model-facing imported frames and safe transform page coordinates to at most two decimals before hashing the IR. The summary owns the compact current-file index; the manifest owns source paths and initial hashes and never enters model context. |
-| `standard` / `fidelity` output | Use the compact authored-preset contract (§1.5) for newly authored stock shapes; do not transplant opaque import payload or source topology. |
-| `mirror` output | Materialize from the edited authoring IR. Rehydrate supported imported metadata only when a Slide-local/slot object's source ref and initial authoring hash still match; otherwise keep the current SVG fallback. Expand fixed Master/Layout group wrappers into direct semantic atoms while preserving source ownership, paint order, and visible appearance. |
+| Lossless import SVG | Immutable native payload and preview evidence in the temporary analysis workspace; never editable template source. |
+| Authoring IR bundle | Editable SVG plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Keep visible intent and document-local `data-pptx-source-ref`, but omit opaque/duplicate carriers. Before hashing, compact safe imported frame/transform coordinates to two decimals. Summary indexes current files; manifest owns source paths/hashes and stays outside model context. |
+| `standard` / `fidelity` output | Use §1.5 compact presets; never transplant opaque payload or source topology. |
+| `mirror` output | Materialize edited IR. Rehydrate supported metadata only for a matching Slide-local/slot ref and initial hash; otherwise keep SVG fallback. Expand fixed Master/Layout wrappers to direct semantic atoms without changing ownership, paint order, or appearance. |
 
 **Hard rule — model-facing page-coordinate precision**:
 
 | Surface | Precision contract |
 |---|---|
-| Imported `data-pptx-frame` in authoring IR | At most two decimals. An unchanged mirror source ref recovers the exact lossless frame before tool-side native-record externalization. |
+| Imported `data-pptx-frame` in authoring IR | At most two decimals; an unchanged mirror ref recovers the exact lossless frame before native-record externalization. |
 | `data-pptx-bounds` in generated and final template SVG | At most two decimals. |
-| `translate(...)`, `rotate(... cx cy)`, and `matrix(... e f)` | Translation values and rotation centers use at most two decimals. Keep the rotation angle and matrix `a b c d` coefficients unchanged. |
-| Protected values | Do not apply this compaction to path/points geometry, normalized crop or nested `viewBox` ratios, gradient offsets, opacity, scale arguments, canonical authored-preset frames, or lossless/tool-side native frames. |
+| `translate(...)`, `rotate(... cx cy)`, and `matrix(... e f)` | Translation/center values use at most two decimals; keep angle and matrix `a b c d` unchanged. |
+| Protected values | Never compact path/points geometry, crop/nested-`viewBox` ratios, gradient offsets, opacity, scale, canonical preset frames, or lossless/tool-side frames. |
 
-**Hard rule — authoring source refs**: `data-pptx-source-ref` is reserved for
-the create-template authoring IR. Its value is unique within one authoring SVG,
-not across the workspace, and must be resolved through that document's
-`authoring_manifest.json` record by the owning tool. Models MUST NOT read that
-machine manifest. Moving a referenced subtree into
-`icons/imported/` for readability must preserve the attribute and record it in
-the vector inventory; re-inlining re-establishes the same mapping. Final materialized
-template SVGs and normal project `svg_output/` must not contain this attribute.
+**Hard rule — authoring source refs**: `data-pptx-source-ref` is create-template
+IR-only and unique per document. Tools resolve it through that document's
+`authoring_manifest.json`; models never read the manifest. Extract/re-inline
+preserves the ref and vector inventory mapping. Final templates and
+`svg_output/` contain no source refs.
 
-**Hard rule — round-trip decoration extraction**: move text-free
-vector decorations from `authoring-svg-flat/` into `icons/imported/` and leave
-a `<use data-icon="imported/...">` reference in the page. Retain refs
-in the inventory. The live editor expands the reference; an unchanged asset
-restores native source objects, while an edited asset is one page-local vector
-edit unit.
+**Hard rule — decoration extraction**: move text-free imported vectors to
+`icons/imported/` and leave an inventoried `<use data-icon="imported/...">`.
+The editor expands it; unchanged assets restore source objects and edited ones
+become page-local vector units.
 
-**Hard rule — round-trip source proxy fallback**: represent a
-semantic/native-payload object that cannot safely become an editable vector
-asset as an atomic `<image data-pptx-source-proxy="native-restore">` whose
-SVG preview lives under `images/source-object-previews/`. The page keeps only
-the outer source ref; descendant identity remains in immutable backing. An
-unchanged proxy restores the native object. Complete removal deletes a
-Slide-local object; an inherited Master/Layout proxy must remain
-because a flat page cannot delete shared structure. Proxy or preview edits must
-fail export rather than downgrade the object. Both compactions are
-round-trip-only and do not apply to layered create-template authoring IR.
+**Hard rule — imported source proxy fallback**: only unsupported, text-free,
+schema-free, unmarked ornament may use an atomic
+`<image data-pptx-source-proxy="native-restore">` preview under
+`images/source-object-previews/`. Meaning-bearing content stays readable inline
+or reports a conversion gap. Unchanged proxies restore; removing a Slide-local
+proxy deletes it, while inherited proxies remain. Proxy edits fail export.
+Extraction/proxies are import-time only, never free-authored `svg_output/`.
 
 **Hard rule — structural-layer boundary**: An unchanged imported logical object
 may keep currently supported metadata while it remains Slide-local or inside a

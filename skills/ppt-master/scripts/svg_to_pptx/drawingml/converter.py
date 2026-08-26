@@ -814,6 +814,17 @@ def _convert_semantic_shape(
         )
     carrier = copy.deepcopy(carriers[0])
     _make_semantic_geometry_carrier_visible(carrier)
+    for name, value in shape.attrib.items():
+        if (
+            name in {
+                'data-pptx-frame',
+                'data-pptx-geometry-kind',
+                'data-pptx-object',
+                'data-pptx-prst',
+            }
+            or name.startswith('data-pptx-av-')
+        ) and carrier.get(name) is None:
+            carrier.set(name, value)
     for name in (
         'data-pptx-shape-id',
         'data-pptx-shape-name',
@@ -1638,8 +1649,14 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
             elem,
         )
         source_custom = (
-            carrier.get('data-pptx-geometry-kind') == 'custom'
-            and carrier.get('data-pptx-frame') is not None
+            (
+                carrier.get('data-pptx-geometry-kind')
+                or elem.get('data-pptx-geometry-kind')
+            ) == 'custom'
+            and (
+                carrier.get('data-pptx-frame')
+                or elem.get('data-pptx-frame')
+            ) is not None
         )
         expected_hash = carrier.get('data-pptx-geometry-sha256')
         actual_hash = hashlib.sha256(
