@@ -689,6 +689,10 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么导入型与生成型 metadata 分层。** 导入 PPTX 时，完整 SVG 可以携带高级形状所需的 metadata、隐藏 carrier 和预览指纹，因此作为原生载荷后备留在临时分析工作区且保持不可变。`svg_authoring_view.py` 生成模板创建所用的可编辑 IR：轻量 SVG 通过文档内 source ref 标识对象，`authoring_manifest.json` 只记录路径与初始 hash，不重复保存原始载荷。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化通过校验的模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，IR 专用 ref 不进入最终模板 SVG。
 
+**为什么 PPTX 往返使用语义工作区，而不是照搬 ZIP 目录。** 可编辑页面源是 `authoring-svg-flat/`；PowerPoint 图片媒体、导入的可复用矢量、提示音、音频、视频、备注和不透明载荷分别位于 `images/`、`icons/imported/`、`sounds/`、`audio/`、`video/`、`notes/` 和 `native-payloads/`。精确来源包保存在 `sources/source.pptx`，结构与归属契约保存在 `analysis/`，诊断保存在 `validation/`，发布文件保存在 `exports/`。这样既让作者路径与普通项目一致，又由 `analysis/roundtrip_manifest.json` 把语义文件映射回 package 归属。导入与导出只接受这一份契约；根目录下的 `source_template.pptx`、`native_structure.json`、`conversion-report.json` 与 `assets/` 都不是兼容输入。
+
+大型导入表格和复杂组合被视为来源支撑的原子对象，而不是在模型可见 SVG 中展开成数千个节点。它们的精确浏览器预览以 hash 命名存放在 `images/source-object-previews/`，`authoring-svg-flat/` 只保留一个紧凑的 `native-restore` 图片代理和外层 source ref。未修改的代理会恢复完整原生 OOXML 对象，包括 PowerPoint 原生表格；删除 Slide-local 代理会删除该对象。继承自 Master/Layout 的代理必须保留，因为单个 flat 页面不能删除共享结构。修改代理或预览会直接阻止导出，因为静默编译为图片或 SVG 派生形状会违背往返意图。
+
 **为什么只有一条 PPTX 编译路线。** Native 导出把作者 SVG 中受支持的元素逐个翻译成 DrawingML 形状。常规 deck 路线读取 `svg_output/`；用户需要时，create-template 对通过校验的模板原型调用同一 structured 编译器，生成 `exports/<id>_template_preview.pptx` 作为审阅证据。项目不会把整页 SVG 媒体或另一套位图渲染打包成第二类 PPTX。`svg_final/` 仍由常规 deck 的强制后处理生成，但只承担派生视觉预览和 SVG 图片插入，不为 PowerPoint 手工“转换为形状”提供兼容兜底。
 
 **为什么结构化复用路线必须在视觉生成前确定结构。** Master 和 Layout 不是后处理阶段才发现的结果。使用 `template_reuse_scope: mirror|layout` 时，Strategist 在 SVG 生成前写出唯一 Master/Layout 定义和完整页面分配；Executor 在构图时同步写入这些身份、固定原子元素和槽位，导出器只编译声明。`template_reuse_scope: style`、自由设计与 brand-only deck 做的是相反的取舍：保持 `mode: flat`，所有对象留在 Slide 本地，不写任何结构 metadata，导出时只获得一个属于本项目的干净 Master/Blank-Layout 壳。旧输入可以为新的 `create-template` 工作区提供参考，但不存在原地升级结构的路线；两种生成模式都不会触发启发式 Master/Layout 提升或 placeholder 推断。

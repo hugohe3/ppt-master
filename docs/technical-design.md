@@ -808,6 +808,17 @@ These direct routes share some analysis primitives with the main pipeline, but a
 
 **Why PPTX round-trip uses a semantic workspace rather than a ZIP-shaped tree.** The editable page source is `authoring-svg-flat/`; PowerPoint image media, imported reusable vectors, cues, audio, video, notes, and opaque payloads live under `images/`, `icons/imported/`, `sounds/`, `audio/`, `video/`, `notes/`, and `native-payloads/`. The exact backing package stays at `sources/source.pptx`, structural and ownership contracts stay under `analysis/`, diagnostics stay under `validation/`, and published decks stay under `exports/`. This keeps authoring paths aligned with normal projects while `analysis/roundtrip_manifest.json` maps semantic files back to package ownership. Import and export use this one contract: root `source_template.pptx`, `native_structure.json`, `conversion-report.json`, and `assets/` are invalid rather than compatibility inputs.
 
+Large imported tables and complex groups are source-backed atoms rather than
+thousands of model-facing SVG nodes. Their exact browser previews are hashed
+under `images/source-object-previews/`, and `authoring-svg-flat/` keeps one
+compact `native-restore` image proxy plus the outer source reference. An
+unchanged proxy rehydrates the complete native OOXML object, including a native
+PowerPoint table; deleting a Slide-local proxy deletes that object. Inherited
+Master/Layout proxies must remain because one flat page cannot delete shared
+structure. Editing either the proxy or its preview fails closed because
+silently compiling it as a picture or SVG-derived shapes would violate
+round-trip intent.
+
 **Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; when requested, create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is only a derived visual-preview / SVG-picture artifact rather than a PPTX source; PowerPoint's manual Convert to Shape command remains outside the supported contract.
 
 **Why structure is authored before visual generation on structured reuse routes.** Master and Layout are not post-processing discoveries. With `template_reuse_scope: mirror|layout`, the Strategist writes unique Master/Layout definitions and complete page assignments before SVG generation; the Executor writes those identities, fixed atoms, and slots while composing each page, and export only compiles declared structure. `template_reuse_scope: style`, free-design, and brand-only decks make the opposite trade: they stay on `mode: flat`, keep every object Slide-local, author no structure metadata, and receive only a clean project-owned Master/Blank-Layout shell at export. Legacy inputs may inform a new `create-template` workspace, but they never enter an in-place structure-upgrade route; neither generation mode triggers heuristic Master/Layout promotion or placeholder inference.

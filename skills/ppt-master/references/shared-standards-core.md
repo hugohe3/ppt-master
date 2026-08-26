@@ -335,6 +335,16 @@ machine manifest. Moving a referenced subtree into
 the vector inventory; re-inlining re-establishes the same mapping. Final materialized
 template SVGs and normal project `svg_output/` must not contain this attribute.
 
+A round-trip flat bundle may represent one large imported logical object as an
+atomic `<image data-pptx-source-proxy="native-restore">` whose hashed SVG preview
+lives under `images/source-object-previews/`. The page keeps only the outer
+source ref; descendant source identity remains in immutable backing. An
+unchanged proxy restores the complete native object. Complete removal deletes a
+Slide-local object; an inherited Master/Layout proxy must remain because one
+flat page cannot delete shared structure. Any proxy or preview edit must fail
+export rather than downgrade the object. This compaction is round-trip-only and
+does not apply to layered create-template authoring IR.
+
 **Hard rule — structural-layer boundary**: An unchanged imported logical object
 may keep currently supported metadata while it remains Slide-local or inside a
 slot. An imported logical `<g>` cannot be assigned to Master/Layout because

@@ -140,7 +140,13 @@ Relative local image references are rewritten so the projected copy still
 renders from its new location. The bundle's `authoring_summary.json` is the
 model-readable current-file index; `authoring_manifest.json` records
 source/authoring hashes and object paths for tools without duplicating opaque
-payload and does not enter model context. Imported model-facing frames and safe
+payload and does not enter model context. Round-trip flat bundles also replace
+large source-backed objects with compact `native-restore` image proxies whose
+hashed SVG previews live under `images/source-object-previews/`. Unchanged
+proxies restore the original native PowerPoint objects; complete removal deletes
+a Slide-local source object, while inherited-proxy removal and any proxy or
+preview edit fail export. Imported
+model-facing frames and safe
 transform page coordinates use at most two decimals; immutable lossless SVGs
 retain the original precision. In-place vector/picture extraction
 refreshes the summary automatically; use `--refresh-summary` after other direct

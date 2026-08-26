@@ -46,11 +46,24 @@ The projected copy:
 - compacts imported model-facing frames and safe transform page coordinates to
   at most two decimals.
 
+Round-trip flat projection additionally replaces any large source-backed
+logical object with one compact
+`<image data-pptx-source-proxy="native-restore">`. Its hashed SVG preview is
+stored under `images/source-object-previews/`, while the complete imported SVG
+and source PPTX remain the semantic authority. This keeps tables and complex
+group geometry out of model-facing page files without changing their browser
+rendering. A source proxy is atomic: leave it unchanged to restore the original
+native PowerPoint object. A complete Slide-local proxy may be removed to delete
+that object; an inherited Master/Layout proxy must remain because one flat page
+cannot delete shared structure. Editing the proxy or its preview asset fails
+round-trip export instead of silently rasterizing or flattening the object.
+
 The summary stores the current SVG roster plus compact per-file canvas, size,
-text, image, vector, placeholder, icon, and source-ref counts. Models read the
+text, image, vector, placeholder, icon, source-ref, and source-proxy counts. Models read the
 summary and editable SVGs; they do not read the machine manifest. The manifest
 stores relative source/authoring filenames, source and initial authoring hashes,
-and source element paths. It deliberately does not copy the opaque payload.
+source element paths, and immutable preview hashes for source proxies. It
+deliberately does not copy the opaque payload.
 The layered authoring bundle remains the editable source for template creation;
 the complete imported SVG remains immutable native-payload backing. Final
 `templates/*.svg` files are materialized and validated from that pair. A
