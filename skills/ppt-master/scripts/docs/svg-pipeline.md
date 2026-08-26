@@ -6,7 +6,15 @@
 
 These tools cover post-processing, SVG validation, speaker notes, recorded narration, and PPTX export.
 
-The supported delivery contract has one PPTX path: `svg_output/` → the project SVG-to-DrawingML converter → native PPTX. The mandatory `finalize_svg.py` step separately creates self-contained `svg_final/` visual previews, which may be opened directly or inserted into PowerPoint as SVG pictures. There is no SVG-image PPTX output, and PowerPoint's manual Convert-to-Shape operation is unsupported.
+The normal release contract has one PPTX path: `svg_output/` → the project
+SVG-to-DrawingML converter → native PPTX. An explicit dangerous compatibility
+path may apply its supported in-memory normalizations to the default
+`svg_output/` or to a project-relative directory selected with `-s`, then enter
+the same strict DrawingML converter.
+The mandatory `finalize_svg.py` step separately creates self-contained
+`svg_final/` visual previews, which may be opened directly or inserted into
+PowerPoint as SVG pictures. There is no SVG-image PPTX output, and PowerPoint's
+manual Convert-to-Shape operation is unsupported.
 
 ## `svg_authoring_view.py`
 
@@ -43,10 +51,23 @@ text, image, vector, placeholder, icon, and source-ref counts. Models read the
 summary and editable SVGs; they do not read the machine manifest. The manifest
 stores relative source/authoring filenames, source and initial authoring hashes,
 and source element paths. It deliberately does not copy the opaque payload.
-The authoring bundle is the editable source for template creation; the complete
-imported SVG remains immutable native-payload backing. Final
-`templates/*.svg` files are materialized and validated from that pair. The IR
-directory itself is not a supported direct input to `svg_to_pptx.py`.
+The layered authoring bundle remains the editable source for template creation;
+the complete imported SVG remains immutable native-payload backing. Final
+`templates/*.svg` files are materialized and validated from that pair. A
+complete-page `authoring-svg-flat/` bundle is the user's editable source for an
+imported-deck round-trip. Keep its SVGs in that directory, its corresponding
+bitmaps in the sibling `assets/` pool, and its extracted vectors in the sibling
+`icons/` pool; do not duplicate those resources into a second `images/` tree.
+With `-s authoring-svg-flat --roundtrip`, export verifies the manifest and
+immutable backing graph, regenerates the deterministic extraction baseline,
+restores every unchanged source-referenced object into a temporary layered
+slide, and retains edited/deleted/new authoring content. It then enters the
+same source-preserving package route as `-s svg --roundtrip`; the temporary
+materialization never rewrites the authoring bundle. The dangerous exporter is
+a separate flat compatibility mechanism and does not restore source objects.
+More generally, an SVG may reference a resource anywhere under the project
+root through an exact SVG-relative or project-root-relative path; export never
+recursively guesses among files with the same name.
 
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:
@@ -557,6 +578,12 @@ python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-desi
 python3 scripts/svg_to_pptx.py <pptx_import_output> -s svg --roundtrip
 # Template-import visual round-trip diagnostic only:
 python3 scripts/svg_to_pptx.py <template_import_output> -s svg-flat
+# Editable authoring-svg-flat -> source-preserving PPTX round-trip:
+python3 scripts/svg_to_pptx.py <pptx_import_output> -s authoring-svg-flat \
+  --roundtrip --no-notes --no-animations
+# The same compatibility mode defaults to svg_output/ when -s is omitted:
+python3 scripts/svg_to_pptx.py <project_path> \
+  --enable-dangerous-nonconforming-svg-export
 # Post-processed-source comparison diagnostic only (never a release export):
 python3 scripts/svg_to_pptx.py <project_path> -s final
 python3 scripts/svg_to_pptx.py <project_path> --no-notes
@@ -621,6 +648,7 @@ Behavior:
 - `exports/` contains only final PPTX deliverables; machine-readable quality and postflight reports belong in `validation/`.
 - The default Generate flow always runs `finalize_svg.py` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX. Quick-generate deliberately skips it.
 - In both Generate profiles, explicit `-o/--output` changes the native PPTX destination and skips `backup/`; the postflight report still uses the output stem under the project `validation/` directory.
+- A custom `-s/--source` also skips `backup/`: that directory remains the caller-owned SVG source and is never copied under a misleading `backup/<timestamp>/svg_output/` name. Default or explicit `-s output` export retains the normal SVG backup behavior.
 - Postflight reruns ZIP integrity and published Slide count. Internal relationships,
   structured-package validation, transitions, and animations are enforced before the
   builder publishes the PPTX and are reported as `enforced-at-build`, not as repeated
@@ -635,8 +663,8 @@ Behavior:
   - `--reflow-text`: eligible same-size lines become flowing prose that PowerPoint may rewrap; a font-size change, list marker, or accepted larger gap remains a paragraph boundary. Legacy `--merge-paragraphs` aliases this mode.
   - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
   - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
-- Native release export reads `svg_output/`. `-s final` is an explicit diagnostic override for comparing conversion behavior against post-processed SVGs; it does not change artifact ownership or create a supported release path.
-- `-s svg --roundtrip` consumes only the validated source package, structure sidecar, and layered `slide_*.svg` files emitted by `pptx_to_svg.py --roundtrip`. An unchanged imported chart with a closed validated source package automatically restores its original chart XML, style/color parts, workbook, and theme override without enabling ordinary semantic Chart/Table replacement. Its visible-fallback fingerprint remains authoritative: editing the SVG fallback disables stale exact replacement instead of discarding that edit.
+- Native release export reads `svg_output/`; `-s <directory>` selects another project-relative SVG source. `-s final` remains an explicit diagnostic comparison against post-processed SVGs and does not change artifact ownership. `--enable-dangerous-nonconforming-svg-export` is a separate, explicitly requested flat compatibility path for either the default or selected source; it forces flat structure, restores no imported source object, and cannot combine with `--roundtrip` or `--quick-generate`.
+- `--roundtrip` consumes the validated source package and structure sidecar emitted by `pptx_to_svg.py --roundtrip`. With `-s svg`, it reads the layered `slide_*.svg` files directly. With another `-s`, that directory must be a flat authoring IR with a valid `authoring_manifest.json`; export deterministically regenerates its pre-edit projection/extraction baseline, restores unchanged source refs from the layered backing, keeps edits/deletions/new elements, and records those counts in postflight. An unchanged imported chart with a closed validated source package automatically restores its original chart XML, style/color parts, workbook, and theme override without enabling ordinary semantic Chart/Table replacement. Its visible-fallback fingerprint remains authoritative: editing the SVG fallback disables stale exact replacement instead of discarding that edit.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export
@@ -644,7 +672,7 @@ Behavior:
   narration, transitions, and direct native-PPTX workflows keep their separate
   inputs and package-level processing.
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
-- Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
+- Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content. Dangerous compatibility export first applies the registry in `svg_compatibility.py`; it currently lowers a filter on an otherwise attribute-free one-child group whose child is a supported native filter target. The complete strict preflight then runs normally; every remaining contract, resource, conversion, relationship, or package error still blocks export.
 - Omitting `--pptx-structure` reads `spec_lock.md`. Free-design, brand-only, and `template_reuse_scope: style` releases declare `mode: flat`, omit Master/Layout mappings and SVG structure metadata, and materialize one clean project-owned Master plus one Blank Layout from the current lock. Deck/layout templates use `mode: structured` only for `template_reuse_scope: mirror|layout`, with complete unique `pptx_masters` / `pptx_layouts` rosters and one `page_pptx_layouts` assignment per page. A template-backed Layout definition may remain unused by pages and still register in the final package.
 - On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct semantic atoms. Ordinary layer `<g>` elements are invalid; one validated compact authored-preset `<g>` emitted by `preset_shape_svg.py` is the sole group exception because it compiles to one native shape.
 - Every visible direct root `<g>` except a compact helper-authored preset atom requires root-coordinate `data-pptx-bounds`; nested bounds are ignored. The text-free preset atom remains top-level when standalone, uses `data-pptx-frame`, and never carries bounds. Frame/native metadata never replaces bounds on any other group; placeholder bounds also define the slot frame. Checker compares root bounds with `viewBox`, descendant text with its module using DrawingML wrapping headroom, and every estimable visible text carrier directly with the root `viewBox` before that headroom. Images, shapes, paths, `<use>`, effects, and object frames are excluded from module containment. Per side, ≤`1px` is ignored; module overflow ≤`5%` warns and >`5%` fails, while larger page text overflow always fails. Bounds never clip/reflow; unestimable visible text warns. A wholly off-canvas direct-root Morph endpoint may opt out of page containment with `data-pptx-morph-staging="true"`; it still needs valid module bounds, retained Morph uses an explicit pair, and partial overflow remains blocking.
@@ -657,7 +685,7 @@ Behavior:
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.
 - `--conversion-trace` without a path writes `validation/<output_stem>.trace.json`. `--conversion-trace <path>` respects the explicit destination; relative paths are resolved from the project root, so `exports/<name>.trace.json` remains available when intentionally requested.
-- Formal default and `--quick-generate` release export compute the exact SVG source fingerprint and refuse a missing, unreadable, unsupported, non-final, blocking, stale, or unverifiable final quality report before PPTX creation. A project without `validation/svg_quality_report.json` exits nonzero with the `not-provided` gate status; run the final checker against its current `svg_output/` first. An explicit non-`output` `--source` remains a diagnostic override and bypasses this release gate; postflight still records any verifiable report linkage.
+- Formal default and `--quick-generate` release export compute the exact SVG source fingerprint and refuse a missing, unreadable, unsupported, non-final, blocking, stale, or unverifiable final quality report before PPTX creation. A project without `validation/svg_quality_report.json` exits nonzero with the `not-provided` gate status; run the final checker against its current `svg_output/` first. An explicit non-`output` `--source` remains outside this release gate. Dangerous compatibility export also stays outside it even when reading the default `svg_output/`: it automatically writes a conversion trace, marks postflight `passed-with-warnings`, and records its normalization count; it never claims that the source passed the normal authoring quality gate.
 - The final quality report carries an informational `carrier_receipt` aggregate plus each page's `files[].info.carrier_receipt`: actual text/image/icon counts, SVG geometry, native preset names, marker use, native Chart/Table/Formula markers, and largest image-frame share. The terminal prints only the compact aggregate. These facts never affect exit status, create coverage quotas, or score design; the active Generate profile compares them with its retained page decisions before export.
 - After publication, native export writes `validation/<output_stem>.report.json`. The report distinguishes authored Slides from internal Layout definitions, reruns ZIP integrity and published Slide-count checks, records slide/layout/master/notes part counts, labels relationship/structured/transition/animation validation as enforced at build time, links the final SVG quality report only when its SHA-256 source fingerprint matches the exact export inputs, and surfaces stale/unverified gates, unresolved template tokens, generic-only font stacks, and external image references. A matching final quality report with introduced warnings yields `passed-with-warnings` and a `quality_introduced_warnings=<N>` receipt instead of a clean `passed` claim.
 - By default, a successful command also prints a compact receipt instead of requiring a report read: `[POSTFLIGHT] status=<...> quality_gate=<...> slides=<N> warning_categories=<N>`, followed by one compact line per warning category and the `[PPTX]` / `[REPORT]` paths. Resource-warning lines carry counts; a non-passing quality gate carries its status. Routine agents use this receipt and do not load either complete validation JSON into model context. Full reports remain cold audit artifacts; failure investigation and explicit audits extract only the required fields. `--quiet` keeps suppressing successful-run output.
