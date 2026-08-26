@@ -4023,8 +4023,8 @@ def _prune_unreferenced_definition_payload_parts(
 ) -> int:
     """Remove generated native/media payload left by deleted carrier slides.
 
-    Definition-only SVGs are first converted as ordinary slides so their
-    reusable structure can be promoted. Removing those internal slides may
+    Unselected complete Slide prototypes are first converted as carrier slides
+    so their reusable Layout can be registered. Removing those carriers may
     leave chart, workbook, or media parts with no remaining relationship. Run
     an iterative incoming-reference sweep so chart-owned workbooks/styles are
     removed after their orphan chart part and relationship sidecar disappear.
@@ -5361,8 +5361,8 @@ def _clear_preserved_slide_collections(extract_dir: Path) -> None:
     _write_xml_tree(presentation_path, tree)
 
 
-def _install_source_theme_xml(extract_dir: Path, payload: bytes) -> None:
-    """Install a validated imported theme into the generated flat package."""
+def _validate_source_theme_xml(payload: bytes) -> None:
+    """Validate one imported Theme part before package installation."""
     try:
         root = ET.fromstring(payload)
     except ET.ParseError as exc:
@@ -5376,10 +5376,50 @@ def _install_source_theme_xml(extract_dir: Path, payload: bytes) -> None:
     ):
         raise ThemeColorError("Imported source theme cannot contain relationships")
 
+
+def _install_source_theme_xml(extract_dir: Path, payload: bytes) -> None:
+    """Install a validated imported theme into the generated flat package."""
+    _validate_source_theme_xml(payload)
+
     theme_paths = sorted((extract_dir / "ppt" / "theme").glob("theme*.xml"))
     if not theme_paths:
         raise ThemeColorError("Generated PPTX package has no theme part")
     for theme_path in theme_paths:
+        theme_path.write_bytes(payload)
+
+
+def _install_source_themes_by_master(
+    extract_dir: Path,
+    master_parts_by_key: dict[str, str],
+    payloads_by_key: dict[str, bytes],
+) -> None:
+    """Install one exact source Theme into each structured mirror Master."""
+    expected = set(master_parts_by_key)
+    actual = set(payloads_by_key)
+    if actual != expected:
+        raise ThemeColorError(
+            "Structured source Theme roster differs from Master roster; "
+            f"missing={sorted(expected - actual)}, extra={sorted(actual - expected)}"
+        )
+    for master_key, master_part in master_parts_by_key.items():
+        payload = payloads_by_key[master_key]
+        _validate_source_theme_xml(payload)
+        master_rels = _relationships_path_for_part(extract_dir, master_part)
+        targets = [
+            attrs["Target"]
+            for attrs in _read_relationships(master_rels).values()
+            if attrs.get("Type") == THEME_REL_TYPE and attrs.get("Target")
+        ]
+        if len(targets) != 1:
+            raise ThemeColorError(
+                f"Structured Master {master_key!r} must own one Theme relationship"
+            )
+        theme_part = _resolve_package_target(master_part, targets[0])
+        theme_path = extract_dir / theme_part
+        if not theme_path.is_file():
+            raise ThemeColorError(
+                f"Structured Master {master_key!r} Theme part is missing: {theme_part}"
+            )
         theme_path.write_bytes(payload)
 
 
@@ -5536,6 +5576,7 @@ def create_pptx_with_native_svg(
     master_text_style_spec: MasterTextStyleSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
     source_theme_xml: bytes | None = None,
+    source_theme_xml_by_master: dict[str, bytes] | None = None,
     source_embedded_fonts: EmbeddedFontBundle | None = None,
     structured_baseline: bool = False,
     baseline_layout_specs: list[TemplateSlideSpec] | None = None,
@@ -5553,12 +5594,12 @@ def create_pptx_with_native_svg(
     Args:
         svg_files: List of SVG files.
         output_path: Output PPTX path.
-        layout_definition_files: Optional structured SVG prototypes for Layouts
-            that no generated page uses. They are converted on internal carrier
-            slides, registered, and removed before the package is published.
+        layout_definition_files: Optional complete Slide SVG prototypes for
+            Layouts that no generated page uses. They are converted on internal
+            carrier slides, registered, and removed before publication.
         canvas_format: Canvas format key.
         expected_viewbox: Optional project/template-lock canvas contract. Every
-            public page and internal Layout definition must match it.
+            public page and internal Layout carrier prototype must match it.
         animation_resource_root: Project root for sidecar sound paths. Object
             animation sounds retain existing absolute-path compatibility;
             transition sounds must remain project-relative WAV files.
@@ -5602,8 +5643,9 @@ def create_pptx_with_native_svg(
             oversized sources; ``display`` sizes from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used when opaque rasters are re-encoded.
-        native_objects: Replace explicit ``data-pptx-replace-with`` chart/table
-            fallback groups with native PowerPoint Chart/Table objects. Default off.
+        native_objects: Replace opt-in ``data-pptx-replace-with`` chart/table
+            fallback groups with native PowerPoint Chart/Table objects. Semantic
+            authoring tables are intrinsically native. Default off for other markers.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         dangerous_nonconforming_export: Apply narrowly defined compatibility
             normalizations before strict SVG conversion. Actual contract,
@@ -5641,6 +5683,8 @@ def create_pptx_with_native_svg(
             flat/structured theme inheritance. Preserve mode ignores this value.
         source_theme_xml: Complete validated source theme used only by an
             explicit PPTX-import diagnostic round-trip.
+        source_theme_xml_by_master: Exact validated source themes keyed by
+            structured mirror Master identity.
         source_embedded_fonts: Validated source font-list metadata and font
             parts used only by an explicit PPTX-import diagnostic round-trip.
         primary_language: Canonical BCP-47 deck content language. ``None``
@@ -5651,6 +5695,14 @@ def create_pptx_with_native_svg(
     Returns:
         Whether all slides were successfully created.
     """
+    if source_theme_xml is not None and source_theme_xml_by_master is not None:
+        raise ThemeColorError(
+            "Use either one diagnostic source Theme or per-Master mirror Themes"
+        )
+    if source_theme_xml_by_master is not None and pptx_structure != "structured":
+        raise ThemeColorError(
+            "Per-Master source Themes are allowed only in structured export"
+        )
     text_flow = resolve_text_flow(text_flow, merge_paragraphs)
     if primary_language is not None:
         primary_language = normalize_language_tag(primary_language)
@@ -5738,20 +5790,20 @@ def create_pptx_with_native_svg(
     morph_shape_ids: dict[tuple[str, str], int] = {}
     if definition_svg_files and pptx_structure != "structured":
         raise ValueError(
-            "layout_definition_files requires pptx_structure='structured'"
+            "unselected Layout prototypes require pptx_structure='structured'"
         )
     public_paths = {path.resolve() for path in public_svg_files}
     seen_definition_paths: set[Path] = set()
     for path in definition_svg_files:
         resolved = path.resolve()
         if not path.is_file():
-            raise ValueError(f"Layout definition SVG does not exist: {path}")
+            raise ValueError(f"Layout prototype SVG does not exist: {path}")
         if resolved in public_paths:
             raise ValueError(
-                f"Layout definition SVG is already a generated page: {path}"
+                f"Layout prototype SVG is already a generated page: {path}"
             )
         if resolved in seen_definition_paths:
-            raise ValueError(f"Layout definition SVG is repeated: {path}")
+            raise ValueError(f"Layout prototype SVG is repeated: {path}")
         seen_definition_paths.add(resolved)
     public_slide_count = len(public_svg_files)
     svg_files = public_svg_files + definition_svg_files
@@ -5869,18 +5921,18 @@ def create_pptx_with_native_svg(
         print(f"  SVG file count: {public_slide_count}")
         if definition_svg_files:
             print(
-                "  Unused Layout definitions: "
-                f"{len(definition_svg_files)} internal prototype(s)"
+                "  Unselected Layout prototype carriers: "
+                f"{len(definition_svg_files)}"
             )
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
             native_object_mode = (
-                "Enabled"
+                "All registered markers enabled"
                 if native_objects
                 else (
-                    "Exact round-trip source packages only"
+                    "Semantic tables; exact round-trip source charts"
                     if native_structure_contract is not None
-                    else "Disabled"
+                    else "Semantic tables only"
                 )
             )
             print(
@@ -6094,7 +6146,7 @@ def create_pptx_with_native_svg(
             slide_num = i
             is_layout_definition = slide_num > public_slide_count
             progress_label = (
-                f"[Layout definition {slide_num - public_slide_count}/"
+                f"[Layout carrier {slide_num - public_slide_count}/"
                 f"{len(definition_svg_files)}]"
                 if is_layout_definition
                 else f"[Slide {slide_num}/{public_slide_count}]"
@@ -6887,6 +6939,12 @@ def create_pptx_with_native_svg(
                 use_layout_placeholder_frames=use_layout_placeholder_frames,
                 verbose=verbose,
             )
+            if source_theme_xml_by_master is not None:
+                _install_source_themes_by_master(
+                    extract_dir,
+                    template_master_parts_by_key,
+                    source_theme_xml_by_master,
+                )
             master_count = apply_master_text_style_spec(
                 extract_dir,
                 master_text_style_spec,
@@ -7205,7 +7263,8 @@ def create_pptx_with_native_svg(
                 print(f"  Trace: {conversion_trace_path}")
             print(
                 f"  Slides: {public_slide_count}; "
-                f"Layout definitions: {len(definition_svg_files)}"
+                "unselected Layout prototype carriers: "
+                f"{len(definition_svg_files)}"
             )
             if use_compat_mode and has_any_image:
                 print(f"  Mode: Office compatibility mode (supports all Office versions)")

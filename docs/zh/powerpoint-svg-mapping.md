@@ -179,7 +179,7 @@ PowerPoint 意图
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 视觉绘制表格 | 普通 SVG shape、line 与 text | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 它不是原生表格，也没有 PowerPoint 表格编辑模型 |
-| PowerPoint 原生表格 | 一个带 `<metadata type="application/json">` 和可见 fallback 的 `<g data-pptx-replace-with="table">` | 启用原生 Chart/Table 替换时产生含 `a:tbl` 的 `p:graphicFrame` | 导入受支持表格重建 fallback 加替换 metadata | metadata 必须形成已登记矩形 schema；需要 `--native-charts-and-tables` |
+| PowerPoint 原生表格 | 一个带 `ppt-master.semantic-table.v2` JSON metadata 和可见 fallback 的 `<g data-pptx-replace-with="table">` | 启用原生 Chart/Table 替换时产生含 `a:tbl` 的 `p:graphicFrame` | 导入时把重复的单元格、段落和 run 格式归纳为默认值及命名单元格样式；导出时在内存中展开 | metadata 必须形成已登记矩形 schema；拒绝无版本 payload；需要 `--native-charts-and-tables` |
 | 合并表格单元格 | 规范原生表格 merge metadata | 原生水平/垂直合并语义 | 封闭 schema 内为 `Native-stable` | 拒绝重叠、歧义或非矩形合并 |
 | 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段；导入的非空 run 效果会阻断，而不是归一化成无效果单元格 |
 | 不受支持的原生表格功能 | SVG fallback 或直接源保留 | 保留可见 fallback，或在直接路线保留源 OOXML | 显式 fallback / `Direct preservation` | 不得临时扩展 JSON |

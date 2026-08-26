@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import copy
 import hashlib
 import math
 import re
@@ -30,6 +31,11 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from resource_paths import icon_dir_for_project
+from svg_authoring_view import (
+    SEMANTIC_OBJECT_ATTRIBUTE,
+    SEMANTIC_SHAPE_KIND,
+    SEMANTIC_TABLE_KIND,
+)
 from svg_compatibility import normalize_single_child_group_filters
 
 from .context import (
@@ -199,6 +205,11 @@ def _native_replacement_enabled(elem: ET.Element, ctx: ConvertContext) -> bool:
     """Return whether this marker is active under the current export policy."""
     kind = native_replacement_kind(elem)
     if kind == 'formula':
+        return True
+    if (
+        kind == 'table'
+        and elem.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_TABLE_KIND
+    ):
         return True
     if elem.get('data-pptx-roundtrip-object') == 'source-chart-package':
         return kind == 'chart'
@@ -708,6 +719,127 @@ def _append_shape_text(
     )
 
 
+def _make_semantic_geometry_carrier_visible(element: ET.Element) -> None:
+    """Remove authoring-only hiding from a semantic geometry carrier clone."""
+    for name in ('visibility', 'display', 'pointer-events'):
+        element.attrib.pop(name, None)
+    style = element.get('style')
+    if style is None:
+        return
+    declarations = [
+        declaration.strip()
+        for declaration in style.split(';')
+        if declaration.strip()
+    ]
+    retained = [
+        declaration
+        for declaration in declarations
+        if declaration.split(':', 1)[0].strip().lower()
+        not in {'display', 'pointer-events', 'visibility'}
+    ]
+    if retained:
+        element.set('style', '; '.join(retained))
+    else:
+        element.attrib.pop('style', None)
+
+
+def _semantic_shape_text_body(
+    shape: ET.Element,
+    ctx: ConvertContext,
+) -> str | None:
+    texts = [
+        child
+        for child in shape
+        if child.tag.replace(f'{{{SVG_NS}}}', '') == 'text'
+    ]
+    nested_texts = [
+        child
+        for child in shape.iter()
+        if child.tag.replace(f'{{{SVG_NS}}}', '') == 'text'
+    ]
+    if nested_texts != texts:
+        raise SvgNativeConversionError(
+            'Semantic shape text must be one direct SVG text component'
+        )
+    if not texts:
+        return None
+    if len(texts) != 1:
+        raise SvgNativeConversionError(
+            'Semantic shape requires at most one paragraph-based text component'
+        )
+    frame = shape.get('data-pptx-frame')
+    if frame is None:
+        raise SvgNativeConversionError(
+            'Semantic shape text requires data-pptx-frame on its owner'
+        )
+
+    text = copy.deepcopy(texts[0])
+    text.set('data-pptx-frame', frame)
+    for name in (
+        'data-pptx-shape-id',
+        'data-pptx-shape-name',
+        'data-pptx-shape-scope',
+    ):
+        text.attrib.pop(name, None)
+    result = convert_text(text, ctx)
+    if result is None:
+        raise SvgNativeConversionError(
+            'Semantic shape text component produced no native text body'
+        )
+    match = re.search(r'(<p:txBody>.*?</p:txBody>)', result.xml, re.DOTALL)
+    if match is None:
+        raise SvgNativeConversionError(
+            'Semantic shape text did not compile to a p:txBody'
+        )
+    return match.group(1)
+
+
+def _convert_semantic_shape(
+    shape: ET.Element,
+    ctx: ConvertContext,
+) -> ShapeResult | None:
+    """Compile one normalized semantic SVG shape into one native PPT shape."""
+    if shape.get(SEMANTIC_OBJECT_ATTRIBUTE) != SEMANTIC_SHAPE_KIND:
+        return None
+    carriers = [
+        child
+        for child in shape
+        if child.get('data-pptx-part') == 'geometry'
+        and child.tag.replace(f'{{{SVG_NS}}}', '')
+        in {'circle', 'ellipse', 'line', 'path', 'polygon', 'polyline', 'rect'}
+    ]
+    if len(carriers) != 1:
+        raise SvgNativeConversionError(
+            'Semantic shape requires exactly one direct geometry carrier'
+        )
+    carrier = copy.deepcopy(carriers[0])
+    _make_semantic_geometry_carrier_visible(carrier)
+    for name in (
+        'data-pptx-shape-id',
+        'data-pptx-shape-name',
+        'data-pptx-shape-scope',
+        'data-name',
+    ):
+        if carrier.get(name) is None and shape.get(name) is not None:
+            carrier.set(name, str(shape.get(name)))
+
+    if shape.get('data-pptx-geometry-kind') == 'custom':
+        for name in (
+            'data-pptx-custgeom',
+            'data-pptx-geometry-kind',
+            'data-pptx-geometry-sha256',
+        ):
+            carrier.attrib.pop(name, None)
+
+    geometry = convert_element(carrier, ctx)
+    if geometry is None:
+        raise SvgNativeConversionError(
+            'Semantic shape geometry carrier produced no native shape'
+        )
+    text_body = _semantic_shape_text_body(shape, ctx)
+    return _append_shape_text(geometry, text_body) if text_body else geometry
+
+
 def _restore_placeholder_sp_pr(
     shape: ShapeResult,
     group: ET.Element,
@@ -1048,6 +1180,28 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 if shape_match:
                     ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
             return native_result
+
+    if elem.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND:
+        geometry_ctx = child_ctx
+        if transform and not native_subtree_active:
+            geometry_ctx = ctx.child(
+                0, 0, 1.0, 1.0,
+                transform_matrix=parse_transform_matrix(transform),
+                filter_id=filter_id,
+                style_overrides=style_overrides,
+                opacity_multiplier=local_opacity,
+            )
+        semantic_result = _convert_semantic_shape(elem, geometry_ctx)
+        ctx.sync_from_child(geometry_ctx)
+        if semantic_result is None:
+            raise SvgNativeConversionError(
+                'Semantic shape marker did not produce a native shape'
+            )
+        if should_animate_group and elem_id:
+            shape_match = re.search(r'<p:cNvPr id="(\d+)"', semantic_result.xml)
+            if shape_match:
+                ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
+        return semantic_result
 
     if (
         elem.get('data-pptx-object') in {'shape', 'connector'}
@@ -1688,9 +1842,10 @@ def convert_svg_to_slide_shapes(
             size from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
-        native_objects: Convert explicit ``data-pptx-replace-with`` chart/table
-            markers to native PowerPoint Chart/Table objects. Formula markers
-            are intrinsically native and do not use this opt-in. Default off.
+        native_objects: Convert opt-in ``data-pptx-replace-with`` chart/table
+            markers to native PowerPoint Chart/Table objects. Formula markers and
+            semantic authoring tables are intrinsically native. Default off for
+            other markers.
         animation_group_overrides: Explicit top-level SVG group ids from
             ``animations.json`` that override the legacy chrome-name fallback.
             Explicit structural layer/role/placeholder markers remain excluded.

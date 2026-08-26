@@ -205,6 +205,7 @@ with TemporaryDirectory(prefix="ppt-master-multilingual-smoke-") as tmp:
             marker,
             context,
             {
+                "schema": "ppt-master.semantic-table.v2",
                 "x": 10,
                 "y": 10,
                 "width": 600,

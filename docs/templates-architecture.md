@@ -135,10 +135,14 @@ serves, the audience outcomes it supports, and representative narrative/page
 roles. Identity and structure are integrated around that context, while the
 current Strategist decides which prototypes and content to use.
 
-`standard` / `fidelity` author a new complete system from confirmed evidence;
-mirror maps validated source identities and parentage one-to-one into a new
-workspace. Mirror preserves source facts but does not prove that the source is
-a reusable Deck: creation still has to identify the stable application rules.
+`standard` / `fidelity` inspect the full confirmed source inventory and author a
+new complete system. Mirror emits one complete prototype per source Slide and
+preserves only that Slide roster plus each Slide's reachable Layout/Master
+parentage; source Layouts or Masters that no source Slide reaches are outside
+the mirror contract. Authored modes may re-author useful unreferenced source
+structures as new complete Slide prototypes. Mirror preserves those in-scope
+source facts but does not prove that the source is a reusable Deck: creation
+still has to identify the stable application rules.
 A source that yields only identity becomes Brand; reusable method and visual
 direction without prototypes becomes Style; a brand-neutral reusable structure
 becomes Layout; a branded structural system or scenario-bearing content grammar

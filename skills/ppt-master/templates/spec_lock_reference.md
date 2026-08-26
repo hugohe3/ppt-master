@@ -122,7 +122,7 @@ New locks always write `title_family` and `body_family`, even when their values 
 - `pptx_masters` grammar: `<master_key>: <PowerPoint picker name>`.
 - `pptx_layouts` grammar: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`.
 - `page_pptx_layouts` grammar: `P` + at least two digits followed by a declared Layout key.
-- `page_layouts` grammar: `P` + at least two digits followed by a template SVG basename.
+- `page_layouts` grammar: `P` + at least two digits followed by a complete Slide template SVG basename. Definition-only `layout_<layout_key>` files are obsolete and are also invalid as `pptx_layouts` sources; author a complete Slide prototype for each reusable Layout.
 
 Catalog-based custom example:
 

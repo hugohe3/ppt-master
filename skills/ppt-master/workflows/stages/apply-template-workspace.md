@@ -107,8 +107,9 @@ leave the rest of the document untouched. An in-place root is not rewritten:
 
 - Copy every selected spec from the root to its resolved qualified destination.
 - If the root contributes the effective structural owner, copy its declared
-  SVG roster and other non-bitmap structural files once. Do not copy a Deck
-  roster when Layout is selected; its structure is shadowed by design.
+  SVG roster and other non-bitmap structural files once, including mirror
+  `source_themes.json` when present. Do not copy a Deck roster when Layout is
+  selected; its structure is shadowed by design.
 - Copy the root's real package-owned `images/` and `icons/` files once. A
   Style-only root has none; reject a Style-only library package carrying asset
   or review payloads.
@@ -146,7 +147,7 @@ agent before direct authoring, and every later role read only
 is installation input, not a later prompt source. If source and target are the
 same project root, that in-place root already satisfies this boundary.
 
-Template SVGs are authoring prototypes, not export-time overlays. The generated page remains complete in `svg_output/`; `page_layouts` selects the complete prototype and its explicit structure contract for authoring.
+Template SVGs are complete Slide authoring prototypes, not export-time overlays. They already resolve Master + Layout context, so `page_layouts` selects one directly. Standalone Master/Layout definition SVGs are invalid; an unselected authored Slide prototype may still back a reusable Layout definition.
 Quick instead realizes the selected prototypes into complete flat, Slide-local
 SVGs and never writes `page_layouts` or Master/Layout/placeholder metadata.
 

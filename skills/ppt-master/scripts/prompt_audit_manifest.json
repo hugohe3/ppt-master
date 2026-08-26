@@ -1870,7 +1870,7 @@
             {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
-              "fingerprint": "c35477d35410",
+              "fingerprint": "e5c9c162d0ff",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -1882,7 +1882,7 @@
             {
               "path": "skills/ppt-master/workflows/stages/apply-template-workspace.md",
               "role": "compatibility",
-              "fingerprint": "1c393e47c311",
+              "fingerprint": "4375357b2252",
               "reason": "This site documents a legacy or omission compatibility boundary."
             }
           ]
@@ -2026,7 +2026,7 @@
             {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
-              "fingerprint": "2d6dba6c449e",
+              "fingerprint": "0e01eedc2c4b",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             }
           ]

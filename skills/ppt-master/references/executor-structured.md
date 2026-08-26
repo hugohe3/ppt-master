@@ -18,7 +18,7 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 | Current page mapping | Read the retained `spec_lock.md page_layouts` row; a page change does not require another file load |
 | Selected prototype SVG | Read the complete `templates/<basename>.svg` once per valid context and reuse it until a known change or context invalidation |
 
-**Hard rule**: The complete prototype SVG is authoritative. An on-demand page-context result may fingerprint it but carries no prototype payload; never author from a roster, manifest, sidecar, filename, or summary alone.
+**Hard rule**: The complete Slide prototype SVG is authoritative and already resolves its Master + Layout context. Standalone Master/Layout definition SVGs are invalid. An on-demand page-context result may fingerprint the selected Slide prototype but carries no payload; never author from a roster, manifest, sidecar, filename, or summary alone.
 
 Manifest/text-slot files are derived tool metadata, not model inputs. Missing metadata neither invalidates a legacy workspace nor permits text-topology changes.
 

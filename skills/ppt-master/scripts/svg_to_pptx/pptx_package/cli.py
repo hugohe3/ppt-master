@@ -107,9 +107,11 @@ from .narration import (
 )
 from .template_structure import (
     PptxStructureLock,
+    SOURCE_THEMES_FILENAME,
     TemplateStructureError,
     load_native_structure_contract,
     load_pptx_structure_lock,
+    load_template_source_themes,
     parse_template_slides,
     structured_layout_definition_files,
     template_lock_errors,
@@ -1590,9 +1592,10 @@ Recorded narration:
         action='store_true',
         default=False,
         help=(
-            'Replace explicit data-pptx-replace-with chart/table groups with '
+            'Replace opt-in data-pptx-replace-with chart/table groups with '
             'PowerPoint native Chart/Table objects. This data-object route may '
-            'normalize styling or omit fallback-only visuals. Default off: groups '
+            'normalize styling or omit fallback-only visuals. Semantic authoring '
+            'tables are always native; default off applies to other markers, which '
             'export as editable SVG-derived DrawingML shapes. The default-flow '
             'output uses <project>_<ts>_native_charts_tables.pptx.'
         ),
@@ -1976,6 +1979,7 @@ Recorded narration:
     master_text_style_spec = None
     theme_color_spec = None
     source_theme_xml = None
+    source_theme_xml_by_master = None
     source_embedded_fonts = None
     if (
         pptx_structure in {'flat', 'structured'}
@@ -2015,6 +2019,27 @@ Recorded narration:
                 source_embedded_fonts,
             ) = _load_diagnostic_import_source(project_path)
         except (EmbeddedFontError, ThemeFontError, ThemeColorError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+    source_themes_path = project_path / "templates" / SOURCE_THEMES_FILENAME
+    mirror_source_themes = (
+        structure_lock is not None
+        and structure_lock.mode == "structured"
+        and structure_lock.template_reuse_scope == "mirror"
+    )
+    if source_themes_path.exists() and not mirror_source_themes:
+        print(
+            "Error: templates/source_themes.json is allowed only for a "
+            "structured mirror contract",
+            file=sys.stderr,
+        )
+        return 1
+    if mirror_source_themes:
+        try:
+            source_theme_xml_by_master = load_template_source_themes(
+                project_path / "templates"
+            )
+        except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
     if args.image_max_dimension < 1:
@@ -2856,6 +2881,7 @@ Recorded narration:
         master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,
         source_theme_xml=source_theme_xml,
+        source_theme_xml_by_master=source_theme_xml_by_master,
         source_embedded_fonts=source_embedded_fonts,
         primary_language=primary_language,
         dangerous_nonconforming_export=(

@@ -118,7 +118,7 @@ native_structure_mode: structured
 
 Deck 编码的是**一类可重复演示**，而不只是预先组合好的 Brand 和 Layout。它描述模板服务哪些沟通场景、支持哪些受众结果，以及常见的叙事或页面角色。身份与结构围绕这份语境形成一个整体；具体选哪些原型、如何处理内容，由当前 Strategist 决定。
 
-`standard` / `fidelity` 根据已确认的证据创作新完整系统；mirror 把已验证的来源身份与父子关系一对一映射进新工作区。Mirror 能保留来源事实，但不能单独证明来源就是可复用 Deck：创建时仍要识别稳定的应用规则。只得到身份时创建 Brand；方法与视觉方向需要脱离原型复用时创建 Style；得到品牌中立的可复用结构时创建 Layout；结构带品牌身份，或者包含场景叙事与内容语法时创建 Deck。
+`standard` / `fidelity` 检查完整的已确认来源清单并创作新完整系统。Mirror 为每张来源 Slide 输出一个完整原型，只保留这组 Slide 及每张 Slide 可达的 Layout/Master 父子关系；没有被任何来源 Slide 引用的 Layout 或 Master 不属于 mirror 合同。创作模式可以把其中有用的未引用来源结构重著为新的完整 Slide 原型。Mirror 能保留这部分范围内的来源事实，但不能单独证明来源就是可复用 Deck：创建时仍要识别稳定的应用规则。只得到身份时创建 Brand；方法与视觉方向需要脱离原型复用时创建 Style；得到品牌中立的可复用结构时创建 Layout；结构带品牌身份，或者包含场景叙事与内容语法时创建 Deck。
 
 这也约束创建模式：只有来源合同本身已经品牌中立且应用中立时，Layout mirror 才成立。删除品牌色、字体、Logo、固定身份对象或可复用应用规则都属于重新创作；越过这条边界的来源要么使用 `standard` / `fidelity` 创作新的 Layout，要么保留这些事实并创建 Deck mirror。
 

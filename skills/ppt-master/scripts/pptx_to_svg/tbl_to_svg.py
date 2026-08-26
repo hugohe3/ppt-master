@@ -37,12 +37,14 @@ Cell painting order:
 from __future__ import annotations
 
 import copy
+import json
 import math
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
 from pptx_effects import txbody_has_run_effects
+from semantic_table import compact_semantic_table_payload
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
@@ -632,27 +634,6 @@ def _strict_merge_span(value: str | None) -> int:
     return span
 
 
-def _canonical_merge_slave_is_empty(tc: ET.Element) -> bool:
-    tc_pr = tc.find("a:tcPr", NS)
-    if tc_pr is None or tc_pr.attrib or list(tc_pr):
-        return False
-    tx_body = tc.find("a:txBody", NS)
-    if tx_body is None:
-        return False
-    paragraph_count = 0
-    for child in tx_body:
-        name = child.tag.rsplit("}", 1)[-1]
-        if name in {"bodyPr", "lstStyle"}:
-            if child.attrib or list(child):
-                return False
-            continue
-        if name == "p" and not child.attrib and not list(child):
-            paragraph_count += 1
-            continue
-        return False
-    return paragraph_count > 0 and not (tx_body.text or "").strip()
-
-
 def _canonical_native_merge_status(
     rows: list[ET.Element],
     col_count: int,
@@ -729,9 +710,6 @@ def _canonical_native_merge_status(
             or v_merge != (row_idx > region.row)
         ):
             return "unsupported-merge-topology"
-        if not is_anchor and not _canonical_merge_slave_is_empty(tc):
-            return "unsupported-merge-topology"
-
     return None
 
 
@@ -750,10 +728,14 @@ def _table_has_unsupported_style(tbl: ET.Element) -> bool:
         for name in ("firstCol", "lastCol", "lastRow", "bandCol", "rtl")
     ):
         return True
-    return any(
-        child.tag.rsplit("}", 1)[-1] != "tableStyleId"
-        for child in tbl_pr
-    )
+    for child in tbl_pr:
+        name = child.tag.rsplit("}", 1)[-1]
+        if name == "tableStyleId":
+            continue
+        if name == "effectLst" and not child.attrib and not list(child):
+            continue
+        return True
+    return False
 
 
 _DIRECT_BORDER_TAGS = {
@@ -761,37 +743,10 @@ _DIRECT_BORDER_TAGS = {
     "lnR": "right",
     "lnT": "top",
     "lnB": "bottom",
+    "lnTlToBr": "diagonal_down",
+    "lnBlToTr": "diagonal_up",
 }
 _DIRECT_BORDER_WIDTH_MAX = 20116800
-_OPAQUE_COLOR_MODIFIERS = {
-    "tint",
-    "shade",
-    "lumMod",
-    "lumOff",
-    "satMod",
-    "satOff",
-}
-
-
-def _validate_opaque_border_color(color_elem: ET.Element | None) -> None:
-    if color_elem is None:
-        raise ValueError("missing border color")
-    name = color_elem.tag.rsplit("}", 1)[-1]
-    if name not in {"srgbClr", "schemeClr"} or set(color_elem.attrib) != {"val"}:
-        raise ValueError("unsupported border color")
-    for modifier in color_elem:
-        modifier_name = modifier.tag.rsplit("}", 1)[-1]
-        if (
-            modifier_name not in _OPAQUE_COLOR_MODIFIERS
-            or set(modifier.attrib) != {"val"}
-            or list(modifier)
-        ):
-            raise ValueError("unsupported border color modifier")
-        value = modifier.get("val", "")
-        if not value.isdigit() or not 0 <= int(value) <= 100000:
-            raise ValueError("invalid border color modifier")
-
-
 def _direct_border_payload(
     ln: ET.Element,
     palette: ColorPalette | None,
@@ -815,9 +770,21 @@ def _direct_border_payload(
 
     children = list(ln)
     child_names = [child.tag.rsplit("}", 1)[-1] for child in children]
-    if child_names == ["noFill"]:
-        no_fill = children[0]
-        if no_fill.attrib or list(no_fill):
+    if child_names.count("noFill") == 1:
+        no_fill = next(
+            child for child in children
+            if child.tag.rsplit("}", 1)[-1] == "noFill"
+        )
+        if (
+            no_fill.attrib
+            or list(no_fill)
+            or any(
+                name not in {
+                    "noFill", "prstDash", "round", "headEnd", "tailEnd",
+                }
+                for name in child_names
+            )
+        ):
             raise ValueError("invalid noFill border")
         return {"style": "none"}
 
@@ -873,9 +840,8 @@ def _direct_border_payload(
     if solid_fill.attrib or len(list(solid_fill)) != 1:
         raise ValueError("invalid solid border fill")
     color_elem = find_color_elem(solid_fill)
-    _validate_opaque_border_color(color_elem)
     try:
-        color, alpha = resolve_color(color_elem, palette)
+        color, alpha = resolve_color(color_elem, palette, strict=True)
     except (TypeError, ValueError, OverflowError) as exc:
         raise ValueError("invalid solid border color") from exc
     if color is None or alpha != 1.0:
@@ -901,10 +867,17 @@ def _table_has_unsupported_direct_formatting(
             return True
         tc_pr = tc.find("a:tcPr", NS)
         if tc_pr is not None:
-            allowed_attrs = {"marL", "marR", "marT", "marB", "anchor"}
+            allowed_attrs = {
+                "marL", "marR", "marT", "marB", "anchor",
+                "anchorCtr", "horzOverflow",
+            }
             if any(name not in allowed_attrs for name in tc_pr.attrib):
                 return True
             if tc_pr.get("anchor") not in {None, "t", "ctr", "b"}:
+                return True
+            if tc_pr.get("anchorCtr") not in {None, "0", "1", "false", "true"}:
+                return True
+            if tc_pr.get("horzOverflow") not in {None, "clip", "overflow"}:
                 return True
             if any(
                 child.tag.rsplit("}", 1)[-1]
@@ -932,12 +905,18 @@ def _table_has_unsupported_direct_formatting(
                         return True
             solid_fill = tc_pr.find("a:solidFill", NS)
             if solid_fill is not None:
-                if solid_fill.find(".//a:alpha", NS) is not None:
-                    return True
-                if _cell_fill_hex(tc_pr, palette) is None:
+                fill = resolve_fill(tc_pr, palette)
+                if (
+                    not fill.attrs
+                    or not fill.attrs.get("fill", "").startswith("#")
+                    or set(fill.attrs) - {"fill", "fill-opacity"}
+                ):
                     return True
         tx_body = tc.find("a:txBody", NS)
-        if _text_body_has_unsupported_formatting(tx_body):
+        if (
+            _text_body_has_unsupported_formatting(tx_body)
+            or _table_text_has_unsupported_outline(tx_body, palette)
+        ):
             return True
     return False
 
@@ -1025,10 +1004,14 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
 
         p_pr = paragraph.find("a:pPr", NS)
         if p_pr is not None:
+            alignment = p_pr.get("algn")
+            if alignment not in {None, "l", "ctr", "r", "just"}:
+                return True
             p_pr_tags = [child.tag.rsplit("}", 1)[-1] for child in p_pr]
             if p_pr_tags.count("defRPr") > 1 or p_pr_tags.count("buNone") > 1:
                 return True
-            if any(tag.startswith("bu") and tag != "buNone" for tag in p_pr_tags):
+            bullet_tags = [tag for tag in p_pr_tags if tag.startswith("bu")]
+            if bullet_tags and "buNone" not in bullet_tags:
                 return True
 
         for run in paragraph.findall("a:r", NS):
@@ -1045,6 +1028,64 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
             allowed_text_attrs = {"{http://www.w3.org/XML/1998/namespace}space"}
             if any(name not in allowed_text_attrs for name in text_node.attrib):
                 return True
+            r_pr = run.find("a:rPr", NS)
+            if _table_run_props_have_unsupported_formatting(r_pr):
+                return True
+        end_r_pr = paragraph.find("a:endParaRPr", NS)
+        if _table_run_props_have_unsupported_formatting(end_r_pr):
+            return True
+    return False
+
+
+def _table_run_props_have_unsupported_formatting(
+    run_props: ET.Element | None,
+) -> bool:
+    """Return whether one run uses semantics outside the normalized schema."""
+    if run_props is None:
+        return False
+    allowed_children = {
+        "effectLst", "latin", "ea", "cs", "sym", "ln", "solidFill",
+    }
+    for child in run_props:
+        name = child.tag.rsplit("}", 1)[-1]
+        if name not in allowed_children:
+            return True
+        if name == "effectLst" and (child.attrib or list(child)):
+            return True
+    return False
+
+
+def _native_run_outline_payload(
+    line: ET.Element | None,
+    palette: ColorPalette | None,
+) -> dict[str, Any] | None:
+    """Normalize one visible text outline into the shared line schema."""
+    if line is None:
+        return None
+    if line.find("a:noFill", NS) is not None:
+        return None
+    raw_width = line.get("w")
+    if raw_width is None:
+        return None
+    if not raw_width.isdigit() or int(raw_width) == 0:
+        return None
+    return _direct_border_payload(line, palette)
+
+
+def _table_text_has_unsupported_outline(
+    tx_body: ET.Element | None,
+    palette: ColorPalette | None,
+) -> bool:
+    if tx_body is None:
+        return False
+    for run_props in tx_body.findall(".//a:rPr", NS):
+        line = run_props.find("a:ln", NS)
+        if line is None:
+            continue
+        try:
+            _native_run_outline_payload(line, palette)
+        except ValueError:
+            return True
     return False
 
 
@@ -1196,7 +1237,7 @@ def _native_table_payload(
     for row_cells in cells:
         row_payload: list[Any] = []
         for slot in row_cells:
-            if slot is None or slot.is_dropped:
+            if slot is None:
                 row_payload.append("")
                 continue
             cell_payload = _native_cell_payload(
@@ -1204,6 +1245,10 @@ def _native_table_payload(
                 palette,
                 theme_fonts,
             )
+            if slot.is_dropped:
+                cell_payload["merge_continuation"] = True
+                row_payload.append(cell_payload)
+                continue
             if slot.row_span > 1:
                 cell_payload["row_span"] = slot.row_span
             if slot.col_span > 1:
@@ -1211,7 +1256,7 @@ def _native_table_payload(
             row_payload.append(cell_payload)
         rows_payload.append(row_payload)
     payload["rows"] = rows_payload
-    return payload
+    return compact_semantic_table_payload(payload)
 
 
 def _native_cell_payload(
@@ -1234,9 +1279,11 @@ def _native_cell_payload(
     else:
         cell = {"text": _cell_plain_text(tx_body)}
 
-    fill = _cell_fill_hex(tc_pr, palette)
+    fill, fill_opacity = _cell_fill_payload(tc_pr, palette)
     if fill:
         cell["fill"] = fill
+    if fill_opacity is not None:
+        cell["fill_opacity"] = fill_opacity
     if rich_paragraphs is None:
         color = _cell_text_color(tx_body, palette)
         if color:
@@ -1259,6 +1306,7 @@ def _native_cell_payload(
     if borders:
         cell["borders"] = borders
     _copy_cell_margins(tc_pr, cell)
+    _copy_cell_layout_options(tc_pr, cell)
     return cell
 
 
@@ -1283,7 +1331,7 @@ def _cell_paragraph_payloads(
         text = "".join(node.text or "" for node in paragraph.findall(".//a:t", NS))
         p_pr = paragraph.find("a:pPr", NS)
         align = p_pr.get("algn") if p_pr is not None else None
-        if align in {"l", "ctr", "r"}:
+        if align in {"l", "ctr", "r", "just"}:
             payloads.append({"text": text, "align": align})
         else:
             payloads.append(text)
@@ -1378,7 +1426,56 @@ def _native_run_payload(
         language = _effective_run_attr(r_pr, default_r_pr, source)
         if language and language.strip():
             payload[target] = language.strip()
+
+    raw_baseline = _effective_run_attr(r_pr, default_r_pr, "baseline")
+    if raw_baseline is not None:
+        try:
+            baseline = int(raw_baseline)
+        except ValueError:
+            baseline = 0
+        if baseline:
+            payload["baseline_percent"] = _round_payload_number(
+                baseline / 1000.0
+            )
+
+    outline = _native_run_outline_payload(
+        _effective_run_child(r_pr, default_r_pr, "ln"),
+        palette,
+    )
+    if outline is not None:
+        payload["outline"] = outline
     return payload
+
+
+def _paragraph_line_spacing_percent(
+    p_pr: ET.Element | None,
+) -> int | float | None:
+    if p_pr is None:
+        return None
+    spacing = p_pr.find("a:lnSpc/a:spcPct", NS)
+    raw = spacing.get("val") if spacing is not None else None
+    if raw is None or not raw.isdigit():
+        return None
+    percent = int(raw) / 1000.0
+    if percent == 100:
+        return None
+    return _round_payload_number(percent)
+
+
+def _run_style_signature(run: dict[str, Any]) -> tuple[tuple[str, Any], ...]:
+    """Return one hashable signature for deciding whether runs are required."""
+    return tuple(
+        sorted(
+            (
+                key,
+                json.dumps(value, sort_keys=True, separators=(",", ":"))
+                if isinstance(value, dict)
+                else value,
+            )
+            for key, value in run.items()
+            if key != "text"
+        )
+    )
 
 
 def _cell_rich_paragraph_payloads(
@@ -1390,25 +1487,31 @@ def _cell_rich_paragraph_payloads(
     if tx_body is None or not _legacy_text_body_has_unsupported_formatting(tx_body):
         return None
 
-    paragraphs: list[tuple[str | None, list[dict[str, Any]]]] = []
+    paragraphs: list[
+        tuple[str | None, int | float | None, list[dict[str, Any]]]
+    ] = []
     style_signatures: set[tuple[tuple[str, Any], ...]] = set()
     needs_runs = False
     run_only_fields = {
         "italic", "underline", "strike", "font_family", "lang", "alt_lang",
+        "baseline_percent", "outline",
     }
     for paragraph in tx_body.findall("a:p", NS):
         p_pr = paragraph.find("a:pPr", NS)
         align = p_pr.get("algn") if p_pr is not None else None
-        if align not in {"l", "ctr", "r"}:
+        if align not in {"l", "ctr", "r", "just"}:
             align = None
+        line_spacing_percent = _paragraph_line_spacing_percent(p_pr)
         default_r_pr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
         runs = [
             _native_run_payload(run, default_r_pr, palette, theme_fonts)
             for run in paragraph.findall("a:r", NS)
         ]
-        paragraphs.append((align, runs))
+        paragraphs.append((align, line_spacing_percent, runs))
+        if line_spacing_percent is not None:
+            needs_runs = True
         for run in runs:
-            style = tuple(sorted((key, value) for key, value in run.items() if key != "text"))
+            style = _run_style_signature(run)
             style_signatures.add(style)
             if run_only_fields.intersection(run):
                 needs_runs = True
@@ -1419,7 +1522,7 @@ def _cell_rich_paragraph_payloads(
         return None
 
     payloads: list[dict[str, Any]] = []
-    for align, runs in paragraphs:
+    for align, line_spacing_percent, runs in paragraphs:
         paragraph_payload: dict[str, Any]
         if runs:
             paragraph_payload = {"runs": runs}
@@ -1427,16 +1530,28 @@ def _cell_rich_paragraph_payloads(
             paragraph_payload = {"text": ""}
         if align is not None:
             paragraph_payload["align"] = align
+        if line_spacing_percent is not None:
+            paragraph_payload["line_spacing_percent"] = line_spacing_percent
         payloads.append(paragraph_payload)
     return payloads
 
 
-def _cell_fill_hex(tc_pr: ET.Element | None, palette: ColorPalette | None) -> str | None:
+def _cell_fill_payload(
+    tc_pr: ET.Element | None,
+    palette: ColorPalette | None,
+) -> tuple[str | None, int | float | None]:
+    """Return one normalized solid cell fill and optional opacity."""
     fill = resolve_fill(tc_pr, palette)
     color = fill.attrs.get("fill") if fill.attrs else None
-    if color and color.startswith("#"):
-        return color
-    return None
+    if not color or not color.startswith("#"):
+        return None, None
+    opacity_raw = fill.attrs.get("fill-opacity")
+    opacity = (
+        _round_payload_number(float(opacity_raw))
+        if opacity_raw is not None
+        else None
+    )
+    return color, opacity
 
 
 def _cell_text_color(tx_body: ET.Element | None, palette: ColorPalette | None) -> str | None:
@@ -1483,7 +1598,7 @@ def _cell_align(tx_body: ET.Element | None) -> str | None:
         return None
     p_pr = tx_body.find("a:p/a:pPr", NS)
     align = p_pr.get("algn") if p_pr is not None else None
-    if align in {"l", "ctr", "r"}:
+    if align in {"l", "ctr", "r", "just"}:
         return align
     return None
 
@@ -1544,6 +1659,20 @@ def _copy_cell_margins(tc_pr: ET.Element | None, cell: dict[str, Any]) -> None:
         if value is None or value < 0:
             continue
         cell[target] = _round_payload_number(emu_to_px(value))
+
+
+def _copy_cell_layout_options(
+    tc_pr: ET.Element | None,
+    cell: dict[str, Any],
+) -> None:
+    """Copy native cell layout semantics not represented by SVG text."""
+    if tc_pr is None:
+        return
+    if tc_pr.get("anchorCtr") is not None:
+        cell["anchor_center"] = ooxml_bool(tc_pr.get("anchorCtr"))
+    horizontal_overflow = tc_pr.get("horzOverflow")
+    if horizontal_overflow is not None:
+        cell["horizontal_overflow"] = horizontal_overflow
 
 
 # ---------------------------------------------------------------------------

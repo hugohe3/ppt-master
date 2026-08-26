@@ -34,26 +34,28 @@ output directory contains the editable SVGs, one model-readable
 
 The projected copy:
 
-- removes embedded `txbody` metadata;
-- removes hidden native geometry carriers while retaining and unwrapping their
-  visible preview geometry;
-- removes source-object identity/style/hash attributes that are only useful to
-  an exact import round trip;
-- keeps visible paths, text, images, stable ids, Master/Layout root markers,
-  selected native-shape intent, and a document-local `data-pptx-source-ref` on
+- translates each recognized native shape into one visible geometry carrier
+  plus at most one structured text body;
+- translates each recognized native table into one inline
+  `ppt-master.semantic-table.v2` payload with table/cell/run defaults and named
+  cell styles, plus an external authoring-preview cache;
+- removes duplicate render geometry, embedded `txbody`, and import-only
+  identity/style/hash payloads;
+- keeps visible semantic paths, text, images, stable ids, Master/Layout root
+  markers, native-shape intent, and a document-local `data-pptx-source-ref` on
   each imported logical object;
 - rewrites relative local asset references for the projection's new location;
-- compacts imported model-facing frames and safe transform page coordinates to
-  at most two decimals.
+- compacts model-facing coordinates, promotes a common page font to the root,
+  and removes descendant presentation declarations equal to inherited values.
 
 Round-trip publication applies two object-level compactions after projection:
 
-- text-free vector decorations that cross the readability threshold move to
-  editable `icons/imported/*.svg` assets; the page retains one compact
-  `<use data-icon="imported/...">`, and
-  `authoring-svg-flat_vector_asset_inventory.json` reconnects its source refs;
-- large semantic/native-payload objects that cannot safely become editable
-  vector assets become
+- non-semantic vector decorations that cross the readability threshold may
+  move to `icons/imported/*.svg`; the asset, placeholder, and v2 inventory all
+  declare the fixed `decoration` role. Any subtree containing semantic
+  authoring content remains inline;
+- unsupported opaque source objects that do not yet have a closed semantic IR
+  may become
   `<image data-pptx-source-proxy="native-restore">` references whose hashed SVG
   previews live under `images/source-object-previews/`.
 
@@ -78,7 +80,7 @@ the complete imported SVG remains immutable native-payload backing. Final
 `templates/*.svg` files are materialized and validated from that pair. A
 complete-page `authoring-svg-flat/` bundle is the user's editable source for an
 imported-deck round-trip. `pptx_to_svg.py --roundtrip` places image media in
-`images/`, vectors in `icons/imported/`, cues/audio/video/notes in their named
+`images/`, decoration-only vectors in `icons/imported/`, cues/audio/video/notes in their named
 directories, opaque payloads in `native-payloads/`, the source package in
 `sources/`, and tool-owned backing/contracts in `analysis/`; `assets/` is
 invalid. `svg_to_pptx.py --roundtrip` always reads `authoring-svg-flat/`,
@@ -373,6 +375,31 @@ or matrix `a/b/c/d` coefficients. Type A mirror materialization invokes the
 same compactor before native-record externalization; `standard` and `fidelity`
 use the shared final pass before template validation.
 
+## `compact_svg_styles.py`
+
+Normalize generated authoring SVG to shared root/group defaults plus local
+overrides:
+
+```bash
+python3 scripts/compact_svg_styles.py <svg-file-or-directory>
+python3 scripts/compact_svg_styles.py <svg-file-or-directory> --inplace
+```
+
+The default run reports proposed changes without writing. `--inplace` prepares
+the complete input set first and then atomically replaces changed files. When
+every rendered `<text>` has a resolvable typeface, the most common page
+`font-family` becomes one root declaration. Descendants retain only true
+exceptions. The same pass removes any supported inheritable presentation
+attribute or inline declaration that exactly repeats its effective parent
+value; it never invents a paint, size, weight, or other non-font default.
+
+Default Generate runs it before the first-page and final checks, Quick runs it
+before its final check, and Create Template runs it before structured-template
+validation. PPTX import projections and mirror materialization call the same
+tree-level implementation directly. SVG-to-PPTX continues to accept valid
+explicit declarations; this is the canonical generated-authoring form, not a
+compatibility restriction on external SVG input.
+
 ## `extract_svg_assets.py`
 
 Factor large vector subtrees out of lightweight authoring IR documents and
@@ -399,10 +426,14 @@ asset's internal ids. The second pass reuses a fingerprint-matched asset and
 writes no duplicate SVG file. Unmatched flat-only subtrees still extract
 normally. Use `--clean-stale` on both import-workspace passes to remove stale
 generated files for their respective prefixes. In create-template workspaces,
-`imported` is the fixed namespace: assets live once under `icons/imported/`, and
-the working SVGs reference them as `data-icon="imported/<name>"`. Inventory
-entries retain source refs from each extracted subtree, allowing expansion to
-reconnect the authoring-manifest mapping. A rerun on an
+`imported` is the fixed decoration-only namespace: assets live once under
+`icons/imported/`, and the working SVGs reference them as
+`data-icon="imported/<name>"`. Each asset root and placeholder declares
+`data-pptx-asset-role="decoration"`; the v2 inventory repeats that role. The
+extractor and both consumers fail closed if a semantic marker or semantic
+descendant crosses this boundary. Inventory entries may retain source refs from
+eligible decoration subtrees, allowing expansion to reconnect the
+authoring-manifest mapping. A rerun on an
 already rewritten namespaced projection inventories those references and does
 not progressively extract their remaining parent or sibling geometry. An
 in-place pass over an authoring bundle refreshes `authoring_summary.json`
@@ -421,8 +452,8 @@ python3 scripts/mirror_template_materialize.py \
 The command treats `<import_workspace>/authoring-svg/` as the sole editable
 source. It reads the tool-only layered authoring manifest internally and
 validates it against immutable lossless SVG
-hashes, source PPTX hash, complete Master/Layout/Slide graph, inheritance
-visibility facts, source-ref closure, and extracted-vector inventory before it
+hashes, source PPTX hash, the source Slide roster and reachable Master/Layout
+graph, inheritance visibility facts, source-ref closure, and extracted-vector inventory before it
 writes anything. It accepts an absent/empty destination or a project
 `templates/` containing unique qualified Brand/Style specs plus, for a
 Layout-over-Deck transition, one qualified Deck spec with no staged roster. A
@@ -432,8 +463,15 @@ new Layout or Deck must be composed with the other structural kind. It stages th
 result before atomic publication, so a failed preflight cannot leave a partial
 template.
 
-Materialization preserves source page order and emits one definition-only
-`layout_<layout_key>.svg` for every source Layout unused by all source Slides.
+Materialization preserves source Slide order and only the Layout/Master chains
+reachable from those Slides. Each source Slide becomes one standalone prototype
+with Master + Layout + Slide context resolved. Explicit layer markers preserve
+ownership; source Master/Layout identities unused by every Slide produce no SVG.
+The v2 report lists source counts plus retained and omitted structure keys.
+For PPTX-backed mirror input, `templates/source_themes.json` stores the exact
+Theme bytes keyed by retained Master. Structured export validates that sidecar
+against the Master roster and installs one Theme per Master; it is not an SVG
+prototype or page-authoring input.
 It mechanically expands fixed Master/Layout group wrappers into direct atoms,
 rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
 current SVG fallback for edited refs, preserves explicit text hard breaks, and
@@ -470,7 +508,7 @@ structured export validate output attributes, text/tspan topology, and
 referenced-resource hashes against
 the prototype.
 
-The output routes reusable vectors once to `icons/imported/`, image media to
+The output routes reusable decoration vectors once to `icons/imported/`, image media to
 `images/`, audio and video to their semantic directories, and opaque referenced
 files to `native-payloads/imported/`. The JSON report
 reports payload occurrence, native-record, unique-byte, and compressed-store

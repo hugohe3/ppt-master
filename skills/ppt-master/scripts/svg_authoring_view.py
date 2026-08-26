@@ -4,8 +4,9 @@ PPT Master - SVG Authoring View
 
 Create a lightweight, non-destructive editable IR from PPTX-imported SVG
 files. The source SVG remains the native-payload authority; the authoring copy
-keeps visible SVG content, compact shape intent, and stable source references
-while hiding bulky import-only payloads and duplicate hidden geometry carriers.
+translates recognized shapes and tables into compact semantic components,
+keeps stable source references, and omits bulky import-only/render-duplicate
+payloads.
 
 Usage:
     python3 scripts/svg_authoring_view.py <svg-file-or-directory> \
@@ -36,6 +37,7 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 import os
 import re
 import shutil
@@ -49,7 +51,12 @@ from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from compact_svg_coordinates import compact_svg_tree
+from compact_svg_styles import compact_svg_style_tree
 from console_encoding import configure_utf8_stdio
+from pptx_shapes import (
+    NATIVE_FALLBACK_SHA256_ATTR,
+    svg_native_fallback_fingerprint,
+)
 from svg_compatibility import normalize_single_child_group_filters
 
 configure_utf8_stdio()
@@ -63,6 +70,9 @@ AUTHORING_SUMMARY_SCHEMA = "ppt-master.svg-authoring-summary.v1"
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
 SOURCE_PROXY_ATTRIBUTE = "data-pptx-source-proxy"
 SOURCE_PROXY_KIND = "native-restore"
+SEMANTIC_OBJECT_ATTRIBUTE = "data-pptx-semantic-object"
+SEMANTIC_SHAPE_KIND = "shape"
+SEMANTIC_TABLE_KIND = "table"
 # Keep ordinary text and vectors inline. Large semantic/native payload objects
 # that cannot move to an editable vector asset become atomic source proxies.
 SOURCE_PROXY_MIN_BYTES = 4096
@@ -77,6 +87,7 @@ _DRAWABLE_TAGS = frozenset({
     "rect",
 })
 _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
+_SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -92,7 +103,11 @@ AUTHORING_OMITTED_SOURCE_ATTRIBUTES = {
     "data-pptx-gradient-ooxml",
     "data-pptx-gradient-ooxml-sha256",
     "data-pptx-gradient-preview-sha256",
+    "data-pptx-custgeom",
+    "data-pptx-geometry-sha256",
     "data-pptx-preview-sha256",
+    NATIVE_FALLBACK_SHA256_ATTR,
+    "data-pptx-roundtrip-object",
     "data-pptx-shape-id",
     "data-pptx-shape-name",
     "data-pptx-shape-scope",
@@ -282,6 +297,25 @@ def _index_initial_authoring_references(
         )
 
 
+def _fresh_native_fallback_markers(root: ET.Element) -> set[ET.Element]:
+    """Return native markers whose source fallback guard is currently valid."""
+    fresh: set[ET.Element] = set()
+    for element in root.iter():
+        expected = element.get(NATIVE_FALLBACK_SHA256_ATTR)
+        if (
+            expected is None
+            or expected != expected.strip()
+            or _SHA256_RE.fullmatch(expected) is None
+        ):
+            continue
+        if svg_native_fallback_fingerprint(
+            element,
+            document_root=root,
+        ) == expected.lower():
+            fresh.add(element)
+    return fresh
+
+
 @dataclass
 class ProjectionStats:
     txbody_metadata: int = 0
@@ -291,10 +325,14 @@ class ProjectionStats:
     compatibility_normalizations: int = 0
     asset_references_rewritten: int = 0
     coordinate_attributes_compacted: int = 0
+    style_declarations_compacted: int = 0
     inherited_text_attributes_compacted: int = 0
     single_tspans_collapsed: int = 0
     source_object_proxies: int = 0
     source_object_proxy_bytes: int = 0
+    semantic_shapes: int = 0
+    semantic_tables: int = 0
+    semantic_table_preview_bytes: int = 0
     unused_definitions_pruned: int = 0
     source_attributes: Counter[str] = field(default_factory=Counter)
 
@@ -308,12 +346,16 @@ class ProjectionStats:
             "source_attributes": dict(sorted(self.source_attributes.items())),
             "asset_references_rewritten": self.asset_references_rewritten,
             "coordinate_attributes_compacted": self.coordinate_attributes_compacted,
+            "style_declarations_compacted": self.style_declarations_compacted,
             "inherited_text_attributes_compacted": (
                 self.inherited_text_attributes_compacted
             ),
             "single_tspans_collapsed": self.single_tspans_collapsed,
             "source_object_proxies": self.source_object_proxies,
             "source_object_proxy_bytes": self.source_object_proxy_bytes,
+            "semantic_shapes": self.semantic_shapes,
+            "semantic_tables": self.semantic_tables,
+            "semantic_table_preview_bytes": self.semantic_table_preview_bytes,
             "unused_definitions_pruned": self.unused_definitions_pruned,
         }
 
@@ -327,12 +369,16 @@ class ProjectionStats:
         self.coordinate_attributes_compacted += (
             other.coordinate_attributes_compacted
         )
+        self.style_declarations_compacted += other.style_declarations_compacted
         self.inherited_text_attributes_compacted += (
             other.inherited_text_attributes_compacted
         )
         self.single_tspans_collapsed += other.single_tspans_collapsed
         self.source_object_proxies += other.source_object_proxies
         self.source_object_proxy_bytes += other.source_object_proxy_bytes
+        self.semantic_shapes += other.semantic_shapes
+        self.semantic_tables += other.semantic_tables
+        self.semantic_table_preview_bytes += other.semantic_table_preview_bytes
         self.unused_definitions_pruned += other.unused_definitions_pruned
         self.source_attributes.update(other.source_attributes)
 
@@ -377,6 +423,376 @@ def _is_hidden_geometry_carrier(element: ET.Element) -> bool:
         or "visibility:hidden" in style
         or "display:none" in style
     )
+
+
+def _is_semantic_shape_candidate(element: ET.Element) -> bool:
+    if (
+        _local_name(element.tag) != "g"
+        or element.get("data-pptx-object") not in {"shape", "connector"}
+        or (
+            element.get("data-pptx-prst") is None
+            and element.get("data-pptx-geometry-kind") != "custom"
+        )
+    ):
+        return False
+    if any(
+        name in element.attrib
+        for name in (
+            "data-pptx-placeholder",
+            "data-pptx-placeholder-type",
+            "data-pptx-placeholder-idx",
+        )
+    ):
+        return False
+    if any(
+        item.get("data-pptx-effect-status") == "unsupported"
+        or item.get("data-pptx-effect-ooxml") is not None
+        for item in element.iter()
+    ):
+        return False
+    carriers = [
+        child
+        for child in element
+        if child.get("data-pptx-part") == "geometry"
+        and _local_name(child.tag) in _DRAWABLE_TAGS
+    ]
+    if len(carriers) != 1:
+        return False
+    visible_texts = [
+        item
+        for item in element.iter()
+        if _local_name(item.tag) == "text"
+    ]
+    if any(text not in list(element) for text in visible_texts):
+        return False
+    if any(
+        item.get("data-pptx-inline-formula") is not None
+        for text in visible_texts
+        for item in text.iter()
+    ):
+        return False
+    positional_texts = [
+        text
+        for text in visible_texts
+        if any(
+            _local_name(item.tag) == "tspan"
+            and any(item.get(name) is not None for name in ("x", "y", "dy"))
+            for item in text.iter()
+        )
+    ]
+    if len(visible_texts) > 1 and positional_texts:
+        return False
+    for text in positional_texts:
+        try:
+            if not _normalize_semantic_text_lines(copy.deepcopy(text)):
+                return False
+        except ValueError:
+            return False
+    if element.get("data-pptx-object") == "connector" and visible_texts:
+        return False
+    if len(visible_texts) > 1:
+        if any(text.get("transform") is not None for text in visible_texts):
+            return False
+        anchors = {
+            (item.get("x"), item.get("text-anchor", "start"))
+            for item in visible_texts
+        }
+        if len(anchors) != 1:
+            return False
+        try:
+            baselines = [_semantic_text_baseline(text) for text in visible_texts]
+        except ValueError:
+            return False
+        if any(current <= previous for previous, current in zip(
+            baselines,
+            baselines[1:],
+        )):
+            return False
+    for child in element:
+        tag = _local_name(child.tag)
+        part = child.get("data-pptx-part")
+        if child is carriers[0] or tag in {"metadata", "text", "a"}:
+            continue
+        if part in {"geometry-preview", "placeholder-sppr"}:
+            continue
+        if tag == "g" and all(
+            _local_name(item.tag) in {"g", "text", "tspan", "a"}
+            for item in child.iter()
+        ):
+            continue
+        return False
+    return True
+
+
+def _mark_semantic_objects(root: ET.Element, stats: ProjectionStats) -> None:
+    """Mark source objects whose authoring truth has a closed semantic IR."""
+    for element in root.iter():
+        if element.get("data-pptx-replace-with") == SEMANTIC_TABLE_KIND:
+            element.set(SEMANTIC_OBJECT_ATTRIBUTE, SEMANTIC_TABLE_KIND)
+            stats.semantic_tables += 1
+            continue
+        if _is_semantic_shape_candidate(element):
+            element.set(SEMANTIC_OBJECT_ATTRIBUTE, SEMANTIC_SHAPE_KIND)
+            stats.semantic_shapes += 1
+
+
+def _make_geometry_carrier_visible(element: ET.Element) -> int:
+    """Turn one import-only hidden carrier into the authored geometry surface."""
+    changed = 0
+    for name in ("visibility", "display", "pointer-events"):
+        if name in element.attrib:
+            del element.attrib[name]
+            changed += 1
+
+    style = element.get("style")
+    if style is not None:
+        declarations = [
+            declaration.strip()
+            for declaration in style.split(";")
+            if declaration.strip()
+        ]
+        retained = [
+            declaration
+            for declaration in declarations
+            if declaration.split(":", 1)[0].strip().lower()
+            not in {"display", "pointer-events", "visibility"}
+        ]
+        normalized = "; ".join(retained)
+        if normalized:
+            if normalized != style:
+                element.set("style", normalized)
+                changed += 1
+        else:
+            del element.attrib["style"]
+            changed += 1
+    return changed
+
+
+def _semantic_text_baseline(element: ET.Element) -> float:
+    raw = element.get("y")
+    if raw is None:
+        raise ValueError("Semantic shape text requires an explicit y baseline")
+    try:
+        value = float(raw)
+    except ValueError as exc:
+        raise ValueError(
+            f"Semantic shape text has a non-numeric y baseline: {raw!r}"
+        ) from exc
+    if not math.isfinite(value):
+        raise ValueError(
+            f"Semantic shape text has a non-finite y baseline: {raw!r}"
+        )
+    return value
+
+
+def _semantic_text_font_size(element: ET.Element) -> float:
+    raw = element.get("font-size")
+    if raw is None:
+        return 16.0
+    try:
+        value = float(raw)
+    except ValueError:
+        return 16.0
+    return value if math.isfinite(value) and value > 0 else 16.0
+
+
+def _semantic_text_has_content(element: ET.Element) -> bool:
+    return bool("".join(element.itertext()))
+
+
+def _normalize_semantic_text_lines(text: ET.Element) -> bool:
+    """Lower compatible positioned tspans into one semantic line model."""
+    positional = [
+        child
+        for child in text
+        if _local_name(child.tag) == "tspan"
+        and any(child.get(name) is not None for name in ("x", "y", "dy"))
+    ]
+    if not positional:
+        return False
+
+    parent_x = text.get("x")
+    advances: list[float] = []
+    for child in positional:
+        if child.get("y") is not None:
+            raise ValueError(
+                "Semantic shape text cannot normalize an absolute tspan y"
+            )
+        child_x = child.get("x")
+        if child_x is not None and child_x != parent_x:
+            raise ValueError(
+                "Semantic shape text cannot normalize a tspan x jump"
+            )
+        raw_dy = child.get("dy")
+        try:
+            advance = float(raw_dy or "0")
+        except ValueError as exc:
+            raise ValueError(
+                f"Semantic shape text has a non-numeric tspan dy: {raw_dy!r}"
+            ) from exc
+        if not math.isfinite(advance) or advance <= 0:
+            raise ValueError(
+                f"Semantic shape text requires a positive finite tspan dy: {raw_dy!r}"
+            )
+        advances.append(advance)
+
+    first_line = ET.Element(f"{{{SVG_NS}}}tspan")
+    first_line.text = text.text
+    lines: list[ET.Element] = [first_line]
+    current = first_line
+    for child in list(text):
+        clone = copy.deepcopy(child)
+        if child in positional:
+            for name in ("x", "y", "dy"):
+                clone.attrib.pop(name, None)
+            clone.set("data-paragraph-line-break", "1")
+            lines.append(clone)
+            current = clone
+            continue
+        current.append(clone)
+
+    lines = [line for line in lines if _semantic_text_has_content(line)]
+    if len(lines) < 2:
+        return False
+    for child in list(text):
+        text.remove(child)
+    text.text = None
+    text.set("data-pptx-text-model", "lines")
+    line_height = min(advances)
+    text.set(
+        "data-paragraph-line-height",
+        f"{line_height:.6f}".rstrip("0").rstrip("."),
+    )
+    for line in lines:
+        text.append(line)
+    return True
+
+
+def _semantic_paragraph_from_text(
+    source: ET.Element,
+    parent: ET.Element,
+    *,
+    space_before: float,
+) -> ET.Element:
+    """Wrap one rendered SVG text line as one semantic paragraph run tree."""
+    paragraph = ET.Element(f"{{{SVG_NS}}}tspan")
+    presentation_attributes = _TSPAN_INHERITED_ATTRIBUTES | {
+        "baseline-shift",
+        "opacity",
+        "stroke-linecap",
+        "stroke-linejoin",
+        "stroke-width",
+        "style",
+    }
+    for name in presentation_attributes:
+        value = source.get(name)
+        if value is not None and value != parent.get(name):
+            paragraph.set(name, value)
+    if space_before > 0:
+        paragraph.set(
+            "data-paragraph-space-before",
+            f"{space_before:.6f}".rstrip("0").rstrip("."),
+        )
+    paragraph.text = source.text
+    for child in source:
+        paragraph.append(copy.deepcopy(child))
+    return paragraph
+
+
+def _merge_semantic_shape_texts(
+    shape: ET.Element,
+    texts: list[ET.Element],
+) -> ET.Element:
+    """Represent multiple rendered text rows as one paragraph-based text body."""
+    baselines = [_semantic_text_baseline(text) for text in texts]
+    positive_advances = [
+        current - previous
+        for previous, current in zip(baselines, baselines[1:])
+        if current > previous
+    ]
+    line_height = _semantic_text_font_size(texts[0]) * 1.5
+    if positive_advances:
+        line_height = min(line_height, min(positive_advances))
+    line_height = max(line_height, 1.0)
+
+    combined = copy.deepcopy(texts[0])
+    for child in list(combined):
+        combined.remove(child)
+    combined.text = None
+    combined.set("data-pptx-text-model", "paragraphs")
+    combined.set(
+        "data-paragraph-line-height",
+        f"{line_height:.6f}".rstrip("0").rstrip("."),
+    )
+    previous_baseline = baselines[0]
+    for index, (source, baseline) in enumerate(zip(texts, baselines)):
+        space_before = (
+            0.0
+            if index == 0
+            else max(0.0, baseline - previous_baseline - line_height)
+        )
+        combined.append(
+            _semantic_paragraph_from_text(
+                source,
+                combined,
+                space_before=space_before,
+            )
+        )
+        previous_baseline = baseline
+
+    siblings = list(shape)
+    first_index = siblings.index(texts[0])
+    for text in texts:
+        shape.remove(text)
+    shape.insert(first_index, combined)
+    return combined
+
+
+def _compact_semantic_shapes(root: ET.Element, stats: ProjectionStats) -> None:
+    """Collapse each semantic shape to one geometry carrier and one text body."""
+    for shape in root.iter():
+        if shape.get(SEMANTIC_OBJECT_ATTRIBUTE) != SEMANTIC_SHAPE_KIND:
+            continue
+        carriers = [
+            child
+            for child in shape
+            if child.get("data-pptx-part") == "geometry"
+            and _local_name(child.tag) in _DRAWABLE_TAGS
+        ]
+        if len(carriers) != 1:
+            raise ValueError("Semantic shape requires exactly one geometry carrier")
+        carrier = carriers[0]
+        stats.compatibility_normalizations += _make_geometry_carrier_visible(carrier)
+
+        direct_texts = [
+            child for child in shape
+            if _local_name(child.tag) == "text"
+        ]
+        all_texts = [
+            item for item in shape.iter()
+            if _local_name(item.tag) == "text"
+        ]
+        for text in direct_texts:
+            if _normalize_semantic_text_lines(text):
+                stats.compatibility_normalizations += 1
+        if len(all_texts) > 1:
+            if direct_texts != all_texts:
+                raise ValueError(
+                    "Multi-paragraph semantic shape text must be direct children"
+                )
+            _merge_semantic_shape_texts(shape, direct_texts)
+
+        for child in list(shape):
+            if child is carrier:
+                continue
+            tag = _local_name(child.tag)
+            part = child.get("data-pptx-part")
+            if tag in _DRAWABLE_TAGS or part in {
+                "geometry-detail",
+                "geometry-preview",
+            }:
+                _remove_child(shape, child)
+                stats.compatibility_normalizations += 1
 
 
 def _append_tail(parent: ET.Element, index: int, tail: str | None) -> None:
@@ -470,7 +886,10 @@ def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
             _remove_child(parent, child)
             continue
 
-        if _is_hidden_geometry_carrier(child):
+        if (
+            _is_hidden_geometry_carrier(child)
+            and parent.get(SEMANTIC_OBJECT_ATTRIBUTE) != SEMANTIC_SHAPE_KIND
+        ):
             stats.hidden_geometry_carriers += 1
             _remove_child(parent, child)
             continue
@@ -638,11 +1057,16 @@ def _source_proxy_asset_bytes(
     authoring_dir: Path,
     proxy_dir: Path,
     stats: ProjectionStats,
+    *,
+    strip_element_transform: bool = False,
 ) -> bytes:
     asset_root = ET.Element(root.tag, dict(root.attrib))
     for definitions in _selected_definitions(root, [element]):
         asset_root.append(definitions)
-    asset_root.append(copy.deepcopy(element))
+    asset_element = copy.deepcopy(element)
+    if strip_element_transform:
+        asset_element.attrib.pop("transform", None)
+    asset_root.append(asset_element)
     for item in asset_root.iter():
         item.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
         item.attrib.pop(SOURCE_PROXY_ATTRIBUTE, None)
@@ -697,6 +1121,72 @@ def _source_proxy_element(
     return proxy
 
 
+def _compact_semantic_tables(
+    root: ET.Element,
+    references: list[SourceReference],
+    output_dir: Path,
+    preview_dir: Path,
+    stats: ProjectionStats,
+) -> dict[Path, bytes]:
+    """Keep table data inline while moving only its rendered preview aside."""
+    assets: dict[Path, bytes] = {}
+    reference_by_id = {
+        reference.source_ref: reference
+        for reference in references
+    }
+    for element in list(root.iter()):
+        if element.get(SEMANTIC_OBJECT_ATTRIBUTE) != SEMANTIC_TABLE_KIND:
+            continue
+        source_ref = element.get(SOURCE_REF_ATTRIBUTE)
+        if not source_ref or source_ref not in reference_by_id:
+            raise ValueError("Semantic table has no source reference")
+        payload_metadata = [
+            child
+            for child in element
+            if _local_name(child.tag) == "metadata"
+            and child.get("type") == "application/json"
+        ]
+        if len(payload_metadata) != 1:
+            raise ValueError(
+                f"Semantic table {source_ref} requires exactly one JSON payload"
+            )
+
+        preview_source = copy.deepcopy(element)
+        for child in list(preview_source):
+            if _local_name(child.tag) == "metadata":
+                preview_source.remove(child)
+        payload = _source_proxy_asset_bytes(
+            root,
+            preview_source,
+            output_dir,
+            preview_dir,
+            stats,
+            strip_element_transform=True,
+        )
+        digest = hashlib.sha256(payload).hexdigest()
+        asset_path = preview_dir / f"semantic-table-preview-{digest}.svg"
+        previous = assets.get(asset_path)
+        if previous is not None and previous != payload:
+            raise ValueError(f"Semantic table preview hash collision: {asset_path.name}")
+        assets[asset_path] = payload
+
+        metadata = payload_metadata[0]
+        metadata.tail = None
+        for child in list(element):
+            element.remove(child)
+        element.append(metadata)
+        preview = ET.Element(f"{{{SVG_NS}}}image")
+        preview.attrib.update(_proxy_canvas_attributes(root))
+        preview.set(
+            "href",
+            os.path.relpath(asset_path, output_dir).replace(os.sep, "/"),
+        )
+        preview.set("data-pptx-part", "authoring-preview")
+        element.append(preview)
+        stats.semantic_table_preview_bytes += len(payload)
+    return assets
+
+
 def _prefer_editable_vector_asset(element: ET.Element) -> bool:
     """Keep pure vector decorations available for later `<use>` extraction."""
     if any(
@@ -739,6 +1229,11 @@ def _externalize_large_source_objects(
     visit(root, False)
     assets: dict[Path, bytes] = {}
     for parent, element in candidates:
+        if element.get(SEMANTIC_OBJECT_ATTRIBUTE) in {
+            SEMANTIC_SHAPE_KIND,
+            SEMANTIC_TABLE_KIND,
+        }:
+            continue
         original_bytes = len(ET.tostring(element, encoding="utf-8"))
         if (
             original_bytes < SOURCE_PROXY_MIN_BYTES
@@ -808,8 +1303,11 @@ def _render_projection(
     if _local_name(root.tag) != "svg":
         raise ValueError(f"Root element is not <svg>: {source}")
 
+    fresh_native_markers = _fresh_native_fallback_markers(root)
     source_references = _stamp_source_references(root)
     stats = ProjectionStats()
+    _mark_semantic_objects(root, stats)
+    _compact_semantic_shapes(root, stats)
     _project_subtree(root, stats)
     _compact_text_runs(root, stats)
     stats.compatibility_normalizations += len(
@@ -820,14 +1318,33 @@ def _render_projection(
     stats.coordinate_attributes_compacted = compact_svg_tree(
         root,
     ).changed_attributes
+    stats.style_declarations_compacted = compact_svg_style_tree(
+        root,
+    ).changed_declarations
     source_proxy_assets: dict[Path, bytes] = {}
     if source_proxy_dir is not None:
-        source_proxy_assets = _externalize_large_source_objects(
+        source_proxy_assets.update(_compact_semantic_tables(
             root,
             source_references,
             output.parent,
             source_proxy_dir,
             stats,
+        ))
+        source_proxy_assets.update(_externalize_large_source_objects(
+            root,
+            source_references,
+            output.parent,
+            source_proxy_dir,
+            stats,
+        ))
+    live_elements = set(root.iter())
+    for marker in fresh_native_markers & live_elements:
+        if marker.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_TABLE_KIND:
+            marker.attrib.pop(NATIVE_FALLBACK_SHA256_ATTR, None)
+            continue
+        marker.set(
+            NATIVE_FALLBACK_SHA256_ATTR,
+            svg_native_fallback_fingerprint(marker, document_root=root),
         )
     _index_initial_authoring_references(root, source_references)
 
@@ -961,6 +1478,14 @@ def _authoring_summary_document(
             element.get(SOURCE_PROXY_ATTRIBUTE) == SOURCE_PROXY_KIND
             for element in elements
         ),
+        "semantic_tables": sum(
+            element.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_TABLE_KIND
+            for element in elements
+        ),
+        "semantic_shapes": sum(
+            element.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND
+            for element in elements
+        ),
     }
 
 
@@ -1062,6 +1587,14 @@ def _authoring_summary_bytes(authoring_dir: Path) -> bytes:
         ),
         "source_proxies": sum(
             int(document["source_proxies"])
+            for document in documents
+        ),
+        "semantic_tables": sum(
+            int(document["semantic_tables"])
+            for document in documents
+        ),
+        "semantic_shapes": sum(
+            int(document["semantic_shapes"])
             for document in documents
         ),
         "machine_source_refs": manifest.get("source_ref_count"),

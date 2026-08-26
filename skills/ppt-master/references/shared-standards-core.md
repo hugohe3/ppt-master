@@ -140,6 +140,18 @@ text uses a non-empty `font-family`, a finite positive unitless-px `font-size`,
 underline/strike, text outline/alpha, gradient text, or text filter effects.
 Unknown or unmapped declarations fail Checker preflight and native export.
 
+**Hard rule — compact inherited authoring**: Generated SVG expresses shared
+presentation values once at the nearest useful common scope. Put the page's
+common `font-family` on the root `<svg>`; a meaningful `<g>` may override a
+shared value for its subtree. Descendant `<text>` / `<tspan>` and drawing
+elements write only values that differ from their inherited effective value.
+Do not repeat the same font, size, weight, paint, stroke, anchor, or spacing on
+every child for self-containment: root/group inheritance is part of the native
+export contract. Keep true exceptions explicit. Run `compact_svg_styles.py`
+on generated or materialized SVG before its quality gate; this normalization
+does not authorize CSS classes, embedded stylesheets, or any otherwise
+unsupported property.
+
 > **`marker-start` / `marker-end` is conditional** — see §1.1.
 >
 > **`clipPath` on `<image>` is conditional** — see §1.2.

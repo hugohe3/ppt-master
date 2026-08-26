@@ -2,8 +2,7 @@
 """
 PPT Master - Template Preview PPTX Exporter
 
-Export public SVG prototypes as a structured review deck while retaining
-definition-only Layout prototypes in the native package.
+Export complete Slide SVG prototypes as a structured review deck.
 
 Usage:
     python3 scripts/template_preview_pptx.py <template_workspace> [-o output.pptx]
@@ -44,6 +43,9 @@ from svg_to_pptx.drawingml.theme_fonts import (  # noqa: E402
 from svg_to_pptx.drawingml.utils import font_px_to_hpt  # noqa: E402
 from svg_to_pptx.pptx_package.builder import (  # noqa: E402
     create_pptx_with_native_svg,
+)
+from svg_to_pptx.pptx_package.template_structure import (  # noqa: E402
+    load_template_source_themes,
 )
 
 
@@ -141,18 +143,6 @@ def _review_svg_sources(
             f"{shortened} SVG(s); canonical {{{{...}}}} markers unchanged"
         )
         yield review_files
-
-
-def _partition_svg_prototypes(
-    svg_files: list[Path],
-) -> tuple[list[Path], list[Path]]:
-    """Separate public pages from canonical definition-only Layout SVGs."""
-    public_files: list[Path] = []
-    definition_files: list[Path] = []
-    for path in svg_files:
-        target = definition_files if path.stem.startswith("layout_") else public_files
-        target.append(path)
-    return public_files, definition_files
 
 
 _TEMPLATE_SPEC_NAME_RE = re.compile(
@@ -412,18 +402,27 @@ def main(argv: list[str] | None = None) -> int:
         all_svg_files = sorted(template_dir.glob("*.svg"))
         if not all_svg_files:
             raise ValueError(f"template directory has no SVG prototypes: {template_dir}")
-        svg_files, layout_definition_files = _partition_svg_prototypes(
-            all_svg_files,
-        )
-        if not svg_files:
+        definition_only_files = [
+            path.name
+            for path in all_svg_files
+            if path.stem.startswith("layout_")
+        ]
+        if definition_only_files:
             raise ValueError(
-                "template directory contains Layout definitions but no public "
-                f"SVG prototypes: {template_dir}"
+                "template workspaces accept only complete Slide prototypes; "
+                "replace definition-only Layout SVG(s) with authored Slide "
+                "prototypes: " + ", ".join(definition_only_files)
             )
+        svg_files = all_svg_files
 
         spec_path = _roster_spec(template_dir)
         template_id = _template_id(spec_path)
         replication_mode = _replication_mode(spec_path)
+        source_themes = load_template_source_themes(template_dir)
+        if source_themes is not None and replication_mode != "mirror":
+            raise ValueError(
+                "source_themes.json is allowed only in a mirror workspace"
+            )
         locked_canvas = _canvas_viewbox(spec_path)
         if locked_canvas is None:
             raise ValueError(
@@ -447,12 +446,7 @@ def main(argv: list[str] | None = None) -> int:
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")
         print(f"  Template source: {template_dir}")
-        print(f"  Public SVG prototypes: {len(svg_files)}")
-        if layout_definition_files:
-            print(
-                "  Definition-only Layout prototypes: "
-                f"{len(layout_definition_files)}"
-            )
+        print(f"  Slide SVG prototypes: {len(svg_files)}")
         if replication_mode == "mirror":
             print("  Review placeholder frames: preserved source Slide geometry")
         else:
@@ -462,14 +456,9 @@ def main(argv: list[str] | None = None) -> int:
 
         with _review_svg_sources(
             workspace,
-            all_svg_files,
+            svg_files,
             shorten_placeholder_markers=use_full_placeholder_frames,
-        ) as review_all_svg_files:
-            review_svg_files, review_layout_definition_files = (
-                _partition_svg_prototypes(
-                    review_all_svg_files,
-                )
-            )
+        ) as review_svg_files:
             success = create_pptx_with_native_svg(
                 svg_files=review_svg_files,
                 output_path=output_path,
@@ -486,7 +475,7 @@ def main(argv: list[str] | None = None) -> int:
                 use_layout_placeholder_frames=use_full_placeholder_frames,
                 master_text_style_spec=text_style,
                 structure_name=template_id,
-                layout_definition_files=review_layout_definition_files,
+                source_theme_xml_by_master=source_themes,
             )
         if not success or not output_path.is_file():
             print("Error: template preview export did not produce a PPTX", file=sys.stderr)

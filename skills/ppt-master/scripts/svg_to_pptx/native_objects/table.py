@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from semantic_table import expand_semantic_table_payload
+
 from .marker_attributes import native_import_source
 
 from ..drawingml.context import ConvertContext, ShapeResult
@@ -23,7 +25,6 @@ from .marker_common import (
     _bool_attr,
     _bounds,
     _clean_hex,
-    _compact_key,
     _first_present,
     _font_size_hpt,
     _hex_or_none,
@@ -50,6 +51,8 @@ def _table_text_run(
     strike: bool | None = None,
     alt_language: str | None = None,
     exact_font_face: bool = False,
+    baseline: int | None = None,
+    outline: _TableBorderSpec | None = None,
 ) -> str:
     size_attr = f' sz="{font_size}"' if font_size is not None else ""
     bold_attr = f' b="{_bool_attr(bold)}"' if bold is not None else ""
@@ -67,6 +70,7 @@ def _table_text_run(
     alt_language_attr = (
         f' altLang="{_xml_escape(alt_language)}"' if alt_language else ""
     )
+    baseline_attr = f' baseline="{baseline}"' if baseline is not None else ""
     color_xml = (
         f'<a:solidFill>{color_node_xml(color, theme_color_spec, "text")}</a:solidFill>'
         if color else ""
@@ -80,11 +84,25 @@ def _table_text_run(
         )
     else:
         font_xml = _font_face_xml(font_face)
+    outline_xml = ""
+    if outline is not None and outline.style == "solid":
+        assert outline.color is not None and outline.width is not None
+        width = _powerpoint_line_width_emu(
+            outline.width,
+            "table text outline width",
+        )
+        outline_xml = (
+            f'<a:ln w="{width}">'
+            '<a:solidFill>'
+            f'{color_node_xml(outline.color, theme_color_spec, "stroke")}'
+            '</a:solidFill><a:prstDash val="solid"/></a:ln>'
+        )
     rtl_xml = '<a:rtl val="1"/>' if text_has_rtl_characters(text) else ''
     space_attr = ' xml:space="preserve"' if text != text.strip() else ""
     return (
         f'<a:r><a:rPr{language_attr}{alt_language_attr}{size_attr}{bold_attr}'
-        f'{italic_attr}{underline_attr}{strike_attr}>'
+        f'{italic_attr}{underline_attr}{strike_attr}{baseline_attr}>'
+        f'{outline_xml}'
         f'{color_xml}'
         f'{font_xml}'
         f'{rtl_xml}'
@@ -99,6 +117,7 @@ def _table_paragraph_properties(
     emit_align: bool,
     text: str,
     language: str | None,
+    line_spacing_percent: float | None = None,
 ) -> str:
     """Build table paragraph properties with project-aware direction."""
     attrs = []
@@ -107,7 +126,13 @@ def _table_paragraph_properties(
     if text_uses_rtl(text, language):
         attrs.append('rtl="1"')
     suffix = f" {' '.join(attrs)}" if attrs else ''
-    return f'<a:pPr{suffix}/>'
+    if line_spacing_percent is None:
+        return f'<a:pPr{suffix}/>'
+    spacing = round(line_spacing_percent * 1000)
+    return (
+        f'<a:pPr{suffix}><a:lnSpc><a:spcPct val="{spacing}"/>'
+        '</a:lnSpc></a:pPr>'
+    )
 
 
 def _cell_payload(value: Any) -> dict[str, Any]:
@@ -167,6 +192,8 @@ class _TableRun:
     font_family: str | None = None
     lang: str | None = None
     alt_lang: str | None = None
+    baseline: int | None = None
+    outline: _TableBorderSpec | None = None
 
 
 @dataclass(frozen=True)
@@ -174,6 +201,7 @@ class _TableParagraph:
     text: str
     align: str | None = None
     runs: tuple[_TableRun, ...] | None = None
+    line_spacing_percent: float | None = None
 
 
 def _table_rows(payload: dict[str, Any]) -> list[list[Any]]:
@@ -214,9 +242,10 @@ def _table_cell_paragraphs(
             raise RuntimeError(
                 f"Native PPTX table paragraph {idx} must be a string or object"
             )
-        if set(value) - {"text", "runs", "align"}:
+        if set(value) - {"text", "runs", "align", "line_spacing_percent"}:
             raise RuntimeError(
-                f"Native PPTX table paragraph {idx} accepts text/runs/align only"
+                "Native PPTX table paragraph "
+                f"{idx} accepts text/runs/align/line_spacing_percent only"
             )
         has_text = "text" in value
         has_runs = "runs" in value
@@ -225,17 +254,35 @@ def _table_cell_paragraphs(
                 f"Native PPTX table paragraph {idx} requires exactly one of text/runs"
             )
         align = value.get("align")
-        if align is not None and align not in {"l", "ctr", "r"}:
+        if align is not None and align not in {"l", "ctr", "r", "just"}:
             raise RuntimeError(
-                f"Native PPTX table paragraph {idx} align must be l, ctr, or r"
+                "Native PPTX table paragraph "
+                f"{idx} align must be l, ctr, r, or just"
             )
+        line_spacing_percent: float | None = None
+        if value.get("line_spacing_percent") is not None:
+            line_spacing_percent = _number(
+                value["line_spacing_percent"],
+                f"table paragraph {idx} line_spacing_percent",
+            )
+            if not 0 < line_spacing_percent <= 1000:
+                raise RuntimeError(
+                    "Native PPTX table paragraph "
+                    f"{idx} line_spacing_percent must be in (0, 1000]"
+                )
         if has_text:
             text = value.get("text")
             if not isinstance(text, str):
                 raise RuntimeError(
                     f"Native PPTX table paragraph {idx} text must be a string"
                 )
-            paragraphs.append(_TableParagraph(text, align))
+            paragraphs.append(
+                _TableParagraph(
+                    text,
+                    align,
+                    line_spacing_percent=line_spacing_percent,
+                )
+            )
             continue
 
         raw_runs = value.get("runs")
@@ -248,7 +295,12 @@ def _table_cell_paragraphs(
             for run_idx, run in enumerate(raw_runs, start=1)
         )
         paragraphs.append(
-            _TableParagraph("".join(run.text for run in runs), align, runs)
+            _TableParagraph(
+                "".join(run.text for run in runs),
+                align,
+                runs,
+                line_spacing_percent,
+            )
         )
     return tuple(paragraphs)
 
@@ -265,6 +317,7 @@ def _table_run(
     allowed = {
         "text", "bold", "italic", "underline", "strike", "color",
         "font_size", "font_family", "lang", "alt_lang",
+        "baseline_percent", "outline",
     }
     unknown = set(value) - allowed
     if unknown:
@@ -330,6 +383,22 @@ def _table_run(
             )
         languages[field] = raw.strip()
 
+    baseline: int | None = None
+    if value.get("baseline_percent") is not None:
+        baseline_percent = _number(
+            value["baseline_percent"],
+            f"table {label} baseline_percent",
+        )
+        if not -100 <= baseline_percent <= 100:
+            raise RuntimeError(
+                f"Native PPTX table {label} baseline_percent must be in [-100, 100]"
+            )
+        baseline = round(baseline_percent * 1000)
+
+    outline: _TableBorderSpec | None = None
+    if value.get("outline") is not None:
+        outline = _table_border_override(value["outline"], "text outline")
+
     return _TableRun(
         text=text,
         bold=booleans["bold"],
@@ -341,6 +410,8 @@ def _table_run(
         font_family=font_family,
         lang=languages["lang"],
         alt_lang=languages["alt_lang"],
+        baseline=baseline,
+        outline=outline,
     )
 
 
@@ -365,10 +436,36 @@ def _merge_covered_cell_is_blank(value: Any) -> bool:
         return True
     if not isinstance(value, dict):
         return False
-    if any(key != "text" for key in value):
-        return False
+    if value.get("merge_continuation") is not True:
+        if any(key != "text" for key in value):
+            return False
     text = value.get("text")
-    return text is None or text == ""
+    if text not in {None, ""}:
+        return False
+    paragraphs = value.get("paragraphs")
+    if paragraphs is None:
+        return True
+    if not isinstance(paragraphs, list):
+        return False
+    for paragraph in paragraphs:
+        if isinstance(paragraph, str):
+            if paragraph:
+                return False
+            continue
+        if not isinstance(paragraph, dict):
+            return False
+        if paragraph.get("text") not in {None, ""}:
+            return False
+        runs = paragraph.get("runs")
+        if runs is not None and (
+            not isinstance(runs, list)
+            or any(
+                not isinstance(run, dict) or run.get("text") not in {None, ""}
+                for run in runs
+            )
+        ):
+            return False
+    return True
 
 
 def _resolve_table_merge_layout(
@@ -452,7 +549,7 @@ def _resolve_table_merge_layout(
 
 
 def _grid_is_strict(payload: dict[str, Any]) -> bool:
-    value = payload.get("strict_grid", payload.get("strictGrid"))
+    value = payload.get("strict_grid")
     return _table_bool(value, "strict_grid", default=False)
 
 
@@ -461,14 +558,9 @@ def _table_bool(value: Any, field_name: str, *, default: bool) -> bool:
         return default
     if isinstance(value, bool):
         return value
-    if value in (0, 1):
-        return bool(value)
-    key = _compact_key(value)
-    if key in {"1", "on", "true", "yes"}:
-        return True
-    if key in {"0", "false", "no", "off"}:
-        return False
-    raise RuntimeError(f"Native PPTX table {field_name} must be a boolean")
+    raise RuntimeError(
+        f"Native PPTX table {field_name} must be a JSON boolean"
+    )
 
 
 def _table_header_rows(payload: dict[str, Any], row_count: int) -> int:
@@ -520,6 +612,13 @@ def _validate_table_cell_formatting(payload: dict[str, Any], table_rows: list[li
     for row in table_rows:
         for cell in row:
             cell_data = _cell_payload(cell)
+            if "merge_continuation" in cell_data and not isinstance(
+                cell_data["merge_continuation"],
+                bool,
+            ):
+                raise RuntimeError(
+                    "Native PPTX table merge_continuation must be a JSON boolean"
+                )
             _table_cell_paragraphs(cell_data)
             if "bold" in cell_data:
                 _table_bool(cell_data["bold"], "cell bold", default=False)
@@ -534,11 +633,19 @@ def _validate_table_cell_formatting(payload: dict[str, Any], table_rows: list[li
                     "table border_width",
                 )
             _table_anchor(cell_data, style)
+            _table_cell_extra_attrs(cell_data)
+            _table_fill_opacity(cell_data)
 
 
 def _validate_table_payload(
     payload: dict[str, Any],
-) -> tuple[list[list[Any]], int, dict[tuple[int, int], _TableMergeRegion]]:
+) -> tuple[
+    dict[str, Any],
+    list[list[Any]],
+    int,
+    dict[tuple[int, int], _TableMergeRegion],
+]:
+    payload = expand_semantic_table_payload(payload)
     table_rows = _table_rows(payload)
     col_count = _validate_table_lengths(payload, table_rows)
     for row in table_rows:
@@ -546,7 +653,7 @@ def _validate_table_payload(
     merge_layout = _resolve_table_merge_layout(payload, table_rows, col_count)
     _table_header_rows(payload, len(table_rows))
     _validate_table_cell_formatting(payload, table_rows)
-    return table_rows, col_count, merge_layout
+    return payload, table_rows, col_count, merge_layout
 
 
 def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
@@ -643,22 +750,15 @@ def _table_padding_value(
     style: dict[str, Any],
     side: str,
 ) -> int | None:
-    side_keys = {
-        "left": ("left", "l", "padding_left", "paddingLeft"),
-        "right": ("right", "r", "padding_right", "paddingRight"),
-        "top": ("top", "t", "padding_top", "paddingTop"),
-        "bottom": ("bottom", "b", "padding_bottom", "paddingBottom"),
-    }
+    direct_key = f"padding_{side}"
 
     def from_source(source: dict[str, Any]) -> Any:
-        for key in side_keys[side]:
-            if key in source:
-                return source[key]
-        padding = source.get("padding", source.get("cell_padding"))
+        if direct_key in source:
+            return source[direct_key]
+        padding = source.get("padding")
         if isinstance(padding, dict):
-            for key in side_keys[side]:
-                if key in padding:
-                    return padding[key]
+            if side in padding:
+                return padding[side]
         elif padding is not None:
             return padding
         return None
@@ -689,40 +789,78 @@ def _table_padding_attrs(cell_data: dict[str, Any], style: dict[str, Any]) -> st
 def _table_anchor(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
     raw = _first_present(
         cell_data.get("valign"),
-        cell_data.get("vertical_align"),
         style.get("valign"),
-        style.get("vertical_align"),
         "middle",
     )
-    aliases = {
+    values = {
         "bottom": "b",
-        "b": "b",
-        "center": "ctr",
-        "ctr": "ctr",
         "middle": "ctr",
         "top": "t",
-        "t": "t",
     }
-    anchor = aliases.get(_compact_key(raw))
+    anchor = values.get(raw) if isinstance(raw, str) else None
     if not anchor:
         raise RuntimeError("Native PPTX table valign must be one of: top, middle, bottom")
     return anchor
 
 
+def _table_cell_extra_attrs(cell_data: dict[str, Any]) -> str:
+    attrs: list[str] = []
+    if "anchor_center" in cell_data:
+        anchor_center = _table_bool(
+            cell_data["anchor_center"],
+            "cell anchor_center",
+            default=False,
+        )
+        attrs.append(f'anchorCtr="{_bool_attr(anchor_center)}"')
+    horizontal_overflow = cell_data.get("horizontal_overflow")
+    if horizontal_overflow is not None:
+        if horizontal_overflow not in {"clip", "overflow"}:
+            raise RuntimeError(
+                "Native PPTX table horizontal_overflow must be clip or overflow"
+            )
+        attrs.append(f'horzOverflow="{horizontal_overflow}"')
+    return (" " + " ".join(attrs)) if attrs else ""
+
+
+def _table_fill_opacity(cell_data: dict[str, Any]) -> float | None:
+    raw = cell_data.get("fill_opacity")
+    if raw is None:
+        return None
+    if cell_data.get("fill") is None:
+        raise RuntimeError(
+            "Native PPTX table fill_opacity requires an explicit cell fill"
+        )
+    opacity = _number(raw, "table cell fill_opacity")
+    if not 0 <= opacity <= 1:
+        raise RuntimeError(
+            "Native PPTX table fill_opacity must be between zero and one"
+        )
+    return opacity
+
+
 def _table_border_width(cell_data: dict[str, Any], style: dict[str, Any]) -> float:
-    width_raw = cell_data.get("border_width", cell_data.get("borderWidth", style.get("border_width")))
-    color_raw = cell_data.get("border_color", cell_data.get("borderColor", style.get("border_color")))
+    width_raw = cell_data.get("border_width", style.get("border_width"))
+    color_raw = cell_data.get("border_color", style.get("border_color"))
     if width_raw is None and color_raw is None:
         return 0.0
     return _number(1 if width_raw is None else width_raw, "table border_width")
 
 
-_TABLE_BORDER_SIDES = ("left", "right", "top", "bottom")
+_TABLE_BORDER_SIDES = (
+    "left",
+    "right",
+    "top",
+    "bottom",
+    "diagonal_down",
+    "diagonal_up",
+)
 _TABLE_BORDER_TAGS = {
     "left": "lnL",
     "right": "lnR",
     "top": "lnT",
     "bottom": "lnB",
+    "diagonal_down": "lnTlToBr",
+    "diagonal_up": "lnBlToTr",
 }
 
 
@@ -797,10 +935,7 @@ def _table_border_specs(
         _TableBorderSpec(
             "solid",
             color=_clean_hex(
-                cell_data.get(
-                    "border_color",
-                    cell_data.get("borderColor", style.get("border_color")),
-                ),
+                cell_data.get("border_color", style.get("border_color")),
                 "#D9DEE7",
             ),
             width=legacy_width,
@@ -845,6 +980,25 @@ def _table_border_xml(
     return "".join(border_xml)
 
 
+def _table_fill_xml(
+    fill: str | None,
+    opacity: float | None,
+    theme_color_spec: ThemeColorSpec | None,
+) -> str:
+    if fill is None:
+        return ""
+    alpha_xml = (
+        f'<a:alpha val="{round(opacity * 100000)}"/>'
+        if opacity is not None and opacity < 1
+        else ""
+    )
+    return (
+        '<a:solidFill>'
+        f'{color_node_xml(fill, theme_color_spec, "fill", alpha_xml)}'
+        '</a:solidFill>'
+    )
+
+
 def _table_merge_attrs(
     region: _TableMergeRegion | None,
     row_idx: int,
@@ -865,7 +1019,7 @@ def _table_merge_attrs(
 
 
 def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
-    table_rows, col_count, merge_layout = _validate_table_payload(payload)
+    payload, table_rows, col_count, merge_layout = _validate_table_payload(payload)
     header_rows = _table_header_rows(payload, len(table_rows))
     preserve_source_style = native_import_source(elem) == "pptx"
 
@@ -910,20 +1064,45 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         is_header = row_idx < header_rows
         cells_xml: list[str] = []
         for col_idx, cell in enumerate(row):
+            cell_data = _cell_payload(cell)
             merge_region = merge_layout.get((row_idx, col_idx))
             merge_attrs = _table_merge_attrs(merge_region, row_idx, col_idx)
             if merge_region is not None and (
                 row_idx != merge_region.row or col_idx != merge_region.col
             ):
+                continuation_attrs = ""
+                continuation_border_xml = ""
+                continuation_fill_xml = ""
+                if cell_data.get("merge_continuation") is True:
+                    continuation_attrs = (
+                        _table_padding_attrs(cell_data, style)
+                        + _table_cell_extra_attrs(cell_data)
+                    )
+                    continuation_border_xml = _table_border_xml(
+                        cell_data,
+                        style,
+                        ctx.theme_color_spec,
+                    )
+                    continuation_fill = (
+                        _clean_hex(cell_data.get("fill"), "#FFFFFF")
+                        if cell_data.get("fill") is not None
+                        else None
+                    )
+                    continuation_fill_xml = _table_fill_xml(
+                        continuation_fill,
+                        _table_fill_opacity(cell_data),
+                        ctx.theme_color_spec,
+                    )
                 cells_xml.append(
                     f'<a:tc{merge_attrs}>'
                     '<a:txBody><a:bodyPr/><a:lstStyle/><a:p/></a:txBody>'
-                    '<a:tcPr/>'
+                    f'<a:tcPr{continuation_attrs}>'
+                    f'{continuation_border_xml}{continuation_fill_xml}'
+                    '</a:tcPr>'
                     '</a:tc>'
                 )
                 continue
 
-            cell_data = _cell_payload(cell)
             if preserve_source_style:
                 fill = (
                     _clean_hex(cell_data.get("fill"), "#FFFFFF")
@@ -948,7 +1127,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                     header_text if is_header else body_text,
                 )
                 align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
-            if align not in {"l", "ctr", "r"}:
+            if align not in {"l", "ctr", "r", "just"}:
                 align = "l"
             paragraphs = _table_cell_paragraphs(cell_data)
             if preserve_source_style:
@@ -1015,6 +1194,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                         ),
                         text=paragraph_text,
                         language=language or ctx.primary_language,
+                        line_spacing_percent=paragraph.line_spacing_percent,
                     )
                     if paragraph.runs is None:
                         text_run_xml = _table_text_run(
@@ -1047,6 +1227,8 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                                 strike=run.strike,
                                 alt_language=run.alt_lang,
                                 exact_font_face=run.font_family is not None,
+                                baseline=run.baseline,
+                                outline=run.outline,
                             )
                             for run in paragraph.runs
                         )
@@ -1054,21 +1236,24 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                         f"<a:p>{paragraph_props}{text_run_xml}</a:p>"
                     )
                 paragraphs_xml = "".join(paragraph_parts)
-            anchor_keys = {"valign", "vertical_align"}
+            anchor_keys = {"valign"}
             anchor_attr = ""
             if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
                 anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
-            tc_pr_attrs = f'{anchor_attr}{_table_padding_attrs(cell_data, style)}'
+            tc_pr_attrs = (
+                f'{anchor_attr}'
+                f'{_table_padding_attrs(cell_data, style)}'
+                f'{_table_cell_extra_attrs(cell_data)}'
+            )
             border_xml = _table_border_xml(
                 cell_data,
                 style,
                 ctx.theme_color_spec,
             )
-            fill_xml = (
-                '<a:solidFill>'
-                f'{color_node_xml(fill, ctx.theme_color_spec, "fill")}'
-                '</a:solidFill>'
-                if fill else ""
+            fill_xml = _table_fill_xml(
+                fill,
+                _table_fill_opacity(cell_data),
+                ctx.theme_color_spec,
             )
             cells_xml.append(
                 f"<a:tc{merge_attrs}>"
@@ -1080,7 +1265,10 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             )
         rows_xml.append(f'<a:tr h="{row_heights[row_idx]}">{"".join(cells_xml)}</a:tr>')
 
-    shape_id = ctx.next_id()
+    shape_id = ctx.claim_shape_id(
+        elem.get("data-pptx-shape-id"),
+        elem.get("data-pptx-shape-scope"),
+    )
     first_row = _bool_attr(header_rows > 0)
     band_row = _bool_attr(band_rows_enabled)
     table_style_id = style.get("table_style_id")

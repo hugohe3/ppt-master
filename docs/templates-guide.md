@@ -259,14 +259,20 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
   "<import_workspace>" "<template_workspace>"
 ```
 
-It validates the IR manifest, immutable source hashes, complete native graph,
-visibility facts, and imported-vector closure before atomically publishing the
+It validates the IR manifest, immutable hashes for source Slides, their reachable
+native graph and visibility facts, and the corresponding imported-vector closure before atomically publishing the
 source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
 requires or uses the opt-in `svg-flat/` verification tree as the template source
 and never generates a Design Spec; the designer writes the resolved spec
 against the published roster.
 
-**Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
+**Mirror graph boundary**: mirror emits one complete prototype per source Slide and preserves only each Slide's referenced Layout and parent Master. The SVG resolves Master + Layout + Slide context while keeping layer ownership explicit. Source Master/Layout identities unused by every Slide are not materialized by mirror; `standard` / `fidelity` may use the complete source inventory to author useful new Slide prototypes.
+
+The Design Spec gives every emitted Slide prototype its normal roster row. When the source contains unreferenced Master/Layout identities, one scope sentence may note that they exist but were not materialized by mirror; it does not invent per-identity usage analysis.
+
+Template use is Slide-first: each generated-page SVG already resolves its Master and Layout visuals, so normal authoring selects that complete Slide prototype. The workspace contains no standalone Master/Layout definition SVGs.
+
+“Slide-only” describes the editable SVG roster. A PPTX-backed mirror may also carry tool-only structural sidecars such as `source_themes.json` and `native_payloads.json.gz`; they preserve exact reachable Theme/native data during export and are not page prototypes or AI authoring inputs.
 
 **How a mirror-authored workspace is consumed**: source-to-workspace `replication_mode: mirror` is a capability, not a project choice. Strategist inspects the actual prototypes, current content, and any explicit instruction, then decides which pages to select, repeat, skip, or reorder and whether literal, structural, or visual-only reuse is appropriate. Literal reuse copies a complete prototype and edits only allowed visible text values while preserving decoration, sprite crops, geometry, and normalized structured declarations. This never requires the source page count or order.
 
@@ -299,7 +305,7 @@ Brand/Style use is intentionally different: both keep authored content Slide-loc
 
 `exports/<id>_template_preview.pptx` is review evidence created by Create Template when requested or required. It is not the template input; generation always consumes the workspace root.
 
-Microsoft PowerPoint is the acceptance target for Master/Layout behavior. Keynote, WPS, and LibreOffice can open PPTX files but may normalize template structure or load a large mirror roster of unused Layouts more slowly.
+Microsoft PowerPoint is the acceptance target for Master/Layout behavior. Keynote, WPS, and LibreOffice can open PPTX files but may normalize template structure.
 
 ### What a derived template workspace looks like
 
@@ -360,7 +366,7 @@ Common misconceptions to avoid:
 - **A template is not one undifferentiated "style skin".** Brand, Style, Layout, and Deck deliberately separate identity, direction/method, structure, and application so each segment can be reused or combined under an explicit ownership rule
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes
-- **`mirror` targets literal supported appearance and source topology, not byte-identical OOXML.** It inherits source import limitations and permits only mechanical normalization such as fixed-layer group expansion. Unsupported native objects keep their available SVG fallback or are reported; mirror never synthesizes replacement ownership.
+- **`mirror` targets literal supported appearance and each source Slide's reachable topology, not byte-identical OOXML.** It inherits source import limitations and permits only mechanical normalization such as inheritance completion and fixed-layer group expansion. Unsupported native objects keep their available SVG fallback or are reported; mirror never synthesizes replacement ownership.
 
 ---
 

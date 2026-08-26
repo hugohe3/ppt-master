@@ -391,7 +391,9 @@ Strategist 及后续角色只读该项目本地副本。Project root 可直接�
 复用；把其中一项迁入 library 时保留 spec schema 与素材，但要把限定名改为
 单 kind 库路径下的裸 spec，再由全局索引注册决定它是否作为 library 选项出现。
 
-对 Create Layout / Create Deck，`standard` 与 `fidelity` 会重新创作 SVG 和新的 Master/Layout/slot 系统；来源拓扑只作为视觉证据，不保留、也不蒸馏。`mirror` 把来源包内实际存在且已验证的页序、Master/Layout 身份与父子关系、placeholder 事实和受支持视觉物化到新工作区，不做语义归纳或缺口补造。只有被保留的来源本身已经品牌中立且应用中立时，Layout mirror 才合法；否则应重新创作 Layout，或把这些事实保留为 Deck。由于结构层不能是 `<g>`，固定结构层的来源 group wrapper 只允许机械展开成直接原子，同时保持归属、paint order 和视觉一致。Create Brand 只提取身份片段，Create Style 只提取可移植方法/方向；两者都不进入结构复制策略，也不生成 SVG roster。
+对 Create Layout / Create Deck，`standard` 与 `fidelity` 会先把完整来源 Master/Layout 清单作为结构与视觉证据，再创作完整 Slide SVG 原型和新的 Master/Layout/slot 系统。`standard` 保持紧凑，`fidelity` 覆盖更广的有用来源对齐家族；每个被保留的创作型 Layout 至少由一个 Slide 原型表达。`mirror` 只输出来源 Slide 原型，并保留每张 Slide 可达的 Layout/Master 链；每个独立 SVG 会补齐 Master + Layout + Slide 上下文，同时保留显式归属标记。未被任何 Slide 引用的来源结构只作为证据。只有被保留的来源已经品牌中立且应用中立时，Layout mirror 才合法；否则应重新创作 Layout，或把这些事实保留为 Deck。固定结构层的来源 group 只允许机械展开成直接原子，同时保持归属、paint order 和视觉一致。Create Brand 只提取身份片段，Create Style 只提取可移植方法/方向；两者都不进入结构复制策略，也不生成 SVG roster。
+
+“只生成 Slide”是 SVG roster 边界，不代表禁止确定性辅助数据。PPTX 来源的 mirror 可携带逐 Master 的来源 Theme 与原生载荷 sidecar；工具会校验并消费它们，但不会把它们暴露为原型或页面创作上下文。
 
 四类模板拥有不同的设计契约片段：
 
@@ -691,7 +693,7 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么 PPTX 往返使用语义工作区，而不是照搬 ZIP 目录。** 可编辑页面源是 `authoring-svg-flat/`；PowerPoint 图片媒体、导入的可复用矢量、提示音、音频、视频、备注和不透明载荷分别位于 `images/`、`icons/imported/`、`sounds/`、`audio/`、`video/`、`notes/` 和 `native-payloads/`。精确来源包保存在 `sources/source.pptx`，结构与归属契约保存在 `analysis/`，诊断保存在 `validation/`，发布文件保存在 `exports/`。这样既让作者路径与普通项目一致，又由 `analysis/roundtrip_manifest.json` 把语义文件映射回 package 归属。导入与导出只接受这一份契约；根目录下的 `source_template.pptx`、`native_structure.json`、`conversion-report.json` 与 `assets/` 都不是兼容输入。
 
-大型导入表格和复杂组合被视为来源支撑的原子对象，而不是在模型可见 SVG 中展开成数千个节点。它们的精确浏览器预览以 hash 命名存放在 `images/source-object-previews/`，`authoring-svg-flat/` 只保留一个紧凑的 `native-restore` 图片代理和外层 source ref。未修改的代理会恢复完整原生 OOXML 对象，包括 PowerPoint 原生表格；删除 Slide-local 代理会删除该对象。继承自 Master/Layout 的代理必须保留，因为单个 flat 页面不能删除共享结构。修改代理或预览会直接阻止导出，因为静默编译为图片或 SVG 派生形状会违背往返意图。
+受支持的导入原生表格保持为一个语义 marker，而不是在模型可见 SVG 中展开成数千个节点。其 `ppt-master.semantic-table.v2` payload 会把重复的单元格、段落和 run 格式归纳成默认值及命名单元格样式，原生导出时再在内存中展开。精确浏览器预览以 hash 命名存放在 `images/source-object-previews/`。复杂组合及封闭语义 schema 以外的表格则继续由来源支撑：`authoring-svg-flat/` 只保留一个紧凑的 `native-restore` 图片代理和外层 source ref。未修改的代理会恢复完整来源 OOXML 对象；删除 Slide-local 代理会删除该对象。继承自 Master/Layout 的代理必须保留，因为单个 flat 页面不能删除共享结构。修改代理或预览会直接阻止导出，因为静默编译为图片或 SVG 派生形状会违背往返意图。
 
 **为什么只有一条 PPTX 编译路线。** Native 导出把作者 SVG 中受支持的元素逐个翻译成 DrawingML 形状。常规 deck 路线读取 `svg_output/`；用户需要时，create-template 对通过校验的模板原型调用同一 structured 编译器，生成 `exports/<id>_template_preview.pptx` 作为审阅证据。项目不会把整页 SVG 媒体或另一套位图渲染打包成第二类 PPTX。`svg_final/` 仍由常规 deck 的强制后处理生成，但只承担派生视觉预览和 SVG 图片插入，不为 PowerPoint 手工“转换为形状”提供兼容兜底。
 
@@ -709,13 +711,13 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么 structured 输出要在发布前回读。** 元数据预检不能证明 package 序列化保留了所有 relationship 与注册信息。导出器会重新打开临时 PPTX，把已发布 Slide 与完整 Master/Layout roster 分开校验，包括没有任何 Slide 使用的定义；同时核对 Presentation → Master → Layout → Slide 注册链、物理 part/content-type roster、选择器身份、固定对象顺序、placeholder 类型/有效索引/bounds、carrier 绑定、隐藏 proxy 与零槽 Layout，只有通过后才发布。
 
-**为什么 Create Layout / Create Deck 分为创作模式和保留模式。** `pptx_template_import.py` 输出分层 Master/Layout/Slide 参考和 native 结构事实。`standard` / `fidelity` 把这些素材和视觉当参考，再按照确认后的可复用行为创作新拓扑。Mirror 则把已验证的来源 roster 与拓扑一对一物化到新工作区，只允许显式 structured 合同要求的机械归一化，不补造缺失事实。原始 PPTX 保持为不可变分析证据，不成为最终模板依赖。Create Brand 没有结构复制策略。
+**为什么 Create Layout / Create Deck 分为创作模式和保留模式。** `pptx_template_import.py` 输出分层 Master/Layout/Slide 参考和 native 结构事实。`standard` / `fidelity` 会检查完整来源 Master/Layout 与视觉证据，再按照确认后的可复用行为创作紧凑或覆盖更广的完整 Slide 原型和新拓扑。Mirror 则一对一物化每张来源 Slide 及其可达的 Layout/Master 链，只做显式 structured 合同要求的上下文补全和机械归一化。未被来源 Slide 引用的结构不进入 mirror 输出；创作模式可按需要把其中有用的结构重新表达为完整 Slide 原型。原始 PPTX 保持为不可变分析证据，不成为最终模板依赖。Create Brand 没有结构复制策略。
 
 **为什么 create-template 在两种范围都使用同一工作区路由。** `create-template` 仍以写入索引的 `library` 为默认，也可写入已初始化项目。两种根目录都要求 `templates/`；`images/`、`icons/` 和按需生成的 `exports/` 只有存在真实内容时才出现，已有 SVG 素材的引用规则也一致。Library 在单 kind 目录使用一份裸 spec，project 在共享 root 使用限定名 spec；schema 与素材路由保持一致，spec 落点及全局索引注册随范围变化。只有 Layout / Deck 拥有 structured SVG 合同，Brand 与 Style 保持 roster-free。
 
 **为什么模板 SVG 保持完整却仍能编译成原生结构。** 模板 SVG 会重复携带继承的 Master/Layout 视觉和示例 Slide 内容，因此可独立打开。生成时由 `page_layouts` 选择该原型，输出 SVG 仍保持视觉闭包。导出器移除重复继承原子、生成真实 Master/Layout part，并把槽位 carrier 与 Slide-local 内容留在 Slide。
 
-**为什么 PowerPoint 原生 Chart/Table 重建使用显式替换 marker，而不是自动替换对象。** 独立的 `pptx_to_svg.py` 导入器只为已验证的表格 / 图表子集输出可见 SVG fallback、`data-pptx-replace-with` 与 `<metadata type="application/json">`。生成型 deck 只为 §IX `Native-ready` 映射中以 `<object-key>=yes` 点名的语义对象准备这组内容；§VII 只保存正向 catalog reference，catalog marker 只是能力示例，不替项目做决策。父组 marker 决定 payload schema；普通 shape 与 connector 不使用该合同。表格导入覆盖精确的物理行列 topology、slave 为空的规范矩形 merge、安全的 solid/no-fill 逐边 border、纯文本多段落，以及封闭的 run 级富文本段落。富文本段落包含非空 `runs`；每个 run 必须有 `text`，并且只能使用 `bold`、`italic`、`underline`、`strike`、`color`、`font_size`、单一 `font_family`、`lang` 和 `alt_lang`。不含非空 `effectLst` / `effectDag` 的来源展示型 run XML 会归一化到该 schema；表格单元格 run 效果则会禁用原生替换，并添加阻塞效果诊断。带 relationship 的文本、扩展节点、换行、字段、tab、项目符号、破损文本 topology、非规范 merge、不安全 border 与非纯色填充仍保持 fallback-only。表格样式 `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}` 的规范化 fallback 会解析 `wholeTbl`、`firstRow`、横向带状行、主题颜色 / 字体和直接格式覆盖；这不代表完整 built-in/custom style registry。
+**为什么 PowerPoint 原生 Chart/Table 重建使用显式替换 marker，而不是自动替换对象。** 独立的 `pptx_to_svg.py` 导入器只为已验证的表格 / 图表子集输出可见 SVG fallback、`data-pptx-replace-with` 与 `<metadata type="application/json">`。生成型 deck 只为 §IX `Native-ready` 映射中以 `<object-key>=yes` 点名的语义对象准备这组内容；§VII 只保存正向 catalog reference，catalog marker 只是能力示例，不替项目做决策。父组 marker 决定 payload schema；普通 shape 与 connector 不使用该合同。表格 marker 必须使用 `ppt-master.semantic-table.v2`：导入时把完全相同的单元格、段落及 run 值归纳为默认值和命名样式，导出时在原生校验前展开。表格导入覆盖精确的物理行列 topology、slave 为空的规范矩形 merge、安全的 solid/no-fill 逐边 border、纯文本多段落，以及封闭的 run 级富文本段落。富文本段落包含非空 `runs`；每个 run 必须有 `text`，并且只能使用 `bold`、`italic`、`underline`、`strike`、`color`、`font_size`、单一 `font_family`、`lang` 和 `alt_lang`。不含非空 `effectLst` / `effectDag` 的来源展示型 run XML 会归一化到该 schema；表格单元格 run 效果则会禁用原生替换，并添加阻塞效果诊断。带 relationship 的文本、扩展节点、换行、字段、tab、项目符号、破损文本 topology、非规范 merge、不安全 border 与非纯色填充仍保持 fallback-only。表格样式 `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}` 的规范化 fallback 会解析 `wholeTbl`、`firstRow`、横向带状行、主题颜色 / 字体和直接格式覆盖；这不代表完整 built-in/custom style registry。
 
 受支持的柱 / 条 / 折线 / 面积、饼 / 圆环、散点 / 气泡图在没有 baked preview 时会生成确定性、可读的 SVG fallback，并标记 `data-pptx-fallback-kind="normalized"`。导入器还覆盖已验证的柱 / 折线 / 面积组合图、规范四系列 OHLC stock、数值日期轴面积图、采用封闭 `axes.x` / `axes.y` 合同的散点 / 气泡图、radar、安全的 `of_pie` `serLines`、坐标轴 / 标题 / 图例归一化，以及有界的柱 / 条图 gap/overlap 场景。`gapWidth` 只接受 `0..500` 内的单个整数，`overlap` 只接受 `-100..100` 内的单个整数；这两个表现字段在 native 输出中有意归一化，非法、重复或越界输入 fail closed。组合图可保留主 / 次 plot 各自的 category cache 与 workbook range。XY 导入根据各系列一致的有效 line/marker/smooth 状态推导 `scatter_style`。封闭的 category/value 与 XY 轴合同为 native read-back 保留 kind、position、visibility、label position、number format、min/max/major unit、reverse 和 major gridlines；规范化 XY fallback 只消费两个 `major_gridlines` 开关。
 

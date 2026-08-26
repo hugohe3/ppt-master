@@ -14,6 +14,7 @@
        data-pptx-replace-with="table">
         <metadata type="application/json">
             {
+              "schema": "ppt-master.semantic-table.v2",
               "name": "hierarchical-table",
               "x": 80,
               "y": 145,

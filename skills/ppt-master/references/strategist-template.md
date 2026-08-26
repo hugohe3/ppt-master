@@ -21,7 +21,7 @@ Conditional extension for applying an installed Brand/Style/Layout/Deck workspac
 Immediately before authoring the Stage-2 solution, load each relevant template
 resource once per path + SHA and inspect:
 
-- every installed `design_spec.<kind>.<id>.md`; inspect the actual Page Roster and relevant SVG prototypes from Layout when present, otherwise from Deck;
+- every installed `design_spec.<kind>.<id>.md`; inspect the actual Page Roster and relevant complete Slide prototypes from Layout when present, otherwise from Deck; a mirror scope note about omitted source identities is evidence, not a page-candidate list;
 - the Identity, Structure, Reusable Application Context, and Direction / method segment owners, resolved here from the installed set under [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md) §5;
 - the confirmed current communication contract, source obligations, planned page count, and content shape of every planned page;
 - the user's natural-language instructions, including any page names/numbers or elements they explicitly require.
@@ -35,6 +35,12 @@ Then author one plan that decides all of the following without presenting an opt
 - which visible elements must remain literal because the user said so, and which may change to serve the current content.
 
 For Layout/Deck, template size is evidence, not policy. A short template may use every prototype when the content genuinely fits; a 20–30 page source may contribute only a few suitable pages, or several pages may be reorganized into a new sequence. Never infer that all pages must be kept or that visible sample content is protected merely because it exists in the template. Style and Brand have no prototype set.
+
+**Hard rule — Slide prototypes drive authoring**: Every template SVG is a
+complete Slide prototype with resolved Master + Layout + Slide context. Use
+these files for `page_layouts`; standalone Master/Layout definition SVGs are
+invalid. An unselected authored Slide prototype may still supply a
+`pptx_layouts` definition, while mirror exposes only actual source Slides.
 
 Record the resulting exporter plan internally:
 
@@ -79,11 +85,11 @@ For Style-only or Style + Brand, write `pptx_structure.mode: flat` plus `templat
 For `mirror` / `layout`, write `pptx_structure.mode: structured` plus `template_adherence: strict|adaptive`; mirror always writes `strict`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows.
 
 - **Master roster**: Write one `pptx_masters` row per Master as `<master_key>: <picker name>` and copy the workspace's prototype roster. Keys use 1–64 ASCII letters, digits, dots, underscores, or hyphens, start with a letter/digit, and contain no spaces; human-readable spaces belong only in the picker name. Master visuals are root-level atomic elements and may never be `<g>`.
-- **Reusable Layout roster**: Write every unique Layout once as `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. Copy installed `template:<basename>` sources, including currently unused Layouts. A new adaptive Layout uses its first generated `P<NN>` as source. Reuse a key only when fixed atoms and slot ids/types/indices/bounds/binding modes are identical. Name authored keys after composition, never page topic. A Layout may intentionally have zero slots; do not manufacture an empty `utility` kind or full-page fake slot.
+- **Reusable Layout roster**: Write every unique Layout once as `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. Each installed `template:<basename>` source is a complete Slide prototype, including one not selected for the current generated deck. A new adaptive Layout uses its first generated `P<NN>` as source. Reuse a key only when fixed atoms and slot ids/types/indices/bounds/binding modes are identical. Name authored keys after composition, never page topic. A Layout may intentionally have zero slots; do not manufacture an empty `utility` kind or full-page fake slot.
 - **Page assignment**: Write exactly one `page_pptx_layouts` row per page. Each key must exist in `pptx_layouts`. Check that distinct compositions do not collapse into role-only keys and that one skeleton does not split into topic-specific keys.
 - **Slot planning**: Each reusable slot is a direct root `<g id>` with `data-pptx-placeholder`, positive design-zone bounds, and exactly one compatible direct carrier. Bounds come from the intended safe area, column, panel inset, or media frame—not sample text ink. A genuinely composite region may use only the explicit `object` + `proxy` downgrade.
 - **Adaptive refinement**: Initial definitions are complete. If construction shows that reusable framing or slot topology/bounds must change, return to Strategist to add a definition sourced from that page and update its assignment before execution resumes. Executor never mutates or extends the contract; export only compiles declared structure and never discovers or clusters Layouts.
-- **Input prototypes**: Add one `page_layouts` row per page. Strict preserves that SVG's contract; adaptive keeps its Master and may declare a new output Layout; mirror also preserves literal visuals and text-node topology.
+- **Input prototypes**: Add one `page_layouts` row per page using a complete Slide prototype. Strict preserves that SVG's contract; adaptive keeps its Master and may declare a new output Layout; mirror also preserves literal visuals and text-node topology.
 
 **Visualization compatibility**: Use `page_layouts` with optional Chart/Table
 `page_visualizations` only when the prototype shell can carry the actual §IX

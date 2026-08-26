@@ -72,6 +72,8 @@ def native_fallback_contract_warnings(
     document_root: ET.Element | None = None,
 ) -> list[str]:
     """Return non-blocking diagnostics for default/checker compatibility."""
+    if elem.get("data-pptx-semantic-object") == "table":
+        return []
     expected, invalid = _expected_native_fallback_hash(elem)
     if invalid:
         return [

@@ -2,16 +2,15 @@
 """
 PPT Master - Large Vector Asset Extractor
 
-Factor large inline vector groups (complex illustrations) out of working SVGs
-into project icon assets, leaving a one-line `<use data-icon="namespace/id"/>`
-placeholder behind — so the working SVG stays readable (structure, not a wall of
-`<path>`). Visually lossless and reversible: the existing icon embedding path
-re-inlines each asset before export, so the exported PPTX remains native shapes,
-not an embedded picture.
+Factor large non-semantic vector decorations out of working SVGs into project
+icon assets, leaving a compact decoration-marked `<use data-icon>` placeholder
+behind. Semantic objects and semantic descendants always remain inline. The
+existing icon embedding path re-inlines each asset before export, so the
+exported PPTX remains native shapes rather than an embedded picture.
 
-Because re-inlining restores the extracted vector subtree, the detection
-threshold is a readability convenience — it changes which blobs are factored
-out, not whether the export stays editable.
+Because re-inlining restores the extracted decoration subtree, the detection
+threshold is a readability convenience. It never expands the eligible asset
+role beyond decoration.
 
 Usage:
     python3 scripts/extract_svg_assets.py <svg_dir> [options]
@@ -47,8 +46,13 @@ from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from pptx_shapes import (
+    NATIVE_FALLBACK_SHA256_ATTR,
+    svg_native_fallback_fingerprint,
+)
 from svg_authoring_view import (
     AUTHORING_MANIFEST_NAME,
+    SEMANTIC_OBJECT_ATTRIBUTE,
     write_authoring_summary,
 )
 
@@ -62,8 +66,12 @@ DEFAULT_MIN_DRAWABLES = 20
 DEFAULT_MIN_BYTES = 3000
 DEFAULT_MIN_DECORATION_BYTES = 3000
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
+ASSET_ROLE_ATTRIBUTE = "data-pptx-asset-role"
+DECORATION_ASSET_ROLE = "decoration"
+VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v2"
 ICON_NAMESPACE_RE = re.compile(r"^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$")
 URL_REF_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"]\S*?)\1\s*\)")
+_SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def _local(tag: object) -> str:
@@ -92,6 +100,14 @@ def _has_semantic_content(elem: ET.Element) -> bool:
     return any(_local(e.tag) in SEMANTIC_CONTENT for e in elem.iter())
 
 
+def _has_semantic_object(elem: ET.Element) -> bool:
+    """Semantic authoring objects must never move into imported decoration."""
+    return any(
+        item.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
+        for item in elem.iter()
+    )
+
+
 def _is_existing_placeholder(elem: ET.Element) -> bool:
     return _local(elem.tag) == "use" and elem.get("data-icon") is not None
 
@@ -104,6 +120,7 @@ def _is_extractable_subtree(elem: ET.Element) -> bool:
     """Pure vector subtrees can be moved; semantic content must stay inline."""
     if (
         _local(elem.tag) in DEFINITION_CONTAINERS
+        or _has_semantic_object(elem)
         or _has_icon_placeholder(elem)
         or _is_chart_group(elem)
         or _has_semantic_content(elem)
@@ -331,7 +348,10 @@ def _find_extractable(root: ET.Element, min_drawables: int, min_bytes: int) -> l
     found: list[ET.Element] = []
 
     def walk(elem: ET.Element) -> None:
-        if _local(elem.tag) in DEFINITION_CONTAINERS:
+        if (
+            _local(elem.tag) in DEFINITION_CONTAINERS
+            or elem.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
+        ):
             return
         for child in list(elem):
             if _local(child.tag) != "g":
@@ -339,6 +359,7 @@ def _find_extractable(root: ET.Element, min_drawables: int, min_bytes: int) -> l
                 continue
             if (
                 not _is_chart_group(child)
+                and not _has_semantic_object(child)
                 and not _has_semantic_content(child)
                 and not _has_icon_placeholder(child)
                 and _large_enough(child, min_drawables, min_bytes)
@@ -375,7 +396,10 @@ def _find_extractable_runs(
             found.append((parent, list(run)))
 
     def walk(elem: ET.Element) -> None:
-        if _local(elem.tag) in DEFINITION_CONTAINERS:
+        if (
+            _local(elem.tag) in DEFINITION_CONTAINERS
+            or elem.get(SEMANTIC_OBJECT_ATTRIBUTE) is not None
+        ):
             return
         run: list[ET.Element] = []
         for child in list(elem):
@@ -399,8 +423,20 @@ def _asset_svg(
     height: str | None,
 ) -> bytes:
     """Standalone, independently-viewable SVG carrying the group in page coords."""
+    semantic_inputs = [group, *dependencies]
+    if any(
+        _has_semantic_object(item)
+        or _has_semantic_content(item)
+        or _is_chart_group(item)
+        for item in semantic_inputs
+    ):
+        raise ValueError(
+            "Semantic authoring content must remain inline and cannot become "
+            "imported decoration assets"
+        )
     svg = ET.Element(f"{{{SVG_NS}}}svg")
     svg.set("data-icon-style", "preserve-color")
+    svg.set(ASSET_ROLE_ATTRIBUTE, DECORATION_ASSET_ROLE)
     if view_box:
         svg.set("viewBox", view_box)
     if width:
@@ -548,6 +584,11 @@ def _existing_placeholder_entries(
             asset = _icon_asset_for_namespace(icon_name, icon_namespace)
             if asset is None:
                 continue
+            if elem.get(ASSET_ROLE_ATTRIBUTE) != DECORATION_ASSET_ROLE:
+                raise ValueError(
+                    f"Imported vector placeholder {icon_name!r} must declare "
+                    f"{ASSET_ROLE_ATTRIBUTE}={DECORATION_ASSET_ROLE!r}"
+                )
             if asset in known_assets:
                 continue
 
@@ -560,6 +601,7 @@ def _existing_placeholder_entries(
                     "icon": icon_name,
                     "asset": asset,
                     "source": "existing-placeholder",
+                    "role": DECORATION_ASSET_ROLE,
                     "asset_exists": (icons_dir / asset).exists(),
                 },
             )
@@ -575,9 +617,19 @@ def _existing_placeholder_entries(
             ).hexdigest()
             try:
                 root = ET.parse(asset_path).getroot()
-            except ET.ParseError:
-                pass
+            except ET.ParseError as exc:
+                raise ValueError(
+                    f"Imported vector asset is invalid SVG XML: "
+                    f"{asset_path}: {exc}"
+                ) from exc
             else:
+                role = root.get(ASSET_ROLE_ATTRIBUTE)
+                if role != DECORATION_ASSET_ROLE:
+                    raise ValueError(
+                        f"Imported vector asset must declare "
+                        f"{ASSET_ROLE_ATTRIBUTE}={DECORATION_ASSET_ROLE!r}: "
+                        f"{asset_path}"
+                    )
                 entry["drawable_count"] = _drawable_count(root)
                 entry["byte_count"] = _xml_size(root)
                 entry["elements"] = _tag_histogram(root)
@@ -602,6 +654,14 @@ def _load_reusable_assets(inventory_path: Path, icons_dir: Path) -> dict[str, di
     except json.JSONDecodeError as exc:
         raise ValueError(f"invalid reuse inventory JSON: {inventory_path}: {exc}") from exc
 
+    if payload.get("schema") != VECTOR_INVENTORY_SCHEMA:
+        raise ValueError(
+            f"unsupported reuse inventory schema: {payload.get('schema')!r}"
+        )
+    if payload.get("asset_role") != DECORATION_ASSET_ROLE:
+        raise ValueError(
+            "reuse inventory must declare asset_role='decoration'"
+        )
     entries = payload.get("assets")
     if not isinstance(entries, list):
         raise ValueError(f"reuse inventory has no assets list: {inventory_path}")
@@ -615,11 +675,16 @@ def _load_reusable_assets(inventory_path: Path, icons_dir: Path) -> dict[str, di
         asset_sha256 = entry.get("asset_sha256")
         asset = entry.get("asset")
         icon = entry.get("icon")
+        role = entry.get("role")
         if not all(
             isinstance(value, str) and value
             for value in (source_sha256, asset_sha256, asset, icon)
         ):
             continue
+        if role != DECORATION_ASSET_ROLE:
+            raise ValueError(
+                f"reusable asset {icon!r} is not a decoration asset"
+            )
         fingerprinted += 1
         asset_path = icons_dir / asset
         if not asset_path.is_file():
@@ -630,6 +695,16 @@ def _load_reusable_assets(inventory_path: Path, icons_dir: Path) -> dict[str, di
         if actual_asset_sha256 != asset_sha256:
             raise ValueError(
                 f"reusable asset hash does not match its inventory: {asset_path}"
+            )
+        try:
+            asset_root = ET.parse(asset_path).getroot()
+        except ET.ParseError as exc:
+            raise ValueError(
+                f"reusable asset is not valid SVG XML: {asset_path}: {exc}"
+            ) from exc
+        if asset_root.get(ASSET_ROLE_ATTRIBUTE) != DECORATION_ASSET_ROLE:
+            raise ValueError(
+                f"reusable asset lacks its decoration role: {asset_path}"
             )
         current = reusable.get(source_sha256)
         if current is None or asset < str(current["asset"]):
@@ -652,6 +727,25 @@ def _rewritten_path(svg_path: Path, rewritten_dir: Path | None, inplace: bool) -
     return rewritten_dir / svg_path.name
 
 
+def _fresh_native_fallback_markers(root: ET.Element) -> set[ET.Element]:
+    """Snapshot native markers whose visible fallback is fresh before extraction."""
+    fresh: set[ET.Element] = set()
+    for element in root.iter():
+        expected = element.get(NATIVE_FALLBACK_SHA256_ATTR)
+        if (
+            expected is None
+            or expected != expected.strip()
+            or not _SHA256_RE.fullmatch(expected)
+        ):
+            continue
+        if svg_native_fallback_fingerprint(
+            element,
+            document_root=root,
+        ) == expected.lower():
+            fresh.add(element)
+    return fresh
+
+
 def extract_file(
     svg_path: Path,
     icons_dir: Path,
@@ -668,6 +762,7 @@ def extract_file(
     ET.register_namespace("", SVG_NS)
     tree = ET.parse(svg_path)
     root = tree.getroot()
+    fresh_native_markers = _fresh_native_fallback_markers(root)
     view_box = root.get("viewBox")
     width = root.get("width")
     height = root.get("height")
@@ -745,6 +840,7 @@ def extract_file(
             reused_asset = str(reusable["asset"])
             placeholder = ET.Element(f"{{{SVG_NS}}}use")
             placeholder.set("data-icon", reused_icon)
+            placeholder.set(ASSET_ROLE_ATTRIBUTE, DECORATION_ASSET_ROLE)
             for node in nodes:
                 if node in parent:
                     parent.remove(node)
@@ -755,6 +851,7 @@ def extract_file(
                 "icon": reused_icon,
                 "asset": reused_asset,
                 "source": "reused-inventory",
+                "role": DECORATION_ASSET_ROLE,
                 "source_sha256": source_sha256,
                 "asset_sha256": reusable["asset_sha256"],
                 "reused_from_svg": reusable.get("svg"),
@@ -789,6 +886,7 @@ def extract_file(
 
         placeholder = ET.Element(f"{{{SVG_NS}}}use")
         placeholder.set("data-icon", icon_reference)
+        placeholder.set(ASSET_ROLE_ATTRIBUTE, DECORATION_ASSET_ROLE)
         for node in nodes:
             if node in parent:
                 parent.remove(node)
@@ -800,6 +898,7 @@ def extract_file(
             "icon": icon_reference,
             "asset": asset,
             "source": "extracted",
+            "role": DECORATION_ASSET_ROLE,
             "source_sha256": source_sha256,
             "asset_sha256": hashlib.sha256(asset_bytes).hexdigest(),
             "drawable_count": _drawable_count(group),
@@ -811,6 +910,12 @@ def extract_file(
         })
 
     _optimize_definitions(root)
+    live_elements = set(root.iter())
+    for marker in fresh_native_markers & live_elements:
+        marker.set(
+            NATIVE_FALLBACK_SHA256_ATTR,
+            svg_native_fallback_fingerprint(marker, document_root=root),
+        )
     rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
     rewritten.parent.mkdir(parents=True, exist_ok=True)
     tree.write(rewritten, encoding="utf-8", xml_declaration=True)
@@ -819,7 +924,9 @@ def extract_file(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Factor large inline vector groups out of SVGs into reusable assets.",
+        description=(
+            "Factor large non-semantic SVG decorations into reusable assets."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("svg_dir", help="Directory of working SVGs (e.g. import_ws/svg or project/svg_output)")
@@ -993,10 +1100,11 @@ def extract_directory(
         )
 
     manifest = {
-        "schema": "vector_asset_inventory.v1",
+        "schema": VECTOR_INVENTORY_SCHEMA,
         "svg_dir": manifest_path(svg_dir),
         "icons_dir": manifest_path(icons_dir),
         "icon_namespace": icon_namespace or None,
+        "asset_role": DECORATION_ASSET_ROLE,
         "rewritten_dir": (
             None
             if inplace

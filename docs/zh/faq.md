@@ -414,7 +414,7 @@ Create Template 会先确认简报，再写入已注册、可发现的 `library`
 
 **第一步 — 准备参考材料**
 
-**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取包内实际存在且受支持的主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则把这些已验证的来源事实物化到新工作区，不做语义归纳或缺口补造。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
+**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取包内实际存在且受支持的主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把完整来源清单作为证据，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则为每张来源 Slide 输出一个原型，并只把这组 Slide 可达的 Layout/Master 事实物化到新工作区，不做语义归纳或缺口补造；未引用的来源 Layout/Master 只保留为分析证据，不进入 mirror 输出。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
 
 完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
 

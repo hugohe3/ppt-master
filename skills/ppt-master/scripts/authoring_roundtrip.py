@@ -29,7 +29,12 @@ from typing import Any
 from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
-from extract_svg_assets import extract_file
+from extract_svg_assets import (
+    ASSET_ROLE_ATTRIBUTE,
+    DECORATION_ASSET_ROLE,
+    VECTOR_INVENTORY_SCHEMA,
+    extract_file,
+)
 from pptx_workspace import ROUNDTRIP_MANIFEST_PATH
 from slide_roster import discover_slide_svgs
 from svg_authoring_view import (
@@ -47,7 +52,6 @@ from svg_compatibility import normalize_single_child_group_filters
 
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
-VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v1"
 IMPORTED_ICON_NAMESPACE = "imported"
 _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
 _PRESERVED_EFFECT_ATTRIBUTES = frozenset({
@@ -484,6 +488,10 @@ def _load_current_assets(
         raise AuthoringRoundtripError(
             "Flat authoring vector inventory must use icon_namespace='imported'"
         )
+    if inventory.get("asset_role") != DECORATION_ASSET_ROLE:
+        raise AuthoringRoundtripError(
+            "Flat authoring vector inventory must use asset_role='decoration'"
+        )
     assets_raw = inventory.get("assets")
     if not isinstance(assets_raw, list):
         raise AuthoringRoundtripError("Vector inventory assets must be an array")
@@ -506,6 +514,10 @@ def _load_current_assets(
             raise AuthoringRoundtripError(
                 f"vector assets[{index}] is missing a required string field"
             )
+        if raw.get("role") != DECORATION_ASSET_ROLE:
+            raise AuthoringRoundtripError(
+                f"vector assets[{index}] is not a decoration asset"
+            )
         icon = str(values["icon"])
         origin = str(values["svg"])
         if icon in records:
@@ -521,6 +533,16 @@ def _load_current_assets(
         )
         if not asset_path.is_file() or asset_path.suffix.lower() != ".svg":
             raise AuthoringRoundtripError(f"Vector asset is missing: {asset_path}")
+        try:
+            asset_root = ET.parse(asset_path).getroot()
+        except ET.ParseError as exc:
+            raise AuthoringRoundtripError(
+                f"Vector asset is invalid SVG XML: {asset_path}: {exc}"
+            ) from exc
+        if asset_root.get(ASSET_ROLE_ATTRIBUTE) != DECORATION_ASSET_ROLE:
+            raise AuthoringRoundtripError(
+                f"Vector asset is not declared as decoration: {asset_path}"
+            )
         records[icon] = VectorAssetRecord(
             icon=icon,
             asset_path=asset_path,
@@ -554,8 +576,22 @@ def _baseline_assets(
             raise AuthoringRoundtripError(
                 f"Generated baseline vector asset {index} is incomplete"
             )
+        if raw.get("role") != DECORATION_ASSET_ROLE:
+            raise AuthoringRoundtripError(
+                f"Generated baseline vector asset {index} is not decoration"
+            )
         icon = str(values["icon"])
         asset_path = icons_root / str(values["asset"])
+        try:
+            asset_root = ET.parse(asset_path).getroot()
+        except ET.ParseError as exc:
+            raise AuthoringRoundtripError(
+                f"Generated baseline vector asset is invalid: {asset_path}: {exc}"
+            ) from exc
+        if asset_root.get(ASSET_ROLE_ATTRIBUTE) != DECORATION_ASSET_ROLE:
+            raise AuthoringRoundtripError(
+                f"Generated baseline vector asset lacks decoration role: {asset_path}"
+            )
         actual_sha = _sha256_file(asset_path)
         records[icon] = VectorAssetRecord(
             icon=icon,
@@ -610,6 +646,10 @@ def _generate_baseline_bundle(
         if icon_namespace != IMPORTED_ICON_NAMESPACE:
             raise AuthoringRoundtripError(
                 "Flat vector inventory must use icon_namespace='imported'"
+            )
+        if inventory.get("asset_role") != DECORATION_ASSET_ROLE:
+            raise AuthoringRoundtripError(
+                "Flat vector inventory must use asset_role='decoration'"
             )
         baseline_icons = baseline_root / "_baseline_icons"
         entries: list[dict[str, Any]] = []
@@ -729,6 +769,14 @@ def _referenced_assets(
         icon = (element.get("data-icon") or "").strip()
         if not icon or icon in referenced:
             continue
+        if (
+            icon.startswith(f"{IMPORTED_ICON_NAMESPACE}/")
+            and element.get(ASSET_ROLE_ATTRIBUTE) != DECORATION_ASSET_ROLE
+        ):
+            raise AuthoringRoundtripError(
+                f"{document_name} imported vector {icon!r} is not marked "
+                "as decoration"
+            )
         record = assets.get(icon)
         if record is None:
             if icon.startswith(f"{IMPORTED_ICON_NAMESPACE}/"):

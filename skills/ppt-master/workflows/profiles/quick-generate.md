@@ -696,10 +696,11 @@ already present.
 
 After every page and required referenced resource exists, run the Quick branch
 of [`verify-charts`](../stages/verify-charts.md) when any data-driven chart was
-authored. Complete all coordinate repairs first; then run the one lockless final
-SVG check:
+authored. Complete all coordinate repairs first; then compact shared root/group
+presentation values and run the one lockless final SVG check:
 
 ```bash
+python3 ${SKILL_DIR}/scripts/compact_svg_styles.py <project_path>/svg_output --inplace
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --quick-generate --stage final --json
 ```

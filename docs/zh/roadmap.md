@@ -141,7 +141,7 @@
 
 **对应 Issue**：[#53](https://github.com/hugohe3/ppt-master/issues/53)、[#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结构完整的 PPTX 可以通过两种显式方式为经过确认的可复用模板包提供依据：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 把来源包内实际存在的全部受支持事实物化到新工作区，包括未使用的 Layout 定义。两者都不修改来源 PPTX，也不补造缺失的设计意图。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
+Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结构完整的 PPTX 可以通过两种显式方式为经过确认的可复用模板包提供依据：`standard` / `fidelity` 读取完整来源证据，创作新的完整 Slide SVG 原型和 Master/Layout 系统；`mirror` 只物化来源 Slide 及其可达的 Layout/Master 链。两者都不修改来源 PPTX，也不补造缺失的设计意图。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 

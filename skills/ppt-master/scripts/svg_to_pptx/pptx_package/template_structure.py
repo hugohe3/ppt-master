@@ -16,6 +16,8 @@ Dependencies:
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
 import math
@@ -122,6 +124,10 @@ PPTX_STRUCTURE_MODES = frozenset({"structured", "preserve", "flat"})
 TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
 TEMPLATE_REUSE_SCOPES = frozenset({"mirror", "layout", "style"})
 PLACEHOLDER_BINDING_MODES = frozenset({"carrier", "proxy"})
+SOURCE_THEMES_FILENAME = "source_themes.json"
+SOURCE_THEMES_SCHEMA = "ppt-master.source-themes.v1"
+_DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 _TEMPLATE_SKIN_ATTRS = frozenset({
     "baseline-shift",
     "color",
@@ -544,6 +550,92 @@ def _template_replication_mode(template_dir: Path) -> str | None:
     return None
 
 
+def load_template_source_themes(
+    template_dir: Path,
+) -> dict[str, bytes] | None:
+    """Load exact per-Master themes carried by a Type A mirror workspace."""
+    path = template_dir / SOURCE_THEMES_FILENAME
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise TemplateStructureError(
+            f"Cannot read template source themes {path}: {exc}"
+        ) from exc
+    schema = payload.get("schema") if isinstance(payload, dict) else None
+    if not isinstance(payload, dict) or schema != SOURCE_THEMES_SCHEMA:
+        raise TemplateStructureError(
+            f"Unsupported template source theme schema: {schema!r}"
+        )
+    masters = payload.get("masters")
+    if not isinstance(masters, dict) or not masters:
+        raise TemplateStructureError(
+            f"{SOURCE_THEMES_FILENAME} requires a non-empty masters object"
+        )
+
+    themes: dict[str, bytes] = {}
+    for master_key, record in masters.items():
+        if (
+            not isinstance(master_key, str)
+            or not _MASTER_KEY_RE.fullmatch(master_key)
+        ):
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} has invalid Master key {master_key!r}"
+            )
+        if not isinstance(record, dict):
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} must be an object"
+            )
+        if record.get("encoding") != "base64":
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} must use base64"
+            )
+        encoded = record.get("payload")
+        expected_sha256 = record.get("sha256")
+        if (
+            not isinstance(encoded, str)
+            or not isinstance(expected_sha256, str)
+        ):
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} lacks payload/hash"
+            )
+        try:
+            raw = base64.b64decode(encoded, validate=True)
+        except (binascii.Error, ValueError) as exc:
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} has invalid base64"
+            ) from exc
+        if base64.b64encode(raw).decode("ascii") != encoded:
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} base64 is not canonical"
+            )
+        if hashlib.sha256(raw).hexdigest() != expected_sha256.strip().lower():
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} hash differs"
+            )
+        try:
+            root = ET.fromstring(raw)
+        except ET.ParseError as exc:
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} theme is malformed"
+            ) from exc
+        if root.tag != f"{{{_DML_NS}}}theme":
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} is not a:theme"
+            )
+        if any(
+            isinstance(name, str) and name.startswith(f"{{{_REL_NS}}}")
+            for node in root.iter()
+            for name in node.attrib
+        ):
+            raise TemplateStructureError(
+                f"{SOURCE_THEMES_FILENAME} Master {master_key!r} has relationships"
+            )
+        themes[master_key] = raw
+    return themes
+
+
 def _template_svg_path(
     template_dir: Path,
     raw_basename: str,
@@ -807,6 +899,12 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             raw_basename,
             f"page_layouts P{slide_num:02d}",
         )
+        if basename.startswith("layout_"):
+            raise TemplateStructureError(
+                f"spec_lock.md page_layouts P{slide_num:02d} cannot select "
+                f"obsolete definition-only template SVG {basename!r}; create "
+                "and select a complete Slide prototype"
+            )
         prototypes.append(PptxPrototypeReference(
             slide_num=slide_num,
             template_basename=basename,
@@ -902,11 +1000,17 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
                 prototype_slide_num = int(page_match.group(1))
             elif raw_source.startswith("template:"):
                 raw_basename = raw_source.split(":", 1)[1].strip()
-                _basename, prototype_svg_path = _template_svg_path(
+                basename, prototype_svg_path = _template_svg_path(
                     template_dir,
                     raw_basename,
                     f"pptx_layouts Layout {layout_key!r}",
                 )
+                if basename.startswith("layout_"):
+                    raise TemplateStructureError(
+                        f"spec_lock.md Layout {layout_key!r} cannot use obsolete "
+                        f"definition-only template SVG {basename!r}; use a "
+                        "complete Slide prototype"
+                    )
             else:
                 raise TemplateStructureError(
                     f"spec_lock.md Layout {layout_key!r} prototype source must be "

@@ -237,12 +237,18 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
   "<import_workspace>" "<template_workspace>"
 ```
 
-它会先校验 IR manifest、不可变来源 hash、完整原生图谱、可见性事实和
-导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
+它会先校验来源 Slide 的 IR manifest 与不可变 hash、可达原生图谱、
+可见性事实和对应的导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
 `icons/imported/`、`images/` 素材。它不要求、也不会把按需生成的
 `svg-flat/` 校验视图当成模板来源，并且不会生成 Design Spec；设计角色必须针对物化后的 roster 写入已解析的 spec 路径。
 
-**Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
+**Mirror 图谱边界**：mirror 为每张来源 Slide 输出一个完整原型，并只保留该 Slide 引用的 Layout 及其父 Master。SVG 会补齐 Master + Layout + Slide 上下文，同时保留显式层归属。未被任何 Slide 引用的来源 Master/Layout 不由 mirror 物化；`standard` / `fidelity` 可读取完整来源清单，并把有用结构重新创作为 Slide 原型。
+
+Design Spec 对每个输出 Slide 原型按正常 roster 说明。若来源还存在未被引用的 Master/Layout，可用一句范围说明指出它们存在、但未由 mirror 物化，不逐个推断用途。
+
+模板使用以 Slide 为主：生成页面 SVG 已经补齐 Master 与 Layout 视觉，正常创作直接选择完整 Slide 原型；工作区不再存放独立 Master/Layout 定义 SVG。
+
+“只生成 Slide”描述的是可编辑 SVG roster。PPTX 来源的 mirror 仍可携带 `source_themes.json`、`native_payloads.json.gz` 等仅供工具使用的结构 sidecar，用于导出时恢复可达结构的精确 Theme/原生数据；它们不是页面原型，也不进入 AI 创作上下文。
 
 **按 mirror 创建的工作区怎么消费**：从来源到工作区的 `replication_mode: mirror` 是一种能力，不是项目选择。Strategist 会读取真实原型、当前内容和用户明确要求，自动决定选哪些页、哪些重复/跳过/重排，以及采用字面、结构还是仅视觉参考。字面复用时，Executor 复制完整 SVG，只修改允许变更的可见文字，同时保留装饰、精灵图裁剪、几何坐标和规范化结构声明；仍不要求沿用来源页数或页序。
 
@@ -275,7 +281,7 @@ Brand/Style 的目标不同：两者都让创作内容保持 Slide 本地，因�
 
 `exports/<id>_template_preview.pptx` 是 Create Template 按需或按规则生成的审阅证据，不是模板输入；真正生成时始终传工作区根目录。
 
-Master/Layout 行为以 Microsoft PowerPoint 为验收目标。Keynote、WPS 与 LibreOffice 可以打开 PPTX，但可能归一化模板结构，或在加载包含大量未使用 Layout 的 mirror roster 时明显更慢。
+Master/Layout 行为以 Microsoft PowerPoint 为验收目标。Keynote、WPS 与 LibreOffice 可以打开 PPTX，但可能归一化模板结构。
 
 ### 派生后的模板工作区长什么样
 
@@ -329,7 +335,7 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 - **模板不是一张不可拆分的“风格皮肤”。** Brand、Style、Layout 与 Deck 有意拆开身份、方向/方法、结构和应用，使每个片段都能单独复用；同时安装多个工作区时，各片段按明确的所有权规则生效
 - **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余
-- **`mirror` 的目标是受支持范围内的视觉与来源拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。
+- **`mirror` 的目标是受支持范围内的视觉及每张来源 Slide 的可达拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许继承补全、固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。
 
 ---
 

@@ -152,18 +152,29 @@ objects have no marker. Finding one marker somewhere on a page is insufficient.
 rg -n 'data-pptx-replace-with="(chart|table)"|<metadata type="application/json">' <project_path>/svg_output/<current_page>.svg
 ```
 
-**Table schema**: Native tables are rectangular DrawingML grids. Use `columns`
-for the optional header row and `rows` for body rows; shorter rows are padded
-with blank cells unless `strict_grid: true` is set. Tables may contain at most
-1000 resolved rows and 1000 resolved columns. Use `column_widths` and
-`row_heights` as relative weights. Weight lists must match the resolved grid,
-contain finite non-negative numbers, and include at least one positive value.
-If present, `header_rows` must be an integer from `0` through the resolved row
-count. Write `strict_grid`, `style.band_row`, and cell `bold` as JSON booleans.
-Cell objects accept `text`, `fill`, `color`,
-`align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
-`border_width`, plus optional `lang`; the same `padding`, `border_color`,
-`border_width`, and `lang` keys may also live under `style` as table defaults.
+**Table schema — `ppt-master.semantic-table.v2` only**: Every payload requires
+that exact `schema`; unversioned payloads and alternate field spellings fail.
+Native tables are rectangular DrawingML grids. Use `columns` for the optional
+header row and `rows` for body rows; shorter rows are padded unless
+`strict_grid: true`. Tables support at most 1000 resolved rows and columns.
+`column_widths` / `row_heights` are finite non-negative relative weights that
+match the grid and include one positive value. `header_rows` is an integer in
+the resolved row range. `strict_grid`, `style.band_row`, and `bold` are JSON
+booleans.
+
+PPTX import factors exact repetition into `defaults.cell`,
+`defaults.paragraph`, `defaults.run`, and lower-case kebab-case `cell_styles`;
+cells select a style with `cell_style`. Precedence is cell defaults → named
+style → cell fields. Only object-valued `padding` merges by member; `borders`
+and other values replace. Content/topology stays cell-local. This is JSON
+inheritance, not SVG CSS: `<style>` and `class` are forbidden. Export expands
+the payload in memory before validation and DrawingML construction.
+
+Cells accept `text`, `fill`, `fill_opacity`, `color`, `align`, `valign`, `bold`,
+`font_size`, `padding`, canonical side-specific `padding_*`, `border_color`,
+`border_width`, `borders`, `lang`, `anchor_center`, and
+`horizontal_overflow`. Table-wide font/palette/banding/uniform-border policy
+lives under `style`; exact imported defaults live under `defaults.cell`.
 For multi-paragraph text, replace cell `text` with a non-empty `paragraphs`
 list. Each entry is either a string or an object containing optional
 `align: "l|ctr|r"` and exactly one of `text` or non-empty `runs`; empty
@@ -180,11 +191,12 @@ instead of entering either the native payload or an effect-free fallback.
 Relationship-bearing text, extensions, structural line breaks, fields, tabs,
 bullets, malformed run topology, and unsupported text-body structure remain
 fallback-only.
-Per-side cell borders use `borders.left|right|top|bottom`, where each value is
+Per-side cell borders use
+`borders.left|right|top|bottom|diagonal_down|diagonal_up`, where each value is
 either `{ "style": "none" }` or
 `{ "style": "solid", "color": "#RRGGBB", "width": <positive-px> }`.
-Per-side borders are cell-only; legacy uniform `border_color` / `border_width`
-remain supported as defaults that an individual side may override.
+Per-side borders are cell-only. Uniform `border_color` / `border_width` may live
+on the table style or cell; an explicit side overrides the uniform value.
 When `lang` is absent, export derives `zh-CN` for CJK text and `en-US`
 otherwise. `style.band_row: false` disables both `<a:tblPr bandRow>` and
 materialized alternating row fills. Native table typography mirrors the

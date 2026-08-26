@@ -141,7 +141,7 @@ The directions below come up repeatedly and have been evaluated as **not on the 
 
 **Issues**: [#53](https://github.com/hugohe3/ppt-master/issues/53), [#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-The Generate PPTX route is built around full control of newly authored shapes, text, and layout. A structured PPTX can inform a reviewed reusable package in two explicit ways: `standard` / `fidelity` author a new SVG and Master/Layout system from visual evidence, while `mirror` materializes a new workspace from the complete set of supported source facts actually present, including unused Layout definitions. Neither path modifies the source PPTX or recovers absent design intent. Generic "open any PPTX and blindly refill every placeholder" remains a different product shape.
+The Generate PPTX route is built around full control of newly authored shapes, text, and layout. A structured PPTX can inform a reviewed reusable package in two explicit ways: `standard` / `fidelity` author new complete Slide SVG prototypes and a Master/Layout system from the full source evidence, while `mirror` materializes source Slides with only their reachable Layout/Master chains. Neither path modifies the source PPTX or recovers absent design intent. Generic "open any PPTX and blindly refill every placeholder" remains a different product shape.
 
 **The basic need is actually simple**: if you just need "replace Excel data into fixed positions in a PPT template", have the AI write a few lines of `python-pptx`. You don't need this pipeline.
 

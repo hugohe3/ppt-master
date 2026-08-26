@@ -81,6 +81,15 @@ prototype size remain unchanged.
 
 **Hard rule — explicit only**: On a structured `template_reuse_scope: mirror|layout` route, every SVG requires the four root Master/Layout identity attributes. Optional inherited-shape visibility uses only exact lowercase `true` / `false`; other spellings fail, and omission means `true`. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat `template_reuse_scope: style`, free-design, and brand-only pages omit the structural markers and visibility attributes; ordinary groups still use the shared `data-pptx-bounds` module contract.
 
+**Identity is not layer membership**: An SVG `id` identifies one element and
+must be unique inside that SVG document. Any number of direct atoms may repeat
+the same `data-pptx-layer="master"` or `data-pptx-layer="layout"` value; the
+layer attribute, never the `id`, determines ownership. Separate standalone SVG
+pages may repeat the same stable fixed-atom `id` when they declare the same
+Master/Layout contract. Unmarked visual content is Slide-local, except that the
+optional direct solid Slide-background marker below makes one-page background
+ownership explicit.
+
 **Layer order**: Author the SVG in PowerPoint paint order: Master background,
 Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms,
 then slot groups and Slide-local content groups. Backgrounds are a special inheritance
