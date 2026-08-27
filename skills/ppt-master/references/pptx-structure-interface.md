@@ -2,7 +2,7 @@
 
 # PPTX Structure Interface
 
-Conditional interface for PowerPoint Master, Layout, fixed-layer, and placeholder authoring. Load only when `spec_lock.md pptx_structure.mode` is `structured`.
+Conditional interface for PowerPoint Master, Layout, fixed-layer, and placeholder authoring. In Generate, load only for Default `spec_lock.md pptx_structure.mode: structured` or Quick structured Slide authoring from an installed Layout/Deck owner.
 
 **Cross-reference map**: unqualified §1.5 and §4.2 references point to [`shared-standards-core.md`](./shared-standards-core.md); this file's own sections are §1–§3.
 
@@ -10,13 +10,15 @@ Conditional interface for PowerPoint Master, Layout, fixed-layer, and placeholde
 
 Every new SVG project declares one deterministic route. Free-design, brand-only, and `template_reuse_scope: style` projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export keeps all represented content Slide-local while materializing one clean project-owned Master plus one Blank Layout from the current color/typography lock; stock content placeholders and unused built-in Layouts are removed, while the standard date/footer/slide-number capability hooks remain. Deck/layout template projects whose AI-derived lock records `template_reuse_scope: mirror|layout` use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use the validated source identities and parentage declared by the newly authored compact workspace.
 
+**Quick exception**: Lock-row/Strategist statements below are Default-only. Quick keeps free/Brand/Style-only flat; an installed Layout/Deck owner is structured unless visual-only, with identities on SVG roots and title/body anchors inferred from slot carriers.
+
 **Hard rule — no structure inference**: Flat export performs no promotion or deduplication; every object stays Slide-local. Structured template export compiles only declared root identities, atomic fixed layers, and slot groups—it does not assign Layout families, cluster pages, infer placeholders, repair missing metadata, or migrate legacy contracts. Create a new current workspace through [`create-template`](../workflows/create-template.md) before generating structured pages.
 
 **Layout reuse**: Reuse one Layout key only when its ordered fixed Layout atoms and slot ids/types/effective indices/default bounds/binding modes are identical. Different wording, data, imagery, crop, or Slide-local carrier geometry does not create a new Layout. A genuinely different reusable contract gets a new key even when both pages are semantically `content`.
 
 **Zero-slot Layout**: A named Layout may contain no slots and no fixed Layout atoms. This is valid for a cover, poster, full-visual page, or other fixed composition. Do not manufacture an empty `utility` kind or full-page fake `object` slot.
 
-**Adaptive change**: Template `strict` preserves the selected prototype contract. `adaptive` retains the prototype Master and may use a current or new Layout identity only when Strategist already declared it in the complete plan and lock. If construction proves that fixed Layout atoms or slot topology/bounds must change, stop and return upstream for Strategist to add or revise the definition and page mapping before authoring resumes; Executor never mutates a reused key or the lock.
+**Adaptive change**: `strict` preserves the prototype. `adaptive` retains its Master and uses only a Layout declared in Default's plan/lock or permitted by Quick's frozen Template Application. Required atom/slot-contract changes return Default for repair/readback/validation; Quick creates a new Layout only under that permission. Never mutate a reused key.
 
 ## 2. Explicit PPTX Master / Layout / Placeholder Metadata
 
@@ -24,7 +26,7 @@ Every new SVG project declares one deterministic route. Free-design, brand-only,
 
 **Project lock**: A Master row is `<master_key>: <PowerPoint picker name>`. A unique Layout row is `<layout_key>: <master_key> | <PowerPoint picker name> | <prototype source>`, where the source is a generated `P<NN>` or installed `template:<basename>`. A page assignment is `P<NN>: <layout_key>` under `page_pptx_layouts`. The SVG root values MUST match the assigned definition. A Layout key belongs to exactly one Master and must be globally unique. Reuse one key only when prototypes share identical ordered Layout atoms and slot ids/types/effective indices/default bounds/binding modes. An unused Layout uses a template SVG source and remains registered without a published carrier slide. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows.
 
-**Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and realizes the current or new Layout key/name declared by Strategist. A construction-discovered change to fixed Layout atoms or slot topology/bounds returns upstream for plan/lock repair, readback, and validation before authoring resumes. Mirror-created prototypes preserve validated source identity, parentage, slots, meaning, and similar presentation in compact new SVG; paint/geometry nodes need not be isomorphic. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology or fill missing facts.
+**Template behavior**: Strict preserves the selected prototype's Master/Layout/slot contract. Adaptive realizes only a Layout allowed by §1 and never mutates a reused key. Mirror-created prototypes preserve validated source identity, parentage, slots, meaning, and similar presentation in compact new SVG; paint/geometry nodes need not be isomorphic. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize replacement topology or fill missing facts.
 
 Imported inherited-shape visibility remains an immutable analysis fact until a
 structured mirror is materialized. The final mirror root carries that fact with
@@ -34,24 +36,27 @@ present. Authored `standard` / `fidelity` templates normally omit both and use
 the default `true`. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
-**Master text-style contract**: Flat and structured export map the declared
-`title` anchor to every `a:defRPr` in Master `p:titleStyle`. Level 1 in both
+**Master text-style contract**: Default reads title/body anchors from its lock;
+structured Quick infers them from semantic slot carriers with deterministic
+fallbacks, while flat Quick retains stock defaults. An effective `title` anchor
+maps to every `a:defRPr` in Master `p:titleStyle`. Level 1 in both
 `p:bodyStyle` and `p:otherStyle` uses the declared `body` anchor; levels 2–9
 use a deterministic descending hierarchy from `15/16` through `8/16` of that
 size, rounded to 0.5 pt and floored at the smaller of 8 pt or the body size.
 Existing per-level indentation and bullet properties remain unchanged.
 
-| Master style | Locked source | XML field changed |
+| Master style | Effective source | XML field changed |
 |---|---|---|
-| `p:titleStyle` | `typography.title` | Every `a:defRPr@sz` |
-| `p:bodyStyle` | `typography.body` | Level 1 plus derived level 2–9 `a:defRPr@sz` |
-| `p:otherStyle` | `typography.body` | Level 1 plus derived level 2–9 `a:defRPr@sz` |
+| `p:titleStyle` | title anchor | Every `a:defRPr@sz` |
+| `p:bodyStyle` | body anchor | Level 1 plus derived level 2–9 `a:defRPr@sz` |
+| `p:otherStyle` | body anchor | Level 1 plus derived level 2–9 `a:defRPr@sz` |
 
 **Hard rule — narrow scope**: This Master update changes only Master
 `p:txStyles//a:defRPr@sz`; it preserves level indentation, bullet, margin, and
 paragraph settings. It does not rewrite direct run sizes on generated slides,
 so the initial slide rendering remains controlled by the authored SVG. Missing
-`title` or `body` rows fail flat or structured export.
+Default `title` or `body` rows fail flat or structured export; Quick structured
+uses inferred/fallback anchors.
 
 **Layout level-one text-default contract**: For every text-bearing placeholder
 whose first prototype run has a direct `a:rPr@sz`, explicit Layout export copies that

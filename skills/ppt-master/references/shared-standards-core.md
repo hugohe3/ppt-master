@@ -8,7 +8,7 @@ Mandatory reference for every route that authors or regenerates slide visuals th
 |---|---|
 | Default or Quick Generate; otherwise noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
-| `pptx_structure.mode: structured` | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
+| Default structured lock, or Quick installed Layout/Deck structured authoring | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
 
 **Default — shared aesthetic baseline (may be overridden by explicit user, installed template / brand, or locked / Quick-resolved visual-style requirements)**: Required / Forbidden technical contracts remain absolute. When a higher authority is silent, build clear hierarchy through typography and leading, alignment, negative space, purposeful imagery / icons, and restrained repetition before decoration. Deliberate tightness, imbalance, off-axis placement, or container-heavy structure remains valid when that authority calls for it.
 

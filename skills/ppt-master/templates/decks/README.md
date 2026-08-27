@@ -43,9 +43,9 @@ exact roots are `library`; other exact roots remain
 stage, which owns path normalization, compatibility checks, installation, and
 installation after Stage 1 and before Stage 2. Template-aware reading begins in final Stage 2 from the
 installed project-local copy.
-Quick applies a supplied exact Deck root directly and otherwise uses free
-design. It uses installed prototypes as flat authoring inputs; reusable
-native Master/Layout compilation remains a default lock-backed capability.
+Quick applies a supplied exact Deck root directly and otherwise uses flat free
+design. It authors the installed Master/Layout/slot contract as lockless
+structured Slides unless the user explicitly requests visual-only flat use.
 This file owns the Deck schema and application-context boundary. Chat discovery
 reads the same index and returns exact roots; a bare ID never resolves
 implicitly.

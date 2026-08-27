@@ -682,8 +682,8 @@ Layout under the selected Master when the frozen application paragraph calls
 for adaptation; it never infers ownership from repeated Slide-local geometry.
 The lockless final checker and exporter derive `structured` solely from that
 complete SVG roster. Include all visible content and resource references in each
-SVG, and set one root `data-pptx-page-role` from `cover`, `toc`, `section`,
-`content`, or `ending` independently of the native structure metadata.
+SVG. Flat pages set one root `data-pptx-page-role` from `cover`, `toc`,
+`section`, `content`, or `ending`; structured pages omit it.
 
 **Typography**: name a concrete target-installed/approved PowerPoint family
 under [`shared-standards-core.md`](../../references/shared-standards-core.md)
