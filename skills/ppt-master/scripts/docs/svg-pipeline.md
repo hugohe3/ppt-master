@@ -398,10 +398,14 @@ value; it never invents a paint, size, weight, or other non-font default.
 PPTX import projections and mirror materialization call the same tree-level
 implementation before publishing their authoring SVG. Standard workflows do
 not rewrite completed SVG: they pass `--canonical-authoring` to
-`svg_quality_checker.py`, which reports any remaining deterministic change as a
-blocking error. SVG-to-PPTX continues to accept valid explicit declarations;
-canonical compact authoring is a generated-source contract, not a compatibility
-restriction on external SVG input.
+`svg_quality_checker.py`, which reports any remaining deterministic change as an
+advisory warning on authored project pages (run
+`compact_svg_styles.py <svg_output> --inplace` and rerun the final gate to
+normalize, or keep the explicit form) and as a blocking error under
+`--template-mode`, where the compact tree is the hash-locked mirror source.
+SVG-to-PPTX accepts valid explicit declarations either way; canonical compact
+authoring is a generated-source contract, not a compatibility restriction on
+external SVG input.
 
 ## `extract_svg_assets.py`
 

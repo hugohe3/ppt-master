@@ -150,8 +150,9 @@ post-process.
 The source stays valid, browser-visible, semantic, locally editable SVG;
 meaning and deterministic export outrank bytes. Never use classes/stylesheets,
 aliases/private keys, encoded payloads, precision loss, or unrelated
-indirection. `--canonical-authoring` is its read-only gate;
-`compact_svg_styles.py` is legacy migration/diagnosis only.
+indirection. `--canonical-authoring` reports drift from the compact form as an advisory
+warning on authored pages and as an error only for template workspaces;
+`compact_svg_styles.py --inplace` applies the same normalization on request.
 
 > **`marker-start` / `marker-end` is conditional** — see §1.1.
 >
