@@ -156,6 +156,12 @@ not permit Executor to acquire visual resources.
 
 **Review gate**: treat any prompt refactor that erases the selected profile's ownership chain, moves acquisition into the default-pipeline Executor, turns a permission into a quota, or turns flexible realization into silent resource/identity reselection as a semantic regression even when the compressed wording is shorter.
 
+### 4.2 Admission Criterion for Prohibitions
+
+Before adding a `Hard rule`, `Forbidden`, `Mandatory`, `never`, `do not`, or any quota/threshold to a process prompt, name the mechanism that makes it hard: a checker rule id, an exporter behaviour, a DrawingML limit, a structured Master/Layout contract, artifact ownership or gate order, or reading-cost control. A rule with no such mechanism does not affect whether the SVG renders as authored or exports to editable PPTX; it may enter only as a capability entry (what exists and its syntax), a `Reference — not a constraint`, or an example — never as a prohibition, quota, usage default, or "omit when …" clause. Whether and how the model uses a capability is its own judgment. A prohibition that a script already enforces is not restated in prose; write only the fix.
+
+**Owner exceptions — kept as `Mandatory`**: primary-per-page, composition geometry vocabulary, the ±2px font-size band, and the Layout-pattern diversity self-check are deliberate anti-sameness devices retained by the maintainer. If sameness returns after other restrictions are relaxed, add examples first; do not re-escalate demoted rules.
+
 ---
 
 ## 5. Tables First
@@ -297,5 +303,6 @@ Prompt compression is complete only after reviewing token reduction and semantic
 | Preparation timing | Strategist-owned acquisition and materialization did not move into Executor or before final confirmation |
 | Capability discovery | Conditional deep specifications retain a short visible menu or an externally observable trigger before their load gate |
 | Token delta | Report route/file budget changes separately; a budget pass does not prove semantic equivalence |
+| Restriction census | Before each release, enumerate every `Hard rule` / `Mandatory` / `never` / quota in the Generate load sets (`route.generate.*`, `stage.generate.*` in `scripts/prompt_audit_manifest.json`) and classify each as EXPORT, SCRIPT-ENFORCED, PROCESS, or STYLE; Hard-rule counts are justified only by §4.2 mechanism citations; STYLE prohibitions are removed (capability entry, Reference, or example), and SCRIPT-ENFORCED prose keeps only the fix |
 
 **Hard rule**: A shorter prompt that changes decision ownership, constraint strength, preparation timing, or capability discoverability is a semantic regression even when structural and token-budget audits pass.
