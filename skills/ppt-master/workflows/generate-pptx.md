@@ -17,7 +17,7 @@ call. Never change CWD or inherit a prior shell working directory.
 **Generate-specific execution discipline**:
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
-- Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
+- Initial SVG cadence: P01 → first-page gate → remaining pages (one page gate per first-exercised `not-exercised` item) → final gate. Batches and other mid-run checker calls are forbidden.
 - `preset_shape_svg.py` and `shape_boolean_svg.py` may provide only their documented stdout fragment(s) after the main agent chooses the object's role, operands, paint, and z-order; neither helper chooses layout or writes a page.
 - Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
@@ -184,7 +184,7 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 Direct supported bitmap inputs follow both boundaries: the original is archived under `sources/`, and a collision-safe basename is copied into `images/` for analysis and §VIII planning. SVG/EMF/WMF remain source assets unless they arrive through a converter companion manifest that supplies their display metadata. This does not classify an asset's role; Strategist still decides whether it is used.
 
-**✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.** `import-sources` exits 0 when any input yields a usable artifact; read printed `skipped` reasons, and treat `path not found`, failed conversion, or no usable Markdown as an absent source.
+**✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.** `import-sources` exits 0 when any input converts; read the printed `skipped` reasons and treat those inputs as absent sources.
 
 ---
 
@@ -679,7 +679,7 @@ sidecars, or guessed family paths.
 **Page-context**: use the read-only projector only for the diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
-> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate. After context invalidation, reload under §2.1 before continuing; do not insert batches or mid-run checker calls.
+> ⚠️ **Generation rhythm**: P01 → first-page gate → remaining pages (one page gate per first-exercised `not-exercised` item) → final gate. After context invalidation, reload under §2.1 before continuing.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
@@ -721,7 +721,7 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --canonical-authoring --stage first-page --json
 ```
-Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
+Run the command unfiltered (no `tail`/`head`/`grep`). Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery.
 
 **Mandatory — read P01 as a method sample, then emit the classification before editing**: the gate validates how the remaining pages will be authored, not only this page.
 
@@ -737,7 +737,9 @@ Emit one line before the consolidated edit:
 gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
 ```
 
-`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic; P02 through the final page run without further checker calls.
+`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic.
+
+**Mandatory — first-exercise gate**: the first page exercising a listed item runs `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --canonical-authoring --stage page --page <svg>` once (items first exercised together share it), fixes blocking items, then continues. Every other page runs without checker calls.
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
@@ -746,7 +748,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 ```
 - **MUST**: Before this gate, every §IX `Native-ready` entry `<object-key>=yes` already has one matching draw-time marker group and JSON metadata child; `=no` and incidental microvisuals remain ordinary SVG. A legacy bare `yes|no` is readable only when that page has exactly one eligible object; it never derives from §VII.
 - **Authority gate**: JSON-first Chart/Table validates inline schema/bounds; its preview has no freshness authority. SVG-first native-ready markers require a current `data-pptx-fallback-sha256`, stamped after SVG/JSON synchronization. Missing/stale baselines block canonical/native export, not fallback export.
-- Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.
+- Run the command unfiltered (no `tail`/`head`/`grep`). One invocation already scans every page and reports the complete issue set.
 - On failure, review all `blocking` errors and all advisory warnings from that run before editing. Choose which warnings merit work, fix every blocking error and the selected warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never run the checker between individual fixes or use repeated invocations to discover one next issue at a time. If terminal output is truncated, extract only `categories.blocking.issues` and, when needed, `categories.introduced.issues` from the report written by that same run.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
 - The same rule applies to structured-template warnings (empty/framing-only Layout, bare Master, duplicate layout keys): they may guide an optional template cleanup, but warnings alone never fail the quality gate. Flat `style`, free-design, and brand-only routes still rely on their existing hard errors for invalid structure metadata or incomplete required locks.
