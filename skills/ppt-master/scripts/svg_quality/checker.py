@@ -388,6 +388,7 @@ _BOUNDS_ATTR = 'data-pptx-bounds'
 _MORPH_STAGING_ATTR = 'data-pptx-morph-staging'
 _BOUNDS_OVERFLOW_TOLERANCE = 1.0
 _BOUNDS_OVERFLOW_ERROR_RATIO = 0.05
+_ROUNDTRIP_TEXT_CALIBRATION_CAP = 0.10
 _PARAGRAPH_LINE_GAP_MIN_RATIO = 0.9
 _PARAGRAPH_LINE_GAP_MAX_RATIO = 2.05
 _PARAGRAPH_LINE_X_TOLERANCE = 0.5
@@ -1541,12 +1542,14 @@ class SVGQualityChecker:
             root = self._parse_xml_root(content, result)
             if root is not None:
                 self._check_viewbox(root, svg_path, result, None)
-                included_text_ids = self._roundtrip_edited_text_ids(
-                    root,
-                    source_document,
-                    baseline_root,
-                    current_assets,
-                    baseline_assets,
+                included_text_ids, unchanged_text_ids = (
+                    self._roundtrip_text_diff_ids(
+                        root,
+                        source_document,
+                        baseline_root,
+                        current_assets,
+                        baseline_assets,
+                    )
                 )
                 result['info']['edited_text_elements'] = len(included_text_ids)
                 if included_text_ids:
@@ -1577,11 +1580,12 @@ class SVGQualityChecker:
                         result,
                         included_text_ids=included_text_ids,
                     )
-                    self._check_roundtrip_text_frames(
-                        root,
-                        result,
-                        included_text_ids,
-                    )
+                self._check_roundtrip_text_frames(
+                    root,
+                    result,
+                    included_text_ids,
+                    unchanged_text_ids,
+                )
             result['passed'] = len(result['errors']) == 0
         except Exception as exc:
             result['errors'].append(f"Failed to read file: {exc}")
@@ -1589,14 +1593,14 @@ class SVGQualityChecker:
         return self._record_result(result)
 
     @staticmethod
-    def _roundtrip_edited_text_ids(
+    def _roundtrip_text_diff_ids(
         root: ET.Element,
         source_document,
         baseline_root: ET.Element,
         current_assets,
         baseline_assets,
-    ) -> set[int]:
-        """Return text carriers outside unchanged refs and source proxies."""
+    ) -> tuple[set[int], set[int]]:
+        """Return edited and hash-unchanged source text carrier identities."""
         from authoring_roundtrip import (
             _definition_changes,
             authoring_source_ref_is_unchanged,
@@ -1630,6 +1634,7 @@ class SVGQualityChecker:
         }
         unchanged_by_owner: Dict[int, bool] = {}
         included: set[int] = set()
+        unchanged_text: set[int] = set()
         for text_element in root.iter(f'{{{SVG_NS}}}text'):
             current: ET.Element | None = text_element
             source_owner: ET.Element | None = None
@@ -1670,8 +1675,27 @@ class SVGQualityChecker:
                     )
                     unchanged_by_owner[owner_key] = unchanged
                 if unchanged:
+                    unchanged_text.add(id(text_element))
                     continue
             included.add(id(text_element))
+        return included, unchanged_text
+
+    @staticmethod
+    def _roundtrip_edited_text_ids(
+        root: ET.Element,
+        source_document,
+        baseline_root: ET.Element,
+        current_assets,
+        baseline_assets,
+    ) -> set[int]:
+        """Return edited text carrier identities for compatibility callers."""
+        included, _unchanged = SVGQualityChecker._roundtrip_text_diff_ids(
+            root,
+            source_document,
+            baseline_root,
+            current_assets,
+            baseline_assets,
+        )
         return included
 
     @staticmethod
@@ -1858,8 +1882,9 @@ class SVGQualityChecker:
         root: ET.Element,
         result: Dict,
         included_text_ids: set[int],
+        unchanged_text_ids: set[int],
     ) -> None:
-        """Report edited text whose estimated width leaves its owning frame."""
+        """Calibrate source text widths, then check edited owning frames."""
         helpers = (
             _estimate_single_line_text_frame_width,
             _parse_project_font_weight,
@@ -1886,6 +1911,59 @@ class SVGQualityChecker:
             id(child): parent
             for parent in root.iter()
             for child in list(parent)
+        }
+        measured_unchanged = 0
+        positive_overflow_ratios: List[float] = []
+        for text_element in root.iter(f'{{{SVG_NS}}}text'):
+            if id(text_element) not in unchanged_text_ids:
+                continue
+            if self._has_non_visual_ancestor(
+                text_element,
+                root,
+                parent_by_id,
+            ):
+                continue
+            if (
+                self._is_hidden_element(text_element, parent_by_id)
+                or self._has_zero_opacity(text_element, parent_by_id)
+            ):
+                continue
+            visible_text = ''.join(text_element.itertext())
+            if (
+                not visible_text.strip()
+                or ('{{' in visible_text and '}}' in visible_text)
+            ):
+                continue
+            estimated = self._estimated_text_bounds(
+                text_element,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+                include_headroom=True,
+            )
+            if estimated is None:
+                continue
+            _frame_label, frame, _frame_error, frame_is_inferred = (
+                self._roundtrip_text_frame(
+                    text_element,
+                    parent_by_id,
+                )
+            )
+            if frame is None or frame_is_inferred:
+                continue
+            measured_unchanged += 1
+            metrics = self._bounds_overflow_metrics(estimated, frame)
+            if metrics is not None and metrics[1] > 0:
+                positive_overflow_ratios.append(metrics[1])
+
+        calibration = min(
+            max(positive_overflow_ratios, default=0.0),
+            _ROUNDTRIP_TEXT_CALIBRATION_CAP,
+        )
+        result['info']['roundtrip_text_calibration'] = {
+            'factor': calibration,
+            'measured_unchanged': measured_unchanged,
+            'positive_unchanged': len(positive_overflow_ratios),
         }
         for text_element in root.iter(f'{{{SVG_NS}}}text'):
             if id(text_element) not in included_text_ids:
@@ -1935,14 +2013,27 @@ class SVGQualityChecker:
             if metrics is None or metrics[1] <= 0:
                 continue
             _axes, horizontal_ratio, _vertical_ratio = metrics
+            corrected_horizontal_ratio = max(
+                horizontal_ratio - calibration,
+                0.0,
+            )
+            if corrected_horizontal_ratio <= 0:
+                continue
             left, top, right, bottom = estimated
             frame_left, frame_top, frame_right, frame_bottom = frame
+            overflow_detail = (
+                f'overflow horizontal {corrected_horizontal_ratio:.1%} after '
+                f'{calibration:.1%} same-page source calibration '
+                f'(raw {horizontal_ratio:.1%})'
+                if calibration > 0
+                else f'overflow horizontal {horizontal_ratio:.1%}'
+            )
             finding = (
                 f'{text_label} exceeds owning frame {frame_label} on the '
                 f'horizontal axis: estimated text ({left:.1f}, {top:.1f})-'
                 f'({right:.1f}, {bottom:.1f}), frame ({frame_left:.1f}, '
                 f'{frame_top:.1f})-({frame_right:.1f}, {frame_bottom:.1f}), '
-                f'overflow horizontal {horizontal_ratio:.1%}; shorten or '
+                f'{overflow_detail}; shorten or '
                 'reflow the edited text, or '
                 'enlarge its owning frame'
             )
@@ -8284,6 +8375,22 @@ class SVGQualityChecker:
             info_items = []
             if 'viewbox' in result['info']:
                 info_items.append(f"viewBox: {result['info']['viewbox']}")
+            calibration = result['info'].get(
+                'roundtrip_text_calibration'
+            )
+            if isinstance(calibration, dict):
+                factor = calibration.get('factor')
+                measured = calibration.get('measured_unchanged')
+                positive = calibration.get('positive_unchanged')
+                if (
+                    isinstance(factor, (int, float))
+                    and isinstance(measured, int)
+                    and isinstance(positive, int)
+                ):
+                    info_items.append(
+                        f'text calibration: {factor:.1%} '
+                        f'({positive}/{measured} unchanged source texts)'
+                    )
             if info_items:
                 print(f"   {' | '.join(info_items)}")
 

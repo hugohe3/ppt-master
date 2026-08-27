@@ -525,7 +525,11 @@ _TRANSITION_EFFECT_OPTIONS: dict[str, dict[str, dict[str, Any]]] = {
         ),
     },
     "push": {
-        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {**_CARDINAL_DIRECTIONS, "left": "l"},
+        ),
     },
     "wipe": {
         "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),

@@ -1897,6 +1897,79 @@ def _rewrite_adopted_fragment_ids(
     return replacements
 
 
+def _adopted_definition_clones(
+    source_root: ET.Element,
+    source_element: ET.Element,
+) -> list[ET.Element]:
+    """Copy the transitive source definitions referenced by one adopted object."""
+    definitions, selected_owners = _definition_closure(
+        source_root,
+        [source_element],
+    )
+    return [
+        copy.deepcopy(child)
+        for definitions_root in definitions
+        for child in definitions_root
+        if id(child) in selected_owners
+    ]
+
+
+def _append_adopted_definitions(
+    target_root: ET.Element,
+    definitions: list[ET.Element],
+) -> None:
+    if not definitions:
+        return
+    target_defs = next(
+        (
+            child
+            for child in target_root
+            if _local_name(child.tag) == "defs"
+        ),
+        None,
+    )
+    if target_defs is None:
+        target_defs = ET.Element(f"{{{SVG_NS}}}defs")
+        target_root.insert(0, target_defs)
+    target_defs.extend(definitions)
+
+
+def _authoring_source_document_ids(
+    authoring_dir: Path,
+    manifest: dict[str, object],
+    authoring_name: str,
+) -> set[str]:
+    """Return ids hidden behind source refs in one authoring document."""
+    documents = manifest.get("documents")
+    if not isinstance(documents, list):
+        return set()
+    document = next(
+        (
+            item
+            for item in documents
+            if isinstance(item, dict)
+            and item.get("authoring") == authoring_name
+        ),
+        None,
+    )
+    source_root_value = manifest.get("source_root")
+    source_name = document.get("source") if document is not None else None
+    if not isinstance(source_root_value, str) or not isinstance(source_name, str):
+        return set()
+    source_dir = (authoring_dir / source_root_value).resolve()
+    source_path = _authoring_page_path(
+        source_dir,
+        source_name,
+        label="--adopt-object target source",
+    )
+    source_root = _parse_authoring_svg(source_path)
+    return {
+        item_id
+        for item in source_root.iter()
+        if (item_id := item.get("id"))
+    }
+
+
 def _strip_adopted_transport(element: ET.Element) -> tuple[set[str], int]:
     stripped: set[str] = set()
     removed_metadata = 0
@@ -1970,7 +2043,7 @@ def adopt_authoring_object(
     authoring_dir = authoring_dir.resolve()
     if not authoring_dir.is_dir():
         raise ValueError(f"Authoring directory not found: {authoring_dir}")
-    _load_authoring_summary_manifest(authoring_dir)
+    manifest, _, _ = _load_authoring_summary_manifest(authoring_dir)
     source_name, element_id = _parse_adopt_source(source_spec)
     source_path = _authoring_page_path(
         authoring_dir,
@@ -2006,6 +2079,10 @@ def adopt_authoring_object(
             "source proxies cannot move between pages"
         )
 
+    adopted_definitions = _adopted_definition_clones(
+        source_root,
+        source_element,
+    )
     adopted = copy.deepcopy(source_element)
     adopted.tail = None
     imported_icons = [
@@ -2053,10 +2130,26 @@ def adopt_authoring_object(
         for item in target_root.iter()
         if (item_id := item.get("id"))
     }
-    replacements = _rewrite_adopted_fragment_ids(adopted, target_ids)
+    target_ids.update(
+        _authoring_source_document_ids(
+            authoring_dir,
+            manifest,
+            target_name,
+        )
+    )
+    adopted_envelope = ET.Element(f"{{{SVG_NS}}}g")
+    adopted_envelope.append(adopted)
+    adopted_envelope.extend(adopted_definitions)
+    replacements = _rewrite_adopted_fragment_ids(
+        adopted_envelope,
+        target_ids,
+    )
+    adopted = adopted_envelope[0]
+    adopted_definitions = list(adopted_envelope)[1:]
     adopted_id = adopted.get("id")
     if not adopted_id:
         raise ValueError("Adopted object lost its required id")
+    _append_adopted_definitions(target_root, adopted_definitions)
     target_root.append(adopted)
 
     original_target = target_path.read_bytes()
@@ -2082,6 +2175,7 @@ def adopt_authoring_object(
         "target": target_name,
         "adopted_id": adopted_id,
         "renamed_ids": dict(sorted(replacements.items())),
+        "copied_definitions": len(adopted_definitions),
         "inlined_imported_vectors": inlined_icons,
         "stripped_attributes": sorted(stripped),
         "removed_native_metadata": removed_metadata,

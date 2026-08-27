@@ -201,7 +201,7 @@ Skip this section when no module in §4.2 is enabled beyond preserving source no
 
 **Hard rule — spoken prose only**: `svg_to_pptx.py` embeds each note verbatim and `notes_to_audio.py` reads it aloud verbatim, so a heading, bullet, `[tag]`, or duration line is spoken and shown. Write 2–5 natural sentences per content page, one or two for cover / chapter / ending, transitions as prose, one language per deck. Source the content from the page's SVG text or the §3 read-back plus the user material; a note never adds a claim the page or material does not carry.
 
-**Narration audio**: Run [`generate-audio`](./stages/generate-audio.md) Steps 1–4 with the workspace path after notes are complete. `notes_to_audio.py` resolves the roster from `page_plan.json` (copies inherit source notes) and refuses an incomplete roster, listing the missing stems. Audio lands at `audio/<stem>.*` per output page. Stop after audio generation; §7 integrates it.
+**Narration audio**: Run [`generate-audio`](./stages/generate-audio.md) Steps 1–4 with the workspace path after notes are complete (`notes_to_audio.py "<workspace>" --provider <p> --voice <v> --rate <r>`); the source deck's own media in `audio/` (imported files not named after a page) is left alone. `notes_to_audio.py` resolves the roster from `page_plan.json` (copies inherit source notes) and refuses an incomplete roster, listing the missing stems. Audio lands at `audio/<stem>.*` per output page. Stop after audio generation; §7 integrates it.
 
 **Motion**: Load [`animations.md`](../references/animations.md) when transitions or object animations are requested. `animations.json` rows are keyed by output SVG stem; a copied page inherits its source row unless it has its own.
 
@@ -218,7 +218,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py "projects/<slug>_<YYYYMMDD>" --
 | Request | Add |
 |---|---|
 | Replace transitions deck-wide | `-t <effect> [--transition-duration <s>]` |
-| Narration with auto-advance | `--recorded-narration audio --use-narration-timings` |
+| Narration with auto-advance | `--recorded-narration audio --use-narration-timings` (round-trip export reads the workspace `animations.json` by default) |
 | Per-slide motion | `--animation-config animations.json` |
 | Object animation policy | `-a <preset>` (default `none`) |
 | Strip all notes | `--no-notes` |

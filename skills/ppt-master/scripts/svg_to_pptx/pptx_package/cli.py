@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 import math
+import posixpath
 import re
 import shutil
 import sys
@@ -17,6 +18,7 @@ import zipfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -127,6 +129,7 @@ from .template_structure import (
 from ..animation_config import (
     animation_group_effect_entries,
     load_animation_config,
+    resolve_slide_animation_config,
     validate_animation_config,
     validate_animation_config_errors,
     validate_transition_config,
@@ -494,6 +497,10 @@ def _roundtrip_slide_patches(
         animation_config,
         pages,
     )
+    animation_defaults = _as_dict(animation_config.get("defaults"))
+    default_transition_config = _as_dict(
+        animation_defaults.get("transition")
+    )
 
     documents = authoring_report.get("documents")
     if not isinstance(documents, list):
@@ -538,25 +545,37 @@ def _roundtrip_slide_patches(
             )
             != expected_animation
         )
-        motion_changed = force_motion_changed or sidecar_changed
         slide_config = _as_dict(
             _as_dict(animation_config.get("slides")).get(page.svg_stem)
         )
-        transition_changed = force_transition_changed or (
-            sidecar_changed and "transition" in slide_config
-        )
         slide_transition_config = _as_dict(slide_config.get("transition"))
+        effective_transition_config = resolve_slide_animation_config(
+            default_transition_config,
+            slide_transition_config,
+        )
+        sidecar_transition_applies = (
+            bool(default_transition_config)
+            or "transition" in slide_config
+        )
+        transition_changed = force_transition_changed or (
+            sidecar_changed and sidecar_transition_applies
+        )
         transition_replaced = force_transition_replaced or (
             sidecar_changed
-            and "transition" in slide_config
+            and sidecar_transition_applies
             and any(
-                key in slide_transition_config
+                key in effective_transition_config
                 for key in ("effect", "effect_options", "duration", "sound")
             )
         )
         animation_changed = force_animation_changed or (
             sidecar_changed
             and any(key in slide_config for key in ("animation", "groups"))
+        )
+        motion_changed = (
+            force_motion_changed
+            or transition_changed
+            or animation_changed
         )
 
         def _ref_set(field: str) -> frozenset[str]:
@@ -649,6 +668,152 @@ def _opaque_roundtrip_slide_dependencies(
     return {
         index: sorted(set(paths))
         for index, paths in dependencies.items()
+    }
+
+
+def _opaque_roundtrip_dependency_owner_refs(
+    project_path: Path,
+    dependencies: dict[int, list[str]],
+) -> dict[int, dict[str, frozenset[str]]]:
+    """Map opaque resource paths to owning Slide-local source refs."""
+    manifest = load_roundtrip_manifest(project_path)
+    if manifest is None:
+        return {}
+    raw_slides = manifest.get("slides")
+    resources = manifest.get("resources")
+    items = resources.get("items") if isinstance(resources, dict) else None
+    if not isinstance(raw_slides, list) or not isinstance(items, list):
+        return {}
+    slide_rows = {
+        int(row["index"]): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get("index"), int)
+    }
+    package_parts: dict[int, dict[str, str]] = {}
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        workspace_path = item.get("workspacePath")
+        package_part = item.get("packagePart")
+        if not isinstance(workspace_path, str) or not isinstance(
+            package_part,
+            str,
+        ):
+            continue
+        for index in _resource_slide_indices(
+            item,
+            slide_rows,
+            include_structure=False,
+        ):
+            if workspace_path in dependencies.get(index, ()):
+                package_parts.setdefault(index, {})[workspace_path] = (
+                    package_part
+                )
+
+    relationship_namespace = (
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    )
+    presentation_namespace = (
+        "http://schemas.openxmlformats.org/presentationml/2006/main"
+    )
+    shape_tags = {
+        f"{{{presentation_namespace}}}{name}"
+        for name in ("cxnSp", "graphicFrame", "grpSp", "pic", "sp")
+    }
+    owner_paths: dict[int, dict[str, set[str]]] = {}
+    source_path = source_pptx_path(project_path)
+    try:
+        with zipfile.ZipFile(source_path) as archive:
+            names = set(archive.namelist())
+            for index, paths_by_package_part in package_parts.items():
+                row = slide_rows.get(index)
+                source_part = row.get("sourcePart") if row else None
+                if not isinstance(source_part, str):
+                    continue
+                rels_part = posixpath.join(
+                    posixpath.dirname(source_part),
+                    "_rels",
+                    posixpath.basename(source_part) + ".rels",
+                )
+                if source_part not in names or rels_part not in names:
+                    continue
+                rels_root = ET.fromstring(archive.read(rels_part))
+                paths_by_relationship: dict[str, set[str]] = {}
+                for relationship in rels_root:
+                    relationship_id = relationship.get("Id")
+                    target = relationship.get("Target")
+                    if (
+                        not relationship_id
+                        or not target
+                        or relationship.get("TargetMode") == "External"
+                    ):
+                        continue
+                    target_part = posixpath.normpath(posixpath.join(
+                        posixpath.dirname(source_part),
+                        unquote(target),
+                    ))
+                    for workspace_path, package_part in (
+                        paths_by_package_part.items()
+                    ):
+                        if target_part == package_part:
+                            paths_by_relationship.setdefault(
+                                relationship_id,
+                                set(),
+                            ).add(workspace_path)
+                if not paths_by_relationship:
+                    continue
+                slide_root = ET.fromstring(archive.read(source_part))
+                parent_by_id = {
+                    id(child): parent
+                    for parent in slide_root.iter()
+                    for child in list(parent)
+                }
+                for element in slide_root.iter():
+                    relationship_ids = {
+                        value
+                        for name, value in element.attrib.items()
+                        if name.startswith(f"{{{relationship_namespace}}}")
+                        and value in paths_by_relationship
+                    }
+                    if not relationship_ids:
+                        continue
+                    current: ET.Element | None = element
+                    while current is not None:
+                        if current.tag in shape_tags:
+                            non_visual = next(
+                                (
+                                    candidate
+                                    for candidate in current.iter()
+                                    if candidate.tag
+                                    == f"{{{presentation_namespace}}}cNvPr"
+                                ),
+                                None,
+                            )
+                            shape_id = (
+                                non_visual.get("id")
+                                if non_visual is not None
+                                else None
+                            )
+                            if shape_id:
+                                source_ref = f"slide:{shape_id}"
+                                for relationship_id in relationship_ids:
+                                    owner_paths.setdefault(index, {}).setdefault(
+                                        source_ref,
+                                        set(),
+                                    ).update(
+                                        paths_by_relationship[relationship_id]
+                                    )
+                        current = parent_by_id.get(id(current))
+    except (ET.ParseError, KeyError, OSError, zipfile.BadZipFile) as exc:
+        raise RuntimeError(
+            f"Cannot resolve opaque round-trip resource owners: {exc}"
+        ) from exc
+    return {
+        index: {
+            source_ref: frozenset(paths)
+            for source_ref, paths in refs.items()
+        }
+        for index, refs in owner_paths.items()
     }
 
 
@@ -1549,10 +1714,18 @@ def _resolve_animation_config_source(
     *,
     recorded_narration: bool,
     no_animations: bool,
+    roundtrip: bool,
 ) -> str | None:
     """Resolve the animation sidecar selected for this export."""
     if requested_config is not None or not recorded_narration or no_animations:
         return requested_config
+
+    if roundtrip:
+        return (
+            'animations.json'
+            if (project_path / 'animations.json').is_file()
+            else None
+        )
 
     canonical_exists = (project_path / 'animations.json').is_file()
     narration_exists = (project_path / 'narration_animations.json').is_file()
@@ -2461,6 +2634,17 @@ Recorded narration:
                 'slides': sorted(roundtrip_passthrough_slides),
             }
     if args.roundtrip:
+        roundtrip_external_animation_config = False
+        if args.animation_config is not None:
+            requested_animation_config = Path(args.animation_config)
+            if not requested_animation_config.is_absolute():
+                requested_animation_config = (
+                    project_path / requested_animation_config
+                )
+            roundtrip_external_animation_config = (
+                requested_animation_config.resolve()
+                != (project_path / 'animations.json').resolve()
+            )
         roundtrip_motion_overridden = any((
             args.no_animations,
             args.transition is not None,
@@ -2498,7 +2682,7 @@ Recorded narration:
             args.animation_duration is not None,
             args.animation_stagger is not None,
             args.animation_trigger is not None,
-            args.animation_config is not None,
+            roundtrip_external_animation_config,
             args.inherit_motion_from is not None,
         ))
         try:
@@ -2524,32 +2708,50 @@ Recorded narration:
             opaque_dependencies = _opaque_roundtrip_slide_dependencies(
                 project_path.resolve()
             )
+            opaque_dependency_refs = (
+                _opaque_roundtrip_dependency_owner_refs(
+                    project_path.resolve(),
+                    opaque_dependencies,
+                )
+            )
         except RuntimeError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
-        blocked_dependencies = {
-            page.output_index: (
-                page.source_slide,
-                opaque_dependencies[page.source_slide],
-            )
-            for page in roundtrip_pages
-            if page.source_slide in opaque_dependencies
-            and page.output_index not in roundtrip_passthrough_slides
-            and page.output_index not in roundtrip_slide_patches
-        }
-        omitted_opaque_dependencies = (
-            {
-                source_slide: paths
-                for source_slide, paths in opaque_dependencies.items()
-                if source_slide not in {
-                    page.source_slide
-                    for page in roundtrip_pages
-                }
+        blocked_dependencies: dict[int, tuple[int, list[str]]] = {}
+        for page in roundtrip_pages:
+            dependencies = opaque_dependencies.get(page.source_slide)
+            if (
+                not dependencies
+                or page.output_index in roundtrip_passthrough_slides
+            ):
+                continue
+            patch = roundtrip_slide_patches.get(page.output_index)
+            if patch is None:
+                blocked_dependencies[page.output_index] = (
+                    page.source_slide,
+                    dependencies,
+                )
+                continue
+            owner_refs = opaque_dependency_refs.get(page.source_slide, {})
+            affected_refs = patch.edited_ref_ids | patch.deleted_ref_ids
+            affected_paths = {
+                path
+                for source_ref in affected_refs
+                for path in owner_refs.get(source_ref, ())
             }
-            if roundtrip_page_plan_present
-            else {}
-        )
-        if blocked_dependencies or omitted_opaque_dependencies:
+            mapped_paths = {
+                path
+                for paths in owner_refs.values()
+                for path in paths
+            }
+            if patch.visual_changed:
+                affected_paths.update(set(dependencies) - mapped_paths)
+            if affected_paths:
+                blocked_dependencies[page.output_index] = (
+                    page.source_slide,
+                    sorted(affected_paths),
+                )
+        if blocked_dependencies:
             print(
                 "Error: round-trip page export would drop source video, audio, "
                 "or opaque native payload relationships:",
@@ -2560,14 +2762,6 @@ Recorded narration:
             ):
                 print(
                     f"  output page {index} (source slide {source_slide}): "
-                    + ", ".join(paths),
-                    file=sys.stderr,
-                )
-            for source_slide, paths in sorted(
-                omitted_opaque_dependencies.items()
-            ):
-                print(
-                    f"  omitted source slide {source_slide}: "
                     + ", ".join(paths),
                     file=sys.stderr,
                 )
@@ -2876,6 +3070,7 @@ Recorded narration:
         args.animation_config,
         recorded_narration=bool(args.recorded_narration),
         no_animations=args.no_animations,
+        roundtrip=args.roundtrip,
     )
 
     if effective_animation_config:

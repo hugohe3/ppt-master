@@ -144,8 +144,9 @@ ordinary media may remain shared. An edited copy overlays only its edited
 owners onto its cloned source page. Same-deck slide-jump links follow the
 page-plan contract: a target must map to exactly one output page. An
 omitted or repeated destination is an error; external links remain unchanged.
-Dropping any source slide that owns video, audio, or another opaque native
-payload also fails instead of discarding that relationship.
+Omitting a source slide deliberately drops its private video, audio, or opaque
+native payloads; a kept slide still fails if rebuilding it would discard such
+relationships.
 With a plan present, presentation-level `sectionLst` and custom-show rosters
 are dropped, output `p:sldId` values are renumbered, and the slide count in
 `docProps/app.xml` is updated.
@@ -160,6 +161,8 @@ a copied SVG, a present `notes/<svg-stem>.md` overrides its inherited source
 notes and an absent file keeps them. Deleting inherited source notes only on a
 copy is not supported in v1. The same output-stem rule applies to narration
 audio.
+
+When a round-trip recorded-narration export omits `--animation-config`, it uses the workspace `animations.json` when present and otherwise applies no sidecar while preserving source motion.
 
 Narration audio is keyed by the output SVG stem. A copied output page uses its
 own stem-keyed notes when present and otherwise inherits the declared source
