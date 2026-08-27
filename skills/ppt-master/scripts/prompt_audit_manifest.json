@@ -307,13 +307,15 @@
       "max_tokens": 175000
     },
     "route.generate.quick-generate.template-fusion": {
-      "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion loaded for flat authoring. Ceiling raised after BUDGET_LOAD_SET reported 125689 tokens.",
+      "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion; installed Layout/Deck ownership determines flat or structured authoring. Ceiling raised after BUDGET_LOAD_SET reported 125689 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.template.fusion-brand-style-layout-deck"
       ],
-      "files": [],
+      "files": [
+        "skills/ppt-master/references/pptx-structure-interface.md"
+      ],
       "max_tokens": 140000
     },
     "route.generate.quick-generate.topic-research": {
@@ -1525,6 +1527,116 @@
       "concern": "spec-lock-schema",
       "from": "skills/ppt-master/templates/spec_lock_reference.md",
       "to": "skills/ppt-master/templates/schemas/spec_lock.schema.json"
+    },
+    {
+      "concern": "create-template-workflow",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/create-template.md"
+    },
+    {
+      "concern": "fill-native-pptx-workflow",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/template-fill-pptx.md"
+    },
+    {
+      "concern": "enhance-native-pptx-workflow",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/native-enhance-pptx.md"
+    },
+    {
+      "concern": "image-to-pptx-profile",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/profiles/image-to-pptx.md"
+    },
+    {
+      "concern": "beautify-profile",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/profiles/beautify-pptx.md"
+    },
+    {
+      "concern": "create-brand-dispatch",
+      "from": "skills/ppt-master/workflows/create-template.md",
+      "to": "skills/ppt-master/workflows/create-template/create-brand.md"
+    },
+    {
+      "concern": "create-style-dispatch",
+      "from": "skills/ppt-master/workflows/create-template.md",
+      "to": "skills/ppt-master/workflows/create-template/create-style.md"
+    },
+    {
+      "concern": "create-layout-dispatch",
+      "from": "skills/ppt-master/workflows/create-template.md",
+      "to": "skills/ppt-master/workflows/create-template/create-layout.md"
+    },
+    {
+      "concern": "create-deck-dispatch",
+      "from": "skills/ppt-master/workflows/create-template.md",
+      "to": "skills/ppt-master/workflows/create-template/create-deck.md"
+    },
+    {
+      "concern": "quick-artifact-ownership",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/artifact-ownership.md"
+    },
+    {
+      "concern": "quick-svg-core-contract",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/shared-standards-core.md"
+    },
+    {
+      "concern": "quick-svg-effects-contract",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/svg-effects.md"
+    },
+    {
+      "concern": "quick-native-shape-contract",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/native-shape-authoring.md"
+    },
+    {
+      "concern": "quick-preset-vocabulary",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/preset-shape-vocabulary.md"
+    },
+    {
+      "concern": "quick-semantic-svg-contract",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/semantic-svg.md"
+    },
+    {
+      "concern": "quick-structure-routing",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/executor-structure.md"
+    },
+    {
+      "concern": "quick-topology-routing",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/topology-assembly.md"
+    },
+    {
+      "concern": "quick-structured-contract",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/pptx-structure-interface.md"
+    },
+    {
+      "concern": "quick-notes-routing",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/references/executor-notes.md"
+    },
+    {
+      "concern": "quick-chart-verification",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
+      "to": "skills/ppt-master/workflows/stages/verify-charts.md"
+    },
+    {
+      "concern": "semantic-vocabulary-owner",
+      "from": "skills/ppt-master/references/shared-standards-core.md",
+      "to": "skills/ppt-master/references/semantic-svg.md"
+    },
+    {
+      "concern": "structured-interface-routing",
+      "from": "skills/ppt-master/references/shared-standards-core.md",
+      "to": "skills/ppt-master/references/pptx-structure-interface.md"
     }
   ],
   "registries": [
@@ -1894,7 +2006,7 @@
             {
               "path": "skills/ppt-master/references/artifact-ownership.md",
               "role": "reference",
-              "fingerprint": "ebe98e6a11a9",
+              "fingerprint": "e05b75f54145",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
