@@ -224,7 +224,7 @@ supplied or `simple-icons` mark. This requires no extra user-facing option.
 >
 > **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, materialize a curated project icon pool:
 >
-> 3. Sync the icons the deck will use; do not preassign them to pages (per-page choice is realization).
+> 3. A confirmed bundled library is materialized as a synced project pool before Executor starts; Executor cannot sync. Which prepared icons a page uses is realization, never a preassignment.
 > 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<drawable-object>*.svg'`. Abstract concept words return nothing; translate the semantic into a drawable object first, per [`../templates/icons/README.md`](../templates/icons/README.md). Do not enumerate broad keyword families.
 > 5. **Copy and validate in one batch** — run `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
 > 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
