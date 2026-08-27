@@ -12,7 +12,7 @@ The fixture deliberately closes the full planning and execution chain:
 
 - `design_spec.md` carries `Motion suggestion`, one current §VIII image row,
   and `Crop Policy`, with no native-shape planning field;
-- `spec_lock.md` projects that row with optional layout pattern `#M1-11`;
+- `spec_lock.md` projects that row (`source`, `crop`); the `#M1-11` layout pattern stays in §VIII;
 - both pages reuse one raster through ordinary, ellipse-preset, and custom-path
   independent nested crops;
 - `animations.json` pairs the main crop across adjacent Morph pages;
@@ -198,7 +198,7 @@ preset = (
 - library: none
 - inventory: none
 ## images
-- scene: images/scene.png | source=user | pattern=#M1-11 same-source independent crops with a shaped detail | crop=adaptive
+- scene: images/scene.png | source=user | crop=adaptive
 ## page_rhythm
 - P01: dense
 - P02: dense
