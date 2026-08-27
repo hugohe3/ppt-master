@@ -195,40 +195,38 @@ proactively when AI imagery is appropriate. Their transparent slices stay
 under `images/`; never put them under `icons/`, add them to `icons.inventory`,
 or reference them through `<use data-icon>`.
 
-Base SVG/emoji icons and illustrated-icon slices may be combined when the page
-benefits, as long as the overall visual treatment remains coherent. Real brand
+Base SVG/emoji icons and illustrated-icon slices may be combined. Real brand
 marks remain identity assets rather than another stylistic library.
 
 The built-in icon library contains multiple stylistic libraries plus a brand-logo library:
 
 See [`../templates/icons/README.md`](../templates/icons/README.md) for the current library inventory, counts, prefixes, and SVG placeholder details.
 
-Content-driven brand preparation applies under every base choice: if a real
-company, product, service, or social identity appears and its mark improves
-recognition, prepare the exact supplied or `simple-icons` asset; otherwise do
-not add one. This requires no extra user-facing option.
+Brand preparation applies under every base choice: a real company, product,
+service, or social identity that appears in the content may use its exact
+supplied or `simple-icons` mark. This requires no extra user-facing option.
 
 > **Mandatory rules for bundled SVG resources**:
 >
 > **At the Strategist confirmation stage — decide the generic base library and stroke only; resolve generic and content-driven brand filenames after approval.**
 >
-> 1. **Pick at most one primary stylistic library from the four bundled choices** — when generic icons are needed, read the source material and choose the one whose visual character best serves the deck:
+> 1. **One primary stylistic library per pool** (`icon_sync.py` rejects a batch that mixes them) — the four bundled choices:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
 >    - **`tabler-filled`** — fill, bezier curves and arcs (C/A); smooth, rounded, organic; medium weight, approachable
 >    - **`tabler-outline`** — stroke (line art); airy, refined, lightweight; best for screen-only (thin strokes may be hard to read in print)
 >    - **`phosphor-duotone`** — duotone; main shape + 20% opacity backplate; medium weight, layered, contemporary
->    - During bundled-library selection, do not select generic icons from more than one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
->    - **`simple-icons` is never a Confirm UI choice**: it is a brand-logo resource that Strategist prepares only when the actual content needs a real company / product / service mark (customer logos, tech-stack icons, social handles). It may be used with any base selection, including `none`, and never substitutes for a missing generic icon.
+>    - A generic icon missing from the chosen library is replaced **within that same library**.
+>    - **`simple-icons` is never a Confirm UI choice**: it is a brand-logo resource for real company / product / service marks (customer logos, tech-stack icons, social handles). It may accompany any base selection, including `none`, and holds no generic icons.
 >    - This restriction governs Strategist selection from the bundled catalog, not the prepared project asset pool. User-provided, template-carried, imported, custom, and previously prepared files under `<project_path>/icons/` remain valid material regardless of namespace or visual style.
-> 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`). For heavier presence, switch library instead of going above `3`.
+> 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`).
 >
 > **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, materialize a curated project icon pool:
 >
-> 3. Choose a reusable set that covers recurring semantics and likely slide needs in the confirmed outline. Do not preassign individual icons to pages or add filler to meet a quota.
+> 3. Sync the icons the deck will use; do not preassign them to pages (per-page choice is realization).
 > 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<drawable-object>*.svg'`. Abstract concept words return nothing; translate the semantic into a drawable object first, per [`../templates/icons/README.md`](../templates/icons/README.md). Do not enumerate broad keyword families.
 > 5. **Copy and validate in one batch** — run `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
 > 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
-> 7. Record each synced bundled path with broad suitable scenarios in `design_spec.md` §VI; record the same curated pool, its primary stylistic library, and any stroke-library `stroke_width` in `spec_lock.md icons`. Keep actually needed `simple-icons/*` ids in the same inventory without treating them as a second stylistic library or user-facing selection. The pool is prepared optional material, not a page-use plan, coverage quota, or whitelist over other prepared project-local icons.
+> 7. Record each synced bundled path with broad suitable scenarios in `design_spec.md` §VI; record the same curated pool, its primary stylistic library, and any stroke-library `stroke_width` in `spec_lock.md icons`. Keep actually needed `simple-icons/*` ids in the same inventory without treating them as a second stylistic library or user-facing selection. `inventory` indexes the synced pool; other prepared project-local icons remain usable.
 >
 > 🚧 **GATE — missing icon = re-pick now**: on non-zero exit, search a missing generic concept only in the chosen stylistic library, or a missing real brand mark in `simple-icons`; re-pick and rerun the final batch until clean. Never carry a missing icon forward or switch among the four stylistic libraries to fill the gap.
 >

@@ -20,12 +20,12 @@ For illustration, confirmed `none` stops and explicit user intent wins. Otherwis
 
 For each sheet, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`, and one element row may serve several §IX pages. State each element's communication job, placement/reuse relationship, relative visual weight, energy, family, and shape without prescribing an effect stack. Use glyph-native expression by default; record a lettering-plus-illustration lockup only when the user explicitly requests it or the confirmed direction requires it. Lettering sheets use `text_policy: embedded`; the asset may carry the complete display title, while any required searchable, selectable, or outline-visible title remains an ordinary separate native text frame. [`image-generator.md`](./image-generator.md) §§4.3 and 5.3 own the controlled-default/high-expression boundary, artistic authorship, grid, key field, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
 
-**Default — consider illustrated icons under confirmed AI permission**: when a
-compact semantic job benefits from a project-specific illustrated cue, plan the
-useful cues through the same sheet-to-slice contract. Each placed cue uses
+**Illustrated icons (confirmed AI permission)**: a compact semantic cue may be
+produced as a project-specific illustrated cue through the same sheet-to-slice
+contract. Each placed cue uses
 `Type: Illustrated icon`, `Crop Policy: no-crop`, and an appropriate layout
 recommendation; the parent remains an unplaced `Type: Illustration Sheet`.
-There is no confirmation field or coverage quota. Illustrated cues may coexist
+There is no confirmation field. Illustrated cues may coexist
 with base SVG/emoji icons when the overall visual system remains coherent, and
 their slices stay out of `icons/`.
 
