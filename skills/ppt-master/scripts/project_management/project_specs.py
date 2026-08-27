@@ -225,9 +225,9 @@ def _looks_like_image_path(raw: str) -> bool:
 def parse_spec_lock_image_value(key: str, value: str) -> dict[str, str]:
     """Parse one image-lock row while preserving supported legacy rows.
 
-    Current rows use ``<path> | source=... | pattern=... | crop=...``. Legacy
-    rows remain readable, but any row that starts using named metadata must
-    provide the complete current contract.
+    Current rows use ``<path> | source=... | crop=...`` and may retain the
+    legacy ``pattern=...`` projection. Legacy rows remain readable, but any row
+    that starts using named metadata must provide source and crop.
     """
     normalized_key = str(key).strip()
     normalized_value = str(value).strip()
@@ -274,9 +274,10 @@ def parse_spec_lock_image_value(key: str, value: str) -> dict[str, str]:
             raise ValueError(f"repeats metadata field {field!r}")
         metadata[field] = raw.strip()
 
-    expected_fields = {"source", "pattern", "crop"}
-    unknown_fields = sorted(set(metadata) - expected_fields)
-    missing_fields = sorted(expected_fields - set(metadata))
+    allowed_fields = {"source", "pattern", "crop"}
+    required_fields = {"source", "crop"}
+    unknown_fields = sorted(set(metadata) - allowed_fields)
+    missing_fields = sorted(required_fields - set(metadata))
     if unsupported_parts:
         shown = ", ".join(repr(part) for part in unsupported_parts)
         raise ValueError(f"has unsupported metadata token(s) {shown}")
@@ -309,7 +310,7 @@ def parse_spec_lock_image_value(key: str, value: str) -> dict[str, str]:
     if source not in _IMAGE_ACQUISITION_SOURCES:
         allowed = ", ".join(sorted(_IMAGE_ACQUISITION_SOURCES))
         raise ValueError(f"source must be one of {allowed}, got {metadata['source']!r}")
-    if not metadata["pattern"]:
+    if "pattern" in metadata and not metadata["pattern"]:
         raise ValueError("pattern must be non-empty")
     crop = metadata["crop"].casefold()
     if crop not in _IMAGE_CROP_POLICIES:
@@ -319,7 +320,7 @@ def parse_spec_lock_image_value(key: str, value: str) -> dict[str, str]:
     return {
         "path": normalized_path,
         "source": source,
-        "pattern": metadata["pattern"],
+        "pattern": metadata.get("pattern", ""),
         "crop": crop,
         "legacy": "false",
     }
@@ -374,7 +375,7 @@ def parse_spec_lock_artifact(
         compatibility_warnings.append(
             f"{lock_path.name} images: normalized {len(compatibility_keys)} legacy "
             "path-as-key row(s); new locks should use '- <key>: <path> | "
-            "source=... | pattern=... | crop=...' "
+            "source=... | crop=...' "
             f"(found: {sample}{suffix})"
         )
     return normalized_sections

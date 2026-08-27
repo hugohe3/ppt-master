@@ -6563,7 +6563,7 @@ class SVGQualityChecker:
                     'planned_image_legacy_lock_projection',
                     f"{filename} uses the current Design Spec image contract "
                     "but its spec_lock.md row does not provide complete "
-                    "source=..., pattern=..., and crop=... metadata.",
+                    "source=... and crop=... metadata.",
                 ))
 
         for filename in sorted(referenced - set(rows_by_filename)):
@@ -6621,8 +6621,9 @@ class SVGQualityChecker:
                         f"does not match Design Spec §VIII Crop Policy "
                         f"{crop_policy!r}.",
                     ))
-                if not self._layout_projection_matches(
-                    entry.get('pattern', ''),
+                locked_pattern = entry.get('pattern', '')
+                if locked_pattern and not self._layout_projection_matches(
+                    locked_pattern,
                     layout_pattern,
                 ):
                     self._illustration_issues.append((
