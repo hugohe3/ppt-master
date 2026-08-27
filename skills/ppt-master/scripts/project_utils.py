@@ -407,11 +407,11 @@ def validate_project_structure(
 
     # Check required files
     if not (project_path / 'README.md').exists():
-        msg = "Missing required file: README.md"
+        msg = "Missing README.md (optional project notes; nothing reads it)"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_readme',
                                                            {'project_path': str(project_path)})
-        errors.append(msg)
+        warnings.append(msg)
 
     # Check design specification file
     has_spec = any((project_path / name).exists() for name in _DESIGN_SPEC_NAMES)

@@ -332,7 +332,7 @@ one. This array is still diagnostic metadata, not an authoring surface.
 | `standard` / `fidelity` output | Use §1.5 compact presets; never transplant opaque payload or source topology. |
 | `mirror` output | Template_Designer reviews/authors the compact parsed IR; materialization validates refs/graph and publishes that tree without restoring visible lossless subtrees. Recover only supported non-visible semantics; expand fixed Master/Layout wrappers without changing ownership or intended presentation. |
 
-**Hard rule — model-facing page-coordinate precision**:
+**Default — model-facing page-coordinate precision (the canonical checker reports over-precision as an advisory warning)**:
 
 | Surface | Precision contract |
 |---|---|

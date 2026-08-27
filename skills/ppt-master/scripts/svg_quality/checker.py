@@ -5893,6 +5893,16 @@ class SVGQualityChecker:
             if standard_project
             else None
         )
+        implicit_flat = bool(standard_project) and not declared_mode
+        if implicit_flat:
+            self._pptx_structure_issues.append((
+                'warning',
+                'spec_lock.md declares no pptx_structure.mode; the project is '
+                'treated as mode: flat, matching the exporter default. Declare '
+                'mode: flat explicitly, or mode: structured for a deck/layout '
+                'template.',
+            ))
+            declared_mode = 'flat'
         if standard_project and declared_mode in {'flat', 'structured'}:
             self._pptx_structure_issues.extend(
                 ('error', message)
@@ -5913,6 +5923,8 @@ class SVGQualityChecker:
                 structure_lock = _load_pptx_structure_lock(project_path)
             except _TemplateStructureError as exc:
                 self._pptx_structure_issues.append(('error', str(exc)))
+                return
+            if structure_lock is None and implicit_flat:
                 return
             if structure_lock is None or structure_lock.mode != 'flat':
                 self._pptx_structure_issues.append((
@@ -5969,18 +5981,14 @@ class SVGQualityChecker:
             return
 
         if standard_project and declared_mode != 'structured':
-            label = repr(declared_mode) if declared_mode else (
-                'missing (legacy implicit baseline)'
-            )
             self._pptx_structure_issues.append((
                 'error',
-                'release SVG projects require an explicit spec_lock.md '
-                'pptx_structure.mode: flat (free design / brand-only) or '
-                f'structured (deck/layout template); found {label}. New '
-                'free-design projects use mode: flat; create a new template '
-                'workspace through skills/ppt-master/workflows/create-template.md, '
-                'then generate new structured SVG pages before export. Existing '
-                'PPTX/SVG files are not upgraded in place.',
+                'release SVG projects require spec_lock.md pptx_structure.mode: '
+                'flat (free design / brand-only) or structured (deck/layout '
+                f'template); found {declared_mode!r}. Create a template '
+                'workspace through skills/ppt-master/workflows/create-template.md '
+                'before generating structured SVG pages. Existing PPTX/SVG files '
+                'are not upgraded in place.',
             ))
             return
 

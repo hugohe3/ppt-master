@@ -13,7 +13,6 @@
     "typography",
     "icons",
     "page_rhythm",
-    "pptx_structure",
     "forbidden"
   ],
   "properties": {
@@ -183,7 +182,7 @@
       {
         "id": "pptx_structure",
         "pattern": "^pptx_structure$",
-        "required": true,
+        "required": false,
         "required_fields": ["mode"],
         "allowed_fields": ["mode", "template_reuse_scope", "template_adherence"],
         "field_enums": {
