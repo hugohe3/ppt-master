@@ -399,11 +399,13 @@ PPTX import projections and mirror materialization call the same tree-level
 implementation before publishing their authoring SVG. Standard workflows do
 not rewrite completed SVG: they pass `--canonical-authoring` to
 `svg_quality_checker.py`, which reports any remaining deterministic change as an
-advisory warning on authored project pages (run
-`compact_svg_styles.py <svg_output> --inplace` and rerun the final gate to
-normalize, or keep the explicit form) and as a blocking error under
-`--template-mode`, where the compact tree is the hash-locked mirror source.
-SVG-to-PPTX accepts valid explicit declarations either way; canonical compact
+advisory warning (run `compact_svg_styles.py <svg_output> --inplace` on
+authored project pages and rerun the final gate to normalize, or keep the
+explicit form). Structured template rosters keep their explicit form: per-slide
+compaction would make shared Master/Layout atoms diverge and shift native
+fallback hashes, so the normalizer is not applied to them; mirror
+materialization compacts its own tree before publication. SVG-to-PPTX accepts
+valid explicit declarations either way; canonical compact
 authoring is a generated-source contract, not a compatibility restriction on
 external SVG input.
 

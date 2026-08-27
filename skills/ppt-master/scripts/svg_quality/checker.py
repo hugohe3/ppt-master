@@ -1404,13 +1404,15 @@ class SVGQualityChecker:
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Report SVG that was not compact when authored.
+        """Report SVG that was not compact when authored (advisory).
 
-        Template workspaces (``--template-mode``) fail because their compact
-        form is the hash-locked source for mirror materialization. Authored
-        project pages only receive an advisory warning: the exporter accepts
-        explicit declarations, and ``compact_svg_styles.py --inplace`` applies
-        the same deterministic normalization on request.
+        The exporter accepts explicit declarations, so drift from the compact
+        form never blocks. ``compact_svg_styles.py --inplace`` applies the
+        deterministic normalization on request for authored project pages; it
+        is not applied to structured template rosters, where per-slide
+        compaction would make shared Master/Layout atoms diverge and shift
+        native fallback hashes. Mirror materialization compacts its own tree
+        before publication.
         """
         if not self.canonical_authoring:
             return
@@ -1425,8 +1427,9 @@ class SVGQualityChecker:
         if not errors:
             return
         if self.template_mode:
-            result['errors'].extend(
-                f"Noncanonical compact authoring: {error}"
+            result['warnings'].extend(
+                f"Noncanonical compact authoring: {error} "
+                "(advisory; structured rosters keep their explicit form)"
                 for error in errors
             )
             return
