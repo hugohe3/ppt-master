@@ -108,7 +108,7 @@ You: Quickly generate a deck from sources/report.pdf — no need to confirm with
 You: Turn this into a deck, skip the confirmation, about 8 pages, dark corporate look
 ```
 
-**Whatever you state explicitly is followed; whatever you leave unspecified the agent decides directly, without coming back to ask.** The page count and the look in the second example still hold — quick mode drops the round trip, not your say. State nothing, and the agent decides everything.
+**Whatever you state explicitly is followed; whatever you leave unspecified the agent decides directly, without coming back to ask.** The page count and the look in the second example still hold — quick mode drops the round trip, not your say. Instead of materializing Default's three directions, Quick directly executes the direction that Default would recommend: the strongest overall fit for free design, or the viable direction most fully expressing installed template context. State nothing, and the agent decides everything.
 
 Quick mode never opens the Confirm UI template selector. Give it up to one exact
 Brand / Style / Layout / Deck workspace root per kind and it validates,

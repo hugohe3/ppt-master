@@ -290,11 +290,15 @@ Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
 ```
 
 This batch is the complete capability map for planning, not a usage checklist:
-zero use of any capability remains valid. Resolve the best whole solution from
-the project brief and loaded decision authorities, freeze its exact
-mode/style/rendering ids, then read only those selected detail files or custom
-bases. A novel custom reads none. Never open unselected detail siblings to
-compare candidates, glob a catalog, or let them influence the decision. Decide
+zero use of any capability remains valid. Resolve one recommended whole
+solution directly; do not materialize Default's three candidates. Without an
+installed template, choose the strongest overall fit from the project brief and
+loaded decision authorities. With one, choose the viable solution that most
+fully expresses the resolved template context and frozen Template Application,
+varying only dimensions they leave open. Freeze its exact mode/style/rendering
+ids, then read only those selected detail files or custom bases. A novel custom
+reads none. Never open unselected detail siblings to compare candidates, glob a
+catalog, or let them influence the decision. Decide
 whether AI images are useful as a separate source judgment; even when the
 answer is no, retain the chosen rendering direction for visual coherence. Keep
 the chosen mode, style, rendering, and exact bases in active context only.

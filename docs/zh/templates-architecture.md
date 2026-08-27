@@ -435,6 +435,8 @@ apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；根
 
 安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；其他情况读取全部有效原型（有 Layout 时用 Layout，否则用 Deck）和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用。
 
+Default 仍提供三套符合模板约束的设计方向。其中的推荐方向是最充分表达解析后模板上下文的可行方案；另外两套只在模板和用户留白的维度上变化。Quick 不生成候选集，而是直接执行同一套推荐规则。
+
 Default 确认一段自然语言 `template_application`；Quick 形成同样的决策，但只冻结在当前上下文。用户明确要求优先；否则 agent 根据内容与完整 SVG roster 判断，没有更强理由时默认按参照型使用。参照型、增强型、替换型只是描述性范式，不是固定字段；任何针对单个原型的例外必须写出精确 SVG 文件名。运行时选择不改变模板结构能力：自由设计及仅 Brand/Style 的输出保持 flat；Layout/Deck 输出保留显式 Master/Layout/slot 元数据，除非用户明确要求只参考视觉并舍弃结构。Confirm UI 显示自由设计/使用模板和这段文本，但不显示内部复用/遵循字段。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责；Default 的持久机器结构由 `templates/schemas/spec_lock.schema.json` 负责，Quick 则直接校验全页 SVG 结构合同。
 
 ---
