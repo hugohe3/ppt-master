@@ -103,12 +103,11 @@ Choose the field and map required atoms, then follow:
 | `labels` | Copy and caveats visibly attach directly or by leader/tether to what they explain; when a node has multiple text roles, cue → claim/value → support → note remains perceptibly descending and absent roles stay absent |
 | `garnish` | Removing accents leaves all meaning intact |
 
-**Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Prefer containment, alignment, baselines, and proximity; add lines/Connectors only for real edges, never to make a page look process-like.
+**Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Containment, alignment, baselines, and proximity express relationships without edges; lines/Connectors express real edges.
 
-**Default — visible structural composition (may override for naked-text
-rhythm/style)**: Make one relationship-bearing field, spine, node carrier, or
-directional shape the page-scale move; never add geometry merely because
-Structure is `yes`. When drawn roles interact, resolve relationship-bearing
+**Structural carriers**: a relationship-bearing field, spine, node carrier, or
+directional shape can be the page-scale move; Structure `yes` by itself adds no
+geometry. When drawn roles interact, resolve relationship-bearing
 parent contour/direction → contact → joint or intentional void →
 z-order/occlusion → canvas-edge behavior before labels/garnish. Skip
 inapplicable operations; implicit/direct roles remain container-free.

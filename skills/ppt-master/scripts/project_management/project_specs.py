@@ -334,8 +334,9 @@ def parse_spec_lock_artifact(
 ) -> list[dict[str, object]]:
     """Parse one execution lock and normalize supported legacy image rows.
 
-    New locks use ``- <key>: <path> | source=... | pattern=... | crop=...``.
-    Some versioned projects instead placed the image path before the colon.
+    Current locks use ``- <key>: <path> | source=... | crop=...`` and may retain
+    the legacy ``pattern=...`` projection. Some versioned projects instead
+    placed the image path before the colon.
     Preserve those projects by projecting the key path back into the value so
     every consumer sees the same path-first image value.
     """

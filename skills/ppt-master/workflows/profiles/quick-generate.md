@@ -384,8 +384,7 @@ the same transient-roster resolution and before resource preparation or
 coordinates, decide each page's complete mix of background, editable text and
 optional lettering, native geometry and lines, photos/scenes,
 illustrations/icons, and applicable visualizations. Decide their primary,
-structural, and supporting jobs together; do not finish a text/container layout
-and then treat the other families as optional decoration. Only selected image,
+structural, and supporting jobs together. Only selected image,
 lettering, or illustrated-icon jobs with plausible page roles create image
 resources; ordinary SVG/emoji icons retain their curated-pool boundary.
 Omitting any carrier is valid after this review; Quick speed, resolved style,
@@ -644,7 +643,7 @@ Chart/Table reference and final information model are independent loading
 signals; load every applicable authority. Selection never makes an object
 native-ready or replaces the per-page Structure decision.
 
-Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 job diagnostic active while authoring, with its Visual Job Router as recall. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery. Treat selected style composition examples as generative vocabulary rather than a finite layout menu.
+Keep the core's shared visual-quality / leading defaults active while authoring, with `svg-effects.md` §6.1's Visual Job Router as recall. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery. Treat selected style composition examples as generative vocabulary rather than a finite layout menu.
 
 **Per-page execution anchors**: apply the transient core-message, typography-role, semantic-color, body-frame, density, and composition anchors resolved in §2 while authoring; they guide the current run without creating a persisted planning artifact.
 

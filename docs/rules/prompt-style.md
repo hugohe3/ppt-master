@@ -160,7 +160,7 @@ not permit Executor to acquire visual resources.
 
 Before adding a `Hard rule`, `Forbidden`, `Mandatory`, `never`, `do not`, or any quota/threshold to a process prompt, name the mechanism that makes it hard: a checker rule id, an exporter behaviour, a DrawingML limit, a structured Master/Layout contract, artifact ownership or gate order, or reading-cost control. A rule with no such mechanism does not affect whether the SVG renders as authored or exports to editable PPTX; it may enter only as a capability entry (what exists and its syntax), a `Reference — not a constraint`, or an example — never as a prohibition, quota, usage default, or "omit when …" clause. Whether and how the model uses a capability is its own judgment. A prohibition that a script already enforces is not restated in prose; write only the fix.
 
-**Owner exceptions — kept as `Mandatory`**: primary-per-page, composition geometry vocabulary, the ±2px font-size band, and the Layout-pattern diversity self-check are deliberate anti-sameness devices retained by the maintainer. If sameness returns after other restrictions are relaxed, add examples first; do not re-escalate demoted rules.
+**Owner exceptions — kept as `Mandatory`**: primary-per-page, composition geometry vocabulary (including its slide-versus-web-grid motivation), the ±2px font-size band, the Layout-pattern diversity self-check, and "do not start from a universal palette" are deliberate anti-sameness devices retained by the maintainer. If sameness returns after other restrictions are relaxed, add examples first; do not re-escalate demoted rules.
 
 ---
 

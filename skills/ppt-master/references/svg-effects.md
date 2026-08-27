@@ -28,14 +28,13 @@ rhythm, and style; apply those that materially help.
 | Aesthetic fit | Locked or Quick-resolved `visual_style` / `visual_style_behavior` |
 | Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
 
-**Mandatory — job-first effect selection**: establish the editable semantic
-skeleton first, then diagnose effect jobs before treating the page as complete.
-Plain construction remains valid only when that diagnostic finds no unresolved
-visual job.
+**Reference — job-first effect selection**: establish the editable semantic
+skeleton first; the Visual Job Router below lists the visual jobs an effect can
+serve. Plain construction remains valid.
 
 | Pass | Decision |
 |---|---|
-| Skeleton / diagnose | Establish native information, relationships, and hierarchy. Before completion, check image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif; keep plain construction when none needs treatment. |
+| Skeleton / diagnose | Establish native information, relationships, and hierarchy. Image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif are the jobs an effect can serve; plain construction stays valid when none needs treatment. |
 | Surface / select | Name the target, confirm its owning subsection and fidelity, and let the Router recall candidates. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
 | Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
 
@@ -341,14 +340,13 @@ uses one deliberate alternative direction)**: every `feOffset` shadow on one
 slide shares the same `dx`/`dy` direction (default `dx="0"`,
 `dy="4"`–`dy="8"`, light from upper front). Contradictory shadow directions
 make one plane read as several incompatible surfaces. A deliberate upward
-paper-layer treatment flips every affected layer together; never mix
-directions on the same plane.
+paper-layer treatment flips every affected layer together, so one plane keeps
+one light direction.
 
 **Reference — not a constraint**: use no more elevation categories than the
 hierarchy needs; a page may reuse one category across several related objects.
-Do not lift every peer card or stack strong shadow, border, gradient, and tint
-on one container. Same-family colored shadow is reserved for a focal accent.
-On dark backgrounds, prefer a light hairline or restrained glow; never glow body copy.
+Same-family colored shadow is reserved for a focal accent.
+On dark backgrounds a light hairline or restrained glow separates surfaces; glow on body copy reduces legibility.
 For older/strict renderers, replace a filter with two or three offset
 translucent shapes behind the object:
 alpha `0.03–0.05`, increasing offset/radius, and optional same-family tint near
@@ -638,12 +636,9 @@ respective sections; they do not weaken those contracts.
 | Shadow/glow | §6.4 filter on `<text>` only | Shape shadow / run glow; `Approximate` |
 | Native bullet | Leading `· • ● ▪ ■ ◆ ◇ ◦ ‣` + non-empty content | `·`/`•` → `•`; others unchanged; color/alpha from marker run; font/size follow text |
 
-**Default — lift key information (may override when uniform treatment is
-deliberate)**: In prose, lift numerical results, explicit contrasts, and one or
-two load-bearing nouns per sentence with bold `<tspan>` runs in the locked or
-Quick-resolved accent. Keep connectives, routine verbs, non-load-bearing nouns,
-decorative adjectives, and structural copy neutral; reserve green/red for
-actual polarity.
+**Inline emphasis**: bold or accent-colored `<tspan>` runs lift numerical
+results, explicit contrasts, or a load-bearing noun inside prose; green/red
+conventionally read as polarity.
 
 ```xml
 <!-- Uniform: the two results disappear into the sentence. -->
@@ -657,8 +652,7 @@ actual polarity.
 </text>
 ```
 
-**Default — semantic underline (may override when another cue is clear)**:
-Reserve it for links, key terms, or local emphasis—not decoration.
+**Underline**: conventionally marks links, key terms, or local emphasis.
 
 ```xml
 <!-- Key term -->
@@ -683,12 +677,11 @@ text-on-path authoring.
   baseline-shift="sub" font-size="14">2</tspan></text>
 ```
 
-Use strikethrough for removed/former values; it is ordinary notation, not a
+Strikethrough conventionally marks removed/former values; it is ordinary notation, not a
 style-exclusive effect. Imported double underline/strike normalizes to single.
 Bullet detection allows optional leading whitespace, requires non-empty content,
 and leaves non-leading decorative glyphs as ordinary text.
-Keep body tracking normal; CJK tracking defaults near/below 2% of font size and
-above 5% triggers review. Text outline is solid only. `textPath`, masks, blend
+CJK tracking defaults near/below 2% of font size and above 5% triggers review. Text outline is solid only. `textPath`, masks, blend
 modes, generated effects, and text-image knockouts are outside editable text.
 
 ---
@@ -970,9 +963,9 @@ back-to-front and omit every layer without a distinct job.
 |---|---|---|
 | Cover | Hero field → optional scrim/wash → purposeful opening/contour → native title, optionally paired with a prepared decorative-lettering image | Stop when copy is safe and title/field read together |
 | Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse deck language; add no effect family |
-| Text-led explanation | Quiet field → recurring material/contour → native hierarchy → optional local emphasis | Emphasis clarifies the argument, never decorates body copy |
-| Process / system | Context field → native relation lines → nodes/labels → optional state/direction focus | Every connector stays semantic; atmosphere must not obscure flow |
-| Evidence / metric | Context field → local contrast → native leaders/labels/metric → optional focus/elevation | Claims stay native; atmosphere must not weaken evidence |
+| Text-led explanation | Quiet field → recurring material/contour → native hierarchy → optional local emphasis | Emphasis sits on the argument's load-bearing runs |
+| Process / system | Context field → native relation lines → nodes/labels → optional state/direction focus | Every connector stays semantic |
+| Evidence / metric | Context field → local contrast → native leaders/labels/metric → optional focus/elevation | Claims stay native |
 | Comparison | Matched planes → optional shared wash/divider → matched labels → one difference marker | Keep crop, elevation, and paint symmetric unless asymmetry is the claim |
 | Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Add no effect family or competing image |
 | Cross-page motif | Reuse contour, gradient direction, line language, texture, or light logic; vary scale, crop, or position by page job | Preserve recognition without copying the page or adding novelty effects |

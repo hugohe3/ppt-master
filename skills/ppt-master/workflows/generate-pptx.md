@@ -618,7 +618,7 @@ Read the exact execution references named by this deck's retained
 construction block plus the resolved mode/style detail files as one batch:
 ```
 Read ${SKILL_DIR}/references/shared-standards-core.md      # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
-Read ${SKILL_DIR}/references/svg-effects.md                # REQUIRED: §6.1 job diagnostic + effects/construction vocabulary
+Read ${SKILL_DIR}/references/svg-effects.md                # REQUIRED: effects/construction vocabulary (§6.1 Visual Job Router as recall)
 Read ${SKILL_DIR}/references/native-shape-authoring.md     # REQUIRED: native-shape selection and Boolean construction
 Read ${SKILL_DIR}/references/preset-shape-vocabulary.md    # REQUIRED: complete 187-name authoring vocabulary
 Read ${SKILL_DIR}/references/executor-structure.md         # REQUIRED: qualitative relationship and topology grammar
@@ -628,7 +628,7 @@ Read ${SKILL_DIR}/references/modes/<resolved-id>.md        # one preset id, or e
 Read ${SKILL_DIR}/references/visual-styles/<resolved-id>.md # one preset id, or each `visual_style_references` id
 ```
 
-Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 job diagnostic active during page authoring, with its Visual Job Router as recall; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
+Keep the core's shared visual-quality defaults active during page authoring, with `svg-effects.md` §6.1's Visual Job Router as recall; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
 > Read only the role core, always-on construction references, exact locked detail files, and conditionally triggered modules below. The selection indexes remain planning-only. A preset reads its one locked file. For `custom`, read only the exact bases named by optional `mode_references` / `visual_style_references`: apply one under the corresponding behavior, or synthesize several by their stated contributions. If absent, read no preset file and follow the behavior directly. Do not infer adjacent bases, glob a catalog, or blend unselected identities.
 

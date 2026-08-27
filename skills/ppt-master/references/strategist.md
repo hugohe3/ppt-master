@@ -165,7 +165,9 @@ Record the confirmed visual style and rationale in `design_spec.md` first, inclu
 
 ### e. Color Scheme Recommendation
 
-**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of the three directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Keep body-text contrast at least 4.5:1 and preserve confirmed/brand semantic roles.
+**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of the three directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Preserve confirmed/brand semantic roles.
+
+**Reference — not a constraint**: WCAG AA body-text contrast is 4.5:1.
 
 **Reference — not a constraint**: Without user/template colors, propose project-specific directions from content and style. `scripts/config.py` industry colors and dominant/support/accent hierarchy are recall aids, never default locks, ratios, or color-count quotas.
 
@@ -365,8 +367,7 @@ composition, resolve each page's complete semantic carrier mix—background
 field, editable text and optional lettering, native-geometry/relationship jobs,
 photos/scenes/illustrations/icons, and applicable visualizations—before
 deriving §VIII resource rows. Decide the primary, structural, and supporting
-jobs together; do not finish a text/container layout and then treat the other
-families as optional decoration. Use existing §VI/§VIII/§IX fields: keep the
+jobs together. Use existing §VI/§VIII/§IX fields: keep the
 ordinary icon basis and prepared-pool plan in §VI, and add an image, lettering,
 or illustrated-icon resource to §VIII only when the page mix assigns it a
 plausible job. This creates no new field or candidate inventory; omitting any
@@ -496,7 +497,7 @@ custom; neither role globs a detail catalog (see
 
 ## 3. Color Selection Reference
 
-Do not start from a universal palette. Precedence is user / brand → active template → project-specific proposal; `scripts/config.py` industry anchors are optional recall. Keep body-text contrast at least 4.5:1; color count and distribution follow encoding, style, and natural assets, not a quota.
+Do not start from a universal palette. Precedence is user / brand → active template → project-specific proposal; `scripts/config.py` industry anchors are optional recall. Color count and distribution follow encoding, style, and natural assets.
 
 Lock the stable role set the deck needs, including recurring neutrals such as `surface`, `grid`, `scrim`, `overlay`, or `block-shade`. These are identity anchors, not an exhaustive paint list. Executor may derive tints, shades, alpha, gradients, and effects, preserve necessary natural asset colors, and add sparse page-local accents for differentiation or ornament. Such accents must not form a competing/recurring palette; Strategist owns reusable positive / warning / negative roles.
 
