@@ -157,7 +157,7 @@ still determine stage and readiness. The transcript is cold audit evidence:
 never read it during normal generation; open it only when the user explicitly
 asks to review the run.
 
-Format options must be named with concrete dimensions. Default: `ppt169` = `1280x720`, `viewBox="0 0 1280 720"`. Other examples: `ppt43` = `1024x768`, `story` = `1080x1920`, `banner` = `1920x1080`. For the full format list, see `references/canvas-formats.md`.
+Registered formats: [`canvas-formats.md`](../references/canvas-formats.md).
 
 Import source content (choose based on the situation):
 
@@ -184,7 +184,7 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 Direct supported bitmap inputs follow both boundaries: the original is archived under `sources/`, and a collision-safe basename is copied into `images/` for analysis and §VIII planning. SVG/EMF/WMF remain source assets unless they arrive through a converter companion manifest that supplies their display metadata. This does not classify an asset's role; Strategist still decides whether it is used.
 
-**✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.**
+**✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.** `import-sources` exits 0 when any input yields a usable artifact; read printed `skipped` reasons, and treat `path not found`, failed conversion, or no usable Markdown as an absent source.
 
 ---
 
@@ -660,7 +660,7 @@ decision nor locks geometry/native readiness.
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 ```
-- Start when Executor begins; `svg_output/` may be empty. Default: first free port from `5050`; `--port N`: strict bind. Read the actual URL from output or `<project_path>/live_preview/lock.json`.
+- Start when Executor begins; `svg_output/` may be empty. Default: first free port from `6060`; `--port N`: strict bind. Read the actual URL from output or `<project_path>/live_preview/lock.json`.
 - Before the first SVG, report that URL or the launch failure; never claim an unavailable preview.
 - Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.
 - **Service must keep running** until one of: (a) the user clicks **Exit preview** in the browser, or (b) the user explicitly asks in chat to stop it. Generation continues even if the user closes the editor.
@@ -737,7 +737,7 @@ Emit one line before the consolidated edit:
 gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
 ```
 
-`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic; P02 through the final page run without further tool calls.
+`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic; P02 through the final page run without further checker calls.
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash

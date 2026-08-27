@@ -43,7 +43,7 @@ On structured `template_reuse_scope: mirror|layout` routes, Master and fixed Lay
 | Requirement | Rule |
 |---|---|
 | Placement | Every Master/Layout atom is a direct child of the root SVG and has a stable unique `id`. |
-| Grouping | A `<g>` may not carry `data-pptx-layer="master|layout"`. Imported PowerPoint groups are recursively flattened and their transform/style/opacity/z-order semantics are pushed into atomic children. |
+| Grouping | A `<g>` may not carry `data-pptx-layer="master|layout"`. The sole exception is one validated compact authored-preset `<g>` ([`shared-standards-core.md`](./shared-standards-core.md) §1.5), which compiles to one native object. Imported PowerPoint groups flatten recursively into atomic children with their transform/style/opacity/z-order semantics. |
 | Atomicity | One marked child must compile to one DrawingML object. A nested crop `<svg>` is allowed only when it is the supported single-picture carrier, not an arbitrary container. |
 | Consistency | Pages sharing one Master key repeat the identical ordered Master atom contract. Pages sharing one `(master, layout)` pair repeat the identical ordered Layout atom contract. |
 | Ownership | Concrete titles, body text, metrics, charts, tables, images, and page-specific decoration stay Slide-local or inside a declared slot. |
@@ -125,7 +125,7 @@ Do not add structural roles to ordinary titles, body copy, cards, KPIs, diagrams
 For structured `template_reuse_scope: mirror|layout` projects, validation rejects:
 
 - a missing root Master/Layout identity or a page-to-lock mismatch;
-- a Master/Layout `<g>`, nested structure marker, missing/stale id, or inconsistent shared atom contract;
+- an ordinary Master/Layout `<g>` (the compact authored-preset atom is the sole exception), nested structure marker, missing/stale id, or inconsistent shared atom contract;
 - a slot without positive bounds, a carrier-bound slot without exactly one compatible carrier, or a proxy binding on a non-`object` slot;
 - incomplete page mappings, cross-Master Layout-key reuse, or conflicting same-key Layout contracts.
 

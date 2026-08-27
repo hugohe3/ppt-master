@@ -273,7 +273,7 @@ preset can never be authored as an ordinary `shape`.
 
 **Hard rule — stdout-only exception**: the helper prints one or more
 deterministic `<g>` fragments. Read that output and insert it with the normal
-page/template `apply_patch` edit. A batch JSON array is transient input for
+page edit. A batch JSON array is transient input for
 already-selected objects in the current construction, never a project resource
 or multi-page plan. Do not redirect output into `svg_output/`, loop over
 pages/templates, or let the helper choose layout. The main Agent still authors
@@ -394,7 +394,7 @@ from the primary, and `fragment` returns each atomic filled region. The PPTX
 stores the materialized freeform geometry, not replayable operation history.
 
 **Hard rule — stdout-only replacement**: The helper never writes the source
-page. In one normal `apply_patch` edit, remove every selected operand and insert
+page. In one normal page edit, remove every selected operand and insert
 every returned path in root coordinate space at the primary operand's z-order,
 using the placement contract above. Fragment paths remain separate shapes; an
 ordinary semantic group does not turn them into one structural atom.

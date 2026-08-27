@@ -72,7 +72,7 @@ Before generating each page, output which template is used:
 
 ```
 📝 **Template mapping**: `templates/03a_content_image_text.svg` (free-design routes may use "None")
-🎯 **Adherence rules / layout strategy**: [specific description]
+🎯 **Adherence rules / application plan**: [specific description]
 ```
 
 - **Content pages**: template defines only header/footer; content area is free

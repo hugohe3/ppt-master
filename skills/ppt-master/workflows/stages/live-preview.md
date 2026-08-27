@@ -36,12 +36,12 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon
 
 The launcher starts the server in the background on its selected port, waits for `GET /api/health`, records the actual pid + port in `<project_path>/live_preview/lock.json`, opens the browser when possible, and edits `<project_path>/svg_output/` in place. After it prints the running URL, tell the user in their language, in one short message:
 
-- editor is at the URL reported by the launcher, e.g. `http://127.0.0.1:5050`
+- editor is at the URL reported by the launcher, e.g. `http://127.0.0.1:6060`
 - **Direct edit** (deterministic tweaks — wording, color, coordinates, SVG attributes): select an element → change the controls in the right panel → preview updates immediately, but nothing is written to `svg_output/` until **Apply changes**. `Ctrl+Z` or the **Undo** button drops staged edits step by step; applied changes are logged to `<project>/live_preview/edits.jsonl`. Re-export stays chat-driven and separate: say "re-export" / "重新导出" to refresh the PPTX.
 - **Annotate** (changes that need AI judgement / re-layout): select an element → write the instruction, optionally starting from a quick type such as move / resize / replace image / copy / relayout → click **Add annotation** to stage it → click **Apply changes** to write annotation markers → return to the chat and say `apply my annotations` (or quote the browser prompt)
 - to skip the editor, just describe the change in chat
 
-Launch immediately — the user already asked for preview. Report the actual URL from the output or project lock; never infer it from `5050`. Remote access → see the appendix.
+Launch immediately — the user already asked for preview. Report the actual URL from the output or project lock; never infer it from `6060`. Remote access → see the appendix.
 
 ---
 
@@ -79,7 +79,7 @@ Triggered by the user signals listed in "When to Run".
 - **Unsaved-work guard**: staged direct edits and annotation changes (added or removed) live in server memory until **Apply changes**; closing the tab triggers the browser's native "leave site?" prompt while any are unapplied, since an idle timeout or process kill would drop them.
 - **Re-export is chat-driven**: applying changes updates `svg_output/` only. Refreshing the PPTX (finalize + svg_to_pptx) stays a chat step — the editor never runs the export pipeline or presents browser-side export as part of applying edits.
 - **Stop conditions**: the service stops when the user clicks **Exit preview** in the browser, asks in chat to stop it, the idle timeout fires, or the process is killed externally.
-- **Port**: without `--port`, use the first free port from `5050`; `--port N` binds `N` strictly and fails if unavailable. Read the actual URL from launch output or `<project_path>/live_preview/lock.json`.
+- **Port**: without `--port`, use the first free port from `6060`; `--port N` binds `N` strictly and fails if unavailable. Read the actual URL from launch output or `<project_path>/live_preview/lock.json`.
 - **Idle timeout**: plain mode `900s`, `--live` mode `7200s`; override with `--timeout <seconds>` (`0` disables).
 - **Single instance per project**: `<project_path>/live_preview/lock.json` records the running pid + actual port and is the discovery source for project-local consumers. A second launch reuses the live instance unless an explicit, different `--port N` was requested; that mismatch fails and requires `--shutdown` before restart. Stale locks (dead pid) are overwritten on the next launch. Legacy root locks at `<project_path>/.live_preview.lock` are still detected when they point to a live process.
 - **Transient ids**: each element gets a temporary `_edit_N` id while the editor is running. On save, only annotated elements keep their id; unannotated `_edit_N` ids are stripped before write-back.

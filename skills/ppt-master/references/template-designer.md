@@ -330,7 +330,6 @@ Sections to **omit** from template `design_spec.md` (sourced elsewhere — listi
 |---|---|
 | Always-on SVG rules and conditional-module routing | `shared-standards-core.md` |
 | Generic layout pattern library (centered card / three-column / timeline / …) | `strategist.md` §4 |
-| Generic spacing bands (margin 40-60px, card gap 20-32px, etc.) | `strategist.md` §4 |
 | Generic font-size hierarchy (cover 2.5-5x body, page title 1.5-2x, …) | `strategist.md` §g |
 | Canonical placeholder table (`{{TITLE}}`, `{{PAGE_NUM}}`, …) | §4 below |
 | Content methodology (pyramid / SCQA / MECE) | `strategist.md` |

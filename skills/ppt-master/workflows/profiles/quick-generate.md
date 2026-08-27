@@ -540,17 +540,18 @@ terminal-status rows.
 
 ## 3. Direct SVG Authoring
 
-Always read the following fixed authoring references directly in one batch; do
-not route among them one file at a time:
+Read fixed references together, never file by file:
 [`shared-standards-core.md`](../../references/shared-standards-core.md),
 [`svg-effects.md`](../../references/svg-effects.md),
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
 [`preset-shape-vocabulary.md`](../../references/preset-shape-vocabulary.md),
 [`semantic-svg.md`](../../references/semantic-svg.md),
 [`executor-structure.md`](../../references/executor-structure.md),
-and [`topology-assembly.md`](../../references/topology-assembly.md). Retain
-only the mode/style detail files selected during one-pass design resolution and
-realize that chosen direction. Exact `*_references` define the catalog material
+and [`topology-assembly.md`](../../references/topology-assembly.md).
+Installed Layout/Deck structure loads
+[`pptx-structure-interface.md`](../../references/pptx-structure-interface.md).
+Keep one-pass-selected mode/style files and realize that direction. Exact
+`*_references` define the catalog material
 actually used by a custom: apply one basis under its behavior, synthesize several
 by their stated contributions, or follow the behavior directly when none exist.
 

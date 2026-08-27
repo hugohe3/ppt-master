@@ -113,10 +113,15 @@ In addition to Create Template Steps 5–6, verify:
 - Neutral prototype paint is not described as a locked brand identity.
 - `replication_mode: mirror` is rejected for any source that retains organization-specific identity or reusable application rules; use authored Layout mode or Create Deck instead.
 
-For library scope, Create Template validates and registers with:
+For library scope, Create Template Step 5 validates the directory/index identity with:
 
 ```bash
 python3 skills/ppt-master/scripts/register_template.py <layout_id> --kind layout --dry-run
+```
+
+After that gate and any triggered Create Template Step 6 pass, Step 7 registers with:
+
+```bash
 python3 skills/ppt-master/scripts/register_template.py <layout_id> --kind layout
 ```
 

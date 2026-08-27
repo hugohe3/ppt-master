@@ -120,10 +120,15 @@ In addition to Create Template Steps 5–6, verify:
 - Every SVG in the roster satisfies the shared Master/Layout/slot contract and the roster is bidirectionally complete.
 - Every referenced image/icon exists under the same workspace; this workflow created no optional directory solely to leave it empty. Pre-existing initialized-project scaffolding is allowed and remains untouched.
 
-For library scope, Create Template validates and registers with:
+For library scope, Create Template Step 5 validates the directory/index identity with:
 
 ```bash
 python3 skills/ppt-master/scripts/register_template.py <deck_id> --kind deck --dry-run
+```
+
+After that gate and any triggered Create Template Step 6 pass, Step 7 registers with:
+
+```bash
 python3 skills/ppt-master/scripts/register_template.py <deck_id> --kind deck
 ```
 

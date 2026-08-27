@@ -203,7 +203,7 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Content**: <notes content and source-handling policy>
 - **Total duration**: <resolved duration>
 - **Notes style**: <formal, conversational, interactive, or resolved equivalent>
-- **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
+- **Presentation purpose**: <the confirmed communication intent from §I>
 ```
 
 When Speaker Notes is disabled, keep §X with only

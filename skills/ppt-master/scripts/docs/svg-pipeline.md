@@ -703,7 +703,7 @@ export:
 
 ```bash
 python3 scripts/svg_quality_checker.py <project_path> \
-  --quick-generate --stage final --json
+  --quick-generate --canonical-authoring --stage final --json
 python3 scripts/svg_to_pptx.py <project_path> --quick-generate
 ```
 
@@ -765,7 +765,7 @@ Behavior:
 - Missing required root bounds fails on final pages/templates and under `--template-mode`; references warn until adapted.
 - On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
 - Flat export maps locked typography/colors into a clean project-owned theme/Master, removes stock content placeholders and unused built-in Layouts, retains only the standard date/footer/slide-number capability hooks, and keeps one Blank Layout without promoting Slide content. Structured export additionally creates one reusable Layout per declared key and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
-- Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when Strategist declared it in the plan and lock. Construction cannot allocate or mutate Layout identity downstream.
+- Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive keeps its Master; new Layouts require Default plan/lock or Quick's frozen Template Application. Construction cannot allocate or mutate Layout identity downstream.
 - Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete Master identity are rejected with a pointer to [`create-template`](../../workflows/create-template.md). Create a new workspace and generate new structured SVG pages; do not upgrade the existing project in place. Explicit flat free-design/brand-only projects intentionally omit Master identity.
 - Native output uses content-hash media filenames, so identical images are reused and different images cannot overwrite each other by sharing a basename.
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.

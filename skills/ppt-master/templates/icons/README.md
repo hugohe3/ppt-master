@@ -24,7 +24,7 @@ This directory is the **global library**. The active resource owner copies chose
 python3 skills/ppt-master/scripts/icon_sync.py <project_path> tabler-outline/home tabler-outline/bulb simple-icons/github
 ```
 
-Missing names and a single selection batch that mixes the four stylistic libraries exit non-zero; `simple-icons` may coexist for real brand marks. Once files are under `<project>/icons/`, they form the prepared project asset pool and may be combined freely with user-provided, custom, or imported icons. `finalize_svg.py embed-icons`, preview, validation, and native export resolve only this project-local pool.
+Missing names and a single selection batch that mixes the four stylistic libraries exit non-zero; `simple-icons` may coexist for real brand marks. Once files are under `<project>/icons/`, they form the prepared project asset pool and may be combined freely with user-provided, custom, or imported icons. `finalize_svg.py --only embed-icons`, preview, validation, and native export resolve only this project-local pool.
 
 **Custom icons**: drop your own `.svg` into `<project>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any library icon.
 

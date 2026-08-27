@@ -260,7 +260,7 @@ not actions or hyperlinks.
 
 **Hard rule — narrow helper scope**: Both helpers print only their documented
 stdout fragment(s); neither writes a page or chooses layout. Read every returned
-fragment and insert it through the normal `apply_patch` page edit; never
+fragment and insert it through the normal page edit; never
 redirect, loop, or batch helper output into `svg_output/`.
 
 
@@ -307,7 +307,7 @@ Strategist chooses at most one primary bundled stylistic library and may select 
 >
 > **Missing `icons.stroke_width` in an existing stroke-library lock — fixed compatibility default**: use `2`, emit one warning, and continue. New authoring must still declare the field.
 >
-> Icons are auto-embedded by `finalize_svg.py` — no need to run `embed_icons.py` manually.
+> Icons are auto-embedded by `finalize_svg.py` — no need to run `svg_finalize/embed_icons.py` manually.
 
 **Project-local verification**: verify the exact prepared file before use:
 ```bash

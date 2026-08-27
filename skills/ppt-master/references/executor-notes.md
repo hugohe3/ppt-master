@@ -56,4 +56,4 @@ Form one coherent argument in intended reading/reveal order: proposition → evi
 
 Put transitions naturally in the opening sentence when useful; never label them. Keep one language. Spell out digits or symbols when literal TTS would sound wrong (for example, Chinese "百分之六十八" rather than "68%").
 
-After `notes/total.md` is complete, return to Generate Step 7.1; the route authority owns splitting and its success criterion.
+After `notes/total.md` is complete, return to Generate Step 7.1 (Default) or `quick-generate.md` §4 (Quick); each route owns splitting and its success criterion.

@@ -208,6 +208,6 @@ Existing structured/template projects or source-analysis packages that carry `an
 | Legacy or unstructured SVG Type B | `standard` / `fidelity` use pages as visual/contextual reference and author a complete new contract; old metadata is not output topology |
 | Complete current SVG Type B | `mirror` may author a compact equivalent while preserving the explicit current contract in a new workspace; authored modes may replace it |
 
-Without an original PPTX or complete current Type B contract, do not claim mirror or source-topology recovery. After template creation, Generate PPTX Step 3 authors new structured `svg_output/` pages; the exporter only compiles those declarations and never derives, repairs, or migrates structure.
+Without an original PPTX or complete current Type B contract, do not claim mirror or source-topology recovery. After template creation, Generate PPTX Step 6 (or Quick §3) authors new structured `svg_output/` pages; the exporter only compiles those declarations and never derives, repairs, or migrates structure.
 
 ---
