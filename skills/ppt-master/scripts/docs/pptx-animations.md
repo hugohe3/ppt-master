@@ -251,13 +251,6 @@ the existing `tmRoot`, allocates fresh ids, and preserves object animation.
 For bounce timing it updates both p14 Choice and Fallback; unsupported nested
 timing containers still fail safely instead of being duplicated.
 
-Direct-PPTX routes run the structural package validator with generated-effect
-enforcement disabled. This permits preservation of source/extension effects and
-legacy group build rows while still rejecting corrupt timing IDs or missing
-targets. Template fill and native enhancement fingerprint the source
-object-animation tree before and after their allowed edits; any semantic change
-fails. These routes have no object-animation write ownership.
-
 The conversion trace is also the authoritative input for downstream video
 motion. `video_motion_plan.py` preserves the resolved effect/options, direction,
 row order, base and repeat-aware playback duration, absolute offset, object

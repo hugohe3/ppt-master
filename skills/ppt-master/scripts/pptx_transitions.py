@@ -3,8 +3,8 @@
 PPT Master - PPTX Transition Core
 
 Provide one strict PowerPoint-native transition registry, a compatibility input
-map, and shared OOXML read/write helpers for generated slides, template-filled
-PPTX files, and native PPTX enhancement.
+map, and shared OOXML read/write helpers for generated and source-preserving
+round-trip PPTX files.
 See references/animations.md for the public workflow and
 scripts/docs/pptx-transitions.md for the OOXML contract.
 

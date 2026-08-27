@@ -201,13 +201,56 @@ def _roundtrip_animation_config_for_pages(
     if not isinstance(raw_slides, dict):
         raise RuntimeError("Round-trip animation sidecar slides must be an object")
     output_slides: dict[str, object] = {}
-    for page in pages:
+    for page_index, page in enumerate(pages):
         output_stem = page.svg_stem
         source_stem = Path(page.source_svg_name).stem
         if output_stem in raw_slides:
-            output_slides[output_stem] = raw_slides[output_stem]
+            selected = copy.deepcopy(raw_slides[output_stem])
+            row_origin = "declares"
         elif source_stem in raw_slides:
-            output_slides[output_stem] = copy.deepcopy(raw_slides[source_stem])
+            selected = copy.deepcopy(raw_slides[source_stem])
+            row_origin = "inherits"
+        else:
+            continue
+        if isinstance(selected, dict):
+            morph = selected.get("morph")
+            if isinstance(morph, dict):
+                original_from = morph.get("from")
+                previous_page = pages[page_index - 1] if page_index else None
+                previous_source_stem = (
+                    Path(previous_page.source_svg_name).stem
+                    if previous_page is not None
+                    else None
+                )
+                if (
+                    isinstance(original_from, str)
+                    and original_from.strip()
+                    and previous_page is not None
+                    and original_from == previous_page.svg_stem
+                ):
+                    pass
+                elif (
+                    isinstance(original_from, str)
+                    and original_from.strip()
+                    and previous_page is not None
+                    and original_from == previous_source_stem
+                ):
+                    morph["from"] = previous_page.svg_stem
+                elif isinstance(original_from, str) and original_from.strip():
+                    previous_label = (
+                        f'"{previous_page.svg_stem}" from '
+                        f'"{previous_source_stem}"'
+                        if previous_page is not None
+                        else "no previous output page"
+                    )
+                    raise RuntimeError(
+                        f'Round-trip output page "{output_stem}" {row_origin} '
+                        f'Morph from "{original_from}", but it follows '
+                        f'{previous_label}; add an explicit animations.json '
+                        f'row for "{output_stem}" that overrides morph.from '
+                        'for this output adjacency, or remove that Morph row'
+                    )
+        output_slides[output_stem] = selected
     expanded["slides"] = output_slides
     return expanded
 

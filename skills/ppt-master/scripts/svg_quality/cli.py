@@ -103,6 +103,7 @@ def print_usage() -> None:
     print("Usage:")
     print("  python3 scripts/svg_quality_checker.py <svg_file>")
     print("  python3 scripts/svg_quality_checker.py <directory>")
+    print("  python3 scripts/svg_quality_checker.py <roundtrip-workspace> --roundtrip")
     print("  python3 scripts/svg_quality_checker.py <workspace>/templates --template-mode")
     print("  python3 scripts/svg_quality_checker.py --all projects")
     print("\nExamples:")
@@ -127,6 +128,10 @@ def print_usage() -> None:
     print("  --quick-generate               Validate lockless Quick SVGs; infer flat or")
     print("                                 structured output from the complete roster;")
     print("                                  ignore design_spec.md and spec_lock.md.")
+    print("  --roundtrip                    Validate edited-text capacity on the resolved")
+    print("                                  authoring-svg-flat/ output roster; uses")
+    print("                                  page_plan.json when present and skips")
+    print("                                  generated-project/template-only contracts.")
     print("  --canonical-authoring          Require compact authoring syntax as written;")
     print("                                  the checker never rewrites source SVG.")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
@@ -160,8 +165,15 @@ def main() -> None:
     template_mode = "--template-mode" in sys.argv
     quick_generate = "--quick-generate" in sys.argv
     canonical_authoring = "--canonical-authoring" in sys.argv
+    roundtrip = "--roundtrip" in sys.argv
     if template_mode and quick_generate:
         print("[ERROR] --template-mode cannot be combined with --quick-generate")
+        sys.exit(1)
+    if roundtrip and (template_mode or quick_generate or canonical_authoring):
+        print(
+            "[ERROR] --roundtrip cannot be combined with --template-mode, "
+            "--quick-generate, or --canonical-authoring"
+        )
         sys.exit(1)
     checker = SVGQualityChecker(
         template_mode=template_mode,
@@ -199,8 +211,17 @@ def main() -> None:
     if stage != "page" and page is not None:
         print("[ERROR] --page is supported only with --stage page")
         sys.exit(1)
+    if roundtrip and any(
+        option in sys.argv
+        for option in ("--format", "--stage", "--page")
+    ):
+        print("[ERROR] --roundtrip does not support --format, --stage, or --page")
+        sys.exit(1)
 
     if target == "--all":
+        if roundtrip:
+            print("[ERROR] --roundtrip does not support --all")
+            sys.exit(1)
         if quick_generate:
             print("[ERROR] --quick-generate does not support --all")
             sys.exit(1)
@@ -218,7 +239,9 @@ def main() -> None:
             print("=" * 80)
             checker.check_directory(str(project))
     else:
-        if stage == "first-page":
+        if roundtrip:
+            checker.check_roundtrip_workspace(target)
+        elif stage == "first-page":
             check_target = _first_page_target(target)
         elif stage == "page":
             try:
@@ -228,9 +251,10 @@ def main() -> None:
                 sys.exit(1)
         else:
             check_target = target
-        checker.check_directory(check_target, expected_format)
+        if not roundtrip:
+            checker.check_directory(check_target, expected_format)
 
-    if stage == "final" and Path(target).is_dir():
+    if not roundtrip and stage == "final" and Path(target).is_dir():
         if checker._has_incomplete_page_roster:
             print(
                 "[TIP] This final-stage run found an incomplete page roster. "

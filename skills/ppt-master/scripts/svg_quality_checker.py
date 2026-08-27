@@ -7,10 +7,12 @@ Implementation lives in ``svg_quality/``.
 Usage:
     python3 scripts/svg_quality_checker.py <svg_file>
     python3 scripts/svg_quality_checker.py <directory>
+    python3 scripts/svg_quality_checker.py <roundtrip_workspace> --roundtrip
     python3 scripts/svg_quality_checker.py --all projects
 
 Examples:
     python3 scripts/svg_quality_checker.py projects/demo --stage final --json
+    python3 scripts/svg_quality_checker.py /path/to/import --roundtrip
 
 Dependencies:
     Same as svg_quality.cli.

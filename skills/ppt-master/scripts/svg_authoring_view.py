@@ -52,6 +52,14 @@ from xml.etree import ElementTree as ET
 
 from compact_svg_coordinates import compact_svg_tree
 from console_encoding import configure_utf8_stdio
+from native_payloads import (
+    CUSTOM_GEOMETRY_ATTRIBUTE,
+    CUSTOM_GEOMETRY_REF_ATTRIBUTE,
+    NATIVE_RECORD_REF_ATTRIBUTE,
+    SHAPE_STYLE_ATTRIBUTE,
+    SHAPE_STYLE_REF_ATTRIBUTE,
+    TXBODY_REF_ATTRIBUTE,
+)
 from pptx_shapes import (
     NATIVE_FALLBACK_SHA256_ATTR,
     svg_native_fallback_fingerprint,
@@ -138,6 +146,24 @@ AUTHORING_OMITTED_SOURCE_ATTRIBUTES = {
     "data-pptx-shape-scope",
     "data-pptx-shape-style",
 }
+
+ADOPT_OBJECT_STRIPPED_ATTRIBUTES = frozenset(
+    AUTHORING_OMITTED_SOURCE_ATTRIBUTES
+    | {
+        SOURCE_REF_ATTRIBUTE,
+        SOURCE_PROXY_ATTRIBUTE,
+        NATIVE_RECORD_REF_ATTRIBUTE,
+        TXBODY_REF_ATTRIBUTE,
+        SHAPE_STYLE_ATTRIBUTE,
+        SHAPE_STYLE_REF_ATTRIBUTE,
+        CUSTOM_GEOMETRY_ATTRIBUTE,
+        CUSTOM_GEOMETRY_REF_ATTRIBUTE,
+        "data-pptx-encoding",
+        "data-pptx-ooxml-sha256",
+        "data-pptx-part",
+        "data-pptx-text-sha256",
+    }
+)
 
 _TSPAN_INHERITED_ATTRIBUTES = frozenset({
     "fill",
@@ -1486,6 +1512,8 @@ def _authoring_document_kind(path: Path) -> str:
 def _authoring_summary_document(
     path: Path,
     relative_name: str,
+    *,
+    source_slide: int | None = None,
 ) -> dict[str, object]:
     try:
         root = ET.parse(path).getroot()
@@ -1504,9 +1532,13 @@ def _authoring_summary_document(
         element for element in elements
         if _local_name(element.tag) == "text"
     ]
-    return {
+    summary: dict[str, object] = {
         "file": relative_name,
         "kind": _authoring_document_kind(path),
+    }
+    if source_slide is not None:
+        summary["source_slide"] = source_slide
+    summary.update({
         "bytes": path.stat().st_size,
         "viewBox": root.get("viewBox"),
         "elements": len(elements),
@@ -1549,12 +1581,13 @@ def _authoring_summary_document(
             element.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND
             for element in elements
         ),
-    }
+    })
+    return summary
 
 
 def _load_authoring_summary_manifest(
     authoring_dir: Path,
-) -> tuple[dict[str, object], list[str]]:
+) -> tuple[dict[str, object], list[str], dict[str, int] | None]:
     manifest_path = authoring_dir / AUTHORING_MANIFEST_NAME
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -1598,6 +1631,40 @@ def _load_authoring_summary_manifest(
     if len(names) != len(set(names)):
         raise ValueError("Authoring manifest contains duplicate document names")
 
+    from pptx_workspace import ROUNDTRIP_PAGE_PLAN_PATH
+
+    project_path = authoring_dir.parent
+    if (project_path / ROUNDTRIP_PAGE_PLAN_PATH).exists():
+        from authoring_roundtrip import (
+            AuthoringRoundtripError,
+            _load_documents,
+            _load_page_plan,
+        )
+
+        try:
+            _, _, roundtrip_documents, _, _ = _load_documents(
+                project_path,
+                authoring_dir,
+            )
+            pages, _ = _load_page_plan(
+                project_path,
+                authoring_dir,
+                roundtrip_documents,
+            )
+        except AuthoringRoundtripError as exc:
+            raise ValueError(
+                f"Cannot build page-plan-aware authoring summary: {exc}"
+            ) from exc
+        source_slides = {
+            name: document.source_slide
+            for name, document in roundtrip_documents.items()
+        }
+        source_slides.update({
+            page.svg_name: page.source_slide
+            for page in pages
+        })
+        return manifest, sorted(source_slides), source_slides
+
     actual_names = sorted(
         path.relative_to(authoring_dir).as_posix()
         for path in authoring_dir.rglob("*.svg")
@@ -1607,13 +1674,25 @@ def _load_authoring_summary_manifest(
         raise ValueError(
             "Authoring manifest/file roster differs while building summary"
         )
-    return manifest, sorted(names)
+    return manifest, sorted(names), None
 
 
 def _authoring_summary_bytes(authoring_dir: Path) -> bytes:
-    manifest, document_names = _load_authoring_summary_manifest(authoring_dir)
+    (
+        manifest,
+        document_names,
+        source_slides,
+    ) = _load_authoring_summary_manifest(authoring_dir)
     documents = [
-        _authoring_summary_document(authoring_dir / name, name)
+        _authoring_summary_document(
+            authoring_dir / name,
+            name,
+            source_slide=(
+                source_slides[name]
+                if source_slides is not None
+                else None
+            ),
+        )
         for name in document_names
     ]
     total_icon_assets = {
@@ -1712,6 +1791,302 @@ def write_authoring_summary(authoring_dir: Path) -> Path:
         temporary_path.unlink(missing_ok=True)
         raise
     return summary_path
+
+
+def _parse_adopt_source(value: str) -> tuple[str, str]:
+    match = re.fullmatch(r"([^/\\]+\.svg):(.+)", value, flags=re.IGNORECASE)
+    if match is None:
+        raise ValueError(
+            "--adopt-object must use <from.svg>:<element-id>"
+        )
+    source_name, element_id = match.groups()
+    if not element_id.strip() or element_id != element_id.strip():
+        raise ValueError("--adopt-object element id must be non-empty and trimmed")
+    return source_name, element_id
+
+
+def _authoring_page_path(
+    authoring_dir: Path,
+    name: str,
+    *,
+    label: str,
+) -> Path:
+    relative = Path(name)
+    if (
+        "/" in name
+        or "\\" in name
+        or relative.name != name
+        or relative.suffix.lower() != ".svg"
+        or name in {".", ".."}
+    ):
+        raise ValueError(f"{label} must name one SVG directly in {authoring_dir}")
+    path = (authoring_dir / name).resolve()
+    try:
+        path.relative_to(authoring_dir.resolve())
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes the authoring directory: {name!r}") from exc
+    if not path.is_file():
+        raise ValueError(f"{label} does not exist: {path}")
+    return path
+
+
+def _parse_authoring_svg(path: Path) -> ET.Element:
+    parser = ET.XMLParser(
+        target=ET.TreeBuilder(insert_comments=True, insert_pis=True),
+    )
+    try:
+        root = ET.fromstring(path.read_bytes(), parser=parser)
+    except (OSError, ET.ParseError) as exc:
+        raise ValueError(f"Cannot parse authoring SVG {path}: {exc}") from exc
+    if _local_name(root.tag) != "svg":
+        raise ValueError(f"Authoring document root is not <svg>: {path}")
+    return root
+
+
+def _rewrite_adopted_fragment_ids(
+    element: ET.Element,
+    target_ids: set[str],
+) -> dict[str, str]:
+    subtree_ids = [
+        item_id
+        for item in element.iter()
+        if (item_id := item.get("id"))
+    ]
+    duplicates = sorted(
+        item_id
+        for item_id, count in Counter(subtree_ids).items()
+        if count > 1
+    )
+    if duplicates:
+        raise ValueError(
+            "Adopted subtree contains duplicate id(s): "
+            + ", ".join(duplicates[:8])
+        )
+
+    reserved = set(target_ids) | set(subtree_ids)
+    replacements: dict[str, str] = {}
+    for item_id in subtree_ids:
+        if item_id not in target_ids:
+            continue
+        base = f"{item_id}-adopted"
+        candidate = base
+        suffix = 2
+        while candidate in reserved:
+            candidate = f"{base}-{suffix}"
+            suffix += 1
+        replacements[item_id] = candidate
+        reserved.add(candidate)
+
+    if not replacements:
+        return replacements
+
+    def rewrite_url(match: re.Match[str]) -> str:
+        quote, ref_id = match.group(1), match.group(2)
+        return f"url({quote}#{replacements.get(ref_id, ref_id)}{quote})"
+
+    for item in element.iter():
+        item_id = item.get("id")
+        if item_id in replacements:
+            item.set("id", replacements[item_id])
+        for name, value in list(item.attrib.items()):
+            rewritten = _URL_ID_RE.sub(rewrite_url, value)
+            if _local_name(name) == "href" and value.startswith("#"):
+                rewritten = "#" + replacements.get(value[1:], value[1:])
+            if rewritten != value:
+                item.set(name, rewritten)
+    return replacements
+
+
+def _strip_adopted_transport(element: ET.Element) -> tuple[set[str], int]:
+    stripped: set[str] = set()
+    removed_metadata = 0
+
+    def visit(parent: ET.Element) -> None:
+        nonlocal removed_metadata
+        for child in list(parent):
+            original_part = child.get("data-pptx-part")
+            has_transport = any(
+                name in ADOPT_OBJECT_STRIPPED_ATTRIBUTES
+                for name in child.attrib
+            )
+            is_json_metadata = (
+                _local_name(child.tag) == "metadata"
+                and child.get("type") == "application/json"
+            )
+            if (
+                _local_name(child.tag) == "metadata"
+                and not is_json_metadata
+                and (original_part is not None or has_transport)
+            ):
+                stripped.update(
+                    name
+                    for name in child.attrib
+                    if name in ADOPT_OBJECT_STRIPPED_ATTRIBUTES
+                )
+                parent.remove(child)
+                removed_metadata += 1
+                continue
+            visit(child)
+
+    visit(element)
+    for item in element.iter():
+        for name in list(item.attrib):
+            if name not in ADOPT_OBJECT_STRIPPED_ATTRIBUTES:
+                continue
+            stripped.add(name)
+            item.attrib.pop(name, None)
+        if item.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND:
+            stripped.add(SEMANTIC_OBJECT_ATTRIBUTE)
+            item.attrib.pop(SEMANTIC_OBJECT_ATTRIBUTE, None)
+    return stripped, removed_metadata
+
+
+def _write_svg_atomically(path: Path, root: ET.Element) -> None:
+    payload = _serialize_svg(root)
+    if not payload.endswith(b"\n"):
+        payload += b"\n"
+    with tempfile.NamedTemporaryFile(
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        dir=path.parent,
+        delete=False,
+    ) as handle:
+        temporary_path = Path(handle.name)
+        handle.write(payload)
+    try:
+        temporary_path.chmod(path.stat().st_mode)
+        temporary_path.replace(path)
+    except OSError:
+        temporary_path.unlink(missing_ok=True)
+        raise
+
+
+def adopt_authoring_object(
+    authoring_dir: Path,
+    source_spec: str,
+    target_name: str,
+) -> dict[str, object]:
+    """Copy one cross-page object as authored SVG with no source identity."""
+    authoring_dir = authoring_dir.resolve()
+    if not authoring_dir.is_dir():
+        raise ValueError(f"Authoring directory not found: {authoring_dir}")
+    _load_authoring_summary_manifest(authoring_dir)
+    source_name, element_id = _parse_adopt_source(source_spec)
+    source_path = _authoring_page_path(
+        authoring_dir,
+        source_name,
+        label="--adopt-object source",
+    )
+    target_path = _authoring_page_path(
+        authoring_dir,
+        target_name,
+        label="--into target",
+    )
+    if source_path == target_path:
+        raise ValueError("--adopt-object source and --into target must differ")
+
+    source_root = _parse_authoring_svg(source_path)
+    target_root = _parse_authoring_svg(target_path)
+    matches = [
+        item
+        for item in source_root.iter()
+        if item.get("id") == element_id
+    ]
+    if not matches:
+        raise ValueError(f"{source_name} has no element id {element_id!r}")
+    if len(matches) > 1:
+        raise ValueError(f"{source_name} repeats element id {element_id!r}")
+    source_element = matches[0]
+    if any(
+        item.get(SOURCE_PROXY_ATTRIBUTE) == SOURCE_PROXY_KIND
+        for item in source_element.iter()
+    ):
+        raise ValueError(
+            f"Cannot adopt source proxy {source_name}:{element_id}; "
+            "source proxies cannot move between pages"
+        )
+
+    adopted = copy.deepcopy(source_element)
+    adopted.tail = None
+    imported_icons = [
+        item
+        for item in adopted.iter()
+        if _local_name(item.tag) == "use"
+        and (item.get("data-icon") or "").startswith("imported/")
+    ]
+    inlined_icons = 0
+    if imported_icons:
+        from svg_to_pptx.use_expander import (
+            UseExpansionError,
+            expand_use_data_icons,
+        )
+
+        container = ET.Element(f"{{{SVG_NS}}}g")
+        container.append(adopted)
+        try:
+            inlined_icons = expand_use_data_icons(
+                container,
+                authoring_dir.parent / "icons",
+            )
+        except UseExpansionError as exc:
+            raise ValueError(
+                f"Cannot inline source-page vector asset: {exc}"
+            ) from exc
+        adopted = container[0]
+        if adopted.get("id") is None:
+            adopted.set("id", element_id)
+    residual_imports = sorted({
+        icon
+        for item in adopted.iter()
+        if (icon := item.get("data-icon"))
+        and icon.startswith("imported/")
+    })
+    if residual_imports:
+        raise ValueError(
+            "Adopted object retains source-owned imported vector(s): "
+            + ", ".join(residual_imports)
+        )
+
+    stripped, removed_metadata = _strip_adopted_transport(adopted)
+    target_ids = {
+        item_id
+        for item in target_root.iter()
+        if (item_id := item.get("id"))
+    }
+    replacements = _rewrite_adopted_fragment_ids(adopted, target_ids)
+    adopted_id = adopted.get("id")
+    if not adopted_id:
+        raise ValueError("Adopted object lost its required id")
+    target_root.append(adopted)
+
+    original_target = target_path.read_bytes()
+    try:
+        _write_svg_atomically(target_path, target_root)
+        summary_path = write_authoring_summary(authoring_dir)
+    except (OSError, ValueError):
+        with tempfile.NamedTemporaryFile(
+            prefix=f".{target_path.name}.rollback.",
+            suffix=".tmp",
+            dir=target_path.parent,
+            delete=False,
+        ) as handle:
+            rollback_path = Path(handle.name)
+            handle.write(original_target)
+        rollback_path.chmod(target_path.stat().st_mode)
+        rollback_path.replace(target_path)
+        raise
+
+    return {
+        "authoring_dir": str(authoring_dir),
+        "source": f"{source_name}:{element_id}",
+        "target": target_name,
+        "adopted_id": adopted_id,
+        "renamed_ids": dict(sorted(replacements.items())),
+        "inlined_imported_vectors": inlined_icons,
+        "stripped_attributes": sorted(stripped),
+        "removed_native_metadata": removed_metadata,
+        "summary": str(summary_path),
+    }
 
 
 def _nearest_existing_directory(path: Path) -> Path:
@@ -1998,6 +2373,19 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--adopt-object",
+        metavar="<from.svg>:<element-id>",
+        help=(
+            "Copy one object from another page as authored SVG, strip its "
+            "source/native transport, and refresh the bundle summary"
+        ),
+    )
+    parser.add_argument(
+        "--into",
+        metavar="<target.svg>",
+        help="Target page for --adopt-object",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help=(
@@ -2022,6 +2410,30 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not input_path.exists():
         print(f"Error: input does not exist: {input_path}", file=sys.stderr)
         return 1
+    if args.refresh_summary and args.adopt_object is not None:
+        parser.error("--refresh-summary and --adopt-object are mutually exclusive")
+    if args.adopt_object is not None:
+        if args.into is None:
+            parser.error("--adopt-object requires --into <target.svg>")
+        if args.output_dir is not None:
+            parser.error("--adopt-object does not accept -o/--output-dir")
+        if args.force:
+            parser.error("--adopt-object does not accept --force")
+        if args.projection_kind != "generic":
+            parser.error("--adopt-object does not accept --projection-kind")
+        try:
+            result = adopt_authoring_object(
+                input_path,
+                args.adopt_object,
+                args.into,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if args.into is not None:
+        parser.error("--into requires --adopt-object")
     if args.refresh_summary:
         if args.output_dir is not None:
             print(

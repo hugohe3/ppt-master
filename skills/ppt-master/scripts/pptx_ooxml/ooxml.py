@@ -1,4 +1,4 @@
-"""Shared OOXML primitives for the template-fill pipeline.
+"""Shared OOXML primitives for PPTX intake and source-preserving export.
 
 Read-side helpers only: namespaces and content-type constants, part /
 relationship resolution, EMU unit conversion, slide-shape discovery, and small

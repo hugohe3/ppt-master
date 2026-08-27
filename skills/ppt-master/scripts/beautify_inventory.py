@@ -4,7 +4,7 @@ PPT Master - Beautify Inventory Builder
 
 Mechanically merge a source deck's extracts into one per-slide ledger for the
 beautify-pptx profile: text blocks + tables + charts + SmartArt structure (from a
-`template_fill_pptx.py analyze` slide_library.json) joined with the images
+`<stem>.slide_library.json` produced by `pptx_intake.py`) joined with the images
 bound to each slide (from a `ppt_to_md.py` image_manifest.json). The deterministic
 join only — `ignored` and `needs_confirmation` are emitted empty for the agent
 to fill with judgment (hidden shapes, combo charts, overcrowded pages, ...).

@@ -1,4 +1,4 @@
-"""Classify template-fill chart and table edits before package mutation."""
+"""Classify supported chart and table edits before package mutation."""
 
 from __future__ import annotations
 
@@ -78,19 +78,19 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
     if "chartex" in root_namespace.lower():
         return _unsupported_chart_capability(
             "chart_edit_chartex_unsupported",
-            "template-fill chart edits do not support ChartEx",
+            "OOXML chart edits do not support ChartEx",
         )
     if root_namespace != NS["c"]:
         return _unsupported_chart_capability(
             "chart_edit_plot_type_unsupported",
-            "template-fill chart edits require a classic DrawingML chart part",
+            "OOXML chart edits require a classic DrawingML chart part",
         )
 
     plot_area = chart_root.find(".//c:plotArea", NS)
     if plot_area is None:
         return _unsupported_chart_capability(
             "chart_edit_plot_type_unsupported",
-            "template-fill chart edits require a classic chart plotArea",
+            "OOXML chart edits require a classic chart plotArea",
         )
 
     plot_nodes = [
@@ -101,13 +101,13 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
     if len(plot_nodes) > 1:
         return _unsupported_chart_capability(
             "chart_edit_multi_plot_unsupported",
-            "template-fill chart edits do not support multi-plot or combination charts",
+            "OOXML chart edits do not support multi-plot or combination charts",
             plot_count=len(plot_nodes),
         )
     if not plot_nodes:
         return _unsupported_chart_capability(
             "chart_edit_plot_type_unsupported",
-            "template-fill chart edits require exactly one recognized chart plot",
+            "OOXML chart edits require exactly one recognized chart plot",
         )
 
     plot = plot_nodes[0]
@@ -115,7 +115,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
     if plot_type == "scatterChart":
         return _unsupported_chart_capability(
             "chart_edit_scatter_unsupported",
-            "template-fill chart edits do not support scatter xVal/yVal data",
+            "OOXML chart edits do not support scatter xVal/yVal data",
             plot_type=plot_type,
             plot_count=1,
             data_model="xy",
@@ -123,7 +123,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
     if plot_type == "bubbleChart":
         return _unsupported_chart_capability(
             "chart_edit_bubble_unsupported",
-            "template-fill chart edits do not support bubble xVal/yVal/bubbleSize data",
+            "OOXML chart edits do not support bubble xVal/yVal/bubbleSize data",
             plot_type=plot_type,
             plot_count=1,
             data_model="bubble",
@@ -132,7 +132,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
     if not series_nodes:
         return _unsupported_chart_capability(
             "chart_edit_no_series",
-            "template-fill chart edits require at least one editable series",
+            "OOXML chart edits require at least one editable series",
             plot_type=plot_type,
             plot_count=1,
             data_model="category",
@@ -144,7 +144,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
         ):
             return _unsupported_chart_capability(
                 "chart_edit_data_model_unsupported",
-                "template-fill chart edits require c:cat/c:val series",
+                "OOXML chart edits require c:cat/c:val series",
                 plot_type=plot_type,
                 plot_count=1,
             )
@@ -153,7 +153,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
         if category is None or values is None:
             return _unsupported_chart_capability(
                 "chart_edit_data_model_unsupported",
-                "template-fill chart edits require c:cat/c:val on every series",
+                "OOXML chart edits require c:cat/c:val on every series",
                 plot_type=plot_type,
                 plot_count=1,
             )
@@ -163,7 +163,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
             {
                 "code": "chart_edit_date_axis_flattened",
                 "message": (
-                    "template-fill will flatten date-axis categories to the "
+                    "OOXML chart editing will flatten date-axis categories to the "
                     "replacement single-level category cache"
                 ),
             }
@@ -176,7 +176,7 @@ def _chart_edit_capability(chart_root: ET.Element) -> dict[str, Any]:
             {
                 "code": "chart_edit_multilevel_categories_flattened",
                 "message": (
-                    "template-fill will flatten multi-level categories to the "
+                    "OOXML chart editing will flatten multi-level categories to the "
                     "replacement single-level category cache"
                 ),
             }

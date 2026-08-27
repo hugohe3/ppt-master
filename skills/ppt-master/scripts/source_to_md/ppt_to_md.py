@@ -45,7 +45,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
-from template_fill_pptx.diagram_read import (  # noqa: E402
+from pptx_ooxml.diagram_read import (  # noqa: E402
     read_smartart_diagrams,
     smartart_to_markdown,
 )

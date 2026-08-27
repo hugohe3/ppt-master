@@ -44,7 +44,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from beautify_identity import extract_identity  # noqa: E402
-from template_fill_pptx.analyzer import analyze_pptx  # noqa: E402
+from pptx_ooxml.analyzer import analyze_pptx  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -182,15 +182,11 @@ def build_source_profile(
             "standard_generation": (
                 "Use identity and slide-library fields as source facts and recommendation "
                 "candidates only; do not preserve original page count, order, or coordinates "
-                "unless the user selected the beautify profile or Fill Native PPTX route."
+                "unless the user selected the beautify profile."
             ),
             "beautify": (
                 "Promote source text, page order, page count, colors, fonts, and font sizes "
                 "into locked constraints after user confirmation."
-            ),
-            "template_fill": (
-                "Use slide slots, tables, charts, diagrams, and geometry as the native PPTX "
-                "fill contract; diagrams are inventory-only and remain unchanged."
             ),
         },
         "artifacts": {

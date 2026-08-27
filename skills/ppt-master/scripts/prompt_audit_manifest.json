@@ -121,7 +121,7 @@
       "max_tokens": 83000
     },
     "route.create-template.layout": {
-      "description": "Create Layout standard/fidelity path through Template_Designer, the strategy-triggered native-shape bundle, SVG core, and the structured PPTX interface; mirror excludes the authored bundle.",
+      "description": "Create Layout standard/fidelity path through Template_Designer, the strategy-triggered native-shape bundle, SVG core, and the structured PPTX interface; mirror excludes the authored bundle. Ceiling raised after BUDGET_LOAD_SET reported 76053 tokens.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -138,27 +138,16 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 76000
+      "max_tokens": 77000
     },
-    "route.enhance-native-pptx": {
-      "description": "Finished-PPTX native enhancement route.",
+    "route.edit-native-pptx": {
+      "description": "Edit Native PPTX route: fill, edit, restructure, or enhance an existing deck through the source-preserving round-trip workspace.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
       ],
       "files": [
-        "skills/ppt-master/workflows/native-enhance-pptx.md"
-      ],
-      "max_tokens": 13000
-    },
-    "route.fill-native-pptx": {
-      "description": "Raw-PPTX native fill route.",
-      "scope": "cumulative",
-      "include": [
-        "bootstrap.routing"
-      ],
-      "files": [
-        "skills/ppt-master/workflows/template-fill-pptx.md"
+        "skills/ppt-master/workflows/edit-native-pptx.md"
       ],
       "max_tokens": 14000
     },
@@ -628,11 +617,44 @@
       "files": [],
       "max_tokens": 215000
     },
-    "route.enhance-native-pptx.audio": {
-      "description": "Enhance Native PPTX with the shared narration-audio stage.",
+    "route.edit-native-pptx.edit": {
+      "description": "Edit Native PPTX with the always-loaded shared standards for page editing.",
       "scope": "cumulative",
       "include": [
-        "route.enhance-native-pptx",
+        "route.edit-native-pptx"
+      ],
+      "files": [
+        "skills/ppt-master/references/shared-standards-core.md"
+      ],
+      "max_tokens": 26000
+    },
+    "route.edit-native-pptx.edit-effects": {
+      "description": "Edit Native PPTX page editing that authors new visual elements.",
+      "scope": "cumulative",
+      "include": [
+        "route.edit-native-pptx.edit"
+      ],
+      "files": [
+        "skills/ppt-master/references/svg-effects.md"
+      ],
+      "max_tokens": 42000
+    },
+    "route.edit-native-pptx.edit-native-data": {
+      "description": "Edit Native PPTX page editing that changes native chart or table data.",
+      "scope": "cumulative",
+      "include": [
+        "route.edit-native-pptx.edit"
+      ],
+      "files": [
+        "skills/ppt-master/references/native-data-interface.md"
+      ],
+      "max_tokens": 34000
+    },
+    "route.edit-native-pptx.audio": {
+      "description": "Edit Native PPTX with the shared narration-audio stage.",
+      "scope": "cumulative",
+      "include": [
+        "route.edit-native-pptx",
         "stage.shared.generate-audio"
       ],
       "files": [],
@@ -1534,14 +1556,9 @@
       "to": "skills/ppt-master/workflows/create-template.md"
     },
     {
-      "concern": "fill-native-pptx-workflow",
+      "concern": "edit-native-pptx-workflow",
       "from": "skills/ppt-master/workflows/routing.md",
-      "to": "skills/ppt-master/workflows/template-fill-pptx.md"
-    },
-    {
-      "concern": "enhance-native-pptx-workflow",
-      "from": "skills/ppt-master/workflows/routing.md",
-      "to": "skills/ppt-master/workflows/native-enhance-pptx.md"
+      "to": "skills/ppt-master/workflows/edit-native-pptx.md"
     },
     {
       "concern": "image-to-pptx-profile",

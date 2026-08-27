@@ -103,14 +103,14 @@ def _analyze_charts(zf: zipfile.ZipFile, slide_root: ET.Element, slide_ref: Slid
             payload["plot_types"] = ["chartEx"]
             payload["edit_capability"] = _unsupported_chart_capability(
                 "chart_edit_chartex_unsupported",
-                "template-fill chart edits do not support ChartEx",
+                "OOXML chart edits do not support ChartEx",
             )
             charts.append(payload)
             continue
         if chart_kind != "classic":
             payload["edit_capability"] = _unsupported_chart_capability(
                 "chart_edit_plot_type_unsupported",
-                "template-fill chart edits require a classic DrawingML chart reference",
+                "OOXML chart edits require a classic DrawingML chart reference",
             )
             charts.append(payload)
             continue
@@ -126,12 +126,12 @@ def _analyze_charts(zf: zipfile.ZipFile, slide_root: ET.Element, slide_ref: Slid
                 payload.update(empty_chart_data())
                 payload["edit_capability"] = _unsupported_chart_capability(
                     "chart_edit_part_unavailable",
-                    "template-fill could not read the classic chart part",
+                    "PPTX intake could not read the classic chart part",
                 )
         else:
             payload["edit_capability"] = _unsupported_chart_capability(
                 "chart_edit_relationship_unsupported",
-                "template-fill chart edits require a classic chart relationship",
+                "OOXML chart edits require a classic chart relationship",
             )
         charts.append(payload)
     return charts
@@ -205,10 +205,10 @@ def _fill_risk(
     charts: list[dict[str, Any]],
     diagrams: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
-    """Return a fill_risk descriptor when the slide has non-text content that text-fill cannot replace.
+    """Return a fill-risk descriptor for non-text content needing explicit edits.
 
-    Tables and charts may be covered by explicit edits. SmartArt is inventory-only:
-    template-fill preserves it unchanged, so its source text may show through.
+    Tables and charts may be covered by explicit edits. SmartArt is
+    inventory-only, so source text may remain visible in preserved objects.
     """
     kinds: list[str] = []
     if tables:
@@ -234,7 +234,7 @@ def _fill_risk(
 
 
 def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
-    """Extract a slide library with text replacement slots."""
+    """Extract a slide library with text, geometry, and native-object facts."""
     with zipfile.ZipFile(pptx_path) as zf:
         pres_root = _read_xml(zf, "ppt/presentation.xml")
         slide_refs = _parse_slide_refs(zf)
@@ -294,37 +294,9 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
             slides.append(slide)
 
     return {
-        "schema": "template_fill_pptx_library.v1",
+        "schema": "pptx_intake_slide_library.v1",
         "source_pptx": str(pptx_path),
         "slide_count": len(slides),
         "canvas_px": _canvas_px(pres_root),
         "slides": slides,
-        "plan_contract": {
-            "schema": "template_fill_pptx_plan.v1",
-            "slides": [
-                {
-                    "source_slide": 1,
-                    "purpose": "封面 / 章节 / 内容 / 结尾",
-                    "replacements": [
-                        {
-                            "slot_id": "s01_sh2",
-                            "text": "替换后的文字",
-                        }
-                    ],
-                    "table_edits": [
-                        {
-                            "table_id": "s01_tbl3",
-                            "cells": [{"row": 0, "col": 0, "text": "替换后的单元格"}],
-                        }
-                    ],
-                    "chart_edits": [
-                        {
-                            "chart_id": "s01_ch4",
-                            "categories": ["A", "B"],
-                            "series": [{"name": "系列1", "values": [1, 2]}],
-                        }
-                    ],
-                }
-            ],
-        },
     }

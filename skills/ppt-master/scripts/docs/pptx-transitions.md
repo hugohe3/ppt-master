@@ -11,8 +11,6 @@ read-back validation for every PPTX route.
 | Page transition registry | scripts/pptx_transitions.py |
 | In-slide object animation | scripts/pptx_animations.py |
 | Generated PPTX adapter | svg_to_pptx/pptx_package/builder.py |
-| Template Fill adapter | template_fill_pptx/transitions.py |
-| Native Enhance adapter | native_enhance_pptx_core.py |
 | Public workflow | references/animations.md |
 
 **Hard rule**: adapters resolve route policy, then call the shared core. They
@@ -233,8 +231,8 @@ roster expectations are then refreshed. Package read-back requires:
   undeclared shared `!!` name on a Morph edge.
 
 Morph without an explicit pair block retains PowerPoint's automatic matching
-behavior. Explicit pairing is generated-route authoring; direct-PPTX routes
-continue to preserve existing object names and transition XML.
+behavior. Explicit pairing is generated-route authoring; source-preserving
+round-trip export keeps existing object names and transition XML.
 
 ---
 
@@ -244,13 +242,10 @@ continue to preserve existing object names and transition XML.
 |---|---|---|---|
 | Generated PPTX CLI | fade, 0.4s; no sound | click | auto-advance maps to both; an optional sidecar sound is project-local |
 | Recorded narration | Preserve resolved enter | narration | none remains visually none |
-| Template Fill | preserve source | preserve source | explicit effects replace; legacy advance_after maps to both |
-| Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | With audio off, an enabled global transition or explicit global `none` applies to all pages; with audio on, the scope flag controls non-narrated pages |
+| Edit Native PPTX (`svg_to_pptx.py --roundtrip`) | preserve source | preserve source | `-t` or `animations.json` rows replace per output page as an overlay; `--use-narration-timings` derives advance from narration |
 
-Template Fill changes source transitions only when its CLI or per-slide plan
-selects a replacement, removal, or timed advance. Native Enhance uses its
-confirmed plan. The public `create_pptx_with_native_svg` Python API retains its
-legacy 0.5s default; the generated-deck CLI explicitly passes 0.4s.
+The public `create_pptx_with_native_svg` Python API retains its legacy 0.5s
+default; the generated-deck CLI explicitly passes 0.4s.
 
 ---
 

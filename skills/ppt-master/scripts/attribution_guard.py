@@ -46,10 +46,6 @@ _REQUIRED_GATE_FILES = (
     "scripts/svg_quality/cli.py",
     "scripts/svg_to_pptx.py",
     "scripts/svg_to_pptx/pptx_package/cli.py",
-    "scripts/template_fill_pptx.py",
-    "scripts/template_fill_pptx/cli.py",
-    "scripts/native_enhance_pptx.py",
-    "scripts/native_enhance_pptx_core.py",
     "scripts/register_template.py",
     "scripts/template_preview_pptx.py",
 )

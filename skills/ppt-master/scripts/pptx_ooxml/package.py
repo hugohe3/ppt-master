@@ -1,4 +1,4 @@
-"""Write-side OOXML package plumbing for the apply stage.
+"""Write-side OOXML package plumbing for source-preserving slide cloning.
 
 Content-type override insertion, relationship-element construction / lookup, and
 part-number allocation used when cloning slides into a new package.
@@ -13,8 +13,6 @@ from xml.etree import ElementTree as ET
 
 from .ooxml import (
     CT_NS,
-    NOTES_SLIDE_CONTENT_TYPE,
-    NS,
     REL_NS,
     SLIDE_CONTENT_TYPE,
     _normalize_part,
@@ -46,33 +44,12 @@ def _add_slide_override(content_root: ET.Element, part_name: str) -> None:
     _add_content_type_override(content_root, part_name, SLIDE_CONTENT_TYPE)
 
 
-def _add_notes_override(content_root: ET.Element, part_name: str) -> None:
-    _add_content_type_override(content_root, part_name, NOTES_SLIDE_CONTENT_TYPE)
-
-
 def _empty_relationships_root() -> ET.Element:
     return ET.Element(_qn(REL_NS, "Relationships"))
 
 
-def _find_relationship(root: ET.Element, rel_id: str) -> ET.Element | None:
-    for rel in root.findall(_qn(REL_NS, "Relationship")):
-        if rel.attrib.get("Id") == rel_id:
-            return rel
-    return None
-
-
 def _relative_target(from_part: str, to_part: str) -> str:
     return posixpath.relpath(to_part, posixpath.dirname(from_part))
-
-
-def _max_slide_part_number(entries: dict[str, bytes]) -> int:
-    max_number = 0
-    pattern = re.compile(r"^ppt/slides/slide(\d+)\.xml$")
-    for name in entries:
-        match = pattern.match(name)
-        if match:
-            max_number = max(max_number, int(match.group(1)))
-    return max_number
 
 
 def _max_numeric_rid(root: ET.Element) -> int:
@@ -85,16 +62,6 @@ def _max_numeric_rid(root: ET.Element) -> int:
     return max_id
 
 
-def _max_slide_id(sld_id_lst: ET.Element) -> int:
-    max_id = 255
-    for sld_id in sld_id_lst.findall("p:sldId", NS):
-        try:
-            max_id = max(max_id, int(sld_id.attrib.get("id", "0")))
-        except ValueError:
-            continue
-    return max_id
-
-
 def _enqueue_rel_targets(
     entries: dict[str, bytes],
     rels_part: str,
@@ -102,14 +69,16 @@ def _enqueue_rel_targets(
     queue: list[str],
 ) -> None:
     data = entries.get(rels_part)
-    if not data:
+    if data is None:
         return
     try:
         root = ET.fromstring(data)
-    except ET.ParseError:
-        return
+    except ET.ParseError as exc:
+        raise RuntimeError(
+            f"Cannot parse relationships part {rels_part}: {exc}"
+        ) from exc
     for rel in root.findall(_qn(REL_NS, "Relationship")):
-        if rel.attrib.get("TargetMode") == "External":
+        if (rel.attrib.get("TargetMode") or "").strip().lower() == "external":
             continue
         target = rel.attrib.get("Target")
         if target:

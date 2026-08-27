@@ -956,7 +956,7 @@ def _collapse_hash_only_groups(root: ET.Element) -> None:
                 break
 
 
-def _normalized_hash(
+def normalized_authoring_subtree_sha256(
     element: ET.Element,
     assets: dict[str, VectorAssetRecord],
     *,
@@ -1015,6 +1015,35 @@ def _normalized_hash(
     return semantic_subtree_sha256(
         normalized,
         ignored_attributes=frozenset({SOURCE_REF_ATTRIBUTE}),
+    )
+
+
+def authoring_source_ref_is_unchanged(
+    current_element: ET.Element,
+    baseline_element: ET.Element,
+    current_assets: dict[str, VectorAssetRecord],
+    baseline_assets: dict[str, VectorAssetRecord],
+    *,
+    changed_definition_ids: set[str],
+    current_asset: VectorAssetRecord | None = None,
+    baseline_asset: VectorAssetRecord | None = None,
+) -> bool:
+    """Compare one source-ref occurrence exactly as round-trip export does."""
+    return (
+        normalized_authoring_subtree_sha256(
+            current_element,
+            current_assets,
+            asset=current_asset,
+        )
+        == normalized_authoring_subtree_sha256(
+            baseline_element,
+            baseline_assets,
+            asset=baseline_asset,
+        )
+        and not (
+            changed_definition_ids
+            & _referenced_definition_ids(current_element)
+        )
     )
 
 
@@ -1124,12 +1153,12 @@ def _definition_changes(
     current_defs = _direct_defs(current_root)
     baseline_defs = _direct_defs(baseline_root)
     current_hash = (
-        _normalized_hash(current_defs, current_assets)
+        normalized_authoring_subtree_sha256(current_defs, current_assets)
         if current_defs is not None
         else None
     )
     baseline_hash = (
-        _normalized_hash(baseline_defs, baseline_assets)
+        normalized_authoring_subtree_sha256(baseline_defs, baseline_assets)
         if baseline_defs is not None
         else None
     )
@@ -1152,8 +1181,14 @@ def _definition_changes(
         for definition_id in set(current_by_id) | set(baseline_by_id)
         if definition_id not in current_by_id
         or definition_id not in baseline_by_id
-        or _normalized_hash(current_by_id[definition_id], current_assets)
-        != _normalized_hash(baseline_by_id[definition_id], baseline_assets)
+        or normalized_authoring_subtree_sha256(
+            current_by_id[definition_id],
+            current_assets,
+        )
+        != normalized_authoring_subtree_sha256(
+            baseline_by_id[definition_id],
+            baseline_assets,
+        )
     }
     return True, changed_ids
 
@@ -1305,8 +1340,11 @@ def _materialize_document(
     baseline_root = _parse_svg(baseline_path)
     layered_root = _parse_svg(document.layered_source_path)
     document_unchanged = (
-        _normalized_hash(current_root, current_assets)
-        == _normalized_hash(baseline_root, baseline_assets)
+        normalized_authoring_subtree_sha256(current_root, current_assets)
+        == normalized_authoring_subtree_sha256(
+            baseline_root,
+            baseline_assets,
+        )
     )
     layered_index = _layered_ref_index(layered_root)
     current_referenced_assets = _referenced_assets(
@@ -1387,21 +1425,15 @@ def _materialize_document(
     for source_ref, occurrences in current_occurrences.items():
         current = occurrences[0]
         baseline = baseline_occurrences[source_ref][0]
-        current_hash = _normalized_hash(
+        if authoring_source_ref_is_unchanged(
             current.element,
-            current_assets,
-            asset=current.asset,
-        )
-        baseline_hash = _normalized_hash(
             baseline.element,
+            current_assets,
             baseline_assets,
-            asset=baseline.asset,
-        )
-        references_changed_def = bool(
-            changed_definition_ids
-            & _referenced_definition_ids(current.element)
-        )
-        if current_hash == baseline_hash and not references_changed_def:
+            changed_definition_ids=changed_definition_ids,
+            current_asset=current.asset,
+            baseline_asset=baseline.asset,
+        ):
             unchanged_refs.add(source_ref)
         else:
             edited_refs.add(source_ref)
@@ -1500,7 +1532,7 @@ def _materialize_document(
         return [clone]
 
     baseline_unreferenced = Counter(
-        _normalized_hash(child, baseline_assets)
+        normalized_authoring_subtree_sha256(child, baseline_assets)
         for child in baseline_root
         if _local_name(child.tag) != "defs"
         and child.get(SOURCE_REF_ATTRIBUTE) is None
@@ -1587,7 +1619,10 @@ def _materialize_document(
             child.get(SOURCE_REF_ATTRIBUTE) is None
             and _local_name(child.tag) != "use"
         ):
-            child_hash = _normalized_hash(child, current_assets)
+            child_hash = normalized_authoring_subtree_sha256(
+                child,
+                current_assets,
+            )
             if baseline_unreferenced[child_hash] > 0:
                 baseline_unreferenced[child_hash] -= 1
                 continue

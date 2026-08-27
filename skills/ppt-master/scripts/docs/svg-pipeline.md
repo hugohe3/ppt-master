@@ -123,12 +123,26 @@ from its declared `source_slide`, so source-ref restoration, proxy checks, and
 edit detection remain source-correct. Every extra authoring SVG must appear in
 the plan; an unknown, duplicate, or cross-owned canonical filename fails.
 
+Move an object between pages before export with the authoring helper:
+
+```bash
+python3 scripts/svg_authoring_view.py <authoring-dir> \
+  --adopt-object <from.svg>:<element-id> --into <target.svg>
+```
+
+The helper appends a copy to the target page, removes its source/native restore
+transport, gives colliding ids fresh local names, inlines any source-owned
+`icons/imported/` vector reference, and refreshes the page-plan-aware summary.
+It refuses a source proxy because that atomic object cannot leave its source
+page. Raw cross-page source refs remain invalid and export reports that the page
+contains unknown source refs.
+
 An unchanged planned page keeps the source slide XML and receives its own
 relationship graph. Repeated pages clone notes slides, charts, diagrams,
 embeddings, and other private structured parts under unique part names while
 ordinary media may remain shared. An edited copy overlays only its edited
 owners onto its cloned source page. Same-deck slide-jump links follow the
-template-fill contract: a target must map to exactly one output page. An
+page-plan contract: a target must map to exactly one output page. An
 omitted or repeated destination is an error; external links remain unchanged.
 Dropping any source slide that owns video, audio, or another opaque native
 payload also fails instead of discarding that relationship.
@@ -146,6 +160,11 @@ a copied SVG, a present `notes/<svg-stem>.md` overrides its inherited source
 notes and an absent file keeps them. Deleting inherited source notes only on a
 copy is not supported in v1. The same output-stem rule applies to narration
 audio.
+
+Narration audio is keyed by the output SVG stem. A copied output page uses its
+own stem-keyed notes when present and otherwise inherits the declared source
+slide's canonical notes.
+
 `-t`, `-a`, `--recorded-narration`, `--use-narration-timings`,
 `--no-animations`, and `--no-notes` continue to resolve per output page.
 
@@ -163,6 +182,18 @@ Successful round-trip export prints one deck receipt:
 cloned_passthrough=C patched=M rebuilt=R`. `patched` keeps the source visible
 Slide XML and applies only notes or motion overlays; `rebuilt` means the page's
 visible authoring changed.
+
+Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip`
+as the round-trip text-capacity gate. It resolves the output roster from
+`authoring-svg-flat/` and optional `page_plan.json`, then applies the shared
+font-family, font-size, text-width, and canvas metrics only to new text or
+changed source-ref objects. The gate asserts horizontal capacity: it estimates
+single-line width for each positioned line and does not model vertical
+wrapping. Width beyond an explicit ancestor `data-pptx-frame` is blocking;
+overflow against the nearest-rect-sibling fallback is advisory, while bounds
+leaving the page canvas remain blocking. Other advisories remain non-blocking.
+Unchanged source refs, source proxies, and generated-project-only spec,
+template, canonical-authoring, and resource-manifest checks are excluded.
 
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:

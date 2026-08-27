@@ -1,6 +1,6 @@
 # PPT Master Toolset
 
-This directory contains user-facing scripts for conversion, project setup, direct PPTX template filling, SVG processing, export, recorded narration, and image generation.
+This directory contains user-facing scripts for conversion, project setup, SVG processing, source-preserving PPTX editing, export, recorded narration, and image generation.
 
 ## Directory Layout
 
@@ -11,6 +11,7 @@ This directory contains user-facing scripts for conversion, project setup, direc
 - `scripts/image_backends/`: internal provider implementations used by `image_gen.py`
 - `scripts/tts_backends/`: internal TTS provider implementations used by `notes_to_audio.py`
 - `scripts/template_import/`: internal PPTX reference-preparation helpers used by `pptx_template_import.py`
+- `scripts/pptx_ooxml/`: shared OOXML intake, cloning, and package primitives
 - `scripts/svg_finalize/`: internal post-processing helpers used by `finalize_svg.py`
 - `scripts/docs/`: topic-focused script documentation
 - `scripts/prompt_audit.py` + `scripts/prompt_audit_manifest.json`: maintainer-only prompt budget/governance lint (see [`docs/prompt_audit.md`](docs/prompt_audit.md)); the manifest is audit-only and never loaded as prompt context
@@ -51,7 +52,7 @@ python3 scripts/update_repo.py
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
-| Project management | `project_manager.py`, `workflow_log.py`, `workflow_transcript.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py`, `pptx_delivery_check.py` | [docs/project.md](./docs/project.md) |
+| Project management | `project_manager.py`, `workflow_log.py`, `workflow_transcript.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `pptx_delivery_check.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `preset_shape_svg.py`, `shape_boolean_svg.py`, `svg_authoring_view.py`, `authoring_roundtrip.py`, `compact_svg_coordinates.py`, `compact_svg_styles.py`, `stamp_native_fallbacks.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py`, `narration_sync.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native shape authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
@@ -118,6 +119,7 @@ python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
 python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
+python3 scripts/svg_authoring_view.py <authoring-dir> --adopt-object <from.svg>:<element-id> --into <target.svg>
 python3 scripts/stamp_native_fallbacks.py <svg-file-or-directory> --write
 python3 scripts/svg_quality_checker.py <template_workspace>/templates --template-mode --canonical-authoring
 python3 scripts/mirror_template_materialize.py <import_workspace> <template_workspace>
@@ -172,6 +174,11 @@ minimal: top-level `schema: "ppt-master.roundtrip-page-plan.v1"` plus a
 non-empty ordered `pages` array; every entry requires one-based
 `source_slide` and may name a unique `authoring-svg-flat/` filename in `svg`.
 A copied SVG is diffed against the baseline for its declared source slide.
+Move a cross-page object with
+`svg_authoring_view.py <authoring-dir> --adopt-object <from.svg>:<element-id>
+--into <target.svg>` rather than pasting raw SVG. The helper rebuilds the copy
+without source identity, inlines source-owned imported vectors, refuses source
+proxies, resolves id collisions, and refreshes `authoring_summary.json`.
 `notes/<svg-stem>.md` implicitly overrides notes for that output page; when it
 is absent, source notes travel with the cloned page. Unchanged repeats clone
 their private notes/chart/diagram/embedding parts, while media may stay shared;
@@ -179,6 +186,16 @@ slide-jump targets must map to exactly one output page. Without the file, the
 identity round trip is unchanged. See
 [`docs/svg-pipeline.md`](docs/svg-pipeline.md#round-trip-deck-page-plans) for
 the schema, sidecar keying, fail-closed rules, and export receipt.
+
+Run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip` before a
+round-trip export. The mode resolves the same identity or `page_plan.json`
+output roster as the exporter and checks only new or changed text for supported
+font stacks and sizes, estimated canvas containment, and horizontal capacity
+against its owning `data-pptx-frame` or nearest rect fallback. Capacity is the
+single-line width of each positioned line; the gate does not model vertical
+wrapping. Explicit frame-width or canvas overflow is blocking, warnings are
+advisory, and unchanged source refs, source proxies, plus
+generated-project/template-only contracts are skipped.
 
 `mirror_template_materialize.py` is the deterministic Type A mirror
 validator/publisher. Template_Designer first reviews and authors the compact
@@ -216,31 +233,6 @@ The destination must be empty, and the command does not write
 `templates/design_spec.md`; Template_Designer owns that authored brief.
 
 `template_preview_pptx.py` reads a template workspace, exports every complete `templates/*.svg` Slide prototype as one structured review slide, and verifies the resulting Master/Layout package. In a project root containing Layout and Deck specs, it previews the active Layout roster. Standalone `layout_<layout_key>.svg` definition files are rejected; every reusable Layout must be represented by a complete Slide prototype. This is an on-demand review action: its default output is `exports/<template_id>_template_preview.pptx`, and that directory need not exist before the command runs. It refuses an existing output unless an intentional re-export passes `--force`.
-
-Template fill (direct PPTX, no SVG conversion):
-
-```bash
-python3 scripts/project_manager.py init <project_name>
-python3 scripts/project_manager.py import-sources <project_path> <source.pptx> <material...>
-# Manual fallback when import-sources did not produce analysis/<stem>.slide_library.json:
-python3 scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/<stem>.slide_library.json
-python3 scripts/template_fill_pptx.py scaffold <project_path>/analysis/<stem>.slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
-python3 scripts/template_fill_pptx.py check-plan <project_path>/analysis/<stem>.slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
-python3 scripts/template_fill_pptx.py apply <project_path>/sources/<source.pptx> <project_path>/analysis/fill_plan.json -o <project_path>/exports/filled.pptx
-python3 scripts/template_fill_pptx.py validate <project_path>
-```
-
-`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It preserves source page transitions by default; `--transition <effect>` accepts a canonical effect in the shared native gallery registry documented by [`docs/pptx-transitions.md`](docs/pptx-transitions.md), while old names remain accepted only as compatibility inputs, and `--transition-duration <seconds>` changes a replacement effect's duration. `--transition none` removes the visual effect, `--transition keep` states the preservation policy explicitly, and a per-slide `transition` field in the plan overrides whatever the CLI selects. The object form accepts effect-specific native `effect_options`.
-
-Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
-
-```bash
-python3 scripts/native_enhance_pptx.py init <source.pptx> --name <project_slug>
-python3 scripts/native_enhance_pptx.py plan <project_path>
-python3 scripts/native_enhance_pptx.py validate <project_path>
-python3 scripts/native_enhance_pptx.py apply <project_path>
-python3 scripts/pptx_delivery_check.py <finished.pptx>
-```
 
 Native preset shape authoring (one or more registry-backed fragments on stdout):
 
@@ -364,7 +356,7 @@ embedded.
 
 `finalize_svg.py` remains mandatory because it creates the self-contained `svg_final/` visual preview. Those SVGs may be opened directly or inserted into PowerPoint as SVG pictures. The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter; `-s final` is diagnostic-only, and PowerPoint's manual Convert-to-Shape operation is unsupported.
 
-For SVG-authoring routes, `svg_output/` is the complete visible page-design source: every exported text, image, shape, background, and template-derived layout element is present in the page SVG or explicitly referenced by it. Export may translate represented content into Master/Layout/Slide parts or native objects, but it does not retrieve missing visible content from templates or planning files. Speaker notes, animation, narration, transitions, `template-fill-pptx`, and `native-enhance-pptx` remain separately owned capabilities.
+For SVG-authoring routes, `svg_output/` is the complete visible page-design source: every exported text, image, shape, background, and template-derived layout element is present in the page SVG or explicitly referenced by it. Export may translate represented content into Master/Layout/Slide parts or native objects, but it does not retrieve missing visible content from templates or planning files. Speaker notes, animation, narration, and transitions use dedicated sidecars or assets; Edit Native PPTX owns source-preserving existing-deck edits.
 
 Native `svg_to_pptx.py` release export reads the project's explicit structure mode. Free-design, Brand-only, Style-only, and other `template_reuse_scope: style` projects use `flat`, omit Master/Layout mappings and SVG structure metadata, keep every represented object Slide-local, and materialize one clean project-owned Master plus one Blank Layout from the current color/typography lock. Stock content placeholders and unused built-in Layouts are removed; only the standard date/footer/slide-number capability hooks remain. A Deck/Layout application uses `structured` in Default when Strategist derives `template_reuse_scope: mirror|layout` with complete lock rosters, or in Quick when every page of the installed Layout/Deck roster declares the complete lockless Master/Layout/slot contract: each project supplies unique Master/Layout definitions and one Layout assignment per generated page before SVG generation, and every SVG root repeats its assigned identity. An unselected complete template Slide may still supply a reusable Layout definition without becoming a published page. Fixed Master/Layout visuals are direct semantic atoms; ordinary groups are invalid there, while one validated compact authored-preset `<g>` is the sole group exception because it compiles to one native shape. Reusable slots are top-level groups with positive design-zone bounds plus one compatible carrier. Composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid.
 

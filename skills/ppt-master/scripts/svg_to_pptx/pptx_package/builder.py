@@ -67,8 +67,8 @@ from pptx_opc_validation import (
     verify_internal_relationships,
 )
 from pptx_workspace import WorkspaceResourceSpec
-from template_fill_pptx.clone import clone_presentation_slides
-from template_fill_pptx.package import prune_unreferenced_directory_parts
+from pptx_ooxml.clone import clone_presentation_slides
+from pptx_ooxml.package import prune_unreferenced_directory_parts
 from language_tags import normalize_language_tag
 from hyperlink_contract import (
     HYPERLINK_REL_TYPE,

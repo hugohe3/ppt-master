@@ -1,8 +1,7 @@
-"""Read native PowerPoint chart display caches for slide-library analysis.
+"""Read native PowerPoint chart display caches for PPTX intake.
 
-The template-fill workflow edits chart data from explicit fill plans. This
-module only reads the data currently visible in a chart XML part, keeping
-workbook parsing out of the analyzer.
+This module reads the data currently visible in a chart XML part while keeping
+workbook parsing out of the slide-library analyzer.
 """
 
 from __future__ import annotations
