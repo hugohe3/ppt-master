@@ -94,6 +94,76 @@ through byte-for-byte; an edit rebuilds only its owner. Resource hrefs resolve
 exactly relative to the page or extracted asset and must remain inside the
 workspace.
 
+### Round-trip deck page plans
+
+`page_plan.json` is an optional, model-authored file at the root of a
+`pptx_to_svg.py --roundtrip` workspace. Without it, export uses the existing
+identity roster and preserves the no-plan package behavior. With it, the
+`pages` array is the complete output order and may select, reorder, repeat, or
+omit source slides:
+
+```json
+{
+  "schema": "ppt-master.roundtrip-page-plan.v1",
+  "pages": [
+    {"source_slide": 3},
+    {"source_slide": 1, "svg": "intro.svg"},
+    {"source_slide": 3, "svg": "intro_b.svg"}
+  ]
+}
+```
+
+`source_slide` is the one-based source presentation index. `svg` defaults to
+that source slide's canonical imported filename, normally `slide_03.svg`, and
+must name one file directly inside `authoring-svg-flat/`. Each output entry
+must use a different SVG filename. To author independent edits from one source
+page, copy its SVG to a new filename and list that filename on the repeated
+entry. The exporter always compares the copy with the baseline regenerated
+from its declared `source_slide`, so source-ref restoration, proxy checks, and
+edit detection remain source-correct. Every extra authoring SVG must appear in
+the plan; an unknown, duplicate, or cross-owned canonical filename fails.
+
+An unchanged planned page keeps the source slide XML and receives its own
+relationship graph. Repeated pages clone notes slides, charts, diagrams,
+embeddings, and other private structured parts under unique part names while
+ordinary media may remain shared. An edited copy overlays only its edited
+owners onto its cloned source page. Same-deck slide-jump links follow the
+template-fill contract: a target must map to exactly one output page. An
+omitted or repeated destination is an error; external links remain unchanged.
+Dropping any source slide that owns video, audio, or another opaque native
+payload also fails instead of discarding that relationship.
+With a plan present, presentation-level `sectionLst` and custom-show rosters
+are dropped, output `p:sldId` values are renumbered, and the slide count in
+`docProps/app.xml` is updated.
+
+Output-page sidecars are keyed by the authoring SVG stem. A repeated copy
+inherits its source row from `animations.json` unless that output stem has its
+own row. Canonical pages keep identity notes semantics: a manifest `notes.file`
+must equal `notes/<svg-stem>.md`; deleting that file removes the source notes,
+different bytes override them, and matching bytes remain unchanged. A canonical
+page without source notes treats a present stem-keyed file as an addition. For
+a copied SVG, a present `notes/<svg-stem>.md` overrides its inherited source
+notes and an absent file keeps them. Deleting inherited source notes only on a
+copy is not supported in v1. The same output-stem rule applies to narration
+audio.
+`-t`, `-a`, `--recorded-narration`, `--use-narration-timings`,
+`--no-animations`, and `--no-notes` continue to resolve per output page.
+
+Import and export from the repository root:
+
+```bash
+python3 skills/ppt-master/scripts/pptx_to_svg.py source.pptx \
+  -o /path/to/workspace --inheritance-mode both --roundtrip
+python3 skills/ppt-master/scripts/svg_to_pptx.py /path/to/workspace \
+  --roundtrip -o /path/to/output.pptx
+```
+
+Successful round-trip export prints one deck receipt:
+`Round-trip export summary: output_pages=N passthrough=P
+cloned_passthrough=C patched=M rebuilt=R`. `patched` keeps the source visible
+Slide XML and applies only notes or motion overlays; `rebuilt` means the page's
+visible authoring changed.
+
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:
 
@@ -756,7 +826,7 @@ Behavior:
   - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
   - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`; `-s <directory>` selects another project-relative SVG source. `-s final` remains an explicit diagnostic comparison against post-processed SVGs and does not change artifact ownership. `--enable-dangerous-nonconforming-svg-export` is a separate, explicitly requested flat compatibility path for either the default or selected source; it forces flat structure, restores no imported source object, and cannot combine with `--roundtrip` or `--quick-generate`.
-- `--roundtrip` accepts only `authoring-svg-flat/` and the source/contracts emitted by `pptx_to_svg.py --roundtrip`; predecessor root sidecars and alternate `-s` inputs fail. It restores unchanged refs from `analysis/roundtrip-svg/`, preserves unchanged Slide XML/relationships and source resources byte-for-byte, and rebuilds only edited owners. Closed unchanged chart packages recover exactly; editing their fallback disables stale replacement.
+- `--roundtrip` accepts only `authoring-svg-flat/` and the source/contracts emitted by `pptx_to_svg.py --roundtrip`; predecessor root sidecars and alternate `-s` inputs fail. It restores unchanged refs from `analysis/roundtrip-svg/`, preserves unchanged Slide XML/relationships and source resources byte-for-byte, and rebuilds only edited owners. Closed unchanged chart packages recover exactly; editing their fallback disables stale replacement. Optional root `page_plan.json` uses the versioned deck-plan contract above; the no-plan path remains the identity export. Explicit `-t <effect>` without `--transition-duration` on a source without transitions uses the default duration.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export

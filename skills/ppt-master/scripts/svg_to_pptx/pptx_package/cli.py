@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import copy
 import hashlib
 import json
 import math
@@ -25,6 +26,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from attribution_guard import require_skill_integrity  # noqa: E402
 from authoring_roundtrip import (  # noqa: E402
     AuthoringRoundtripError,
+    RoundtripPage,
     is_flat_authoring_bundle,
     materialize_flat_authoring_roundtrip,
 )
@@ -46,6 +48,7 @@ from pptx_animations import (  # noqa: E402
     normalize_animation_trigger,
 )
 from pptx_transitions import (  # noqa: E402
+    DEFAULT_TRANSITION_DURATION,
     LEGACY_TRANSITION_KEYS,
     NATIVE_TRANSITION_KEYS,
     normalize_transition_effect_request,
@@ -53,6 +56,8 @@ from pptx_transitions import (  # noqa: E402
 )
 from pptx_workspace import (  # noqa: E402
     AUTHORING_SVG_FLAT_DIR,
+    ROUNDTRIP_MANIFEST_PATH,
+    ROUNDTRIP_PAGE_PLAN_PATH,
     WorkspaceResourceSpec,
     conversion_report_path,
     load_roundtrip_manifest,
@@ -186,9 +191,71 @@ def _resource_slide_indices(
     }
 
 
+def _roundtrip_animation_config_for_pages(
+    config: dict[str, object],
+    pages: tuple[RoundtripPage, ...],
+) -> dict[str, object]:
+    """Key per-slide motion by output SVG stem, inheriting source rows for copies."""
+    expanded = copy.deepcopy(config)
+    raw_slides = expanded.get("slides")
+    if not isinstance(raw_slides, dict):
+        raise RuntimeError("Round-trip animation sidecar slides must be an object")
+    output_slides: dict[str, object] = {}
+    for page in pages:
+        output_stem = page.svg_stem
+        source_stem = Path(page.source_svg_name).stem
+        if output_stem in raw_slides:
+            output_slides[output_stem] = raw_slides[output_stem]
+        elif source_stem in raw_slides:
+            output_slides[output_stem] = copy.deepcopy(raw_slides[source_stem])
+    expanded["slides"] = output_slides
+    return expanded
+
+
+def _roundtrip_note_changed(
+    project_path: Path,
+    row: dict[str, object],
+    page: RoundtripPage,
+) -> bool:
+    """Return whether one output page changes its inherited source notes."""
+    relative = Path("notes") / f"{page.svg_stem}.md"
+    output_note = project_path / relative
+    if page.svg_name != page.source_svg_name:
+        return output_note.is_file()
+
+    note = row.get("notes")
+    if note is None:
+        return output_note.is_file()
+    if not isinstance(note, dict):
+        raise RuntimeError(
+            f"Round-trip manifest slide {page.source_slide} notes metadata "
+            "must be an object"
+        )
+    note_file = note.get("file")
+    if not isinstance(note_file, str) or not note_file:
+        raise RuntimeError(
+            f"Round-trip manifest slide {page.source_slide} notes metadata "
+            "must declare notes.file"
+        )
+    expected_file = relative.as_posix()
+    if note_file != expected_file:
+        raise RuntimeError(
+            f"Round-trip manifest slide {page.source_slide} notes.file must be "
+            f"{expected_file!r} for {page.svg_name}; got {note_file!r}"
+        )
+    expected_sha = note.get("sha256")
+    if not isinstance(expected_sha, str):
+        raise RuntimeError(
+            f"Round-trip manifest slide {page.source_slide} notes metadata "
+            "must declare notes.sha256"
+        )
+    return not output_note.is_file() or _path_sha256(output_note) != expected_sha
+
+
 def _roundtrip_passthrough_candidates(
     project_path: Path,
     native_files: list[Path],
+    pages: tuple[RoundtripPage, ...],
     *,
     source_dir: str,
     authoring_report: dict[str, object] | None,
@@ -208,8 +275,10 @@ def _roundtrip_passthrough_candidates(
         for row in raw_slides
         if isinstance(row, dict) and isinstance(row.get('index'), int)
     }
-    if len(slide_rows) != len(native_files):
-        return set()
+    if len(pages) != len(native_files):
+        raise RuntimeError(
+            "Round-trip output page roster differs from materialized SVG files"
+        )
 
     candidates: set[int] = set()
     if authoring_report is not None:
@@ -221,8 +290,12 @@ def _roundtrip_passthrough_candidates(
             for row in raw_documents
             if isinstance(row, dict) and isinstance(row.get('file'), str)
         }
-        for index in slide_rows:
-            report = reports.get(f'slide_{index:02d}.svg')
+        for page in pages:
+            if page.source_slide not in slide_rows:
+                raise RuntimeError(
+                    f"Round-trip manifest has no source slide {page.source_slide}"
+                )
+            report = reports.get(page.svg_name)
             if not isinstance(report, dict):
                 continue
             if (
@@ -235,17 +308,18 @@ def _roundtrip_passthrough_candidates(
                 and int(report.get('authored_unreferenced') or 0) == 0
                 and report.get('defs_changed') is False
             ):
-                candidates.add(index)
+                candidates.add(page.output_index)
     elif source_dir == 'svg':
         files_by_name = {path.name: path for path in native_files}
-        for index, row in slide_rows.items():
+        for page in pages:
+            row = slide_rows[page.source_slide]
             relative = row.get('layeredSvg')
             expected = row.get('layeredSvgSha256')
             if not isinstance(relative, str) or not isinstance(expected, str):
                 continue
             path = files_by_name.get(Path(relative).name)
             if path is not None and _path_sha256(path) == expected:
-                candidates.add(index)
+                candidates.add(page.output_index)
     else:
         return set()
 
@@ -273,39 +347,36 @@ def _roundtrip_passthrough_candidates(
         raise RuntimeError(
             f"Round-trip animation sidecar must be a JSON object: {current_animation}"
         )
+    expanded_animation_config = _roundtrip_animation_config_for_pages(
+        current_animation_config,
+        pages,
+    )
+    pages_by_output = {page.output_index: page for page in pages}
     for index in tuple(candidates):
-        expected = slide_rows[index].get("animationSha256")
+        page = pages_by_output[index]
+        expected = slide_rows[page.source_slide].get("animationSha256")
         if not isinstance(expected, str):
             raise RuntimeError(
-                f"Round-trip manifest slide {index} lacks animationSha256"
+                f"Round-trip manifest slide {page.source_slide} lacks "
+                "animationSha256"
             )
         actual = slide_animation_config_sha256(
-            current_animation_config,
-            f"slide_{index:02d}",
+            expanded_animation_config,
+            page.svg_stem,
         )
         if actual != expected:
             candidates.discard(index)
 
-    notes_dir = project_path / 'notes'
     for index in tuple(candidates):
-        row = slide_rows[index]
-        note = row.get('notes')
-        canonical_note = notes_dir / f'slide_{index:02d}.md'
-        if isinstance(note, dict):
-            note_file = note.get('file')
-            note_sha = note.get('sha256')
-            if not isinstance(note_file, str) or not isinstance(note_sha, str):
-                candidates.discard(index)
-                continue
-            current_note = project_path / note_file
-            if not current_note.is_file() or _path_sha256(current_note) != note_sha:
-                candidates.discard(index)
-        elif canonical_note.is_file():
+        page = pages_by_output[index]
+        row = slide_rows[page.source_slide]
+        if _roundtrip_note_changed(project_path, row, page):
             candidates.discard(index)
         derived = row.get("derivedResources")
         if not isinstance(derived, list):
             raise RuntimeError(
-                f"Round-trip manifest slide {index} lacks derivedResources"
+                f"Round-trip manifest slide {page.source_slide} lacks "
+                "derivedResources"
             )
         for resource_index, raw in enumerate(derived):
             if not isinstance(raw, dict):
@@ -332,30 +403,13 @@ def _roundtrip_passthrough_candidates(
     return candidates
 
 
-def _roundtrip_note_changed(
-    project_path: Path,
-    row: dict[str, object],
-    index: int,
-) -> bool:
-    """Return whether one canonical per-slide notes source changed."""
-    note = row.get("notes")
-    if isinstance(note, dict):
-        relative = note.get("file")
-        expected_sha = note.get("sha256")
-        if not isinstance(relative, str) or not isinstance(expected_sha, str):
-            raise RuntimeError(
-                f"Round-trip manifest slide {index} has incomplete notes metadata"
-            )
-        current = project_path / relative
-        return not current.is_file() or _path_sha256(current) != expected_sha
-    return (project_path / "notes" / f"slide_{index:02d}.md").is_file()
-
-
 def _roundtrip_slide_patches(
     project_path: Path,
     authoring_report: dict[str, object] | None,
     passthrough_slides: set[int],
+    pages: tuple[RoundtripPage, ...],
     *,
+    force_visual_changed: bool,
     force_motion_changed: bool,
     force_notes_changed: bool,
 ) -> dict[int, RoundtripSlidePatch]:
@@ -390,36 +444,51 @@ def _roundtrip_slide_patches(
         ) from exc
     if not isinstance(animation_config, dict):
         raise RuntimeError("Round-trip animation sidecar must be a JSON object")
+    animation_config = _roundtrip_animation_config_for_pages(
+        animation_config,
+        pages,
+    )
 
     documents = authoring_report.get("documents")
     if not isinstance(documents, list):
         raise RuntimeError("Authoring round-trip report documents must be an array")
+    pages_by_file = {page.svg_name: page for page in pages}
+    if len(documents) != len(pages):
+        raise RuntimeError(
+            "Authoring round-trip report differs from the output page plan"
+        )
     patches: dict[int, RoundtripSlidePatch] = {}
     for raw in documents:
         if not isinstance(raw, dict) or not isinstance(raw.get("file"), str):
             raise RuntimeError("Authoring round-trip document report is incomplete")
-        match = re.fullmatch(r"slide_(\d+)\.svg", str(raw["file"]))
-        if match is None:
+        page = pages_by_file.get(str(raw["file"]))
+        if page is None:
             raise RuntimeError(
                 f"Unexpected authoring round-trip slide name: {raw['file']}"
             )
-        index = int(match.group(1))
+        if raw.get("source_slide") != page.source_slide:
+            raise RuntimeError(
+                f"Authoring round-trip source mapping changed for {page.svg_name}"
+            )
+        index = page.output_index
         if index in passthrough_slides:
             continue
-        row = slide_rows.get(index)
+        row = slide_rows.get(page.source_slide)
         if row is None:
             raise RuntimeError(
-                f"Round-trip manifest has no slide {index} for authoring overlay"
+                f"Round-trip manifest has no source slide {page.source_slide} "
+                "for authoring overlay"
             )
         expected_animation = row.get("animationSha256")
         if not isinstance(expected_animation, str):
             raise RuntimeError(
-                f"Round-trip manifest slide {index} lacks animationSha256"
+                f"Round-trip manifest slide {page.source_slide} lacks "
+                "animationSha256"
             )
         motion_changed = force_motion_changed or (
             slide_animation_config_sha256(
                 animation_config,
-                f"slide_{index:02d}",
+                page.svg_stem,
             )
             != expected_animation
         )
@@ -438,10 +507,17 @@ def _roundtrip_slide_patches(
             source_ref_ids=_ref_set("source_ref_ids"),
             edited_ref_ids=_ref_set("edited_ref_ids"),
             deleted_ref_ids=_ref_set("deleted_ref_ids"),
+            visual_changed=(
+                force_visual_changed
+                or int(raw.get("edited_refs") or 0) > 0
+                or int(raw.get("deleted_refs") or 0) > 0
+                or int(raw.get("authored_unreferenced") or 0) > 0
+                or raw.get("defs_changed") is True
+            ),
             motion_changed=motion_changed,
             notes_changed=(
                 force_notes_changed
-                or _roundtrip_note_changed(project_path, row, index)
+                or _roundtrip_note_changed(project_path, row, page)
             ),
         )
     return patches
@@ -719,7 +795,7 @@ def _package_part_counts(pptx_path: Path) -> dict[str, object]:
         'zip_integrity': 'passed' if bad_member is None else 'failed',
         'corrupt_member': bad_member,
         'slides': count(r'ppt/slides/slide\d+\.xml'),
-        'notes': count(r'ppt/notesSlides/notesSlide\d+\.xml'),
+        'notes': count(r'ppt/notesSlides/notesSlide[^/]+\.xml'),
         'masters': count(r'ppt/slideMasters/slideMaster\d+\.xml'),
         'layouts': count(r'ppt/slideLayouts/slideLayout\d+\.xml'),
     }
@@ -1870,6 +1946,33 @@ Recorded narration:
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
         return 1
+    page_plan_path = project_path / ROUNDTRIP_PAGE_PLAN_PATH
+    if page_plan_path.exists() and not args.roundtrip:
+        print(
+            "Error: page_plan.json is valid only for --roundtrip export from "
+            "a pptx_to_svg.py --roundtrip workspace",
+            file=sys.stderr,
+        )
+        return 1
+    if page_plan_path.exists() and args.roundtrip:
+        required_roundtrip_paths = (
+            ROUNDTRIP_MANIFEST_PATH,
+            native_structure_path(project_path).relative_to(project_path),
+            source_pptx_path(project_path).relative_to(project_path),
+        )
+        missing_roundtrip_paths = [
+            relative.as_posix()
+            for relative in required_roundtrip_paths
+            if not (project_path / relative).is_file()
+        ]
+        if missing_roundtrip_paths:
+            print(
+                "Error: page_plan.json requires a pptx_to_svg.py --roundtrip "
+                "workspace; missing: "
+                + ", ".join(missing_roundtrip_paths),
+                file=sys.stderr,
+            )
+            return 1
 
     structure_lock = None
     native_structure_contract = None
@@ -2189,6 +2292,9 @@ Recorded narration:
     ref_files = native_files
     authoring_roundtrip_temporary: tempfile.TemporaryDirectory[str] | None = None
     authoring_roundtrip_report: dict[str, object] | None = None
+    roundtrip_pages: tuple[RoundtripPage, ...] = ()
+    roundtrip_page_plan_present = False
+    roundtrip_page_sources: tuple[int, ...] | None = None
     if args.roundtrip:
         authoring_source_dir = project_path / native_source_dir
         if not is_flat_authoring_bundle(authoring_source_dir):
@@ -2214,6 +2320,14 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
         native_files = list(materialized.svg_files)
+        ref_files = list(materialized.authoring_files)
+        roundtrip_pages = materialized.pages
+        roundtrip_page_plan_present = materialized.page_plan_present
+        if roundtrip_page_plan_present:
+            roundtrip_page_sources = tuple(
+                page.source_slide
+                for page in roundtrip_pages
+            )
         authoring_roundtrip_report = materialized.report
         totals = materialized.report.get('totals')
         if isinstance(totals, dict):
@@ -2223,6 +2337,12 @@ Recorded narration:
                 f"{totals.get('unchanged_refs', 0)} unchanged ref(s), "
                 f"{totals.get('edited_refs', 0)} edited ref(s), "
                 f"{totals.get('deleted_refs', 0)} deleted ref(s)"
+            )
+        if roundtrip_page_plan_present:
+            print(
+                "  Round-trip page plan: "
+                f"{len(roundtrip_pages)} output page(s) from "
+                f"{len(set(roundtrip_page_sources or ()))} source slide(s)"
             )
 
     roundtrip_passthrough_slides: set[int] = set()
@@ -2250,6 +2370,7 @@ Recorded narration:
             roundtrip_passthrough_slides = _roundtrip_passthrough_candidates(
                 project_path.resolve(),
                 native_files,
+                roundtrip_pages,
                 source_dir=args.source or native_source_dir,
                 authoring_report=authoring_roundtrip_report,
             )
@@ -2288,6 +2409,11 @@ Recorded narration:
                 project_path.resolve(),
                 authoring_roundtrip_report,
                 roundtrip_passthrough_slides,
+                roundtrip_pages,
+                force_visual_changed=(
+                    args.image_sizing == 'display'
+                    or args.text_flow != TEXT_FLOW_PRESERVE
+                ),
                 force_motion_changed=roundtrip_motion_overridden,
                 force_notes_changed=args.no_notes,
             )
@@ -2302,28 +2428,103 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
         blocked_dependencies = {
-            index: paths
-            for index, paths in opaque_dependencies.items()
-            if index not in roundtrip_passthrough_slides
-            and index not in roundtrip_slide_patches
+            page.output_index: (
+                page.source_slide,
+                opaque_dependencies[page.source_slide],
+            )
+            for page in roundtrip_pages
+            if page.source_slide in opaque_dependencies
+            and page.output_index not in roundtrip_passthrough_slides
+            and page.output_index not in roundtrip_slide_patches
         }
-        if blocked_dependencies:
+        omitted_opaque_dependencies = (
+            {
+                source_slide: paths
+                for source_slide, paths in opaque_dependencies.items()
+                if source_slide not in {
+                    page.source_slide
+                    for page in roundtrip_pages
+                }
+            }
+            if roundtrip_page_plan_present
+            else {}
+        )
+        if blocked_dependencies or omitted_opaque_dependencies:
             print(
-                "Error: direct layered-SVG rebuild would drop source video, "
-                "audio, or opaque native payload relationships:",
+                "Error: round-trip page export would drop source video, audio, "
+                "or opaque native payload relationships:",
                 file=sys.stderr,
             )
-            for index, paths in sorted(blocked_dependencies.items()):
+            for index, (source_slide, paths) in sorted(
+                blocked_dependencies.items()
+            ):
                 print(
-                    f"  slide {index}: " + ", ".join(paths),
+                    f"  output page {index} (source slide {source_slide}): "
+                    + ", ".join(paths),
+                    file=sys.stderr,
+                )
+            for source_slide, paths in sorted(
+                omitted_opaque_dependencies.items()
+            ):
+                print(
+                    f"  omitted source slide {source_slide}: "
+                    + ", ".join(paths),
                     file=sys.stderr,
                 )
             print(
-                "Use the imported authoring-svg-flat bundle so edited objects "
-                "can overlay the preserved source slide.",
+                "Keep each listed source slide in page_plan.json, or remove the "
+                "opaque relationship from the source deck before importing.",
                 file=sys.stderr,
             )
             return 1
+
+        direct_passthrough_count = (
+            0
+            if roundtrip_page_plan_present
+            else len(roundtrip_passthrough_slides)
+        )
+        cloned_passthrough_count = (
+            len(roundtrip_passthrough_slides)
+            if roundtrip_page_plan_present
+            else 0
+        )
+        patched_count = sum(
+            not patch.visual_changed
+            for patch in roundtrip_slide_patches.values()
+        )
+        rebuilt_count = sum(
+            patch.visual_changed
+            for patch in roundtrip_slide_patches.values()
+        )
+        classified_pages = (
+            direct_passthrough_count
+            + cloned_passthrough_count
+            + patched_count
+            + rebuilt_count
+        )
+        if classified_pages != len(roundtrip_pages):
+            print(
+                "Error: round-trip export summary could not classify every "
+                "output page",
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            "  Round-trip export summary: "
+            f"output_pages={len(roundtrip_pages)} "
+            f"passthrough={direct_passthrough_count} "
+            f"cloned_passthrough={cloned_passthrough_count} "
+            f"patched={patched_count} "
+            f"rebuilt={rebuilt_count}"
+        )
+        if authoring_roundtrip_report is not None:
+            authoring_roundtrip_report["export_summary"] = {
+                "output_pages": len(roundtrip_pages),
+                "passthrough": direct_passthrough_count,
+                "cloned_passthrough": cloned_passthrough_count,
+                "patched": patched_count,
+                "rebuilt": rebuilt_count,
+            }
 
     release_quality_gate = (
         args.quick_generate
@@ -2611,6 +2812,15 @@ Recorded narration:
     except Exception as exc:
         print(f"Error: Failed to load animation config: {exc}", file=sys.stderr)
         return 1
+    if animation_config and roundtrip_page_plan_present:
+        try:
+            animation_config = _roundtrip_animation_config_for_pages(
+                animation_config,
+                roundtrip_pages,
+            )
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
     config_errors: list[str] = []
     if animation_config:
         config_errors.extend(validate_transition_config(animation_config))
@@ -2702,6 +2912,12 @@ Recorded narration:
                 ),
             )
         )
+        explicit_transition_uses_default_duration = (
+            args.roundtrip
+            and args.transition is not None
+            and args.transition_duration is None
+            and transition is not None
+        )
         transition_duration = validate_seconds(
             (
                 args.transition_duration
@@ -2713,8 +2929,13 @@ Recorded narration:
                 )
             ),
             "transition duration",
-            allow_zero=transition is None,
+            allow_zero=(
+                transition is None
+                or explicit_transition_uses_default_duration
+            ),
         )
+        if explicit_transition_uses_default_duration and transition_duration == 0:
+            transition_duration = DEFAULT_TRANSITION_DURATION
         auto_advance = (
             args.auto_advance
             if args.auto_advance is not None
@@ -2832,6 +3053,7 @@ Recorded narration:
         ),
         'transition_duration': (
             args.transition_duration is not None
+            or explicit_transition_uses_default_duration
             or inherited_overrides.get('transition_duration') is True
         ),
         'auto_advance': (
@@ -2958,6 +3180,7 @@ Recorded narration:
         roundtrip_passthrough_slides=roundtrip_passthrough_slides,
         roundtrip_slide_patches=roundtrip_slide_patches,
         roundtrip_resources=roundtrip_resources,
+        roundtrip_page_sources=roundtrip_page_sources,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,

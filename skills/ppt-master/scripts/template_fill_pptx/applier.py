@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from hyperlink_contract import SLIDE_JUMP_ACTION
 from pptx_animations import (
     object_animation_fingerprint,
     validate_pptx_animation_package,
@@ -30,17 +29,20 @@ from .chart_fill import (
     _max_chart_part_number,
     _max_embedding_part_number,
 )
-from .clone import _make_part_allocator, deep_clone_slide_private_parts
+from .clone import (
+    _make_part_allocator,
+    _remap_reachable_shared_layer_slide_jumps,
+    _remap_slide_jump_relationships,
+    deep_clone_slide_private_parts,
+)
 from .notes import _find_notes_master_target, _slide_rels_with_notes
 from .ooxml import (
     NS,
     REL_NS,
     SLIDE_REL_TYPE,
     SlideRef,
-    _normalize_part,
     _parse_slide_refs,
     _qn,
-    _rels_name_for_part,
     _xml_bytes,
 )
 from .package import (
@@ -52,7 +54,6 @@ from .package import (
     _max_slide_id,
     _max_slide_part_number,
     _prune_unreferenced_parts,
-    _relative_target,
 )
 from .table_fill import _apply_table_edits_to_slide
 from .text_fill import _apply_replacements_to_slide
@@ -107,156 +108,6 @@ def _build_clone_roster(
             )
         )
     return roster
-
-
-_SLIDE_LAYOUT_REL_TYPE = (
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
-)
-_SLIDE_MASTER_REL_TYPE = (
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
-)
-
-
-def _slide_jump_relationship_ids(part_root: ET.Element) -> set[str]:
-    """Return relationship ids used by actual same-deck click actions."""
-    relationship_attr = _qn(NS["r"], "id")
-    return {
-        relationship_id
-        for link in part_root.iter(_qn(NS["a"], "hlinkClick"))
-        if (link.attrib.get("action") or "").strip() == SLIDE_JUMP_ACTION
-        if (relationship_id := (link.attrib.get(relationship_attr) or "").strip())
-    }
-
-
-def _remap_slide_jump_relationships(
-    part_root: ET.Element,
-    relationships_root: ET.Element,
-    *,
-    source_owner_part: str,
-    output_owner_part: str,
-    owner_label: str,
-    outputs_by_source_part: dict[str, list[str]],
-    source_ref_by_part: dict[str, SlideRef],
-    self_source_part: str | None = None,
-    self_output_part: str | None = None,
-) -> bool:
-    """Point referenced slide-jump relationships at final output slides.
-
-    Unreferenced ``/slide`` relationships are left untouched. A cloned slide's
-    self-link follows that clone; shared layout/master links require one unique
-    output for the referenced source slide.
-    """
-    relationship_ids = _slide_jump_relationship_ids(part_root)
-    relationships = {
-        rel.attrib.get("Id", ""): rel
-        for rel in relationships_root.findall(_qn(REL_NS, "Relationship"))
-    }
-    changed = False
-    for relationship_id in sorted(relationship_ids):
-        rel = relationships.get(relationship_id)
-        if rel is None:
-            raise RuntimeError(
-                f"{owner_label} has a slide jump with missing relationship "
-                f"{relationship_id!r}"
-            )
-        if rel.attrib.get("Type") != SLIDE_REL_TYPE:
-            raise RuntimeError(
-                f"{owner_label} slide jump {relationship_id!r} does not use "
-                "a slide relationship"
-            )
-        if rel.attrib.get("TargetMode") == "External":
-            raise RuntimeError(
-                f"{owner_label} has an external slide relationship"
-            )
-        target = rel.attrib.get("Target")
-        if not target:
-            raise RuntimeError(
-                f"{owner_label} has a slide relationship without a target"
-            )
-        source_target_part = _normalize_part(target, source_owner_part)
-        if (
-            self_source_part is not None
-            and self_output_part is not None
-            and source_target_part == self_source_part
-        ):
-            output_target_part = self_output_part
-        else:
-            output_targets = outputs_by_source_part.get(source_target_part, [])
-            source_target_ref = source_ref_by_part.get(source_target_part)
-            target_label = (
-                f"source slide {source_target_ref.index}"
-                if source_target_ref is not None
-                else source_target_part
-            )
-            if not output_targets:
-                raise RuntimeError(
-                    f"{owner_label} links to omitted {target_label}; "
-                    "include the target exactly once or remove the link"
-                )
-            if len(output_targets) > 1:
-                raise RuntimeError(
-                    f"{owner_label} links to repeated {target_label}; "
-                    "the output target is ambiguous"
-                )
-            output_target_part = output_targets[0]
-        output_target = _relative_target(output_owner_part, output_target_part)
-        if rel.attrib.get("Target") != output_target:
-            rel.set("Target", output_target)
-            changed = True
-    return changed
-
-
-def _remap_reachable_shared_layer_slide_jumps(
-    entries: dict[str, bytes],
-    clone_roster: list[_PlannedSlideClone],
-    *,
-    outputs_by_source_part: dict[str, list[str]],
-    source_ref_by_part: dict[str, SlideRef],
-) -> None:
-    """Remap links inherited from layouts and masters used by output slides."""
-    pending: list[str] = []
-    for clone in clone_roster:
-        rels_data = entries.get(clone.rels_name)
-        if not rels_data:
-            continue
-        rels_root = ET.fromstring(rels_data)
-        for rel in rels_root.findall(_qn(REL_NS, "Relationship")):
-            if rel.attrib.get("Type") != _SLIDE_LAYOUT_REL_TYPE:
-                continue
-            target = rel.attrib.get("Target")
-            if target:
-                pending.append(_normalize_part(target, clone.part_name))
-
-    visited: set[str] = set()
-    while pending:
-        part_name = pending.pop()
-        if part_name in visited:
-            continue
-        visited.add(part_name)
-        part_data = entries.get(part_name)
-        rels_name = _rels_name_for_part(part_name)
-        rels_data = entries.get(rels_name)
-        if not part_data or not rels_data:
-            continue
-        part_root = ET.fromstring(part_data)
-        rels_root = ET.fromstring(rels_data)
-        changed = _remap_slide_jump_relationships(
-            part_root,
-            rels_root,
-            source_owner_part=part_name,
-            output_owner_part=part_name,
-            owner_label=part_name,
-            outputs_by_source_part=outputs_by_source_part,
-            source_ref_by_part=source_ref_by_part,
-        )
-        if changed:
-            entries[rels_name] = _xml_bytes(rels_root)
-        for rel in rels_root.findall(_qn(REL_NS, "Relationship")):
-            if rel.attrib.get("Type") != _SLIDE_MASTER_REL_TYPE:
-                continue
-            target = rel.attrib.get("Target")
-            if target:
-                pending.append(_normalize_part(target, part_name))
 
 
 def apply_plan(
@@ -440,7 +291,10 @@ def apply_plan(
 
     _remap_reachable_shared_layer_slide_jumps(
         entries,
-        clone_roster,
+        [
+            (clone.part_name, clone.rels_name)
+            for clone in clone_roster
+        ],
         outputs_by_source_part=outputs_by_source_part,
         source_ref_by_part=source_ref_by_part,
     )

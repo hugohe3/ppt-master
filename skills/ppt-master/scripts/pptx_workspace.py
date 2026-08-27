@@ -32,6 +32,7 @@ from xml.etree import ElementTree as ET
 SOURCE_PPTX_PATH = Path("sources/source.pptx")
 NATIVE_STRUCTURE_PATH = Path("analysis/native_structure.json")
 ROUNDTRIP_MANIFEST_PATH = Path("analysis/roundtrip_manifest.json")
+ROUNDTRIP_PAGE_PLAN_PATH = Path("page_plan.json")
 TEMPLATE_MANIFEST_PATH = Path("analysis/manifest.json")
 CONVERSION_REPORT_PATH = Path("validation/conversion-report.json")
 AUTHORING_SVG_FLAT_DIR = Path("authoring-svg-flat")
@@ -104,6 +105,11 @@ def source_pptx_path(workspace: Path) -> Path:
 def native_structure_path(workspace: Path) -> Path:
     """Return the semantic native-structure contract path."""
     return workspace / NATIVE_STRUCTURE_PATH
+
+
+def roundtrip_page_plan_path(workspace: Path) -> Path:
+    """Return the optional deck-level round-trip page-plan path."""
+    return workspace / ROUNDTRIP_PAGE_PLAN_PATH
 
 
 def template_manifest_path(workspace: Path) -> Path:
@@ -564,6 +570,7 @@ __all__ = [
     "PackageResource",
     "PackageResourceInventory",
     "ROUNDTRIP_MANIFEST_PATH",
+    "ROUNDTRIP_PAGE_PLAN_PATH",
     "SOURCE_PPTX_PATH",
     "TEMPLATE_MANIFEST_PATH",
     "VIDEO_EXTENSIONS",
@@ -573,6 +580,7 @@ __all__ = [
     "load_roundtrip_manifest",
     "native_structure_path",
     "reject_removed_workspace_layout",
+    "roundtrip_page_plan_path",
     "source_pptx_path",
     "slide_animation_config_sha256",
     "template_manifest_path",

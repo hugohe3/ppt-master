@@ -60,6 +60,7 @@ from svg_authoring_contract import normalize_compact_authoring_tree
 configure_utf8_stdio()
 
 SVG_NS = "http://www.w3.org/2000/svg"
+XLINK_NS = "http://www.w3.org/1999/xlink"
 DRAWABLE = {"path", "polygon", "polyline", "rect", "circle", "ellipse", "line"}
 SEMANTIC_CONTENT = {"text", "tspan", "foreignObject"}
 SEMANTIC_MARKER_ATTRIBUTES = {
@@ -96,10 +97,14 @@ def _drawable_count(elem: ET.Element) -> int:
 
 def _xml_size(elem: ET.Element) -> int:
     if not any(item.get(SOURCE_REF_ATTRIBUTE) for item in elem.iter()):
+        ET.register_namespace("", SVG_NS)
+        ET.register_namespace("xlink", XLINK_NS)
         return len(ET.tostring(elem, encoding="utf-8"))
     measured = copy.deepcopy(elem)
     for item in measured.iter():
         item.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     return len(ET.tostring(measured, encoding="utf-8"))
 
 
@@ -286,6 +291,8 @@ def _definition_signature(elem: ET.Element) -> bytes:
     """Return definition semantics without its document-local id."""
     normalized = copy.deepcopy(elem)
     normalized.attrib.pop("id", None)
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     return ET.tostring(normalized, encoding="utf-8")
 
 
@@ -467,6 +474,8 @@ def _asset_svg(
             defs.append(dependency)
     svg.append(group)
     normalize_compact_authoring_tree(svg)
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     return ET.tostring(svg, encoding="utf-8", xml_declaration=True)
 
 
@@ -809,6 +818,8 @@ def extract_file(
             _normalize_authoring_tree(root, fresh_native_markers)
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
+            ET.register_namespace("", SVG_NS)
+            ET.register_namespace("xlink", XLINK_NS)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
         return []
 
@@ -844,6 +855,8 @@ def extract_file(
             _normalize_authoring_tree(root, fresh_native_markers)
             rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
             rewritten.parent.mkdir(parents=True, exist_ok=True)
+            ET.register_namespace("", SVG_NS)
+            ET.register_namespace("xlink", XLINK_NS)
             tree.write(rewritten, encoding="utf-8", xml_declaration=True)
         return []
 
@@ -948,6 +961,8 @@ def extract_file(
     _normalize_authoring_tree(root, fresh_native_markers)
     rewritten = _rewritten_path(svg_path, rewritten_dir, inplace)
     rewritten.parent.mkdir(parents=True, exist_ok=True)
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     tree.write(rewritten, encoding="utf-8", xml_declaration=True)
     return entries
 

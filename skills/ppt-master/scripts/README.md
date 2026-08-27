@@ -166,6 +166,20 @@ deterministic extraction baseline, restores unchanged refs from the immutable
 layered backing, and sends the temporary result through preserve export while
 leaving edited/deleted/new authoring content in place.
 
+An imported round-trip workspace may optionally add root `page_plan.json` to
+select, reorder, repeat, or omit source slides during export. The v1 shape is
+minimal: top-level `schema: "ppt-master.roundtrip-page-plan.v1"` plus a
+non-empty ordered `pages` array; every entry requires one-based
+`source_slide` and may name a unique `authoring-svg-flat/` filename in `svg`.
+A copied SVG is diffed against the baseline for its declared source slide.
+`notes/<svg-stem>.md` implicitly overrides notes for that output page; when it
+is absent, source notes travel with the cloned page. Unchanged repeats clone
+their private notes/chart/diagram/embedding parts, while media may stay shared;
+slide-jump targets must map to exactly one output page. Without the file, the
+identity round trip is unchanged. See
+[`docs/svg-pipeline.md`](docs/svg-pipeline.md#round-trip-deck-page-plans) for
+the schema, sidecar keying, fail-closed rules, and export receipt.
+
 `mirror_template_materialize.py` is the deterministic Type A mirror
 validator/publisher. Template_Designer first reviews and authors the compact
 layered `authoring-svg/` tree. The command loads its tool-only manifest and

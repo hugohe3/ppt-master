@@ -493,6 +493,8 @@ def _build_replacement_g(
 
     Invalid or unresolved project-local references are blocking input errors.
     """
+    ET.register_namespace('', SVG_NS)
+    ET.register_namespace('xlink', XLINK_NS)
     use_str = ET.tostring(use_elem, encoding='unicode')
     attrs = embed_icons_mod.parse_use_element(use_str)
     if 'icon' not in attrs:

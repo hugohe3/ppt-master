@@ -35,7 +35,10 @@ from extract_svg_assets import (
     VECTOR_INVENTORY_SCHEMA,
     extract_file,
 )
-from pptx_workspace import ROUNDTRIP_MANIFEST_PATH
+from pptx_workspace import (
+    ROUNDTRIP_MANIFEST_PATH,
+    ROUNDTRIP_PAGE_PLAN_PATH,
+)
 from slide_roster import discover_slide_svgs
 from svg_authoring_view import (
     AUTHORING_OMITTED_SOURCE_ATTRIBUTES,
@@ -53,6 +56,7 @@ from svg_compatibility import normalize_single_child_group_filters
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
 IMPORTED_ICON_NAMESPACE = "imported"
+ROUNDTRIP_PAGE_PLAN_SCHEMA = "ppt-master.roundtrip-page-plan.v1"
 _URL_ID_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"\s]+)\1\s*\)")
 _PRESERVED_EFFECT_ATTRIBUTES = frozenset({
     "data-pptx-effect-ooxml",
@@ -81,6 +85,8 @@ class SourceRefRecord:
 @dataclass(frozen=True)
 class AuthoringDocument:
     name: str
+    source_name: str
+    source_slide: int
     authoring_path: Path
     flat_source_path: Path
     layered_source_path: Path
@@ -122,7 +128,24 @@ class RefOccurrence:
 @dataclass(frozen=True)
 class AuthoringRoundtripResult:
     svg_files: tuple[Path, ...]
+    authoring_files: tuple[Path, ...]
+    pages: tuple["RoundtripPage", ...]
+    page_plan_present: bool
     report: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class RoundtripPage:
+    """One output page resolved from the optional deck-level plan."""
+
+    output_index: int
+    source_slide: int
+    svg_name: str
+    source_svg_name: str
+
+    @property
+    def svg_stem(self) -> str:
+        return Path(self.svg_name).stem
 
 
 def _local_name(name: object) -> str:
@@ -202,10 +225,62 @@ def is_flat_authoring_bundle(authoring_dir: Path) -> bool:
     )
 
 
+def _roundtrip_source_svg_names(
+    manifest: dict[str, Any],
+) -> dict[int, str]:
+    """Map every source slide index to its canonical flat SVG basename."""
+    raw_slides = manifest.get("slides")
+    if not isinstance(raw_slides, list) or not raw_slides:
+        raise AuthoringRoundtripError(
+            "Round-trip workspace manifest slides must be a non-empty array"
+        )
+    names: dict[int, str] = {}
+    for offset, raw in enumerate(raw_slides):
+        context = f"round-trip slides[{offset}]"
+        if not isinstance(raw, dict):
+            raise AuthoringRoundtripError(f"{context} must be an object")
+        index = raw.get("index")
+        flat_svg = raw.get("flatSvg")
+        if (
+            not isinstance(index, int)
+            or isinstance(index, bool)
+            or index < 1
+        ):
+            raise AuthoringRoundtripError(
+                f"{context}.index must be a positive integer"
+            )
+        if not isinstance(flat_svg, str) or not flat_svg:
+            raise AuthoringRoundtripError(
+                f"{context}.flatSvg must be a non-empty string"
+            )
+        name = Path(flat_svg).name
+        if Path(name).suffix.lower() != ".svg":
+            raise AuthoringRoundtripError(
+                f"{context}.flatSvg must name an SVG file"
+            )
+        if index in names:
+            raise AuthoringRoundtripError(
+                f"Round-trip workspace repeats source slide {index}"
+            )
+        names[index] = name
+    expected = set(range(1, len(names) + 1))
+    if set(names) != expected:
+        raise AuthoringRoundtripError(
+            "Round-trip source slide indices must be contiguous from 1"
+        )
+    return names
+
+
 def _load_documents(
     project_path: Path,
     authoring_dir: Path,
-) -> tuple[Path, Path, dict[str, AuthoringDocument], dict[str, Any]]:
+) -> tuple[
+    Path,
+    Path,
+    dict[str, AuthoringDocument],
+    dict[str, Any],
+    dict[str, Any],
+]:
     manifest_path = authoring_dir / AUTHORING_MANIFEST_NAME
     manifest = _load_json(manifest_path, context="flat authoring manifest")
     if manifest.get("schema") != AUTHORING_SCHEMA:
@@ -295,6 +370,12 @@ def _load_documents(
             f"Round-trip layered SVG backing directory is missing: {layered_root}"
         )
 
+    source_svg_names = _roundtrip_source_svg_names(roundtrip_manifest)
+    source_slide_by_name = {
+        name: index
+        for index, name in source_svg_names.items()
+    }
+
     documents_raw = manifest.get("documents")
     if not isinstance(documents_raw, list):
         raise AuthoringRoundtripError(
@@ -317,6 +398,12 @@ def _load_documents(
         if authoring_name in documents:
             raise AuthoringRoundtripError(
                 f"Duplicate authoring manifest document: {authoring_name}"
+            )
+        source_slide = source_slide_by_name.get(authoring_name)
+        if source_slide is None:
+            raise AuthoringRoundtripError(
+                "Authoring manifest document is not registered by the round-trip "
+                f"source roster: {authoring_name}"
             )
         authoring_path = _resolve_inside(
             authoring_dir,
@@ -441,6 +528,8 @@ def _load_documents(
             )
         documents[authoring_name] = AuthoringDocument(
             name=authoring_name,
+            source_name=authoring_name,
+            source_slide=source_slide,
             authoring_path=authoring_path,
             flat_source_path=flat_source_path,
             layered_source_path=layered_source_path,
@@ -448,16 +537,11 @@ def _load_documents(
             source_refs=refs,
         )
 
-    actual_files = {
-        path.relative_to(authoring_dir).as_posix()
-        for path in authoring_dir.rglob("*.svg")
-        if path.is_file()
-    }
-    if actual_files != set(documents):
+    if set(documents) != set(source_slide_by_name):
         raise AuthoringRoundtripError(
-            "Authoring manifest/file roster differs; missing="
-            f"{sorted(set(documents) - actual_files)}, "
-            f"extra={sorted(actual_files - set(documents))}"
+            "Authoring manifest/source slide roster differs; missing="
+            f"{sorted(set(source_slide_by_name) - set(documents))}, "
+            f"extra={sorted(set(documents) - set(source_slide_by_name))}"
         )
     if manifest.get("file_count") != len(documents):
         raise AuthoringRoundtripError(
@@ -468,7 +552,183 @@ def _load_documents(
         raise AuthoringRoundtripError(
             "authoring_manifest.json source_ref_count does not match documents"
         )
-    return source_root, proxy_root, documents, manifest
+    return source_root, proxy_root, documents, manifest, roundtrip_manifest
+
+
+def _identity_pages(
+    documents: dict[str, AuthoringDocument],
+) -> tuple[RoundtripPage, ...]:
+    by_slide = {
+        document.source_slide: document
+        for document in documents.values()
+    }
+    return tuple(
+        RoundtripPage(
+            output_index=index,
+            source_slide=index,
+            svg_name=by_slide[index].name,
+            source_svg_name=by_slide[index].name,
+        )
+        for index in range(1, len(by_slide) + 1)
+    )
+
+
+def _load_page_plan(
+    project_path: Path,
+    authoring_dir: Path,
+    documents: dict[str, AuthoringDocument],
+) -> tuple[tuple[RoundtripPage, ...], bool]:
+    """Load the optional strict page plan or return the identity page order."""
+    plan_path = project_path / ROUNDTRIP_PAGE_PLAN_PATH
+    if not plan_path.exists():
+        actual_files = {
+            path.relative_to(authoring_dir).as_posix()
+            for path in authoring_dir.rglob("*.svg")
+            if path.is_file()
+        }
+        if actual_files != set(documents):
+            raise AuthoringRoundtripError(
+                "Authoring manifest/file roster differs; missing="
+                f"{sorted(set(documents) - actual_files)}, "
+                f"extra={sorted(actual_files - set(documents))}"
+            )
+        return _identity_pages(documents), False
+    if not plan_path.is_file():
+        raise AuthoringRoundtripError(
+            f"Round-trip page plan must be a file: {plan_path}"
+        )
+    payload = _load_json(plan_path, context="round-trip page plan")
+    unknown_root_fields = sorted(set(payload) - {"schema", "pages"})
+    if unknown_root_fields:
+        raise AuthoringRoundtripError(
+            "Round-trip page plan has unsupported field(s): "
+            + ", ".join(unknown_root_fields)
+        )
+    if payload.get("schema") != ROUNDTRIP_PAGE_PLAN_SCHEMA:
+        raise AuthoringRoundtripError(
+            "Unsupported round-trip page plan schema: "
+            f"{payload.get('schema')!r}; expected {ROUNDTRIP_PAGE_PLAN_SCHEMA!r}"
+        )
+    raw_pages = payload.get("pages")
+    if not isinstance(raw_pages, list) or not raw_pages:
+        raise AuthoringRoundtripError(
+            "Round-trip page plan pages must be a non-empty array"
+        )
+
+    documents_by_slide = {
+        document.source_slide: document
+        for document in documents.values()
+    }
+    source_count = len(documents_by_slide)
+    pages: list[RoundtripPage] = []
+    seen_svg_names: dict[str, int] = {}
+    for output_index, raw in enumerate(raw_pages, start=1):
+        context = f"page_plan.json pages[{output_index - 1}]"
+        if not isinstance(raw, dict):
+            raise AuthoringRoundtripError(f"{context} must be an object")
+        unknown_fields = sorted(set(raw) - {"source_slide", "svg"})
+        if unknown_fields:
+            raise AuthoringRoundtripError(
+                f"{context} has unsupported field(s): "
+                + ", ".join(unknown_fields)
+            )
+        source_slide = raw.get("source_slide")
+        if (
+            not isinstance(source_slide, int)
+            or isinstance(source_slide, bool)
+            or source_slide < 1
+            or source_slide > source_count
+        ):
+            raise AuthoringRoundtripError(
+                f"{context}.source_slide must be between 1 and {source_count}"
+            )
+        source_document = documents_by_slide[source_slide]
+        svg_value = raw.get("svg", source_document.name)
+        if not isinstance(svg_value, str) or not svg_value:
+            raise AuthoringRoundtripError(
+                f"{context}.svg must be a non-empty authoring SVG filename"
+            )
+        svg_path_value = Path(svg_value)
+        if (
+            svg_path_value.name != svg_value
+            or svg_path_value.suffix.lower() != ".svg"
+            or svg_value in {".", ".."}
+        ):
+            raise AuthoringRoundtripError(
+                f"{context}.svg must be one authoring-svg-flat SVG filename"
+            )
+        svg_key = svg_value.casefold()
+        if svg_key in seen_svg_names:
+            raise AuthoringRoundtripError(
+                f"{context}.svg repeats {svg_value!r}; already used by output "
+                f"page {seen_svg_names[svg_key]}"
+            )
+        authoring_path = _resolve_inside(
+            authoring_dir,
+            svg_value,
+            context=f"{context}.svg",
+        )
+        if not authoring_path.is_file():
+            raise AuthoringRoundtripError(
+                f"{context}.svg names an unknown authoring SVG file: {svg_value}"
+            )
+        canonical_owner = documents.get(svg_value)
+        if (
+            canonical_owner is not None
+            and canonical_owner.source_slide != source_slide
+        ):
+            raise AuthoringRoundtripError(
+                f"{context}.svg {svg_value!r} belongs to source slide "
+                f"{canonical_owner.source_slide}, not {source_slide}"
+            )
+
+        pages.append(RoundtripPage(
+            output_index=output_index,
+            source_slide=source_slide,
+            svg_name=svg_value,
+            source_svg_name=source_document.name,
+        ))
+        seen_svg_names[svg_key] = output_index
+
+    expected_files = set(documents) | {page.svg_name for page in pages}
+    actual_files = {
+        path.relative_to(authoring_dir).as_posix()
+        for path in authoring_dir.rglob("*.svg")
+        if path.is_file()
+    }
+    if actual_files != expected_files:
+        raise AuthoringRoundtripError(
+            "Authoring manifest/page-plan file roster differs; missing="
+            f"{sorted(expected_files - actual_files)}, "
+            f"extra={sorted(actual_files - expected_files)}"
+        )
+    return tuple(pages), True
+
+
+def _output_documents(
+    pages: tuple[RoundtripPage, ...],
+    documents: dict[str, AuthoringDocument],
+    authoring_dir: Path,
+) -> tuple[AuthoringDocument, ...]:
+    """Bind every output authoring file to its declared source document."""
+    documents_by_slide = {
+        document.source_slide: document
+        for document in documents.values()
+    }
+    output: list[AuthoringDocument] = []
+    for page in pages:
+        source = documents_by_slide[page.source_slide]
+        output.append(AuthoringDocument(
+            name=page.svg_name,
+            source_name=source.name,
+            source_slide=page.source_slide,
+            authoring_path=(authoring_dir / page.svg_name).resolve(),
+            flat_source_path=source.flat_source_path,
+            layered_source_path=source.layered_source_path,
+            initial_authoring_sha256=source.initial_authoring_sha256,
+            source_refs=source.source_refs,
+        ))
+    return tuple(output)
 
 
 def _load_current_assets(
@@ -763,6 +1023,7 @@ def _referenced_assets(
     assets: dict[str, VectorAssetRecord],
     *,
     document_name: str,
+    origin_document: str | None = None,
 ) -> dict[str, tuple[VectorAssetRecord, ET.Element]]:
     referenced: dict[str, tuple[VectorAssetRecord, ET.Element]] = {}
     for element in root.iter():
@@ -785,7 +1046,8 @@ def _referenced_assets(
                     "without an inventory record"
                 )
             continue
-        if record.origin_document != document_name:
+        expected_origin = origin_document or document_name
+        if record.origin_document != expected_origin:
             raise AuthoringRoundtripError(
                 f"{document_name} references {icon!r} owned by "
                 f"{record.origin_document}"
@@ -960,6 +1222,8 @@ def _merge_defs(
 
 
 def _serialize_svg(root: ET.Element) -> bytes:
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     payload = ET.tostring(root, encoding="utf-8", xml_declaration=True)
     return payload if payload.endswith(b"\n") else payload + b"\n"
 
@@ -1049,11 +1313,13 @@ def _materialize_document(
         current_root,
         current_assets,
         document_name=document.name,
+        origin_document=document.source_name,
     )
     baseline_referenced_assets = _referenced_assets(
         baseline_root,
         baseline_assets,
         document_name=document.name,
+        origin_document=document.source_name,
     )
     current_occurrences = _ref_occurrences(
         current_root,
@@ -1344,6 +1610,8 @@ def _materialize_document(
     output_path.write_bytes(_serialize_svg(output_root))
     return {
         "file": document.name,
+        "source_file": document.source_name,
+        "source_slide": document.source_slide,
         "document_unchanged": document_unchanged,
         "source_ref_count": len(expected_refs),
         "source_ref_ids": sorted(expected_refs),
@@ -1385,10 +1653,22 @@ def materialize_flat_authoring_roundtrip(
         )
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    source_root, source_proxy_dir, documents, manifest = _load_documents(
+    (
+        source_root,
+        source_proxy_dir,
+        documents,
+        manifest,
+        _roundtrip_manifest,
+    ) = _load_documents(
         project_path,
         authoring_dir,
     )
+    pages, page_plan_present = _load_page_plan(
+        project_path,
+        authoring_dir,
+        documents,
+    )
+    output_documents = _output_documents(pages, documents, authoring_dir)
     current_assets, inventory = _load_current_assets(
         project_path,
         authoring_dir,
@@ -1414,20 +1694,24 @@ def materialize_flat_authoring_roundtrip(
             _materialize_document(
                 project_path,
                 document,
-                baseline_root / document.name,
+                baseline_root / document.source_name,
                 output_dir / document.name,
                 current_assets,
                 baseline_assets,
             )
-            for document in sorted(documents.values(), key=lambda item: item.name)
+            for document in output_documents
         ]
     finally:
         baseline_temporary.cleanup()
 
-    svg_files = tuple(discover_slide_svgs(output_dir))
-    if len(svg_files) != len(documents):
+    svg_files = (
+        tuple(output_dir / page.svg_name for page in pages)
+        if page_plan_present
+        else tuple(discover_slide_svgs(output_dir))
+    )
+    if len(svg_files) != len(pages):
         raise AuthoringRoundtripError(
-            "Materialized slide roster does not match the authoring manifest"
+            "Materialized slide roster does not match the output page plan"
         )
     totals = {
         key: sum(int(item[key]) for item in document_reports)
@@ -1446,7 +1730,32 @@ def materialize_flat_authoring_roundtrip(
         "manifest_schema": manifest.get("schema"),
         "projection_kind": manifest.get("projection_kind"),
         "materialized_slide_count": len(svg_files),
+        "page_plan": (
+            {
+                "schema": ROUNDTRIP_PAGE_PLAN_SCHEMA,
+                "output_pages": len(pages),
+                "pages": [
+                    {
+                        "output_index": page.output_index,
+                        "source_slide": page.source_slide,
+                        "svg": page.svg_name,
+                    }
+                    for page in pages
+                ],
+            }
+            if page_plan_present
+            else None
+        ),
         "totals": totals,
         "documents": document_reports,
     }
-    return AuthoringRoundtripResult(svg_files=svg_files, report=report)
+    return AuthoringRoundtripResult(
+        svg_files=svg_files,
+        authoring_files=tuple(
+            authoring_dir / page.svg_name
+            for page in pages
+        ),
+        pages=pages,
+        page_plan_present=page_plan_present,
+        report=report,
+    )

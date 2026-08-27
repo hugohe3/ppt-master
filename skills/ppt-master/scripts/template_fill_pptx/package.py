@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import posixpath
 import re
+from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from .ooxml import (
@@ -19,6 +20,7 @@ from .ooxml import (
     _normalize_part,
     _qn,
     _rels_name_for_part,
+    _xml_bytes,
 )
 
 
@@ -153,3 +155,25 @@ def _prune_unreferenced_parts(entries: dict[str, bytes], content_root: ET.Elemen
         part_name = (override.attrib.get("PartName") or "").lstrip("/")
         if part_name and part_name not in reachable:
             content_root.remove(override)
+
+
+def prune_unreferenced_directory_parts(package_root: Path) -> int:
+    """Prune unreachable parts from one extracted OOXML package directory."""
+    entries = {
+        path.relative_to(package_root).as_posix(): path.read_bytes()
+        for path in package_root.rglob("*")
+        if path.is_file()
+    }
+    content_types = entries.get("[Content_Types].xml")
+    if content_types is None:
+        raise RuntimeError("Extracted PPTX package has no [Content_Types].xml")
+    content_root = _content_type_root(ET.fromstring(content_types))
+    before = set(entries)
+    _prune_unreferenced_parts(entries, content_root)
+    removed = before - set(entries)
+    for part_name in sorted(removed):
+        target = package_root.joinpath(*part_name.split("/"))
+        if target.is_file():
+            target.unlink()
+    (package_root / "[Content_Types].xml").write_bytes(_xml_bytes(content_root))
+    return len(removed)

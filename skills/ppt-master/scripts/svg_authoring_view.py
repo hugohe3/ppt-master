@@ -110,6 +110,13 @@ _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
 
+
+def _serialize_svg(element: ET.Element) -> bytes:
+    """Serialize SVG independently of namespace registrations from other tools."""
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
+    return ET.tostring(element, encoding="utf-8", xml_declaration=False)
+
 # These fields identify source OOXML objects or carry opaque paint/effect
 # payloads. They belong in the complete import SVG, not its lightweight view.
 AUTHORING_OMITTED_SOURCE_ATTRIBUTES = {
@@ -1110,7 +1117,7 @@ def _source_proxy_asset_bytes(
     stats.coordinate_attributes_compacted += compact_svg_tree(
         asset_root,
     ).changed_attributes
-    payload = ET.tostring(asset_root, encoding="utf-8", xml_declaration=False)
+    payload = _serialize_svg(asset_root)
     return payload if payload.endswith(b"\n") else payload + b"\n"
 
 
@@ -1281,7 +1288,7 @@ def _externalize_large_source_objects(
             SEMANTIC_TABLE_KIND,
         }:
             continue
-        original_bytes = len(ET.tostring(element, encoding="utf-8"))
+        original_bytes = len(_serialize_svg(element))
         if (
             original_bytes < SOURCE_PROXY_MIN_BYTES
             or _contains_authoring_semantics(element)
@@ -1404,7 +1411,7 @@ def _render_projection(
             + "; ".join(contract_errors)
         )
 
-    projected = ET.tostring(root, encoding="utf-8", xml_declaration=False)
+    projected = _serialize_svg(root)
     if not projected.endswith(b"\n"):
         projected += b"\n"
 

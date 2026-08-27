@@ -38,6 +38,7 @@ from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS
 configure_utf8_stdio()
 
 SVG_NS = "http://www.w3.org/2000/svg"
+XLINK_NS = "http://www.w3.org/1999/xlink"
 INHERITABLE_ATTRIBUTES = tuple(INHERITABLE_ATTRS)
 _DEFINITION_SUBTREES = frozenset({
     "clipPath",
@@ -491,6 +492,8 @@ def _compact_svg_bytes(
     stats = compact_svg_style_tree(root)
     if stats.changed_declarations == 0:
         return original, stats
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     payload = ET.tostring(
         root,
         encoding="utf-8",

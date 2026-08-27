@@ -15,6 +15,7 @@ configure_utf8_stdio()
 
 
 SVG_NS = "http://www.w3.org/2000/svg"
+XLINK_NS = "http://www.w3.org/1999/xlink"
 NSMAP = {"svg": SVG_NS}
 
 # Ensure pretty element names without ns0 prefix on write
@@ -827,6 +828,8 @@ def process_svg_file(
     os.makedirs(os.path.dirname(dst_path), exist_ok=True)
 
     # Write out XML without XML declaration to mimic input style
+    ET.register_namespace("", SVG_NS)
+    ET.register_namespace("xlink", XLINK_NS)
     tree.write(dst_path, encoding="utf-8", xml_declaration=False, method="xml")
     return changed
 
