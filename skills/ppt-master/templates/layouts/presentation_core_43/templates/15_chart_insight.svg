@@ -19,7 +19,7 @@
   <g id="chart-insight-chart-slot" data-pptx-placeholder="chart" data-pptx-idx="1"
     data-pptx-bounds="76 156 576 536">
     <g id="chart-insight-chart-carrier" data-pptx-carrier="true"
-      data-pptx-replace-with="chart">
+      data-pptx-replace-with="chart" data-pptx-fallback-sha256="0d80a55b47e50bcd9ffe0f604bb9a8e033d015e503c6f836a1701e2d67b8016d">
       <metadata type="application/json">{"name":"chart_insight","x":76,"y":156,"width":576,"height":536,"type":"column","categories":["Q1","Q2","Q3","Q4"],"series":[{"name":"Actual","values":[42,55,63,78]},{"name":"Plan","values":[48,58,68,74]}],"show_legend":true,"legend_position":"bottom","style":{"colors":["#64748B","#CBD5E1"],"chart_area_fill":"#F4F6F8","plot_area_fill":"#FFFFFF","text_color":"#475569","axis_color":"#CBD5E1","grid_color":"#E2E8F0","font_family":"Arial"}}</metadata>
       <rect x="76" y="156" width="576" height="536" rx="8" fill="#FFFFFF"/>
       <rect x="440" y="192" width="12" height="12" rx="2" fill="#64748B"/>

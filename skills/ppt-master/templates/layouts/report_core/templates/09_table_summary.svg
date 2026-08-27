@@ -21,7 +21,7 @@
   <g id="table-summary-table-slot" data-pptx-placeholder="table" data-pptx-idx="1"
     data-pptx-bounds="68 196 816 424">
     <g id="table-summary-table-carrier" data-pptx-carrier="true"
-      data-pptx-replace-with="table">
+      data-pptx-replace-with="table" data-pptx-fallback-sha256="8855518e6bc3c692919ed68d368f493fa05fdecd16eabc5beece070b24353f30">
         <metadata type="application/json">{"schema":"ppt-master.semantic-table.v2","name":"table_summary","x":68,"y":196,"width":816,"height":424,"strict_grid":true,"column_widths":[3,2,2],"row_heights":[1,1,1,1,1],"style":{"font_family":"Arial","font_size":15,"header_font_size":14,"header_fill":"#F1F5F9","header_text":"#334155","body_fill":"#FFFFFF","body_text":"#475569","band_fill":"#F8FAFC","border_color":"#E2E8F0","border_width":1,"padding":{"left":10,"right":10,"top":5,"bottom":5},"valign":"middle"},"columns":[{"text":"Metric","bold":true},{"text":"Current","align":"r","bold":true},{"text":"Target","align":"r","bold":true}],"rows":[[{"text":"Adoption"},{"text":"68%","align":"r","bold":true},{"text":"80%","align":"r"}],[{"text":"Cycle time"},{"text":"12 d","align":"r","bold":true},{"text":"8 d","align":"r"}],[{"text":"Quality"},{"text":"94%","align":"r","bold":true},{"text":"97%","align":"r"}],[{"text":"Cost index"},{"text":"1.08","align":"r","bold":true},{"text":"1.00","align":"r"}]]}</metadata>
       <rect x="68" y="196" width="816" height="424" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
       <rect x="68" y="196" width="816" height="64" rx="6" fill="#F1F5F9"/>
