@@ -254,6 +254,7 @@ except ImportError:
 try:
     from svg_to_pptx.semantic_markers import (
         SEMANTIC_ATTRS as _SEMANTIC_ATTRS,
+        STRUCTURAL_ROLES as _STRUCTURAL_ROLES,
         is_static_page_frame as _is_static_page_frame,
         validate_semantic_markers as _validate_semantic_markers,
     )
@@ -261,6 +262,16 @@ except ImportError:
     _SEMANTIC_ATTRS = frozenset({
         'data-pptx-page-role',
         'data-pptx-role',
+    })
+    _STRUCTURAL_ROLES = frozenset({
+        'background',
+        'chrome',
+        'decoration',
+        'footer',
+        'header',
+        'logo',
+        'page-number',
+        'watermark',
     })
     _is_static_page_frame = None
     _validate_semantic_markers = None
@@ -276,10 +287,12 @@ except ImportError:
 
 try:
     from svg_to_pptx.tspan_flattener import (
+        classify_paragraph_block as _classify_paragraph_block,
         flatten_positional_tspans as _flatten_positional_tspans,
         nested_positional_tspan_errors as _nested_positional_tspan_errors,
     )
 except ImportError:
+    _classify_paragraph_block = None
     _flatten_positional_tspans = None
     _nested_positional_tspan_errors = None
 
@@ -1881,6 +1894,18 @@ class SVGQualityChecker:
         text_el: ET.Element,
     ) -> List[Tuple[ET.Element, str]] | None:
         """Return normalized inline runs, or ``None`` for positioned text."""
+        raw_runs = cls._inline_text_segments(text_el, 'default')
+        if raw_runs is None:
+            return None
+        return cls._normalize_source_text_runs(raw_runs)
+
+    @classmethod
+    def _inline_text_segments(
+        cls,
+        container: ET.Element,
+        inherited_xml_space: str,
+    ) -> List[Tuple[ET.Element, str, str]] | None:
+        """Collect inline text while rejecting descendant positioning."""
         if (
             _normalize_project_text_segments is None
             or _resolve_project_xml_space is None
@@ -1892,17 +1917,17 @@ class SVGQualityChecker:
             if raw:
                 raw_runs.append((owner, xml_space, raw))
 
-        def collect(container: ET.Element, inherited_xml_space: str) -> bool:
+        def collect(element: ET.Element, inherited: str) -> bool:
             try:
                 xml_space = _resolve_project_xml_space(
-                    container,
-                    inherited_xml_space,
+                    element,
+                    inherited,
                 )
             except ValueError:
                 return False
-            if container.text:
-                append_run(container, container.text, xml_space)
-            for child in list(container):
+            if element.text:
+                append_run(element, element.text, xml_space)
+            for child in list(element):
                 if not cls._is_tspan(child):
                     return False
                 if any(child.get(name) is not None for name in ('x', 'y', 'dx', 'dy')):
@@ -1915,11 +1940,18 @@ class SVGQualityChecker:
                 if not collect(child, xml_space):
                     return False
                 if child.tail:
-                    append_run(container, child.tail, xml_space)
+                    append_run(element, child.tail, xml_space)
             return True
 
-        if not collect(text_el, 'default'):
+        if not collect(container, inherited_xml_space):
             return None
+        return raw_runs
+
+    @staticmethod
+    def _normalize_source_text_runs(
+        raw_runs: List[Tuple[ET.Element, str, str]],
+    ) -> List[Tuple[ET.Element, str]]:
+        """Normalize collected segments while retaining their style owner."""
         normalized = _normalize_project_text_segments([
             (xml_space, raw)
             for _owner, xml_space, raw in raw_runs
@@ -1928,6 +1960,38 @@ class SVGQualityChecker:
             (raw_runs[index][0], text)
             for index, text in normalized
         ]
+
+    @classmethod
+    def _paragraph_line_text_runs(
+        cls,
+        text_el: ET.Element,
+        line_group: List[ET.Element],
+        synthetic_first: ET.Element | None,
+    ) -> List[Tuple[ET.Element, str]] | None:
+        """Return one classified visual line's normalized source runs."""
+        if (
+            _normalize_project_text_segments is None
+            or _resolve_project_xml_space is None
+        ):
+            return None
+        try:
+            parent_xml_space = _resolve_project_xml_space(text_el, 'default')
+        except ValueError:
+            return None
+
+        raw_runs: List[Tuple[ET.Element, str, str]] = []
+        for member in line_group:
+            if member is synthetic_first:
+                if member.text:
+                    raw_runs.append((text_el, parent_xml_space, member.text))
+                continue
+            member_runs = cls._inline_text_segments(member, parent_xml_space)
+            if member_runs is None:
+                return None
+            raw_runs.extend(member_runs)
+            if member.tail:
+                raw_runs.append((text_el, parent_xml_space, member.tail))
+        return cls._normalize_source_text_runs(raw_runs)
 
     @staticmethod
     def _unchanged_txbody_group_ids(
@@ -1996,6 +2060,22 @@ class SVGQualityChecker:
         source_runs = cls._single_line_text_runs(text_el)
         if source_runs is None:
             return None
+        return cls._resolved_text_runs(
+            source_runs,
+            parent_by_id,
+            font_sizes,
+            letter_spacings,
+        )
+
+    @classmethod
+    def _resolved_text_runs(
+        cls,
+        source_runs: List[Tuple[ET.Element, str]],
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+    ) -> List[Dict]:
+        """Resolve run metrics shared by single and classified text lines."""
         resolved: List[Dict] = []
         for owner, text in source_runs:
             raw_weight = (
@@ -2234,8 +2314,101 @@ class SVGQualityChecker:
         if _parse_project_geometry_length is None:
             return None
         children = list(text_el)
-        if not children or (text_el.text or '').strip():
+        if not children:
             return None
+        if (text_el.text or '').strip():
+            if _classify_paragraph_block is None:
+                return None
+            paragraph = _classify_paragraph_block(
+                text_el,
+                preserve_line_breaks=True,
+            )
+            if paragraph is None:
+                return None
+            _base, _extras, _breaks, line_groups, synthetic_first = paragraph
+            try:
+                current_y = _parse_project_geometry_length(
+                    text_el.get('y') or '0',
+                    'y',
+                )
+                parent_x = _parse_project_geometry_length(
+                    text_el.get('x') or '0',
+                    'x',
+                )
+            except ValueError:
+                return None
+
+            lines: List[
+                Tuple[ET.Element, float, float, List[Dict], float]
+            ] = []
+            for line_group in line_groups:
+                starter = line_group[0]
+                if starter is synthetic_first:
+                    line_element = text_el
+                    line_x = parent_x
+                    line_y = current_y
+                else:
+                    if starter.get('x') is None:
+                        return None
+                    line_element = starter
+                    try:
+                        line_x = _parse_project_geometry_length(
+                            starter.get('x'),
+                            'x',
+                        )
+                        line_y = (
+                            _parse_project_geometry_length(
+                                starter.get('y'),
+                                'y',
+                            )
+                            if starter.get('y') is not None
+                            else current_y
+                        )
+                        if starter.get('dx') is not None:
+                            line_x += _parse_project_geometry_length(
+                                starter.get('dx'),
+                                'dx',
+                            )
+                        if starter.get('dy') is not None:
+                            line_y += _parse_project_geometry_length(
+                                starter.get('dy'),
+                                'dy',
+                            )
+                    except ValueError:
+                        return None
+
+                current_y = line_y
+                source_runs = cls._paragraph_line_text_runs(
+                    text_el,
+                    line_group,
+                    synthetic_first,
+                )
+                if source_runs is None:
+                    return None
+                try:
+                    runs = cls._resolved_text_runs(
+                        source_runs,
+                        parent_by_id,
+                        font_sizes,
+                        letter_spacings,
+                    )
+                except (KeyError, TypeError, ValueError):
+                    return None
+                if not runs:
+                    continue
+                try:
+                    font_size = max(float(run['font_size']) for run in runs)
+                except (KeyError, TypeError, ValueError):
+                    return None
+                lines.append((
+                    line_element,
+                    line_x,
+                    line_y,
+                    runs,
+                    font_size,
+                ))
+            return lines or None
+
         if any(
             not cls._is_tspan(child)
             or not cls._is_line_tspan(child)
@@ -2584,6 +2757,19 @@ class SVGQualityChecker:
             or top >= other_bottom
         )
 
+    @staticmethod
+    def _bounds_overlap_dimensions(
+        first: Tuple[float, float, float, float],
+        second: Tuple[float, float, float, float],
+    ) -> Tuple[float, float]:
+        """Return positive intersection width and height for two bounds."""
+        left, top, right, bottom = first
+        other_left, other_top, other_right, other_bottom = second
+        return (
+            max(min(right, other_right) - max(left, other_left), 0.0),
+            max(min(bottom, other_bottom) - max(top, other_top), 0.0),
+        )
+
     @classmethod
     def _is_off_canvas_morph_group(
         cls,
@@ -2597,6 +2783,25 @@ class SVGQualityChecker:
         return (
             resolved is not None
             and cls._bounds_are_disjoint(resolved[1], canvas)
+        )
+
+    @classmethod
+    def _root_module_overlap_exempt(
+        cls,
+        group: ET.Element,
+        *,
+        structured_page: bool,
+        canvas: Tuple[float, float, float, float] | None,
+    ) -> bool:
+        """Return whether one root group is not an ordinary module zone."""
+        role = (group.get('data-pptx-role') or '').strip().lower()
+        if role in _STRUCTURAL_ROLES:
+            return True
+        if structured_page and group.get('data-pptx-placeholder') is not None:
+            return True
+        return (
+            canvas is not None
+            and cls._is_off_canvas_morph_group(group, canvas)
         )
 
     @classmethod
@@ -2890,6 +3095,9 @@ class SVGQualityChecker:
                 )
 
         missing: List[str] = []
+        bounded_root_groups: List[
+            Tuple[ET.Element, Tuple[float, float, float, float]]
+        ] = []
         root_groups = [
             child
             for child in list(root)
@@ -2924,7 +3132,10 @@ class SVGQualityChecker:
                 continue
 
             resolved = self._resolved_root_module_bounds(group)
-            if resolved is None or canvas is None:
+            if resolved is None:
+                continue
+            bounded_root_groups.append((group, resolved[1]))
+            if canvas is None:
                 continue
             if self._is_off_canvas_morph_group(group, canvas):
                 continue
@@ -2939,6 +3150,43 @@ class SVGQualityChecker:
                     'keep the root module subcanvas inside the SVG viewBox'
                 ),
             )
+
+        structured_page = all(
+            (root.get(attribute) or '').strip()
+            for attribute in _PPTX_ROOT_STRUCTURE_ATTRS
+        )
+        for index, (first_group, first_bounds) in enumerate(
+            bounded_root_groups,
+        ):
+            if self._root_module_overlap_exempt(
+                first_group,
+                structured_page=structured_page,
+                canvas=canvas,
+            ):
+                continue
+            for second_group, second_bounds in bounded_root_groups[index + 1:]:
+                if self._root_module_overlap_exempt(
+                    second_group,
+                    structured_page=structured_page,
+                    canvas=canvas,
+                ):
+                    continue
+                overlap_width, overlap_height = self._bounds_overlap_dimensions(
+                    first_bounds,
+                    second_bounds,
+                )
+                if (
+                    overlap_width <= _BOUNDS_OVERFLOW_TOLERANCE
+                    or overlap_height <= _BOUNDS_OVERFLOW_TOLERANCE
+                ):
+                    continue
+                result['errors'].append(
+                    f'{_element_label(first_group)} {_BOUNDS_ATTR} overlaps '
+                    f'{_element_label(second_group)} {_BOUNDS_ATTR} by '
+                    f'{overlap_width:.1f}px x {overlap_height:.1f}px; keep '
+                    'ordinary direct-root module zones disjoint beyond the '
+                    f'{_BOUNDS_OVERFLOW_TOLERANCE:.0f}px tolerance'
+                )
 
         if missing:
             sample = '; '.join(missing[:3])
@@ -3022,7 +3270,7 @@ class SVGQualityChecker:
                 parent_by_id,
                 font_sizes,
                 letter_spacings,
-                include_headroom=False,
+                include_headroom=True,
             )
             if estimated is not None:
                 estimated_by_id[id(text_element)] = estimated

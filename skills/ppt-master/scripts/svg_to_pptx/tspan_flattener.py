@@ -12,6 +12,9 @@ performs the same transformation in memory so ``svg_to_pptx`` can consume
 ``svg_output/`` directly without that disk step.
 
 Public API:
+    classify_paragraph_block(text_el, preserve_line_breaks=False)
+        Classify compatible positioned paragraphs without mutating the SVG.
+
     flatten_positional_tspans(tree) -> bool
         Walk the SVG element tree, replace every positional ``<tspan>``
         with an independent ``<text>``, and return whether anything
@@ -55,6 +58,23 @@ def flatten_positional_tspans(
     return _flatten_module().flatten_text_with_tspans(
         tree,
         merge_paragraphs=merge_paragraphs,
+        preserve_line_breaks=preserve_line_breaks,
+    )
+
+
+def classify_paragraph_block(
+    text_el: ET.Element,
+    preserve_line_breaks: bool = False,
+) -> tuple[
+    float,
+    list[float],
+    list[str],
+    list[list[ET.Element]],
+    ET.Element | None,
+] | None:
+    """Return shared positioned-paragraph classification without mutation."""
+    return _flatten_module().classify_paragraph_block(
+        text_el,
         preserve_line_breaks=preserve_line_breaks,
     )
 
