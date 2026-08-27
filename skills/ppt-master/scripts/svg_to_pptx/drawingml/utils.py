@@ -3162,7 +3162,10 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
     """Parse CSS font-family into latin/ea typeface names.
 
     Prioritizes Windows-available fonts since PPTX is primarily opened on
-    Windows. macOS/Linux-only fonts are mapped via FONT_FALLBACK_WIN.
+    Windows. macOS/Linux-only fonts are mapped via FONT_FALLBACK_WIN. The
+    first named Latin face fills ``latin`` and the first named CJK face fills
+    ``ea``; a CJK face also serves ``latin`` when no named Latin face exists,
+    and a generic family fills ``latin`` only when it precedes every named face.
     """
     if not font_family_str:
         return {'latin': 'Segoe UI', 'ea': 'Microsoft YaHei'}
@@ -3175,8 +3178,11 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
         if font in SYSTEM_FONTS:
             continue
         if font in GENERIC_FONT_MAP:
-            resolved = GENERIC_FONT_MAP[font]
-            latin_font = latin_font or resolved
+            # A generic family only fills the Latin slot when it precedes
+            # every named face: a trailing ``sans-serif`` after a named CJK
+            # face must not pull that run's Latin glyphs onto another face.
+            if latin_font is None and ea_font is None:
+                latin_font = GENERIC_FONT_MAP[font]
             continue
 
         win_font = FONT_FALLBACK_WIN.get(font, font)
