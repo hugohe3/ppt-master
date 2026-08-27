@@ -47,8 +47,7 @@ use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
 | Generate PPTX — ordinary Default | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
 | Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
-| Fill Native PPTX | [`workflows/template-fill-pptx.md`](workflows/template-fill-pptx.md) |
-| Enhance Native PPTX | [`workflows/native-enhance-pptx.md`](workflows/native-enhance-pptx.md) |
+| Edit Native PPTX | [`workflows/edit-native-pptx.md`](workflows/edit-native-pptx.md) |
 
 **Hard rule — selected authority only**: Do not load another top-level route's
 procedure after routing. Image to PPTX and Beautify are mutually exclusive;

@@ -11,20 +11,20 @@ This stage is **context-independent**: it reads `notes/*.md` and queries the sel
 **Trigger**: In Generate PPTX, run when the effective `Narration Audio` outcome
 in `design_spec.md` §I is `enabled`; a later explicit request first updates that
 outcome and its provenance. Quick Generate instead runs when the request or
-current agent's active-context decision selects narration. In Enhance Native
-PPTX, run when its confirmed enhancement plan has `audio.enabled: true`.
+current agent's active-context decision selects narration. In Edit Native
+PPTX, run when the confirmed plan enables narration.
 
 **Hard dependency — speaker notes**: Audio requires complete per-slide speaker
 notes. Generate PPTX additionally requires its effective `Speaker Notes`
-outcome to be enabled; Enhance Native PPTX follows its confirmed notes/audio
-plan, where enabling audio also enables notes. Quick records the same dependency
+outcome to be enabled; Edit Native PPTX follows its confirmed plan, where
+narration requires a note for every output page. Quick records the same dependency
 in active context. Do not enter audio generation while the owning route's notes
 are missing or incomplete; generate and validate those notes first, then resume
 this stage.
 
 ## When to Run
 
-- Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Enhance Native PPTX, the notes module writes numeric files such as `001.md`.
+- Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Edit Native PPTX, notes are `notes/<svg-stem>.md` keyed by output page; the round-trip roster comes from `page_plan.json` and copies inherit source notes.
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
 - The stage is page-level only: one note becomes `audio/<stem>.<audio-ext>` plus `audio/<stem>.srt` on provider-timed paths, or one audio file with Qwen / explicit CosyVoice audio-only mode. Never substitute one long track or automatic splitting.
 - Final/literal script notes are synthesized verbatim. Source SRT timecodes are pacing evidence only; new provider timing owns the generated audio/SRT set.
@@ -54,9 +54,9 @@ this stage.
 
 If per-slide notes are missing, recover through the owning route. Generate
 PPTX returns to its enabled notes branch and then runs
-`total_md_split.py <project_path>`; Enhance Native PPTX returns to
-`native-enhance-pptx` Step 6 and writes numeric notes directly. Never run the
-Generate splitter against a Native Enhance project.
+`total_md_split.py <project_path>`; Edit Native PPTX returns to
+[`edit-native-pptx`](../edit-native-pptx.md) §6 and writes `notes/<svg-stem>.md`
+per output page. Never run the Generate splitter against a round-trip workspace.
 
 ---
 
@@ -127,15 +127,15 @@ when narration-cue sync or subtitle delivery needs page-local SRT; on the
 native-export branch, audio-only narration can still calibrate the sound mix
 from its complete per-page tracks.
 
-**Default / Enhance Native — one-shot interaction (mandatory)**:
+**Default / Edit Native — one-shot interaction (mandatory)**:
 
-For Default or Enhance Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
+For Default or Edit Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
 An explicit slideshow-capture choice does not run this availability check; it
 uses the manual Windows playback handoff below.
 
-**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the named provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) and pin that `voice_id`. Quick applies its exception above; Default and Enhance Native confirm only rate + embed + video.
+**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the named provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) and pin that `voice_id`. Quick applies its exception above; Default and Edit Native confirm only rate + embed + video.
 
-**Message template** (Chinese; translate to user's chat language if different). “Embed” means caller-specific integration: SVG re-export for Generate PPTX, or native OOXML application for Enhance Native PPTX.
+**Message template** (Chinese; translate to user's chat language if different). “Embed” means caller-specific integration: SVG re-export for Generate PPTX, or `svg_to_pptx.py --roundtrip --recorded-narration audio` for Edit Native PPTX.
 
 > 检测到 notes 主语言为 **<语言>**（locale: `<locale>`）。基于 deck 调性（<风格>），我推荐以下配置：
 >
@@ -169,8 +169,9 @@ uses the manual Windows playback handoff below.
 ## Step 4: Execute (no further interaction)
 
 **Blocking notes preflight**: `notes_to_audio.py` resolves the complete notes
-roster from `svg_output/*.svg` on Generate projects or
-`analysis/slide_index.json` on Native Enhance projects. Before any TTS request,
+roster from `svg_output/*.svg` on Generate projects or from `page_plan.json` /
+the identity roster on Edit Native PPTX round-trip workspaces (copies inherit
+source notes). Before any TTS request,
 every expected note must exist, be readable, and contain spoken text. Exit code
 `2` returns the caller to its notes-generation step; never continue with partial
 audio generation.
@@ -408,7 +409,7 @@ that handoff remains incomplete until a real capture is accepted.
 | Caller | After audio generation |
 |---|---|
 | Generate PPTX | Derive narration-cued motion when selected; otherwise pass canonical motion, inherit base motion, or use explicit all-motion-off. Export with `--recorded-narration audio`; Quick also passes `--quick-generate --with-notes`. Native video uses conversion trace plus raw export and cue mix as required. Explicit capture returns the narrated PPTX for the handoff above, skips trace-only sound work and mixing, then aligns subtitles against the accepted capture. |
-| Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9. Native video passes its final PPTX to `powerpoint_video.py`; explicit capture uses the same handoff above and skips mixing. |
+| Edit Native PPTX | Return to [`edit-native-pptx`](../edit-native-pptx.md) §7 and export with `--roundtrip --recorded-narration audio --use-narration-timings`. Native video passes its final PPTX to `powerpoint_video.py`; explicit capture uses the same handoff above and skips mixing. |
 
 For Qwen or explicit CosyVoice audio-only mode, embed/export the audio normally
 but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and

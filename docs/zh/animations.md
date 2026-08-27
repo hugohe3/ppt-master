@@ -248,7 +248,7 @@ PPT Master 会严格校验动画设置：未知效果或 Start 模式、非法�
 | 静态结构 | 背景、Master/Layout 内容、placeholder 与页面框架保持静态 |
 | 不支持的对象 build | 不会从分组 SVG 推导段落/文字范围 build、自定义自由动作路径、原生 Chart/SmartArt 分步 build 或媒体播放命令 |
 | 输出路线 | 动画存在于从 `svg_output/` 生成的原生 PPTX；`svg_final/` 只是静态预览 |
-| 现有 PPTX 路线 | Template Fill 与 Native Enhance 保留源对象动画，不把它翻译成生成路线的动画模型 |
+| Edit Native PPTX | 通过 round-trip 工作区保留来源对象动画，不把它翻译成生成路线的动画模型 |
 | PPTX-to-SVG 回导 | 只重建当前注册表内具有精确原生时长且可唯一映射到顶层 group 的记录；高级/build/media timing 保留诊断 |
 | 播放兼容性 | Microsoft PowerPoint 桌面版是主要验证目标；Keynote、WPS、LibreOffice 与较旧 Office 可能重新映射或忽略个别效果 |
 

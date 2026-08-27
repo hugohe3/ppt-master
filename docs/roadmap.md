@@ -12,7 +12,7 @@
 
 The defining axis is **native depth**: author or preserve more of PowerPoint's own object model, behavior, and reusable structure, release after release — converging with PowerPoint itself. The [positioning charter](./project-positioning.md) states the full thesis; the [PowerPoint ↔ SVG Mapping Guide](./powerpoint-svg-mapping.md) records the current boundary honestly, feature by feature.
 
-Today that axis is expressed through four explicit artifact routes: **Generate PPTX** authors newly designed slides through constrained SVG → DrawingML; **Create Template** produces reusable Brand / Style / Layout / Deck workspaces; **Fill Native PPTX** and **Enhance Native PPTX** preserve existing packages through scoped OOXML operations.
+Today that axis is expressed through three explicit artifact routes: **Generate PPTX** authors newly designed slides through constrained SVG → DrawingML; **Create Template** produces reusable Brand / Style / Layout / Deck workspaces; **Edit Native PPTX** imports an existing deck into a source-preserving round-trip workspace and edits only planned pages or overlays.
 
 ---
 
@@ -86,7 +86,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Slide size | Systematized | The canvas contract selects the presentation format; the SVG `viewBox` is the single geometry truth with fail-closed validation, and every page in a deck must agree on one format |
 | Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Flat Quick keeps converter-default Theme scaffolding. Structured Quick retains installed per-Master source Themes when available and infers Master title/body size defaults from semantic slot carriers; SVG-derived page colors and fonts remain direct values |
 | Font embedding | Bounded by design | Fonts are never embedded in the package; a brand or web face leads only after confirmed availability on the target system, otherwise export uses a safe family and keeps the intended face recorded in the Design Spec |
-| Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
+| Slide sections | Asymmetric by design | Edit Native PPTX retains existing section metadata when the identity roster leaves presentation structure untouched; a `page_plan.json` roster drops sections. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
 | Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
 | Placeholders | Systematized | Template workspace contracts, with strict/adaptive exporter behavior derived per deck |
 | Date, footer & slide-number fields | Bounded by design | Structured template routes author real date / footer / slide-number placeholders under the placeholder contract. Free-design decks deliberately keep drawn page numbers and footers as ordinary text: a page numeral is often a design element rather than a standard field, telling the two apart is an intent judgment, and inserting a standard field by hand in PowerPoint takes seconds and is done once |
@@ -145,7 +145,7 @@ The Generate PPTX route is built around full control of newly authored shapes, t
 
 **The basic need is actually simple**: if you just need "replace Excel data into fixed positions in a PPT template", have the AI write a few lines of `python-pptx`. You don't need this pipeline.
 
-> **Supported boundaries**: Fill Native PPTX (`template-fill-pptx`) directly refills selected source slides. Create Template (`create-template`) derives an internal authored or mirror implementation from the natural-language request and source evidence. Strategist later derives strict/adaptive exporter behavior from the actual template and current content. What remains out of scope is unreviewed, schema-free substitution against arbitrary third-party placeholder systems.
+> **Supported boundaries**: Edit Native PPTX (`edit-native-pptx`) imports an existing deck into a round-trip workspace, references unchanged pages byte-for-byte, and edits only planned pages or overlays. Create Template (`create-template`) derives an internal authored or mirror implementation from the natural-language request and source evidence. Strategist later derives strict/adaptive exporter behavior from the actual template and current content. What remains out of scope is unreviewed, schema-free substitution against arbitrary third-party placeholder systems.
 
 ### Make native PowerPoint charts the default
 

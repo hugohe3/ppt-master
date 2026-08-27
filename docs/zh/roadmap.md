@@ -12,7 +12,7 @@
 
 项目的主轴是**原生深度**：逐版本创作或保留更多 PowerPoint 自身的对象模型、行为与可复用结构——持续向 PowerPoint 本身靠拢。完整论述见[项目定位章程](./project-positioning.md)；[PowerPoint ↔ SVG 映射指南](./powerpoint-svg-mapping.md)逐特性诚实记录当前边界。
 
-这条主轴今天体现为四条显式产物路线：**Generate PPTX** 通过受约束的 SVG → DrawingML 创作全新设计的页面；**Create Template** 产出可复用的 Brand / Style / Layout / Deck 模板工作区；**Fill Native PPTX** 与 **Enhance Native PPTX** 通过限定范围的 OOXML 操作保留既有文件包。
+这条主轴今天体现为三条显式产物路线：**Generate PPTX** 通过受约束的 SVG → DrawingML 创作全新设计的页面；**Create Template** 产出可复用的 Brand / Style / Layout / Deck 模板工作区；**Edit Native PPTX** 把既有 deck 导入保留来源的 round-trip 工作区，只编辑计划中的页面或叠加内容。
 
 ---
 
@@ -86,7 +86,7 @@
 | 画布尺寸 | 系统化 | 画布契约选定演示文稿格式；SVG `viewBox` 是页面几何的唯一真值，配 fail-closed 校验，且同一 deck 的所有页面必须使用同一格式 |
 | Theme | 系统化 | 有锁的 Default 导出根据配色与字体合同逐 deck 派生 `clrScheme`、major/minor 字体与 Master 标题／正文默认字号。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值；SVG 派生的页面颜色与字体仍按直接值写入 |
 | 字体嵌入 | 有意边界 | 从不在包内嵌入字体；品牌 / 网络字体只有确认目标系统可用后才领衔，否则导出安全字体族，并把原意向字体记录在 Design Spec 中 |
-| 幻灯片节 | 有意的不对称 | 源保留型原生路线把既有节元数据作为未改动的包结构保留；生成或重建页面列表的路线不创作 PowerPoint 原生节，因为页面角色与可选的 Design Spec Part 并不构成所有路线都具备的必需章节合同。节只改变缩略图栏的组织方式，从不改变任何页面外观；长 deck 需要分组时，在 PowerPoint 里手动分节约一分钟，且只做一次 |
+| 幻灯片节 | 有意的不对称 | Edit Native PPTX 在 identity roster 不改 presentation 结构时保留既有节元数据；使用 `page_plan.json` 重建页面清单时会丢弃节。生成或重建页面列表的路线不创作 PowerPoint 原生节，因为页面角色与可选的 Design Spec Part 并不构成所有路线都具备的必需章节合同。节只改变缩略图栏的组织方式，从不改变任何页面外观；长 deck 需要分组时，在 PowerPoint 里手动分节约一分钟，且只做一次 |
 | Master / Layout | 系统化 | 结构化路线输出真实的 `p:sldMaster` / `p:sldLayout` part |
 | Placeholder | 系统化 | 模板工作区契约，strict/adaptive 导出行为逐 deck 推导 |
 | 日期、页脚与页码字段 | 有意边界 | 结构化模板路线按 placeholder 契约创作真实的日期 / 页脚 / 页码 placeholder。自由设计路线有意让画出的页码与页脚保持普通文本：页码数字经常本身就是设计元素而非标准字段，区分两者是意图判断；真需要标准页码域时在 PowerPoint 里手动插入只要几秒，且只做一次 |
@@ -145,7 +145,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 
-> **已支持边界**：Fill Native PPTX（`template-fill-pptx`）直接回填选中的源页面；Create Template（`create-template`）根据自然语言请求和来源证据，在内部推导重新创作或 mirror 物化实现；Strategist 再根据真实模板和当前内容推导 strict/adaptive 导出行为。仍不做未经审查、没有契约的任意第三方 placeholder 全自动替换。
+> **已支持边界**：Edit Native PPTX（`edit-native-pptx`）把既有 deck 导入 round-trip 工作区，逐字节引用未改页面，只编辑计划中的页面或叠加内容；Create Template（`create-template`）根据自然语言请求和来源证据，在内部推导重新创作或 mirror 物化实现；Strategist 再根据真实模板和当前内容推导 strict/adaptive 导出行为。仍不做未经审查、没有契约的任意第三方 placeholder 全自动替换。
 
 ### 把原生 PowerPoint 图表设为默认路线
 

@@ -42,7 +42,7 @@ may combine only with non-overlapping kinds. Default permits one explicit root
 beside registered choices; Quick applies the same kind constraint. Reject
 duplicate kinds before validation.
 
-**Hard rule — raw source boundary**: A raw PPTX is not a template workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first; its validated workspace-root handoff becomes a Stage-1 candidate and is preselected only when it is the sole supplied root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
+**Hard rule — raw source boundary**: A raw PPTX is not a template workspace. Raw PPTX plus new content uses [`edit-native-pptx`](../edit-native-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first; its validated workspace-root handoff becomes a Stage-1 candidate and is preselected only when it is the sole supplied root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
 **Current-contract gate**: Reject flat-root, semantic-legacy, or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved.
 

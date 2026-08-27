@@ -4,7 +4,7 @@ description: Generate profile for 1:1, content-faithful re-layout of an existing
 
 # Beautify PPTX (Re-layout) Profile
 
-> Generate profile, not a top-level route. [`template-fill-pptx.md`](../template-fill-pptx.md) reuses a deck's design and swaps in new content; this profile keeps a deck's content and redoes its layout.
+> Generate profile, not a top-level route. [`edit-native-pptx.md`](../edit-native-pptx.md) keeps a deck's native design and edits selected pages; this profile keeps a deck's content and redoes its layout.
 
 Re-lays-out an existing `.pptx`: text is preserved **verbatim** and source
 palette / fonts are the preselected recommendation. Only explicit user
@@ -32,7 +32,7 @@ Beautify constraints in this file apply in either runtime.
 
 **Hard rule — content is frozen**: every text string from the source is preserved exactly (no add / remove / reword / reorder). Beautification freedom lives only in layout, hierarchy, spacing, and visual rhythm.
 
-**Hard rule — not a patch, not a fill**: this regenerates a native deck through the selected Default or Quick SVG → PPTX runtime. It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](../template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
+**Hard rule — not a patch, not a fill**: this regenerates a native deck through the selected Default or Quick SVG → PPTX runtime. It does **not** edit the source file in place, and it is **not** [`edit-native-pptx`](../edit-native-pptx.md) (which restores unchanged source slides and edits only planned pages). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
 
 **Distinct from mirror templates**: `replication_mode: mirror` ([`executor-structured.md`](../../references/executor-structured.md) §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, source identity recommended unless the user overrides it.
 

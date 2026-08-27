@@ -339,7 +339,7 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。默认 Generate 流程会运行 `finalize_svg.py` 并生成自包含预览 `svg_final/`；PowerPoint 手工“转换为形状”不在支持范围。用户可显式启用[快速生成](./skills/ppt-master/workflows/profiles/quick-generate.md)：它跳过 Strategist、确认、`design_spec.md`、`spec_lock.md` 与 `finalize_svg.py`——你明确提出的要求照做，你没提的由 Agent 在一次有效上下文中直接决定；仍按需转换来源、研究事实缺口、应用共享 mode / visual style / 美学规范、准备图片 / 图标，并把公式直接创作为原生行内或块级 marker，同时考虑原生形状与数据可视化，随后按规范手写 SVG，通过无锁的 Quick 最终质量检查，再导出最终 PPTX。它不写替代计划，上下文丢失后不能续接。公式 marker 会把 LaTeX payload 编译为 PowerPoint 2010+ 可编辑 OMML；块级 group 与行内 `<tspan>` run 都保留普通 SVG 预览，导出时将其替换。Keynote、WPS、LibreOffice 等非 PowerPoint 客户端的公式显示与编辑能力不在支持合同内。原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时启用。Quick 使用默认输出路径时仍会生成普通 postflight 报告，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；显式指定输出路径时沿用普通流程不创建备份的行为。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；可加 `--native-charts-and-tables`，把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。这两种图表/表格导出变体都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
 
-> **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
+> **已有一份想复用的 `.pptx`？** 把 deck 连同素材给 AI，说「套模板」即可——Edit Native PPTX 会保留原设计，逐字节保留未改页面，只编辑选中页面，支持选页/重排，并可添加讲稿或旁白。详见 [常见问题](./docs/zh/faq.md) 与 [工作流](./skills/ppt-master/workflows/edit-native-pptx.md)。
 
 > **遇到问题？** AI 迷失上下文时，让它先读 `skills/ppt-master/SKILL.md`；其他问题查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
 

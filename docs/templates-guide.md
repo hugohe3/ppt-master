@@ -18,7 +18,7 @@ Choose the route by the artifact you already have and the result you want:
 
 | Starting point and goal | Route | Copy-ready request |
 |---|---|---|
-| A raw `.pptx`; keep its existing slide shells and replace content | **Fill Native PPTX** | `Fill projects/source/template.pptx with projects/source/content.md.` |
+| A raw `.pptx`; keep its existing slide shells and replace content | **Edit Native PPTX** | `Fill projects/source/template.pptx with projects/source/content.md; keep its design and use only the pages that fit.` |
 | A reusable Brand/Style/Layout/Deck workspace; generate a fresh deck | **Generate PPTX → Stage-1 template controls** | `Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/.` |
 | A PPTX, SVG set, brand guide, website, images, or mixed references; first build a reusable system | **Create Template → Generate PPTX** | `Use /create-template to create a reusable Deck workspace from projects/brand/our_deck.pptx.` |
 

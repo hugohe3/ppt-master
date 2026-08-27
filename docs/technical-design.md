@@ -65,9 +65,9 @@ whole-slide screenshot skin remains forbidden. Quick bypasses separate
 planning/confirmation, the first-page gate, and preview finalization; source
 understanding and resource preparation still run as needed, and one lockless
 final quality gate remains. Exactly one runtime procedure is loaded.
-Create Template has its own workspace lifecycle, while Fill Native PPTX and
-Enhance Native PPTX operate directly on OOXML; the route table later in this
-document covers all four.
+Create Template has its own workspace lifecycle, while Edit Native PPTX imports
+an existing deck into a source-preserving round-trip workspace; the route table
+later in this document covers all three top-level routes.
 
 ```
 User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
@@ -86,7 +86,6 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
 [Template Candidate Preparation (Step 3)] — internal only; no UI, wait, selection, template read, or installation
     Prepare indexed Brand/Style/Layout/Deck candidates and supplied exact roots
     Stage 1 confirms communication plus free design/template use together; selected workspaces are then validated and installed before Stage 2
-    Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - Stage 1 communication confirmation + final Stage 2 solution/production confirmation → design_spec.md + spec_lock.md
     ↓
@@ -164,18 +163,17 @@ Minimal semantic markers do not weaken that closure. Free-design, brand/style-on
 | Project-canonical SVG syntax, compatible forms, and mapping boundary | The split authority set selected through [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
 | Master/Layout/Slide packaging and native-object mapping | SVG-to-PPTX translation; it may reorganize represented content but does not invent visible content |
 | Animations, transitions, speaker notes, and narration | Dedicated sidecars/assets and PPTX package post-processing |
-| Direct native-PPTX editing | The selected native workflow's PPTX/OOXML contract |
+| Native-PPTX preservation editing | The Edit Native PPTX round-trip workspace and source-preserving exporter |
 
 This is a page-design closure rule, not a claim that SVG describes the entire PPTX package. Rebuilding the visible slide from its completed SVG is the relevant invariant; reconstructing notes, audio, timing, relationships, or direct native edits from SVG alone is not.
 
 `svg_final/` does not change that boundary. In the default pipeline, Step 7 derives visual previews from `svg_output/`: supported bitmap/SVG resources are inlined when processing succeeds, while EMF/WMF stay external for native passthrough; unresolved ordinary images retain their original references, and the current finalizer counts those processing errors without failing the whole run. These files support IDE/browser inspection and manual insertion as SVG pictures. They are not a second PPTX export route and carry no PowerPoint Convert-to-Shape compatibility contract. Editable shapes come only from the project converter translating `svg_output/` into native DrawingML PPTX.
 
-Existing-PPTX requests split by mutation model: the two native workflows bypass SVG, while `beautify-pptx` remains a Generate PPTX profile that regenerates the visible design:
+Existing-PPTX requests split by mutation model: Edit Native PPTX uses source-preserving round-trip authoring, while `beautify-pptx` remains a Generate PPTX profile that regenerates every visible page:
 
 | Workflow | Input role | Output mechanics | Why it is separate |
 |---|---|---|---|
-| `template-fill-pptx` | a native PPTX template deck plus new material | clone selected slides and patch text / tables / charts in OOXML | preserves the user's PowerPoint slide shells instead of converting them into SVG |
-| `native-enhance-pptx` | a finished PPTX whose layout/content should remain stable | patch notes, narration, timings, and transitions directly in OOXML | appends native enhancements without regenerating design |
+| `edit-native-pptx` | an existing PPTX whose native design must survive; new material and delivery overlays are optional | import with `pptx_to_svg.py --roundtrip`, reference unchanged pages, edit selected compact SVGs, then export with `svg_to_pptx.py --roundtrip` | unchanged pages restore byte-for-byte, unchanged objects on edited pages restore natively, and notes/motion remain overlays |
 | `beautify-pptx` | an existing PPTX whose page count/order/wording must stay 1:1 | extract source facts, regenerate a native deck through the SVG pipeline | changes layout and hierarchy only; it is not direct in-place editing |
 
 ---
@@ -193,15 +191,15 @@ Use this table before reasoning about implementation details. Most failed runs s
 | One or more images contain page frames that must become layered editable slides | Generate PPTX + Image to PPTX (`image-to-pptx`) profile | Codex is currently required and the profile always activates Quick; normalize all represented frames first and map each frame to one slide; restore ordinary text natively; reference-reconstruct low-resolution logos/icons/decorative graphics only with identity, silhouette, proportions, colors, and wordmarks locked where applicable; charts/tables/data graphics require native objects with verifiable values, exact source assets, or `manual_required`; build scenes as at least a clean base plus subject/foreground layers; non-overlapping padded-bbox objects may share one generation plate before grid slicing or SVG bounding-box cropping; no similar substitute or whole-slide screenshot skin |
 | Explicit quick generation | Generate PPTX + `quick-generate` profile | convert/read sources, research factual gaps, and prepare required resources as needed; explicit user requirements are followed and the current agent decides every remaining content, page, visual, and resource question in active context, skips Strategist/confirmation/spec/lock/finalize, hand-authors SVG, passes one lockless final gate, and exports the final PPTX |
 | PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
-| Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
+| Raw PPTX template plus new material/topic | Edit Native PPTX (`edit-native-pptx`) | import a round-trip workspace; select, reorder, repeat, or omit pages with `page_plan.json`; edit only planned pages |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | content and pagination stay locked; explicit Quick intent uses Quick, otherwise Default |
-| Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
+| Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Edit Native PPTX (`edit-native-pptx`) | overlay enhancements on source-preserved slides; visible authoring is not rebuilt |
 | User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root as a Generate Stage-1 candidate; structured children may export a review PPTX |
 | Default Generate reaches planning; an exact current-contract workspace root or current Create Template handoff may already be present | Generate PPTX Stage 1 | Step 3 prepares candidates without interaction; Stage 1 confirms communication plus free design/template use together; ordinary requests default to free design, explicit template intent or any root defaults to template mode, and only one root is preselected; selected workspaces are validated and installed before Stage 2 |
 | User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
-Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Both use Generate PPTX; preservation selects the `beautify-pptx` profile, while restructuring uses the normal profile. In either case, explicit Quick intent selects Quick; otherwise Default applies.
+Ambiguous "optimize this PPT" requests reduce first to one discriminator: redesign the visible pages through Generate, or preserve the native deck and edit it through Edit Native PPTX. Within Generate, preserving page count/order/wording selects the `beautify-pptx` profile, while rebuilding the story uses the normal profile. Explicit Quick intent selects Quick inside Generate; otherwise Default applies.
 
 ---
 
@@ -269,11 +267,10 @@ source material or topic
                                         + validation/<output_stem>.report.json
                                         + backup/<ts>/svg_output/ [default output path]
 
-Direct OOXML routes:
-analysis/<stem>.slide_library.json + source PPTX + fill_plan.json
-    └─> template_fill_pptx.py -> exports/*.pptx
-source PPTX project copy + enhancement plan + notes/audio/timing assets
-    └─> native_enhance_pptx.py -> exports/*.pptx
+Edit Native PPTX:
+source PPTX
+    └─> pptx_to_svg.py --roundtrip -> authoring-svg-flat/ [+ page_plan.json]
+          └─> svg_to_pptx.py --roundtrip -> exports/*.pptx
 ```
 
 The critical split is that `svg_output/` is authored state, while `svg_final/`, `exports/`, and `backup/` are derived delivery or archival state. Deleting that distinction makes validation, re-export, and manual repair much harder to reason about.
@@ -324,7 +321,7 @@ Source documents (PDF / DOCX / EPUB / XLSX / PPTX / web pages) are normalized be
 | Content contract | `sources/` content-type files (primarily `<stem>.md`) | `source_to_md/*` converters + `import-sources` | text, tables, chart values, SmartArt node wording, citations, and source narrative |
 | Structured analysis | `analysis/*.json` / `analysis/*.csv` | intake and analysis tools | PPTX identity, slide geometry, native tables/charts, SmartArt relationships, and measurable image facts such as dimensions, aspect ratio, reference count, media type, and renderability |
 
-For a PPTX source, `project_manager.py import-sources` first moves or copies the original into the project's `sources/` under the ownership boundary, then runs `pptx_intake.py` against that archived path. Only when no explicit or existing canonical same-stem Markdown is present does it finally invoke `ppt_to_md.py`. A normal first import therefore produces both fact channels, while deduplication may skip redundant Markdown conversion and an intake failure is recorded as an import note rather than fabricated analysis. Markdown remains the main generation pipeline's content source. A successful intake bundle writes `<stem>.identity.json`, `<stem>.slide_library.json`, and merges a compact multi-deck index into `analysis/source_profile.json`. Strategist reads the compact index for source facts and opens raw per-deck artifacts only when a workflow needs them. That distinction matters: the main pipeline may rethink page count and story, while `template-fill` and `beautify` promote parts of the same intake facts into stronger constraints.
+For a PPTX source, `project_manager.py import-sources` first moves or copies the original into the project's `sources/` under the ownership boundary, then runs `pptx_intake.py` against that archived path. Only when no explicit or existing canonical same-stem Markdown is present does it finally invoke `ppt_to_md.py`. A normal first import therefore produces both fact channels, while deduplication may skip redundant Markdown conversion and an intake failure is recorded as an import note rather than fabricated analysis. Markdown remains the main generation pipeline's content source. A successful intake bundle writes `<stem>.identity.json`, `<stem>.slide_library.json`, and merges a compact multi-deck index into `analysis/source_profile.json`. Strategist reads the compact index for source facts and opens raw per-deck artifacts only when a workflow needs them. That distinction matters: the main pipeline may rethink page count and story, while `beautify` promotes parts of the same intake facts into stronger constraints.
 
 Converter-generated image assets are also normalized. Companion `<stem>_files/` directories are imported into the project `images/` pool, `image_manifest.json` is merged by filename, and Markdown asset references are rewritten when imported names change. Office vector images (`.emf` / `.wmf`) are first-class runtime assets: they are not rasterized during intake, `finalize_svg.py` leaves them external for the native path, and `svg_to_pptx.py` embeds them as Office vector media so CJK fonts and vector detail are not lost.
 
@@ -392,7 +389,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 | `svg_final/` is mandatory but derived in default delivery | it is regenerated from `svg_output/` for visual preview or manual insertion as an SVG picture; supported resources are inlined when possible while EMF/WMF retain an external-reference exception, and it never becomes the native export source of truth; quick-generate skips this artifact |
 | Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
 | PowerPoint Convert to Shape is outside the compatibility contract | `svg_final/` may be inserted as an SVG picture, but the converted structure and visual result are not guaranteed and do not constrain the supported SVG feature set |
-| Direct OOXML routes do not enter the SVG pipeline | preservation workflows patch native PPTX parts directly |
+| Edit Native PPTX does not enter the Generate SVG pipeline | its round-trip workspace uses source-backed `authoring-svg-flat/` pages and a source-preserving exporter rather than generating a new deck |
 | Image facts come from regenerated metadata | `analysis/image_analysis.csv` is re-derived from the live `images/` folder; in the default pipeline Strategist uses source context first and inspects only a specifically ambiguous asset when semantics or safe placement cannot otherwise be resolved, while in `quick-generate` the current agent applies the same bounded analysis while preparing resources; SVG authoring does not rescan source pixels |
 | Raw PPTX templates are not Step 3 candidates | Step 3 accepts only exact reusable-template workspace roots as candidate input |
 
@@ -483,7 +480,7 @@ place both rule sets into the same native Master/Layout graph.
 
 When several roots are selected, each distinct root is installed once and every contribution remains its own spec file. The complete set contains at most one contribution per kind; all four kinds may coexist, and a multi-kind project root is atomic. Ownership is resolved segment-level while reading, not field-level: Brand owns identity, Style owns direction/method defaults, Layout owns structure when present, and Deck otherwise owns structure while always retaining descriptive reusable-application context and any identity not overridden by Brand. Only the effective Layout-or-Deck structural roster is installed. Library/explicit provenance never changes that order. The current project's application contract comes only from confirmed Stage 1; Deck context is comparison input for Stage 2, not an override. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity, and its method/composition expectations must be compatible with the selected structure. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Duplicate kinds are rejected before installation. This keeps template composition debuggable: the installed set is self-describing, since each file names its kind and id and retains its source body apart from provenance.
 
-**Raw PPTX files cannot be Step 3 workspaces.** Normal Generate may use a PPTX as source material, and `beautify-pptx` may redesign it while preserving page count, order, and per-page wording 1:1; neither treats the source PPTX as a Step 3 template. When a raw PPTX is used as a template or native slide shell and filled with new material, the default route is Fill Native PPTX. If the request permits splitting, merging, dropping, reordering, or narrative restructuring, it remains Generate. Only a request to create a reusable template workspace and reuse that design system in SVG-route Step 3 first runs Create Template and then supplies the generated workspace root.
+**Raw PPTX files cannot be Step 3 workspaces.** Normal Generate may use a PPTX as source material, and `beautify-pptx` may redesign it while preserving page count, order, and per-page wording 1:1; neither treats the source PPTX as a Step 3 template. When a raw PPTX is used as a template or native slide shell, or its existing pages are selected, reordered, repeated, or omitted without redesign, the default route is Edit Native PPTX. Requests that split, merge, re-outline, or redesign the deck remain Generate. Only a request to create a reusable template workspace and reuse that design system in SVG-route Step 3 first runs Create Template and then supplies the generated workspace root.
 
 **Template contracts are opt-in; catalog references and icons are not.** The asymmetry is intentional: Layout locks reusable structure, Style locks direction/method defaults, Brand locks identity, and Deck combines a recurring application with identity and structure. Page-local Chart/Table references plus icons are reusable primitives that do not by themselves impose a deck-wide contract. Qualitative Structure is instead generated from the current page's relationships by Executor and has no catalog SVG or key. Chart/Table catalogs share the `templates/` tree with reusable workspaces, but their ownership remains page-local.
 
@@ -544,9 +541,9 @@ Standard `<a href>` wraps either a complete visible object/group or one or more
 inline `<tspan>` runs. Absolute external URIs become external hyperlink
 relationships; exact 1-based `#slide-N` targets become internal Slide
 relationships with `ppaction://hlinksldjump`. The PPTX importer reconstructs
-the same anchors for supported shape and run clicks. Fill Native remaps an
-internal jump only when its output target is unambiguous, while Enhance Native
-leaves existing hyperlink XML and relationships untouched. Mouse-over, custom
+the same anchors for supported shape and run clicks. Edit Native PPTX keeps
+hyperlink XML and relationships untouched on unchanged pages and, with a page
+plan, remaps an internal jump only when its output target is unambiguous. Mouse-over, custom
 show, navigation-command, program/macro/OLE/file, and arbitrary action settings
 remain outside the contract. One source-only transport exception preserves a
 PowerPoint shape that has both a whole-shape click and inner run links:
@@ -564,7 +561,7 @@ Generate routing selects one runtime authority before loading its procedure: [`w
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
-Three boundaries are especially important to the architecture. First, page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, default-pipeline cadence is `P01 → first-page gate → remaining pages (one page gate per first-exercised not-exercised item) → final gate`. P01 is a method sample: execution emits a `gate-signal`, then carries resolved method rules into later pages; no page batch interrupts P02 through the final page, and the only mid-run checker call is the first-exercise page gate. `quick-generate` retains serial hand-authoring and uses P01 as its visual-system calibration baseline, skips the first-page gate, and runs one lockless final gate after the complete roster exists. Third, routing is deterministic: raw PPTX template requests, beautify-profile requests, native enhancement, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
+Three boundaries are especially important to the architecture. First, page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, default-pipeline cadence is `P01 → first-page gate → remaining pages (one page gate per first-exercised not-exercised item) → final gate`. P01 is a method sample: execution emits a `gate-signal`, then carries resolved method rules into later pages; no page batch interrupts P02 through the final page, and the only mid-run checker call is the first-exercise page gate. `quick-generate` retains serial hand-authoring and uses P01 as its visual-system calibration baseline, skips the first-page gate, and runs one lockless final gate after the complete roster exists. Third, routing is deterministic: raw PPTX template requests, beautify-profile requests, Edit Native PPTX requests, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
 In the default pipeline, the Role Switching Protocol (mandated read of `references/<role>.md` before mode change) serves two reinforcing purposes: forcing fresh role instructions into context overrides drift from the previous mode, and the visible marker in the conversation transcript creates an audit trail so the user can see when the agent moved between modes — critical when reviewing why a particular decision was made.
 
@@ -788,15 +785,9 @@ This is easy to miss when reading the code. Shared cleanup modules, the local-re
 
 ---
 
-## Direct OOXML Routes
+## Native PPTX Editing
 
-Not every PPTX-related request should regenerate slides. PPT Master now has direct OOXML routes for cases where the native deck itself is the object being edited.
-
-`template_fill_pptx.py` is a thin CLI wrapper over `scripts/template_fill_pptx/`. Its analyzer extracts a slide library with text slots, tables, charts, and geometry; the fill plan selects source slides, confirms replacements, then the applier clones slides and patches XML parts directly. This route deliberately avoids SVG: a user who supplies a PowerPoint template usually wants those native slide masters, placeholders, tables, and charts to remain PowerPoint-native.
-
-`native_enhance_pptx.py` is the stable entry point for finished-deck enhancement. It delegates to `native_enhance_pptx_core.py` and patches the PPTX package from a project copy: notes, global or per-slide page transitions, recorded narration media, slide timings, and related metadata. Intake records a source hash and ordered slide-part roster; validate/apply reject source drift or incomplete requested material. A read-only delivery check inventories package integrity, fonts, media, hidden slides, size, and existing motion at intake/preflight, then audits the candidate before atomic publication. The retired `native_narration_pptx.py` name remains only as a thin CLI compatibility shim. The contract is preservation: existing content, layout, and formatting are not regenerated.
-
-These direct routes share some analysis primitives with the main pipeline, but at different depths. Template Fill consumes the standard PPTX intake slide library. Native Enhance uses `ppt_to_md.py` for content understanding, generates its own lightweight `slide_index.json` from the archived package, and keeps machine delivery reports under `validation/`. Neither shares the SVG authoring or post-processing stages. That separation is intentional: SVG generation is a design synthesis path; direct OOXML editing is a preservation path.
+Not every PPTX-related request should regenerate every slide. Edit Native PPTX is the current preservation route: it imports the source deck with `pptx_to_svg.py --roundtrip`, references unchanged pages byte-for-byte, edits only planned compact SVG pages, and exports through `svg_to_pptx.py --roundtrip`. `page_plan.json` may select, reorder, repeat, or omit pages; notes, narration, timings, and transitions remain overlays on preserved slides.
 
 ---
 
@@ -862,7 +853,7 @@ it as a picture or SVG-derived shapes would violate round-trip intent.
 
 For supported parsed column/bar/line/area, pie/doughnut, scatter, and bubble charts, a missing baked preview is replaced by a deterministic readable SVG fallback marked `data-pptx-fallback-kind="normalized"`. The importer also covers the verified column/line/area combo subset, canonical four-series OHLC stock, area charts with numeric date axes, verified scatter/bubble charts with the closed `axes.x` / `axes.y` contract, radar, safe `of_pie` `serLines`, axis/title/legend normalization, and bounded bar/column gap/overlap cases. `gapWidth` is accepted only as one integer in `0..500`, and `overlap` only as one integer in `-100..100`; these presentation values intentionally normalize in native output, while malformed, duplicate, or out-of-range input fails closed. Combo plots may retain independent primary/secondary category caches and workbook ranges. XY import derives `scatter_style` from uniform effective series line/marker/smooth state. The closed category/value and XY axis contracts retain kind, position, visibility, label position, number format, min/max/major unit, reversal, and major gridlines for native read-back; the normalized XY fallback consumes only the two `major_gridlines` flags.
 
-ChartEx import is deliberately closed to seven validated data models: `treemap`, `sunburst`, `histogram`, `pareto`, `box_whisker`, `waterfall`, and `funnel`. Their supported hierarchy/category/value/series/subtotal data topology round-trips through native output and reimport. Numeric caches must be non-empty and finite, with canonical non-negative counts/indexes and exact contiguous point topology. Source ChartEx style, axes, labels, and binning may normalize; this is not arbitrary ChartEx import or presentation fidelity. C4/C5 do not expand the normalized renderer, so valid active types outside it still use `data-pptx-fallback-kind="placeholder"` without a source preview. Full `AxisSpec`, arbitrary ChartEx families, arbitrary rich OOXML, rotated/flipped/3D charts, unverified combo/stock/date-axis variants, and other unmodeled semantics remain outside the active import subset. Native replacement may normalize payload-external presentation details and retains the data-model-first warning. Default export keeps preview children as editable DrawingML shapes; only explicit `--native-charts-and-tables` activates PowerPoint-native Chart/Table objects. JSON-first ignores preview freshness; SVG-first requires a present, valid, fresh `data-pptx-fallback-sha256` or native replacement fails closed. Marker presence, semantic tables, and imported chart packages never activate replacement implicitly. This importer/exporter pairing is a reconstruction aid, not a preservation-route substitute for `template-fill-pptx` or `native-enhance-pptx`.
+ChartEx import is deliberately closed to seven validated data models: `treemap`, `sunburst`, `histogram`, `pareto`, `box_whisker`, `waterfall`, and `funnel`. Their supported hierarchy/category/value/series/subtotal data topology round-trips through native output and reimport. Numeric caches must be non-empty and finite, with canonical non-negative counts/indexes and exact contiguous point topology. Source ChartEx style, axes, labels, and binning may normalize; this is not arbitrary ChartEx import or presentation fidelity. C4/C5 do not expand the normalized renderer, so valid active types outside it still use `data-pptx-fallback-kind="placeholder"` without a source preview. Full `AxisSpec`, arbitrary ChartEx families, arbitrary rich OOXML, rotated/flipped/3D charts, unverified combo/stock/date-axis variants, and other unmodeled semantics remain outside the active import subset. Native replacement may normalize payload-external presentation details and retains the data-model-first warning. Default export keeps preview children as editable DrawingML shapes; only explicit `--native-charts-and-tables` activates PowerPoint-native Chart/Table objects. JSON-first ignores preview freshness; SVG-first requires a present, valid, fresh `data-pptx-fallback-sha256` or native replacement fails closed. Marker presence, semantic tables, and imported chart packages never activate replacement implicitly. This importer/exporter pairing is a reconstruction aid, not a substitute for the source-preserving Edit Native PPTX round-trip route.
 
 ---
 
@@ -943,7 +934,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 |---|---|
 | Do not fuzzy-match template names or style phrases to library paths | Template selection must be deterministic; applying the wrong workspace is harder to recover from than free design |
 | Do not treat a raw PPTX template as a Step 3 template | when used as a template/page shell, it belongs to native cloning/filling; source use, 1:1 beautify, and restructuring instead follow their Generate boundaries rather than passing a PPTX directly to Step 3 |
-| Do not merge `template-fill-pptx`, `beautify-pptx`, and `native-enhance-pptx` into one "PPTX optimization" route | their preservation contracts differ: native fill, 1:1 redesign, and direct enhancement are separate operations |
+| Merge native filling and enhancement into Edit Native PPTX; keep `beautify-pptx` separate | filling and enhancement share one source-preserving round-trip workspace and `svg_to_pptx.py --roundtrip` exporter; beautify redesigns every page through Generate instead of preserving source slides |
 | Do not script-generate batches of Executor SVG pages | cross-page design judgment depends on sequential main-agent authoring |
 | Do not make `image_analysis.csv` a durable cache | `images/` is a live folder; facts must be regenerated on use |
 | Do not make `svg_final/` the default native PPTX input | `svg_final/` rewrites resources for visual preview, while native conversion needs high-fidelity `svg_output/` semantics |
@@ -951,13 +942,13 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 | Do not auto-enable object-level animations | page transitions are default; object motion is an explicit export policy |
 | Do not default visual review, narration, chart verification, or animation customization into every run | these workflows have narrow triggers and extra dependencies |
 | Do not replace `finalize_svg.py` with a file copy | finalization embeds icons/images, flattens special text, and prepares preview artifacts |
-| Do not use `analysis/<stem>.slide_library.json` as a second source of chart values in the main pipeline | Markdown owns content values; intake chart/table entries are structural digests unless a direct-PPTX workflow owns them |
+| Do not use `analysis/<stem>.slide_library.json` as a second source of chart values in the main pipeline | Markdown owns content values; intake chart/table entries are structural digests unless the beautify profile owns the full native-object facts |
 
 ---
 
 ## Routes and Supporting Runbooks
 
-[`workflows/index.md`](../skills/ppt-master/workflows/index.md) is a maintainer-only inventory and does not enter the task-loading chain. Runtime route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
+[`workflows/index.md`](../skills/ppt-master/workflows/index.md) is a maintainer-only inventory and does not enter the task-loading chain. Runtime route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly three top-level artifact routes: Generate PPTX, Create Template, and Edit Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
 
 Supporting files stay separate only to keep route contracts focused and load optional context on demand:
 
@@ -967,7 +958,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 | Template child workflows | `create-brand`, `create-style`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, roster-free direction/method, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
 | Template-input stage | `apply-template-workspace` | Runs after Default Stage 1 confirms at least one workspace and before Stage 2; free design skips installation, while Quick may provide direct exact-root input |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
-| Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |
-| Governance | `failure-recovery` | Global stop/continue policy for all four routes; concrete recovery matrix and resume pointers for Generate PPTX |
+| Shared stage | `generate-audio` | Generate PPTX post-processing or Edit Native PPTX narration integration |
+| Governance | `failure-recovery` | Global stop/continue policy for all three routes; concrete recovery matrix and resume pointers for Generate PPTX |
 
 This classification is a responsibility boundary, not a filename preference. A new top-level route is justified only by a distinct artifact lifecycle and mutation model; kind-specific execution inside Create Template remains a child workflow, optional route behavior remains a profile or stage, and cross-route policy remains governance.

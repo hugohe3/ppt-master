@@ -75,14 +75,12 @@ levels. Every ordinary whole-object link uses the standard outer `<a href>`.
 | Inline or whole-object slide jump | The same click carrier plus an internal slide relationship and `ppaction://hlinksldjump` |
 | Supported PPTX import | Reconstruct the same canonical SVG `<a href>` form |
 
-**Hard rule — Fill Native preservation**: Preserve external links. Retarget a
-same-deck jump only when its source target maps unambiguously to one output
-slide; omitted or duplicated targets fail closed instead of linking to an
-orphan or wrong slide.
-
-**Hard rule — Enhance Native preservation**: Preserve existing hyperlink XML
-and relationships unchanged. This route does not use the SVG authoring contract
-to add new links.
+**Hard rule — Edit Native PPTX preservation**: Unchanged round-trip pages keep
+their hyperlink XML and relationships byte-for-byte. External links are
+preserved. With a `page_plan.json`, a same-deck jump is retargeted only when
+its source target maps unambiguously to one output page; omitted or repeated
+targets make `svg_to_pptx.py --roundtrip` fail instead of linking to an orphan
+or wrong slide. New links on an edited page use this SVG authoring contract.
 
 ---
 

@@ -387,12 +387,12 @@ For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — th
 
 ## Q: I have an existing PPT and want to build on it — which route should I use?
 
-Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to three generation paths plus the option to keep the original unchanged:
+Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to three processing paths plus the option to keep the original unchanged:
 
 | Intent | Route | What stays fixed |
 |---|---|---|
 | Keep content + redo layout | **Generate PPTX + beautify profile** | Page count, page order, per-slide wording, chart/table data |
-| Replace content + keep design | **Fill Native PPTX** | Native source slide design; selected pages may be reused/reordered |
+| Replace content + keep design | **Edit Native PPTX** | Native source design; unchanged pages stay byte-for-byte, while selected pages may be edited, reordered, repeated, or omitted |
 | Keep only content, redo design and pagination | **Generate PPTX** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
@@ -400,7 +400,7 @@ Use the **beautify profile** when the source deck's page split is part of the re
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
-The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline. The concrete discriminator is **page count / order**: if it changes at all — split, merge, drop, reorder, or even keeping every word but splitting one crowded page so it reads better — that is re-pagination, which is the main pipeline. Beautify is strictly 1:1.
+The one-line test between beautify and ordinary Generate applies when the visible design will be regenerated: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → ordinary Generate. Beautify is strictly 1:1. If the native design must survive instead, use Edit Native PPTX; its `page_plan.json` may select, reorder, repeat, or omit existing pages without redesigning them.
 
 If your request is ambiguous, for example "make this PPT more professional" or "optimize this deck", the AI should ask one clarification before routing: **keep the original page count/order and each slide's wording, or treat the PPT as source material and restructure it into a new story?**
 
@@ -410,23 +410,24 @@ There is also one orthogonal route: if you don't want to produce a deck right no
 
 ## Q: I already have a finished `.pptx` — can I reuse its design and just fill in new content?
 
-Yes — this is the **template fill** route, separate from the SVG generation pipeline. Give the AI your existing `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" or "fill this back into the template". It treats your deck as a native slide library, lets you pick only the pages that fit the new story (reorder freely, and reuse one page for several output slides), and writes the new text — plus native table cells and chart data — straight into the original OOXML.
+Yes — this is the **Edit Native PPTX** route, separate from Generate. Give the AI your existing `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" or "fill this back into the template". It imports the deck into a source-preserving round-trip workspace under `projects/`, treats the source pages as a native slide library, and lets you choose, reorder, repeat, or omit pages before editing selected content.
 
-The output stays 100% native-editable PowerPoint: the original design, layouts, images, and animations are preserved, and only the planned pages are exported. It deliberately does **not** author a new layout topology or swap source images. The ordered `slides` roster in `fill_plan.json` may omit, reorder, or repeat source slide shells, so the output page count can differ from the source. A deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. When the source library lacks a required new structure, use ordinary Generate, or run Create Template first and then Generate from the resulting workspace. Full steps: [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md).
+Unchanged output pages are referenced and restored byte-for-byte. On an edited page, unchanged objects restore in their native form and only changed objects are rebuilt. The ordered `pages` roster in `page_plan.json` uses `source_slide` plus an optional copied `svg` filename to select, reorder, repeat, or omit source pages. Notes, narration, timings, and transitions are overlays on the preserved slide. A deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. When the source library lacks a required new structure, use ordinary Generate, or run Create Template first and then Generate from the resulting workspace. Full steps: [Edit Native PPTX workflow](../skills/ppt-master/workflows/edit-native-pptx.md).
 
 ---
 
 ## Q: Content landed in unexpected places — how do I see what PPT Master detected in my `.pptx`?
 
-Both PPTX-consuming routes write a read-only analysis report before anything is generated. Read that report to see exactly which shapes were recognized.
+Edit Native PPTX and Create Template each write a readable inventory before authoring begins. Read it to see which pages and objects were recognized.
 
-For **Fill Native PPTX**:
+For **Edit Native PPTX**:
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+python3 skills/ppt-master/scripts/pptx_to_svg.py <deck.pptx> \
+  -o projects/<slug> --inheritance-mode both --roundtrip
 ```
 
-`<stem>.slide_library.json` lists every fillable slot per slide with geometry, paragraph counts, and text metrics, plus separate `tables` and `charts` sections. A styled plain text box counts as a slot — a shape does not have to be a real placeholder to be filled.
+`authoring-svg-flat/authoring_summary.json` lists the source page roster and per-page text, image, vector, placeholder, and source-reference counts. Open only the selected compact SVG pages you need to inspect or edit.
 
 For **Create Template**:
 

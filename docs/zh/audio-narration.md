@@ -22,7 +22,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
 2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出 3–6 个候选，并用当前聊天语言为每个写一句调性说明（如“稳重男声·适合财报”）。语速/风格也会基于 notes 信息密度给出推荐值。
-3. **配置一次确定**。Default Generate 和 Enhance Native 会一次确认 provider、音色、语速、是否嵌入 PPTX，以及是否继续导出视频。Quick 直接采用明确值，并自动补齐未指定的 provider、音色、语速和嵌入方式；只有明确要求直接交付视频时才开启视频导出。
+3. **配置一次确定**。Default Generate 和 Edit Native PPTX 会一次确认 provider、音色、语速、是否嵌入 PPTX，以及是否继续导出视频。Quick 直接采用明确值，并自动补齐未指定的 provider、音色、语速和嵌入方式；只有明确要求直接交付视频时才开启视频导出。
 4. **执行**。Edge、ElevenLabs、MiniMax，以及支持时间戳的 CosyVoice 音色，会依据同一次合成返回的 provider 计时，把每页音频和 SRT 一起写入 `audio/`；Qwen 和显式 CosyVoice 纯音频模式只写音频。完整生成成功后会原子写入 `audio/manifest.json` 记录来源。对于选择旁白 cue 同步的 Generate PPTX，逐页 SRT 与规范自定义动画会让 AI 将当前 SVG 内容组映射到编号后的 SRT cue，并派生无点击的 `narration_animations.json`；与旁白无关的自定义动画保留规范计时，没有动画 sidecar 时则继承基础导出的已解析 motion。随后再导出带音频的 PPTX；存在逐页 SRT 时，才从该 PPTX 读回实际计时并合并。自动视频交付继续调用 PowerPoint 原生编码器，存在 cue 时再完成验收后的混音；显式选择实时放映录制时，则捕获 PowerPoint 实际全屏画面与系统音频、跳过混音，并将交付字幕对齐到验收后的录屏。不支持长音频导入或自动拆分。
 
 字幕保持为外部 SRT 文件：PPT Master 不把字幕嵌入 PPTX，也不烧录进 MP4。自动视频导出委托给本机 Windows PowerPoint，并不是另一套渲染器。
@@ -162,8 +162,8 @@ python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
 ```
 
 发送任何 TTS 请求前，`notes_to_audio.py` 会确认每个 Generate SVG 页面或
-Native Enhance 页面都有可读且非空的逐页备注。缺失或空备注会返回退出码
-`2`；必须先生成这些备注，再重新运行音频生成。
+Edit Native PPTX 输出页面都有可读且非空的逐页备注。缺失或空备注会返回
+退出码 `2`；必须先生成这些备注，再重新运行音频生成。
 
 edge 模式下 `--voice` 是必填项，可用 `--list-voices --locale <locale>` 查看音色。
 Edge 默认同时生成最多 3 页音频/SRT。可用 `--concurrency <N>` 调整；

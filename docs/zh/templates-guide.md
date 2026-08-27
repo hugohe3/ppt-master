@@ -18,7 +18,7 @@ PPT Master 模板是一种可复用工作区，明确分为四类：**Brand** �
 
 | 起点与目标 | 路线 | 可直接复制的请求 |
 |---|---|---|
-| 手里是原始 `.pptx`，想保留现有页面壳并替换内容 | **Fill Native PPTX** | `用 projects/source/template.pptx 套入 projects/source/content.md 的内容。` |
+| 手里是原始 `.pptx`，想保留现有页面壳并替换内容 | **Edit Native PPTX** | `把 projects/source/content.md 的内容套进 projects/source/template.pptx；保留原设计，只选适合的页面。` |
 | 已有可复用 Brand/Style/Layout/Deck 工作区，想生成一份全新 deck | **Generate PPTX → Stage 1 模板选择控件** | `用 sources/report.pdf 做 deck，模板用 skills/ppt-master/templates/layouts/presentation_core/。` |
 | 手里是 PPTX、SVG、品牌手册、网站、图片或混合参考，想先建立可复用系统 | **Create Template → Generate PPTX** | `用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 工作区。` |
 

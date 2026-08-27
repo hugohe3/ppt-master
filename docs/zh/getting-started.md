@@ -51,12 +51,12 @@ python3 -m pip install -r "<installed-skill-dir>/requirements.txt"
 
 | 你想要… | 路径 | 会发生什么 |
 |---|---|---|
-| **用这份 deck 的原生页面壳承载新内容** | Fill Native PPTX | 克隆选中的源页面，并在 OOXML 中直接改写文字 / 表格 / 图表数据。来源设计保持原生；输出是受现有页面壳约束的新回填 deck。 |
+| **用这份 deck 的原生页面壳承载新内容** | Edit Native PPTX | 导入 round-trip 工作区；未改页面逐字节恢复，`page_plan.json` 可选页、重排、重复或省略，且只编辑计划中的页面。 |
 | **先建立可复用设计系统，再生成新 deck** | Create Template → Generate PPTX | 从参考材料创建经过验证的 Brand、Style、Layout 或 Deck 工作区，再创作一份新 deck。新故事、结构与页数都可以不同于来源。 |
 
-前者:把 `.pptx` 连同素材(或一个主题)给 AI,说「套模板」——见 [套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。本节其余部分讲 create-template。
+前者：把 `.pptx` 连同素材（或一个主题）给 AI，说「套模板」——见 [Edit Native PPTX 工作流](../../skills/ppt-master/workflows/edit-native-pptx.md)。本节其余部分讲 create-template。
 
-**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Fill Native PPTX，并不是 Generate 可以直接消费的模板工作区。先创建工作区：
+**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Edit Native PPTX，并不是 Generate 可以直接消费的模板工作区。先创建工作区：
 
 ```
 你：用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 模板

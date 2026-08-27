@@ -12,8 +12,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 |---|---|---|
 | `generate-pptx` | Top-level route | [`generate-pptx.md`](./generate-pptx.md) |
 | `create-template` | Top-level route | [`create-template.md`](./create-template.md) |
-| `template-fill-pptx` | Top-level route | [`template-fill-pptx.md`](./template-fill-pptx.md) |
-| `native-enhance-pptx` | Top-level route | [`native-enhance-pptx.md`](./native-enhance-pptx.md) |
+| `edit-native-pptx` | Top-level route | [`edit-native-pptx.md`](./edit-native-pptx.md) |
 
 ## 2. Supporting Documents
 
@@ -35,7 +34,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 | `visual-review` | Quality gate | [`stages/visual-review.md`](./stages/visual-review.md) | Before Generate Step 7 |
 | `live-preview` | Editor stage | [`stages/live-preview.md`](./stages/live-preview.md) | Generate preview / post-export |
 | `customize-animations` | Post-processing stage | [`stages/customize-animations.md`](./stages/customize-animations.md) | Generate conditional export |
-| `generate-audio` | Shared audio stage | [`stages/generate-audio.md`](./stages/generate-audio.md) | Generate / Enhance Native |
+| `generate-audio` | Shared audio stage | [`stages/generate-audio.md`](./stages/generate-audio.md) | Generate / Edit Native |
 | `failure-recovery` | Governance | [`governance/failure-recovery.md`](./governance/failure-recovery.md) | All routes |
 
 ## 3. Maintenance Rules

@@ -22,7 +22,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 
 1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "steady male voice for financial reporting"). It also recommends a speaking rate or provider defaults based on notes density.
-3. **Settings resolve once.** Default Generate and Enhance Native ask once for provider, voice, rate, embedding, and optional video export. Quick uses explicit values and automatically resolves unspecified provider, voice, rate, and embedding choices; video remains off unless direct video delivery was requested.
+3. **Settings resolve once.** Default Generate and Edit Native PPTX ask once for provider, voice, rate, embedding, and optional video export. Quick uses explicit values and automatically resolves unspecified provider, voice, rate, and embedding choices; video remains off unless direct video delivery was requested.
 4. **Generation runs.** Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice voices write each page's audio and SRT from provider timing returned by the same synthesis; Qwen and explicit CosyVoice audio-only mode write audio only. A complete run atomically writes `audio/manifest.json` for provenance. For Generate PPTX with narration-cue synchronization, page-local SRT and canonical custom animation let the AI map current SVG content groups to numbered SRT cues and derive click-free `narration_animations.json`; narration-independent custom motion keeps canonical timing, while no animation sidecar inherits the base export's resolved motion. It then re-exports the deck with audio attached and, when page-local SRT exists, merges it using timing values read from that final PPTX. Automatic video delivery continues through PowerPoint's native encoder and, when cues exist, the verified sound mix. An explicitly selected slideshow capture instead records PowerPoint's real-time full-screen picture and system audio, skips that mixer, and aligns any delivery SRT against the accepted capture. Long-audio import and automatic long-audio splitting are not supported.
 
 Subtitles remain external artifacts: PPT Master does not embed them into the PPTX or burn them into the MP4. Automatic video export delegates to installed Windows PowerPoint; it is not a separate renderer.
@@ -168,9 +168,9 @@ python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
 ```
 
 Before sending any TTS request, `notes_to_audio.py` verifies that every
-Generate SVG page or Native Enhance slide has a readable, non-empty per-slide
-note. Missing or empty notes return exit code `2`; generate those notes first,
-then rerun audio generation.
+Generate SVG page or Edit Native PPTX output page has a readable, non-empty
+per-slide note. Missing or empty notes return exit code `2`; generate those
+notes first, then rerun audio generation.
 
 For edge, `--voice` is required. Use `--list-voices --locale <locale>` to see what's available.
 Edge generates up to three slide-level audio/SRT pairs concurrently by default.

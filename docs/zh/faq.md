@@ -334,12 +334,12 @@ Quick 省略独立规划阶段，但仓库没有文档化的测量或保证表�
 
 ## Q: 我手上有一份现成的 PPT，想基于它做东西，该走哪条路？
 
-把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应三种生成路径，以及直接保留原文件这一种无需生成的结果：
+把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应三种处理路径，以及直接保留原文件这一种无需生成的结果：
 
 | 意图 | 路线 | 固定不变的东西 |
 |---|---|---|
 | 留内容 + 重做版式 | **Generate PPTX + beautify profile** | 页数、页序、每页文字、图表/表格数据 |
-| 换内容 + 留设计 | **Fill Native PPTX** | 原生页面设计；可选择、乱序、复用源页 |
+| 换内容 + 留设计 | **Edit Native PPTX** | 保留原生设计；未改页面逐字节保留，选中页面可编辑、重排、重复或省略 |
 | 只留内容，设计与分页都重来 | **Generate PPTX** | 源事实；故事结构和页数都可重构 |
 | 留内容 + 留设计 | 不必生成 | 直接用原文件 |
 
@@ -347,7 +347,7 @@ Quick 省略独立规划阶段，但仓库没有文档化的测量或保证表�
 
 用 **主管线** 的前提是：原 PPT 只是内容材料。流程会用 `ppt_to_md` 抽成 Markdown，并读取 `analysis/` 里的 PPTX intake 事实，再由 Strategist 自由重构大纲（合页 / 拆页 / 换序）。典型说法是「用这份 PPT 的内容重做一份更好的」或「提炼成 10 页高管汇报」。
 
-beautify 和主管线的一句话判别：**原来的分页是要保留的信息，还是只是前一作者的结构、可以推翻？** 保留 → beautify；推翻 → 主管线。落到硬判据就是**页数 / 页序**：只要它有任何变化——拆页、合页、删页、换序，乃至「一字不改、只把某张太挤的页拆开排得更好看」——都属于重分页，走主管线。beautify 严格 1:1。
+只有在可见设计会被重新生成时，才用这句话区分 beautify 与普通 Generate：**原来的分页是要保留的信息，还是只是前一作者的结构、可以推翻？** 保留 → beautify；推翻 → 普通 Generate。beautify 严格 1:1。若原生设计必须保留，则改走 Edit Native PPTX；它的 `page_plan.json` 可以选择、重排、重复或省略既有页面，而不重设计这些页面。
 
 如果用户说法含糊，比如「把这份 PPT 做得更专业一点」「优化一下这个 deck」，AI 应先问一句：**要保留原页数、页序和每页文字，只做美化；还是把 PPT 当素材，重新梳理成一份新故事？**
 
@@ -357,23 +357,24 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 ## Q: 我已经有一份做好的 `.pptx`，能不能复用它的设计、只填新内容？
 
-可以——这就是 **套模板（template fill）** 路径，独立于 SVG 生成管线。把你现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把你的 deck 当作原生页面库，只挑适合新内容的页面（可乱序、可重复），把新文字——以及原生表格单元格、图表数据——直接写回原始 OOXML。
+可以——这就是 **Edit Native PPTX** 路线，独立于 Generate。把现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把 deck 导入 `projects/` 下保留来源的 round-trip 工作区，把来源页面当作原生页面库，并在编辑选中内容前选择、重排、重复或省略页面。
 
-输出仍是 100% 原生可编辑的 PowerPoint：原设计、母版、图片、动画都保留，且只导出计划中的页面。它刻意**不**创作新的版式拓扑，也不替换源图。`fill_plan.json` 中有序的 `slides` 清单可以省略、乱序或重复源页面壳，因此输出页数可以不同于源文件。一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若源页面库缺少所需的新结构，请走普通 Generate，或先 Create Template、再从产出的工作区 Generate。完整步骤：[套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+未改的输出页面会被引用并逐字节恢复；在编辑过的页面上，未改对象恢复为原生形态，只有改过的对象会重建。`page_plan.json` 中有序的 `pages` 清单使用 `source_slide` 和可选的 SVG 副本文件名选择、重排、重复或省略来源页面。讲稿、旁白、计时和转场都作为保留页面上的叠加内容。一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若源页面库缺少所需的新结构，请走普通 Generate，或先 Create Template、再从产出的工作区 Generate。完整步骤：[Edit Native PPTX 工作流](../../skills/ppt-master/workflows/edit-native-pptx.md)。
 
 ---
 
 ## Q: 内容填到了意料之外的位置——怎么查看 PPT Master 到底识别到了什么？
 
-两条消费 PPTX 的路径都会在生成之前先写出一份只读分析报告，读它就能确认哪些图形被识别到了。
+Edit Native PPTX 与 Create Template 都会在开始创作前写出可读清单，用它确认识别到的页面和对象。
 
-**套模板（Fill Native PPTX）**：
+**Edit Native PPTX**：
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+python3 skills/ppt-master/scripts/pptx_to_svg.py <deck.pptx> \
+  -o projects/<slug> --inheritance-mode both --roundtrip
 ```
 
-`<stem>.slide_library.json` 会逐页列出每个可填充槽位的几何、段落数与文字度量，并单独给出 `tables` 与 `charts`。带样式的普通文本框同样算槽位——图形不必是真正的占位符才能被填充。
+`authoring-svg-flat/authoring_summary.json` 会列出来源页面清单，以及逐页文字、图片、矢量、placeholder 和 source-reference 数量；只打开确实要判断或编辑的紧凑 SVG 页面。
 
 **Create Template**：
 

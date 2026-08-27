@@ -272,7 +272,7 @@ PPT Master validates animation settings strictly: unknown effects or Start modes
 | Static structure | Backgrounds, Master/Layout content, placeholders, and page chrome remain static |
 | Unsupported object builds | No paragraph/text-range builds, custom freeform motion-path authoring, native Chart/SmartArt build sequencing, or media playback commands are inferred from grouped SVG content |
 | Output route | Animation exists in the native PPTX generated from `svg_output/`; `svg_final/` is a static preview |
-| Existing PPTX routes | Template Fill and Native Enhance preserve source object animation rather than translating it into this generated-deck model |
+| Edit Native PPTX | Preserves source object animation through the round-trip workspace rather than translating it into this generated-deck model |
 | PPTX-to-SVG import | Reconstructs only current-registry rows with exact native duration and unique top-level group targets; advanced/build/media timing remains diagnosed |
 | Playback compatibility | Microsoft PowerPoint desktop is the primary validation target; Keynote, WPS, LibreOffice, and older Office versions may remap or omit individual effects |
 

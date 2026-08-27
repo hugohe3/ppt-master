@@ -51,12 +51,12 @@ The `npx skills add hugohe3/ppt-master` installation path also requires a workin
 
 | You want… | Route | What happens |
 |---|---|---|
-| **Use this deck's native slide shells with new content** | Fill Native PPTX | Clones the selected source slides and patches text / table / chart data directly in OOXML. The source design remains native; output is a new filled deck bound to the available slide shells. |
+| **Use this deck's native slide shells with new content** | Edit Native PPTX | Imports a round-trip workspace; unchanged pages restore byte-for-byte, `page_plan.json` may select/reorder/repeat/omit pages, and only planned pages are edited. |
 | **Build a reusable design system, then generate a new deck** | Create Template → Generate PPTX | Creates a validated Brand, Style, Layout, or Deck workspace from the reference, then authors a fresh deck. The new story, structure, and page count can differ from the source. |
 
-For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
+For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [Edit Native PPTX workflow](../skills/ppt-master/workflows/edit-native-pptx.md). The rest of this section covers create-template.
 
-**To build a reusable workspace from an existing PowerPoint, explicitly request the Create Template route.** A raw `.pptx` plus new material otherwise belongs to Fill Native PPTX; it is not a Generate template workspace. Create the workspace first:
+**To build a reusable workspace from an existing PowerPoint, explicitly request the Create Template route.** A raw `.pptx` plus new material otherwise belongs to Edit Native PPTX; it is not a Generate template workspace. Create the workspace first:
 
 ```
 You: Create a reusable Deck template from projects/brand/our_deck.pptx via /create-template

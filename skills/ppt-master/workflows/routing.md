@@ -1,5 +1,5 @@
 ---
-description: Deterministic selection among PPT Master's four top-level artifact routes.
+description: Deterministic selection among PPT Master's three top-level artifact routes.
 ---
 
 # Routing Rules
@@ -16,10 +16,10 @@ route selection. After selection, the active runtime authority owns execution.
 
 | Rule | Behavior |
 |---|---|
-| One artifact lifecycle | Every request enters Generate PPTX, Create Template, Fill Native PPTX, or Enhance Native PPTX |
+| One artifact lifecycle | Every request enters Generate PPTX, Create Template, or Edit Native PPTX |
 | Supporting documents are not top-level routes | Create Template child workflows, generation profiles, stages, and governance documents refine the selected route; never offer them as competing top-level routes |
 | Missing prerequisite | State the missing prerequisite and stop that route; do not invent an alternative |
-| Ambiguous existing-deck request | Ask one discriminator question only when needed: regenerate visible slides, fill native slide shells with new content, or preserve slides and add native behavior? |
+| Ambiguous existing-deck request | Ask one discriminator question only when needed: regenerate the visible design (Generate), or preserve the native deck and edit it (Edit Native PPTX)? |
 | Explicit user override | Honor explicit route instructions only when the route preconditions are satisfied |
 
 **Forbidden — route-choice menus**: Do not present multiple implementation paths when the request already matches one row in §2. Ordinary design choices remain at the selected route's existing confirmation gate.
@@ -32,8 +32,7 @@ route selection. After selection, the active runtime authority owns execution.
 |---|---|---|---|---|---|
 | Generate PPTX | Create, reconstruct, or visually regenerate a presentation/video from sources or a topic; templates remain optional | Image to PPTX: [`image-to-pptx`](./profiles/image-to-pptx.md), always Quick; Beautify: [`beautify-pptx`](./profiles/beautify-pptx.md), Default or Quick; ordinary [`generate-pptx`](./generate-pptx.md) / [`quick-generate`](./profiles/quick-generate.md) | Facts exist or research can gather them; Image to PPTX also requires Codex and an ordered page-frame roster | Author SVG pages and export a new PPTX | Default: spec/lock/SVG/PPTX; Quick: optional source/resource artifacts, no spec/lock, SVG/PPTX; either may derive narrated PPTX/MP4 |
 | Create Template | Create a reusable brand/style/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
-| Fill Native PPTX | Use a raw PPTX's native slide shells and replace/fill content | [`template-fill-pptx`](./template-fill-pptx.md) | Source PPTX plus new material/topic | Clone and patch PPTX through OOXML; no SVG pipeline | New filled PPTX in project `exports/` |
-| Enhance Native PPTX | Keep a finished PPTX's visible slides stable while adding notes, audio, timings, or transitions | [`native-enhance-pptx`](./native-enhance-pptx.md) | Finished source PPTX exists | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX in project `exports/` |
+| Edit Native PPTX | Keep an existing PPTX's native design: fill it with new content, edit or restructure selected pages, or add notes, narration, timings, or transitions with visible slides untouched | [`edit-native-pptx`](./edit-native-pptx.md) | Source PPTX exists; new material only when content changes | `pptx_to_svg.py --roundtrip` workspace: unchanged pages restore byte-for-byte, edited pages rebuild only edited objects, notes/motion overlay | New PPTX in workspace `exports/` |
 
 ---
 
@@ -46,7 +45,8 @@ route selection. After selection, the active runtime authority owns execution.
 | The effective delivery purpose is recorded, self-running, or video-directed | Inside the already selected Default or explicit Quick runtime, load [`video-design`](../references/video-design.md) before whole-solution/page planning. This is a conditional design reference, not a profile or fifth route; notes, animation, audio, and optional native MP4 remain owned by their existing stages |
 | Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent without an active fidelity profile | Load [`quick-generate`](./profiles/quick-generate.md) directly without loading `generate-pptx.md`: prepare sources/resources as needed, let the current agent decide without interaction, directly apply at most one exact workspace root per kind supplied for this run, otherwise use free design, omit Strategist/Confirm UI/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
-| Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through the selected Generate authority's source intake; continue Default unless explicit Quick intent selected that runtime |
+| Existing PPTX must be split, merged, or re-outlined into newly designed pages | Treat the PPTX as source content through the selected Generate authority's source intake; continue Default unless explicit Quick intent selected that runtime |
+| Existing PPTX pages are dropped, reordered, or repeated without redesign | Not Generate: route to Edit Native PPTX, whose `page_plan.json` owns selection, order, and repetition |
 | Default Generate reaches planning | Step 3 prepares template candidates without interaction. Stage 1 then confirms the communication contract and free-design/template choice together; only a confirmed non-free choice runs [`apply-template-workspace`](./stages/apply-template-workspace.md) before Stage 2 |
 | Explicit current brand/style/layout/deck workspace root outside Image to PPTX | Default Generate preserves the exact path as a Stage-1 template candidate; Quick Generate validates and installs it directly without Steps 3–4 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
@@ -57,7 +57,7 @@ route selection. After selection, the active runtime authority owns execution.
 | User requests preview, selection, or annotation application outside Image to PPTX | Use the default Generate pipeline and run [`live-preview`](./stages/live-preview.md) at the stage defined there; explicit Quick + preview intent falls back to default rather than dropping preview. Image to PPTX remains Quick-only and uses its mandatory canonical-frame recomposition comparison instead of this interactive stage |
 | User requests page transitions, auto-advance, or deck-wide animation settings without page-specific motion planning or an existing `animations.json` | Load [`animations`](../references/animations.md) and apply its export-level contract |
 | `<project_path>/animations.json` already exists, the user explicitly requests per-slide/object-level animation control, or the effective Custom Animations outcome in `design_spec.md §I` is enabled | Run [`customize-animations`](./stages/customize-animations.md) after the final SVG quality gate and any enabled speaker-note pass, before Generate Step 7. A §IX `Motion suggestion` informs an active pass but never triggers it alone |
-| Generate PPTX receives an explicit narration request or has effective Narration Audio enabled in `design_spec.md §I`; Enhance Native PPTX has a confirmed `audio.enabled: true` module | Run [`generate-audio`](./stages/generate-audio.md) after the owning route's notes/export readiness; Generate audio implies effective Speaker Notes enabled |
+| Generate PPTX receives an explicit narration request or has effective Narration Audio enabled in `design_spec.md §I`; Edit Native PPTX has narration confirmed in its plan | Run [`generate-audio`](./stages/generate-audio.md) after the owning route's notes readiness; audio implies notes on every output page |
 
 **Hard rule — fidelity profiles, not fifth routes**: Image to PPTX and Beautify
 change different source/page invariants and are mutually exclusive. Image to
@@ -99,7 +99,7 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | Input | Route behavior |
 |---|---|
 | One or more images containing page frames + explicit final-deck reconstruction intent | Generate PPTX with the Codex-supported, Quick-only [`image-to-pptx`](./profiles/image-to-pptx.md); normalize page frames first and do not infer reusable native structure from pixels |
-| Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
+| Raw PPTX called a template + new content | Edit Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
 | Current template workspace root + content | Default: [`generate-pptx`](./generate-pptx.md) Stage-1 template choice; explicit Quick: direct validated workspace application |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
@@ -133,9 +133,9 @@ or reusable scenario/content semantics.
 | Artifact state | Narration route |
 |---|---|
 | Main-generated project with notes and exported deck | Shared [`generate-audio`](./stages/generate-audio.md) stage |
-| Arbitrary finished PPTX that must preserve visible slides | Enhance Native PPTX; its narration module invokes the same shared audio-stage rules |
+| Arbitrary finished PPTX that must preserve visible slides | Edit Native PPTX; its narration module invokes the same shared audio-stage rules against the round-trip workspace |
 
-Object animation for generated SVG projects uses the animation stage. Native PPTX routes preserve existing object-animation fingerprints and do not silently claim an animation-editing capability.
+Object animation for generated SVG projects uses the animation stage. Edit Native PPTX preserves source motion by default and writes requested motion as an overlay per [`animations.md`](../references/animations.md).
 
 ---
 
