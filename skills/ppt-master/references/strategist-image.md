@@ -29,22 +29,14 @@ There is no confirmation field. Illustrated cues may coexist
 with base SVG/emoji icons when the overall visual system remains coherent, and
 their slices stay out of `icons/`.
 
-**Mandatory — scan decorative-lettering candidates before selection**: When
-confirmed image usage retains `ai`, scan the complete page roster once before
-writing §VIII. Confirmed `ai` is a Permission, not coverage: never create
-lettering merely to justify the AI source or because no other AI-image job was
-found. Candidate discovery asks two questions—is the wording stable, and could
-an artistic treatment plausibly communicate better than native type. When
-either answer is no, create no lettering row and keep the wording as native
-editable text. Page role, character count, word count, line count, kind of noun,
+**Reference — decorative-lettering candidates**: under confirmed `ai`, any
+stable wording is a lettering candidate when an artistic treatment could
+communicate better than native type; confirmed `ai` is a Permission, not
+coverage, and wording that fails either test stays native editable text. Page role, character count, word count, line count, kind of noun,
 and locked style never pre-filter candidates; a complete long title, multi-word
 phrase, and multi-line lockup are as eligible as a short mark. Preserve each
 full exact character sequence as one intended mark when its hierarchy belongs
-to the art; never trim, rewrite, or split it merely to ease generation. Passing
-both questions exposes a possible job rather than selecting it. Compare every
-candidate inside the complete page and deck carrier mix, then choose any
-coherent set whose artistic treatment wins that fit; zero selected marks
-remains valid and needs no skip explanation or coverage quota. Materialize each
+to the art; never trim, rewrite, or split it merely to ease generation. Zero selected marks remains valid. Materialize each
 selected mark as an ordinary `ai` row or group compatible marks through the
 §4.3 sheet/element rows rather than leaving it as a planning suggestion. Let
 letterform character, treatment, and practical generation needs guide grouping.
@@ -57,7 +49,7 @@ editable-only hook, or Offline Manual path does not activate this proactive
 rule; an explicit user-required lettering asset still follows the ordinary
 resource contract.
 
-**Mandatory — image-treatment path scan, not a quota**: Per selected image choose `none` (unchanged), `native` (SVG crop/clip, transform, opacity, frame/depth, overlap), or `prepared derivative` (separate pixel blur/tone or cutout/registered layers); `none` is valid.
+**Image treatment path** (per selected image): `none` (unchanged), `native` (SVG crop/clip, transform, opacity, frame/depth, overlap), or `prepared derivative` (separate pixel blur/tone or cutout/registered layers); `none` is valid.
 
 When a subject crosses a native title, panel, frame, or shape, the prepared path is mandatory: plan a clean full-canvas base plus minimum registered RGBA layers; set full-canvas members `no-crop`; name their shared source/registration in `Reference`; suggest `#A2-03`. A shared plate requires padded-bbox-disjoint objects and independent final crops. Use `user` only when every final asset is supplied, otherwise `ai`; [`image-generator.md`](./image-generator.md) §4.4 owns preparation. An independent floating cutout may use `#A2-01`.
 
@@ -81,9 +73,9 @@ References describe visual intent: AI uses subject + intent + composition withou
 
 **Prepared-user fast path**: For initial imported or user-supplied assets confirmed as `provided`, copy the exact `Filename` basename and derive `Dimensions` / `Ratio` from that row's EXIF-corrected `Width` / `Height` / native `AspectRatio` in the latest `analysis/image_analysis.csv`; `SourceDisplayRatio` is source-context metadata, not the bitmap crop ratio. Drop source-side directories, set `Acquire Via: user` and `Status: Existing`, and decide the remaining §VIII fields normally. Existing §VIII / lock / provenance-manifest records override this inference. Assets declared as `ai`, `web`, `slice`, or manual fulfillment retain that provenance and advance through their own status lifecycle after entering `images/`; location never reclassifies them as `user / Existing`.
 
-**Mandatory**: each placed row gets one executable `Layout pattern`. It is preferred expression, not locked geometry; optional hierarchical ids from the already-read [`image-layout-patterns.md`](./image-layout-patterns.md) must be exact. They are prompt lookup handles for Executor, not exporter effect codes. Executor may adopt, adapt, or decline the suggestion while preserving resource identity/source, must-use status, crop/content, and explicit user/template constraints; layout-only changes need no upstream rewrite.
+**Layout pattern** (the checker requires one non-empty value per placed row): it is preferred expression, not locked geometry; optional hierarchical ids from the already-read [`image-layout-patterns.md`](./image-layout-patterns.md) must be exact. They are prompt lookup handles for Executor, not exporter effect codes. Executor may adopt, adapt, or decline the suggestion while preserving resource identity/source, must-use status, crop/content, and explicit user/template constraints; layout-only changes need no upstream rewrite.
 
-**Mandatory — job-bearing entry for image-led `adaptive` rows**: name the page job the image resolves alongside the composition serving it. A bare skeleton id, or position, size, crop, or legibility scrim alone, names no job: the entry stays incomplete until it says what the image does to the content or to the page's shapes. The already-read [`image-layout-patterns.md`](./image-layout-patterns.md) is recall for that composition, never a menu — an unlisted combination or a technique it never names answers a job just as well, and the job is never restated to reach a listed entry. Plain split and full bleed stay valid when the named job is best served plainly. A `no-crop` or supporting row keeps one concise suggestion instead.
+**Reference — job-bearing pattern text**: a useful entry names the job the image does for the content or the page's shapes, not only a skeleton id, position, size, crop, or scrim. The already-read [`image-layout-patterns.md`](./image-layout-patterns.md) is recall for that composition, never a menu — an unlisted combination or a technique it never names answers a job just as well, and the job is never restated to reach a listed entry. Plain split and full bleed stay valid when the named job is best served plainly. A `no-crop` or supporting row keeps one concise suggestion instead.
 
 Choose narrative intent before dimensions, then apply the already-read [`image-layout-spec.md`](./image-layout-spec.md) to the actual page region. Techniques needing a cutout, blurred crop, or desaturated copy require that prepared asset. Write `Crop Policy: no-crop` whenever cropping could remove required pixels, labels, evidence, identity, or edge content; screenshots, charts, certificates/contracts, dense diagrams, logos, and product markings are common triggers rather than an exhaustive list. Otherwise write `Crop Policy: adaptive`: Executor may use complete display or a focal-safe crop, and the value never commands cropping.
 

@@ -362,8 +362,8 @@ The module owns AI rendering alternatives, acquisition paths, resource rows, pro
 
 ### Page Carrier and Capability Planning (Non-blocking — Strategist recommends, no user confirmation needed)
 
-**Mandatory — one-pass page carrier planning**: During the same §IX roster
-composition, resolve each page's complete semantic carrier mix—background
+**Default — carrier planning in §IX (may stay implicit when a page's mix is obvious)**: During the same §IX roster
+composition, decide each page's semantic carrier mix—background
 field, editable text and optional lettering, native-geometry/relationship jobs,
 photos/scenes/illustrations/icons, and applicable visualizations—before
 deriving §VIII resource rows. Decide the primary, structural, and supporting
@@ -371,7 +371,7 @@ jobs together. Use existing §VI/§VIII/§IX fields: keep the
 ordinary icon basis and prepared-pool plan in §VI, and add an image, lettering,
 or illustrated-icon resource to §VIII only when the page mix assigns it a
 plausible job. This creates no new field or candidate inventory; omitting any
-carrier remains valid after the same review. Macro composition recommendations
+carrier remains valid. Macro composition recommendations
 remain Reference; planned resource identities/jobs and explicit user/template
 requirements retain their existing authority.
 
@@ -420,13 +420,11 @@ Classify by information model, never source PowerPoint object type:
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
-**Mandatory — complete Chart/Table capability review**: During the same §IX
-roster composition, compare every page's information model against every entry
-in the already-loaded Chart and Table expression vocabularies. These
-complete capability maps expose what can be selected; their descriptions do
-not rank candidates or replace judgment from the actual information. They are
-neither usage quotas nor whitelists. Skip custom objects and qualitative
-composition. Retain `no-template-match` when no registered reference fits.
+**Reference — Chart/Table vocabularies**: the already-loaded Chart and Table
+expression vocabularies list what can be selected for a page's information
+model; their descriptions do not rank candidates or replace judgment from the
+actual information. Custom objects and qualitative composition stay outside
+them. Retain `no-template-match` when no registered reference fits.
 
 **Selection**:
 

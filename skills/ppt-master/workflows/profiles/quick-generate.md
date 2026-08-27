@@ -379,9 +379,9 @@ meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and
 must stand alone. Create no artifact, checkpoint, lock, or second
 authoring/review pass.
 
-**Mandatory — one-pass page carrier resolution, not a coverage quota**: During
+**Default — page carrier resolution (may stay implicit when a page's mix is obvious)**: During
 the same transient-roster resolution and before resource preparation or
-coordinates, decide each page's complete mix of background, editable text and
+coordinates, decide each page's mix of background, editable text and
 optional lettering, native geometry and lines, photos/scenes,
 illustrations/icons, and applicable visualizations. Decide their primary,
 structural, and supporting jobs together. Only selected image,
@@ -411,9 +411,9 @@ with SVG icons to the page and deck fit under
 [`image-generator.md`](../../references/image-generator.md) §4.3; apply no
 coverage quota and never treat the slices as SVG inventory.
 
-**Mandatory — proactive decorative-lettering capability scan**: During that same one-pass
-carrier resolution, when the user has not forbidden AI, scan the frozen roster
-for display strings anywhere in the deck. Two questions expose candidates: is
+**Reference — decorative-lettering candidates**: when the user has not
+forbidden AI, any display string in the frozen roster is a candidate. Two
+questions expose candidates: is
 that wording stable, and could an artistic treatment plausibly communicate
 better than native type? Passing both exposes a possible AI visual job; it does
 not select lettering or add AI by itself. Page role, string length, line count,
@@ -466,10 +466,8 @@ This carrier menu does not satisfy or replace the per-page Structure decision in
 
 Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
-**Mandatory — complete Chart/Table capability review**: During that same
-carrier resolution, compare every page's information model against every entry
-in the already-loaded Chart and Table expression vocabularies. These
-complete capability maps expose what exists; their descriptions do not rank
+**Reference — Chart/Table vocabularies**: the already-loaded Chart and Table
+expression vocabularies list what exists for a page's information model; their descriptions do not rank
 candidates or replace judgment from the actual information, and they are
 neither usage quotas nor whitelists. Do not select a catalog reference for
 qualitative shape composition. Choose at most one primary Chart/Table
