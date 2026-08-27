@@ -328,7 +328,7 @@ Read typography from `spec_lock.md`: `<role>_family` → `title_family` / `body_
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 
-**Hard rule**: every SVG `font-family` stack MUST resolve to target-installed/approved Latin and EA faces. PPTX writes one face per script; CSS tails affect preview only, and fonts are not embedded. Missing-face substitution is viewer-selected—not guaranteed Calibri or a later stack entry.
+**Hard rule**: every SVG `font-family` stack MUST resolve to target-installed/approved Latin and EA faces. PPTX writes one face per script from the stack: the first named Latin face fills `latin`, the first named CJK face fills `ea` and also `latin` when no named Latin face exists, and a generic family (`sans-serif`, `serif`) fills `latin` only when it precedes every named face. Fonts are not embedded. Missing-face substitution is viewer-selected—not guaranteed Calibri or a later stack entry.
 
 ---
 
