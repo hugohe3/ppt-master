@@ -36,6 +36,7 @@ from pptx_embedded_fonts import (
 )
 from pptx_transitions import (
     AdvanceUpdate,
+    DEFAULT_TRANSITION_DURATION,
     EnterUpdate,
     MorphPairExpectation,
     NATIVE_TRANSITIONS,
@@ -44,6 +45,7 @@ from pptx_transitions import (
     normalize_transition_effect_request,
     serialize_source_xml,
     set_directory_use_timings,
+    transition_carriers,
     validate_generated_transition_xml,
     validate_pptx_morph_pairs,
     validate_pptx_transition_package,
@@ -222,6 +224,9 @@ class RoundtripSlidePatch:
     deleted_ref_ids: frozenset[str]
     visual_changed: bool
     motion_changed: bool
+    transition_changed: bool
+    transition_replaced: bool
+    animation_changed: bool
     notes_changed: bool
 
 
@@ -977,19 +982,25 @@ def _merge_roundtrip_relationships(
 def _replace_roundtrip_motion(
     source_root: ET.Element,
     generated_root: ET.Element,
+    *,
+    transition_changed: bool,
+    transition_replaced: bool,
+    animation_changed: bool,
 ) -> None:
-    """Replace source transition/timing nodes with the generated request."""
-    for local_name in ("transition", "timing"):
-        tag = f"{{{PML_NS}}}{local_name}"
-        existing = source_root.find(tag)
-        generated = generated_root.find(tag)
-        if existing is not None:
-            source_root.remove(existing)
-        if generated is None:
-            continue
-        clone = ET.fromstring(ET.tostring(generated, encoding="utf-8"))
-        children = list(source_root)
-        if local_name == "transition":
+    """Replace only explicitly changed transition and animation state."""
+    if transition_changed and transition_replaced:
+        generated_carriers = transition_carriers(generated_root)
+        if len(generated_carriers) > 1:
+            raise TemplateStructureError(
+                "Generated round-trip slide has multiple transition carriers"
+            )
+        for carrier in transition_carriers(source_root):
+            source_root.remove(carrier)
+        if generated_carriers:
+            clone = ET.fromstring(
+                ET.tostring(generated_carriers[0], encoding="utf-8")
+            )
+            children = list(source_root)
             insert_at = next(
                 (
                     index
@@ -1001,16 +1012,205 @@ def _replace_roundtrip_motion(
                 ),
                 len(children),
             )
-        else:
+            source_root.insert(insert_at, clone)
+    elif transition_changed:
+        _replace_roundtrip_transition_advance(source_root, generated_root)
+
+    if animation_changed:
+        timing_tag = f"{{{PML_NS}}}timing"
+        existing_timing = source_root.find(timing_tag)
+        generated_timing = generated_root.find(timing_tag)
+        if existing_timing is not None:
+            source_root.remove(existing_timing)
+        if generated_timing is None:
+            return
+        clone = ET.fromstring(ET.tostring(generated_timing, encoding="utf-8"))
+        children = list(source_root)
+        insert_at = next(
+            (
+                index
+                for index, child in enumerate(children)
+                if child.tag == f"{{{PML_NS}}}extLst"
+            ),
+            len(children),
+        )
+        source_root.insert(insert_at, clone)
+
+
+def _replace_roundtrip_transition_advance(
+    source_root: ET.Element,
+    generated_root: ET.Element,
+) -> None:
+    """Copy only advance attributes while preserving the source visual effect."""
+    source_carriers = transition_carriers(source_root)
+    generated_carriers = transition_carriers(generated_root)
+    if len(source_carriers) > 1 or len(generated_carriers) > 1:
+        raise TemplateStructureError(
+            "Round-trip transition advance patch requires at most one carrier"
+        )
+
+    transition_tag = f"{{{PML_NS}}}transition"
+
+    def _elements(carrier: ET.Element) -> list[ET.Element]:
+        if carrier.tag == transition_tag:
+            return [carrier]
+        return list(carrier.iter(transition_tag))
+
+    generated_transitions = (
+        _elements(generated_carriers[0]) if generated_carriers else []
+    )
+    advance_values = {
+        (transition.get("advClick"), transition.get("advTm"))
+        for transition in generated_transitions
+    }
+    if len(advance_values) > 1:
+        raise TemplateStructureError(
+            "Generated transition branches disagree on advance attributes"
+        )
+    advance_click, advance_after = (
+        next(iter(advance_values)) if advance_values else (None, None)
+    )
+
+    if not source_carriers:
+        if generated_carriers:
+            clone = ET.fromstring(
+                ET.tostring(generated_carriers[0], encoding="utf-8")
+            )
+            children = list(source_root)
             insert_at = next(
                 (
                     index
                     for index, child in enumerate(children)
-                    if child.tag == f"{{{PML_NS}}}extLst"
+                    if child.tag in {
+                        f"{{{PML_NS}}}timing",
+                        f"{{{PML_NS}}}extLst",
+                    }
                 ),
                 len(children),
             )
-        source_root.insert(insert_at, clone)
+            source_root.insert(insert_at, clone)
+        return
+
+    source_transitions = _elements(source_carriers[0])
+    if not source_transitions:
+        raise TemplateStructureError(
+            "Source logical transition carrier contains no p:transition"
+        )
+    for transition in source_transitions:
+        for attribute, value in (
+            ("advClick", advance_click),
+            ("advTm", advance_after),
+        ):
+            if value is None:
+                transition.attrib.pop(attribute, None)
+            else:
+                transition.set(attribute, value)
+
+
+_RAW_ALTERNATE_CONTENT_RE = re.compile(
+    rb"<mc:AlternateContent\b[^>]*>.*?</mc:AlternateContent\s*>",
+    re.DOTALL,
+)
+_RAW_DIRECT_TRANSITION_RE = re.compile(
+    rb"<p:transition\b(?:[^>]*/>|[^>]*>.*?</p:transition\s*>)",
+    re.DOTALL,
+)
+_RAW_TIMING_RE = re.compile(
+    rb"<p:timing\b(?:[^>]*/>|[^>]*>.*?</p:timing\s*>)",
+    re.DOTALL,
+)
+
+
+def _raw_transition_carrier_span(xml_data: bytes) -> tuple[int, int] | None:
+    """Locate one raw root transition carrier in PowerPoint slide XML."""
+    alternate_spans = [
+        match.span()
+        for match in _RAW_ALTERNATE_CONTENT_RE.finditer(xml_data)
+    ]
+    carriers = [
+        span
+        for span in alternate_spans
+        if _RAW_DIRECT_TRANSITION_RE.search(xml_data[span[0]:span[1]])
+    ]
+    for match in _RAW_DIRECT_TRANSITION_RE.finditer(xml_data):
+        if any(start <= match.start() < end for start, end in alternate_spans):
+            continue
+        carriers.append(match.span())
+    if len(carriers) > 1:
+        raise TemplateStructureError(
+            "Round-trip slide has multiple raw transition carriers"
+        )
+    return carriers[0] if carriers else None
+
+
+def _preserve_roundtrip_transition_markup(
+    serialized_slide: bytes,
+    source_slide: bytes,
+) -> bytes:
+    """Restore an unchanged source transition carrier byte-for-byte."""
+    source_span = _raw_transition_carrier_span(source_slide)
+    serialized_span = _raw_transition_carrier_span(serialized_slide)
+    if source_span is None:
+        if serialized_span is not None:
+            raise TemplateStructureError(
+                "Round-trip serialization introduced a transition carrier"
+            )
+        return serialized_slide
+    if serialized_span is None:
+        raise TemplateStructureError(
+            "Round-trip serialization removed the preserved transition carrier"
+        )
+    return (
+        serialized_slide[:serialized_span[0]]
+        + source_slide[source_span[0]:source_span[1]]
+        + serialized_slide[serialized_span[1]:]
+    )
+
+
+def _raw_timing_span(xml_data: bytes) -> tuple[int, int] | None:
+    """Locate one raw logical object-animation timing carrier in slide XML."""
+    alternate_spans = [
+        match.span()
+        for match in _RAW_ALTERNATE_CONTENT_RE.finditer(xml_data)
+    ]
+    timings = [
+        span
+        for span in alternate_spans
+        if _RAW_TIMING_RE.search(xml_data[span[0]:span[1]])
+    ]
+    for match in _RAW_TIMING_RE.finditer(xml_data):
+        if any(start <= match.start() < end for start, end in alternate_spans):
+            continue
+        timings.append(match.span())
+    if len(timings) > 1:
+        raise TemplateStructureError(
+            "Round-trip slide has multiple raw object-animation timing carriers"
+        )
+    return timings[0] if timings else None
+
+
+def _preserve_roundtrip_timing_markup(
+    serialized_slide: bytes,
+    source_slide: bytes,
+) -> bytes:
+    """Restore unchanged source object-animation timing byte-for-byte."""
+    source_span = _raw_timing_span(source_slide)
+    serialized_span = _raw_timing_span(serialized_slide)
+    if source_span is None:
+        if serialized_span is not None:
+            raise TemplateStructureError(
+                "Round-trip serialization introduced object-animation timing"
+            )
+        return serialized_slide
+    if serialized_span is None:
+        raise TemplateStructureError(
+            "Round-trip serialization removed preserved object-animation timing"
+        )
+    return (
+        serialized_slide[:serialized_span[0]]
+        + source_slide[source_span[0]:source_span[1]]
+        + serialized_slide[serialized_span[1]:]
+    )
 
 
 def _apply_roundtrip_transition_overlay(
@@ -1020,20 +1220,27 @@ def _apply_roundtrip_transition_overlay(
     effect_options: dict[str, object],
     duration: float,
     auto_advance: float | None,
+    replace_transition: bool,
 ) -> bool:
     """Patch only transition/advance state while preserving source timing."""
-    source_xml = slide_path.read_text(encoding="utf-8")
+    source_bytes = slide_path.read_bytes()
+    source_xml = source_bytes.decode("utf-8")
     source_animation = object_animation_fingerprint(source_xml)
-    enter = (
-        EnterUpdate(policy="none", effect=None, duration=duration)
-        if effect is None
-        else EnterUpdate(
+    if not replace_transition:
+        enter = EnterUpdate(policy="preserve", duration=duration)
+    elif effect is None:
+        enter = EnterUpdate(
+            policy="none",
+            effect=None,
+            duration=(duration or DEFAULT_TRANSITION_DURATION),
+        )
+    else:
+        enter = EnterUpdate(
             policy="replace",
             effect=effect,
             duration=duration,
             effect_options=effect_options,
         )
-    )
     advance = (
         AdvanceUpdate(mode="click")
         if auto_advance is None
@@ -1048,15 +1255,21 @@ def _apply_roundtrip_transition_overlay(
         raise RuntimeError(
             "Round-trip transition overlay changed source object animations"
         )
-    validate_generated_transition_xml(
-        updated_xml,
-        effect=effect,
-        effect_options=effect_options,
-        duration=duration,
-        advance_on_click=True,
-        advance_after=auto_advance,
+    if replace_transition:
+        validate_generated_transition_xml(
+            updated_xml,
+            effect=effect,
+            effect_options=effect_options,
+            duration=duration,
+            advance_on_click=True,
+            advance_after=auto_advance,
+        )
+    slide_path.write_bytes(
+        _preserve_roundtrip_timing_markup(
+            updated_xml.encode("utf-8"),
+            source_bytes,
+        )
     )
-    slide_path.write_text(updated_xml, encoding="utf-8")
     return uses_timings
 
 
@@ -1326,28 +1539,38 @@ def _apply_roundtrip_slide_overlay(
         for element in generated_nodes
         for relationship_id in _relationship_ids_in_shape(element)
     }
-    if patch.motion_changed:
-        for local_name in ("transition", "timing"):
-            motion_node = generated_root.find(f"{{{PML_NS}}}{local_name}")
-            if motion_node is not None:
-                required_generated_relationship_ids.update(
-                    _relationship_ids_in_shape(motion_node)
-                )
+    if patch.transition_changed:
+        for carrier in transition_carriers(generated_root):
+            required_generated_relationship_ids.update(
+                _relationship_ids_in_shape(carrier)
+            )
+    if patch.animation_changed:
+        motion_node = generated_root.find(f"{{{PML_NS}}}timing")
+        if motion_node is not None:
+            required_generated_relationship_ids.update(
+                _relationship_ids_in_shape(motion_node)
+            )
     _merge_roundtrip_relationships(
         source_rels,
         generated_rels_path,
         generated_root,
         required_generated_relationship_ids,
     )
-    if patch.motion_changed:
-        _replace_roundtrip_motion(source_root, generated_root)
+    if patch.transition_changed or patch.animation_changed:
+        _replace_roundtrip_motion(
+            source_root,
+            generated_root,
+            transition_changed=patch.transition_changed,
+            transition_replaced=patch.transition_replaced,
+            animation_changed=patch.animation_changed,
+        )
     restored_shape_id_map = {
         generated_top_id: source_id
         for generated_top_id, source_id in source_id_by_generated_top_id.items()
         if source_id not in affected_top_ids
         and generated_top_id != source_id
     }
-    if patch.motion_changed:
+    if patch.animation_changed:
         _rewrite_roundtrip_timing_shape_ids(
             source_root,
             restored_shape_id_map,
@@ -1356,7 +1579,7 @@ def _apply_roundtrip_slide_overlay(
         generated_nodes,
         retained_source_nodes,
         source_root,
-        rewrite_timing=patch.motion_changed,
+        rewrite_timing=patch.animation_changed,
     )
 
     for child in list(source_tree):
@@ -1369,7 +1592,7 @@ def _apply_roundtrip_slide_overlay(
         for element in source_tree
         for value in _shape_ids_in_element(element)
     }
-    if not patch.motion_changed:
+    if not patch.animation_changed:
         missing_timing_targets = _timing_shape_ids(source_root) - visible_shape_ids
         if missing_timing_targets:
             raise TemplateStructureError(
@@ -1377,9 +1600,18 @@ def _apply_roundtrip_slide_overlay(
                 "animations.json explicitly: "
                 + ", ".join(sorted(missing_timing_targets, key=int))
             )
-    generated_slide_path.write_bytes(
-        serialize_source_xml(source_root, source_slide)
-    )
+    serialized_slide = serialize_source_xml(source_root, source_slide)
+    if not patch.transition_changed:
+        serialized_slide = _preserve_roundtrip_transition_markup(
+            serialized_slide,
+            source_slide,
+        )
+    if not patch.animation_changed:
+        serialized_slide = _preserve_roundtrip_timing_markup(
+            serialized_slide,
+            source_slide,
+        )
+    generated_slide_path.write_bytes(serialized_slide)
     combined_id_map = {
         **restored_shape_id_map,
         **renumbered_shape_id_map,
@@ -5897,7 +6129,7 @@ def create_pptx_with_native_svg(
     source_motion_slides = passthrough_slides | {
         index
         for index, patch in slide_patches.items()
-        if not patch.motion_changed
+        if not patch.animation_changed
     }
     invalid_passthrough = sorted(
         index
@@ -6465,6 +6697,7 @@ def create_pptx_with_native_svg(
                             effect_options=overlay_transition_options,
                             duration=overlay_transition_duration,
                             auto_advance=overlay_auto_advance,
+                            replace_transition=slide_patch.transition_replaced,
                         ):
                             package_uses_timings = True
                         if slide_patch.notes_changed:
@@ -7094,12 +7327,16 @@ def create_pptx_with_native_svg(
                     narration_slides_created.add(slide_num)
 
                 final_slide_xml = slide_xml_path.read_text(encoding='utf-8')
-                preserved_source_motion = (
-                    slide_patch is not None and not slide_patch.motion_changed
+                preserved_source_transition = (
+                    slide_patch is not None
+                    and not slide_patch.transition_replaced
+                )
+                preserved_source_animation = (
+                    slide_patch is not None and not slide_patch.animation_changed
                 )
                 resolved_motion = None
                 resolved_animation = None
-                if not preserved_source_motion:
+                if not preserved_source_transition:
                     try:
                         resolved_motion = validate_generated_transition_xml(
                             final_slide_xml,
@@ -7114,6 +7351,7 @@ def create_pptx_with_native_svg(
                         raise RuntimeError(
                             f'Slide {slide_num} transition validation failed: {exc}'
                         ) from exc
+                if not preserved_source_animation:
                     try:
                         resolved_animation = validate_generated_animation_xml(
                             final_slide_xml,

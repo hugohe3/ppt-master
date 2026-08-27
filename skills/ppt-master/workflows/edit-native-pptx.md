@@ -205,6 +205,8 @@ Skip this section when no module in §4.2 is enabled beyond preserving source no
 
 **Motion**: Load [`animations.md`](../references/animations.md) when transitions or object animations are requested. `animations.json` rows are keyed by output SVG stem; a copied page inherits its source row unless it has its own.
 
+**Hard rule — rebuilt animation targets**: Rebuilding an object that a source animation targets (for example a chart whose data you edited) leaves that animation without a target, and export stops with `Edited slide removed source animation target(s)`. Give that page its own row so its motion becomes explicit — `"<stem>": {"animation": {"effect": "none"}}` drops the source build, or author the page's animation in the row — then export again.
+
 ---
 
 ## 7. Export and Validate

@@ -182,6 +182,7 @@ Successful round-trip export prints one deck receipt:
 cloned_passthrough=C patched=M rebuilt=R`. `patched` keeps the source visible
 Slide XML and applies only notes or motion overlays; `rebuilt` means the page's
 visible authoring changed.
+Without `-o`, round-trip export names the deck `<workspace-directory-name>_<timestamp>[<flavor-suffix>].pptx` under `exports/`.
 
 Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip`
 as the round-trip text-capacity gate. It resolves the output roster from

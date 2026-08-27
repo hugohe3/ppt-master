@@ -454,6 +454,9 @@ def _roundtrip_slide_patches(
     *,
     force_visual_changed: bool,
     force_motion_changed: bool,
+    force_transition_changed: bool,
+    force_transition_replaced: bool,
+    force_animation_changed: bool,
     force_notes_changed: bool,
 ) -> dict[int, RoundtripSlidePatch]:
     """Build strict source-overlay metadata for edited authoring slides."""
@@ -528,12 +531,32 @@ def _roundtrip_slide_patches(
                 f"Round-trip manifest slide {page.source_slide} lacks "
                 "animationSha256"
             )
-        motion_changed = force_motion_changed or (
+        sidecar_changed = (
             slide_animation_config_sha256(
                 animation_config,
                 page.svg_stem,
             )
             != expected_animation
+        )
+        motion_changed = force_motion_changed or sidecar_changed
+        slide_config = _as_dict(
+            _as_dict(animation_config.get("slides")).get(page.svg_stem)
+        )
+        transition_changed = force_transition_changed or (
+            sidecar_changed and "transition" in slide_config
+        )
+        slide_transition_config = _as_dict(slide_config.get("transition"))
+        transition_replaced = force_transition_replaced or (
+            sidecar_changed
+            and "transition" in slide_config
+            and any(
+                key in slide_transition_config
+                for key in ("effect", "effect_options", "duration", "sound")
+            )
+        )
+        animation_changed = force_animation_changed or (
+            sidecar_changed
+            and any(key in slide_config for key in ("animation", "groups"))
         )
 
         def _ref_set(field: str) -> frozenset[str]:
@@ -558,6 +581,9 @@ def _roundtrip_slide_patches(
                 or raw.get("defs_changed") is True
             ),
             motion_changed=motion_changed,
+            transition_changed=transition_changed,
+            transition_replaced=transition_replaced,
+            animation_changed=animation_changed,
             notes_changed=(
                 force_notes_changed
                 or _roundtrip_note_changed(project_path, row, page)
@@ -2208,11 +2234,14 @@ Recorded narration:
         print("Error: --image-quality must be between 1 and 100", file=sys.stderr)
         return 1
 
-    try:
-        project_info = get_project_info(str(project_path))
-        project_name = project_info.get('name', project_path.name)
-    except Exception:
-        project_name = project_path.name
+    if args.roundtrip:
+        project_name = project_path.resolve().name
+    else:
+        try:
+            project_info = get_project_info(str(project_path))
+            project_name = project_info.get('name', project_path.name)
+        except Exception:
+            project_name = project_path.name
 
     canvas_format = args.format
     expected_viewbox = (
@@ -2447,6 +2476,31 @@ Recorded narration:
             args.use_narration_timings,
             args.inherit_motion_from is not None,
         ))
+        roundtrip_transition_overridden = any((
+            args.no_animations,
+            args.transition is not None,
+            args.transition_duration is not None,
+            args.auto_advance is not None,
+            args.recorded_narration is not None,
+            args.narration_audio_dir is not None,
+            args.use_narration_timings,
+            args.inherit_motion_from is not None,
+        ))
+        roundtrip_transition_replaced = any((
+            args.no_animations,
+            args.transition is not None,
+            args.transition_duration is not None,
+            args.inherit_motion_from is not None,
+        ))
+        roundtrip_animation_overridden = any((
+            args.no_animations,
+            args.animation is not None,
+            args.animation_duration is not None,
+            args.animation_stagger is not None,
+            args.animation_trigger is not None,
+            args.animation_config is not None,
+            args.inherit_motion_from is not None,
+        ))
         try:
             roundtrip_slide_patches = _roundtrip_slide_patches(
                 project_path.resolve(),
@@ -2458,6 +2512,9 @@ Recorded narration:
                     or args.text_flow != TEXT_FLOW_PRESERVE
                 ),
                 force_motion_changed=roundtrip_motion_overridden,
+                force_transition_changed=roundtrip_transition_overridden,
+                force_transition_replaced=roundtrip_transition_replaced,
+                force_animation_changed=roundtrip_animation_overridden,
                 force_notes_changed=args.no_notes,
             )
         except RuntimeError as exc:

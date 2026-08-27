@@ -1554,8 +1554,19 @@ class SVGQualityChecker:
                         root,
                         included_text_ids,
                     )
+                    changed_font_families = (
+                        self._roundtrip_changed_font_families(
+                            root,
+                            baseline_root,
+                            included_text_ids,
+                        )
+                    )
                     svg_contracts.check_font_size_values(scoped_content, result)
-                    self._check_fonts(scoped_content, result)
+                    self._check_fonts(
+                        scoped_content,
+                        result,
+                        font_families=changed_font_families,
+                    )
                     self._check_text_output_geometry(
                         root,
                         result,
@@ -1691,6 +1702,156 @@ class SVGQualityChecker:
         if scoped_root is None:
             return ''
         return ET.tostring(scoped_root, encoding='unicode')
+
+    @staticmethod
+    def _roundtrip_resolved_font_family(
+        element: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> str | None:
+        """Resolve inherited SVG font-family at one text carrier."""
+        current: ET.Element | None = element
+        while current is not None:
+            style_values = (
+                _parse_inline_style(current.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            value = style_values.get('font-family')
+            if value is None:
+                value = current.get('font-family')
+            if isinstance(value, str) and value.strip():
+                normalized = value.strip()
+                if normalized.casefold() not in {'inherit', 'unset'}:
+                    return normalized
+            current = parent_by_id.get(id(current))
+        return None
+
+    @staticmethod
+    def _roundtrip_relative_path(
+        element: ET.Element,
+        ancestor: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> tuple[int, ...] | None:
+        """Return child indices from one source-ref owner to a descendant."""
+        reverse_path: List[int] = []
+        current = element
+        while current is not ancestor:
+            parent = parent_by_id.get(id(current))
+            if parent is None:
+                return None
+            reverse_path.append(
+                next(
+                    index
+                    for index, child in enumerate(list(parent))
+                    if child is current
+                )
+            )
+            current = parent
+        return tuple(reversed(reverse_path))
+
+    @staticmethod
+    def _roundtrip_baseline_context(
+        current_owner: ET.Element,
+        baseline_owner: ET.Element,
+        path: tuple[int, ...],
+    ) -> ET.Element:
+        """Follow a matching relative path, stopping at the closest context."""
+        current = current_owner
+        baseline = baseline_owner
+        for index in path:
+            current_children = list(current)
+            baseline_children = list(baseline)
+            if index >= len(current_children) or index >= len(baseline_children):
+                break
+            current_child = current_children[index]
+            baseline_child = baseline_children[index]
+            if _local_name(current_child) != _local_name(baseline_child):
+                break
+            current = current_child
+            baseline = baseline_child
+        return baseline
+
+    @classmethod
+    def _roundtrip_changed_font_families(
+        cls,
+        root: ET.Element,
+        baseline_root: ET.Element,
+        included_text_ids: set[int],
+    ) -> List[str]:
+        """Return resolved edited fonts that differ from the source baseline."""
+        from svg_authoring_view import SOURCE_REF_ATTRIBUTE
+
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        baseline_parent_by_id = {
+            id(child): parent
+            for parent in baseline_root.iter()
+            for child in list(parent)
+        }
+        baseline_by_ref = {
+            source_ref: element
+            for element in baseline_root.iter()
+            if (source_ref := element.get(SOURCE_REF_ATTRIBUTE))
+        }
+        changed: List[str] = []
+        seen: set[str] = set()
+        for text_element in root.iter(f'{{{SVG_NS}}}text'):
+            if id(text_element) not in included_text_ids:
+                continue
+            current_owner: ET.Element | None = text_element
+            source_ref: str | None = None
+            while current_owner is not None:
+                source_ref = current_owner.get(SOURCE_REF_ATTRIBUTE)
+                if source_ref:
+                    break
+                current_owner = parent_by_id.get(id(current_owner))
+            baseline_owner = (
+                baseline_by_ref.get(source_ref)
+                if source_ref is not None
+                else None
+            )
+            for carrier in text_element.iter():
+                if _local_name(carrier) not in {'text', 'tspan'}:
+                    continue
+                if not re.sub(r'\s+', ' ', ''.join(carrier.itertext())).strip():
+                    continue
+                current_family = cls._roundtrip_resolved_font_family(
+                    carrier,
+                    parent_by_id,
+                )
+                if current_family is None:
+                    continue
+                baseline_context = baseline_root
+                if current_owner is not None and baseline_owner is not None:
+                    relative_path = cls._roundtrip_relative_path(
+                        carrier,
+                        current_owner,
+                        parent_by_id,
+                    )
+                    if relative_path is not None:
+                        baseline_context = cls._roundtrip_baseline_context(
+                            current_owner,
+                            baseline_owner,
+                            relative_path,
+                        )
+                baseline_family = cls._roundtrip_resolved_font_family(
+                    baseline_context,
+                    baseline_parent_by_id,
+                )
+                normalized = cls._normalize_font_stack(current_family)
+                if (
+                    baseline_family is not None
+                    and normalized
+                    == cls._normalize_font_stack(baseline_family)
+                ):
+                    continue
+                if normalized and normalized not in seen:
+                    changed.append(current_family)
+                    seen.add(normalized)
+        return changed
 
     def _check_roundtrip_text_frames(
         self,
@@ -2261,14 +2422,24 @@ class SVGQualityChecker:
             'max_frame_share': round(max(frame_shares), 4) if frame_shares else 0.0,
         }
 
-    def _check_fonts(self, content: str, result: Dict):
+    def _check_fonts(
+        self,
+        content: str,
+        result: Dict,
+        *,
+        font_families: List[str] | None = None,
+    ):
         """Check font usage.
 
         PPTX stores concrete typefaces per run with no CSS fallback. The
         converter resolves each SVG font stack to exported latin / EA typefaces;
         validate those exported values rather than the visual-preview tail.
         """
-        font_matches = self._font_family_values(content)
+        font_matches = (
+            self._font_family_values(content)
+            if font_families is None
+            else font_families
+        )
 
         if not font_matches:
             return
