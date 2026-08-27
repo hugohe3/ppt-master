@@ -1404,7 +1404,14 @@ class SVGQualityChecker:
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Fail standard generation when SVG was not compact when authored."""
+        """Report SVG that was not compact when authored.
+
+        Template workspaces (``--template-mode``) fail because their compact
+        form is the hash-locked source for mirror materialization. Authored
+        project pages only receive an advisory warning: the exporter accepts
+        explicit declarations, and ``compact_svg_styles.py --inplace`` applies
+        the same deterministic normalization on request.
+        """
         if not self.canonical_authoring:
             return
         errors = canonical_authoring_errors(
@@ -1415,8 +1422,19 @@ class SVGQualityChecker:
             # still known.
             compact_native_frames=False,
         )
-        result['errors'].extend(
-            f"Noncanonical compact authoring: {error}"
+        if not errors:
+            return
+        if self.template_mode:
+            result['errors'].extend(
+                f"Noncanonical compact authoring: {error}"
+                for error in errors
+            )
+            return
+        result['warnings'].extend(
+            f"Noncanonical compact authoring: {error} "
+            "(advisory; normalize with "
+            "`python3 scripts/compact_svg_styles.py <svg_output> --inplace` "
+            "and rerun the final gate, or leave the explicit form)"
             for error in errors
         )
 
