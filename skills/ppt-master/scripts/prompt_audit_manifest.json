@@ -280,7 +280,7 @@
         "skills/ppt-master/references/image-base.md",
         "skills/ppt-master/references/image-generator.md"
       ],
-      "max_tokens": 150000
+      "max_tokens": 145000
     },
     "route.generate.quick-generate.video-design": {
       "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery. Ceiling raised after BUDGET_LOAD_SET reported 154620 tokens.",
@@ -1047,7 +1047,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 125000
+      "max_tokens": 120000
     },
     "stage.generate.executor.chart": {
       "description": "Conditional value-driven chart execution rules.",

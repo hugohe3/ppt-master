@@ -260,7 +260,7 @@ workspace has been installed.
 At Step-4 entry, load the always-required planning context directly in one
 batch: the role core, every canonical content-type source file defined below,
 and the compact structured analysis facts already present. Do not load any
-mode, visual-style, or image-rendering index or detail file before Stage 1. For a multi-deck
+mode, visual-style, or image-rendering detail file before Stage 1. For a multi-deck
 `source_profile.json`, read its compact `decks[]` digests in that batch and open
 a deck's larger identity/slide-library files only when the specific need below
 arises.
@@ -277,24 +277,29 @@ Then load only the extra role modules triggered by the current plan:
 | Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
 | The confirmed Stage-1 `delivery_context` identifies recorded/self-running/video delivery, or input is an explicit final/literal narration script | `references/video-design.md` before the three Stage-2 whole solutions and page roster |
 
-**Hard rule — judgment reads only what it needs**: Stage 2 directions come
-from the material, the confirmed contract, the role core, and
-`canvas-formats.md` alone. After final confirmation, read each reference at
-the Design Spec step that uses it: `strategist-image.md` for §VIII when the
-confirmed image source is not `none`; `templates/icons/README.md` when
-materializing a confirmed icon pool; the chart/table vocabularies only when the
-roster has value-driven or cell-grid pages. `image-layout-spec.md` and
-`image-layout-patterns.md` are Executor material; Strategist never opens them.
+After Stage 1 and template handoff, load the fixed planning-capability block
+below in one batch before authoring any Stage-2 whole-solution intent, image
+source recommendation, or page roster:
 
-**Hard rule — direction before catalog**: author the three whole solutions
-from the material and the confirmed contract with no mode / visual-style /
-rendering index or detail file in context. Only then read the three
-`_index.md` files once, solely to record a `*_references` basis where a row
-genuinely matches what was written; no match records none, and no direction
-is revised toward a row. Detail files are read only after final confirmation,
-only for the selected direction, while authoring the Design Spec. Confirmed non-`none` loads `strategist-image.md`
-and continues into resource planning; confirmed `none` writes no image rows
-while retaining recommendation-only rendering candidates. Only an installed
+```
+Read ${SKILL_DIR}/references/strategist-image.md
+Read ${SKILL_DIR}/references/image-layout-spec.md
+Read ${SKILL_DIR}/references/image-layout-patterns.md
+Read ${SKILL_DIR}/references/modes/_index.md
+Read ${SKILL_DIR}/references/visual-styles/_index.md
+Read ${SKILL_DIR}/references/image-renderings/_index.md
+Read ${SKILL_DIR}/templates/icons/README.md
+Read ${SKILL_DIR}/templates/charts/chart-vocabulary.md
+Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
+```
+
+This is a capability map; retain the Strategist/Executor ownership boundary. Author the three whole solution
+intents before mapping any component basis. Freeze every referenced
+mode/style/rendering id from the indexes, then read once only the deduplicated
+union of those exact detail files and finish the three custom behaviors. A novel
+custom reads no detail file. Confirmed non-`none` uses the already-loaded image
+layout references and continues into resource planning; confirmed `none` writes
+no image rows while retaining recommendation-only rendering candidates. Only an installed
 project-local template state loads the template module, and only after Stage 1
 is confirmed; a bare template/style name does not.
 
@@ -382,9 +387,10 @@ or `templates` with at least one server-resolved root.
    it. The server requires this handoff before Stage 2.
 
 2. Only now inspect installed template state and apply
-   `strategist-template.md` when active. Under the two hard rules above, author
-   the three whole solutions with the catalogs closed, then open the three
-   indexes only to record genuinely matching references. Derive the
+   `strategist-template.md` when active. Load the fixed Stage-2 planning-capability
+   block above, author three whole solution intents, freeze their exact component
+   references from its indexes, then read only the referenced detail files and
+   complete the custom projections. Derive the
    remaining production defaults and create
    `confirm_ui/recommendations.stage2.json` without changing Stage 1; declare
    `stage: "stage2"`, then wait for the final confirmation:
@@ -497,7 +503,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 For a new project, use the reference-first whole-document sequence:
 
-1. Read `${SKILL_DIR}/templates/design_spec_reference.md` plus only the detail files named by the confirmed direction's `*_references` (none for a novel custom); create complete I–X `<project_path>/design_spec.md` once from retained confirmation, analysis, and context, without placeholders/examples.
+1. Read `${SKILL_DIR}/templates/design_spec_reference.md`; create complete I–X `<project_path>/design_spec.md` once from retained confirmation, analysis, and context, without placeholders/examples.
 2. Audit it field by field against retained confirmation; Gate 1 must pass.
 3. If enabled, run [`refine-spec`](stages/refine-spec.md) on that file until explicit approval; touch no lock.
 4. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create or resynchronize the lock once from approved Design Spec and context. Never reopen `result.json` or make a new design choice.

@@ -8,7 +8,7 @@ A **mode** is the deck's **narrative + persuasion skeleton** — how the argumen
 
 ## 1. Catalog (5 modes)
 
-Each mode keeps its own authoritative file with: narrative skeleton, page-structure tendencies, speaker-notes register, and a page skeleton example. Open this index only after the direction has been written in its own words, to name a basis that genuinely matches it; a direction that matches no row names none. Read a sibling file only after that direction is confirmed or, in Quick, decided: one file for a preset, every exact `mode_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling.
+Each mode keeps its own authoritative file with: narrative skeleton, page-structure tendencies, speaker-notes register, and a page skeleton example. Read this index alone while choosing a direction. Only after a preset or custom bases are fixed may the active role read the selected sibling files: one file for a preset, every exact `mode_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling.
 
 | Mode | Narrative skeleton | Typical communication context |
 |---|---|---|
@@ -51,8 +51,8 @@ selecting one for the current deck:
 
 | Active profile | Use |
 |---|---|
-| Default Generate | Strategist authors three whole directions with this index closed, then opens it once to record genuinely matching bases; the confirmed direction's referenced files are read at Design Spec time. Executor reads the confirmed preset file or exact custom references. |
-| Quick Generate | The current main agent decides its one direction with this index closed, then opens it once to map, then reads the resolved preset or exact custom bases and keeps that one direction in active context without Design Spec/lock. |
+| Default Generate | Strategist reads only this index while mapping three whole solution intents, freezes each custom direction's exact bases, then reads only their deduplicated detail files. Executor reads the confirmed preset file or exact custom references. |
+| Quick Generate | The current main agent reads only this index while deciding, then reads the resolved preset or exact custom bases and keeps that one direction in active context without Design Spec/lock. |
 
 **Resolution scope**: deck-wide (one mode per deck). The five are the catalog you select from; if the structure is genuinely mixed, pick the mode of the body pages and let pages vary within it, or use a warranted `custom` blend (§4). Default recommends and confirms; Quick decides directly.
 
@@ -66,7 +66,7 @@ selecting one for the current deck:
 
 **Quick custom**: do not display a candidate set. Use `custom` only when a project-specific specialization or fusion serves the deck better than one preset; retain the behavior and exact bases in active context and persist nothing.
 
-**Mandatory — write before mapping, map before reading**: write the behavior first; then use this index only to record every catalog source it genuinely uses, and read those exact files only once the direction is confirmed or decided. One source may supply the complete cadence unchanged; when several are named, each owns a distinct executable act, posture, title voice, rhythm, or register. Reference count has no fixed cap; count is an outcome, not a target. A three-basis direction may use `pyramid` for a conclusion-first opening, `narrative` for the risk-tension act, and `instructional` for the closing action sequence; it reads those three files and writes all three ids beside `mode_behavior`. Quick retains its bases only in active context. Omit every source whose contribution cannot be stated, never add a second merely to imply synthesis, and do not open candidates for comparison after this gate. A custom using no catalog source names and reads none.
+**Mandatory — select before detail reading**: Use this index to freeze every catalog source actually used, then read only those exact files before writing the behavior. One source may supply the complete cadence unchanged; when several are named, each owns a distinct executable act, posture, title voice, rhythm, or register. Reference count has no fixed cap; count is an outcome, not a target. A three-basis direction may use `pyramid` for a conclusion-first opening, `narrative` for the risk-tension act, and `instructional` for the closing action sequence; it reads those three files and writes all three ids beside `mode_behavior`. Quick retains its bases only in active context. Omit every source whose contribution cannot be stated, never add a second merely to imply synthesis, and do not open candidates for comparison after this gate. A custom using no catalog source names and reads none.
 
 > **One value per deck — fusion is *one* `custom`, not several modes.** A deck always resolves a single `mode`. A multi-mode blend is expressed as **one** custom behavior whose paragraph describes the acts — never as several simultaneous modes.
 >

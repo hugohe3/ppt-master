@@ -10,7 +10,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ## 1. Catalog (20 renderings)
 
-Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Open this index only after the direction has been written in its own words, to name a basis that genuinely matches it; a direction that matches no row names none. Read a sibling file only after that direction is confirmed or, in Quick, decided: one file for a preset, every exact `image_rendering_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling. Whether AI imagery is recommended remains a separate source decision; Image_Generator follows the same selected-only rule.
+Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Read this index alone while choosing a direction. Only after a preset or custom bases are fixed may the active role read the selected sibling files: one file for a preset, every exact `image_rendering_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling. Whether AI imagery is recommended remains a separate source decision; Image_Generator follows the same selected-only rule.
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
@@ -62,7 +62,7 @@ Every coordinated Stage-2 direction carries one complete `rendering: custom` can
 |---|---|
 | Length | One paragraph, 2-5 sentences |
 | Axes covered | line / texture / depth / material / mood (same as preset files) |
-| Catalog basis | Write the treatment first; record only genuinely matching ids from this index, and read those files only after the direction is confirmed or decided |
+| Catalog basis | Freeze every exact id from this index, then read only those files before applying one basis or synthesizing several |
 
 ```yaml
 - image_rendering: custom
