@@ -216,7 +216,8 @@ the payload in memory before validation and DrawingML construction.
 Cells accept `text`, `fill`, `fill_opacity`, `color`, `align`, `valign`, `bold`,
 `font_size`, `padding`, canonical side-specific `padding_*`, `border_color`,
 `border_width`, `borders`, `lang`, `anchor_center`, and
-`horizontal_overflow`. Table-wide font/palette/banding/uniform-border policy
+`horizontal_overflow`. `align` is `l`, `ctr`, or `r`; `valign` is `top`,
+`middle`, or `bottom`. Table-wide font/palette/banding/uniform-border policy
 lives under `style`; exact imported defaults live under `defaults.cell`.
 For multi-paragraph text, replace cell `text` with a non-empty `paragraphs`
 list. Each entry is either a string or an object containing optional

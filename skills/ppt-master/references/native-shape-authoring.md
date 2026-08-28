@@ -235,7 +235,12 @@ siblings whenever one-object contour semantics are unnecessary.
 ## 3. Fragment Generation
 
 `render` emits one selected object. `render-batch` atomically emits multiple
-already-selected objects for one current page or template construction.
+already-selected objects for one current page or template construction. Its
+`--input` is a JSON array of objects with the same fields as the `render`
+flags: required `preset`, `id`, and `frame` (`[x, y, width, height]`);
+optional `object_kind`, `name`, `fill`, `fill_opacity`, `stroke`,
+`stroke_width`, `stroke_opacity`, `stroke_linecap`, `stroke_linejoin`,
+`filter_id`, and `adjustments` (an object such as `{"adj": "val 42000"}`).
 Generated project pages choose each object's solid paint from the current page
 context, using `spec_lock.md` roles as reusable anchors rather than an exhaustive
 palette; `create-template` takes colors from the confirmed brief and template
