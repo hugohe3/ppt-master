@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="risk-matrix" data-pptx-replace-with="table" data-pptx-bounds="96 242 1112 388" data-pptx-fallback-sha256="0ca66360858c77eda15ddea9f1bb21223ea73442ef2d73c260dbdba6c9f73f2a">
+    <metadata type="application/json">
+      {
+        "schema": "ppt-master.semantic-table.v2",
+        "x": 96, "y": 242, "width": 1112, "height": 388,
+        "name": "risk-matrix",
+        "header_rows": 1,
+        "column_widths": [190, 110, 100, 110, 350, 252],
+        "columns": ["风险类别", "发生可能性", "影响程度", "综合等级", "重点监测信号", "主要责任主体"],
+        "rows": [
+          ["政策与市场风险", "高", "高", "红色", "规划调整、准入规则变化、项目清单和建设时序变化", "区域总部、市场经营及专业单位"],
+          ["地方财政与支付风险", "高", "高", "红色", "资金未落实、预算调整、回款逾期、业主负债率上升", "投资、财务、市场及项目公司"],
+          ["电力市场价格风险", "高", "高", "红色", "现货价格波动、偏差考核增加、机制电量变化、限电上升", "投资、能源专业单位及运营主体"],
+          ["生态用地与建设条件风险", "中高", "高", "红色", "触及生态保护红线、用地手续滞后、地灾和征拆协调困难", "前期、设计、工程及属地项目单位"],
+          ["竞争与内部协同风险", "高", "中高", "橙色", "低价竞争、重复营销、内部抢标、资源投入分散", "区域总部及在渝成员企业"],
+          ["技术迭代风险", "中", "高", "橙色", "设备性能不达标、技术路线更替、运维成本超预期", "科技、设计、采购及运营单位"]
+        ],
+        "style": {
+          "font_family": "Microsoft YaHei",
+          "font_size": 18,
+          "band_row": false,
+          "border_color": "#DDE3E9",
+          "border_width": 1
+        }
+      }
+    </metadata>
+    <rect x="96" y="246" width="1112" height="40" fill="#004EA1" />
+    <g id="risk-matrix-head" font-size="18" font-weight="bold" fill="#FFFFFF">
+      <text x="112" y="272">风险类别</text>
+      <text x="302" y="272">发生可能性</text>
+      <text x="412" y="272">影响程度</text>
+      <text x="512" y="272">综合等级</text>
+      <text x="622" y="272">重点监测信号</text>
+      <text x="972" y="272">主要责任主体</text>
+    </g>
+    <g id="risk-matrix-rules" stroke="#DDE3E9" stroke-width="1">
+      <line x1="96" y1="342" x2="1208" y2="342" />
+      <line x1="96" y1="398" x2="1208" y2="398" />
+      <line x1="96" y1="454" x2="1208" y2="454" />
+      <line x1="96" y1="510" x2="1208" y2="510" />
+      <line x1="96" y1="566" x2="1208" y2="566" />
+      <line x1="96" y1="622" x2="1208" y2="622" />
+      <line x1="286" y1="286" x2="286" y2="622" />
+      <line x1="396" y1="286" x2="396" y2="622" />
+      <line x1="496" y1="286" x2="496" y2="622" />
+      <line x1="606" y1="286" x2="606" y2="622" />
+      <line x1="956" y1="286" x2="956" y2="622" />
+    </g>
+    <g id="risk-matrix-levels">
+      <rect x="506" y="300" width="90" height="28" fill="#C90A4F" />
+      <rect x="506" y="356" width="90" height="28" fill="#C90A4F" />
+      <rect x="506" y="412" width="90" height="28" fill="#C90A4F" />
+      <rect x="506" y="468" width="90" height="28" fill="#C90A4F" />
+      <rect x="506" y="524" width="90" height="28" fill="#D97706" />
+      <rect x="506" y="580" width="90" height="28" fill="#D97706" />
+    </g>
+    <g id="risk-matrix-level-text" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
+      <text x="551" y="320">红色</text>
+      <text x="551" y="376">红色</text>
+      <text x="551" y="432">红色</text>
+      <text x="551" y="488">红色</text>
+      <text x="551" y="544">橙色</text>
+      <text x="551" y="600">橙色</text>
+    </g>
+    <g id="risk-matrix-body" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#1A1A1A">
+      <text x="112" y="312" font-weight="bold">政策与市场风险</text>
+      <text x="302" y="312">高</text>
+      <text x="412" y="312">高</text>
+      <text x="622" y="312">规划调整、准入规则变化、<tspan x="622" dy="24">项目清单和建设时序变化</tspan>
+      </text>
+      <text x="972" y="312">区域总部、市场经营及<tspan x="972" dy="24">专业单位</tspan>
+      </text>
+      <text x="112" y="368" font-weight="bold">地方财政与支付风险</text>
+      <text x="302" y="368">高</text>
+      <text x="412" y="368">高</text>
+      <text x="622" y="368">资金未落实、预算调整、<tspan x="622" dy="24">回款逾期、业主负债率上升</tspan>
+      </text>
+      <text x="972" y="368">投资、财务、市场及<tspan x="972" dy="24">项目公司</tspan>
+      </text>
+      <text x="112" y="424" font-weight="bold">电力市场价格风险</text>
+      <text x="302" y="424">高</text>
+      <text x="412" y="424">高</text>
+      <text x="622" y="424">现货价格波动、偏差考核增加、<tspan x="622" dy="24">机制电量变化、限电上升</tspan>
+      </text>
+      <text x="972" y="424">投资、能源专业单位及<tspan x="972" dy="24">运营主体</tspan>
+      </text>
+      <text x="112" y="480" font-weight="bold">生态用地与建设<tspan x="112" dy="24">条件风险</tspan>
+      </text>
+      <text x="302" y="480">中高</text>
+      <text x="412" y="480">高</text>
+      <text x="622" y="480">触及生态保护红线、用地手续<tspan x="622" dy="24">滞后、地灾和征拆协调困难</tspan>
+      </text>
+      <text x="972" y="480">前期、设计、工程及<tspan x="972" dy="24">属地项目单位</tspan>
+      </text>
+      <text x="112" y="536" font-weight="bold">竞争与内部协同风险</text>
+      <text x="302" y="536">高</text>
+      <text x="412" y="536">中高</text>
+      <text x="622" y="536">低价竞争、重复营销、<tspan x="622" dy="24">内部抢标、资源投入分散</tspan>
+      </text>
+      <text x="972" y="536">区域总部及在渝成员企业</text>
+      <text x="112" y="592" font-weight="bold">技术迭代风险</text>
+      <text x="302" y="592">中</text>
+      <text x="412" y="592">高</text>
+      <text x="622" y="592">设备性能不达标、技术路线<tspan x="622" dy="24">更替、运维成本超预期</tspan>
+      </text>
+      <text x="972" y="592">科技、设计、采购及<tspan x="972" dy="24">运营单位</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

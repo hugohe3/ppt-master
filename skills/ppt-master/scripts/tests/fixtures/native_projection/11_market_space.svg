@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="market-space-breakdown" data-pptx-replace-with="chart" data-pptx-bounds="96 250 604 320" data-pptx-fallback-sha256="c64262840a568de1cccbd992132213b85a71b1d40622da99ef582bd94584bc40">
+    <metadata type="application/json">
+      {
+        "x": 96, "y": 250, "width": 604, "height": 320,
+        "name": "market-space-breakdown",
+        "type": "treemap",
+        "parent_label_layout": "banner",
+        "categories": [
+          ["城市建设与基础设施", "房建"], ["城市建设与基础设施", "市政"], ["城市建设与基础设施", "综合交通"],
+          ["水资源与环境", "水利工程"], ["水资源与环境", "水环境治理和生态修复"], ["水资源与环境", "水务工程"], ["水资源与环境", "环保"],
+          ["能源电力", "光伏"], ["能源电力", "电网"], ["能源电力", "火电"], ["能源电力", "抽水蓄能"], ["能源电力", "风电"], ["能源电力", "常规水电"],
+          ["战略性新兴业务", "人工智能"], ["战略性新兴业务", "低空经济"], ["战略性新兴业务", "氢能"], ["战略性新兴业务", "新型储能"], ["战略性新兴业务", "土壤修复"],
+          ["数字化", "工程基建数字化"], ["数字化", "城市治理数字化"], ["数字化", "能源算力数字化"], ["数字化", "战略性新兴数字化"]
+        ],
+        "values": [4720, 2420, 573, 2198.31, 211.41, 204.53, 37.6, 559, 300, 240, 223, 209, 45, 200, 80, 50, 46.5, 10.3, 65, 52, 48, 35],
+        "style": {
+          "colors": ["#0E7C9B", "#004EA1", "#4A7BB5", "#7FA3C4", "#B8CBE0"],
+          "font_family": "Arial",
+          "chart_area_fill": "none",
+          "text_color": "#FFFFFF"
+        }
+      }
+    </metadata>
+    <g id="market-space-breakdown-tiles" stroke="#FFFFFF" stroke-width="1">
+      <rect x="96" y="250" width="227.6" height="320" fill="#0E7C9B" />
+      <rect x="323.6" y="250" width="116.7" height="320" fill="#2E90AD" />
+      <rect x="440.3" y="250" width="27.6" height="320" fill="#57A9C0" />
+      <rect x="467.9" y="250" width="192.4" height="176.3" fill="#004EA1" />
+      <rect x="660.3" y="250" width="39.7" height="82.2" fill="#2A6FB5" />
+      <rect x="660.3" y="332.2" width="39.7" height="79.5" fill="#4A7BB5" />
+      <rect x="660.3" y="411.7" width="39.7" height="14.6" fill="#6F9BCB" />
+      <rect x="467.9" y="426.3" width="82.3" height="104.7" fill="#4A7BB5" />
+      <rect x="550.2" y="426.3" width="44.2" height="104.7" fill="#5E89BE" />
+      <rect x="594.4" y="426.3" width="35.3" height="104.7" fill="#7098C7" />
+      <rect x="629.7" y="426.3" width="32.8" height="104.7" fill="#83A6D0" />
+      <rect x="662.5" y="426.3" width="30.8" height="104.7" fill="#96B4D8" />
+      <rect x="693.3" y="426.3" width="6.7" height="104.7" fill="#A9C2E0" />
+      <rect x="467.9" y="531" width="120" height="25.7" fill="#7FA3C4" />
+      <rect x="587.9" y="531" width="48" height="25.7" fill="#8CADCB" />
+      <rect x="635.9" y="531" width="30" height="25.7" fill="#99B7D2" />
+      <rect x="665.9" y="531" width="27.9" height="25.7" fill="#A6C1D9" />
+      <rect x="693.8" y="531" width="6.2" height="25.7" fill="#B3CBE0" />
+      <rect x="467.9" y="556.7" width="75.4" height="13.3" fill="#B8CBE0" />
+      <rect x="543.3" y="556.7" width="60.3" height="13.3" fill="#C2D3E5" />
+      <rect x="603.6" y="556.7" width="55.7" height="13.3" fill="#CCDBEA" />
+      <rect x="659.3" y="556.7" width="40.7" height="13.3" fill="#D6E3EF" />
+    </g>
+    <g id="market-space-breakdown-labels" fill="#FFFFFF">
+      <text x="112" y="290" font-size="24" font-weight="bold">城市建设与基础设施</text>
+      <text x="112" y="330" font-family="Arial, sans-serif" font-size="32" font-weight="bold">7713</text>
+      <text x="112" y="356" font-family="Arial, sans-serif" font-size="18">61.57%</text>
+      <text x="484" y="286" font-size="18" font-weight="bold">水资源与环境</text>
+      <text x="484" y="320" font-family="Arial, sans-serif" font-size="28" font-weight="bold">2651.85</text>
+      <text x="484" y="344" font-family="Arial, sans-serif" font-size="15">21.17%</text>
+      <text x="484" y="452" font-size="18" font-weight="bold">能源电力</text>
+      <text x="484" y="482" font-family="Arial, sans-serif" font-size="24" font-weight="bold">1576</text>
+      <text x="484" y="504" font-family="Arial, sans-serif" font-size="15">12.58%</text>
+    </g>
+  </g>
+</svg>

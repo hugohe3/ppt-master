@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="segment-mix-by-year" data-pptx-replace-with="chart" data-pptx-bounds="96 246 724 336" data-pptx-fallback-sha256="0c7ae6b6bcb06e33c59a7f7ff0aed4569c08901fa4aa7ac4eec178c518c99bb8">
+    <metadata type="application/json">
+      {
+        "x": 96, "y": 246, "width": 724, "height": 336,
+        "name": "segment-mix-by-year",
+        "type": "area",
+        "grouping": "stacked",
+        "categories": ["2021", "2022", "2023", "2024", "2025"],
+        "series": [
+          {"name": "水资源与环境", "values": [215.42, 40.9, 9.4, 10.33, 8.45]},
+          {"name": "能源电力", "values": [24.33, 29.0, 56.6, 52.96, 36.96]},
+          {"name": "城市建设与基础设施", "values": [71.37, 202.35, 107.33, 221.85, 69.24]},
+          {"name": "其他业务", "values": [1.9, 2.78, 1.79, 1.06, 15.88]}
+        ],
+        "show_legend": true,
+        "legend_position": "top",
+        "axes": {
+          "category": {"kind": "text", "position": "bottom"},
+          "value": {"kind": "value", "position": "left", "minimum": 0, "maximum": 350, "major_unit": 100, "major_gridlines": true}
+        },
+        "style": {
+          "colors": ["#004EA1", "#4A7BB5", "#0E7C9B", "#9FB6CE"],
+          "font_family": "Arial",
+          "axis_font_size": 18,
+          "legend_font_size": 18,
+          "chart_area_fill": "none",
+          "plot_area_fill": "none",
+          "text_color": "#1A1A1A",
+          "axis_color": "#DDE3E9",
+          "grid_color": "#DDE3E9"
+        },
+        "plot_area": {"x": 140, "y": 280, "width": 670, "height": 260}
+      }
+    </metadata>
+    <g id="segment-mix-by-year-legend" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#4A5568">
+      <rect x="180" y="262" width="24" height="12" fill="#004EA1" />
+      <text x="212" y="274">水资源与环境</text>
+      <rect x="344" y="262" width="24" height="12" fill="#4A7BB5" />
+      <text x="376" y="274">能源电力</text>
+      <rect x="472" y="262" width="24" height="12" fill="#0E7C9B" />
+      <text x="504" y="274">城市建设与基础设施</text>
+      <rect x="690" y="262" width="24" height="12" fill="#9FB6CE" />
+      <text x="722" y="274">其他</text>
+    </g>
+    <g id="segment-mix-by-year-chartArea">
+      <g id="segment-mix-by-year-grid" stroke="#DDE3E9" stroke-width="1">
+        <line x1="140" y1="317.14" x2="810" y2="317.14" />
+        <line x1="140" y1="391.43" x2="810" y2="391.43" />
+        <line x1="140" y1="465.71" x2="810" y2="465.71" />
+        <line x1="140" y1="540" x2="810" y2="540" stroke="#9FB6CE" />
+        <line x1="140" y1="280" x2="140" y2="540" />
+      </g>
+      <g id="segment-mix-by-year-yaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="end" fill="#4A5568">
+        <text x="132" y="323">300</text>
+        <text x="132" y="397">200</text>
+        <text x="132" y="472">100</text>
+        <text x="132" y="546">0</text>
+      </g>
+      <g id="segment-mix-by-year-bands">
+        <polygon points="140,379.98 307.5,509.62 475,533.02 642.5,532.33 810,533.72 810,540 140,540" fill="#004EA1" />
+        <polygon points="140,361.9 307.5,488.07 475,490.97 642.5,492.99 810,506.27 810,533.72 642.5,532.33 475,533.02 307.5,509.62 140,379.98" fill="#4A7BB5" />
+        <polygon points="140,308.89 307.5,337.76 475,411.24 642.5,328.18 810,454.83 810,506.27 642.5,492.99 475,490.97 307.5,488.07 140,361.9" fill="#0E7C9B" />
+        <polygon points="140,307.48 307.5,335.7 475,409.91 642.5,327.39 810,443.03 810,454.83 642.5,328.18 475,411.24 307.5,337.76 140,308.89" fill="#9FB6CE" />
+      </g>
+    </g>
+    <g id="segment-mix-by-year-xaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4A5568">
+      <text x="140" y="568">2021</text>
+      <text x="307.5" y="568">2022</text>
+      <text x="475" y="568">2023</text>
+      <text x="642.5" y="568">2024</text>
+      <text x="810" y="568">2025</text>
+    </g>
+  </g>
+</svg>

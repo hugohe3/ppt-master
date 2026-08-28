@@ -24,14 +24,14 @@
     "skills/ppt-master/references/executor-visualization.md": 1250,
     "skills/ppt-master/references/executor-structure.md": 2250,
     "skills/ppt-master/references/topology-assembly.md": 3750,
-    "skills/ppt-master/references/executor-table.md": 1000,
+    "skills/ppt-master/references/executor-table.md": 1250,
     "skills/ppt-master/references/executor-image.md": 2000,
     "skills/ppt-master/references/executor-web-image.md": 750,
     "skills/ppt-master/references/executor-notes.md": 1000,
     "skills/ppt-master/references/shared-standards.md": 500,
     "skills/ppt-master/references/shared-standards-core.md": 13000,
     "skills/ppt-master/references/svg-effects.md": 16000,
-    "skills/ppt-master/references/native-data-interface.md": 7500,
+    "skills/ppt-master/references/native-data-interface.md": 7750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 18000,
@@ -1066,12 +1066,12 @@
       "max_tokens": 1250
     },
     "stage.generate.executor.table": {
-      "description": "Conditional semantic cell-grid construction rules.",
+      "description": "Conditional semantic cell-grid construction rules. Ceiling raised after the native projection step was added (BUDGET_FILE/BUDGET_LOAD_SET reported 1022 tokens).",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-table.md"
       ],
-      "max_tokens": 1000
+      "max_tokens": 1250
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
@@ -1082,12 +1082,12 @@
       "max_tokens": 3000
     },
     "stage.generate.executor.native-data": {
-      "description": "Conditional preset-pattern and native chart/table metadata interface. Ceiling raised after BUDGET_FILE and BUDGET_LOAD_SET reported 6774 tokens.",
+      "description": "Conditional preset-pattern and native chart/table metadata interface. Ceiling raised after BUDGET_FILE and BUDGET_LOAD_SET reported 6774 tokens. Ceiling raised again after the table-payload completeness and ChartEx title clauses were added (7573 tokens).",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-data-interface.md"
       ],
-      "max_tokens": 7500
+      "max_tokens": 7750
     },
     "stage.generate.executor.formula": {
       "description": "Conditional direct authoring contract for PowerPoint-native inline and block formulas.",

@@ -249,7 +249,7 @@ per-cell `font_size` only when the fallback visibly differs. If the fallback
 has no explicit table font, Default uses the deck body family and declared body
 anchor from `spec_lock.md`; Quick uses its active-context body family and size.
 
-**Hard rule — table native payload is complete**: Every row, summary line,
+**Hard rule — table native payload is complete**: A payload holding only `font_size` and a uniform border is not complete when the fallback draws a header band, row or column fills, first-column emphasis, non-uniform row heights, or sparse rules. Every row, summary line,
 value, and cell-level style that must survive `--native-charts-and-tables` must
 be present in `columns` / `rows`; SVG fallback text is discarded on that route.
 For SVG-first objects this payload is a synchronized projection of the visible
@@ -362,8 +362,7 @@ slide-px bounds; partial bounds or `subtitle` fail. Use `name`, not
 `title`, for object naming. `title`, `subtitle`, and axis-title objects may set
 `text`, `font_size`, `font_family`, and `color`. On SVG-first markers the
 checker rejects title/axis text absent from the fallback and export omits it
-with a warning; JSON-first keeps it. ChartEx keeps an empty `<cx:title>` and
-emits title/subtitle as companion editable text boxes. Axis
+with a warning; JSON-first keeps it. ChartEx writes no `<cx:title>` unless the payload gives a title — an empty ChartEx title makes PowerPoint show the series name as an automatic title — and emits title/subtitle as companion editable text boxes. Axis
 titles are optional and explicit: use `axis_titles` with
 `category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
 `category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
@@ -399,7 +398,7 @@ payloads default to uppercase `#RRGGBB`. The exporter retains compatibility for
 inversion so negative bars keep the same series fill instead of turning into
 white/theme fill.
 
-For ChartEx native charts, valid payload `style.colors` (or root `colors`)
+For treemap and sunburst, `style.colors` projects the visible tile palette in order; aggregate figures drawn inside the marker belong in companion text. For ChartEx native charts, valid payload `style.colors` (or root `colors`)
 populate the ChartEx color-style part instead of being replaced by a fixed
 accent1–accent6 list. Other ChartEx style semantics remain normalized.
 

@@ -6,6 +6,7 @@ import json
 import math
 import re
 from collections.abc import Iterable
+from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -76,6 +77,26 @@ _CSS_NAMED_COLORS = {
     "white": "FFFFFF",
     "yellow": "FFFF00",
 }
+
+
+@dataclass(frozen=True)
+class _FallbackShapeRecord:
+    tag: str
+    bounds: tuple[float, float, float, float]
+    fill: str | None
+    stroke: str | None
+    labels: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class _FallbackTextRecord:
+    text: str
+    x: float | None
+    y: float | None
+    fill: str | None
+    bold: bool
+    anchor: str
+    labels: tuple[str, ...]
 
 
 def _local_tag(elem: ET.Element) -> str:
@@ -495,6 +516,185 @@ def _inferred_bounds(elem: ET.Element) -> tuple[float, float, float, float] | No
     for child in elem:
         bbox = _bbox_union(bbox, _fallback_bbox(child))
     return bbox
+
+
+def _fallback_element_labels(elem: ET.Element) -> tuple[str, ...]:
+    labels: list[str] = []
+    for attribute in ("id", "class", "data-name"):
+        raw = elem.get(attribute)
+        if raw:
+            labels.append(str(raw).strip().lower())
+    return tuple(labels)
+
+
+def _fallback_shape_records(
+    elem: ET.Element,
+    matrix: tuple[float, float, float, float, float, float] = IDENTITY_MATRIX,
+    inherited_fill: str | None = "000000",
+    inherited_stroke: str | None = None,
+    inherited_labels: tuple[str, ...] = (),
+) -> list[_FallbackShapeRecord]:
+    """Collect visible painted fallback geometry with resolved bounds and ancestry."""
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if (
+        _style_attr(elem, "display") == "none"
+        or _style_attr(elem, "visibility") == "hidden"
+    ):
+        return []
+
+    local_matrix = matrix
+    transform = elem.get("transform")
+    if transform:
+        local_matrix = matrix_multiply(matrix, parse_transform_matrix(transform))
+
+    own_fill = _style_attr(elem, "fill")
+    own_stroke = _style_attr(elem, "stroke")
+    fill = own_fill if own_fill is not None else inherited_fill
+    stroke = own_stroke if own_stroke is not None else inherited_stroke
+    labels = inherited_labels + _fallback_element_labels(elem)
+
+    records: list[_FallbackShapeRecord] = []
+    if tag in {
+        "circle", "ellipse", "line", "path", "polygon", "polyline", "rect",
+    }:
+        fill_color = (
+            _hex_or_none(fill)
+            if fill and _paint_visible(elem, "fill") and tag != "line"
+            else None
+        )
+        stroke_color = (
+            _hex_or_none(stroke)
+            if stroke and _paint_visible(elem, "stroke")
+            else None
+        )
+        if fill_color is not None or stroke_color is not None:
+            local_bbox = _element_local_bbox(elem)
+            if local_bbox is not None:
+                records.append(
+                    _FallbackShapeRecord(
+                        tag=tag,
+                        bounds=_apply_matrix_bbox(local_bbox, local_matrix),
+                        fill=fill_color,
+                        stroke=stroke_color,
+                        labels=labels,
+                    )
+                )
+
+    for child in elem:
+        records.extend(
+            _fallback_shape_records(
+                child,
+                local_matrix,
+                fill,
+                stroke,
+                labels,
+            )
+        )
+    return records
+
+
+def _fallback_text_records(
+    elem: ET.Element,
+    matrix: tuple[float, float, float, float, float, float] = IDENTITY_MATRIX,
+    inherited_fill: str | None = "000000",
+    inherited_weight: str | None = None,
+    inherited_anchor: str | None = None,
+    inherited_labels: tuple[str, ...] = (),
+) -> list[_FallbackTextRecord]:
+    """Collect visible fallback text with resolved paint, emphasis, and anchor."""
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if (
+        _style_attr(elem, "display") == "none"
+        or _style_attr(elem, "visibility") == "hidden"
+    ):
+        return []
+
+    local_matrix = matrix
+    transform = elem.get("transform")
+    if transform:
+        local_matrix = matrix_multiply(matrix, parse_transform_matrix(transform))
+
+    own_fill = _style_attr(elem, "fill")
+    own_weight = _style_attr(elem, "font-weight")
+    own_anchor = _style_attr(elem, "text-anchor")
+    fill = own_fill if own_fill is not None else inherited_fill
+    weight = own_weight if own_weight is not None else inherited_weight
+    anchor = own_anchor if own_anchor is not None else inherited_anchor
+    labels = inherited_labels + _fallback_element_labels(elem)
+
+    if tag == "text":
+        text = _normalized_fallback_text("".join(elem.itertext()))
+        if not text:
+            return []
+        x = _project_geometry_number(elem, "x") if elem.get("x") is not None else None
+        y = _project_geometry_number(elem, "y") if elem.get("y") is not None else None
+        if x is not None and y is not None:
+            x, y = transform_point(local_matrix, x, y)
+        raw_weight = str(weight or "").strip().lower()
+        numeric_weight = _maybe_number(raw_weight)
+        bold = raw_weight in {"bold", "bolder"} or (
+            numeric_weight is not None and numeric_weight >= 600
+        )
+        return [
+            _FallbackTextRecord(
+                text=text,
+                x=x,
+                y=y,
+                fill=_hex_or_none(fill),
+                bold=bold,
+                anchor=str(anchor or "start").strip().lower(),
+                labels=labels,
+            )
+        ]
+
+    records: list[_FallbackTextRecord] = []
+    for child in elem:
+        records.extend(
+            _fallback_text_records(
+                child,
+                local_matrix,
+                fill,
+                weight,
+                anchor,
+                labels,
+            )
+        )
+    return records
+
+
+def _fallback_concentric_circle_radii(elem: ET.Element) -> list[float]:
+    """Return the largest countable set of concentric circular grid radii."""
+    groups: list[tuple[float, float, list[float]]] = []
+    for record in _fallback_shape_records(elem):
+        if record.tag != "circle" or record.stroke is None:
+            continue
+        x1, y1, x2, y2 = record.bounds
+        radius_x = (x2 - x1) / 2
+        radius_y = (y2 - y1) / 2
+        if radius_x <= 0 or abs(radius_x - radius_y) > 1:
+            continue
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        group = next(
+            (
+                item
+                for item in groups
+                if abs(item[0] - center_x) <= 1 and abs(item[1] - center_y) <= 1
+            ),
+            None,
+        )
+        if group is None:
+            group = (center_x, center_y, [])
+            groups.append(group)
+        group[2].append(radius_x)
+    if not groups:
+        return []
+    radii = max(groups, key=lambda item: len(item[2]))[2]
+    return sorted({round(radius, 3) for radius in radii})
 
 
 def _fallback_fill_candidates(

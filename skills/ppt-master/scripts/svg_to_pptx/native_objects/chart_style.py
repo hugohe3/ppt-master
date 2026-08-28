@@ -18,16 +18,19 @@ from ..drawingml.utils import (
     text_has_rtl_characters,
     text_uses_rtl,
 )
-from .chart_data import _DEFAULT_CHART_COLORS
+from .chart_data import _DEFAULT_CHART_COLORS, _chart_data
 from .marker_common import (
     _bool_attr,
     _bounds,
     _chart_bool,
     _clean_hex,
     _compact_key,
+    _fallback_concentric_circle_radii,
     _fallback_fill_candidates,
+    _fallback_shape_records,
     _fallback_stroke_colors,
     _fallback_text_colors,
+    _fallback_text_records,
     _first_present,
     _font_size_hpt,
     _hex_or_none,
@@ -39,7 +42,6 @@ from .marker_common import (
     _normalized_fallback_text,
     _powerpoint_emu,
     _powerpoint_emu_value,
-    _relative_luminance,
     _style_attr,
     _visible_fallback_texts,
 )
@@ -115,6 +117,48 @@ def _most_common_font_size(values: list[str]) -> str | None:
     return candidates[0]
 
 
+def _record_has_label(record: Any, *needles: str) -> bool:
+    return any(
+        needle in label
+        for label in record.labels
+        for needle in needles
+    )
+
+
+def _fallback_chart_colors(
+    elem: ET.Element,
+    inherited_styles: dict[str, str] | None = None,
+) -> dict[str, str | None]:
+    inherited_styles = inherited_styles or {}
+    text_color = _most_common_color(
+        _fallback_text_colors(elem, inherited_styles.get("fill"))
+    )
+    stroke_colors = _fallback_stroke_colors(
+        elem,
+        inherited_styles.get("stroke"),
+    )
+    shape_records = _fallback_shape_records(
+        elem,
+        inherited_stroke=inherited_styles.get("stroke"),
+    )
+    axis_colors = [
+        record.stroke
+        for record in shape_records
+        if record.stroke and _record_has_label(record, "axis")
+    ]
+    grid_colors = [
+        record.stroke
+        for record in shape_records
+        if record.stroke and _record_has_label(record, "grid", "gridline")
+    ]
+    dominant_stroke = _most_common_color(stroke_colors)
+    return {
+        "text_color": text_color,
+        "axis_color": _most_common_color(axis_colors) or dominant_stroke,
+        "grid_color": _most_common_color(grid_colors) or dominant_stroke,
+    }
+
+
 def _classic_chart_style(
     payload: dict[str, Any],
     elem: ET.Element,
@@ -123,20 +167,12 @@ def _classic_chart_style(
     inherited_styles = inherited_styles or {}
     json_authority = native_json_is_authoritative(elem)
     fallback_background = None if json_authority else _inferred_chart_background(elem)
-    text_color = (
-        None
+    fallback_colors = (
+        {"text_color": None, "axis_color": None, "grid_color": None}
         if json_authority
-        else _most_common_color(
-            _fallback_text_colors(elem, inherited_styles.get("fill"))
-        )
-    ) or "404040"
-    stroke_colors = (
-        []
-        if json_authority
-        else _fallback_stroke_colors(elem, inherited_styles.get("stroke"))
+        else _fallback_chart_colors(elem, inherited_styles)
     )
-    darkest_stroke = min(stroke_colors, key=_relative_luminance) if stroke_colors else None
-    lightest_stroke = max(stroke_colors, key=_relative_luminance) if stroke_colors else None
+    text_color = fallback_colors["text_color"] or "404040"
     raw_font_face = _chart_style_value(payload, "font_family", "fontFamily", "font_face", "fontFace")
     fallback_font_face = (
         None
@@ -150,12 +186,8 @@ def _classic_chart_style(
         )
     )
     font_face = str(raw_font_face).strip() if raw_font_face is not None else fallback_font_face
-    axis_color = darkest_stroke or text_color
-    grid_color = (
-        lightest_stroke
-        if lightest_stroke and _relative_luminance(lightest_stroke) > _relative_luminance(axis_color)
-        else "D9DED8"
-    )
+    axis_color = fallback_colors["axis_color"] or text_color
+    grid_color = fallback_colors["grid_color"] or "D9DED8"
     chart_fill = _chart_style_color(
         payload,
         (
@@ -598,11 +630,15 @@ def _native_chart_export_payload(
     show_legend = payload.get("show_legend", style.get("show_legend", False))
     if show_legend:
         legend_texts = _legend_candidate_texts(payload)
-        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+        missing_legend = [
+            text for text in legend_texts if text not in fallback_texts
+        ]
+        if missing_legend:
             mutable_payload()["show_legend"] = False
+            sample = ", ".join(repr(text) for text in missing_legend)
             messages.append(
-                "omitted native chart legend because show_legend=true has no "
-                "visible fallback legend text"
+                "omitted native chart legend because these expected labels are "
+                f"missing from the fallback: {sample}"
             )
 
     return output, messages
@@ -641,6 +677,253 @@ def _legend_candidate_texts(payload: dict[str, Any]) -> list[str]:
     return normalized
 
 
+def _native_chart_style_color_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+) -> list[str]:
+    inferred = _fallback_chart_colors(elem)
+    fields = {
+        "text_color": (
+            "text_color", "textColor", "label_color", "labelColor",
+            "font_color", "fontColor",
+        ),
+        "axis_color": (
+            "axis_color", "axisColor", "axis_line_color", "axisLineColor",
+        ),
+        "grid_color": (
+            "grid_color", "gridColor", "gridline_color", "gridlineColor",
+        ),
+    }
+    warnings: list[str] = []
+    for field_name, aliases in fields.items():
+        raw = _chart_style_value(payload, *aliases)
+        if raw is None:
+            continue
+        payload_color = _hex_or_none(raw)
+        fallback_color = inferred[field_name]
+        if (
+            payload_color is None
+            or fallback_color is None
+            or payload_color == fallback_color
+        ):
+            continue
+        warnings.append(
+            f"Native PPTX chart style.{field_name} #{payload_color} differs "
+            f"from fallback dominant {field_name} #{fallback_color}"
+        )
+    return warnings
+
+
+def _native_chart_point_color_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    if chart_data.get("kind") != "category" or chart_data.get("type") not in {
+        "bar", "column",
+    }:
+        return []
+    series = chart_data.get("series")
+    if not isinstance(series, list) or not series:
+        return []
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    raw_colors = _first_present(style.get("colors"), payload.get("colors"))
+    palette = (
+        [_clean_hex(color, "#4472C4") for color in raw_colors]
+        if isinstance(raw_colors, list) and raw_colors
+        else list(_DEFAULT_CHART_COLORS)
+    )
+    series_colors = {
+        palette[idx % len(palette)]
+        for idx in range(len(series))
+    }
+    point_colors = {
+        color
+        for item in series
+        if isinstance(item, dict)
+        for color in item.get("point_colors", [])
+    }
+    deviations = sorted({
+        record.fill
+        for record in _fallback_shape_records(elem)
+        if (
+            record.tag == "rect"
+            and record.fill is not None
+            and _record_has_label(record, "bar", "column")
+            and not _record_has_label(record, "legend")
+            and record.fill not in series_colors
+            and record.fill not in point_colors
+        )
+    })
+    return [
+        "Native PPTX chart data mark fill "
+        f"#{color} deviates from its series color, but series point_colors is absent"
+        for color in deviations
+    ]
+
+
+def _native_chart_radial_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    if chart_data.get("kind") != "category" or chart_data.get("type") != "radar":
+        return []
+    radii = _fallback_concentric_circle_radii(elem)
+    if len(radii) < 2:
+        return []
+    warnings: list[str] = []
+    if payload.get("plot_area") is None:
+        warnings.append(
+            "Native PPTX radial chart plot area is visible in the fallback, but "
+            "classic payload has no plot_area"
+        )
+    axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
+    value_axis = axes.get("value") if isinstance(axes.get("value"), dict) else {}
+    if not all(value_axis.get(field) is not None for field in (
+        "minimum", "maximum", "major_unit",
+    )):
+        warnings.append(
+            f"Native PPTX radial chart has {len(radii)} countable radial gridlines, "
+            "but payload has no complete axes.value minimum/maximum/major_unit scale"
+        )
+    return warnings
+
+
+def _native_chart_tile_color_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    if chart_data.get("kind") != "chartex" or chart_data.get("type") not in {
+        "sunburst", "treemap",
+    }:
+        return []
+    values = chart_data.get("values")
+    if not isinstance(values, list) or not values:
+        return []
+    all_shapes = _fallback_shape_records(elem)
+    tile_shapes = [
+        record
+        for record in all_shapes
+        if (
+            record.fill is not None
+            and record.tag in {"path", "polygon", "rect"}
+            and _record_has_label(record, "tile", "sector", "segment", "slice")
+            and not _record_has_label(record, "legend")
+        )
+    ]
+    if len(tile_shapes) < len(values):
+        return []
+    fallback_colors = [record.fill for record in tile_shapes[:len(values)]]
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    raw_colors = _first_present(style.get("colors"), payload.get("colors"))
+    payload_colors = (
+        [_clean_hex(color, "#4472C4") for color in raw_colors]
+        if isinstance(raw_colors, list)
+        else []
+    )
+    if fallback_colors == payload_colors:
+        return []
+    return [
+        "Native PPTX ChartEx tile color sequence not projected: fallback has "
+        f"{len(fallback_colors)} colors, payload style.colors has "
+        f"{len(payload_colors)}"
+    ]
+
+
+def _chart_projection_text_variants(value: Any) -> set[str]:
+    text = _normalized_fallback_text(value)
+    variants = {text} if text else set()
+    numeric = _maybe_number(value)
+    if numeric is not None and numeric.is_integer():
+        variants.add(str(int(numeric)))
+    return variants
+
+
+def _chart_projected_texts(
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> set[str]:
+    projected: set[str] = set()
+
+    def add(value: Any) -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if key in {
+                    "categories", "levels", "name", "series", "sizes",
+                    "values", "x", "y",
+                }:
+                    add(item)
+            return
+        if isinstance(value, list):
+            for item in value:
+                add(item)
+            return
+        projected.update(_chart_projection_text_variants(value))
+
+    for key in ("categories", "levels", "plots", "series", "values"):
+        add(chart_data.get(key))
+    for field_name in ("title", "subtitle"):
+        text = _metadata_text(payload.get(field_name))
+        if text:
+            projected.add(text)
+    for value in _axis_titles(payload).values():
+        text = _metadata_text(value)
+        if text:
+            projected.add(text)
+    for item in _chart_companion_entries(
+        payload,
+        include_title=True,
+        include_subtitle_as_caption=True,
+    ):
+        projected.update(_chart_projection_text_variants(item.get("text")))
+
+    axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
+    for config in axes.values():
+        if not isinstance(config, dict):
+            continue
+        minimum = _maybe_number(config.get("minimum"))
+        maximum = _maybe_number(config.get("maximum"))
+        major_unit = _maybe_number(config.get("major_unit"))
+        if (
+            minimum is None
+            or maximum is None
+            or major_unit is None
+            or major_unit <= 0
+        ):
+            continue
+        value = minimum
+        for _ in range(1000):
+            if value > maximum + major_unit * 1e-6:
+                break
+            projected.update(_chart_projection_text_variants(value))
+            value += major_unit
+    return projected
+
+
+def _native_chart_reverse_text_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    projected = _chart_projected_texts(payload, chart_data)
+    missing: list[str] = []
+    for record in _fallback_text_records(elem):
+        if _record_has_label(record, "legend"):
+            continue
+        if record.text not in projected and record.text not in missing:
+            missing.append(record.text)
+    if not missing:
+        return []
+    sample = ", ".join(repr(text) for text in missing[:8])
+    suffix = "" if len(missing) <= 8 else f", and {len(missing) - 8} more"
+    return [
+        "Native PPTX chart visible text not projected: "
+        f"{sample}{suffix}. Use categories/data labels/axis labels/legend or companion text."
+    ]
+
+
 def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
     fallback_texts = set(_visible_fallback_texts(elem))
     warnings: list[str] = []
@@ -648,11 +931,13 @@ def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> 
     show_legend = payload.get("show_legend", style.get("show_legend", False))
     if show_legend:
         legend_texts = _legend_candidate_texts(payload)
-        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+        missing_legend = [
+            text for text in legend_texts if text not in fallback_texts
+        ]
+        for text in missing_legend:
             warnings.append(
-                "Native PPTX chart has show_legend=true, but no series/category "
-                "legend text is visible inside the fallback marker. Add the "
-                "fallback legend or remove show_legend."
+                "Native PPTX chart legend label is not visible inside the fallback "
+                f"marker: {text!r}. Add the expected label or remove show_legend."
             )
 
     companion_entries = _chart_companion_entries(
@@ -674,6 +959,12 @@ def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> 
             f"{sample}{suffix}. "
             "Keep companion metadata aligned with visible chart annotations."
         )
+    warnings.extend(_native_chart_style_color_warnings(elem, payload))
+    chart_data = _chart_data(payload)
+    warnings.extend(_native_chart_point_color_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_radial_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_tile_color_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_reverse_text_warnings(elem, payload, chart_data))
     return warnings
 
 

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="competitor-capability-radar" data-pptx-replace-with="chart" data-pptx-bounds="192 208 520 424" data-pptx-fallback-sha256="78bd902df74e19d8ae89a269a64280dd0130f120e74b76506446935c1acb4e10">
+    <metadata type="application/json">
+      {
+        "x": 192, "y": 208, "width": 520, "height": 424,
+        "name": "competitor-capability-radar",
+        "type": "radar",
+        "categories": ["政企合作", "属地化", "市场规模", "赛道适配", "资金实力", "品牌口碑", "技术履约", "成本管控", "资质全链", "风险合规", "新兴赛道", "人才团队"],
+        "series": [
+          {"name": "中国电建", "values": [4.0, 3.67, 3.58, 4.25, 3.5, 3.92, 4.0, 3.5, 3.92, 4.42, 4.75, 3.92]},
+          {"name": "中国建筑", "values": [4.92, 4.75, 4.92, 4.25, 4.75, 4.33, 4.25, 4.25, 5.0, 3.75, 3.75, 4.5]},
+          {"name": "行业均值", "values": [4.12, 4.01, 3.87, 4.12, 4.02, 3.93, 4.12, 3.77, 4.24, 3.94, 3.94, 3.99]}
+        ],
+        "show_value_axis_labels": false,
+        "style": {
+          "colors": ["#004EA1", "#0E7C9B", "#9FB6CE"],
+          "font_family": "Arial",
+          "axis_font_size": 18,
+          "chart_area_fill": "none",
+          "plot_area_fill": "none",
+          "text_color": "#1A1A1A",
+          "axis_color": "#DDE3E9",
+          "grid_color": "#DDE3E9"
+        }
+      }
+    </metadata>
+    <g id="competitor-capability-radar-chartArea">
+      <g id="competitor-capability-radar-grid" fill="none" stroke="#DDE3E9" stroke-width="1">
+        <circle cx="450" cy="420" r="33" />
+        <circle cx="450" cy="420" r="66" />
+        <circle cx="450" cy="420" r="99" />
+        <circle cx="450" cy="420" r="132" />
+        <circle cx="450" cy="420" r="165" />
+        <line x1="450" y1="420" x2="450" y2="255" />
+        <line x1="450" y1="420" x2="532.5" y2="277.11" />
+        <line x1="450" y1="420" x2="592.89" y2="337.5" />
+        <line x1="450" y1="420" x2="615" y2="420" />
+        <line x1="450" y1="420" x2="592.89" y2="502.5" />
+        <line x1="450" y1="420" x2="532.5" y2="562.89" />
+        <line x1="450" y1="420" x2="450" y2="585" />
+        <line x1="450" y1="420" x2="367.5" y2="562.89" />
+        <line x1="450" y1="420" x2="307.11" y2="502.5" />
+        <line x1="450" y1="420" x2="285" y2="420" />
+        <line x1="450" y1="420" x2="307.11" y2="337.5" />
+        <line x1="450" y1="420" x2="367.5" y2="277.11" />
+      </g>
+      <polygon points="450,284.04 516.17,305.4 560.6,356.14 585.96,420 564.88,486.33 514.85,532.31 450,555.96 387.79,527.74 328.83,489.96 319.98,420 337.4,354.99 384.16,305.97" fill="none" stroke="#9FB6CE" stroke-width="2" />
+      <polygon points="450,257.64 528.38,284.25 590.6,338.82 590.25,420 585.75,498.38 521.45,543.75 450,560.25 379.87,541.46 307.11,502.5 326.25,420 342.83,358.12 375.75,291.38" fill="none" stroke="#0E7C9B" stroke-width="2" stroke-dasharray="6,3" />
+      <polygon points="450,288 510.56,315.12 552.31,360.93 590.25,420 550.02,477.75 514.68,532.03 450,552 392.25,520.02 337.97,484.68 304.14,420 314.25,341.62 385.32,307.97" fill="#004EA1" fill-opacity="0.16" stroke="#004EA1" stroke-width="3" />
+      <g id="competitor-capability-radar-weak" fill="#C90A4F">
+        <circle cx="550.02" cy="477.75" r="6" />
+        <circle cx="392.25" cy="520.02" r="6" />
+        <circle cx="552.31" cy="360.93" r="6" />
+      </g>
+    </g>
+    <g id="competitor-capability-radar-labels" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#4A5568">
+      <text x="450" y="228" text-anchor="middle">政企合作</text>
+      <text x="545" y="272">属地化</text>
+      <text x="612" y="333">市场规模</text>
+      <text x="632" y="426">赛道适配</text>
+      <text x="612" y="519">资金实力</text>
+      <text x="545" y="580">品牌口碑</text>
+      <text x="450" y="618" text-anchor="middle">技术履约</text>
+      <text x="355" y="580" text-anchor="end">成本管控</text>
+      <text x="288" y="519" text-anchor="end">资质全链</text>
+      <text x="268" y="426" text-anchor="end">风险合规</text>
+      <text x="288" y="333" text-anchor="end">新兴赛道</text>
+      <text x="355" y="272" text-anchor="end">人才团队</text>
+    </g>
+  </g>
+</svg>

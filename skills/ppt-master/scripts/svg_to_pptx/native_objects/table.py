@@ -25,9 +25,12 @@ from .marker_common import (
     _bool_attr,
     _bounds,
     _clean_hex,
+    _fallback_shape_records,
+    _fallback_text_records,
     _first_present,
     _font_size_hpt,
     _hex_or_none,
+    _maybe_number,
     _normalized_fallback_text,
     _number,
     _powerpoint_emu,
@@ -674,26 +677,585 @@ def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
     return counts
 
 
-def _native_table_warnings(elem: ET.Element, table_rows: list[list[Any]]) -> list[str]:
-    fallback_texts = _visible_fallback_texts(elem)
-    if not fallback_texts:
+def _table_fallback_frame(
+    elem: ET.Element,
+    payload: dict[str, Any],
+) -> tuple[float, float, float, float] | None:
+    values = tuple(_maybe_number(payload.get(key)) for key in ("x", "y", "width", "height"))
+    if all(value is not None for value in values):
+        x, y, width, height = values
+        assert x is not None and y is not None and width is not None and height is not None
+        if width > 0 and height > 0:
+            return x, y, width, height
+
+    raw_bounds = elem.get("data-pptx-bounds")
+    if raw_bounds:
+        parts = [_maybe_number(value) for value in raw_bounds.replace(",", " ").split()]
+        if len(parts) == 4 and all(value is not None for value in parts):
+            x, y, width, height = parts
+            assert x is not None and y is not None and width is not None and height is not None
+            if width > 0 and height > 0:
+                return x, y, width, height
+    return None
+
+
+def _dedupe_table_edges(values: list[float], tolerance: float = 2.0) -> list[float]:
+    edges: list[float] = []
+    for value in sorted(values):
+        if edges and abs(edges[-1] - value) <= tolerance:
+            edges[-1] = (edges[-1] + value) / 2
+        else:
+            edges.append(value)
+    return edges
+
+
+def _table_fallback_grid(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    table_rows: list[list[Any]],
+) -> tuple[list[float], list[float], list[Any], list[Any]] | None:
+    frame = _table_fallback_frame(elem, payload)
+    if frame is None or not table_rows:
+        return None
+    x, y, width, height = frame
+    col_count = max(len(row) for row in table_rows)
+    raw_widths = payload.get("column_widths")
+    weights = (
+        [_number(value, "table fallback column width") for value in raw_widths]
+        if isinstance(raw_widths, list) and len(raw_widths) == col_count
+        else [1.0] * col_count
+    )
+    weight_total = sum(weights)
+    if weight_total <= 0:
+        return None
+    payload_column_edges = [x]
+    for weight in weights:
+        payload_column_edges.append(
+            payload_column_edges[-1] + width * weight / weight_total
+        )
+
+    shape_records = _fallback_shape_records(elem)
+    vertical_candidates = [x, x + width]
+    for record in shape_records:
+        x1, y1, x2, y2 = record.bounds
+        if (
+            record.tag == "line"
+            and record.stroke is not None
+            and abs(x2 - x1) <= 1
+            and y2 - y1 >= height * 0.5
+        ):
+            vertical_candidates.append((x1 + x2) / 2)
+    fallback_column_edges = _dedupe_table_edges(vertical_candidates)
+    column_edges = (
+        fallback_column_edges
+        if len(fallback_column_edges) == col_count + 1
+        else payload_column_edges
+    )
+
+    row_candidates: list[float] = []
+    for record in shape_records:
+        x1, y1, x2, y2 = record.bounds
+        if record.tag == "rect" and record.fill is not None and x2 - x1 >= width * 0.85:
+            if x1 <= x + width * 0.1 and x2 >= x + width * 0.9:
+                row_candidates.extend((y1, y2))
+        elif (
+            record.tag == "line"
+            and record.stroke is not None
+            and abs(y2 - y1) <= 1
+            and x2 - x1 >= width * 0.75
+        ):
+            row_candidates.append((y1 + y2) / 2)
+    row_candidates = [
+        value
+        for value in row_candidates
+        if y - 5 <= value <= y + height + 5
+    ]
+    row_edges = _dedupe_table_edges(row_candidates)
+    expected_count = len(table_rows) + 1
+    if len(row_edges) < expected_count:
+        row_edges = _dedupe_table_edges(row_edges + [y, y + height])
+    if len(row_edges) != expected_count:
+        return None
+    return column_edges, row_edges, shape_records, _fallback_text_records(elem)
+
+
+def _table_cell_at(
+    x: float | None,
+    y: float | None,
+    column_edges: list[float],
+    row_edges: list[float],
+) -> tuple[int, int] | None:
+    if x is None or y is None:
+        return None
+    col_idx = next(
+        (
+            idx
+            for idx in range(len(column_edges) - 1)
+            if column_edges[idx] - 1 <= x <= column_edges[idx + 1] + 1
+        ),
+        None,
+    )
+    row_idx = next(
+        (
+            idx
+            for idx in range(len(row_edges) - 1)
+            if row_edges[idx] - 1 <= y <= row_edges[idx + 1] + 1
+        ),
+        None,
+    )
+    if row_idx is None or col_idx is None:
+        return None
+    return row_idx, col_idx
+
+
+def _table_cell_texts(cell: Any) -> set[str]:
+    cell_data = _cell_payload(cell)
+    paragraphs = _table_cell_paragraphs(cell_data)
+    values = (
+        [paragraph.text for paragraph in paragraphs]
+        if paragraphs is not None
+        else [cell_data.get("text")]
+    )
+    normalized = [
+        _normalized_fallback_text(value)
+        for value in values
+        if value is not None
+    ]
+    texts = {text for text in normalized if text}
+    if len(texts) > 1:
+        texts.add(_normalized_fallback_text(" ".join(normalized)))
+    return texts
+
+
+def _table_text_cells(
+    text_records: list[Any],
+    table_rows: list[list[Any]],
+    column_edges: list[float],
+    row_edges: list[float],
+) -> list[tuple[Any, int, int]]:
+    records: list[tuple[Any, int, int]] = []
+    for record in text_records:
+        position = _table_cell_at(record.x, record.y, column_edges, row_edges)
+        if position is None:
+            continue
+        row_idx, col_idx = position
+        if row_idx >= len(table_rows) or col_idx >= len(table_rows[row_idx]):
+            continue
+        if record.text not in _table_cell_texts(table_rows[row_idx][col_idx]):
+            continue
+        records.append((record, row_idx, col_idx))
+    return records
+
+
+def _fallback_table_alignment(anchor: str) -> str:
+    return {
+        "middle": "ctr",
+        "end": "r",
+        "right": "r",
+    }.get(anchor, "l")
+
+
+def _native_table_header_warnings(
+    payload: dict[str, Any],
+    table_rows: list[list[Any]],
+    column_edges: list[float],
+    row_edges: list[float],
+    shape_records: list[Any],
+    text_cells: list[tuple[Any, int, int]],
+) -> list[str]:
+    header_rows = _table_header_rows(payload, len(table_rows))
+    if header_rows <= 0:
         return []
-    metadata_counts = _native_table_metadata_texts(table_rows)
-    missing: list[str] = []
-    seen_counts: dict[str, int] = {}
-    for text in fallback_texts:
-        seen_counts[text] = seen_counts.get(text, 0) + 1
-        if seen_counts[text] > metadata_counts.get(text, 0):
-            missing.append(text)
-    if not missing:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    header_text_cells = [item for item in text_cells if item[1] < header_rows]
+    if not header_text_cells:
         return []
 
-    sample = ", ".join(repr(text) for text in missing[:5])
-    suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
+    missing: list[str] = []
+    table_left, table_right = column_edges[0], column_edges[-1]
+    header_top, header_bottom = row_edges[0], row_edges[header_rows]
+    header_fill = next(
+        (
+            record.fill
+            for record in sorted(
+                shape_records,
+                key=lambda item: (item.bounds[2] - item.bounds[0]) * (item.bounds[3] - item.bounds[1]),
+                reverse=True,
+            )
+            if (
+                record.tag == "rect"
+                and record.fill is not None
+                and record.bounds[0] <= table_left + 3
+                and record.bounds[2] >= table_right - 3
+                and record.bounds[1] <= header_top + 3
+                and record.bounds[3] >= header_bottom - 3
+            )
+        ),
+        None,
+    )
+    if header_fill is not None and style.get("header_fill") is None:
+        if not all(
+            _hex_or_none(_cell_payload(cell).get("fill")) == header_fill
+            for row in table_rows[:header_rows]
+            for cell in row
+        ):
+            missing.append("style.header_fill")
+
+    header_colors = [record.fill for record, _, _ in header_text_cells if record.fill]
+    header_text_color = max(set(header_colors), key=header_colors.count) if header_colors else None
+    if header_text_color is not None and style.get("header_text") is None:
+        if not all(
+            _hex_or_none(_cell_payload(table_rows[row_idx][col_idx]).get("color"))
+            == record.fill
+            for record, row_idx, col_idx in header_text_cells
+            if record.fill is not None
+        ):
+            missing.append("style.header_text")
+
+    if any(
+        record.bold
+        and _cell_payload(table_rows[row_idx][col_idx]).get("bold") is not True
+        for record, row_idx, col_idx in header_text_cells
+    ):
+        missing.append("columns[].bold")
+    if any(
+        _cell_payload(table_rows[row_idx][col_idx]).get("align")
+        != _fallback_table_alignment(record.anchor)
+        for record, row_idx, col_idx in header_text_cells
+    ):
+        missing.append("columns[].align")
+    if not missing:
+        return []
     return [
-        "Native PPTX table fallback text is missing from metadata columns/rows "
-        f"and will disappear with --native-charts-and-tables: {sample}{suffix}"
+        "Native PPTX table header style not projected from fallback: "
+        + ", ".join(missing)
     ]
+
+
+def _native_table_fill_warnings(
+    table_rows: list[list[Any]],
+    header_rows: int,
+    column_edges: list[float],
+    row_edges: list[float],
+    shape_records: list[Any],
+) -> list[str]:
+    warnings: list[str] = []
+    col_count = len(column_edges) - 1
+    row_count = len(row_edges) - 1
+
+    def edge_index(value: float, edges: list[float]) -> int | None:
+        return next(
+            (idx for idx, edge in enumerate(edges) if abs(edge - value) <= 3),
+            None,
+        )
+
+    seen: set[tuple[str, int, int, str]] = set()
+    for record in shape_records:
+        if record.tag != "rect" or record.fill in {None, "FFFFFF"}:
+            continue
+        x1, y1, x2, y2 = record.bounds
+        start_col = edge_index(x1, column_edges)
+        end_col = edge_index(x2, column_edges)
+        start_row = edge_index(y1, row_edges)
+        end_row = edge_index(y2, row_edges)
+        if None in {start_col, end_col, start_row, end_row}:
+            continue
+        assert start_col is not None and end_col is not None
+        assert start_row is not None and end_row is not None
+        if end_col <= start_col or end_row <= start_row:
+            continue
+
+        label: tuple[str, int, int, str] | None = None
+        targets: list[tuple[int, int]] = []
+        if start_col == 0 and end_col == col_count and start_row >= header_rows:
+            label = ("row", start_row, end_row, record.fill)
+            targets = [
+                (row_idx, col_idx)
+                for row_idx in range(start_row, end_row)
+                for col_idx in range(col_count)
+            ]
+        elif (
+            start_row <= header_rows
+            and end_row == row_count
+            and end_col - start_col < col_count
+        ):
+            body_start = max(start_row, header_rows)
+            label = ("column", start_col, end_col, record.fill)
+            targets = [
+                (row_idx, col_idx)
+                for row_idx in range(body_start, end_row)
+                for col_idx in range(start_col, end_col)
+            ]
+        if label is None or label in seen or not targets:
+            continue
+        seen.add(label)
+        if all(
+            _hex_or_none(_cell_payload(table_rows[row_idx][col_idx]).get("fill"))
+            == record.fill
+            for row_idx, col_idx in targets
+        ):
+            continue
+        axis, start, end, color = label
+        human_start = start + 1
+        human_end = end
+        span = str(human_start) if human_start == human_end else f"{human_start}-{human_end}"
+        warnings.append(
+            f"Native PPTX table whole {axis} {span} fill #{color} is not projected to cell fill"
+        )
+    return warnings
+
+
+def _native_table_first_column_warnings(
+    table_rows: list[list[Any]],
+    header_rows: int,
+    text_cells: list[tuple[Any, int, int]],
+) -> list[str]:
+    body_records = [item for item in text_cells if item[1] >= header_rows]
+    first_column = [item for item in body_records if item[2] == 0]
+    if not first_column:
+        return []
+    body_colors = [
+        record.fill
+        for record, _, col_idx in body_records
+        if col_idx != 0 and record.fill
+    ]
+    body_color = max(set(body_colors), key=body_colors.count) if body_colors else None
+    missing: list[str] = []
+    if any(
+        record.bold
+        and _cell_payload(table_rows[row_idx][col_idx]).get("bold") is not True
+        for record, row_idx, col_idx in first_column
+    ):
+        missing.append("bold")
+    missing_colors = sorted({
+        record.fill
+        for record, row_idx, col_idx in first_column
+        if (
+            record.fill is not None
+            and record.fill != body_color
+            and _hex_or_none(_cell_payload(table_rows[row_idx][col_idx]).get("color"))
+            != record.fill
+        )
+    })
+    if missing_colors:
+        missing.append("color " + "/".join(f"#{color}" for color in missing_colors))
+    if not missing:
+        return []
+    return [
+        "Native PPTX table first-column text style not projected from fallback: "
+        + ", ".join(missing)
+    ]
+
+
+def _native_table_inset_graphic_warnings(
+    table_rows: list[list[Any]],
+    header_rows: int,
+    column_edges: list[float],
+    row_edges: list[float],
+    shape_records: list[Any],
+    text_cells: list[tuple[Any, int, int]],
+) -> list[str]:
+    for record in shape_records:
+        if record.tag != "rect" or record.fill in {None, "FFFFFF"}:
+            continue
+        x1, y1, x2, y2 = record.bounds
+        for row_idx in range(header_rows, len(row_edges) - 1):
+            for col_idx in range(len(column_edges) - 1):
+                cell_x1, cell_x2 = column_edges[col_idx], column_edges[col_idx + 1]
+                cell_y1, cell_y2 = row_edges[row_idx], row_edges[row_idx + 1]
+                cell_width = cell_x2 - cell_x1
+                cell_height = cell_y2 - cell_y1
+                if not (
+                    x1 > cell_x1 + max(1, cell_width * 0.02)
+                    and x2 < cell_x2 - max(1, cell_width * 0.02)
+                    and y1 > cell_y1 + max(1, cell_height * 0.02)
+                    and y2 < cell_y2 - max(1, cell_height * 0.02)
+                    and x2 - x1 <= cell_width * 0.9
+                    and y2 - y1 <= cell_height * 0.9
+                ):
+                    continue
+                has_text = any(
+                    text_row == row_idx
+                    and text_col == col_idx
+                    and text_record.x is not None
+                    and text_record.y is not None
+                    and x1 <= text_record.x <= x2
+                    and y1 <= text_record.y <= y2
+                    for text_record, text_row, text_col in text_cells
+                )
+                if has_text:
+                    return [
+                        "Native PPTX table contains an inset graphical cell with text; "
+                        "the a:tbl schema cannot express it and the object should be Native-ready=no"
+                    ]
+    return []
+
+
+def _native_table_border_topology_warnings(
+    payload: dict[str, Any],
+    table_rows: list[list[Any]],
+    column_edges: list[float],
+    row_edges: list[float],
+    shape_records: list[Any],
+) -> list[str]:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    cells = [_cell_payload(cell) for row in table_rows for cell in row]
+    per_side = any(
+        isinstance(cell.get("borders"), dict)
+        and any(
+            side in cell["borders"]
+            for side in ("left", "right", "top", "bottom")
+        )
+        for cell in cells
+    )
+    style_width = _maybe_number(style.get("border_width"))
+    style_uniform = style.get("border_color") is not None or (
+        style_width is not None and style_width > 0
+    )
+    cell_uniform = any(
+        cell.get("border_color") is not None
+        or (_maybe_number(cell.get("border_width")) or 0) > 0
+        for cell in cells
+    )
+    if per_side or not (style_uniform or cell_uniform):
+        return []
+
+    covered: set[tuple[str, int, int]] = set()
+    row_count = len(row_edges) - 1
+    col_count = len(column_edges) - 1
+    for record in shape_records:
+        if record.tag != "line" or record.stroke is None:
+            continue
+        x1, y1, x2, y2 = record.bounds
+        if abs(y2 - y1) <= 1:
+            boundary = next(
+                (idx for idx, edge in enumerate(row_edges) if abs(edge - y1) <= 2),
+                None,
+            )
+            if boundary is None:
+                continue
+            for col_idx in range(col_count):
+                if x1 <= column_edges[col_idx] + 2 and x2 >= column_edges[col_idx + 1] - 2:
+                    covered.add(("h", boundary, col_idx))
+        elif abs(x2 - x1) <= 1:
+            boundary = next(
+                (idx for idx, edge in enumerate(column_edges) if abs(edge - x1) <= 2),
+                None,
+            )
+            if boundary is None:
+                continue
+            for row_idx in range(row_count):
+                if y1 <= row_edges[row_idx] + 2 and y2 >= row_edges[row_idx + 1] - 2:
+                    covered.add(("v", boundary, row_idx))
+    full_count = (row_count + 1) * col_count + (col_count + 1) * row_count
+    if not covered or len(covered) >= full_count:
+        return []
+    return [
+        "Native PPTX table border topology not projected: fallback rules cover only "
+        f"{len(covered)} of {full_count} cardinal cell edges, but payload has only a uniform border"
+    ]
+
+
+def _native_table_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    table_rows: list[list[Any]],
+) -> list[str]:
+    fallback_texts = _visible_fallback_texts(elem)
+    warnings: list[str] = []
+    if fallback_texts:
+        metadata_counts = _native_table_metadata_texts(table_rows)
+        missing: list[str] = []
+        seen_counts: dict[str, int] = {}
+        for text in fallback_texts:
+            seen_counts[text] = seen_counts.get(text, 0) + 1
+            if seen_counts[text] > metadata_counts.get(text, 0):
+                missing.append(text)
+        if missing:
+            sample = ", ".join(repr(text) for text in missing[:5])
+            suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
+            warnings.append(
+                "Native PPTX table fallback text is missing from metadata columns/rows "
+                f"and will disappear with --native-charts-and-tables: {sample}{suffix}"
+            )
+
+    grid = _table_fallback_grid(elem, payload, table_rows)
+    if grid is None:
+        return warnings
+    column_edges, row_edges, shape_records, text_records = grid
+    text_cells = _table_text_cells(
+        text_records,
+        table_rows,
+        column_edges,
+        row_edges,
+    )
+    fallback_heights = [
+        row_edges[idx + 1] - row_edges[idx]
+        for idx in range(len(row_edges) - 1)
+    ]
+    non_uniform = (
+        max(fallback_heights) - min(fallback_heights)
+        > max(1.0, max(fallback_heights) * 0.02)
+    )
+    raw_heights = payload.get("row_heights")
+    payload_uniform = not isinstance(raw_heights, list) or not raw_heights or (
+        max(_number(value, "table row height") for value in raw_heights)
+        - min(_number(value, "table row height") for value in raw_heights)
+        <= 1e-6
+    )
+    if non_uniform and payload_uniform:
+        warnings.append(
+            "Native PPTX table fallback row heights are non-uniform, but payload "
+            "row_heights is missing or uniform"
+        )
+
+    header_rows = _table_header_rows(payload, len(table_rows))
+    warnings.extend(
+        _native_table_header_warnings(
+            payload,
+            table_rows,
+            column_edges,
+            row_edges,
+            shape_records,
+            text_cells,
+        )
+    )
+    warnings.extend(
+        _native_table_fill_warnings(
+            table_rows,
+            header_rows,
+            column_edges,
+            row_edges,
+            shape_records,
+        )
+    )
+    warnings.extend(
+        _native_table_first_column_warnings(
+            table_rows,
+            header_rows,
+            text_cells,
+        )
+    )
+    warnings.extend(
+        _native_table_border_topology_warnings(
+            payload,
+            table_rows,
+            column_edges,
+            row_edges,
+            shape_records,
+        )
+    )
+    warnings.extend(
+        _native_table_inset_graphic_warnings(
+            table_rows,
+            header_rows,
+            column_edges,
+            row_edges,
+            shape_records,
+            text_cells,
+        )
+    )
+    return warnings
 
 
 def _weighted_lengths(
@@ -947,7 +1509,8 @@ def _table_border_specs(
         side: (
             _table_border_override(border_overrides[side], side)
             if side in border_overrides
-            else legacy_spec
+            else legacy_spec if side in {"left", "right", "top", "bottom"}
+            else None
         )
         for side in _TABLE_BORDER_SIDES
     }

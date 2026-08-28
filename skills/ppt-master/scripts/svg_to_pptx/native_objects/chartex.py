@@ -114,8 +114,33 @@ def _chart_ex_data_xml(chart_data: dict[str, Any]) -> str:
     raise RuntimeError(f"Native PPTX {chart_type} chart is outside current basic chart support")
 
 
-def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
+def _chart_ex_title_text(payload: dict[str, Any]) -> str | None:
+    raw_title = payload.get("title")
+    if isinstance(raw_title, dict):
+        raw_title = raw_title.get("text")
+    if raw_title is None:
+        return None
+    title = str(raw_title).strip()
+    return title or None
+
+
+def _chart_ex_series_name(
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> str:
+    return str(
+        _chart_ex_title_text(payload)
+        or payload.get("name")
+        or chart_data["type"].replace("_", " ").title()
+    )
+
+
+def _chart_ex_series_xml(
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> str:
     chart_type = chart_data["type"]
+    series_name = _xml_escape(_chart_ex_series_name(payload, chart_data))
     if chart_type in {"sunburst", "treemap"}:
         layout_id = chart_type
         label_pos = "ctr" if chart_type == "sunburst" else "inEnd"
@@ -129,7 +154,7 @@ def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
             )
         return (
             f'<cx:series layoutId="{layout_id}" uniqueId="{{00000000-0000-4000-8000-000000000001}}">'
-            '<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>{series_name}</cx:v></cx:txData></cx:tx>'
             f'<cx:dataLabels pos="{label_pos}"><cx:visibility seriesName="0" categoryName="1" value="1"/></cx:dataLabels>'
             '<cx:dataId val="0"/>'
             f"{layout_pr}"
@@ -138,14 +163,14 @@ def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
     if chart_type == "histogram":
         return (
             '<cx:series layoutId="clusteredColumn" uniqueId="{00000000-0000-4000-8000-000000000001}">'
-            '<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>{series_name}</cx:v></cx:txData></cx:tx>'
             '<cx:dataId val="0"/><cx:layoutPr><cx:binning intervalClosed="r"/></cx:layoutPr>'
             "</cx:series>"
         )
     if chart_type == "pareto":
         return (
             '<cx:series layoutId="clusteredColumn" uniqueId="{00000000-0000-4000-8000-000000000001}">'
-            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>{series_name}</cx:v></cx:txData></cx:tx>'
             '<cx:dataId val="0"/><cx:layoutPr><cx:aggregation/></cx:layoutPr>'
             '<cx:axisId val="1"/></cx:series>'
             '<cx:series layoutId="paretoLine" ownerIdx="0" uniqueId="{00000000-0000-4000-8000-000000000002}">'
@@ -158,7 +183,7 @@ def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
             subtotals_xml = f"<cx:subtotals>{subtotal_items}</cx:subtotals>"
         return (
             '<cx:series layoutId="waterfall" uniqueId="{00000000-0000-4000-8000-000000000001}">'
-            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>{series_name}</cx:v></cx:txData></cx:tx>'
             '<cx:dataLabels pos="outEnd"><cx:visibility seriesName="0" categoryName="0" value="1"/></cx:dataLabels>'
             f'<cx:dataId val="0"/><cx:layoutPr>{subtotals_xml}</cx:layoutPr>'
             "</cx:series>"
@@ -166,7 +191,7 @@ def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
     if chart_type == "funnel":
         return (
             '<cx:series layoutId="funnel" uniqueId="{00000000-0000-4000-8000-000000000001}">'
-            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>{series_name}</cx:v></cx:txData></cx:tx>'
             '<cx:dataLabels><cx:visibility seriesName="0" categoryName="0" value="1"/></cx:dataLabels>'
             '<cx:dataId val="0"/></cx:series>'
         )
@@ -214,14 +239,21 @@ def _chart_ex_xml(
     chart_rels_id: str,
 ) -> bytes:
     data_xml = _chart_ex_data_xml(chart_data)
-    series_xml = _chart_ex_series_xml(chart_data)
+    series_xml = _chart_ex_series_xml(payload, chart_data)
     axes_xml = _chart_ex_axes_xml(chart_data)
+    title = _chart_ex_title_text(payload)
+    title_xml = (
+        '<cx:title pos="t" align="ctr" overlay="0">'
+        f'<cx:tx><cx:txData><cx:v>{_xml_escape(title)}</cx:v>'
+        '</cx:txData></cx:tx></cx:title>'
+        if title is not None else ""
+    )
     xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cx:chartSpace xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
                xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
                xmlns:cx="{CHARTEX_URI}">
 <cx:chartData><cx:externalData r:id="{chart_rels_id}" cx:autoUpdate="0"/>{data_xml}</cx:chartData>
-<cx:chart><cx:title pos="t" align="ctr" overlay="0"/>
+<cx:chart>{title_xml}
 <cx:plotArea><cx:plotAreaRegion>{series_xml}</cx:plotAreaRegion>{axes_xml}</cx:plotArea>
 {_chart_ex_legend_xml(payload)}</cx:chart>
 </cx:chartSpace>'''

@@ -45,6 +45,7 @@ shared row/column information-model boundary.
 3. Place every cell value, unit, qualifier, status, and source-bearing note in its correct intersection.
 4. Apply alignment consistently by content role, including comparable numeric alignment and stable header/body hierarchy.
 5. Add rules, fills, banding, highlights, and in-cell indicators only after the grid reads correctly in plain form.
+6. For a `<object-key>=yes` table, project the finished grid into the JSON in the same edit: `row_heights`, header fill / text / bold / alignment, whole-row or whole-column fills, first-column emphasis, padding, and per-side `borders` mirroring the drawn rules; a font size plus a uniform border is not a projection. A graphical cell (inset badge, colored chip, mini bar) cannot be expressed by `a:tbl`: return that object to `Native-ready=no`.
 
 **Per-cell completeness**: never drop a row, column, summary, footnote, unit, or qualifier to imitate a lighter catalog preview. Reflow text, widen the affected column, rebalance adjacent columns, or increase row height while preserving the active page's information contract and [`executor-base.md`](./executor-base.md) typography bounds.
 

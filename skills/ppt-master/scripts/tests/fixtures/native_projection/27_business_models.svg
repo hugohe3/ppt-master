@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="business-model-toolbox" data-pptx-replace-with="table" data-pptx-bounds="96 272 1112 316" data-pptx-fallback-sha256="27a219bd543ea061bd085c13f2c4129ebf577580838dc89af561a52809e14702">
+    <metadata type="application/json">
+      {
+        "schema": "ppt-master.semantic-table.v2",
+        "x": 96, "y": 272, "width": 1112, "height": 316,
+        "name": "business-model-toolbox",
+        "header_rows": 1,
+        "column_widths": [160, 240, 220, 220, 272],
+        "columns": ["项目属性", "典型场景", "建议模式", "主要收益来源", "关键合规边界"],
+        "rows": [
+          ["公益性", "老旧小区、城市生命线、公益性水利及生态修复", "政府投资＋DB/EPC；必要时 EPC＋O", "财政及政策性资金支付的工程或服务费用", "不垫资、不承诺融资兜底；资金落实后实施"],
+          ["准经营性／使用者付费", "供排水、停车、垃圾处理、综合管廊、部分交通和能源设施", "BOT、BOOT、TOT、ROT 等特许经营", "使用者付费、依法依规的可行性缺口补助", "公开竞争选择经营者；不得承诺保本保收益"],
+          ["市场化经营性", "园区综合能源、分布式新能源、工商业储能、智慧运维", "股权投资、BOO、EMC、投建营一体化", "售电、供能、节能分享、租赁及运营服务收入", "独立核算、风险自担；退出路径和收益边界清晰"]
+        ],
+        "style": {
+          "font_family": "Microsoft YaHei",
+          "font_size": 18,
+          "band_row": false,
+          "border_color": "#DDE3E9",
+          "border_width": 1
+        }
+      }
+    </metadata>
+    <rect x="96" y="272" width="1112" height="48" fill="#004EA1" />
+    <g id="business-model-toolbox-head" font-size="18" font-weight="bold" fill="#FFFFFF">
+      <text x="112" y="302">项目属性</text>
+      <text x="272" y="302">典型场景</text>
+      <text x="512" y="302">建议模式</text>
+      <text x="732" y="302">主要收益来源</text>
+      <text x="952" y="302">关键合规边界</text>
+    </g>
+    <g id="business-model-toolbox-rules" stroke="#DDE3E9" stroke-width="1">
+      <line x1="96" y1="408" x2="1208" y2="408" />
+      <line x1="96" y1="496" x2="1208" y2="496" />
+      <line x1="96" y1="584" x2="1208" y2="584" />
+      <line x1="256" y1="320" x2="256" y2="584" />
+      <line x1="496" y1="320" x2="496" y2="584" />
+      <line x1="716" y1="320" x2="716" y2="584" />
+      <line x1="936" y1="320" x2="936" y2="584" />
+    </g>
+    <rect x="936" y="320" width="272" height="264" fill="#F4F6F8" />
+    <g id="business-model-toolbox-body" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#1A1A1A">
+      <text x="112" y="352" font-weight="bold" fill="#004EA1">公益性</text>
+      <text x="272" y="352">老旧小区、城市生命线、<tspan x="272" dy="24">公益性水利及生态修复</tspan>
+      </text>
+      <text x="512" y="352">政府投资＋DB/EPC；<tspan x="512" dy="24">必要时 EPC＋O</tspan>
+      </text>
+      <text x="732" y="352">财政及政策性资金支付<tspan x="732" dy="24">的工程或服务费用</tspan>
+      </text>
+      <text x="952" y="352">不垫资、不承诺融资兜底；<tspan x="952" dy="24">资金落实后实施</tspan>
+      </text>
+      <text x="112" y="440" font-weight="bold" fill="#004EA1">准经营性／<tspan x="112" dy="24">使用者付费</tspan>
+      </text>
+      <text x="272" y="440">供排水、停车、垃圾处理、<tspan x="272" dy="24">综合管廊、部分交通和</tspan>
+        <tspan x="272" dy="24">能源设施</tspan>
+      </text>
+      <text x="512" y="440">BOT、BOOT、TOT、<tspan x="512" dy="24">ROT 等特许经营</tspan>
+      </text>
+      <text x="732" y="440">使用者付费、依法依规<tspan x="732" dy="24">的可行性缺口补助</tspan>
+      </text>
+      <text x="952" y="440">公开竞争选择经营者；<tspan x="952" dy="24">不得承诺保本保收益</tspan>
+      </text>
+      <text x="112" y="528" font-weight="bold" fill="#004EA1">市场化<tspan x="112" dy="24">经营性</tspan>
+      </text>
+      <text x="272" y="528">园区综合能源、分布式<tspan x="272" dy="24">新能源、工商业储能、</tspan>
+        <tspan x="272" dy="24">智慧运维</tspan>
+      </text>
+      <text x="512" y="528">股权投资、BOO、EMC、<tspan x="512" dy="24">投建营一体化</tspan>
+      </text>
+      <text x="732" y="528">售电、供能、节能分享、<tspan x="732" dy="24">租赁及运营服务收入</tspan>
+      </text>
+      <text x="952" y="528">独立核算、风险自担；<tspan x="952" dy="24">退出路径和收益边界清晰</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

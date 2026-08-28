@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="annual-signing-target" data-pptx-replace-with="chart" data-pptx-bounds="96 246 724 336" data-pptx-fallback-sha256="6af940e79ef2bf066aedf2860173a4785c9861ad5c3293e59ce36f5a81666b94">
+    <metadata type="application/json">
+      {
+              "x": 96,
+              "y": 246,
+              "width": 724,
+              "height": 336,
+              "name": "annual-signing-target",
+              "type": "column",
+              "grouping": "stacked",
+              "categories": [
+                      "2026",
+                      "2027",
+                      "2028",
+                      "2029",
+                      "2030"
+              ],
+              "series": [
+                      {
+                              "name": "水",
+                              "values": [
+                                      59,
+                                      70,
+                                      81,
+                                      89,
+                                      92
+                              ]
+                      },
+                      {
+                              "name": "城",
+                              "values": [
+                                      66,
+                                      70,
+                                      76,
+                                      85,
+                                      92
+                              ]
+                      },
+                      {
+                              "name": "能",
+                              "values": [
+                                      18,
+                                      21,
+                                      24,
+                                      27,
+                                      28
+                              ]
+                      },
+                      {
+                              "name": "战兴业务",
+                              "values": [
+                                      7,
+                                      8,
+                                      9,
+                                      10,
+                                      11
+                              ]
+                      }
+              ],
+              "show_legend": true,
+              "legend_position": "top",
+              "axes": {
+                      "category": {
+                              "kind": "text",
+                              "position": "bottom"
+                      },
+                      "value": {
+                              "kind": "value",
+                              "position": "left",
+                              "minimum": 0,
+                              "maximum": 240,
+                              "major_unit": 60,
+                              "major_gridlines": true
+                      }
+              },
+              "style": {
+                      "colors": [
+                              "#004EA1",
+                              "#0E7C9B",
+                              "#4A7BB5",
+                              "#9FB6CE"
+                      ],
+                      "font_family": "Arial",
+                      "axis_font_size": 18,
+                      "legend_font_size": 18,
+                      "chart_area_fill": "none",
+                      "plot_area_fill": "none",
+                      "text_color": "#1A1A1A",
+                      "axis_color": "#DDE3E9",
+                      "grid_color": "#DDE3E9"
+              },
+              "plot_area": {
+                      "x": 140,
+                      "y": 280,
+                      "width": 670,
+                      "height": 260
+              },
+              "notes": [
+                      {
+                              "text": "150",
+                              "x": 172,
+                              "y": 344,
+                              "width": 70,
+                              "height": 30,
+                              "font_size": 24,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#1A1A1A"
+                      },
+                      {
+                              "text": "169",
+                              "x": 306,
+                              "y": 323,
+                              "width": 70,
+                              "height": 30,
+                              "font_size": 24,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#1A1A1A"
+                      },
+                      {
+                              "text": "190",
+                              "x": 440,
+                              "y": 300,
+                              "width": 70,
+                              "height": 30,
+                              "font_size": 24,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#1A1A1A"
+                      },
+                      {
+                              "text": "211",
+                              "x": 574,
+                              "y": 278,
+                              "width": 70,
+                              "height": 30,
+                              "font_size": 24,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#1A1A1A"
+                      },
+                      {
+                              "text": "223",
+                              "x": 708,
+                              "y": 265,
+                              "width": 70,
+                              "height": 30,
+                              "font_size": 24,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#C90A4F"
+                      }
+              ]
+      }
+    </metadata>
+    <g id="annual-signing-target-legend" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#4A5568">
+      <rect x="380" y="262" width="24" height="12" fill="#004EA1" />
+      <text x="412" y="274">水</text>
+      <rect x="470" y="262" width="24" height="12" fill="#0E7C9B" />
+      <text x="502" y="274">城</text>
+      <rect x="560" y="262" width="24" height="12" fill="#4A7BB5" />
+      <text x="592" y="274">能</text>
+      <rect x="650" y="262" width="24" height="12" fill="#9FB6CE" />
+      <text x="682" y="274">战兴业务</text>
+    </g>
+    <g id="annual-signing-target-chartArea">
+      <g id="annual-signing-target-grid" stroke="#DDE3E9" stroke-width="1">
+        <line x1="140" y1="280" x2="810" y2="280" />
+        <line x1="140" y1="345" x2="810" y2="345" />
+        <line x1="140" y1="410" x2="810" y2="410" />
+        <line x1="140" y1="475" x2="810" y2="475" />
+        <line x1="140" y1="540" x2="810" y2="540" stroke="#9FB6CE" />
+        <line x1="140" y1="280" x2="140" y2="540" />
+      </g>
+      <g id="annual-signing-target-yaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="end" fill="#4A5568">
+        <text x="132" y="286">240</text>
+        <text x="132" y="351">180</text>
+        <text x="132" y="416">120</text>
+        <text x="132" y="481">60</text>
+        <text x="132" y="546">0</text>
+      </g>
+      <g id="annual-signing-target-water" fill="#004EA1">
+        <rect x="165" y="476.08" width="84" height="63.92" />
+        <rect x="299" y="464.17" width="84" height="75.83" />
+        <rect x="433" y="452.25" width="84" height="87.75" />
+        <rect x="567" y="443.58" width="84" height="96.42" />
+        <rect x="701" y="440.33" width="84" height="99.67" />
+      </g>
+      <g id="annual-signing-target-city" fill="#0E7C9B">
+        <rect x="165" y="404.58" width="84" height="71.5" />
+        <rect x="299" y="388.34" width="84" height="75.83" />
+        <rect x="433" y="369.92" width="84" height="82.33" />
+        <rect x="567" y="351.5" width="84" height="92.08" />
+        <rect x="701" y="340.66" width="84" height="99.67" />
+      </g>
+      <g id="annual-signing-target-energy" fill="#4A7BB5">
+        <rect x="165" y="385.08" width="84" height="19.5" />
+        <rect x="299" y="365.59" width="84" height="22.75" />
+        <rect x="433" y="343.92" width="84" height="26" />
+        <rect x="567" y="322.25" width="84" height="29.25" />
+        <rect x="701" y="310.33" width="84" height="30.33" />
+      </g>
+      <g id="annual-signing-target-new" fill="#9FB6CE">
+        <rect x="165" y="377.5" width="84" height="7.58" />
+        <rect x="299" y="356.92" width="84" height="8.67" />
+        <rect x="433" y="334.17" width="84" height="9.75" />
+        <rect x="567" y="311.42" width="84" height="10.83" />
+        <rect x="701" y="298.41" width="84" height="11.92" />
+      </g>
+    </g>
+    <g id="annual-signing-target-totals" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1A1A1A">
+      <text x="207" y="366">150</text>
+      <text x="341" y="345">169</text>
+      <text x="475" y="322">190</text>
+      <text x="609" y="300">211</text>
+      <text x="743" y="287" fill="#C90A4F">223</text>
+    </g>
+    <g id="annual-signing-target-xaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4A5568">
+      <text x="207" y="568">2026</text>
+      <text x="341" y="568">2027</text>
+      <text x="475" y="568">2028</text>
+      <text x="609" y="568">2029</text>
+      <text x="743" y="568">2030</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="fiveyear-target-vs-actual" data-pptx-replace-with="chart" data-pptx-bounds="96 246 724 336" data-pptx-fallback-sha256="431a9b3eb0f292c1e7309cd363fd09f863ff08b17dbd92168b782e7e19099764">
+    <metadata type="application/json">
+      {
+              "x": 96,
+              "y": 246,
+              "width": 724,
+              "height": 336,
+              "name": "fiveyear-target-vs-actual",
+              "type": "column",
+              "grouping": "clustered",
+              "categories": [
+                      "2021",
+                      "2022",
+                      "2023",
+                      "2024",
+                      "2025"
+              ],
+              "series": [
+                      {
+                              "name": "目标",
+                              "values": [
+                                      341,
+                                      210,
+                                      175,
+                                      329,
+                                      356
+                              ]
+                      },
+                      {
+                              "name": "完成",
+                              "values": [
+                                      313.02,
+                                      275.04,
+                                      175.12,
+                                      286.2,
+                                      130.53
+                              ]
+                      }
+              ],
+              "show_legend": true,
+              "legend_position": "top",
+              "axes": {
+                      "category": {
+                              "kind": "text",
+                              "position": "bottom"
+                      },
+                      "value": {
+                              "kind": "value",
+                              "position": "left",
+                              "minimum": 0,
+                              "maximum": 400,
+                              "major_unit": 100,
+                              "major_gridlines": true
+                      }
+              },
+              "style": {
+                      "colors": [
+                              "#9FB6CE",
+                              "#004EA1"
+                      ],
+                      "font_family": "Arial",
+                      "axis_font_size": 18,
+                      "legend_font_size": 18,
+                      "chart_area_fill": "none",
+                      "plot_area_fill": "none",
+                      "text_color": "#1A1A1A",
+                      "axis_color": "#DDE3E9",
+                      "grid_color": "#DDE3E9"
+              },
+              "plot_area": {
+                      "x": 140,
+                      "y": 280,
+                      "width": 670,
+                      "height": 260
+              },
+              "notes": [
+                      {
+                              "text": "91.79%",
+                              "x": 162,
+                              "y": 292,
+                              "width": 90,
+                              "height": 24,
+                              "font_size": 18,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#4A5568"
+                      },
+                      {
+                              "text": "130.97%",
+                              "x": 296,
+                              "y": 335,
+                              "width": 90,
+                              "height": 24,
+                              "font_size": 18,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#4A5568"
+                      },
+                      {
+                              "text": "100.07%",
+                              "x": 430,
+                              "y": 400,
+                              "width": 90,
+                              "height": 24,
+                              "font_size": 18,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#4A5568"
+                      },
+                      {
+                              "text": "86.99%",
+                              "x": 564,
+                              "y": 300,
+                              "width": 90,
+                              "height": 24,
+                              "font_size": 18,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#4A5568"
+                      },
+                      {
+                              "text": "36.67%",
+                              "x": 698,
+                              "y": 282,
+                              "width": 90,
+                              "height": 24,
+                              "font_size": 18,
+                              "bold": true,
+                              "align": "ctr",
+                              "color": "#C90A4F"
+                      }
+              ]
+      }
+    </metadata>
+    <g id="fiveyear-target-vs-actual-legend" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#4A5568">
+      <rect x="560" y="262" width="24" height="12" fill="#9FB6CE" />
+      <text x="592" y="274">目标</text>
+      <rect x="656" y="262" width="24" height="12" fill="#004EA1" />
+      <text x="688" y="274">完成</text>
+    </g>
+    <g id="fiveyear-target-vs-actual-chartArea">
+      <g id="fiveyear-target-vs-actual-grid" stroke="#DDE3E9" stroke-width="1">
+        <line x1="140" y1="280" x2="810" y2="280" />
+        <line x1="140" y1="345" x2="810" y2="345" />
+        <line x1="140" y1="410" x2="810" y2="410" />
+        <line x1="140" y1="475" x2="810" y2="475" />
+        <line x1="140" y1="540" x2="810" y2="540" stroke="#9FB6CE" />
+        <line x1="140" y1="280" x2="140" y2="540" />
+      </g>
+      <g id="fiveyear-target-vs-actual-yaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="end" fill="#4A5568">
+        <text x="132" y="286">400</text>
+        <text x="132" y="351">300</text>
+        <text x="132" y="416">200</text>
+        <text x="132" y="481">100</text>
+        <text x="132" y="546">0</text>
+      </g>
+      <g id="fiveyear-target-vs-actual-bars-target" fill="#9FB6CE">
+        <rect x="157" y="318.35" width="44" height="221.65" />
+        <rect x="291" y="403.5" width="44" height="136.5" />
+        <rect x="425" y="426.25" width="44" height="113.75" />
+        <rect x="559" y="326.15" width="44" height="213.85" />
+        <rect x="693" y="308.6" width="44" height="231.4" />
+      </g>
+      <g id="fiveyear-target-vs-actual-bars-actual" fill="#004EA1">
+        <rect x="213" y="336.54" width="44" height="203.46" />
+        <rect x="347" y="361.22" width="44" height="178.78" />
+        <rect x="481" y="426.17" width="44" height="113.83" />
+        <rect x="615" y="353.97" width="44" height="186.03" />
+        <rect x="749" y="455.16" width="44" height="84.84" fill="#C90A4F" />
+      </g>
+    </g>
+    <g id="fiveyear-target-vs-actual-rates" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4A5568">
+      <text x="207" y="308">91.79%</text>
+      <text x="341" y="351">130.97%</text>
+      <text x="475" y="416">100.07%</text>
+      <text x="609" y="316">86.99%</text>
+      <text x="743" y="298" fill="#C90A4F">36.67%</text>
+    </g>
+    <g id="fiveyear-target-vs-actual-xaxis" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4A5568">
+      <text x="207" y="568">2021</text>
+      <text x="341" y="568">2022</text>
+      <text x="475" y="568">2023</text>
+      <text x="609" y="568">2024</text>
+      <text x="743" y="568">2025</text>
+    </g>
+  </g>
+</svg>

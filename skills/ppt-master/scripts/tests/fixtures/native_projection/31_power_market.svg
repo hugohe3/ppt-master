@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="power-market-calculation" data-pptx-replace-with="table" data-pptx-bounds="96 242 1112 340" data-pptx-fallback-sha256="1491f4f30ab59c73e10734b61064513e25fcdcba8e23ef18a1e35109aff4cf3e">
+    <metadata type="application/json">
+      {
+        "schema": "ppt-master.semantic-table.v2",
+        "x": 96, "y": 242, "width": 1112, "height": 340,
+        "name": "power-market-calculation",
+        "header_rows": 1,
+        "column_widths": [150, 280, 240, 240, 202],
+        "columns": ["测算模块", "核心参数", "基准情景要求", "压力测试重点", "管理用途"],
+        "rows": [
+          ["电量", "P50/P90 发电量、可利用率、限电率、储能循环次数", "采用代表年和中长期资源评估结果", "利用小时下降、限电和设备衰减叠加", "确定容量、设备方案及偿债边界"],
+          ["电价与交易", "中长期、现货、机制电价、绿电绿证", "采用最新规则和可验证市场数据", "低价时段增加、机制电量下降、价差扩大", "评估年度收入和套期保值策略"],
+          ["辅助服务与调节", "调频、备用、需求响应、容量租赁", "仅计入具备准入条件且可持续的收入", "调用频次、性能考核和市场竞争变化", "评价储能、虚拟电厂和灵活性价值"],
+          ["成本与考核", "偏差考核、交易费、损耗、运维和保险", "全额纳入运营现金流", "偏差率提高、损耗增加、运维超支", "确定报价底线和运维预算"],
+          ["融资与退出", "利率、偿债覆盖率、残值和退出估值", "与真实融资条件和资产寿命匹配", "利率上升、再融资受限、估值折价", "控制资本金、负债率和退出时点"]
+        ],
+        "style": {
+          "font_family": "Microsoft YaHei",
+          "font_size": 18,
+          "band_row": false,
+          "border_color": "#DDE3E9",
+          "border_width": 1
+        }
+      }
+    </metadata>
+    <rect x="96" y="246" width="1112" height="40" fill="#004EA1" />
+    <rect x="726" y="286" width="240" height="292" fill="#F4F6F8" />
+    <g id="power-market-calculation-head" font-size="18" font-weight="bold" fill="#FFFFFF">
+      <text x="112" y="272">测算模块</text>
+      <text x="262" y="272">核心参数</text>
+      <text x="542" y="272">基准情景要求</text>
+      <text x="742" y="272">压力测试重点</text>
+      <text x="982" y="272">管理用途</text>
+    </g>
+    <g id="power-market-calculation-rules" stroke="#DDE3E9" stroke-width="1">
+      <line x1="96" y1="344" x2="1208" y2="344" />
+      <line x1="96" y1="402" x2="1208" y2="402" />
+      <line x1="96" y1="460" x2="1208" y2="460" />
+      <line x1="96" y1="518" x2="1208" y2="518" />
+      <line x1="96" y1="576" x2="1208" y2="576" />
+      <line x1="246" y1="286" x2="246" y2="576" />
+      <line x1="526" y1="286" x2="526" y2="576" />
+      <line x1="726" y1="286" x2="726" y2="576" />
+      <line x1="966" y1="286" x2="966" y2="576" />
+    </g>
+    <g id="power-market-calculation-body" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#1A1A1A">
+      <text x="112" y="314" font-weight="bold" fill="#004EA1">电量</text>
+      <text x="262" y="314">P50/P90 发电量、可利用率、<tspan x="262" dy="24">限电率、储能循环次数</tspan>
+      </text>
+      <text x="542" y="314">采用代表年和中长期<tspan x="542" dy="24">资源评估结果</tspan>
+      </text>
+      <text x="742" y="314">利用小时下降、限电和<tspan x="742" dy="24">设备衰减叠加</tspan>
+      </text>
+      <text x="982" y="314">确定容量、设备方案<tspan x="982" dy="24">及偿债边界</tspan>
+      </text>
+      <text x="112" y="372" font-weight="bold" fill="#004EA1">电价与交易</text>
+      <text x="262" y="372">中长期、现货、机制电价、<tspan x="262" dy="24">绿电绿证</tspan>
+      </text>
+      <text x="542" y="372">采用最新规则和<tspan x="542" dy="24">可验证市场数据</tspan>
+      </text>
+      <text x="742" y="372">低价时段增加、机制电量<tspan x="742" dy="24">下降、价差扩大</tspan>
+      </text>
+      <text x="982" y="372">评估年度收入和<tspan x="982" dy="24">套期保值策略</tspan>
+      </text>
+      <text x="112" y="430" font-weight="bold" fill="#004EA1">辅助服务<tspan x="112" dy="24">与调节</tspan>
+      </text>
+      <text x="262" y="430">调频、备用、需求响应、<tspan x="262" dy="24">容量租赁</tspan>
+      </text>
+      <text x="542" y="430">仅计入具备准入条件<tspan x="542" dy="24">且可持续的收入</tspan>
+      </text>
+      <text x="742" y="430">调用频次、性能考核和<tspan x="742" dy="24">市场竞争变化</tspan>
+      </text>
+      <text x="982" y="430">评价储能、虚拟电厂<tspan x="982" dy="24">和灵活性价值</tspan>
+      </text>
+      <text x="112" y="488" font-weight="bold" fill="#004EA1">成本与考核</text>
+      <text x="262" y="488">偏差考核、交易费、损耗、<tspan x="262" dy="24">运维和保险</tspan>
+      </text>
+      <text x="542" y="488">全额纳入运营现金流</text>
+      <text x="742" y="488">偏差率提高、损耗增加、<tspan x="742" dy="24">运维超支</tspan>
+      </text>
+      <text x="982" y="488">确定报价底线和<tspan x="982" dy="24">运维预算</tspan>
+      </text>
+      <text x="112" y="546" font-weight="bold" fill="#004EA1">融资与退出</text>
+      <text x="262" y="546">利率、偿债覆盖率、残值和<tspan x="262" dy="24">退出估值</tspan>
+      </text>
+      <text x="542" y="546">与真实融资条件和<tspan x="542" dy="24">资产寿命匹配</tspan>
+      </text>
+      <text x="742" y="546">利率上升、再融资受限、<tspan x="742" dy="24">估值折价</tspan>
+      </text>
+      <text x="982" y="546">控制资本金、负债率<tspan x="982" dy="24">和退出时点</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

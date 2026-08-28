@@ -84,6 +84,7 @@ from .discovery import NotesFileReadError, find_notes_files, find_svg_files
 from .builder import RoundtripSlidePatch, create_pptx_with_native_svg
 from ..native_objects import (
     native_fallback_kind,
+    native_object_projection_warnings,
     native_replacement_kind,
     native_replacement_status,
 )
@@ -1707,6 +1708,47 @@ def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]
     return fallbacks
 
 
+def _native_object_projection_findings(
+    svg_files: list[Path],
+) -> list[tuple[str, str, str]]:
+    """Return SVG-first Chart/Table details that native metadata would discard."""
+    findings: list[tuple[str, str, str]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        parent_map = {
+            child: parent
+            for parent in root.iter()
+            for child in parent
+        }
+        for elem in root.iter():
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            if native_replacement_kind(elem) not in {'chart', 'table'}:
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            ancestors: list[ET.Element] = []
+            parent = parent_map.get(elem)
+            while parent is not None and parent is not root:
+                if parent.tag.rsplit('}', 1)[-1] == 'g':
+                    ancestors.append(parent)
+                parent = parent_map.get(parent)
+            try:
+                warnings = native_object_projection_warnings(
+                    elem,
+                    ancestors=tuple(reversed(ancestors)),
+                )
+            except RuntimeError as exc:
+                warnings = [f"projection validation failed: {exc}"]
+            findings.extend(
+                (svg_path.name, marker_id, warning)
+                for warning in warnings
+            )
+    return findings
+
+
 def _release_blocked_graphics(
     svg_files: list[Path],
 ) -> list[tuple[str, str, str]]:
@@ -3063,6 +3105,25 @@ Recorded narration:
             )
 
     if args.native_objects:
+        projection_findings = _native_object_projection_findings(native_files)
+        if projection_findings:
+            print(
+                "Error: --native-charts-and-tables stopped because visible "
+                "SVG-first fallback details are not projected by marker metadata:",
+                file=sys.stderr,
+            )
+            for filename, marker_id, finding in projection_findings:
+                print(
+                    f"  {filename}: {marker_id}: {finding}",
+                    file=sys.stderr,
+                )
+            print(
+                "Project every listed detail into the closed native payload, or "
+                "remove the active replacement marker and keep the object "
+                "Native-ready=no.",
+                file=sys.stderr,
+            )
+            return 1
         print(
             "Warning: --native-charts-and-tables replaces shape-based SVG fallbacks "
             "with PowerPoint Chart/Table objects. The native objects may normalize "

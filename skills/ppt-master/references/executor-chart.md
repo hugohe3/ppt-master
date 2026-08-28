@@ -42,7 +42,7 @@ A dual-axis chart is valid only when both series share the exact time/category
 domain and the units and visual identities stay unambiguous; otherwise separate
 the views.
 
-**Per-object completeness**: preserve every authoritative series, category, point, label, unit, qualifier, source, and scale cue needed to read the chart. When the source cannot determine a required scale or derived value, return the ambiguity upstream in Default or resolve it from explicit source facts in Quick; never fabricate it at draw time.
+**Per-object completeness**: preserve every authoritative series, category, point, label, unit, qualifier, source, and scale cue needed to read the chart. For a `<object-key>=yes` chart, the JSON mirrors the drawn fallback item by item in the same edit: legend labels verbatim, point-level exception colors as `point_colors`, the axis scale, the classic `plot_area` taken from the plot-area marker, visible data labels or summary figures as `data_labels` or companion text, and the actual label / axis / grid colors — omit `text_color` and its siblings rather than guess them. When the source cannot determine a required scale or derived value, return the ambiguity upstream in Default or resolve it from explicit source facts in Quick; never fabricate it at draw time.
 
 **Hard rule — schedule geometry**: A schedule is a Gantt chart when dates or
 durations determine each task bar's `x` and `width`, even if the source was a
