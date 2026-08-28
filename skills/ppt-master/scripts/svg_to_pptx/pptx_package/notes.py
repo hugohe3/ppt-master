@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from xml.sax.saxutils import quoteattr
 
 from language_tags import normalize_language_tag
 
@@ -181,18 +182,22 @@ def create_notes_slide_xml(
 </p:notes>'''
 
 
-def create_notes_slide_rels_xml(slide_num: int) -> str:
+def create_notes_slide_rels_xml(
+    slide_num: int,
+    notes_master_target: str,
+) -> str:
     """Create notes slide relationship file XML.
 
     Args:
         slide_num: Slide number.
+        notes_master_target: Package-relative target of the notes master.
 
     Returns:
         Relationship file XML string.
     """
     return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target={quoteattr(notes_master_target)}/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide{slide_num}.xml"/>
 </Relationships>'''
 

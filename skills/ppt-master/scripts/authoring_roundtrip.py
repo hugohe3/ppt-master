@@ -44,6 +44,7 @@ from svg_authoring_view import (
     AUTHORING_OMITTED_SOURCE_ATTRIBUTES,
     AUTHORING_MANIFEST_NAME,
     AUTHORING_SCHEMA,
+    EXTERNAL_LINKED_IMAGE_PROXY_ATTRIBUTE,
     SOURCE_REF_ATTRIBUTE,
     SOURCE_PROXY_ATTRIBUTE,
     SOURCE_PROXY_KIND,
@@ -51,6 +52,7 @@ from svg_authoring_view import (
     semantic_subtree_sha256,
 )
 from svg_compatibility import normalize_single_child_group_filters
+from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS
 
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -64,6 +66,14 @@ _PRESERVED_EFFECT_ATTRIBUTES = frozenset({
     "data-pptx-effect-reason",
     "data-pptx-effect-status",
 })
+_ROOT_AUTHORING_ATTRIBUTES = (
+    "width",
+    "height",
+    "viewBox",
+    "style",
+    *INHERITABLE_ATTRS,
+    "opacity",
+)
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -175,9 +185,15 @@ def _load_json(path: Path, *, context: str) -> dict[str, Any]:
 
 
 def _resolve_inside(root: Path, value: str, *, context: str) -> Path:
-    path = (root / value).resolve()
     try:
-        path.relative_to(root.resolve())
+        resolved_root = root.resolve()
+        path = (root / value).resolve()
+    except ValueError as exc:
+        raise AuthoringRoundtripError(
+            f"{context} contains an invalid path value: {value!r}"
+        ) from exc
+    try:
+        path.relative_to(resolved_root)
     except ValueError as exc:
         raise AuthoringRoundtripError(
             f"{context} resolves outside {root}: {value!r}"
@@ -647,6 +663,10 @@ def _load_page_plan(
         if not isinstance(svg_value, str) or not svg_value:
             raise AuthoringRoundtripError(
                 f"{context}.svg must be a non-empty authoring SVG filename"
+            )
+        if "\\" in svg_value:
+            raise AuthoringRoundtripError(
+                f"{context}.svg must not contain backslashes: {svg_value!r}"
             )
         svg_path_value = Path(svg_value)
         if (
@@ -1203,6 +1223,67 @@ def _referenced_definition_ids(element: ET.Element) -> set[str]:
     return references
 
 
+def _definition_reference_ids(element: ET.Element) -> set[str]:
+    """Return local definition ids referenced by attributes or style text."""
+    references = _referenced_definition_ids(element)
+    for item in element.iter():
+        if item.text:
+            references.update(
+                match.group(2) for match in _URL_ID_RE.finditer(item.text)
+            )
+    return references
+
+
+def _prune_unreferenced_definitions(root: ET.Element) -> None:
+    """Keep only the definition closure reachable by converted page content."""
+    definitions = _direct_defs(root)
+    if definitions is None:
+        return
+    owner_by_id: dict[str, ET.Element] = {}
+    for child in definitions:
+        for item in child.iter():
+            if definition_id := item.get("id"):
+                owner_by_id.setdefault(definition_id, child)
+
+    always_kept = [
+        child
+        for child in definitions
+        if _local_name(child.tag) == "style" or not child.get("id")
+    ]
+    pending = [
+        reference
+        for child in root
+        if child is not definitions
+        for reference in _definition_reference_ids(child)
+    ]
+    pending.extend(
+        reference
+        for child in always_kept
+        for reference in _definition_reference_ids(child)
+    )
+    selected_owners: set[int] = set()
+    required_ids: set[str] = set()
+    while pending:
+        definition_id = pending.pop()
+        if definition_id in required_ids:
+            continue
+        required_ids.add(definition_id)
+        owner = owner_by_id.get(definition_id)
+        if owner is None or id(owner) in selected_owners:
+            continue
+        selected_owners.add(id(owner))
+        pending.extend(_definition_reference_ids(owner) - required_ids)
+
+    for child in list(definitions):
+        if child in always_kept or id(child) in selected_owners:
+            continue
+        definitions.remove(child)
+    if not list(definitions) and not (
+        definitions.text and definitions.text.strip()
+    ):
+        root.remove(definitions)
+
+
 def _merge_defs(
     layered_root: ET.Element,
     authoring_root: ET.Element,
@@ -1328,6 +1409,64 @@ def _restore_preserved_effect_metadata(
                 item.set(name, value)
 
 
+def _apply_authoring_root_attributes(
+    target: ET.Element,
+    authoring_root: ET.Element,
+) -> None:
+    """Make authoring-root geometry and inherited presentation authoritative."""
+    for name in _ROOT_AUTHORING_ATTRIBUTES:
+        target.attrib.pop(name, None)
+        value = authoring_root.get(name)
+        if value is not None:
+            target.set(name, value)
+
+
+def _native_restore_placeholder(
+    source: ET.Element,
+    source_ref: str,
+) -> ET.Element:
+    """Keep one natively restored source shape ordered without converting it."""
+    shape_key = source_ref.split(":", 1)[1]
+    placeholder = ET.Element(
+        f"{{{SVG_NS}}}g",
+        {
+            "id": f"shape-{shape_key}",
+            "data-pptx-object": "group",
+        },
+    )
+    if shape_key.isdigit():
+        placeholder.set("data-pptx-shape-id", shape_key)
+        placeholder.set("data-pptx-shape-scope", "slide")
+    for name in (
+        "data-pptx-layer",
+        "data-pptx-role",
+        "data-pptx-placeholder",
+    ):
+        value = source.get(name)
+        if value is not None:
+            placeholder.set(name, value)
+    transform = source.get("transform")
+    if transform:
+        placeholder.set("transform", transform)
+    frame = (source.get("data-pptx-frame") or "").split()
+    try:
+        x, y, width, height = (float(value) for value in frame)
+    except (TypeError, ValueError):
+        x, y, width, height = 0.0, 0.0, 1.0, 1.0
+    ET.SubElement(
+        placeholder,
+        f"{{{SVG_NS}}}rect",
+        {
+            "x": f"{x:.15g}",
+            "y": f"{y:.15g}",
+            "width": f"{max(width, 0.001):.15g}",
+            "height": f"{max(height, 0.001):.15g}",
+            "fill": "#000000",
+        },
+    )
+    return placeholder
+
+
 def _materialize_document(
     project_path: Path,
     document: AuthoringDocument,
@@ -1447,6 +1586,20 @@ def _materialize_document(
             "object; only a complete Slide-local proxy may be removed to "
             "delete that object"
         )
+    deleted_external_linked_image_refs = sorted(
+        source_ref
+        for source_ref in deleted_refs & manifest_proxy_refs
+        if baseline_occurrences[source_ref][0].element.get(
+            EXTERNAL_LINKED_IMAGE_PROXY_ATTRIBUTE
+        ) == "true"
+    )
+    if deleted_external_linked_image_refs:
+        raise AuthoringRoundtripError(
+            f"{document.name} deletes externally linked image proxy object(s): "
+            + ", ".join(deleted_external_linked_image_refs)
+            + "; keep each proxy unchanged to restore its original external "
+            "picture relationship"
+        )
     deleted_inherited_proxy_refs = sorted(
         source_ref
         for source_ref in deleted_refs & manifest_proxy_refs
@@ -1475,15 +1628,7 @@ def _materialize_document(
                 raise AuthoringRoundtripError(
                     f"{document.name} cannot find {source_ref!r} in layered source"
                 )
-            restored = copy.deepcopy(source)
-            _rebase_resource_references(
-                restored,
-                document.layered_source_path.parent,
-                output_path.parent,
-                project_path,
-                recursive=True,
-            )
-            return [restored]
+            return [_native_restore_placeholder(source, source_ref)]
 
         if _local_name(element.tag) == "use":
             icon = (element.get("data-icon") or "").strip()
@@ -1541,10 +1686,7 @@ def _materialize_document(
     output_root = copy.deepcopy(layered_root)
     for child in list(output_root):
         output_root.remove(child)
-    for name in ("width", "height", "viewBox"):
-        value = current_root.get(name)
-        if value is not None:
-            output_root.set(name, value)
+    _apply_authoring_root_attributes(output_root, current_root)
     layered_defs_root = copy.deepcopy(layered_root)
     current_defs_root = copy.deepcopy(current_root)
     _rebase_resource_references(
@@ -1633,6 +1775,7 @@ def _materialize_document(
         for replacement in replacements:
             output_root.append(replacement)
 
+    _prune_unreferenced_definitions(output_root)
     residual_refs = sorted({
         source_ref
         for element in output_root.iter()

@@ -223,11 +223,20 @@ class RoundtripSlidePatch:
     edited_ref_ids: frozenset[str]
     deleted_ref_ids: frozenset[str]
     visual_changed: bool
+    authoring_visual_changed: bool
     motion_changed: bool
     transition_changed: bool
     transition_replaced: bool
     animation_changed: bool
     notes_changed: bool
+
+
+@dataclass(frozen=True)
+class _NotesMasterReference:
+    """Notes master selected for one generated notes slide."""
+
+    package_part: str
+    created_theme_part: str | None = None
 
 
 @dataclass
@@ -883,13 +892,203 @@ def _write_xml_tree(path: Path, tree: ET.ElementTree) -> None:
 
 
 def _slide_ref_shape_ids(values: frozenset[str]) -> set[str]:
-    """Return numeric Slide-local ids from authoring source references."""
+    """Return Slide-local ids from authoring source references."""
     result: set[str] = set()
     for value in values:
-        match = re.fullmatch(r"slide:(\d+)", value)
-        if match is not None:
-            result.add(match.group(1))
+        if value.startswith("slide:") and len(value) > len("slide:"):
+            result.add(value.split(":", 1)[1])
     return result
+
+
+def _roundtrip_synthetic_shape_id(source_order: tuple[int, ...]) -> str:
+    """Return the importer's stable identity for a shape with no native id."""
+    return "missing-" + "-".join(str(value) for value in source_order)
+
+
+def _direct_shape_id(element: ET.Element) -> str | None:
+    """Return one shape's own cNvPr id without descending into child shapes."""
+    if element.tag == f"{{{MC_NS}}}AlternateContent":
+        return _shape_id(element)
+    for child in element:
+        c_nv_pr = child.find(f"{{{PML_NS}}}cNvPr")
+        if c_nv_pr is not None:
+            return c_nv_pr.get("id")
+    return None
+
+
+def _roundtrip_shape_id_closure(
+    element: ET.Element,
+    source_order: tuple[int, ...],
+) -> set[str]:
+    """Return native and synthetic identities in one source shape subtree."""
+    identity = _direct_shape_id(element) or _roundtrip_synthetic_shape_id(
+        source_order
+    )
+    identities = _shape_ids_in_element(element) | {identity}
+    if element.tag != f"{{{PML_NS}}}grpSp":
+        return identities
+    child_order = 0
+    for child in element:
+        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+            continue
+        child_order += 1
+        identities.update(
+            _roundtrip_shape_id_closure(
+                child,
+                (*source_order, child_order),
+            )
+        )
+    return identities
+
+
+def _index_roundtrip_source_shape(
+    element: ET.Element,
+    source_order: tuple[int, ...],
+    shapes: dict[str, ET.Element],
+    key_by_element: dict[int, str],
+) -> None:
+    """Index one native source shape subtree by stable round-trip identity."""
+    shape_id = _direct_shape_id(element) or _roundtrip_synthetic_shape_id(
+        source_order
+    )
+    if shape_id in shapes:
+        raise TemplateStructureError(
+            f"Round-trip source slide repeats shape id {shape_id}"
+        )
+    shapes[shape_id] = element
+    key_by_element[id(element)] = shape_id
+    if element.tag != f"{{{PML_NS}}}grpSp":
+        return
+    child_order = 0
+    for child in element:
+        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+            continue
+        child_order += 1
+        _index_roundtrip_source_shape(
+            child,
+            (*source_order, child_order),
+            shapes,
+            key_by_element,
+        )
+
+
+def _roundtrip_source_shape_roster(
+    source_tree: ET.Element,
+) -> tuple[
+    dict[str, ET.Element],
+    dict[str, set[str]],
+    dict[int, str],
+    dict[str, ET.Element],
+]:
+    """Index source top-level shapes without mutating missing native ids."""
+    shapes: dict[str, ET.Element] = {}
+    descendant_ids: dict[str, set[str]] = {}
+    key_by_element: dict[int, str] = {}
+    all_shapes: dict[str, ET.Element] = {}
+    source_order = 0
+    for child in source_tree:
+        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+            continue
+        source_order += 1
+        order_path = (source_order,)
+        _index_roundtrip_source_shape(
+            child,
+            order_path,
+            all_shapes,
+            key_by_element,
+        )
+        shape_id = key_by_element[id(child)]
+        shapes[shape_id] = child
+        descendant_ids[shape_id] = _roundtrip_shape_id_closure(
+            child,
+            order_path,
+        )
+    return shapes, descendant_ids, key_by_element, all_shapes
+
+
+def _roundtrip_nested_restore_ids(
+    source_shapes: dict[str, ET.Element],
+    source_key_by_element: dict[int, str],
+    affected_top_ids: set[str],
+    unchanged_ids: set[str],
+    deleted_ids: set[str],
+) -> set[str]:
+    """Return outermost unchanged source shapes inside rebuilt top-level groups."""
+    restore_ids: set[str] = set()
+
+    def visit(element: ET.Element) -> None:
+        shape_id = source_key_by_element[id(element)]
+        if shape_id in unchanged_ids:
+            restore_ids.add(shape_id)
+            return
+        if shape_id in deleted_ids or element.tag != f"{{{PML_NS}}}grpSp":
+            return
+        for child in element:
+            if child.tag in _TOP_LEVEL_SHAPE_TAGS:
+                visit(child)
+
+    for shape_id in affected_top_ids:
+        visit(source_shapes[shape_id])
+    return restore_ids
+
+
+def _restore_roundtrip_nested_source_shapes(
+    generated_nodes: list[ET.Element],
+    source_shapes: dict[str, ET.Element],
+    restore_ids: set[str],
+    traced_ids: dict[str, list[str]],
+) -> None:
+    """Replace converter-safe nested placeholders with exact source shapes."""
+    locations: dict[str, tuple[ET.Element, ET.Element]] = {}
+
+    def index_children(parent: ET.Element) -> None:
+        for child in parent:
+            if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+                continue
+            shape_id = _direct_shape_id(child)
+            if shape_id is not None:
+                previous = locations.setdefault(shape_id, (parent, child))
+                if previous[1] is not child:
+                    raise TemplateStructureError(
+                        "Generated round-trip slide repeats nested shape id "
+                        f"{shape_id}"
+                    )
+            if child.tag == f"{{{PML_NS}}}grpSp":
+                index_children(child)
+
+    for node in generated_nodes:
+        if node.tag == f"{{{PML_NS}}}grpSp":
+            index_children(node)
+
+    for source_id in sorted(restore_ids, key=_roundtrip_shape_sort_key):
+        candidate_ids = {source_id}
+        candidate_ids.update(traced_ids.get(f"shape-{source_id}", []))
+        matches = {
+            candidate_id: locations[candidate_id]
+            for candidate_id in candidate_ids
+            if candidate_id in locations
+        }
+        if len(matches) != 1:
+            raise TemplateStructureError(
+                "Unchanged nested round-trip source object did not produce "
+                f"exactly one restore placeholder: {source_id}"
+            )
+        parent, placeholder = next(iter(matches.values()))
+        source = source_shapes.get(source_id)
+        if source is None:
+            raise TemplateStructureError(
+                f"Round-trip source shape is missing for nested ref {source_id}"
+            )
+        clone = ET.fromstring(ET.tostring(source, encoding="utf-8"))
+        clone.tail = placeholder.tail
+        position = list(parent).index(placeholder)
+        parent.remove(placeholder)
+        parent.insert(position, clone)
+
+
+def _roundtrip_shape_sort_key(value: str) -> tuple[int, int | str]:
+    """Sort native numeric ids before stable synthetic ids."""
+    return (0, int(value)) if value.isdigit() else (1, value)
 
 
 def _relationship_key(attrs: dict[str, str]) -> tuple[str, str, str | None]:
@@ -1376,22 +1575,12 @@ def _apply_roundtrip_slide_overlay(
             "Round-trip slide overlay requires source and generated p:spTree"
         )
 
-    source_shapes: dict[str, ET.Element] = {}
-    source_descendant_ids: dict[str, set[str]] = {}
-    for child in source_tree:
-        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
-            continue
-        shape_id = _shape_id(child)
-        if not shape_id:
-            raise TemplateStructureError(
-                "Round-trip source slide contains a top-level shape without id"
-            )
-        if shape_id in source_shapes:
-            raise TemplateStructureError(
-                f"Round-trip source slide repeats top-level shape id {shape_id}"
-            )
-        source_shapes[shape_id] = child
-        source_descendant_ids[shape_id] = _shape_ids_in_element(child)
+    (
+        source_shapes,
+        source_descendant_ids,
+        source_key_by_element,
+        all_source_shapes,
+    ) = _roundtrip_source_shape_roster(source_tree)
 
     generated_order: list[str] = []
     generated_shapes: dict[str, ET.Element] = {}
@@ -1424,11 +1613,19 @@ def _apply_roundtrip_slide_overlay(
     source_ref_ids = _slide_ref_shape_ids(patch.source_ref_ids)
     edited_ids = _slide_ref_shape_ids(patch.edited_ref_ids)
     deleted_ids = _slide_ref_shape_ids(patch.deleted_ref_ids)
+    unchanged_ids = source_ref_ids - edited_ids - deleted_ids
     affected_top_ids = {
         shape_id
         for shape_id, descendant_ids in source_descendant_ids.items()
         if descendant_ids & (edited_ids | deleted_ids)
     }
+    nested_restore_ids = _roundtrip_nested_restore_ids(
+        source_shapes,
+        source_key_by_element,
+        affected_top_ids,
+        unchanged_ids,
+        deleted_ids,
+    )
     authored_top_ids = {
         shape_id
         for shape_id in source_shapes
@@ -1480,7 +1677,7 @@ def _apply_roundtrip_slide_overlay(
     if missing_authored:
         raise TemplateStructureError(
             "Edited round-trip source object did not produce a DrawingML shape: "
-            + ", ".join(sorted(missing_authored, key=int))
+            + ", ".join(sorted(missing_authored, key=_roundtrip_shape_sort_key))
         )
 
     selected_by_id: dict[str, tuple[ET.Element, bool]] = {}
@@ -1502,7 +1699,11 @@ def _apply_roundtrip_slide_overlay(
     merged_children: list[tuple[ET.Element, bool]] = []
     final_authored_slot = 0
     for child in list(source_tree):
-        shape_id = _shape_id(child) if child.tag in _TOP_LEVEL_SHAPE_TAGS else None
+        shape_id = (
+            source_key_by_element.get(id(child))
+            if child.tag in _TOP_LEVEL_SHAPE_TAGS
+            else None
+        )
         if shape_id not in authored_top_ids:
             merged_children.append((child, False))
             continue
@@ -1555,6 +1756,12 @@ def _apply_roundtrip_slide_overlay(
         generated_rels_path,
         generated_root,
         required_generated_relationship_ids,
+    )
+    _restore_roundtrip_nested_source_shapes(
+        generated_nodes,
+        all_source_shapes,
+        nested_restore_ids,
+        traced_ids,
     )
     if patch.transition_changed or patch.animation_changed:
         _replace_roundtrip_motion(
@@ -1646,16 +1853,16 @@ def _apply_slide_notes(
     primary_language: str | None,
     *,
     enable_notes: bool,
-) -> bool:
-    """Replace one slide's notes relationship and return whether notes were added."""
+) -> _NotesMasterReference | None:
+    """Replace one slide's notes relationship and return its notes master."""
     _remove_relationships_by_type(rels_path, NOTES_SLIDE_REL_TYPE)
     if not enable_notes:
-        return False
+        return None
     notes_text = markdown_to_plain_text(notes_content) if notes_content else ''
     if not notes_text:
-        return False
+        return None
 
-    _ensure_notes_master(extract_dir, primary_language)
+    notes_master = _ensure_notes_master(extract_dir, primary_language)
     notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
     notes_slides_dir.mkdir(exist_ok=True)
     notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
@@ -1667,7 +1874,10 @@ def _apply_slide_notes(
     notes_rels_dir.mkdir(exist_ok=True)
     notes_rels_path = notes_rels_dir / f'notesSlide{slide_num}.xml.rels'
     notes_rels_path.write_text(
-        create_notes_slide_rels_xml(slide_num),
+        create_notes_slide_rels_xml(
+            slide_num,
+            posixpath.relpath(notes_master.package_part, 'ppt/notesSlides'),
+        ),
         encoding='utf-8',
     )
     _ensure_relationship(
@@ -1675,16 +1885,16 @@ def _apply_slide_notes(
         NOTES_SLIDE_REL_TYPE,
         f'../notesSlides/notesSlide{slide_num}.xml',
     )
-    return True
+    return notes_master
 
 
 def _roundtrip_resource_payloads(
     resource_root: Path | None,
     resources: tuple[WorkspaceResourceSpec, ...],
 ) -> dict[str, bytes]:
-    """Read validated materialized round-trip resources by package part."""
-    materialized = [resource for resource in resources if resource.materialized]
-    if not materialized:
+    """Read changed, validated round-trip resources by package part."""
+    changed = [resource for resource in resources if resource.changed]
+    if not changed:
         return {}
     if resource_root is None:
         raise TemplateStructureError(
@@ -1692,7 +1902,7 @@ def _roundtrip_resource_payloads(
         )
     workspace = resource_root.resolve()
     payloads: dict[str, bytes] = {}
-    for resource in materialized:
+    for resource in changed:
         source = (workspace / resource.workspace_path).resolve()
         try:
             source.relative_to(workspace)
@@ -1706,7 +1916,14 @@ def _roundtrip_resource_payloads(
                 "Materialized round-trip resource is missing: "
                 f"{resource.workspace_path.as_posix()}"
             )
-        payloads[resource.package_part] = source.read_bytes()
+        payload = source.read_bytes()
+        current_sha256 = hashlib.sha256(payload).hexdigest()
+        if current_sha256 != resource.current_sha256:
+            raise TemplateStructureError(
+                "Round-trip resource changed after validation: "
+                f"{resource.workspace_path.as_posix()}"
+            )
+        payloads[resource.package_part] = payload
     return payloads
 
 
@@ -1715,7 +1932,7 @@ def _reinject_roundtrip_resources(
     resource_root: Path | None,
     resources: tuple[WorkspaceResourceSpec, ...],
 ) -> int:
-    """Write semantic resource bytes back to their exact source package parts."""
+    """Write changed resource bytes back to their exact source package parts."""
     payloads = _roundtrip_resource_payloads(resource_root, resources)
     written = 0
     for package_part, payload in payloads.items():
@@ -4917,72 +5134,246 @@ def _relax_output_permissions(output_path: Path) -> list[str]:
 _NOTES_MASTER_REL_TYPE = (
     'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster'
 )
+_NOTES_MASTER_CONTENT_TYPE = (
+    'application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml'
+)
+
+
+def _content_type_overrides(extract_dir: Path) -> dict[str, str]:
+    """Return package part content-type overrides keyed without a leading slash."""
+    content_types_path = extract_dir / '[Content_Types].xml'
+    try:
+        root = ET.parse(content_types_path).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise RuntimeError(
+            f'Cannot read package content types: {content_types_path}'
+        ) from exc
+    overrides: dict[str, str] = {}
+    for child in root:
+        if child.tag.rsplit('}', 1)[-1] != 'Override':
+            continue
+        part_name = child.get('PartName', '').lstrip('/')
+        content_type = child.get('ContentType', '')
+        if part_name:
+            overrides[part_name] = content_type
+    return overrides
+
+
+def _notes_master_part_from_target(target: str) -> str | None:
+    """Resolve one presentation relationship target to a notes-master part."""
+    part_name = _resolve_package_target(
+        'ppt/presentation.xml',
+        target,
+    ).lstrip('/')
+    prefix = 'ppt/notesMasters/'
+    if not part_name.startswith(prefix) or part_name == prefix:
+        return None
+    return part_name
+
+
+def _validate_notes_master_part(
+    extract_dir: Path,
+    part_name: str,
+    content_types: dict[str, str],
+) -> str:
+    """Validate one existing notes-master package part and return its name."""
+    normalized = posixpath.normpath(part_name.lstrip('/'))
+    if not normalized.startswith('ppt/notesMasters/'):
+        raise RuntimeError(
+            f'Notes master resolves outside ppt/notesMasters: {part_name}'
+        )
+    part_path = extract_dir / PurePosixPath(normalized)
+    if not part_path.is_file():
+        raise RuntimeError(f'Notes master part is missing: {normalized}')
+    try:
+        root = ET.parse(part_path).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise RuntimeError(f'Cannot parse notes master part: {normalized}') from exc
+    if root.tag != f'{{{PML_NS}}}notesMaster':
+        raise RuntimeError(f'Notes master part has an invalid root: {normalized}')
+    declared_type = content_types.get(normalized)
+    if declared_type is not None and declared_type != _NOTES_MASTER_CONTENT_TYPE:
+        raise RuntimeError(
+            'Notes master content type mismatch for '
+            f'{normalized}: {declared_type}'
+        )
+    return normalized
+
+
+def _register_notes_master_id(
+    presentation_path: Path,
+    relationship_id: str,
+) -> None:
+    """Register a notes-master relationship in presentation.xml by XML identity."""
+    try:
+        tree = ET.parse(presentation_path)
+    except (OSError, ET.ParseError) as exc:
+        raise RuntimeError(
+            f'Cannot parse presentation package part: {presentation_path}'
+        ) from exc
+    root = tree.getroot()
+    list_tag = f'{{{PML_NS}}}notesMasterIdLst'
+    id_tag = f'{{{PML_NS}}}notesMasterId'
+    relationship_attr = f'{{{REL_NS}}}id'
+    notes_master_list = root.find(list_tag)
+    if notes_master_list is not None:
+        if any(
+            child.tag == id_tag
+            and child.get(relationship_attr) == relationship_id
+            for child in notes_master_list
+        ):
+            return
+    else:
+        slide_master_list = root.find(f'{{{PML_NS}}}sldMasterIdLst')
+        if slide_master_list is None:
+            raise RuntimeError(
+                'presentation.xml is missing p:sldMasterIdLst'
+            )
+        notes_master_list = ET.Element(list_tag)
+        insert_at = list(root).index(slide_master_list) + 1
+        root.insert(insert_at, notes_master_list)
+    ET.SubElement(
+        notes_master_list,
+        id_tag,
+        {relationship_attr: relationship_id},
+    )
+    _write_xml_tree(presentation_path, tree)
 
 
 def _ensure_notes_master(
     extract_dir: Path,
     primary_language: str | None = None,
-) -> None:
-    """Create notesMaster parts and wire them into the presentation package."""
+) -> _NotesMasterReference:
+    """Reuse or create a notes master and wire it into the presentation package."""
     ppt_dir = extract_dir / 'ppt'
     notes_masters_dir = ppt_dir / 'notesMasters'
     notes_masters_dir.mkdir(exist_ok=True)
+    presentation_rels_path = ppt_dir / '_rels' / 'presentation.xml.rels'
+    presentation_path = ppt_dir / 'presentation.xml'
+    content_types = _content_type_overrides(extract_dir)
+    relationships = _read_relationships(presentation_rels_path)
 
-    notes_master_path = notes_masters_dir / 'notesMaster1.xml'
-    if not notes_master_path.exists():
+    try:
+        presentation_root = ET.parse(presentation_path).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise RuntimeError(
+            f'Cannot parse presentation package part: {presentation_path}'
+        ) from exc
+    relationship_attr = f'{{{REL_NS}}}id'
+    referenced_ids = [
+        elem.get(relationship_attr, '')
+        for elem in presentation_root.findall(
+            f'./{{{PML_NS}}}notesMasterIdLst/{{{PML_NS}}}notesMasterId'
+        )
+    ]
+    notes_relationship_ids = [
+        rel_id
+        for rel_id, attrs in relationships.items()
+        if attrs.get('Type') == _NOTES_MASTER_REL_TYPE
+        and attrs.get('TargetMode') != 'External'
+    ]
+    ordered_relationship_ids = list(
+        dict.fromkeys(referenced_ids + notes_relationship_ids)
+    )
+    relationship_id_by_part: dict[str, str] = {}
+    selected_part: str | None = None
+    selected_rid: str | None = None
+    for rel_id in ordered_relationship_ids:
+        attrs = relationships.get(rel_id)
+        if (
+            not attrs
+            or attrs.get('Type') != _NOTES_MASTER_REL_TYPE
+            or attrs.get('TargetMode') == 'External'
+        ):
+            continue
+        target = attrs.get('Target', '')
+        part_name = _notes_master_part_from_target(target)
+        if part_name is None:
+            raise RuntimeError(
+                f'Notes master relationship {rel_id} has an invalid target: {target}'
+            )
+        part_name = _validate_notes_master_part(
+            extract_dir,
+            part_name,
+            content_types,
+        )
+        relationship_id_by_part.setdefault(part_name, rel_id)
+        if selected_part is None:
+            selected_part = part_name
+            selected_rid = rel_id
+
+    if selected_part is None:
+        for part_name, content_type in sorted(content_types.items()):
+            if content_type != _NOTES_MASTER_CONTENT_TYPE:
+                continue
+            selected_part = _validate_notes_master_part(
+                extract_dir,
+                part_name,
+                content_types,
+            )
+            selected_rid = relationship_id_by_part.get(selected_part)
+            break
+
+    created_theme_part: str | None = None
+    if selected_part is None:
+        occupied_parts = set(content_types)
+        occupied_parts.update(
+            part_name
+            for attrs in relationships.values()
+            if attrs.get('Type') == _NOTES_MASTER_REL_TYPE
+            and (part_name := _notes_master_part_from_target(
+                attrs.get('Target', '')
+            )) is not None
+        )
+        index = 1
+        while True:
+            selected_part = f'ppt/notesMasters/notesMaster{index}.xml'
+            if (
+                selected_part not in occupied_parts
+                and not (extract_dir / selected_part).exists()
+            ):
+                break
+            index += 1
+        notes_master_path = extract_dir / selected_part
         notes_master_path.write_text(
             create_notes_master_xml(primary_language),
             encoding='utf-8',
         )
 
-    theme_dir = ppt_dir / 'theme'
-    theme_dir.mkdir(exist_ok=True)
-    theme1_path = theme_dir / 'theme1.xml'
-    theme2_path = theme_dir / 'theme2.xml'
-    if not theme2_path.exists():
-        if theme1_path.exists():
-            shutil.copy2(theme1_path, theme2_path)
-        else:
-            raise RuntimeError('Cannot create notes theme: ppt/theme/theme1.xml is missing')
+        theme_dir = ppt_dir / 'theme'
+        theme_dir.mkdir(exist_ok=True)
+        theme1_path = theme_dir / 'theme1.xml'
+        theme2_path = theme_dir / 'theme2.xml'
+        if not theme2_path.exists():
+            if theme1_path.exists():
+                shutil.copy2(theme1_path, theme2_path)
+            else:
+                raise RuntimeError(
+                    'Cannot create notes theme: ppt/theme/theme1.xml is missing'
+                )
+        created_theme_part = 'ppt/theme/theme2.xml'
 
-    notes_master_rels_dir = notes_masters_dir / '_rels'
-    notes_master_rels_dir.mkdir(exist_ok=True)
-    notes_master_rels_path = notes_master_rels_dir / 'notesMaster1.xml.rels'
-    if not notes_master_rels_path.exists():
+        notes_master_rels_path = _relationships_path_for_part(
+            extract_dir,
+            selected_part,
+        )
+        notes_master_rels_path.parent.mkdir(parents=True, exist_ok=True)
         notes_master_rels_path.write_text(
             create_notes_master_rels_xml(),
             encoding='utf-8',
         )
 
-    presentation_rels_path = ppt_dir / '_rels' / 'presentation.xml.rels'
-    notes_master_rid = _find_relationship_id(
-        presentation_rels_path,
-        _NOTES_MASTER_REL_TYPE,
-        'notesMasters/notesMaster1.xml',
-    )
-    if notes_master_rid is None:
-        notes_master_rid = _append_relationship(
+    if selected_rid is None:
+        selected_rid = _append_relationship(
             presentation_rels_path,
             _NOTES_MASTER_REL_TYPE,
-            'notesMasters/notesMaster1.xml',
+            posixpath.relpath(selected_part, 'ppt'),
         )
-
-    presentation_path = ppt_dir / 'presentation.xml'
-    presentation_xml = presentation_path.read_text(encoding='utf-8')
-    if '<p:notesMasterIdLst>' in presentation_xml:
-        return
-    notes_master_lst = (
-        f'<p:notesMasterIdLst><p:notesMasterId r:id="{notes_master_rid}"/>'
-        '</p:notesMasterIdLst>'
+    _register_notes_master_id(presentation_path, selected_rid)
+    return _NotesMasterReference(
+        package_part=selected_part,
+        created_theme_part=created_theme_part,
     )
-    if '</p:sldMasterIdLst>' not in presentation_xml:
-        raise RuntimeError('presentation.xml is missing p:sldMasterIdLst')
-    presentation_xml = presentation_xml.replace(
-        '</p:sldMasterIdLst>',
-        '</p:sldMasterIdLst>' + notes_master_lst,
-        1,
-    )
-    presentation_path.write_text(presentation_xml, encoding='utf-8')
 
 
 def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dict[str, Any]:
@@ -6538,6 +6929,8 @@ def create_pptx_with_native_svg(
         package_exts_used: set[str] = set()
         package_content_overrides: dict[str, str] = {}
         notes_slides_created: set[int] = set()
+        notes_master_parts_used: set[str] = set()
+        notes_master_theme_parts_created: set[str] = set()
         narration_slides_created: set[int] = set()
         audio_exts_used: set[str] = set()
         package_uses_timings = False
@@ -6704,15 +7097,23 @@ def create_pptx_with_native_svg(
                             notes_content = (
                                 notes.get(svg_path.stem, '') if notes else ''
                             )
-                            if _apply_slide_notes(
+                            notes_master = _apply_slide_notes(
                                 extract_dir,
                                 rels_path,
                                 slide_num,
                                 notes_content,
                                 primary_language,
                                 enable_notes=enable_notes,
-                            ):
+                            )
+                            if notes_master is not None:
                                 notes_slides_created.add(slide_num)
+                                notes_master_parts_used.add(
+                                    notes_master.package_part
+                                )
+                                if notes_master.created_theme_part is not None:
+                                    notes_master_theme_parts_created.add(
+                                        notes_master.created_theme_part
+                                    )
                         if verbose:
                             print(
                                 f"  {progress_label} {svg_path.name} "
@@ -6729,7 +7130,7 @@ def create_pptx_with_native_svg(
                     notes_content = (
                         notes.get(svg_path.stem, '') if notes else ''
                     )
-                    notes_added = _apply_slide_notes(
+                    notes_master = _apply_slide_notes(
                         extract_dir,
                         rels_path,
                         slide_num,
@@ -6737,8 +7138,13 @@ def create_pptx_with_native_svg(
                         primary_language,
                         enable_notes=enable_notes,
                     )
-                    if notes_added:
+                    if notes_master is not None:
                         notes_slides_created.add(slide_num)
+                        notes_master_parts_used.add(notes_master.package_part)
+                        if notes_master.created_theme_part is not None:
+                            notes_master_theme_parts_created.add(
+                                notes_master.created_theme_part
+                            )
                     if verbose:
                         print(
                             f"  {progress_label} {svg_path.name} "
@@ -7235,15 +7641,21 @@ def create_pptx_with_native_svg(
                     notes_content = (
                         notes.get(svg_path.stem, '') if notes else ''
                     )
-                    if _apply_slide_notes(
+                    notes_master = _apply_slide_notes(
                         extract_dir,
                         rels_path,
                         slide_num,
                         notes_content,
                         primary_language,
                         enable_notes=enable_notes,
-                    ):
+                    )
+                    if notes_master is not None:
                         notes_slides_created.add(slide_num)
+                        notes_master_parts_used.add(notes_master.package_part)
+                        if notes_master.created_theme_part is not None:
+                            notes_master_theme_parts_created.add(
+                                notes_master.created_theme_part
+                            )
 
                 # --- Process narration audio (shared between native and legacy mode) ---
                 svg_stem = svg_path.stem
@@ -7650,17 +8062,18 @@ def create_pptx_with_native_svg(
 
         # Add notes master / slides content types
         if enable_notes and notes_slides_created:
-            content_types = _add_content_type_override(
-                content_types,
-                '/ppt/theme/theme2.xml',
-                'application/vnd.openxmlformats-officedocument.theme+xml',
-            )
-            content_types = _add_content_type_override(
-                content_types,
-                '/ppt/notesMasters/notesMaster1.xml',
-                'application/vnd.openxmlformats-officedocument.presentationml.'
-                'notesMaster+xml',
-            )
+            for part_name in sorted(notes_master_theme_parts_created):
+                content_types = _add_content_type_override(
+                    content_types,
+                    part_name,
+                    THEME_CONTENT_TYPE,
+                )
+            for part_name in sorted(notes_master_parts_used):
+                content_types = _add_content_type_override(
+                    content_types,
+                    part_name,
+                    _NOTES_MASTER_CONTENT_TYPE,
+                )
             for i in sorted(notes_slides_created):
                 content_types = _add_content_type_override(
                     content_types,

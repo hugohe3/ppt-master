@@ -69,6 +69,14 @@ from svg_authoring_contract import (
     canonical_authoring_errors,
     normalize_compact_authoring_tree,
 )
+from svg_to_pptx.drawingml.context import IDENTITY_MATRIX
+from svg_to_pptx.drawingml.utils import (
+    INHERITABLE_ATTRS,
+    matrix_multiply,
+    parse_inline_style,
+    parse_opacity,
+    parse_transform_matrix,
+)
 
 configure_utf8_stdio()
 
@@ -81,6 +89,9 @@ AUTHORING_SUMMARY_SCHEMA = "ppt-master.svg-authoring-summary.v1"
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
 SOURCE_PROXY_ATTRIBUTE = "data-pptx-source-proxy"
 SOURCE_PROXY_KIND = "native-restore"
+EXTERNAL_LINKED_IMAGE_PROXY_ATTRIBUTE = (
+    "data-pptx-external-linked-image-proxy"
+)
 SEMANTIC_OBJECT_ATTRIBUTE = "data-pptx-semantic-object"
 SEMANTIC_SHAPE_KIND = "shape"
 SEMANTIC_TABLE_KIND = "table"
@@ -177,6 +188,7 @@ _TSPAN_INHERITED_ATTRIBUTES = frozenset({
     "text-anchor",
     "text-decoration",
 })
+_ADOPT_INHERITED_ATTRIBUTES = tuple(INHERITABLE_ATTRS)
 
 # Compact native-shape intent is intentionally not in the removal set:
 # data-pptx-object, data-pptx-prst, and data-pptx-frame remain useful while
@@ -1159,6 +1171,7 @@ def _source_proxy_element(
         "id",
         "data-pptx-object",
         "data-pptx-frame",
+        EXTERNAL_LINKED_IMAGE_PROXY_ATTRIBUTE,
         "data-pptx-prst",
         "data-pptx-av-adj",
         "data-pptx-av-adj1",
@@ -1315,10 +1328,16 @@ def _externalize_large_source_objects(
         }:
             continue
         original_bytes = len(_serialize_svg(element))
+        forced_source_proxy = (
+            element.get(SOURCE_PROXY_ATTRIBUTE) == SOURCE_PROXY_KIND
+        )
         if (
-            original_bytes < SOURCE_PROXY_MIN_BYTES
-            or _contains_authoring_semantics(element)
-            or _prefer_editable_vector_asset(element)
+            not forced_source_proxy
+            and (
+                original_bytes < SOURCE_PROXY_MIN_BYTES
+                or _contains_authoring_semantics(element)
+                or _prefer_editable_vector_asset(element)
+            )
         ):
             continue
         source_ref = element.get(SOURCE_REF_ATTRIBUTE)
@@ -1843,6 +1862,150 @@ def _parse_authoring_svg(path: Path) -> ET.Element:
     return root
 
 
+def _element_chain(
+    root: ET.Element,
+    element: ET.Element,
+) -> tuple[ET.Element, ...]:
+    """Return the root-to-element ancestry chain."""
+    parent_by_child = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    chain = [element]
+    while chain[-1] is not root:
+        parent = parent_by_child.get(chain[-1])
+        if parent is None:
+            raise ValueError("Adopted element is detached from its source SVG")
+        chain.append(parent)
+    return tuple(reversed(chain))
+
+
+def _local_inherited_presentation(element: ET.Element) -> dict[str, str]:
+    """Resolve supported local presentation attributes with CSS precedence."""
+    values = {
+        name: value
+        for name in _ADOPT_INHERITED_ATTRIBUTES
+        if (value := element.get(name)) is not None
+    }
+    values.update({
+        name: value
+        for name, value in parse_inline_style(element.get("style")).items()
+        if name in _ADOPT_INHERITED_ATTRIBUTES
+    })
+    return values
+
+
+def _local_opacity(element: ET.Element) -> str | None:
+    inline = parse_inline_style(element.get("style"))
+    return inline.get("opacity") or element.get("opacity")
+
+
+def _set_explicit_presentation(
+    element: ET.Element,
+    name: str,
+    value: str,
+) -> None:
+    """Write one resolved style as an attribute, removing its inline shadow."""
+    inline = parse_inline_style(element.get("style"))
+    if name in inline:
+        inline.pop(name)
+        if inline:
+            element.set(
+                "style",
+                "; ".join(
+                    f"{property_name}: {property_value}"
+                    for property_name, property_value in inline.items()
+                ),
+            )
+        else:
+            element.attrib.pop("style", None)
+    element.set(name, value)
+
+
+def _format_transform_number(value: float) -> str:
+    if math.isclose(value, 0.0, abs_tol=1e-12):
+        value = 0.0
+    return f"{value:.12g}"
+
+
+def _materialize_adopted_context(
+    source_root: ET.Element,
+    source_element: ET.Element,
+    target_root: ET.Element,
+    adopted: ET.Element,
+) -> tuple[tuple[str, ...], bool]:
+    """Carry source ancestry style and transforms onto an adopted object."""
+    chain = _element_chain(source_root, source_element)
+    effective: dict[str, str] = {}
+    for ancestor in chain:
+        effective.update(_local_inherited_presentation(ancestor))
+    target_defaults = _local_inherited_presentation(target_root)
+    materialized: list[str] = []
+    for name, value in effective.items():
+        if target_defaults.get(name) == value:
+            continue
+        _set_explicit_presentation(adopted, name, value)
+        materialized.append(name)
+
+    source_opacity = 1.0
+    source_has_opacity = False
+    try:
+        for ancestor in chain:
+            raw_opacity = _local_opacity(ancestor)
+            if raw_opacity is None:
+                continue
+            source_has_opacity = True
+            source_opacity *= parse_opacity(
+                raw_opacity,
+                allow_percentage=True,
+            )
+        target_raw_opacity = _local_opacity(target_root)
+        target_opacity = parse_opacity(
+            target_raw_opacity,
+            allow_percentage=True,
+        )
+    except ValueError as exc:
+        raise ValueError(f"Cannot resolve adopted object opacity: {exc}") from exc
+    if (
+        (source_has_opacity or target_raw_opacity is not None)
+        and not math.isclose(source_opacity, target_opacity, abs_tol=1e-12)
+    ):
+        _set_explicit_presentation(
+            adopted,
+            "opacity",
+            _format_transform_number(source_opacity),
+        )
+        materialized.append("opacity")
+
+    ancestor_transform_composed = any(
+        (ancestor.get("transform") or "").strip()
+        for ancestor in chain[:-1]
+    )
+    if ancestor_transform_composed:
+        matrix = IDENTITY_MATRIX
+        try:
+            for ancestor in chain:
+                raw_transform = ancestor.get("transform")
+                if raw_transform:
+                    matrix = matrix_multiply(
+                        matrix,
+                        parse_transform_matrix(raw_transform),
+                    )
+        except ValueError as exc:
+            raise ValueError(
+                f"Cannot compose adopted object ancestor transform: {exc}"
+            ) from exc
+        adopted.set(
+            "transform",
+            "matrix(" + " ".join(
+                _format_transform_number(value)
+                for value in matrix
+            ) + ")",
+        )
+    return tuple(sorted(materialized)), ancestor_transform_composed
+
+
 def _rewrite_adopted_fragment_ids(
     element: ET.Element,
     target_ids: set[str],
@@ -1902,9 +2065,17 @@ def _adopted_definition_clones(
     source_element: ET.Element,
 ) -> list[ET.Element]:
     """Copy the transitive source definitions referenced by one adopted object."""
+    context_elements = [source_element]
+    for ancestor in _element_chain(source_root, source_element)[:-1]:
+        context = ET.Element(ancestor.tag)
+        for name in (*_ADOPT_INHERITED_ATTRIBUTES, "opacity", "style"):
+            value = ancestor.get(name)
+            if value is not None:
+                context.set(name, value)
+        context_elements.append(context)
     definitions, selected_owners = _definition_closure(
         source_root,
-        [source_element],
+        context_elements,
     )
     return [
         copy.deepcopy(child)
@@ -2124,6 +2295,14 @@ def adopt_authoring_object(
             + ", ".join(residual_imports)
         )
 
+    inherited_attributes, ancestor_transform_composed = (
+        _materialize_adopted_context(
+            source_root,
+            source_element,
+            target_root,
+            adopted,
+        )
+    )
     stripped, removed_metadata = _strip_adopted_transport(adopted)
     target_ids = {
         item_id
@@ -2177,6 +2356,8 @@ def adopt_authoring_object(
         "renamed_ids": dict(sorted(replacements.items())),
         "copied_definitions": len(adopted_definitions),
         "inlined_imported_vectors": inlined_icons,
+        "inherited_attributes": list(inherited_attributes),
+        "ancestor_transform_composed": ancestor_transform_composed,
         "stripped_attributes": sorted(stripped),
         "removed_native_metadata": removed_metadata,
         "summary": str(summary_path),

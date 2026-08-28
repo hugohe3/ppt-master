@@ -194,6 +194,43 @@ def _resource_slide_indices(
     }
 
 
+def _changed_roundtrip_resource_pages(
+    resources: tuple[WorkspaceResourceSpec, ...],
+    manifest: dict[str, object],
+    pages: tuple[RoundtripPage, ...],
+) -> dict[int, frozenset[str]]:
+    """Map changed materialized resources to every referencing output page."""
+    raw_slides = manifest.get("slides")
+    if not isinstance(raw_slides, list):
+        raise RuntimeError("Round-trip manifest slides must be an array")
+    slide_rows = {
+        int(row["index"]): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get("index"), int)
+    }
+    affected: dict[int, set[str]] = {}
+    for resource in resources:
+        if not resource.changed:
+            continue
+        source_slides = {
+            index
+            for index, row in slide_rows.items()
+            if set(resource.owner_parts) & _roundtrip_slide_parts(
+                row,
+                include_structure=True,
+            )
+        }
+        for page in pages:
+            if page.source_slide in source_slides:
+                affected.setdefault(page.output_index, set()).add(
+                    resource.workspace_path.as_posix()
+                )
+    return {
+        index: frozenset(paths)
+        for index, paths in affected.items()
+    }
+
+
 def _roundtrip_animation_config_for_pages(
     config: dict[str, object],
     pages: tuple[RoundtripPage, ...],
@@ -305,6 +342,7 @@ def _roundtrip_passthrough_candidates(
     *,
     source_dir: str,
     authoring_report: dict[str, object] | None,
+    changed_resource_pages: frozenset[int],
 ) -> set[int]:
     """Return source slides whose visual and editable sidecars are unchanged."""
     manifest = load_roundtrip_manifest(project_path)
@@ -446,6 +484,7 @@ def _roundtrip_passthrough_candidates(
             if not path.is_file() or _path_sha256(path) != expected_sha:
                 candidates.discard(index)
                 break
+    candidates.difference_update(changed_resource_pages)
     return candidates
 
 
@@ -455,6 +494,7 @@ def _roundtrip_slide_patches(
     passthrough_slides: set[int],
     pages: tuple[RoundtripPage, ...],
     *,
+    changed_resource_pages: frozenset[int],
     force_visual_changed: bool,
     force_motion_changed: bool,
     force_transition_changed: bool,
@@ -588,17 +628,22 @@ def _roundtrip_slide_patches(
                 )
             return frozenset(value)
 
+        authoring_visual_changed = (
+            force_visual_changed
+            or int(raw.get("edited_refs") or 0) > 0
+            or int(raw.get("deleted_refs") or 0) > 0
+            or int(raw.get("authored_unreferenced") or 0) > 0
+            or raw.get("defs_changed") is True
+        )
         patches[index] = RoundtripSlidePatch(
             source_ref_ids=_ref_set("source_ref_ids"),
             edited_ref_ids=_ref_set("edited_ref_ids"),
             deleted_ref_ids=_ref_set("deleted_ref_ids"),
             visual_changed=(
-                force_visual_changed
-                or int(raw.get("edited_refs") or 0) > 0
-                or int(raw.get("deleted_refs") or 0) > 0
-                or int(raw.get("authored_unreferenced") or 0) > 0
-                or raw.get("defs_changed") is True
+                authoring_visual_changed
+                or index in changed_resource_pages
             ),
+            authoring_visual_changed=authoring_visual_changed,
             motion_changed=motion_changed,
             transition_changed=transition_changed,
             transition_replaced=transition_replaced,
@@ -609,6 +654,71 @@ def _roundtrip_slide_patches(
             ),
         )
     return patches
+
+
+def _report_roundtrip_omitted_opaque_payloads(
+    project_path: Path,
+    pages: tuple[RoundtripPage, ...],
+) -> None:
+    """Report omitted source slides whose private payloads drop with the page."""
+    manifest = load_roundtrip_manifest(project_path)
+    if manifest is None:
+        return
+    resources = manifest.get("resources")
+    items = resources.get("items") if isinstance(resources, dict) else None
+    raw_slides = manifest.get("slides")
+    if not isinstance(items, list) or not isinstance(raw_slides, list):
+        return
+    slide_rows = {
+        int(row["index"]): row
+        for row in raw_slides
+        if isinstance(row, dict) and isinstance(row.get("index"), int)
+    }
+    kept_source_slides = {page.source_slide for page in pages}
+    omitted_payloads: dict[int, set[str]] = {}
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        kind = item.get("kind")
+        source_parts = item.get("sourceParts")
+        chart_native_payload = (
+            kind == "native-payload"
+            and isinstance(source_parts, list)
+            and bool(source_parts)
+            and all(
+                isinstance(source_part, str)
+                and source_part.startswith("ppt/charts/")
+                for source_part in source_parts
+            )
+        )
+        if chart_native_payload:
+            continue
+        payload_kind = {
+            "audio": "audio",
+            "sound": "audio",
+            "video": "video",
+            "native-payload": "opaque native payload",
+        }.get(kind)
+        if payload_kind is None:
+            continue
+        for index in _resource_slide_indices(
+            item,
+            slide_rows,
+            include_structure=False,
+        ):
+            if index not in kept_source_slides:
+                omitted_payloads.setdefault(index, set()).add(payload_kind)
+    if not omitted_payloads:
+        return
+    details = "; ".join(
+        f"source slide {index}: {', '.join(sorted(kinds))}"
+        for index, kinds in sorted(omitted_payloads.items())
+    )
+    print(
+        "Note: page_plan.json omits source slide(s) whose private payloads "
+        "are dropped with the page: " + details,
+        file=sys.stderr,
+    )
 
 
 def _opaque_roundtrip_slide_dependencies(
@@ -2218,6 +2328,7 @@ Recorded narration:
 
     structure_lock = None
     native_structure_contract = None
+    roundtrip_manifest: dict[str, object] | None = None
     roundtrip_resources: tuple[WorkspaceResourceSpec, ...] = ()
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
@@ -2590,6 +2701,22 @@ Recorded narration:
                 f"{len(set(roundtrip_page_sources or ()))} source slide(s)"
             )
 
+    changed_resources_by_page: dict[int, frozenset[str]] = {}
+    if args.roundtrip:
+        if roundtrip_manifest is None:
+            print("Error: Round-trip manifest is missing", file=sys.stderr)
+            return 1
+        try:
+            changed_resources_by_page = _changed_roundtrip_resource_pages(
+                roundtrip_resources,
+                roundtrip_manifest,
+                roundtrip_pages,
+            )
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+    changed_resource_pages = frozenset(changed_resources_by_page)
+
     roundtrip_passthrough_slides: set[int] = set()
     roundtrip_slide_patches: dict[int, RoundtripSlidePatch] = {}
     roundtrip_passthrough_overridden = any((
@@ -2618,6 +2745,7 @@ Recorded narration:
                 roundtrip_pages,
                 source_dir=args.source or native_source_dir,
                 authoring_report=authoring_roundtrip_report,
+                changed_resource_pages=changed_resource_pages,
             )
         except RuntimeError as exc:
             print(f"Error: {exc}", file=sys.stderr)
@@ -2691,6 +2819,7 @@ Recorded narration:
                 authoring_roundtrip_report,
                 roundtrip_passthrough_slides,
                 roundtrip_pages,
+                changed_resource_pages=changed_resource_pages,
                 force_visual_changed=(
                     args.image_sizing == 'display'
                     or args.text_flow != TEXT_FLOW_PRESERVE
@@ -2705,6 +2834,11 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
         try:
+            if roundtrip_page_plan_present:
+                _report_roundtrip_omitted_opaque_payloads(
+                    project_path.resolve(),
+                    roundtrip_pages,
+                )
             opaque_dependencies = _opaque_roundtrip_slide_dependencies(
                 project_path.resolve()
             )
@@ -2744,7 +2878,7 @@ Recorded narration:
                 for paths in owner_refs.values()
                 for path in paths
             }
-            if patch.visual_changed:
+            if patch.authoring_visual_changed:
                 affected_paths.update(set(dependencies) - mapped_paths)
             if affected_paths:
                 blocked_dependencies[page.output_index] = (

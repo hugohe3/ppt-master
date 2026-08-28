@@ -67,7 +67,7 @@ python3 skills/ppt-master/scripts/pptx_to_svg.py "<source.pptx>" \
 |---|---|---|
 | `authoring-svg-flat/slide_NN.svg` | One compact editable SVG per source slide, in source order | Open only the pages you will edit or need to judge for reuse |
 | `authoring-svg-flat/authoring_summary.json` | Roster plus per-page canvas, text, image, vector, placeholder, source-ref, and source-proxy counts | Read first; plan from it before opening any SVG |
-| `images/`, `icons/imported/`, `audio/`, `video/`, `sounds/` | Source media and imported decorative vectors | Reference from pages; keep names — export resolves hrefs relative to the page and fails on a missing resource |
+| `images/`, `icons/imported/`, `audio/`, `video/`, `sounds/` | Source media and imported decorative vectors | Keep names. Export hashes materialized files; changed bytes rebuild every output page whose source Slide/Layout/Master/notes graph references that package part, and a format mismatch fails export |
 | `notes/slide_NN.md` | Source speaker notes when present | Edit, delete, or add per output page (§6) |
 | `native-payloads/`, `analysis/` | Immutable native backing and tool-owned contracts | Tool-owned; opening them costs context and changes nothing — do not read, edit, or quote |
 | `sources/source.pptx` | Exact source package | Read only through `ppt_to_md.py "<workspace>/sources/source.pptx" -o "<workspace>/validation/source_readback.md"` when you need page text without opening every SVG (notes on unchanged pages, content mapping) |
@@ -111,11 +111,12 @@ Write `page_plan.json` at the workspace root only when the output differs from t
 Only `schema` and `pages` at the root and `source_slide` / `svg` per page are accepted; the exporter rejects any other field.
 
 **Forbidden — plans the exporter refuses** (fail-closed, fix the plan instead of forcing):
-- Omitting a source slide that owns audio, video, or another opaque native payload
 - A same-deck slide jump whose destination is omitted or repeated (include the target exactly once, or remove the link from the page)
 - Unknown, duplicated, or cross-owned `svg` filenames; `source_slide` out of range
 
-**Combining pages**: One output page always has exactly one skeleton — its `source_slide`. To merge several source pages, pick the page whose layout carries the result as the skeleton, then copy the needed elements from the other pages' SVGs into it and delete what the merged page no longer needs. Bring an object across pages only through the adopt command below — never by pasting raw SVG, because source refs are page-local and a pasted object would be mistaken for one of the skeleton's own. The adopted object keeps its visual form but loses its native identity and is rebuilt from SVG, so the combined page counts as `rebuilt`. A source proxy (§3) cannot leave its own page; a merge that needs one keeps that page as the skeleton instead.
+Omitting a source slide deliberately drops the audio, video, or undecodable payloads only that slide owns; export prints a note listing them.
+
+**Combining pages**: One output page always has exactly one skeleton — its `source_slide`. To merge several source pages, pick the page whose layout carries the result as the skeleton, then copy the needed elements from the other pages' SVGs into it and delete what the merged page no longer needs. Bring an object across pages only through the adopt command below — never by pasting raw SVG, because source refs are page-local and a pasted object would be mistaken for one of the skeleton's own. The adopted object keeps its visual form by materializing effective inherited presentation attributes (including `font-family`, `fill`, `opacity`, and CSS-resolved values) and composing ancestor transforms onto the copy. It loses its native identity and is rebuilt from SVG, so the combined page counts as `rebuilt`. A source proxy (§3) cannot leave its own page; a merge that needs one keeps that page as the skeleton instead.
 
 ```bash
 python3 skills/ppt-master/scripts/svg_authoring_view.py \
@@ -234,8 +235,8 @@ Round-trip export summary: output_pages=N passthrough=P cloned_passthrough=C pat
 |---|---|---|
 | `passthrough` | Identity page, original XML and relationships | Referenced pages without a plan and without any notes/motion overlay |
 | `cloned_passthrough` | Planned page, original XML on a cloned part | Referenced pages with a plan and without any overlay |
-| `patched` | Visible XML kept; only notes or motion overlaid | Referenced pages once notes, transitions, animation, or narration flags apply |
-| `rebuilt` | Visible authoring changed | Exactly the pages marked edited in §4.3 — a delivery-only job must show `rebuilt=0` |
+| `patched` | Source shape XML is kept while shape order, notes, transitions, animation, or narration timing may change | Pages with z-order-only edits or package overlays that do not rebuild a source shape |
+| `rebuilt` | Visible authoring or a referenced materialized resource changed | Exactly the pages marked edited in §4.3 plus every output page that references a changed resource — a delivery-only job must show `rebuilt=0` |
 
 **Validation**:
 

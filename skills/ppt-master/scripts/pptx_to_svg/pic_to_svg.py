@@ -74,10 +74,15 @@ class PictureResult:
     # the SVG. Filename is the basename inside the package's media dir.
     media: dict[str, bytes] = field(default_factory=dict)
     diagnostics: tuple[PictureDiagnostic, ...] = ()
+    external_linked: bool = False
 
 
 class MediaResolutionError(RuntimeError):
     """Raised when a PPTX media relationship cannot be reproduced as SVG."""
+
+
+class LinkedImageResolutionError(MediaResolutionError):
+    """Raised when an external linked image has no embedded preview."""
 
 
 def convert_blip_fill(
@@ -103,10 +108,16 @@ def convert_blip_fill(
 
     relationship_ids = blip_embed_relationship_ids(blip)
     linked_rid = blip.attrib.get(f"{{{NS['r']}}}link")
+    linked_relationship = slide_part.rels.get(linked_rid or "", {})
+    external_linked = linked_relationship.get("external") == "1"
     if not relationship_ids:
+        if external_linked:
+            raise LinkedImageResolutionError(
+                "Linked image relationships are not supported; embed the image in PowerPoint first"
+            )
         if linked_rid:
             raise MediaResolutionError(
-                "Linked image relationships are not supported; embed the image in PowerPoint first"
+                "Linked image relationship cannot be resolved; embed the image in PowerPoint first"
             )
         return PictureResult()
 
@@ -130,7 +141,12 @@ def convert_blip_fill(
         break
     if target is None or img_bytes is None:
         details = "; ".join(failures)
-        raise MediaResolutionError(
+        error_type = (
+            LinkedImageResolutionError
+            if external_linked
+            else MediaResolutionError
+        )
+        raise error_type(
             f"No embedded image relationship can be read in {slide_part.path}: {details}"
         )
 
@@ -196,6 +212,7 @@ def convert_blip_fill(
         svg=svg,
         media=media,
         diagnostics=tuple(diagnostics),
+        external_linked=external_linked,
     )
 
 

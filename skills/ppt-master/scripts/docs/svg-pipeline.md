@@ -62,8 +62,8 @@ staging transaction, before the editable bundle first appears:
 
 The live editor expands `data-icon` references for complete-page preview. Read
 an imported vector asset only when editing that decoration. An unchanged asset
-restores its native source objects; editing the asset rebuilds only its owning
-slide as one vector edit unit. A source proxy remains atomic: leave it unchanged
+restores its native source objects; editing the asset rebuilds every slide whose
+placeholder references that vector edit unit. A source proxy remains atomic: leave it unchanged
 to restore the original native PowerPoint object. A complete Slide-local proxy
 may be removed to delete that object; an inherited Master/Layout proxy must
 remain because one flat page cannot delete shared structure. Editing the proxy
@@ -90,9 +90,11 @@ invalid. `svg_to_pptx.py --roundtrip` always reads `authoring-svg-flat/`,
 restores unchanged source refs from `analysis/roundtrip-svg/`, expands imported
 vector edit units from `icons/imported/`, and retains edits/deletions/new
 content without rewriting the bundle. Unchanged slides and resources pass
-through byte-for-byte; an edit rebuilds only its owner. Resource hrefs resolve
-exactly relative to the page or extracted asset and must remain inside the
-workspace.
+through byte-for-byte. A page edit rebuilds that output page; a changed
+materialized or derived resource rebuilds every output page that references it.
+Changed materialized bytes must still match the source package part's extension
+and Content-Type. Resource hrefs resolve exactly relative to the page or
+extracted asset and must remain inside the workspace.
 
 ### Round-trip deck page plans
 
@@ -182,9 +184,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py /path/to/workspace \
 
 Successful round-trip export prints one deck receipt:
 `Round-trip export summary: output_pages=N passthrough=P
-cloned_passthrough=C patched=M rebuilt=R`. `patched` keeps the source visible
-Slide XML and applies only notes or motion overlays; `rebuilt` means the page's
-visible authoring changed.
+cloned_passthrough=C patched=M rebuilt=R`. `patched` keeps source shape XML
+while order, notes, or motion may change; `rebuilt` means visible authoring or
+one of its referenced resources changed.
 Without `-o`, round-trip export names the deck `<workspace-directory-name>_<timestamp>[<flavor-suffix>].pptx` under `exports/`.
 
 Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip`
@@ -861,7 +863,7 @@ Behavior:
   - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
   - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`; `-s <directory>` selects another project-relative SVG source. `-s final` remains an explicit diagnostic comparison against post-processed SVGs and does not change artifact ownership. `--enable-dangerous-nonconforming-svg-export` is a separate, explicitly requested flat compatibility path for either the default or selected source; it forces flat structure, restores no imported source object, and cannot combine with `--roundtrip` or `--quick-generate`.
-- `--roundtrip` accepts only `authoring-svg-flat/` and the source/contracts emitted by `pptx_to_svg.py --roundtrip`; predecessor root sidecars and alternate `-s` inputs fail. It restores unchanged refs from `analysis/roundtrip-svg/`, preserves unchanged Slide XML/relationships and source resources byte-for-byte, and rebuilds only edited owners. Closed unchanged chart packages recover exactly; editing their fallback disables stale replacement. Optional root `page_plan.json` uses the versioned deck-plan contract above; the no-plan path remains the identity export. Explicit `-t <effect>` without `--transition-duration` on a source without transitions uses the default duration.
+- `--roundtrip` accepts only `authoring-svg-flat/` and the source/contracts emitted by `pptx_to_svg.py --roundtrip`; predecessor root sidecars and alternate `-s` inputs fail. It restores unchanged refs from `analysis/roundtrip-svg/`, preserves unchanged Slide XML/relationships and source resources byte-for-byte, rebuilds a page whose authoring changed, and rebuilds every output page that references a changed resource. Closed unchanged chart packages recover exactly; editing their fallback disables stale replacement. Optional root `page_plan.json` uses the versioned deck-plan contract above; the no-plan path remains the identity export. Explicit `-t <effect>` without `--transition-duration` on a source without transitions uses the default duration.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export

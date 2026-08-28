@@ -19,6 +19,7 @@ Dependencies:
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import posixpath
 import re
@@ -95,6 +96,127 @@ _TRANSITION_TAG = (
     "{http://schemas.openxmlformats.org/presentationml/2006/main}transition"
 )
 _REL_ATTR_PREFIX = f"{{{_DOC_REL_NS}}}"
+_CONTENT_TYPES_NS = (
+    "http://schemas.openxmlformats.org/package/2006/content-types"
+)
+_FORMAT_BY_EXTENSION = {
+    ".3mf": frozenset({"3mf"}),
+    ".aac": frozenset({"aac"}),
+    ".aif": frozenset({"aiff"}),
+    ".aiff": frozenset({"aiff"}),
+    ".avif": frozenset({"avif"}),
+    ".avi": frozenset({"avi"}),
+    ".bmp": frozenset({"bmp"}),
+    ".doc": frozenset({"ole"}),
+    ".docm": frozenset({"ooxml-docx"}),
+    ".docx": frozenset({"ooxml-docx"}),
+    ".dotm": frozenset({"ooxml-docx"}),
+    ".dotx": frozenset({"ooxml-docx"}),
+    ".emf": frozenset({"emf"}),
+    ".eps": frozenset({"postscript"}),
+    ".flac": frozenset({"flac"}),
+    ".gif": frozenset({"gif"}),
+    ".glb": frozenset({"glb"}),
+    ".jpeg": frozenset({"jpeg"}),
+    ".jpg": frozenset({"jpeg"}),
+    ".ico": frozenset({"ico"}),
+    ".m4a": frozenset({"iso-bmff"}),
+    ".m4v": frozenset({"iso-bmff"}),
+    ".mkv": frozenset({"ebml"}),
+    ".mov": frozenset({"iso-bmff"}),
+    ".mp3": frozenset({"mp3"}),
+    ".mp4": frozenset({"iso-bmff"}),
+    ".mpeg": frozenset({"mpeg"}),
+    ".mpg": frozenset({"mpeg"}),
+    ".oga": frozenset({"ogg"}),
+    ".ogg": frozenset({"ogg"}),
+    ".png": frozenset({"png"}),
+    ".pdf": frozenset({"pdf"}),
+    ".potm": frozenset({"ooxml-pptx"}),
+    ".potx": frozenset({"ooxml-pptx"}),
+    ".ppt": frozenset({"ole"}),
+    ".pptm": frozenset({"ooxml-pptx"}),
+    ".pptx": frozenset({"ooxml-pptx"}),
+    ".svg": frozenset({"svg"}),
+    ".tif": frozenset({"tiff"}),
+    ".tiff": frozenset({"tiff"}),
+    ".wav": frozenset({"wav"}),
+    ".wdp": frozenset({"wdp"}),
+    ".webm": frozenset({"ebml"}),
+    ".webp": frozenset({"webp"}),
+    ".wma": frozenset({"asf"}),
+    ".wmf": frozenset({"wmf"}),
+    ".wmv": frozenset({"asf"}),
+    ".xls": frozenset({"ole"}),
+    ".xlsb": frozenset({"ooxml-xlsx"}),
+    ".xlsm": frozenset({"ooxml-xlsx"}),
+    ".xlsx": frozenset({"ooxml-xlsx"}),
+    ".xltm": frozenset({"ooxml-xlsx"}),
+    ".xltx": frozenset({"ooxml-xlsx"}),
+}
+_FORMAT_MEDIA_KIND = {
+    "aac": "audio",
+    "aiff": "audio",
+    "asf": "media",
+    "avi": "video",
+    "avif": "image",
+    "bmp": "image",
+    "ebml": "video",
+    "emf": "image",
+    "flac": "audio",
+    "gif": "image",
+    "ico": "image",
+    "iso-bmff": "media",
+    "jpeg": "image",
+    "mp3": "audio",
+    "mpeg": "video",
+    "ogg": "media",
+    "png": "image",
+    "postscript": "image",
+    "svg": "image",
+    "tiff": "image",
+    "wav": "audio",
+    "wdp": "image",
+    "webp": "image",
+    "wmf": "image",
+}
+_FORMAT_BY_CONTENT_TYPE = {
+    "application/pdf": frozenset({"pdf"}),
+    "application/postscript": frozenset({"postscript"}),
+    "application/vnd.ms-3mfdocument": frozenset({"3mf"}),
+    "audio/aac": frozenset({"aac"}),
+    "audio/aiff": frozenset({"aiff"}),
+    "audio/flac": frozenset({"flac"}),
+    "audio/mpeg": frozenset({"mp3"}),
+    "audio/mp4": frozenset({"iso-bmff"}),
+    "audio/ogg": frozenset({"ogg"}),
+    "audio/wav": frozenset({"wav"}),
+    "audio/x-aiff": frozenset({"aiff"}),
+    "audio/x-ms-wma": frozenset({"asf"}),
+    "audio/x-wav": frozenset({"wav"}),
+    "image/avif": frozenset({"avif"}),
+    "image/bmp": frozenset({"bmp"}),
+    "image/gif": frozenset({"gif"}),
+    "image/jpeg": frozenset({"jpeg"}),
+    "image/png": frozenset({"png"}),
+    "image/svg+xml": frozenset({"svg"}),
+    "image/tiff": frozenset({"tiff"}),
+    "image/vnd.ms-photo": frozenset({"wdp"}),
+    "image/vnd.microsoft.icon": frozenset({"ico"}),
+    "image/webp": frozenset({"webp"}),
+    "image/x-eps": frozenset({"postscript"}),
+    "image/x-emf": frozenset({"emf"}),
+    "image/x-icon": frozenset({"ico"}),
+    "image/x-wmf": frozenset({"wmf"}),
+    "model/gltf-binary": frozenset({"glb"}),
+    "video/mp4": frozenset({"iso-bmff"}),
+    "video/mpeg": frozenset({"mpeg"}),
+    "video/quicktime": frozenset({"iso-bmff"}),
+    "video/webm": frozenset({"ebml"}),
+    "video/x-matroska": frozenset({"ebml"}),
+    "video/x-ms-wmv": frozenset({"asf"}),
+    "video/x-msvideo": frozenset({"avi"}),
+}
 
 
 def source_pptx_path(workspace: Path) -> Path:
@@ -146,6 +268,201 @@ def _safe_basename(value: str) -> str:
 
 def _sha256(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def _sniff_zip_format(payload: bytes) -> str | None:
+    """Return the semantic package family for one ZIP payload."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(payload)) as package:
+            names = set(package.namelist())
+    except (OSError, zipfile.BadZipFile):
+        return None
+    if "xl/workbook.xml" in names or "xl/workbook.bin" in names:
+        return "ooxml-xlsx"
+    if "word/document.xml" in names:
+        return "ooxml-docx"
+    if "ppt/presentation.xml" in names:
+        return "ooxml-pptx"
+    if any(name.lower().endswith(".model") for name in names):
+        return "3mf"
+    return "zip"
+
+
+def _sniff_resource_format(payload: bytes) -> str | None:
+    """Identify common PPTX resource formats from their bytes."""
+    header = payload[:64]
+    if header.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "png"
+    if header.startswith(b"\xff\xd8\xff"):
+        return "jpeg"
+    if header.startswith((b"GIF87a", b"GIF89a")):
+        return "gif"
+    if header.startswith(b"BM"):
+        return "bmp"
+    if header.startswith((b"II*\x00", b"MM\x00*", b"II+\x00", b"MM\x00+")):
+        return "tiff"
+    if header.startswith((b"II\xbc\x01", b"MM\x01\xbc")):
+        return "wdp"
+    if len(header) >= 44 and header[40:44] == b" EMF":
+        return "emf"
+    if header.startswith(b"\xd7\xcd\xc6\x9a"):
+        return "wmf"
+    if (
+        len(header) >= 6
+        and header[:2] in {b"\x01\x00", b"\x02\x00"}
+        and header[2:4] == b"\x09\x00"
+    ):
+        return "wmf"
+    if header.startswith(b"\x00\x00\x01\x00"):
+        return "ico"
+    if header.startswith(b"%PDF-"):
+        return "pdf"
+    if header.startswith(b"%!PS-Adobe-"):
+        return "postscript"
+    if len(header) >= 12 and header[:4] in {b"RIFF", b"RF64"}:
+        form = header[8:12]
+        if form == b"WAVE":
+            return "wav"
+        if form == b"AVI ":
+            return "avi"
+        if form == b"WEBP":
+            return "webp"
+    if header.startswith(b"FORM") and header[8:12] in {b"AIFF", b"AIFC"}:
+        return "aiff"
+    if header.startswith(b"fLaC"):
+        return "flac"
+    if header.startswith(b"OggS"):
+        return "ogg"
+    if header.startswith(b"ID3") or (
+        len(header) >= 2
+        and header[0] == 0xFF
+        and header[1] & 0xE0 == 0xE0
+        and header[1] & 0x06 != 0
+    ):
+        return "mp3"
+    if (
+        len(header) >= 2
+        and header[0] == 0xFF
+        and header[1] & 0xF6 == 0xF0
+    ):
+        return "aac"
+    if header.startswith(b"\x30\x26\xb2\x75\x8e\x66\xcf\x11"):
+        return "asf"
+    if header.startswith(b"\x1aE\xdf\xa3"):
+        return "ebml"
+    if header.startswith(b"glTF"):
+        return "glb"
+    if len(header) >= 12 and header[4:8] == b"ftyp":
+        box_size = int.from_bytes(header[:4], "big")
+        brands = {
+            header[offset:offset + 4]
+            for offset in range(8, min(len(header), box_size or len(header)), 4)
+        }
+        if brands & {b"avif", b"avis"}:
+            return "avif"
+        return "iso-bmff"
+    if header.startswith((b"\x00\x00\x01\xba", b"\x00\x00\x01\xb3")):
+        return "mpeg"
+    if header.startswith(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"):
+        return "ole"
+    if header.startswith(b"PK"):
+        return _sniff_zip_format(payload)
+    try:
+        root = ET.fromstring(payload)
+    except ET.ParseError:
+        return None
+    if root.tag == "svg" or root.tag.endswith("}svg"):
+        return "svg"
+    return None
+
+
+def _package_content_types(
+    package: zipfile.ZipFile,
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Read Default and Override declarations from a PPTX package."""
+    try:
+        root = ET.fromstring(package.read("[Content_Types].xml"))
+    except (KeyError, ET.ParseError) as exc:
+        raise RuntimeError(
+            "Round-trip source PPTX has an invalid [Content_Types].xml"
+        ) from exc
+    defaults = {
+        str(item.get("Extension", "")).lower(): str(item.get("ContentType", ""))
+        for item in root.findall(f"{{{_CONTENT_TYPES_NS}}}Default")
+        if item.get("Extension") and item.get("ContentType")
+    }
+    overrides = {
+        str(item.get("PartName", "")).lstrip("/"): str(
+            item.get("ContentType", "")
+        )
+        for item in root.findall(f"{{{_CONTENT_TYPES_NS}}}Override")
+        if item.get("PartName") and item.get("ContentType")
+    }
+    return defaults, overrides
+
+
+def _expected_content_type_formats(content_type: str) -> frozenset[str]:
+    normalized = content_type.partition(";")[0].strip().lower()
+    known = _FORMAT_BY_CONTENT_TYPE.get(normalized)
+    if known is not None:
+        return known
+    if "spreadsheetml" in normalized:
+        return frozenset({"ooxml-xlsx"})
+    if "wordprocessingml" in normalized:
+        return frozenset({"ooxml-docx"})
+    if "presentationml" in normalized:
+        return frozenset({"ooxml-pptx"})
+    return frozenset()
+
+
+def _validate_changed_resource_format(
+    *,
+    spec: WorkspaceResourceSpec,
+    payload: bytes,
+    source_payload: bytes,
+    content_type: str,
+) -> None:
+    """Refuse changed bytes that no longer fit their source package part."""
+    suffix = PurePosixPath(spec.package_part).suffix.lower()
+    actual_format = _sniff_resource_format(payload)
+    source_format = _sniff_resource_format(source_payload)
+    expected_by_extension = _FORMAT_BY_EXTENSION.get(suffix, frozenset())
+    expected_by_content_type = _expected_content_type_formats(content_type)
+    declared_media_kind = content_type.partition("/")[0].lower()
+    actual_media_kind = _FORMAT_MEDIA_KIND.get(actual_format or "")
+    has_declared_expectation = bool(
+        source_format
+        or expected_by_extension
+        or expected_by_content_type
+        or declared_media_kind in {"audio", "image", "video"}
+    )
+    mismatch = actual_format is None or not has_declared_expectation or (
+        actual_format is not None
+        and (
+            (source_format is not None and actual_format != source_format)
+            or (
+                bool(expected_by_extension)
+                and actual_format not in expected_by_extension
+            )
+            or (
+                bool(expected_by_content_type)
+                and actual_format not in expected_by_content_type
+            )
+            or (
+                declared_media_kind in {"audio", "image", "video"}
+                and actual_media_kind not in {declared_media_kind, "media"}
+            )
+        )
+    )
+    if not mismatch:
+        return
+    detected = actual_format or "unrecognized"
+    raise RuntimeError(
+        "Changed round-trip resource format does not match its source part: "
+        f"{spec.workspace_path.as_posix()} is {detected}, but "
+        f"{spec.package_part} uses extension {suffix or '<none>'} and "
+        f"Content-Type {content_type!r}"
+    )
 
 
 def _source_part_for_relationships(rels_path: str) -> str | None:
@@ -258,6 +575,18 @@ class WorkspaceResourceSpec:
     kind: str
     workspace_path: Path
     materialized: bool
+    source_sha256: str
+    current_sha256: str | None
+    owner_parts: tuple[str, ...]
+
+    @property
+    def changed(self) -> bool:
+        """Return whether materialized workspace bytes differ from import."""
+        return (
+            self.materialized
+            and self.current_sha256 is not None
+            and self.current_sha256 != self.source_sha256
+        )
 
 
 def workspace_resource_specs(
@@ -279,6 +608,7 @@ def workspace_resource_specs(
 
     workspace_root = workspace.resolve()
     specs: list[WorkspaceResourceSpec] = []
+    changed_payloads: list[tuple[WorkspaceResourceSpec, bytes]] = []
     seen_package_parts: set[str] = set()
     for index, raw in enumerate(items):
         context = f"round-trip resources.items[{index}]"
@@ -288,6 +618,8 @@ def workspace_resource_specs(
         kind = raw.get("kind")
         workspace_path = raw.get("workspacePath")
         materialized = raw.get("materialized")
+        source_sha256 = raw.get("sha256")
+        raw_owner_parts = raw.get("ownerParts")
         if not isinstance(package_part, str) or not package_part:
             raise RuntimeError(f"{context}.packagePart must be a non-empty string")
         package_path = PurePosixPath(package_part)
@@ -334,13 +666,70 @@ def workspace_resource_specs(
             raise RuntimeError(
                 f"Materialized round-trip resource is missing: {workspace_path}"
             )
-        specs.append(WorkspaceResourceSpec(
+        if (
+            not isinstance(source_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", source_sha256) is None
+        ):
+            raise RuntimeError(f"{context}.sha256 must be a lowercase SHA-256")
+        if not isinstance(raw_owner_parts, list) or not all(
+            isinstance(value, str) and value
+            for value in raw_owner_parts
+        ):
+            raise RuntimeError(f"{context}.ownerParts must be an array of parts")
+        payload = resolved.read_bytes() if materialized else None
+        current_sha256 = _sha256(payload) if payload is not None else None
+        spec = WorkspaceResourceSpec(
             package_part=package_part,
             kind=kind,
             workspace_path=relative,
             materialized=materialized,
-        ))
+            source_sha256=source_sha256,
+            current_sha256=current_sha256,
+            owner_parts=tuple(raw_owner_parts),
+        )
+        specs.append(spec)
+        if payload is not None and spec.changed:
+            changed_payloads.append((spec, payload))
         seen_package_parts.add(package_part)
+
+    if changed_payloads:
+        source_path = source_pptx_path(workspace_root)
+        if not source_path.is_file():
+            raise RuntimeError(
+                "Changed round-trip resources require the preserved source PPTX: "
+                f"{source_path}"
+            )
+        try:
+            with zipfile.ZipFile(source_path) as package:
+                defaults, overrides = _package_content_types(package)
+                names = set(package.namelist())
+                for spec, payload in changed_payloads:
+                    if spec.package_part not in names:
+                        raise RuntimeError(
+                            "Round-trip source package part is missing: "
+                            f"{spec.package_part}"
+                        )
+                    suffix = (
+                        PurePosixPath(spec.package_part).suffix.lstrip(".").lower()
+                    )
+                    content_type = overrides.get(spec.package_part) or defaults.get(
+                        suffix,
+                    )
+                    if not content_type:
+                        raise RuntimeError(
+                            "Round-trip source package part has no Content-Type: "
+                            f"{spec.package_part}"
+                        )
+                    _validate_changed_resource_format(
+                        spec=spec,
+                        payload=payload,
+                        source_payload=package.read(spec.package_part),
+                        content_type=content_type,
+                    )
+        except zipfile.BadZipFile as exc:
+            raise RuntimeError(
+                f"Round-trip source PPTX is not a valid ZIP package: {source_path}"
+            ) from exc
     return tuple(specs)
 
 

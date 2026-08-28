@@ -108,10 +108,18 @@ def _emu_to_px(value: str | None) -> int | None:
 
 
 def _parse_relationships(zf: zipfile.ZipFile) -> dict[str, dict[str, str]]:
-    rels_root = _read_xml(zf, "ppt/_rels/presentation.xml.rels")
+    rels_name = "ppt/_rels/presentation.xml.rels"
+    rels_root = _read_xml(zf, rels_name)
     relationships: dict[str, dict[str, str]] = {}
+    seen_ids: set[str] = set()
     for rel in rels_root.findall(_qn(REL_NS, "Relationship")):
         rel_id = rel.attrib.get("Id")
+        if rel_id:
+            if rel_id in seen_ids:
+                raise RuntimeError(
+                    f"Duplicate relationship Id {rel_id!r} in {rels_name}"
+                )
+            seen_ids.add(rel_id)
         target = rel.attrib.get("Target")
         rel_type = rel.attrib.get("Type")
         if rel_id and target and rel_type:
