@@ -1047,7 +1047,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 120000
+      "max_tokens": 125000
     },
     "stage.generate.executor.chart": {
       "description": "Conditional value-driven chart execution rules.",

@@ -690,7 +690,7 @@ representative line per recurring text role with
 `python3 ${SKILL_DIR}/scripts/text_measure.py measure` and keep "≈ N chars per
 W px" in active context; the final checker's module check adds DrawingML
 wrapping headroom, so characters × font size underestimates by roughly 15%.
-Wrap long paragraphs with `text_measure.py wrap` instead of counting by hand.
+Those per-role constants cover most lines; measure only lines that approach a limit, many at once through `--stdin`, and `wrap` only a genuinely long paragraph.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
 order. Use P01 to calibrate visual identity and cover-specific expression; use
