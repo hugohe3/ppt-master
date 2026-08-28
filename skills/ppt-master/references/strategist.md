@@ -36,7 +36,7 @@ solution + production gate:
 | **1 — communication contract + template choice** | `primary_language` · `c` audience · open-ended communication intent · audience outcome · core message / delivery context (primary + optional secondary) / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas · explicit `free_design` or `templates` choice and selected roots | confirmed together; candidate workspaces do not influence the communication recommendation |
 | **2 — final solution + production** (authored once from the user's *actual* Stage 1) | reading mode (`delivery_purpose`, PPT only) · `d` mode + visual style · `b` page count · `e` color · `f` icon · `g` typography · `h` image source + generated-image rendering · conditional natural-language template application · conditional AI-image acquisition path · generation mode · refine-spec toggle · `design_spec_depth` · proactive speaker notes / custom animations / narration audio | derived as one coherent plan from the confirmed contract; internal template exporter modes remain hidden |
 
-Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, image direction, production mechanics, and how any installed template should be used. It never chooses or installs a template. Inspect only project-local template spec/prototypes, present one editable application plan, and keep exporter reuse/adherence internal. First author exactly three complete, project-fit solution directions from the confirmed contract and source; only then project each direction into mode, visual style, color, type, icons, and generated-image rendering for lower-level adjustment. Every direction projects a project-specific `custom` mode, `custom` visual style, and `custom` generated-image rendering; the fixed catalogs remain conservative lower-level single-select alternatives. Each direction is one complete design authored top-down within the confirmed contract, never assembled bottom-up from catalog picks; three exist so a single recommendation cannot lock the user in, and the fixed catalogs stay the manual lower layer. Its custom projections are unrestricted by catalog relationship and may carry one preset unchanged. The three directions are plainly different designs at the whole-deck level before any field is written; that difference lives in the solutions, not in one designated field. Whichever components a direction's own design requires carry it — mode, visual style, rendering, color, type, or icons — any of them may, and none is required to differ. A different name, note, or reference count alone is not a difference, and projections identical on every component are not three solutions. Do not force safe / shifted / bold archetypes or artificial extremes. After all three bundles are complete, choose the strongest overall fit when no template is installed; with installed template state, choose the viable direction that most strongly expresses its resolved context under [`strategist-template.md`](./strategist-template.md). Write its actual zero-based index as `design_directions.selected` (`0`, `1`, or `2`); array order never determines preference. Every direction carries a complete generated-image rendering candidate even when AI imagery is not recommended; `recommend.image_usage` independently decides whether AI is proposed. Generated images inherit deck colors—there is no second image palette. Proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. `design_spec_depth` defaults to `brief`; `split` mode, `refine_spec: true`, or a preservation profile forces `complete`. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
+Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, image direction, production mechanics, and how any installed template should be used. It never chooses or installs a template. Inspect only project-local template spec/prototypes, present one editable application plan, and keep exporter reuse/adherence internal. First author exactly three complete, project-fit solution directions from the confirmed contract and source with every mode / visual-style / rendering catalog closed; only then project each direction into mode, visual style, color, type, icons, and generated-image rendering for lower-level adjustment. Every direction projects a project-specific `custom` mode, `custom` visual style, and `custom` generated-image rendering; the fixed catalogs remain conservative lower-level single-select alternatives. Each direction is one complete design authored top-down within the confirmed contract, never assembled bottom-up from catalog picks; three exist so a single recommendation cannot lock the user in, and the fixed catalogs stay the manual lower layer. Its custom projections are unrestricted by catalog relationship and may carry one preset unchanged. The three directions are plainly different designs at the whole-deck level before any field is written; that difference lives in the solutions, not in one designated field. Whichever components a direction's own design requires carry it — mode, visual style, rendering, color, type, or icons — any of them may, and none is required to differ. A different name, note, or reference count alone is not a difference, and projections identical on every component are not three solutions. Do not force safe / shifted / bold archetypes or artificial extremes. After all three bundles are complete, choose the strongest overall fit when no template is installed; with installed template state, choose the viable direction that most strongly expresses its resolved context under [`strategist-template.md`](./strategist-template.md). Write its actual zero-based index as `design_directions.selected` (`0`, `1`, or `2`); array order never determines preference. Every direction carries a complete generated-image rendering candidate even when AI imagery is not recommended; `recommend.image_usage` independently decides whether AI is proposed. Generated images inherit deck colors—there is no second image palette. Proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. `design_spec_depth` defaults to `brief`; `split` mode, `refine_spec: true`, or a preservation profile forces `complete`. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
 
 **Default — continuity-aware whole solution (may override when a scene reset communicates better)**: Within active-profile invariants and before recommending page count or production mechanics, judge whether adjacent explanation beats can remain within one recognizable mental map while a visible state changes. Where that choice lowers cognitive switching and motion has a named communication job, let it shape the solution's narrative spine, page rhythm, visual approach, and enabled notes/narration segmentation, and recommend the existing `proactive_custom_animations: true`. This is one positive signal, not the only reason to enable animation; absent it, retain the existing default or other valid evidence. Topic or wording repetition alone is insufficient. A `Motion suggestion` remains optional advice and never changes the effective outcome.
 
@@ -127,11 +127,11 @@ When authoring §IX, translate every purpose named in `communication_intent` int
 
 Two independent layers, each locks one preset or `custom`. Output: `d. Mode: <mode> + Visual style: <visual_style>`.
 
-> **Top-down custom direction construction.** Author three complete solution intents from the confirmed project contract and source before selecting any catalog basis; do not assemble three apparent solutions from independent mode/style/rendering picks. The fixed planning-capability batch may already be in context, but only the three mode/style/rendering indexes act as basis selectors. Use their summaries to freeze the exact reference ids for each direction, then read once only the deduplicated union of those referenced detail files and author the final behaviors. Every direction MUST serialize `mode: custom`, `visual_style: custom`, and `image_strategy.rendering: custom`, each with visible, non-empty behavior prose. `custom` is not constrained by a catalog relationship: it may use catalog material in any way or none, including carrying one exact preset unchanged. References record only actual sources; one may carry the complete preset behavior, while several must each own a distinct executable contribution. Omit every basis whose contribution the behavior cannot state, and never add a decorative second basis. The three whole-deck directions MUST be plainly different designs before any field is written; complete each one's detail, then project that detail onto the fields. No component is the designated proof: whichever ones a direction's design requires carry the difference, any of them may, and mode, style, rendering, catalog bases, color, type, and icons are each free to coincide. A different name, note, or reference count alone is not a difference, and projections identical on every component are not three solutions. Where authoritative truth fixes some components, the remaining open ones carry it; when nothing is open, keep the projections identical and state that boundary instead of inventing a false difference. These three projections are the project-specific choices above the conservative fixed catalogs, not a fourth Custom proposal. Never glob a catalog, read an unselected sibling, or write bespoke prose as an enum value.
+> **Direction before catalog.** Author three complete solutions from the confirmed contract and source while no mode/style/rendering index or detail file is in context: each states its own narrative cadence, shape language, composition geometry, decoration density, typographic character, texture, and generated-image treatment in executable prose drawn from the material. Only then open the three indexes once to map: record a reference where a row genuinely matches what is written, none where nothing does; never rewrite a direction toward a row. Detail files are read only after confirmation, for the selected direction, at Design Spec time. Every direction MUST serialize `mode: custom`, `visual_style: custom`, and `image_strategy.rendering: custom`, each with visible, non-empty behavior prose. `custom` is not constrained by a catalog relationship: it may use catalog material in any way or none, including carrying one exact preset unchanged. References record only actual sources; one may carry the complete preset behavior, while several must each own a distinct executable contribution. Omit every basis whose contribution the behavior cannot state, and never add a decorative second basis. The three whole-deck directions MUST be plainly different designs before any field is written; complete each one's detail, then project that detail onto the fields. No component is the designated proof: whichever ones a direction's design requires carry the difference, any of them may, and mode, style, rendering, catalog bases, color, type, and icons are each free to coincide. A different name, note, or reference count alone is not a difference, and projections identical on every component are not three solutions. Where authoritative truth fixes some components, the remaining open ones carry it; when nothing is open, keep the projections identical and state that boundary instead of inventing a false difference. These three projections are the project-specific choices above the conservative fixed catalogs, not a fourth Custom proposal. Never glob a catalog, read an unselected sibling, or write bespoke prose as an enum value.
 
 #### Layer 1 — Communication mode
 
-🚧 **GATE**: use the already-loaded [`modes/_index.md`](./modes/_index.md) as the sole mode-basis catalog authority. After the three direction intents exist and their mode reference ids are frozen, read only those exact sibling files once; a novel mode reads none.
+🚧 **GATE**: open [`modes/_index.md`](./modes/_index.md) only after the three direction proses exist, and only to name a genuinely matching basis as `mode_references`; read the selected direction's referenced mode file once after final confirmation, while authoring the Design Spec. A novel mode reads none.
 
 The deck's **narrative + persuasion skeleton** — how the argument is organized and advanced. Lock one preset from `pyramid` / `narrative` / `instructional` / `showcase` / `briefing`, or `custom` with behavior.
 
@@ -145,7 +145,7 @@ Record the confirmed mode and rationale in `design_spec.md` first, including eve
 
 #### Layer 2 — Visual style
 
-🚧 **GATE**: use the already-loaded [`visual-styles/_index.md`](./visual-styles/_index.md) as the sole style-basis catalog authority. After the three direction intents exist and their style reference ids are frozen, read only those exact sibling files once; a novel style reads none.
+🚧 **GATE**: open [`visual-styles/_index.md`](./visual-styles/_index.md) only after the three direction proses exist, and only to name a genuinely matching basis as `visual_style_references`; read the selected direction's referenced style file once after final confirmation, while authoring the Design Spec. A novel style reads none.
 
 The deck's **visual aesthetic** — shape language, decoration density, whitespace rhythm, typographic character, texture. Anchors downstream fields e (Color), f (Icon), g (Typography), h (Image). Lock one preset from the catalog, or `custom`.
 
@@ -165,7 +165,7 @@ Record the confirmed visual style and rationale in `design_spec.md` first, inclu
 
 ### e. Color Scheme Recommendation
 
-**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of the three directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Preserve confirmed/brand semantic roles. When writing §III, derive the standard `secondary_text` and `divider` neutrals and project them to `spec_lock.md colors`; §V fixes the five deck-wide spacing anchors.
+**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of the three directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Preserve confirmed/brand semantic roles. When writing §III, derive the standard `secondary_text` and `divider` neutrals and project them to `spec_lock.md colors`; §V fixes the five deck-wide spacing anchors and the page chrome system.
 
 **Reference — not a constraint**: WCAG AA body-text contrast is 4.5:1.
 
@@ -225,7 +225,7 @@ supplied or `simple-icons` mark. This requires no extra user-facing option.
 > **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, materialize a curated project icon pool:
 >
 > 3. A confirmed bundled library is materialized as a synced project pool before Executor starts; Executor cannot sync. Which prepared icons a page uses is realization, never a preassignment.
-> 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<drawable-object>*.svg'`. Abstract concept words return nothing; translate the semantic into a drawable object first, per [`../templates/icons/README.md`](../templates/icons/README.md). Do not enumerate broad keyword families.
+> 4. Read [`../templates/icons/README.md`](../templates/icons/README.md) at this step, then put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<drawable-object>*.svg'`. Abstract concept words return nothing; translate the semantic into a drawable object first, per [`../templates/icons/README.md`](../templates/icons/README.md). Do not enumerate broad keyword families.
 > 5. **Copy and validate in one batch** — run `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
 > 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
 > 7. Record each synced bundled path with broad suitable scenarios in `design_spec.md` §VI; record the same curated pool, its primary stylistic library, and any stroke-library `stroke_width` in `spec_lock.md icons`. Keep actually needed `simple-icons/*` ids in the same inventory without treating them as a second stylistic library or user-facing selection. `inventory` indexes the synced pool; other prepared project-local icons remain usable.
@@ -236,7 +236,7 @@ supplied or `simple-icons` mark. This requires no extra user-facing option.
 
 ### g. Typography Plan Confirmation (Font + Size)
 
-🚧 **GATE**: Apply the chosen custom behavior and only the detail files already loaded from its exact `visual_style_references`. The title carries the character; the body may remain neutral.
+🚧 **GATE**: Apply the confirmed direction's own typographic character; the referenced style detail files, read at Design Spec time, refine it but never replace it. The title carries the character; the body may remain neutral.
 
 **Family selection**:
 
@@ -318,7 +318,7 @@ system.
 
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
-| Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, apply the already-loaded [`strategist-image.md`](./strategist-image.md) resource contract and image-layout references, record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
+| Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, load [`strategist-image.md`](./strategist-image.md) now and apply its resource contract, record a concise plain-language §VIII `Layout pattern` job, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Composable illustration family | One or more pages benefit from coherent reusable title/corner ornaments, dominant anchors, supporting figures, compact illustrated-icon cues, or accents that can mix with text, shapes, photos, or lettering | Apply [`strategist-image.md`](./strategist-image.md): plan transparent elements by compatible family, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each used page's carrier relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | AI decorative lettering asset | Any stable display string in the deck — including a complete long or multi-line title, cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, or motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply [`strategist-image.md`](./strategist-image.md): preserve every complete exact string, group compatible marks when useful, and keep chrome/body as native text. The lettering asset may carry the complete long or multi-line title as its display layer; keep an ordinary native title/subtitle in a separate text frame wherever the page needs a searchable, selectable, or outline-visible heading. Never shorten copy to make it look more like a wordmark |
@@ -352,8 +352,9 @@ Classify by information model, never source PowerPoint object type:
 
 **Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
 
-**Reference — Chart/Table vocabularies**: the already-loaded Chart and Table
-expression vocabularies list what can be selected for a page's information
+**Reference — Chart/Table vocabularies**: read `chart-vocabulary.md` and
+`table-vocabulary.md` at this point, only when the roster has value-driven or
+cell-grid pages; they list what can be selected for a page's information
 model; their descriptions do not rank candidates or replace judgment from the
 actual information. Custom objects and qualitative composition stay outside
 them. Retain `no-template-match` when no registered reference fits.
@@ -432,20 +433,20 @@ editable-only requirements win. Execution follows
 
 **Always-on decision module; conditional resource extension**:
 
-1. Before authoring Stage-2 directions, load the workflow's complete fixed
-   planning-capability batch. It includes this module, the image-layout
-   authorities, all compact decision maps, the icon-library contract, the
-   complete Chart and Table expression vocabularies. After the
-   three whole-direction intents exist and their mode/style/rendering reference
-   ids are frozen, read only
-   those exact detail siblings once and author one complete custom rendering
-   inside each direction before deciding whether `recommend.image_usage`
-   includes AI.
-2. Independently derive `recommend.image_usage` from source needs. Confirmed
-   non-`none` sources activate the module's resource-planning sections.
-   Confirmed `none` writes no image rows, but does not erase the three
-   recommendation-only rendering candidates or the already-loaded composition
-   vocabulary.
+1. Author one complete custom rendering inside each Stage-2 direction from
+   the material, with no rendering index, detail file, or image module in
+   context: `name`, `rendering: custom`, `visual`, `mood` (with a recognizable
+   real-world analogy), and a 2–5 sentence `behavior` covering line, texture,
+   depth, material, and mood; colors inherit the direction's deck HEX roles.
+   After all three exist, open
+   [`image-renderings/_index.md`](./image-renderings/_index.md) once only to
+   record a genuinely matching `image_rendering_references`, then decide
+   whether `recommend.image_usage` includes AI.
+2. Independently derive `recommend.image_usage` from source needs. After
+   confirmation, a non-`none` source loads
+   [`strategist-image.md`](./strategist-image.md) and activates its
+   resource-planning sections; confirmed `none` writes no image rows but keeps
+   the three recommendation-only rendering candidates.
 
 The module owns AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
@@ -482,12 +483,11 @@ Confirmation `d` locks two independent catalog items:
 - **Mode** — narrative skeleton: [`modes/_index.md`](./modes/_index.md) → `pyramid` / `narrative` / `instructional` / `showcase` / `briefing`.
 - **Visual style** — aesthetic: [`visual-styles/_index.md`](./visual-styles/_index.md) → presets + `custom`.
 
-Strategist first loads the fixed planning-capability batch. For
-mode/style/rendering basis selection it uses only the three corresponding
-indexes, freezes the bases for the three whole directions, then reads only the
-deduplicated referenced detail files before authoring their custom behaviors.
-Executor reads one locked preset file or the exact references of a selected
-custom; neither role globs a detail catalog (see
+Strategist authors the three whole directions with the catalogs closed, then
+opens the three indexes once to record genuinely matching bases, and reads only
+the confirmed direction's referenced detail files while authoring the Design
+Spec. Executor reads one locked preset file or the exact references of a
+selected custom; neither role globs a detail catalog (see
 [`generate-pptx`](../workflows/generate-pptx.md) Step 6).
 
 ---
@@ -512,6 +512,12 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 | Parallel sequence | three-column, process line, or Z-pattern |
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
+
+**Default — page chrome is a deck decision (may override when a template or
+explicit instruction fixes it)**: decide once in §V whether the deck carries a
+running header/eyebrow, page number, source line, and where titles live and in
+which orientation; `none` is valid for any part. The kicker → rule → title →
+body → footer skeleton is one choice, never the default.
 
 **Reference — not a constraint**: after the complete §IX roster and planned
 visual resources are known, recommend a cross-page motif or coherent element

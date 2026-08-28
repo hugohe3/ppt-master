@@ -122,6 +122,7 @@ Use these exact subsections and field shapes:
 - **Hierarchy direction**: <how attention should move across a typical page>
 - **Composition tendency**: <non-binding macro direction; no coordinates or authoring method>
 - **Cross-page continuity**: <what may recur or vary across the roster>
+- **Page chrome system**: <one deck-level decision: running header or eyebrow, page number, source line, title placement and orientation; `none` is valid for any part>
 - **Spacing posture**: <dense, open, or variable by page rhythm>
 - **Spacing anchors**: <five deck-wide px values — page margin, block gap, column gutter, corner radius, body leading — kept stable across pages like the color and type anchors>
 
@@ -177,7 +178,7 @@ in `kebab-case` and add one `Native-ready` map: `<key>=yes|no; ...`. Decide
 object. Qualitative relationships/read order remain unkeyed prose, as do
 incidental microvisuals.
 
-In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Write one concise, non-empty `Layout pattern` suggestion in ordinary language; optionally cite hierarchical ids from the layout library when they help recall a technique. An image-led `adaptive` row names the page job the image resolves next to the composition serving it; a `no-crop` or supporting row keeps the concise suggestion alone. Set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them. Native formulas never enter this table or `spec_lock.md images`.
+In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Write one concise, non-empty `Layout pattern` suggestion in ordinary language naming the job the image does; do not open the layout library to find an id. An image-led `adaptive` row names the page job the image resolves next to the composition serving it; a `no-crop` or supporting row keeps the concise suggestion alone. Set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them. Native formulas never enter this table or `spec_lock.md images`.
 
 §VIII `Layout pattern` is a per-resource preference. When a page uses several images, repeats one image in multiple views, or combines an image with native overlays, describe the page-level relationship and participating resources in §IX `Layout` / `Images`; do not duplicate an unchanged resource row merely to encode animation sequencing.
 

@@ -274,31 +274,25 @@ artifact. If a detail becomes uncertain later, re-read the exact installed SVG
 instead of relying on memory or reopening the source PPTX. If no template was
 installed, make the same design choices freely.
 
-Before resolving the one-pass design, read this fixed planning-capability batch
-in one pass:
-
-```
-Read ${SKILL_DIR}/references/canvas-formats.md
-Read ${SKILL_DIR}/references/image-layout-spec.md
-Read ${SKILL_DIR}/references/image-layout-patterns.md
-Read ${SKILL_DIR}/references/modes/_index.md
-Read ${SKILL_DIR}/references/visual-styles/_index.md
-Read ${SKILL_DIR}/references/image-renderings/_index.md
-Read ${SKILL_DIR}/templates/icons/README.md
-Read ${SKILL_DIR}/templates/charts/chart-vocabulary.md
-Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
-```
-
-This batch is the complete capability map for planning, not a usage checklist:
-zero use of any capability remains valid. Resolve one recommended whole
+Before resolving the one-pass design, read only
+`${SKILL_DIR}/references/canvas-formats.md`. Judgment reads nothing else;
+reference material is read at the step that uses it: `templates/icons/README.md`
+when preparing an icon pool, `templates/charts/chart-vocabulary.md` and
+`templates/tables/table-vocabulary.md` only when the roster has value-driven or
+cell-grid pages, and the image-layout authorities in §3 before the first image
+page. Zero use of any capability remains valid. Resolve one recommended whole
 solution directly; do not materialize Default's three candidates. Without an
 installed template, choose the strongest overall fit from the project brief and
 loaded decision authorities. With one, choose the viable solution that most
 fully expresses the resolved template context and frozen Template Application,
-varying only dimensions they leave open. Freeze its exact mode/style/rendering
-ids, then read only those selected detail files or custom bases. A novel custom
-reads none. Never open unselected detail siblings to compare candidates, glob a
-catalog, or let them influence the decision. Decide
+varying only dimensions they leave open. Write that solution in its own words
+first — cadence, shape language, composition geometry, decoration density,
+typographic character, texture, generated-image treatment — with no
+mode/style/rendering index or detail file in context. Only then read the three
+`_index.md` files once to record genuinely matching bases (no match records
+none and reads nothing), then read only the recorded detail files. Never revise
+the solution toward a row, open unselected siblings, glob a catalog, or let
+them influence the decision. Decide
 whether AI images are useful as a separate source judgment; even when the
 answer is no, retain the chosen rendering direction for visual coherence. Keep
 the chosen mode, style, rendering, and exact bases in active context only.
@@ -321,6 +315,10 @@ the roster after the whole-roster check:
 - the resolved visual direction's deck-level shape language under
   [`visual-styles/_index.md`](../../references/visual-styles/_index.md) §2,
   retained for page-fit native geometry without selecting an exact preset here;
+- one deck-wide page chrome system — running header/eyebrow, page number,
+  source line, title placement and orientation — each decided, `none` valid;
+  the kicker → rule → title → body → footer skeleton is one option, never the
+  default;
 - when useful, an additional transient deck-level visual motif system with an identity or
   communication job, a recognizable invariant, and a reuse mode: fixed chrome,
   adaptive variation, or both; treat restraint as control of visual weight,
@@ -466,8 +464,9 @@ This carrier menu does not satisfy or replace the per-page Structure decision in
 
 Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
-**Reference — Chart/Table vocabularies**: the already-loaded Chart and Table
-expression vocabularies list what exists for a page's information model; their descriptions do not rank
+**Reference — Chart/Table vocabularies**: read the Chart and Table
+expression vocabularies now, only when the roster has value-driven or cell-grid
+pages; they list what exists for a page's information model; their descriptions do not rank
 candidates or replace judgment from the actual information, and they are
 neither usage quotas nor whitelists. Do not select a catalog reference for
 qualitative shape composition. Choose at most one primary Chart/Table
@@ -555,9 +554,11 @@ by their stated contributions, or follow the behavior directly when none exist.
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
 exclusion; Quick loads the shared and conditional execution authorities here
-directly. Reuse the already-loaded image-layout authorities. When any image
+directly. When any image
 exists, read once before the first affected page and reuse throughout the valid
-execution context: [`executor-image.md`](../../references/executor-image.md)
+execution context: [`executor-image.md`](../../references/executor-image.md),
+[`image-layout-spec.md`](../../references/image-layout-spec.md),
+[`image-layout-patterns.md`](../../references/image-layout-patterns.md),
 and [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a placed
 `Status: Sourced` image or filename recorded in `image_sources.json`.
@@ -819,7 +820,7 @@ or lock.
 ## ✅ Quick Generate Complete
 
 - [x] All required source/resource preparation is complete
-- [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
+- [x] The direction was written before any catalog was opened; reference material was read only at the step that used it, and every selected detail source was read
 - [x] The complete 187-name native preset vocabulary was read before P01; each page chose from that full capability surface, with objective candidate details inspected only when needed
 - [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
 - [x] The proactive decorative-lettering capability scan ran before carrier selection; every selected lettering job entered an AI item or lettering sheet/slice job, and zero selected jobs remained valid
