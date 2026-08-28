@@ -293,8 +293,7 @@ Read ${SKILL_DIR}/templates/charts/chart-vocabulary.md
 Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
 ```
 
-This is a capability map, not a usage checklist: retain zero-use outcomes and
-the Strategist/Executor ownership boundary. Author the three whole solution
+This is a capability map; retain the Strategist/Executor ownership boundary. Author the three whole solution
 intents before mapping any component basis. Freeze every referenced
 mode/style/rendering id from the indexes, then read once only the deduplicated
 union of those exact detail files and finish the three custom behaviors. A novel

@@ -188,7 +188,7 @@ The base icon style is one single-select identity, not a material whitelist:
 | **A** | Emoji | Casual, playful, social media |
 | **B** | Built-in generic icon library | Recurring compact semantic cues in one coherent SVG style |
 | **C** | Custom project icons | Supplied, template-carried, or imported assets |
-| **D** | No base icons | Illustration, typography, shapes, or data already carry the compact cues |
+| **D** | No base icons | No shared generic base-icon identity is selected |
 
 AI-generated illustrated icons are not a base-style option, add-on, Confirm UI
 field, or result key. Like decorative lettering, they are a downstream image
@@ -293,73 +293,6 @@ page block, record the linked text/object and its exact absolute URI or final
 inline/whole-object carrier, or create a link manifest or lock entry. Executor
 owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 
-### h. Image Source Recommendation
-
-| Source id | Approach | Use when |
-|---|---|---|
-| `none` | No images | Data reports or process documentation whose visual burden is fully served by charts / native SVG |
-| `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
-| `ai` | AI-generated | Invented or deliberately stylized scenes, illustrations, backgrounds, metaphors, decorative lettering, or another generated visual treatment is needed |
-| `web` | Web-sourced | A named or evidence-bearing real-world subject must appear as itself |
-| `placeholder` | Deferred | The image is required but will be supplied later |
-
-**Current inventory**: If `images/` is non-empty, run `python3 scripts/analyze_images.py <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
-
-**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or keyed stock-provider credentials never justifies `none` or deletion of a planned web-compatible role. Web search retains zero-config providers; an explicit generation-only requirement follows the normal Offline Manual boundary.
-
-**Mandatory — no AI capability preflight**: When `recommend.image_usage` includes `ai`, preserve an explicit user path instruction; otherwise recommend `auto`. Do not inspect backend configuration, check host-tool availability, or probe a provider during planning. Generate Step 5 execution is the first capability check.
-
-**Default — visual grounding before `none` (may override when the full-roster carrier review finds no useful image job)**: Honor an explicit no-image requirement. First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression materially improves a planned visual job. Treat `none` as a positive whole-deck conclusion when no image source owns a meaningful communication job. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
-
-**Default — consider proactive illustrated icons without creating another
-confirmation field**: Before each Stage-2 `recommend.image_usage`, consider
-whether compact semantic jobs would communicate better through a coherent
-illustrated cue family. This may support an `ai` recommendation, but it is not
-an automatic source trigger or coverage quota. Resource grouping remains a
-fit-driven decision under [`strategist-image.md`](./strategist-image.md).
-
-**Mandatory — scan proactive decorative-lettering capability without making
-candidates an automatic source trigger**: Before each Stage-2
-`recommend.image_usage`, scan the complete planned roster for exact stable
-display strings whose artistic treatment could plausibly communicate better
-than native type. Page role, character count, word count, line count, kind of
-noun, and proposed style never pre-filter candidates: a complete long or
-multi-line title is as eligible as a short mark. Never invent, rewrite,
-shorten, or split copy to make generation easier. Passing both discovery
-questions exposes one possible AI visual job, not a selected resource or a
-mechanical reason to add `ai`. During page-carrier planning, compare those
-candidates with native type and the complete deck mix; select only the marks
-whose treatment wins that fit. Zero selected marks remains valid and needs no
-skip explanation or coverage quota. A selected mark may be the sole intended
-AI job and may support an AI recommendation stated in `image_notes.value`;
-when either discovery answer is no, native editable text remains valid. The
-absence of another AI-image job never forces lettering. Explicit no-AI or
-editable-only requirements win. Execution follows
-[`image-generator.md`](./image-generator.md) §7.
-
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration, illustrated-icon, or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive. Decks built around real-world recognition or choice, including travel itineraries, lean `provided` / `web`; generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story and invented or stylized expression serves it. Regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
-
-**Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
-
-**Always-on decision module; conditional resource extension**:
-
-1. Before authoring Stage-2 directions, load the workflow's complete fixed
-   planning-capability batch. It includes this module, the image-layout
-   authorities, all compact decision maps, the icon-library contract, the
-   complete Chart and Table expression vocabularies. After the
-   three whole-direction intents exist and their mode/style/rendering reference
-   ids are frozen, read only
-   those exact detail siblings once and author one complete custom rendering
-   inside each direction before deciding whether `recommend.image_usage`
-   includes AI.
-2. Independently derive `recommend.image_usage` from source needs. Confirmed
-   non-`none` sources activate the module's resource-planning sections.
-   Confirmed `none` writes no image rows, but does not erase the three
-   recommendation-only rendering candidates or the already-loaded composition
-   vocabulary.
-
-The module owns AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
-
 ### Page Carrier and Capability Planning (Non-blocking — Strategist recommends, no user confirmation needed)
 
 **Default — carrier planning in §IX (may stay implicit when a page's mix is obvious)**: During the same §IX roster
@@ -370,8 +303,7 @@ deriving §VIII resource rows. Decide the primary, structural, and supporting
 jobs together. Use existing §VI/§VIII/§IX fields: keep the
 ordinary icon basis and prepared-pool plan in §VI, and add an image, lettering,
 or illustrated-icon resource to §VIII only when the page mix assigns it a
-plausible job. This creates no new field or candidate inventory; omitting any
-carrier remains valid. Macro composition recommendations
+plausible job. This creates no new field or candidate inventory. Macro composition recommendations
 remain Reference; planned resource identities/jobs and explicit user/template
 requirements retain their existing authority.
 
@@ -449,6 +381,73 @@ Correct failed selections by re-reading the complete vocabulary/registry;
 | --- | --- | --- | --- |
 | P03 | chart | line_chart | Compare the source metrics over time |
 ```
+
+### h. Image Source Recommendation
+
+| Source id | Approach | Use when |
+|---|---|---|
+| `none` | No images | No image source owns a meaningful communication job for the planned deck |
+| `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
+| `ai` | AI-generated | Invented or deliberately stylized scenes, illustrations, backgrounds, metaphors, decorative lettering, or another generated visual treatment is needed |
+| `web` | Web-sourced | Named or evidence-bearing real-world subjects that must appear as themselves, plus generic photographic mood, background, or scene jobs that benefit from sourced visual grounding |
+| `placeholder` | Deferred | The image is required but will be supplied later |
+
+**Current inventory**: If `images/` is non-empty, run `python3 scripts/analyze_images.py <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
+
+**Hard rule**: Credentials do not decide image need. Missing `IMAGE_BACKEND`, host generation, or keyed stock-provider credentials never justifies `none` or deletion of a planned web-compatible role. Web search retains zero-config providers; an explicit generation-only requirement follows the normal Offline Manual boundary.
+
+**Mandatory — no AI capability preflight**: When `recommend.image_usage` includes `ai`, preserve an explicit user path instruction; otherwise recommend `auto`. Do not inspect backend configuration, check host-tool availability, or probe a provider during planning. Generate Step 5 execution is the first capability check.
+
+**Default — visual grounding before `none` (may override when the full-roster carrier review finds no useful image job)**: Honor an explicit no-image requirement. First decide whether the audience must recognize, experience, compare, or choose an externally verifiable subject, place, product, or setting. When yes, propose `provided` / `web`; propose `ai` when invented or deliberately stylized expression materially improves a planned visual job. Mixed sources may serve different page roles. The three Stage-2 style directions never settle source: a rendering candidate resolves how imagery looks, never whether a real subject must appear as itself.
+
+**Default — consider proactive illustrated icons without creating another
+confirmation field**: Before each Stage-2 `recommend.image_usage`, consider
+whether compact semantic jobs would communicate better through a coherent
+illustrated cue family. This may support an `ai` recommendation, but it is not
+an automatic source trigger or coverage quota. Resource grouping remains a
+fit-driven decision under [`strategist-image.md`](./strategist-image.md).
+
+**Mandatory — scan proactive decorative-lettering capability without making
+candidates an automatic source trigger**: Before each Stage-2
+`recommend.image_usage`, scan the complete planned roster for exact stable
+display strings whose artistic treatment could plausibly communicate better
+than native type. Page role, character count, word count, line count, kind of
+noun, and proposed style never pre-filter candidates: a complete long or
+multi-line title is as eligible as a short mark. Never invent, rewrite,
+shorten, or split copy to make generation easier. Passing both discovery
+questions exposes one possible AI visual job, not a selected resource or a
+mechanical reason to add `ai`. During page-carrier planning, compare those
+candidates with native type and the complete deck mix; select only the marks
+whose treatment wins that fit. Zero selected marks remains valid and needs no
+skip explanation or coverage quota. A selected mark may be the sole intended
+AI job and may support an AI recommendation stated in `image_notes.value`;
+when either discovery answer is no, native editable text remains valid. The
+absence of another AI-image job never forces lettering. Explicit no-AI or
+editable-only requirements win. Execution follows
+[`image-generator.md`](./image-generator.md) §7.
+
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put the intended communication jobs of each proposed source, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. When `ai` is proposed, explain in editable natural language how generated visuals are expected to contribute and mention any materially anticipated illustration, illustrated-icon, or lettering role. Keep the note an open strategy—not an enum, carrier allowlist, page-by-page assignment, count, or resource manifest; name exact pages/assets only when already authoritative or required. `none` is exclusive.
+
+**Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
+
+**Always-on decision module; conditional resource extension**:
+
+1. Before authoring Stage-2 directions, load the workflow's complete fixed
+   planning-capability batch. It includes this module, the image-layout
+   authorities, all compact decision maps, the icon-library contract, the
+   complete Chart and Table expression vocabularies. After the
+   three whole-direction intents exist and their mode/style/rendering reference
+   ids are frozen, read only
+   those exact detail siblings once and author one complete custom rendering
+   inside each direction before deciding whether `recommend.image_usage`
+   includes AI.
+2. Independently derive `recommend.image_usage` from source needs. Confirmed
+   non-`none` sources activate the module's resource-planning sections.
+   Confirmed `none` writes no image rows, but does not erase the three
+   recommendation-only rendering candidates or the already-loaded composition
+   vocabulary.
+
+The module owns AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
 ### Speaker Notes Requirements
 
