@@ -685,7 +685,12 @@ SVG. Flat pages set one root `data-pptx-page-role` from `cover`, `toc`,
 
 **Typography**: name a concrete target-installed/approved PowerPoint family
 under [`shared-standards-core.md`](../../references/shared-standards-core.md)
-§4.1; do not depend on a lock or generated font asset.
+§4.1; do not depend on a lock or generated font asset. Before P01, measure one
+representative line per recurring text role with
+`python3 ${SKILL_DIR}/scripts/text_measure.py measure` and keep "≈ N chars per
+W px" in active context; the final checker's module check adds DrawingML
+wrapping headroom, so characters × font size underestimates by roughly 15%.
+Wrap long paragraphs with `text_measure.py wrap` instead of counting by hand.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
 order. Use P01 to calibrate visual identity and cover-specific expression; use

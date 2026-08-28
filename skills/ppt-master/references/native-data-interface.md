@@ -261,7 +261,9 @@ native table.
 
 **Merged table cells — canonical rectangular contract only**: Put positive JSON
 integer `row_span` / `col_span` values on the merge anchor and keep every
-covered grid cell blank. Spans must stay within the resolved rectangular grid
+covered grid cell blank: write it as `{"merge_continuation": true}` (a bare
+`{"text": ""}` is also blank, but only while no `defaults.cell` expansion adds
+other fields to it). Spans must stay within the resolved rectangular grid
 and may not overlap. The exporter emits the canonical DrawingML topology
 (`rowSpan` on the top edge, `gridSpan` on the left edge, `hMerge` / `vMerge` on
 covered cells). CamelCase aliases, raw OOXML merge fields, top-level merge lists,
@@ -372,7 +374,11 @@ are absent from the fallback. Set `show_value_axis_labels: false` when the fallb
 keeps category labels but omits numeric value-axis tick labels, such as a radar
 chart without radial coordinates. Native legends are metadata-controlled: use
 `show_legend: true` and `legend_position` only when the fallback's legend is
-meant to be replaced by PowerPoint's native legend.
+meant to be replaced by PowerPoint's native legend. SVG-first parity reads the
+fallback literally: `style.axis_color` must equal the dominant stroke among
+axis and grid lines, numbers match in written form (`286.20` ≠ `286.2`), and
+any marker text that is not a category, data label, axis label, or legend
+entry needs its own companion entry (`note`, `caption`, …).
 Companion text such as `caption`, `source`, `note`, `notes`, `footnote`, and
 `footnotes` is exported as editable PPT text boxes next to the native chart. A
 companion entry may be a string or an object with `text`, `x`, `y`, `width`,

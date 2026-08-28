@@ -62,6 +62,14 @@ Default chain (when `--provider` is unset):
 
 Keyed providers without an API key are silently skipped — not an error.
 
+**Reference — provider fit by subject**: Pixabay's API serves at most a
+1280 px long-edge file even when its metadata reports a much larger original,
+so a landscape hero row with the default 1200×800 floors can fail promotion on
+height; prefer Wikimedia or Pexels originals for full-bleed use. For murals,
+manuscripts, artworks, and museum objects, pin `provider: wikimedia` on that
+row: stock providers tag tourist snapshots with the place name, and those pass
+`required_terms` while showing no artwork at all.
+
 **Default — keyed providers for broader stock coverage (may override when zero-config sources fit)**: Configure Pexels or Pixabay when their stock-photo coverage serves the brief. Their absence is not a validation failure; Openverse and Wikimedia remain valid zero-config acquisition paths.
 
 ---

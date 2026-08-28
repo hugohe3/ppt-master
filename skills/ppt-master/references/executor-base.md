@@ -51,7 +51,7 @@ baked/alternative-only.
 
 ## 2. Design Parameter Confirmation (Mandatory Step)
 
-Before the first SVG page, output a confirmation listing: the compact communication objective, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
+Before the first SVG page, output a confirmation listing: the compact communication objective, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, the measured line capacity of the body and annotation roles (run `python3 ${SKILL_DIR}/scripts/text_measure.py measure` on one representative CJK/Latin line per role and state "≈ N chars per W px"; the checker's module check adds DrawingML wrapping headroom, so a hand count of characters × font size underestimates by roughly 15%), and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
 
 ### 2.1 Execution context validity (Mandatory)
 
