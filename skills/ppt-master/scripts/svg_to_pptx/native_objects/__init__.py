@@ -74,6 +74,7 @@ from .marker_attributes import (
     native_replacement_status,
 )
 from .marker_status import native_marker_status_errors
+from semantic_table import expand_semantic_table_payload
 from .table import (
     _build_native_table,
     _native_table_warnings,
@@ -454,10 +455,9 @@ def _validate_native_object_marker_payload(
     off_x, off_y, ext_cx, ext_cy, _ = _validate_bounds_inputs(elem, payload, bounds_ctx)
     validated_data: list[list[Any]] | FormulaSpec | None = None
     if kind == "table":
-        expanded_payload, table_rows, col_count, _merge_layout = (
+        _expanded_payload, table_rows, col_count, _merge_layout = (
             _validate_table_payload(payload)
         )
-        payload = expanded_payload
         validated_data = table_rows
         if ext_cx < col_count or ext_cy < len(table_rows):
             raise RuntimeError(
@@ -518,7 +518,13 @@ def _projection_warnings_for_validated_marker(
     ):
         return []
     if kind == "table" and isinstance(validated_data, list):
-        return _native_table_warnings(elem, payload, validated_data)
+        # Expand a copy for the parity checks; the caller keeps the original
+        # payload so the table writer can expand it again itself.
+        return _native_table_warnings(
+            elem,
+            expand_semantic_table_payload(payload),
+            validated_data,
+        )
     if kind == "chart" and payload.get("source_package") is None:
         return _native_chart_chrome_warnings(elem, payload)
     return []

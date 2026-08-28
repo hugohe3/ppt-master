@@ -291,5 +291,24 @@ class NativeProjectionCheckerTests(unittest.TestCase):
                     self.assertIn(text, findings_by_page[filename])
 
 
+class NativeTablePayloadRoundTripTest(unittest.TestCase):
+    def test_marker_validation_keeps_original_table_payload(self):
+        """The converter re-expands the payload; validation must not hand back an expanded copy."""
+        import xml.etree.ElementTree as ET
+        from svg_to_pptx.native_objects import _validate_native_object_marker_payload
+        from svg_to_pptx.native_objects.table import _build_native_table  # noqa: F401
+        from semantic_table import expand_semantic_table_payload
+        fixture = FIXTURES_DIR / "27_business_models.svg"
+        root = ET.parse(fixture).getroot()
+        marker = next(
+            el for el in root.iter()
+            if el.get("data-pptx-replace-with") == "table"
+        )
+        kind, payload, rows = _validate_native_object_marker_payload(marker)
+        self.assertEqual(kind, "table")
+        self.assertEqual(payload.get("schema"), "ppt-master.semantic-table.v2")
+        expand_semantic_table_payload(payload)  # must still expand cleanly
+
+
 if __name__ == "__main__":
     unittest.main()
