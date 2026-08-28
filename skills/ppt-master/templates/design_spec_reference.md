@@ -8,6 +8,8 @@ Strategist reads the complete final confirmation once, writes this artifact from
 
 After final confirmation, compose the entire document in active context from the retained final state, source analysis, and project context. Then create `<project_path>/design_spec.md` once, from the first line through §X.
 
+**Depth follows the confirmed `design_spec_depth`** — `brief` (default) or `complete`; both keep every required heading and every machine-read field. `brief` serves a continuous run whose author also draws the pages — §I records production mechanics without restating Stage-1 prose, §VI may leave the scenario column empty, §IX `Content` is a short block list — one bullet per block, each in the phrasing that fits it (a real sentence for prose, `·`-joined parallel fragments, `/`-joined labels) — never full page copy, and `Layout` is one optional line. `complete` writes full wording and layout prose; split mode, `refine_spec: true`, and preservation profiles force it.
+
 **Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, followed by `# <Project Name> - Design Spec`. Write every required section with final values and the complete page roster; include conditional §VII only when a real catalog reference is selected. Do not create a placeholder-bearing project file, copy example rows, or patch a scaffold field by field.
 
 `project_manager.py scaffold-spec` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. Resume and refine paths edit an existing completed Design Spec rather than replacing it with a scaffold.
@@ -88,6 +90,8 @@ Use these exact subsections and field shapes:
 | Accent | <HEX> | <semantic use> |
 | Secondary accent | <HEX> | <semantic use> |
 | Body text | <HEX> | <semantic use> |
+| Secondary text | <HEX> | <captions, annotations, footnotes> |
+| Divider | <HEX> | <rules, borders, hairlines> |
 
 ## IV. Typography System
 
@@ -118,7 +122,8 @@ Use these exact subsections and field shapes:
 - **Hierarchy direction**: <how attention should move across a typical page>
 - **Composition tendency**: <non-binding macro direction; no coordinates or authoring method>
 - **Cross-page continuity**: <what may recur or vary across the roster>
-- **Spacing posture**: <dense, open, or variable behavior by page rhythm; no fixed gaps>
+- **Spacing posture**: <dense, open, or variable by page rhythm>
+- **Spacing anchors**: <five deck-wide px values — page margin, block gap, column gutter, corner radius, body leading — kept stable across pages like the color and type anchors>
 
 ## VI. Icon Usage Specification
 
@@ -129,7 +134,7 @@ Use these exact subsections and field shapes:
 | --- | --- |
 ```
 
-Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when actual content requires real brand marks; it is never a separate confirmation choice. The icon table records the synced SVG pool and broad semantic scenarios, not page placement. User-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that bundled selection. Leave the §VI table empty when no bundled or brand SVG icons are prepared. Illustrated icons are AI image resources: their production sheet and placed slice rows belong in §VIII, and only placed slices project to `spec_lock.md images`.
+Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when actual content requires real brand marks; it is never a separate confirmation choice. The icon table records the synced SVG pool and, at `complete` depth, broad semantic scenarios — never page placement. User-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that bundled selection. Leave the §VI table empty when no bundled or brand SVG icons are prepared. Illustrated icons are AI image resources: their production sheet and placed slice rows belong in §VIII, and only placed slices project to `spec_lock.md images`.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 
@@ -180,7 +185,7 @@ Put native paint/overlay intent in §IX `Layout` plus `Images` for imagery—not
 
 ### 2.4 Complete page roster and notes
 
-Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is a complete page brief, not a skeleton.
+Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is a complete page brief at `complete` depth and a short block list at `brief` depth — neither is a skeleton.
 
 ```markdown
 ## IX. Content Outline
@@ -190,10 +195,10 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 #### Slide 01 - <page name>
 
 - **Audience move**: <audience state before → after>
-- **Layout**: <non-binding macro composition, hierarchy, and visual focus; include the chosen prototype when template-active>
+- **Layout**: <non-binding macro composition, hierarchy, and visual focus; chosen prototype when template-active; optional at brief depth>
 - **Title**: <preferred page title>
 - **Core message**: <one governing assertion>
-- **Content**: <complete intended on-slide content and hierarchy>
+- **Content**: <complete content at complete depth; short block list at brief depth>
 - **Mathematical content**: <exact expression as a delimiter-free LaTeX body; omit when none>
 
 ## X. Speaker Notes Requirements

@@ -22,7 +22,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `communication` | `primary_language`, `audience`, `objective`, `core_message` | New lock: canonical BCP-47; old lock may omit it. Reject `und` and Chinese without script/region. `objective` merges intent/outcome; `consumption_mode` is optional off PPT |
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
-| `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
+| `colors` | Stable semantic color roles | Core identity and recurring roles only, including the standard `secondary_text` and `divider` neutrals; contextual SVG paints need no row; `image_rendering` appears only for AI images |
 | `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; size anchors are unitless px numbers |
 | `icons` | `library`, `inventory` | `library` is the Strategist's primary bundled style choice or `none`; content-driven `simple-icons/*` may be prepared alone or accompany it; `inventory` indexes the curated synced SVG pool rather than page usage or all usable project-local icons; `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |

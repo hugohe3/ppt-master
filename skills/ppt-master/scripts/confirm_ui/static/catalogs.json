@@ -1505,6 +1505,32 @@
       "label_ja": "分割モード"
     }
   ],
+  "design_spec_depth": [
+    {
+      "id": "brief",
+      "label": "brief",
+      "label_zh": "简要",
+      "label_zh_tw": "簡要",
+      "label_en": "Brief",
+      "label_ja": "簡潔",
+      "desc_zh": "每页只写简短的内容块列表，不写整页文案。",
+      "desc_zh_tw": "每頁只寫簡短的內容區塊清單，不寫整頁文案。",
+      "desc_en": "A short block list per page; no full page copy.",
+      "desc_ja": "各ページを短いブロック一覧で記し、全文は書きません。"
+    },
+    {
+      "id": "complete",
+      "label": "complete",
+      "label_zh": "完整",
+      "label_zh_tw": "完整",
+      "label_en": "Complete",
+      "label_ja": "完全",
+      "desc_zh": "写入包含完整文案的逐页简报。",
+      "desc_zh_tw": "寫入包含完整文案的逐頁簡報。",
+      "desc_en": "Full page briefs with complete wording.",
+      "desc_ja": "完全な文言を含む各ページの詳細なブリーフを記載します。"
+    }
+  ],
   "delivery_purpose": [
     {
       "id": "text",

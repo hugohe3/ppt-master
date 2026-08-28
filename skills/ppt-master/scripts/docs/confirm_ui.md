@@ -43,7 +43,8 @@ Interpret the instruction semantically: “confirm here”, “use the chat wind
 keyword is required. Invoking a chat-question tool by itself does not select the
 chat branch—the user's instruction does. Both branches preserve the same
 Stage-1 communication/template decision, installation handoff, and template-aware
-final Stage 2.
+final Stage 2; the chat branch records the same `design_spec_depth` value in its
+confirmation summary.
 
 **Chat/delegated Stage-1 listing**: Author the communication recommendation
 before reading the four indexes, then present that recommendation together with
@@ -332,7 +333,7 @@ Direction-local custom projections apply to mode, visual style, and generated-im
 
 ## Catalogs — `static/catalogs.json` (the finite option universe)
 
-The front-end loads `/api/catalogs` (served by the confirm server) and falls back to the static `/static/catalogs.json` if that route is unavailable. `/api/catalogs` returns the static file **with the `canvas` list synced live from `config.py CANVAS_FORMATS`** — the set of formats and their `dim` come from config (single source of truth, zero drift), while four-language labels / use text stay in catalogs.json (a plain fallback label is synthesized for any new id config adds). Keys: `canvas`, `modes`, `visual_styles` (grouped), `icons`, `image_usage`, `image_ai_path`, `generation_mode`, `delivery_purpose`. `simple-icons` is content-driven and has no option. Each catalog entry is `{ "id", "label", "label_zh", "label_zh_tw", "label_en", "label_ja", ... }`; descriptions use `desc_zh` / `desc_zh_tw` / `desc_en` / `desc_ja`, and `visual_styles` groups use `group_zh` / `group_zh_tw` / `group_en` / `group_ja`. The front-end falls back to legacy `label` / `desc` / `group`, so old catalogs still load, but new user-facing catalog text must cover all four languages (zh / zh-TW / en / ja). English labels should mirror canonical reference names (`pyramid`, `swiss-minimal`, `Path A`, `continuous`, etc.); Simplified Chinese, Traditional Chinese, and Japanese labels should be translated for users. Descriptions render inline after the option title, not as a separate selected-option line. `visual_styles` is `[{ "group", "group_zh", "group_zh_tw", "group_en", "group_ja", "items": [...] }]`. For `canvas` you only need to maintain the four-language labels in catalogs.json; the format set and dimensions are authoritative in `config.py CANVAS_FORMATS`.
+The front-end loads `/api/catalogs` (served by the confirm server) and falls back to the static `/static/catalogs.json` if that route is unavailable. `/api/catalogs` returns the static file **with the `canvas` list synced live from `config.py CANVAS_FORMATS`** — the set of formats and their `dim` come from config (single source of truth, zero drift), while four-language labels / use text stay in catalogs.json (a plain fallback label is synthesized for any new id config adds). Keys: `canvas`, `modes`, `visual_styles` (grouped), `icons`, `image_usage`, `image_ai_path`, `generation_mode`, `design_spec_depth`, `delivery_purpose`. `simple-icons` is content-driven and has no option. Each catalog entry is `{ "id", "label", "label_zh", "label_zh_tw", "label_en", "label_ja", ... }`; descriptions use `desc_zh` / `desc_zh_tw` / `desc_en` / `desc_ja`, and `visual_styles` groups use `group_zh` / `group_zh_tw` / `group_en` / `group_ja`. The front-end falls back to legacy `label` / `desc` / `group`, so old catalogs still load, but new user-facing catalog text must cover all four languages (zh / zh-TW / en / ja). English labels should mirror canonical reference names (`pyramid`, `swiss-minimal`, `Path A`, `continuous`, etc.); Simplified Chinese, Traditional Chinese, and Japanese labels should be translated for users. Descriptions render inline after the option title, not as a separate selected-option line. `visual_styles` is `[{ "group", "group_zh", "group_zh_tw", "group_en", "group_ja", "items": [...] }]`. For `canvas` you only need to maintain the four-language labels in catalogs.json; the format set and dimensions are authoritative in `config.py CANVAS_FORMATS`.
 
 ## Round-trip data contract
 
@@ -370,7 +371,7 @@ run remains inactive. An existing `result.json` outside the current `stage1` /
 | Recommendation file | Declared stage | Page renders | Button | On submit |
 |---|---|---|---|---|
 | `recommendations.stage1.json` + `template_options.json` | `"stage1"` | communication contract — content language; audience; open `communication_intent`; audience outcome; core message / primary delivery context + optional secondary use / artifact afterlife / `content_divergence` (all prose fields may be blank); canvas; free-design/template mode and conditional candidate selectors | **Confirm contract & template choice** | writes Stage-1 `result.json` plus `template_selection.json` in one submission; the page stays open and polls while the agent installs/completes the handoff |
-| `recommendations.stage2.json` | `"stage2"` | complete deck solution and production — conditional natural-language template application, reading mode, mode, page count, visual direction, color, icons, typography, image usage/rendering, conditional AI acquisition path, proactive notes/custom-animation/narration-audio toggles, generation mode, and Design Spec review toggle | **Confirm final plan** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
+| `recommendations.stage2.json` | `"stage2"` | complete deck solution and production — conditional natural-language template application, reading mode, mode, page count, visual direction, color, icons, typography, image usage/rendering, conditional AI acquisition path, proactive notes/custom-animation/narration-audio toggles, generation mode, Design Spec review toggle, and Design Spec depth | **Confirm final plan** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
 
 In the UI branch, the AI authors Stage 1 without reading template candidates,
 then launches the combined page. In chat/delegated confirmation it authors the
@@ -443,12 +444,17 @@ The common paths — inform / explain / persuade / decide / align / teach / repo
 After Stage 1 is confirmed, create `recommendations.stage2.json` with the complete solution; leave Stage 1 unchanged (the server folds confirmed communication fields back in when serving the page):
 
 **Stage-2 production contract**: the server rejects the recommendation file
-unless `recommend.generation_mode` and boolean `refine_spec.value` are present;
+unless `recommend.generation_mode`, boolean `refine_spec.value`, and
+`design_spec_depth.value` as `brief` or `complete` are present;
 `recommend.image_ai_path` is additionally required when `image_usage` includes
 `ai`. Final submission must retain the corresponding direct values
-(`generation_mode`, boolean `refine_spec`, and conditional `image_ai_path`) or
-confirmation is rejected. Formula realization is Executor-owned and is not a
-Stage-2 choice. Legacy recommendation/result objects may contain
+(`generation_mode`, boolean `refine_spec`, `design_spec_depth`, and conditional
+`image_ai_path`) or confirmation is rejected. `design_spec_depth: brief` is
+rejected when `generation_mode` is `split` or `refine_spec` is `true`; those
+conditions require `complete`. A legacy `result.json` without the field is read
+as `complete`, while a Stage-2 recommendation without it is invalid. Formula
+realization is Executor-owned and is not a Stage-2 choice. Legacy
+recommendation/result objects may contain
 `formula_policy`; the server tolerates the extra field but does not render or
 persist it in a new receipt.
 
@@ -471,6 +477,7 @@ persist it in a new receipt.
   "proactive_custom_animations": { "value": false },
   "proactive_narration_audio": { "value": false },
   "refine_spec": { "value": false },
+  "design_spec_depth": { "value": "brief" },
   "design_directions": {
     "selected": 1,
     "candidates": [
@@ -537,7 +544,7 @@ Template-mode-only Stage-2 fragment:
 - **Combined style preview** — a compact live "overall impression" strip sits just above the color section and is **sticky**: it pins under the topbar so it stays visible while the user scrolls through the color / icon / typography sections, keeping the picking controls and their combined effect on screen together. It applies the currently selected color palette **and** typography (heading sample in `primary` over `background`, body sample in `body_text`, an `accent` bar, a `secondary_bg` chip) and repaints on every color / HEX-override / font / `body_size` change. It does not replace the per-candidate swatches or font samples (those stay for picking); it is deliberately an abstract style chip, **not** a slide-layout preview — page layout preview remains the live-preview server's job (Step 6). No schema field; it derives entirely from the existing color + typography selections.
 - **Generated-image direction** appears only for current `image_usage: ai`, but all three custom project candidates already exist in `design_directions` before that toggle. Turning AI on reveals those candidates immediately without a backend rerun, followed by the 20 fixed system styles. Selecting a project candidate expands its behavior editor in that card; a fixed preset submits its id, while a project candidate submits `rendering: "custom"` + edited non-empty `behavior`. Turning AI off omits `image_strategy` from the final result without deleting the authored recommendation candidates. Catalog-based custom behavior names exact ids for optional `image_rendering_references`; a novel behavior has none. The left preview follows selection. No image palette is written; deck colors remain authoritative, and legacy `image_strategy.palette` is ignored. Illustrated icons and decorative lettering are downstream AI carrier decisions; neither adds a Confirm UI field or `result.json` key.
 - **`design_directions`** is the canonical Stage-2 starting set: exactly three top-down, project-fit bundles with stable ids, localized copy, custom mode/style/rendering, icons, complete language-aware typography, and HEX `background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`. The `selected` card carries the persistent Recommended marker and is applied first. A custom direction card uses its localized style-summary note—or the required behavior fallback—instead of requesting a preset-style preview. Newly authored notes may borrow localized catalog display labels where useful or use concise natural language freely; they never force an approximate label or expose internal catalog ids. Clicking an inactive card applies every field it owns; projected custom fields can then be edited in place and all lower controls may diverge. The active card shows an adjusted state and exposes an explicit restore action for its immutable authored bundle. `result.json` stores the edited current components, never a direction id.
-- `recommend.generation_mode` and `refine_spec` mirror [`generate-pptx`](../../workflows/generate-pptx.md) Step 4. `split` / `true` are explicit opt-ins. Refinement adds no UI stage: after Gate 1 it stops before the lock for unrestricted chat revision until approval.
+- `recommend.generation_mode`, `refine_spec`, and `design_spec_depth` are Stage-2 production fields. `design_spec_depth.value` is exactly `brief` or `complete`: `brief` records each page as a short block list without full page copy, while `complete` records full page briefs. `split` generation or enabled refinement locks the field to `complete` in the UI, and the server rejects a recommendation or final `brief` value under either condition.
 - `content_divergence` is a **free-text** Stage-1 source-treatment field. Blank means a balanced default; facts stay sourced at every level. Strategist consumes it while authoring §IX and records it in `design_spec.md §I`; it is not written to `spec_lock.md`. Beautify sends `{ "value": "keep source wording and page structure verbatim", "locked": true }`, so the UI displays it read-only and the server restores it on every staged submit. Edit Native PPTX uses its source-backed round-trip plan instead of this confirmation flow and does not surface the field.
 - `lang` is the soft UI-language default (`zh` / `zh-TW` / `en` / `ja`); the persisted user choice wins. It never sets `primary_language`.
 
@@ -572,6 +579,7 @@ Template-mode-only Stage-2 fragment:
   "proactive_narration_audio": false,
   "generation_mode": "continuous",
   "refine_spec": false,
+  "design_spec_depth": "brief",
   "stage": "final",
   "status": "confirmed",
   "confirmed_at": "2026-06-15T11:44:44"
@@ -594,6 +602,8 @@ named catalog sources. These lists have no fixed item limit. One item may carry
 the complete preset behavior unchanged; with several, each owns a distinct
 executable contribution. Genuinely novel custom behavior has no reference list.
 The Stage-1 intermediate write retains the communication contract for Stage 2.
+Legacy final results without `design_spec_depth` resolve to `complete` when read
+by the server.
 
 **Final-result consumption contract.** A final result is the user-confirmed input contract for the Strategist's Design Spec, not another recommendation input. After the final wait, Generate Step 4 reads the complete final object exactly once and retains it while Strategist writes and audits `design_spec.md` against every explicitly present field. Normal lock authoring and downstream execution do not reopen `result.json`; the completed Design Spec is the durable authority. Only after that audit passes does Strategist author `spec_lock.md` from the Design Spec plus current execution context, selecting stable anchors and routing rather than copying every field or enumerating every legal color/font. Every value must be consumed at the semantic type owned by [`strategist.md`](../../references/strategist.md) §1 and its field owner: do not omit or substitute it, and do not silently strengthen or weaken its type. If a confirmed requirement cannot be honored, the owning workflow reports or pauses under failure recovery; it never deletes the requirement to keep the pipeline moving.
 

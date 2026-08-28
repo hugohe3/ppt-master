@@ -303,7 +303,7 @@ no image rows while retaining recommendation-only rendering candidates. Only an 
 project-local template state loads the template module, and only after Stage 1
 is confirmed; a bare template/style name does not.
 
-> ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
+> ⚠️ **Mandatory artifact gates**: after final confirmation, author `design_spec.md` at the confirmed `design_spec_depth` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -347,7 +347,7 @@ Stage-2 summary without fabricating UI results. Silence confirms nothing.
 | `confirm_ui/template_options.json` | Candidate schema/language plus supplied exact roots; library entries remain server-owned index data | Stage-1 submission writes user-owned `template_selection.json` with `phase: template`, `status: confirmed` |
 | `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only; no template-derived recommendation | The same submission writes `result.json` with `status: stage1-confirmed` |
 | `confirm_ui/template_handoff.json` | Only through `--complete-template-selection`, after the Stage-1 selection and free-design closure or successful installation | `status: ready`, bound to the current selection hash; prerequisite for Stage 2 |
-| `confirm_ui/recommendations.stage2.json` | `stage: stage2`; complete deck solution plus conditional AI path, generation mode, refine-spec, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
+| `confirm_ui/recommendations.stage2.json` | `stage: stage2`; complete deck solution plus conditional AI path, generation mode, refine-spec, design-spec depth, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
@@ -602,7 +602,7 @@ Read ${SKILL_DIR}/references/executor-base.md     # REQUIRED: flat/shared execut
 
 **Scheduled lock re-read (Default Generate only)**: when another page follows, re-read `spec_lock.md` once after P05/P10/P15/… per [`executor-base.md`](../references/executor-base.md) §2.1.
 
-**Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
+**Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair first; a continuous run may repair within the confirmed range per [`executor-base.md`](../references/executor-base.md) §2.1.
 
 **Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
 
