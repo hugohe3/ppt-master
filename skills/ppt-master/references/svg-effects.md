@@ -30,11 +30,11 @@ rhythm, and style; apply those that materially help.
 
 **Reference — job-first effect selection**: establish the editable semantic
 skeleton first; the Visual Job Router below lists the visual jobs an effect can
-serve. Plain construction remains valid.
+serve.
 
 | Pass | Decision |
 |---|---|
-| Skeleton / diagnose | Establish native information, relationships, and hierarchy. Image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif are the jobs an effect can serve; plain construction stays valid when none needs treatment. |
+| Skeleton / diagnose | Establish native information, relationships, and hierarchy. Image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif are the jobs an effect can serve. |
 | Surface / select | Name the target, confirm its owning subsection and fidelity, and let the Router recall candidates. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
 | Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
 
@@ -59,7 +59,7 @@ contracts are the boundary; membership in this table is not.
 | Diagnosed visual problem | Candidate technique | Authority / stop |
 |---|---|---|
 | Meaningful direction, continuous value, or center focus is missing | Linear/radial gradient or channel alpha | §6.2 / §6.3; otherwise keep solid paint |
-| Picture/card/overlay elevation or boundary is unclear | Object or picture/carrier shadow, restrained glow, or hairline | §6.4; equal peers stay flat; one light direction |
+| Picture/card/overlay elevation or boundary is unclear | Object or picture/carrier shadow, restrained glow, or hairline | §6.4; one light direction |
 | Native copy and image do not integrate | Scrim, fade, wash, vignette, off-center spotlight, or faux glass | §6.5 and the Image-Treatment Implementation Map; verify contrast; no backdrop blur |
 | Relationship state, direction, continuity, or boundary is unclear | Draft/optional/future → dash; direction → marker; undirected → solid; continuous flow → gradient stroke; repeated boundary → frame/contour/crop edge; exact grid → multi-subpath | §6.6 / §6.3; every line needs a job |
 | Short display text needs notation, silhouette, or material/image emphasis | Removed/former → strike; eyebrow distinction → tracking; display silhouette → outline/gradient; justified material/image emphasis → native picture/texture fill; luminous metric → glow; semantic list → native bullet | §6.7 / §6.3 / §6.4; no decorative body-copy treatment |
@@ -962,12 +962,12 @@ back-to-front and omit every layer without a distinct job.
 | Page / deck job | Back-to-front stack | Stop |
 |---|---|---|
 | Cover | Hero field → optional scrim/wash → purposeful opening/contour → native title, optionally paired with a prepared decorative-lettering image | Stop when copy is safe and title/field read together |
-| Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse deck language; add no effect family |
+| Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse deck language |
 | Text-led explanation | Quiet field → recurring material/contour → native hierarchy → optional local emphasis | Emphasis sits on the argument's load-bearing runs |
 | Process / system | Context field → native relation lines → nodes/labels → optional state/direction focus | Every connector stays semantic |
 | Evidence / metric | Context field → local contrast → native leaders/labels/metric → optional focus/elevation | Claims stay native |
 | Comparison | Matched planes → optional shared wash/divider → matched labels → one difference marker | Keep crop, elevation, and paint symmetric unless asymmetry is the claim |
-| Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Add no effect family or competing image |
+| Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Keep the native action legible |
 | Cross-page motif | Reuse contour, gradient direction, line language, texture, or light logic; vary scale, crop, or position by page job | Preserve recognition without copying the page or adding novelty effects |
 
 ---

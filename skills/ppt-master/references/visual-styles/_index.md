@@ -29,46 +29,46 @@ Each style keeps its own authoritative file with: shape & decoration, typography
 
 ### 1.1 Corporate / product
 
-| Visual style | Character | Typical context | Paired rendering | Illus. |
-|---|---|---|---|---|
-| [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, near-zero ornament | High-end consulting, architecture, type-led | `minimalist-swiss` | sparse |
-| [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` | supportive |
-| [`glassmorphism`](./glassmorphism.md) | Translucent glass panels, gradient light, floating depth | Modern SaaS, fintech, product launches, AI demos | `glassmorphism` | sparse |
-| [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | Tech, AI, data products, launches | `digital-dashboard` | sparse |
-| [`blueprint`](./blueprint.md) | Schematic line work on dark paper, isometric, annotated | Technical briefings, architecture, engineering | `blueprint` | supportive |
+| Visual style | Character | Paired rendering | Illus. |
+|---|---|---|---|
+| [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, near-zero ornament | `minimalist-swiss` | sparse |
+| [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | `flat` | supportive |
+| [`glassmorphism`](./glassmorphism.md) | Translucent glass panels, gradient light, floating depth | `glassmorphism` | sparse |
+| [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | `digital-dashboard` | sparse |
+| [`blueprint`](./blueprint.md) | Schematic line work on dark paper, isometric, annotated | `blueprint` | supportive |
 
 ### 1.2 Editorial / publication
 
-| Visual style | Character | Typical context | Paired rendering | Illus. |
-|---|---|---|---|---|
-| [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` | supportive |
-| [`photo-editorial`](./photo-editorial.md) | Full-bleed photography dominates, text points & captions | Architecture, design, fashion, culture, travel / destination, photo-led | `corporate-photo` | sparse |
-| [`data-journalism`](./data-journalism.md) | Multi-column micro-charts, sidebars, source lines, dense | Finance, market reviews, research, data reports | `editorial` | sparse |
-| [`brutalist`](./brutalist.md) | Newsprint density, ruled boxes, raw structure, flat | Annual reviews, research digests, manifestos | `screen-print` / `editorial` | supportive |
+| Visual style | Character | Paired rendering | Illus. |
+|---|---|---|---|
+| [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | `editorial` | supportive |
+| [`photo-editorial`](./photo-editorial.md) | Full-bleed photography dominates, text points & captions | `corporate-photo` | sparse |
+| [`data-journalism`](./data-journalism.md) | Multi-column micro-charts, sidebars, source lines, dense | `editorial` | sparse |
+| [`brutalist`](./brutalist.md) | Newsprint density, ruled boxes, raw structure, flat | `screen-print` / `editorial` | supportive |
 
 ### 1.3 Expressive / print
 
-| Visual style | Character | Typical context | Paired rendering | Illus. |
-|---|---|---|---|---|
-| [`memphis`](./memphis.md) | Clashing color blocks, geometric confetti, bold outlines | Festivals, consumer, youth, launch hype | `flat` | core |
-| [`zine`](./zine.md) | Riso misregistration, halftone, limited palette, print grit | Culture, design talks, indie brands | `screen-print` | core |
-| [`vintage-poster`](./vintage-poster.md) | Mid-century flat blocks, halftone, retro-geometric warmth | Heritage brands, historic hospitality identities, cultural retrospectives, anniversaries | `vintage-poster` | core |
-| [`paper-cut`](./paper-cut.md) | Layered cut-paper sheets, soft inter-layer shadow, tactile | Cultural / folk, children, festival, sustainability | `paper-cut` | core |
+| Visual style | Character | Paired rendering | Illus. |
+|---|---|---|---|
+| [`memphis`](./memphis.md) | Clashing color blocks, geometric confetti, bold outlines | `flat` | core |
+| [`zine`](./zine.md) | Riso misregistration, halftone, limited palette, print grit | `screen-print` | core |
+| [`vintage-poster`](./vintage-poster.md) | Mid-century flat blocks, halftone, retro-geometric warmth | `vintage-poster` | core |
+| [`paper-cut`](./paper-cut.md) | Layered cut-paper sheets, soft inter-layer shadow, tactile | `paper-cut` | core |
 
 ### 1.4 Hand-drawn / brush
 
-| Visual style | Character | Typical context | Paired rendering | Illus. |
-|---|---|---|---|---|
-| [`sketch-notes`](./sketch-notes.md) | Warm paper, doodle line work, soft pastel blocks | Education, training, onboarding, knowledge | `sketch-notes` | core |
-| [`ink-notes`](./ink-notes.md) | Pale field, black hand-ink, sparse semantic accent | Methodology, before/after, manifestos | `ink-notes` | supportive |
-| [`chalkboard`](./chalkboard.md) | Dark slate, chalk strokes, powdery pastel accents | Teaching, tutorials, classroom, academic | `chalkboard` | core |
-| [`ink-wash`](./ink-wash.md) | Rice-paper whitespace, brush marks, seal accent, still | Cultural, philosophy, heritage, 新中式 | `ink-notes` / `watercolor` | supportive |
+| Visual style | Character | Paired rendering | Illus. |
+|---|---|---|---|
+| [`sketch-notes`](./sketch-notes.md) | Warm paper, doodle line work, soft pastel blocks | `sketch-notes` | core |
+| [`ink-notes`](./ink-notes.md) | Pale field, black hand-ink, sparse semantic accent | `ink-notes` | supportive |
+| [`chalkboard`](./chalkboard.md) | Dark slate, chalk strokes, powdery pastel accents | `chalkboard` | core |
+| [`ink-wash`](./ink-wash.md) | Rice-paper whitespace, brush marks, seal accent, still | `ink-notes` / `watercolor` | supportive |
 
 ### 1.5 Specialty
 
-| Visual style | Character | Typical context | Paired rendering | Illus. |
-|---|---|---|---|---|
-| [`pixel-art`](./pixel-art.md) | Strict pixel grid, blocky forms, limited palette, flat | Gaming, retro-tech, nostalgic, game-flavored | `pixel-art` | core |
+| Visual style | Character | Paired rendering | Illus. |
+|---|---|---|---|
+| [`pixel-art`](./pixel-art.md) | Strict pixel grid, blocky forms, limited palette, flat | `pixel-art` | core |
 
 ---
 
