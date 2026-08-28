@@ -18,6 +18,7 @@ import html
 import json
 import math
 import sys
+import unicodedata
 from functools import partial
 from pathlib import Path
 
@@ -28,11 +29,13 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from svg_to_pptx.drawingml.elements import estimate_single_line_text_frame_width  # noqa: E402
-from svg_to_pptx.drawingml.utils import is_cjk_char, split_project_text_clusters  # noqa: E402
+from svg_to_pptx.drawingml.utils import split_project_text_clusters  # noqa: E402
 
 
-_CLOSING_PUNCTUATION = frozenset(',.;:!?)]」』】》，。；：！？')
-_OPENING_PUNCTUATION = frozenset('([「『【《（')
+_CLOSING_PUNCTUATION = frozenset(',.;:!?)]}、，。；：！？）》」』】”’')
+_OPENING_PUNCTUATION = frozenset('([{（《「『【“‘')
+_PREFERRED_BREAK_PUNCTUATION = frozenset('，。；：')
+_LATIN_TOKEN_CONNECTORS = frozenset("'’._:/+%@#-")
 _WEIGHTS = ('normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900')
 
 
@@ -65,66 +68,160 @@ def _format_number(value: float) -> str:
 def measure_text(
     text: str, *, size: float, family: str = 'Calibri',
     weight: str = 'normal', letter_spacing: float = 0.0,
+    include_headroom: bool = True,
 ) -> float:
     """Measure one line with the checker-owned DrawingML estimator."""
     run = dict(
         text=text, font_size=size, font_family=family,
         font_weight=weight, letter_spacing=letter_spacing,
     )
-    return estimate_single_line_text_frame_width([run])
+    return estimate_single_line_text_frame_width(
+        [run],
+        include_headroom=include_headroom,
+    )
 
 
-def _protected_units(text: str) -> tuple[list[str], str]:
-    cjk_clusters = ' ' not in text and any(is_cjk_char(ch) for ch in text)
-    separator = '' if cjk_clusters else ' '
-    units = split_project_text_clusters(text) if cjk_clusters else [token for token in text.split(' ') if token]
+def _is_latin_or_number_cluster(cluster: str) -> bool:
+    """Return whether a rendered cluster belongs to a Latin/number token."""
+    bases = [
+        ch
+        for ch in cluster
+        if unicodedata.category(ch) not in {'Mn', 'Mc', 'Me'}
+    ]
+    return bool(bases) and all(
+        ch.isdigit() or 'LATIN' in unicodedata.name(ch, '')
+        for ch in bases
+    )
+
+
+def _lexical_units(text: str) -> list[str]:
+    """Split a paragraph while keeping Latin words and numbers atomic."""
+    clusters = split_project_text_clusters(' '.join(text.split()))
+    units: list[str] = []
+    pending_space = False
+    index = 0
+    while index < len(clusters):
+        cluster = clusters[index]
+        if cluster.isspace():
+            pending_space = bool(units)
+            index += 1
+            continue
+
+        end = index + 1
+        if _is_latin_or_number_cluster(cluster):
+            while end < len(clusters):
+                next_cluster = clusters[end]
+                if _is_latin_or_number_cluster(next_cluster):
+                    end += 1
+                    continue
+                connector = (
+                    next_cluster in _LATIN_TOKEN_CONNECTORS
+                    or (
+                        next_cluster == ','
+                        and clusters[end - 1].isdigit()
+                    )
+                )
+                if (
+                    connector
+                    and end + 1 < len(clusters)
+                    and _is_latin_or_number_cluster(clusters[end + 1])
+                ):
+                    end += 2
+                    continue
+                break
+
+        prefix = ' ' if pending_space else ''
+        units.append(prefix + ''.join(clusters[index:end]))
+        pending_space = False
+        index = end
+    return units
+
+
+def _protected_units(text: str) -> list[str]:
+    units = _lexical_units(text)
     protected: list[str] = []
     for unit in units:
-        if protected and (unit[0] in _CLOSING_PUNCTUATION or protected[-1][-1] in _OPENING_PUNCTUATION):
-            protected[-1] += separator + unit
+        content = unit.lstrip()
+        if protected and (
+            content[0] in _CLOSING_PUNCTUATION
+            or protected[-1].rstrip()[-1] in _OPENING_PUNCTUATION
+        ):
+            protected[-1] += unit
         else:
             protected.append(unit)
-    return protected, separator
+    return protected
+
+
+def _joined_units(units: list[str], start: int, end: int) -> str:
+    return ''.join(units[start:end]).lstrip()
+
+
+def _preferred_break_after(text: str) -> bool:
+    tail = text.rstrip()
+    while (
+        tail
+        and tail[-1] in _CLOSING_PUNCTUATION
+        and tail[-1] not in _PREFERRED_BREAK_PUNCTUATION
+    ):
+        tail = tail[:-1]
+    return bool(tail) and tail[-1] in _PREFERRED_BREAK_PUNCTUATION
 
 
 def wrap_text(
     text: str, *, size: float, max_width: float, family: str = 'Calibri',
     weight: str = 'normal', letter_spacing: float = 0.0,
+    include_headroom: bool = True,
 ) -> tuple[list[str], list[float], list[tuple[str, float]]]:
     """Greedily wrap text and return lines, widths, and oversized units."""
-    style = dict(size=size, family=family, weight=weight, letter_spacing=letter_spacing)
-    units, separator = _protected_units(text)
+    style = dict(
+        size=size,
+        family=family,
+        weight=weight,
+        letter_spacing=letter_spacing,
+        include_headroom=include_headroom,
+    )
+    units = _protected_units(text)
     if not units:
         return [''], [0.0], []
 
     lines: list[str] = []
     widths: list[float] = []
     oversized: list[tuple[str, float]] = []
-    current, current_width = '', 0.0
-    for unit in units:
-        unit_width = measure_text(unit, **style)
-        if unit_width > max_width:
-            if current:
-                lines.append(current)
-                widths.append(current_width)
-                current = ''
+    start = 0
+    while start < len(units):
+        fit_widths: dict[int, float] = {}
+        preferred_end: int | None = None
+        end = start
+        while end < len(units):
+            candidate_end = end + 1
+            candidate = _joined_units(units, start, candidate_end)
+            candidate_width = measure_text(candidate, **style)
+            if candidate_width > max_width:
+                break
+            fit_widths[candidate_end] = candidate_width
+            if _preferred_break_after(candidate):
+                preferred_end = candidate_end
+            end = candidate_end
+
+        if end == len(units):
+            line = _joined_units(units, start, end)
+            lines.append(line)
+            widths.append(fit_widths[end])
+            break
+
+        if end == start:
+            unit = units[start].lstrip()
+            unit_width = measure_text(unit, **style)
             lines.append(unit)
             widths.append(unit_width)
             oversized.append((unit, unit_width))
+            start += 1
             continue
-        candidate = unit if not current else current + separator + unit
-        candidate_width = measure_text(candidate, **style)
-        if current and candidate_width > max_width:
-            lines.append(current)
-            widths.append(current_width)
-            current = unit
-            current_width = unit_width
-        else:
-            current = candidate
-            current_width = candidate_width
-    if current:
-        lines.append(current)
-        widths.append(current_width)
+
+        line_end = preferred_end or end
+        lines.append(_joined_units(units, start, line_end))
+        widths.append(fit_widths[line_end])
+        start = line_end
     return lines, widths, oversized
 
 
@@ -153,6 +250,11 @@ def _add_style_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--family', default='Calibri')
     parser.add_argument('--weight', choices=_WEIGHTS, default='normal')
     parser.add_argument('--letter-spacing', type=_bounded_float, default=0.0)
+    parser.add_argument(
+        '--no-headroom',
+        action='store_true',
+        help='Use the raw estimator instead of DrawingML wrapping headroom.',
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -189,7 +291,13 @@ def main(argv: list[str] | None = None) -> int:
     configure_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
-    style = dict(size=args.size, family=args.family, weight=args.weight, letter_spacing=args.letter_spacing)
+    style = dict(
+        size=args.size,
+        family=args.family,
+        weight=args.weight,
+        letter_spacing=args.letter_spacing,
+        include_headroom=not args.no_headroom,
+    )
 
     if args.command == 'measure':
         if args.stdin and args.text:

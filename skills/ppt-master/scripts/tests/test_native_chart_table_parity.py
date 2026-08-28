@@ -290,6 +290,76 @@ class NativeProjectionCheckerTests(unittest.TestCase):
                 for text in expected:
                     self.assertIn(text, findings_by_page[filename])
 
+    def test_table_parity_accepts_uniform_run_level_bold_and_color(self) -> None:
+        marker = ET.fromstring("""
+            <g data-pptx-replace-with="table" data-pptx-bounds="0 0 200 80">
+              <metadata type="application/json">
+                {
+                  "schema": "ppt-master.semantic-table.v2",
+                  "x": 0, "y": 0, "width": 200, "height": 80,
+                  "header_rows": 1,
+                  "column_widths": [100, 100],
+                  "row_heights": [40, 40],
+                  "columns": [
+                    {
+                      "align": "l",
+                      "paragraphs": [{"runs": [{
+                        "text": "Level", "bold": true, "color": "#1E1A16"
+                      }]}]
+                    },
+                    {
+                      "align": "l",
+                      "paragraphs": [{"runs": [{
+                        "text": "Meaning", "bold": true, "color": "#1E1A16"
+                      }]}]
+                    }
+                  ],
+                  "rows": [[
+                    {"paragraphs": [{"runs": [{
+                      "text": "Altar", "bold": true, "color": "#1E1A16"
+                    }]}]},
+                    {"text": "Cosmos", "color": "#2F2A25"}
+                  ]]
+                }
+              </metadata>
+              <line x1="0" y1="0" x2="200" y2="0" stroke="#999999"/>
+              <line x1="0" y1="40" x2="200" y2="40" stroke="#999999"/>
+              <line x1="0" y1="80" x2="200" y2="80" stroke="#999999"/>
+              <g font-weight="bold" fill="#1E1A16">
+                <text x="10" y="25">Level</text>
+                <text x="110" y="25">Meaning</text>
+                <text x="10" y="65">Altar</text>
+              </g>
+              <text x="110" y="65" fill="#2F2A25">Cosmos</text>
+            </g>
+        """)
+
+        joined = "\n".join(native_object_projection_warnings(marker))
+
+        self.assertNotIn("header style not projected", joined)
+        self.assertNotIn("first-column text style not projected", joined)
+
+    def test_table_parity_accepts_positioned_tspan_lines_for_paragraphs(self) -> None:
+        marker = ET.fromstring("""
+            <g data-pptx-replace-with="table" data-pptx-bounds="0 0 200 80">
+              <metadata type="application/json">
+                {
+                  "schema": "ppt-master.semantic-table.v2",
+                  "x": 0, "y": 0, "width": 200, "height": 80,
+                  "header_rows": 0,
+                  "rows": [[{"paragraphs": ["First line", "Second line"]}]]
+                }
+              </metadata>
+              <text x="10" y="25">
+                <tspan x="10" y="25">First line</tspan><tspan x="10" dy="24">Second line</tspan>
+              </text>
+            </g>
+        """)
+
+        joined = "\n".join(native_object_projection_warnings(marker))
+
+        self.assertNotIn("fallback text is missing", joined)
+
 
 class NativeTablePayloadRoundTripTest(unittest.TestCase):
     def test_marker_validation_keeps_original_table_payload(self):

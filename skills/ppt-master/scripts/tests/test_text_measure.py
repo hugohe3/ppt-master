@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import unittest
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -17,15 +19,24 @@ from svg_to_pptx.drawingml.elements import (  # noqa: E402
     estimate_single_line_text_frame_width,
 )
 from text_measure import (  # noqa: E402
+    _CLOSING_PUNCTUATION,
+    _OPENING_PUNCTUATION,
     _render_wrapped_svg,
     measure_text,
     text_box,
     wrap_text,
 )
+from svg_quality.checker import SVGQualityChecker  # noqa: E402
 
 
 SCRIPT = SCRIPTS_DIR / 'text_measure.py'
 SAMPLE = 'Current macro-free package; the main editable format in modern PowerPoint'
+CJK_PARAGRAPHS = (
+    '通体蓝瓦圆顶对应天穹，不靠体量压人，而用“圆”与“空”消解人与天地的隔阂；'
+    '蓝瓦贴合青天之色，模糊人间与天宇的边界。',
+    '三层汉白玉圆台层层递进，暗藏天时历法；古人在此祭天，以高台承接天地阳气，'
+    '把四时流转、阴阳交替的规律固化为仪式。',
+)
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -68,6 +79,19 @@ class TextMeasureTests(unittest.TestCase):
             self.assertAlmostEqual(width, direct)
             self.assertLessEqual(direct, max_width)
 
+    def test_wrap_can_request_raw_width_without_headroom(self) -> None:
+        with_headroom = measure_text(SAMPLE, size=22)
+        raw = measure_text(SAMPLE, size=22, include_headroom=False)
+
+        self.assertGreater(with_headroom, raw)
+        result = _run_cli(
+            'wrap', SAMPLE, '--size', '22', '--max-width', '900',
+            '--x', '96', '--dy', '30', '--no-headroom', '--json',
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload['widths'], [raw])
+
     def test_oversized_token_is_emitted_alone_with_warning(self) -> None:
         token = 'UnbreakableToken'
         lines, widths, oversized = wrap_text(token, size=22, max_width=20)
@@ -89,6 +113,46 @@ class TextMeasureTests(unittest.TestCase):
         self.assertEqual(lines, ['甲', '乙，', '丙丁'])
         self.assertEqual(oversized, [])
         self.assertTrue(all(width <= 45 for width in widths))
+
+    def test_cjk_wrap_fits_checker_module_bounds_and_obeys_line_punctuation(self) -> None:
+        groups: list[str] = []
+        for index, paragraph in enumerate(CJK_PARAGRAPHS):
+            lines, widths, oversized = wrap_text(
+                paragraph,
+                size=24,
+                family='Microsoft YaHei',
+                max_width=540,
+            )
+
+            self.assertEqual(oversized, [])
+            self.assertTrue(all(width <= 540 for width in widths))
+            for line in lines:
+                self.assertNotIn(line[0], _CLOSING_PUNCTUATION)
+                self.assertNotIn(line[-1], _OPENING_PUNCTUATION)
+
+            top = index * 180
+            rendered = _render_wrapped_svg(
+                lines,
+                x=100,
+                y=top + 30,
+                dy=36,
+            )
+            groups.append(
+                f'<g id="module-{index}" data-pptx-bounds="100 {top} 540 160">'
+                f'{rendered}</g>'
+            )
+
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+            'font-family="Microsoft YaHei" font-size="24">'
+            + ''.join(groups)
+            + '</svg>'
+        )
+        result = {'warnings': [], 'errors': [], 'info': {}}
+        SVGQualityChecker()._check_text_bounds(root, result)
+
+        self.assertEqual(result['warnings'], [])
+        self.assertEqual(result['errors'], [])
 
     def test_box_arithmetic_and_anchor_adjustment(self) -> None:
         expected_x = {'start': 100.0, 'middle': 60.0, 'end': 20.0}

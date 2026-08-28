@@ -659,21 +659,39 @@ def _validate_table_payload(
     return payload, table_rows, col_count, merge_layout
 
 
+def _table_cell_text_parts(cell: Any) -> list[str]:
+    """Return normalized paragraph lines for one table cell."""
+    cell_data = _cell_payload(cell)
+    paragraphs = _table_cell_paragraphs(cell_data)
+    values = (
+        [paragraph.text for paragraph in paragraphs]
+        if paragraphs is not None
+        else [cell_data.get("text")]
+    )
+    return [
+        text
+        for text in (
+            _normalized_fallback_text(value)
+            for value in values
+            if value is not None
+        )
+        if text
+    ]
+
+
 def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for row in table_rows:
         for cell in row:
-            cell_data = _cell_payload(cell)
-            paragraphs = _table_cell_paragraphs(cell_data)
-            texts = (
-                [paragraph.text for paragraph in paragraphs]
-                if paragraphs is not None
-                else [cell_data.get("text")]
-            )
-            for value in texts:
-                text = _normalized_fallback_text(value)
-                if text:
-                    counts[text] = counts.get(text, 0) + 1
+            parts = _table_cell_text_parts(cell)
+            variants = list(parts)
+            if len(parts) > 1:
+                variants.extend({
+                    _normalized_fallback_text("".join(parts)),
+                    _normalized_fallback_text(" ".join(parts)),
+                })
+            for text in variants:
+                counts[text] = counts.get(text, 0) + 1
     return counts
 
 
@@ -809,22 +827,44 @@ def _table_cell_at(
 
 
 def _table_cell_texts(cell: Any) -> set[str]:
+    parts = _table_cell_text_parts(cell)
+    texts = set(parts)
+    if len(parts) > 1:
+        texts.add(_normalized_fallback_text("".join(parts)))
+        texts.add(_normalized_fallback_text(" ".join(parts)))
+    return texts
+
+
+def _table_cell_parity_text_style(
+    cell: Any,
+) -> tuple[bool | None, str | None]:
+    """Resolve cell-level parity style, falling back to uniform run values."""
     cell_data = _cell_payload(cell)
     paragraphs = _table_cell_paragraphs(cell_data)
-    values = (
-        [paragraph.text for paragraph in paragraphs]
+    runs = (
+        [run for paragraph in paragraphs for run in paragraph.runs or ()]
         if paragraphs is not None
-        else [cell_data.get("text")]
+        and all(paragraph.runs is not None for paragraph in paragraphs)
+        else []
     )
-    normalized = [
-        _normalized_fallback_text(value)
-        for value in values
-        if value is not None
-    ]
-    texts = {text for text in normalized if text}
-    if len(texts) > 1:
-        texts.add(_normalized_fallback_text(" ".join(normalized)))
-    return texts
+
+    uniform_bold: bool | None = None
+    run_bold = {run.bold for run in runs}
+    if runs and None not in run_bold and len(run_bold) == 1:
+        uniform_bold = run_bold.pop()
+
+    uniform_color: str | None = None
+    run_colors = {run.color for run in runs}
+    if runs and None not in run_colors and len(run_colors) == 1:
+        uniform_color = run_colors.pop()
+
+    bold = cell_data.get("bold") if "bold" in cell_data else uniform_bold
+    color = (
+        _hex_or_none(cell_data.get("color"))
+        if "color" in cell_data
+        else uniform_color
+    )
+    return bold, color
 
 
 def _table_text_cells(
@@ -905,8 +945,9 @@ def _native_table_header_warnings(
     header_text_color = max(set(header_colors), key=header_colors.count) if header_colors else None
     if header_text_color is not None and style.get("header_text") is None:
         if not all(
-            _hex_or_none(_cell_payload(table_rows[row_idx][col_idx]).get("color"))
-            == record.fill
+            _table_cell_parity_text_style(
+                table_rows[row_idx][col_idx]
+            )[1] == record.fill
             for record, row_idx, col_idx in header_text_cells
             if record.fill is not None
         ):
@@ -914,7 +955,9 @@ def _native_table_header_warnings(
 
     if any(
         record.bold
-        and _cell_payload(table_rows[row_idx][col_idx]).get("bold") is not True
+        and _table_cell_parity_text_style(
+            table_rows[row_idx][col_idx]
+        )[0] is not True
         for record, row_idx, col_idx in header_text_cells
     ):
         missing.append("columns[].bold")
@@ -1023,7 +1066,9 @@ def _native_table_first_column_warnings(
     missing: list[str] = []
     if any(
         record.bold
-        and _cell_payload(table_rows[row_idx][col_idx]).get("bold") is not True
+        and _table_cell_parity_text_style(
+            table_rows[row_idx][col_idx]
+        )[0] is not True
         for record, row_idx, col_idx in first_column
     ):
         missing.append("bold")
@@ -1033,8 +1078,9 @@ def _native_table_first_column_warnings(
         if (
             record.fill is not None
             and record.fill != body_color
-            and _hex_or_none(_cell_payload(table_rows[row_idx][col_idx]).get("color"))
-            != record.fill
+            and _table_cell_parity_text_style(
+                table_rows[row_idx][col_idx]
+            )[1] != record.fill
         )
     })
     if missing_colors:

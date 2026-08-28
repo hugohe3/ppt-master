@@ -61,6 +61,8 @@ _BG_SAMPLE_BORDER = 2
 _BG_SAMPLE_MAX_SIDE = 256
 _DEFAULT_FEATHER = 4
 _BOUNDARY_OPAQUE_ALPHA = 32
+_SHEET_DIAGNOSTIC_BORDER_RATIO = 0.01
+_SHEET_DIAGNOSTIC_BUCKET_SIZE = 4
 
 
 def _log(msg: str) -> None:
@@ -174,6 +176,53 @@ def _sample_bg(cell: Image.Image, tolerance: int) -> tuple[int, int, int]:
         candidates,
         key=lambda candidate: _background_coverage(pixels, candidate, tolerance),
     )
+
+
+def _sample_sheet_border(
+    sheet: Image.Image,
+) -> tuple[tuple[int, int, int], int]:
+    """Return the dominant RGB cluster and its spread in the outer 1% ring."""
+    rgb = sheet.convert("RGB")
+    width, height = rgb.size
+    border_x = max(1, round(width * _SHEET_DIAGNOSTIC_BORDER_RATIO))
+    border_y = max(1, round(height * _SHEET_DIAGNOSTIC_BORDER_RATIO))
+    px = rgb.load()
+    pixels: list[tuple[int, int, int]] = []
+
+    for y in range(border_y):
+        pixels.extend(px[x, y] for x in range(width))
+    for y in range(max(border_y, height - border_y), height):
+        pixels.extend(px[x, y] for x in range(width))
+    for y in range(border_y, max(border_y, height - border_y)):
+        pixels.extend(px[x, y] for x in range(border_x))
+        pixels.extend(
+            px[x, y]
+            for x in range(max(border_x, width - border_x), width)
+        )
+
+    buckets = Counter(
+        tuple(channel // _SHEET_DIAGNOSTIC_BUCKET_SIZE for channel in pixel)
+        for pixel in pixels
+    )
+    dominant_bucket = buckets.most_common(1)[0][0]
+    dominant_pixels = [
+        pixel
+        for pixel in pixels
+        if tuple(
+            channel // _SHEET_DIAGNOSTIC_BUCKET_SIZE
+            for channel in pixel
+        ) == dominant_bucket
+    ]
+    dominant = tuple(
+        round(median(channel))
+        for channel in zip(*dominant_pixels)
+    )
+    channel_spreads = [
+        max(pixel[index] for pixel in dominant_pixels)
+        - min(pixel[index] for pixel in dominant_pixels)
+        for index in range(3)
+    ]
+    return dominant, max(channel_spreads)  # type: ignore[return-value]
 
 
 def _max_channel_difference(cell: Image.Image, bg: tuple[int, int, int]) -> Image.Image:
@@ -363,7 +412,7 @@ def _keying_findings(
             findings.append(
                 f"{label}: {opaque}/{len(boundary)} boundary pixels stayed opaque "
                 f"after --alpha "
-                f"(sampled background {hex_bg})"
+                f"(key background {hex_bg})"
             )
 
     if trim:
@@ -380,13 +429,18 @@ def _keying_findings(
         if touched_edges:
             findings.append(
                 f"{label}: content reaches the {'/'.join(touched_edges)} cell edge(s) "
-                f"(sampled background {hex_bg})"
+                f"(key background {hex_bg})"
             )
 
     return findings
 
 
-def _log_keying_findings(findings: list[str]) -> None:
+def _log_keying_findings(
+    findings: list[str],
+    *,
+    sheet_border: tuple[tuple[int, int, int], int] | None = None,
+    tolerance: int,
+) -> None:
     """Report incomplete flat-background keying."""
     _log("\n[WARN] Alpha extraction is incomplete — the key field or cell")
     _log("       isolation failed:")
@@ -398,6 +452,18 @@ def _log_keying_findings(findings: list[str]) -> None:
          "explicit")
     _log("       --bg <hex> and a larger --tolerance; use --inset when a drawn "
          "outer gutter is isolated from every element.")
+    if sheet_border is not None:
+        dominant, drift = sheet_border
+        hex_bg = "#{:02X}{:02X}{:02X}".format(*dominant)
+        suggested_tolerance = max(tolerance, drift)
+        _log(
+            "       Measured outer 1% border/gutter: "
+            f"dominant {hex_bg}; max channel spread {drift}."
+        )
+        _log(
+            "       Suggested rerun: "
+            f"--bg {hex_bg} --tolerance {suggested_tolerance}"
+        )
 
 
 def slice_sheet(
@@ -508,7 +574,12 @@ def slice_sheet(
             idx += 1
 
     if findings:
-        _log_keying_findings(findings)
+        sheet_border = _sample_sheet_border(sheet) if strict_alpha else None
+        _log_keying_findings(
+            findings,
+            sheet_border=sheet_border,
+            tolerance=tolerance,
+        )
         if strict_alpha:
             raise ValueError(
                 "strict alpha validation found incomplete background keying; "
