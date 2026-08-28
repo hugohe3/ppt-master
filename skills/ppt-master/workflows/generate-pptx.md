@@ -726,7 +726,7 @@ Run the command unfiltered (no `tail`/`head`/`grep`). Review the complete P01 is
 
 | Signal | Reading |
 |---|---|
-| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is `svg_to_pptx.drawingml.elements.estimate_single_line_text_frame_width(runs)`, with `${SKILL_DIR}/scripts` on `sys.path` and every run key present — `text`, `font_size`, `font_family`, `font_weight`, `letter_spacing` — since omissions under-measure |
+| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is the shared estimator, exposed as `python3 ${SKILL_DIR}/scripts/text_measure.py measure|wrap|box` — measure or wrap lines before writing them instead of estimating by hand |
 | One isolated issue tied to this page's structure | Page-local — fix and continue |
 | A recurring element appears for the first time (page furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
 

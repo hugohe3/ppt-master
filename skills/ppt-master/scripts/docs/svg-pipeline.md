@@ -954,6 +954,24 @@ Requirements:
 - Heading text matches the SVG filename
 - Sections are separated by `---`
 
+## Measuring and wrapping text before authoring
+
+`text_measure.py` imports the same single-line DrawingML width estimator used by
+the SVG quality checker.
+
+- `measure` prints one `width<TAB>text` line per input, or a JSON array with
+  `--json`.
+- `wrap` prints greedy word- or CJK-cluster-wrapped SVG text content; `--y`
+  includes the outer `<text>` element, and `--json` prints line metrics.
+- `box` prints a `data-pptx-bounds` attribute plus numeric `top` and `bottom`, or
+  a JSON bounds object with `--json`.
+
+```bash
+python3 scripts/text_measure.py measure "Editable DrawingML text" --size 22
+python3 scripts/text_measure.py wrap "Editable DrawingML text stays measurable" --size 22 --max-width 240 --x 96 --dy 30 --y 140
+python3 scripts/text_measure.py box "First line" "Second line" --x 96 --y 140 --size 22 --lines 2 --dy 30
+```
+
 ## `svg_quality_checker.py`
 
 Validate SVG technical compliance.
