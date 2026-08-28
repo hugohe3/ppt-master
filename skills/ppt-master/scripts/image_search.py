@@ -441,6 +441,7 @@ def _stage_and_validate_image(
     min_width: int,
     min_height: int,
     enforce_thumbnail_floor: bool = True,
+    metadata_dimensions: Optional[tuple[int, int]] = None,
 ) -> tuple[Path, tuple[int, int]]:
     """Materialize and validate beside the target without changing the canonical."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -460,8 +461,28 @@ def _stage_and_validate_image(
             min_height=min_height,
             enforce_thumbnail_floor=enforce_thumbnail_floor,
         ):
+            actual_dimensions = _measure_actual_image(temp_path)
+            if actual_dimensions is None:
+                measured = "measured dimensions unavailable (file unreadable)"
+            else:
+                measured = (
+                    f"measured {actual_dimensions[0]}x{actual_dimensions[1]}"
+                )
+            details = [
+                measured,
+                f"required minimum {min_width}x{min_height}",
+            ]
+            if (
+                metadata_dimensions is not None
+                and metadata_dimensions != actual_dimensions
+            ):
+                details.append(
+                    "metadata claimed "
+                    f"{metadata_dimensions[0]}x{metadata_dimensions[1]}"
+                )
             raise DownloadQualityError(
-                "downloaded image did not satisfy the requested dimensions/readability"
+                "downloaded image did not satisfy the requested "
+                f"dimensions/readability: {'; '.join(details)}"
             )
         actual_dimensions = _measure_actual_image(temp_path)
         if actual_dimensions is None:
@@ -485,6 +506,7 @@ def _stage_validated_image(
     min_width: int,
     min_height: int,
     enforce_thumbnail_floor: bool = True,
+    metadata_dimensions: Optional[tuple[int, int]] = None,
 ) -> tuple[Path, tuple[int, int]]:
     """Download and validate beside the target without changing the canonical."""
     return _stage_and_validate_image(
@@ -497,6 +519,7 @@ def _stage_validated_image(
         min_width=min_width,
         min_height=min_height,
         enforce_thumbnail_floor=enforce_thumbnail_floor,
+        metadata_dimensions=metadata_dimensions,
     )
 
 
@@ -507,6 +530,7 @@ def _stage_validated_candidate_copy(
     min_width: int,
     min_height: int,
     enforce_thumbnail_floor: bool = True,
+    metadata_dimensions: Optional[tuple[int, int]] = None,
 ) -> tuple[Path, tuple[int, int]]:
     """Stage a saved pool candidate, preserving target-extension correctness."""
     return _stage_and_validate_image(
@@ -518,6 +542,7 @@ def _stage_validated_candidate_copy(
         min_width=min_width,
         min_height=min_height,
         enforce_thumbnail_floor=enforce_thumbnail_floor,
+        metadata_dimensions=metadata_dimensions,
     )
 
 
@@ -1389,6 +1414,12 @@ def promote_candidate(
         )
         return 1
 
+    metadata_dimensions = (
+        (selected_candidate.width, selected_candidate.height)
+        if selected_candidate.width > 0 and selected_candidate.height > 0
+        else None
+    )
+
     staged_path: Optional[Path] = None
     try:
         legacy_src_path = cand_dir / candidate_filename
@@ -1401,6 +1432,7 @@ def promote_candidate(
                 dst_path,
                 min_width=min_width,
                 min_height=min_height,
+                metadata_dimensions=metadata_dimensions,
             )
         else:
             staged_path, actual_dimensions = _stage_validated_image(
@@ -1408,6 +1440,7 @@ def promote_candidate(
                 dst_path,
                 min_width=min_width,
                 min_height=min_height,
+                metadata_dimensions=metadata_dimensions,
             )
 
         item_args = argparse.Namespace(

@@ -146,7 +146,7 @@ def _patch_document(
     source: bytes,
     root: ET.Element,
     digests: dict[ET.Element, str],
-) -> bytes:
+) -> tuple[bytes, int]:
     elements = list(root.iter())
     spans = _start_tag_spans(source)
     if len(elements) != len(spans):
@@ -171,7 +171,7 @@ def _patch_document(
     patched = source
     for start, end, replacement in reversed(patches):
         patched = patched[:start] + replacement + patched[end:]
-    return patched
+    return patched, len(patches)
 
 
 def _validated_svg_first_digests(
@@ -246,16 +246,25 @@ def _atomic_write(path: Path, payload: bytes) -> None:
             temporary_path.unlink()
 
 
-def _prepare_file(path: Path) -> tuple[bytes, int, int, bool]:
-    source = path.read_bytes()
+def prepare_native_fallback_baselines(
+    source: bytes,
+    path: Path,
+) -> tuple[bytes, int, int, int]:
+    """Validate and plan fallback baselines for one in-memory SVG document."""
     try:
         root = ET.fromstring(source)
     except ET.ParseError as exc:
         raise NativeFallbackStampError(f"{path.name}: invalid SVG XML: {exc}") from exc
     digests, json_authoritative = _validated_svg_first_digests(root, path)
-    patched = _patch_document(source, root, digests)
-    changed = patched != source
-    return patched, len(digests), json_authoritative, changed
+    patched, restamped = _patch_document(source, root, digests)
+    return patched, len(digests), json_authoritative, restamped
+
+
+def _prepare_file(path: Path) -> tuple[bytes, int, int, bool]:
+    patched, svg_first, json_authoritative, restamped = (
+        prepare_native_fallback_baselines(path.read_bytes(), path)
+    )
+    return patched, svg_first, json_authoritative, restamped > 0
 
 
 def stamp_file(path: Path, *, write: bool) -> tuple[int, int, bool]:

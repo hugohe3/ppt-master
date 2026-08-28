@@ -439,36 +439,14 @@ def _merge_covered_cell_is_blank(value: Any) -> bool:
         return True
     if not isinstance(value, dict):
         return False
-    if value.get("merge_continuation") is not True:
-        if any(key != "text" for key in value):
-            return False
-    text = value.get("text")
-    if text not in {None, ""}:
+    if set(value) - {"merge_continuation", "text"}:
         return False
-    paragraphs = value.get("paragraphs")
-    if paragraphs is None:
-        return True
-    if not isinstance(paragraphs, list):
+    if (
+        "merge_continuation" in value
+        and value["merge_continuation"] is not True
+    ):
         return False
-    for paragraph in paragraphs:
-        if isinstance(paragraph, str):
-            if paragraph:
-                return False
-            continue
-        if not isinstance(paragraph, dict):
-            return False
-        if paragraph.get("text") not in {None, ""}:
-            return False
-        runs = paragraph.get("runs")
-        if runs is not None and (
-            not isinstance(runs, list)
-            or any(
-                not isinstance(run, dict) or run.get("text") not in {None, ""}
-                for run in runs
-            )
-        ):
-            return False
-    return True
+    return value.get("text") in {None, ""}
 
 
 def _resolve_table_merge_layout(
@@ -648,12 +626,20 @@ def _validate_table_payload(
     int,
     dict[tuple[int, int], _TableMergeRegion],
 ]:
+    authored_payload = payload
+    authored_rows = _table_rows(authored_payload)
     payload = expand_semantic_table_payload(payload)
     table_rows = _table_rows(payload)
     col_count = _validate_table_lengths(payload, table_rows)
     for row in table_rows:
         row.extend([""] * (col_count - len(row)))
-    merge_layout = _resolve_table_merge_layout(payload, table_rows, col_count)
+    for row in authored_rows:
+        row.extend([""] * (col_count - len(row)))
+    merge_layout = _resolve_table_merge_layout(
+        authored_payload,
+        authored_rows,
+        col_count,
+    )
     _table_header_rows(payload, len(table_rows))
     _validate_table_cell_formatting(payload, table_rows)
     return payload, table_rows, col_count, merge_layout

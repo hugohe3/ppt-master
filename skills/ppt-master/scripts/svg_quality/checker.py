@@ -93,6 +93,7 @@ try:
         PROJECT_PAINT_PROPERTIES as _PAINT_PROPERTIES,
         PROJECT_TEXT_IMAGE_FILL_ATTR as _TEXT_IMAGE_FILL_ATTR,
         detect_text_lang as _detect_text_lang,
+        is_cjk_char as _is_cjk_char,
         matrix_multiply as _matrix_multiply,
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
@@ -102,6 +103,7 @@ try:
         parse_transform_matrix as _parse_transform_matrix,
         project_mask_errors as _project_mask_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
+        split_project_text_clusters as _split_project_text_clusters,
         transform_point as _transform_point,
         unsafe_exported_font_faces as _unsafe_exported_font_faces,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
@@ -111,6 +113,7 @@ except ImportError:
     _PAINT_PROPERTIES = None
     _TEXT_IMAGE_FILL_ATTR = 'data-pptx-text-image-fill'
     _detect_text_lang = None
+    _is_cjk_char = None
     _matrix_multiply = None
     _parse_inline_style = None
     _parse_project_geometry_length = None
@@ -120,6 +123,7 @@ except ImportError:
     _parse_transform_matrix = None
     _project_mask_errors = None
     _rect_to_dml_xfrm = None
+    _split_project_text_clusters = None
     _transform_point = None
     _unsafe_exported_font_faces = None
     _validate_dml_shape_matrix = None
@@ -3279,16 +3283,14 @@ class SVGQualityChecker:
         )
 
     @classmethod
-    def _estimated_text_bounds(
+    def _resolved_text_lines(
         cls,
         text_el: ET.Element,
         parent_by_id: Dict[int, ET.Element],
         font_sizes: Dict[int, float],
         letter_spacings: Dict[int, float],
-        *,
-        include_headroom: bool = True,
-    ) -> Tuple[float, float, float, float] | None:
-        """Estimate one single- or multi-line text carrier's visual bounds."""
+    ) -> List[Tuple[ET.Element, float, float, List[Dict], float]] | None:
+        """Resolve one text carrier into the lines used by width estimation."""
         lines: List[Tuple[ET.Element, float, float, List[Dict], float]] | None
         try:
             runs = cls._resolved_single_line_text_runs(
@@ -3317,7 +3319,26 @@ class SVGQualityChecker:
                 font_sizes,
                 letter_spacings,
             )
-        if not lines:
+        return lines or None
+
+    @classmethod
+    def _estimated_text_bounds(
+        cls,
+        text_el: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+        *,
+        include_headroom: bool = True,
+    ) -> Tuple[float, float, float, float] | None:
+        """Estimate one single- or multi-line text carrier's visual bounds."""
+        lines = cls._resolved_text_lines(
+            text_el,
+            parent_by_id,
+            font_sizes,
+            letter_spacings,
+        )
+        if lines is None:
             return None
 
         bounds = [
@@ -3433,6 +3454,114 @@ class SVGQualityChecker:
         if rendered_w <= 0 or rendered_h <= 0:
             return None
         return rendered_w, rendered_h
+
+    @classmethod
+    def _text_width_diagnostic(
+        cls,
+        text_element: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+        *,
+        container_width: float,
+        include_headroom: bool,
+    ) -> str | None:
+        """Summarize the overflowing line's effective per-cluster width."""
+        if (
+            _estimate_single_line_text_frame_width is None
+            or _is_cjk_char is None
+            or _split_project_text_clusters is None
+            or not math.isfinite(container_width)
+            or container_width <= 0
+        ):
+            return None
+        lines = cls._resolved_text_lines(
+            text_element,
+            parent_by_id,
+            font_sizes,
+            letter_spacings,
+        )
+        if lines is None:
+            return None
+
+        widest: Tuple[float, List[str], float] | None = None
+        for line_element, _x, _y, runs, _font_size in lines:
+            clusters: List[str] = []
+            weighted_font_size = 0.0
+            try:
+                for run in runs:
+                    run_clusters = [
+                        cluster
+                        for cluster in _split_project_text_clusters(
+                            str(run.get('text', ''))
+                        )
+                        if not cluster.isspace()
+                    ]
+                    run_font_size = float(run['font_size'])
+                    clusters.extend(run_clusters)
+                    weighted_font_size += run_font_size * len(run_clusters)
+                raw_width = float(_estimate_single_line_text_frame_width(
+                    runs,
+                    include_headroom=include_headroom,
+                ))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if not clusters or not math.isfinite(raw_width) or raw_width <= 0:
+                continue
+            transformed = cls._transformed_rect_edge_lengths(
+                line_element,
+                (0.0, 0.0, raw_width, 1.0),
+                parent_by_id,
+            )
+            rendered_width = transformed[0] if transformed is not None else raw_width
+            if not math.isfinite(rendered_width) or rendered_width <= 0:
+                continue
+            rendered_font_size = (
+                weighted_font_size
+                / len(clusters)
+                * rendered_width
+                / raw_width
+            )
+            if widest is None or rendered_width > widest[0]:
+                widest = rendered_width, clusters, rendered_font_size
+
+        if widest is None:
+            return None
+        rendered_width, clusters, rendered_font_size = widest
+        per_cluster = rendered_width / len(clusters)
+        if not math.isfinite(per_cluster) or per_cluster <= 0:
+            return None
+
+        cjk_clusters = [
+            any(_is_cjk_char(ch) for ch in cluster)
+            for cluster in clusters
+        ]
+        if all(cjk_clusters):
+            cluster_label = 'CJK char'
+        elif not any(cjk_clusters) and all(
+            all(ord(ch) < 128 for ch in cluster)
+            for cluster in clusters
+        ):
+            cluster_label = 'Latin char'
+        else:
+            cluster_label = 'mixed char'
+
+        font_size = (
+            f'{rendered_font_size:.0f}'
+            if math.isclose(rendered_font_size, round(rendered_font_size), abs_tol=0.05)
+            else f'{rendered_font_size:.1f}'
+        )
+        width = (
+            f'{container_width:.0f}'
+            if math.isclose(container_width, round(container_width), abs_tol=0.05)
+            else f'{container_width:.1f}'
+        )
+        headroom = 'incl. headroom' if include_headroom else 'without headroom'
+        fits = max(0, math.floor(container_width / per_cluster))
+        return (
+            f'≈{per_cluster:.1f} px per {cluster_label} at {font_size}px '
+            f'{headroom}; ≈{fits} chars fit in {width} px'
+        )
 
     @staticmethod
     def _resolved_root_module_bounds(
@@ -3565,6 +3694,7 @@ class SVGQualityChecker:
         container: str,
         outer: Tuple[float, float, float, float],
         repair: str,
+        width_diagnostic: str | None = None,
     ) -> None:
         """Record a warning through 5% overflow and an error above it."""
         metrics = cls._bounds_overflow_metrics(inner, outer)
@@ -3588,6 +3718,11 @@ class SVGQualityChecker:
         )
         left, top, right, bottom = inner
         outer_left, outer_top, outer_right, outer_bottom = outer
+        width_suffix = (
+            f'; {width_diagnostic}'
+            if horizontal_ratio > 0 and width_diagnostic
+            else ''
+        )
         bucket.append(
             f'{subject} exceeds {container} on the {axes} axis: '
             f'content ({left:.1f}, {top:.1f})-({right:.1f}, '
@@ -3595,7 +3730,7 @@ class SVGQualityChecker:
             f'{outer_top:.1f})-({outer_right:.1f}, '
             f'{outer_bottom:.1f}), overflow horizontal '
             f'{horizontal_ratio:.1%}, vertical {vertical_ratio:.1%}; '
-            f'{repair}'
+            f'{repair}{width_suffix}'
         )
 
     @classmethod
@@ -3606,6 +3741,7 @@ class SVGQualityChecker:
         subject: str,
         inner: Tuple[float, float, float, float],
         canvas: Tuple[float, float, float, float],
+        width_diagnostic: str | None = None,
     ) -> bool:
         """Record one page-boundary error and return whether it overflowed."""
         metrics = cls._bounds_overflow_metrics(inner, canvas)
@@ -3614,6 +3750,11 @@ class SVGQualityChecker:
         axes, horizontal_ratio, vertical_ratio = metrics
         left, top, right, bottom = inner
         canvas_left, canvas_top, canvas_right, canvas_bottom = canvas
+        width_suffix = (
+            f'; {width_diagnostic}'
+            if horizontal_ratio > 0 and width_diagnostic
+            else ''
+        )
         result['errors'].append(
             f'{subject} exceeds the root viewBox on the {axes} axis: '
             f'content ({left:.1f}, {top:.1f})-({right:.1f}, '
@@ -3622,6 +3763,7 @@ class SVGQualityChecker:
             f'{canvas_bottom:.1f}), overflow horizontal '
             f'{horizontal_ratio:.1%}, vertical {vertical_ratio:.1%}; '
             'move or reflow the text until its estimated bounds stay on-page'
+            f'{width_suffix}'
         )
         return True
 
@@ -4070,6 +4212,14 @@ class SVGQualityChecker:
                     subject=self._text_diagnostic_label(text_element),
                     inner=page_estimated,
                     canvas=canvas,
+                    width_diagnostic=self._text_width_diagnostic(
+                        text_element,
+                        parent_by_id,
+                        font_sizes,
+                        letter_spacings,
+                        container_width=canvas[2] - canvas[0],
+                        include_headroom=False,
+                    ),
                 )
             ):
                 page_overflow_text_ids.add(id(text_element))
@@ -4116,6 +4266,14 @@ class SVGQualityChecker:
                     repair=(
                         'expand the root module bounds into available '
                         'non-overlapping space; otherwise reflow the text'
+                    ),
+                    width_diagnostic=self._text_width_diagnostic(
+                        text_element,
+                        parent_by_id,
+                        font_sizes,
+                        letter_spacings,
+                        container_width=boundary[2] - boundary[0],
+                        include_headroom=True,
                     ),
                 )
 

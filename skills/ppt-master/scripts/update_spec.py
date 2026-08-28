@@ -34,6 +34,10 @@ from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
 from project_management.project_specs import parse_spec_lock as parse_lock
+from stamp_native_fallbacks import (
+    NativeFallbackStampError,
+    prepare_native_fallback_baselines,
+)
 
 configure_utf8_stdio()
 
@@ -125,6 +129,21 @@ def _plan_font_family_updates(
         if count > 0 and new_text != text:
             planned.append((svg, new_text, count))
     return planned
+
+
+def _plan_native_fallback_updates(
+    planned: list[tuple[Path, str, int]],
+) -> tuple[list[tuple[Path, str, int]], int]:
+    """Re-stamp changed SVG text in memory before the joint publish."""
+    stamped: list[tuple[Path, str, int]] = []
+    restamped_markers = 0
+    for path, text, replacement_count in planned:
+        payload, _svg_first, _json_first, restamped = (
+            prepare_native_fallback_baselines(text.encode("utf-8"), path)
+        )
+        stamped.append((path, payload.decode("utf-8"), replacement_count))
+        restamped_markers += restamped
+    return stamped, restamped_markers
 
 
 def _publish_text_updates(updates: list[tuple[Path, str]]) -> None:
@@ -315,23 +334,7 @@ def main() -> int:
             print(f"error: {exc}", file=sys.stderr)
             return 2
         planned_svg = _plan_color_updates(svg_dir, old_value, new_value)
-        changed = [
-            (path, count)
-            for path, _text, count in planned_svg
-        ]
         lock_changes = [(key, old_value, new_value)]
-        if not args.dry_run:
-            try:
-                _publish_text_updates([
-                    *(
-                        (path, new_text)
-                        for path, new_text, _count in planned_svg
-                    ),
-                    (lock, planned_lock),
-                ])
-            except (OSError, RuntimeError, ValueError) as exc:
-                print(f"error: update was not published: {exc}", file=sys.stderr)
-                return 2
     elif section == "typography" and key == "font_family":
         family_keys = [
             name
@@ -353,25 +356,9 @@ def main() -> int:
                 {name: new_value for name in family_keys},
             )
             planned_svg = _plan_font_family_updates(svg_dir, new_value)
-            changed = [
-                (path, count)
-                for path, _text, count in planned_svg
-            ]
         except (KeyError, ValueError) as e:
             print(f"error: {e}", file=sys.stderr)
             return 2
-        if not args.dry_run:
-            try:
-                _publish_text_updates([
-                    *(
-                        (path, new_text)
-                        for path, new_text, _count in planned_svg
-                    ),
-                    (lock, planned_lock),
-                ])
-            except (OSError, RuntimeError, ValueError) as exc:
-                print(f"error: update was not published: {exc}", file=sys.stderr)
-                return 2
     else:
         print(
             f"error: {section}.{key} is not supported by update_spec.py.\n"
@@ -381,6 +368,29 @@ def main() -> int:
         )
         return 2
 
+    try:
+        planned_svg, restamped_markers = _plan_native_fallback_updates(planned_svg)
+    except (NativeFallbackStampError, UnicodeError) as exc:
+        print(f"error: native fallback baselines could not be prepared: {exc}", file=sys.stderr)
+        return 2
+
+    changed = [
+        (path, count)
+        for path, _text, count in planned_svg
+    ]
+    if not args.dry_run:
+        try:
+            _publish_text_updates([
+                *(
+                    (path, new_text)
+                    for path, new_text, _count in planned_svg
+                ),
+                (lock, planned_lock),
+            ])
+        except (OSError, RuntimeError, ValueError) as exc:
+            print(f"error: update was not published: {exc}", file=sys.stderr)
+            return 2
+
     if args.dry_run:
         for lock_key, previous, replacement in lock_changes:
             print(
@@ -388,12 +398,17 @@ def main() -> int:
                 f"{section}.{lock_key}  {previous} → {replacement}"
             )
         print(f"[dry-run] svg_output/:  {len(changed)} file(s) would be updated")
+        print(
+            f"[dry-run] native fallbacks: {restamped_markers} marker(s) "
+            "would be re-stamped"
+        )
     else:
         for lock_key, previous, replacement in lock_changes:
             print(
                 f"spec_lock.md: {section}.{lock_key}  {previous} → {replacement}"
             )
         print(f"svg_output/:  {len(changed)} file(s) updated")
+        print(f"native fallbacks: {restamped_markers} marker(s) re-stamped")
     for p, n in changed:
         suffix = "replacement" if n == 1 else "replacements"
         print(f"  - {p.name} ({n} {suffix})")

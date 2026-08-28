@@ -23,6 +23,7 @@ from svg_to_pptx.native_objects import (  # noqa: E402
 from svg_to_pptx.native_objects.table import (  # noqa: E402
     _table_border_specs,
     _table_border_xml,
+    _validate_table_payload,
 )
 from svg_to_pptx.pptx_package.cli import (  # noqa: E402
     _native_object_projection_findings,
@@ -82,6 +83,48 @@ class NativeTableBorderTests(unittest.TestCase):
         self.assertEqual(specs["diagonal_up"].style, "none")
         self.assertIn("lnTlToBr", border_xml)
         self.assertIn("lnBlToTr", border_xml)
+
+
+class NativeTableMergeTests(unittest.TestCase):
+    @staticmethod
+    def _payload(covered_cell: dict) -> dict:
+        return {
+            "schema": "ppt-master.semantic-table.v2",
+            "defaults": {
+                "cell": {
+                    "color": "#1F2937",
+                    "fill": "#FFFFFF",
+                    "padding": {"left": 8, "right": 8},
+                    "valign": "middle",
+                },
+            },
+            "rows": [[
+                {"text": "Owner", "col_span": 2},
+                covered_cell,
+            ]],
+        }
+
+    def test_merge_blankness_uses_authored_cells_before_defaults(self) -> None:
+        for covered_cell in (
+            {},
+            {"text": ""},
+            {"merge_continuation": True},
+        ):
+            with self.subTest(covered_cell=covered_cell):
+                _payload, rows, col_count, merge_layout = (
+                    _validate_table_payload(self._payload(covered_cell))
+                )
+                self.assertEqual((len(rows), col_count), (1, 2))
+                self.assertIn((0, 1), merge_layout)
+
+        for covered_cell in (
+            {"text": "authored"},
+            {"paragraphs": [{"text": ""}]},
+            {"fill": "#F1F4F8"},
+        ):
+            with self.subTest(covered_cell=covered_cell):
+                with self.assertRaisesRegex(RuntimeError, "must be blank"):
+                    _validate_table_payload(self._payload(covered_cell))
 
 
 class NativeChartExTests(unittest.TestCase):

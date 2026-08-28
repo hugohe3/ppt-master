@@ -21,9 +21,13 @@ from svg_quality.checker import SVGQualityChecker  # noqa: E402
 SVG_NS = 'http://www.w3.org/2000/svg'
 
 
-def _parse_svg(body: str, root_attributes: str = '') -> ET.Element:
+def _parse_svg(
+    body: str,
+    root_attributes: str = '',
+    view_box: str = '0 0 1000 1000',
+) -> ET.Element:
     return ET.fromstring(
-        f'<svg xmlns="{SVG_NS}" viewBox="0 0 1000 1000" '
+        f'<svg xmlns="{SVG_NS}" viewBox="{view_box}" '
         f'{root_attributes}>{body}</svg>'
     )
 
@@ -158,6 +162,51 @@ class SVGQualityCheckerBoundsTests(unittest.TestCase):
         )
         self.assertFalse(
             any('root viewBox' in error for error in result['errors'])
+        )
+
+    def test_horizontal_overflow_reports_per_cluster_width_and_capacity(
+        self,
+    ) -> None:
+        cjk_text = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往秋收冬藏'
+        module_root = _parse_svg(
+            '<g id="module" data-pptx-bounds="0 0 540 100">'
+            f'<text x="0" y="30" font-size="24">{cjk_text}</text>'
+            '</g>'
+        )
+        module_result = _empty_result()
+        SVGQualityChecker()._check_text_bounds(module_root, module_result)
+        module_error = next(
+            error
+            for error in module_result['errors']
+            if 'data-pptx-bounds on the horizontal axis' in error
+        )
+        self.assertTrue(
+            module_error.endswith(
+                '≈25.4 px per CJK char at 24px incl. headroom; '
+                '≈21 chars fit in 540 px'
+            ),
+            module_error,
+        )
+
+        page_root = _parse_svg(
+            '<g id="module" data-pptx-bounds="0 0 1000 100">'
+            f'<text x="0" y="30" font-size="24">{cjk_text}</text>'
+            '</g>',
+            view_box='0 0 540 100',
+        )
+        page_result = _empty_result()
+        SVGQualityChecker()._check_text_bounds(page_root, page_result)
+        page_error = next(
+            error
+            for error in page_result['errors']
+            if 'exceeds the root viewBox on the horizontal axis' in error
+        )
+        self.assertTrue(
+            page_error.endswith(
+                '≈24.0 px per CJK char at 24px without headroom; '
+                '≈22 chars fit in 540 px'
+            ),
+            page_error,
         )
 
     def test_root_module_overlap_is_error_with_minimal_exemptions(self) -> None:
