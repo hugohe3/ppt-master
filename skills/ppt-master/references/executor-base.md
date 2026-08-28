@@ -169,6 +169,23 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Default — stage each page with the style's composition geometry (may override when another page-fit move is stronger)**: an SVG page is a canvas, not a DOM. Resolve the page-scale move from `spec_lock.md`: a preset uses that selected style's §1 `Composition geometry`; `custom` executes `visual_style_behavior` first, then uses §1 geometry only from exact `visual_style_references` that the behavior assigns a shape or composition job. Other bases contribute only their assigned job, and an unreferenced novel custom follows its behavior alone. Treat every listed move as generative vocabulary rather than a finite menu, then apply [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's shared exact-fit geometry gate.
 - **Default — consider the planned motif direction (may override when another coherent expression better serves the deck)**: when §III `Theme` recommends a cross-page motif or element family, decide whether it earns a continuity job. If adopted, keep its reuse coherent while varying scale, crop, density, position, and content interaction by page role; otherwise adapt or decline it and establish a more fitting style-consistent expression. An explicit user/template motif remains binding.
 - **Ordinary carriers stay ordinary**: cards, icon-and-label rows, color swatches, soft shadows, and gradient fields are everyday slide carriers. Use them whenever content groups, compares, enumerates, or names a color, material, or sample, and give peers one shared treatment. When the subject itself is a color or material, draw it: a swatch is content, its value comes from the source, and it needs no lock row.
+- **Reference — everyday device menu (not a constraint, not a quota)**: the pieces most slides are built from; reach for them by page job and let the locked style set their treatment.
+
+| Device | Typical job | Realization |
+|---|---|---|
+| Gradient block or band | Cover / chapter field, title backing, zone separation | `<linearGradient>` / `<radialGradient>` in 2–3 stops of the deck hue |
+| Rounded card | One content module among peers, a feature or option block | `<rect rx>` in `secondary_bg`; a shadow only when it floats over a photo or colored panel |
+| Icon with label | Feature markers, list prefixes, step or category cues | `<use data-icon>` at 32–48 px in an accent or primary role |
+| Numbered circle or badge | Ordered steps, ranked items, chapter marks | `<circle>` + centered number; oversized numeral for a chapter |
+| Color swatch | A color, material, or sample that the content names | `<circle>` / `<rect>` filled with the subject's own value, labeled with its name and HEX |
+| KPI card | Metric name + hero number + trend or comparison | Card + number at the hero size + small annotation; icon optional |
+| Takeaway box | One-sentence conclusion under a title | Tinted band (`fill-opacity` 0.06–0.10) with the sentence in lead size |
+| Divider or rule | Separate sections, columns, header from body | Hairline `<line>` in `divider`, or a 2 px accent bar |
+| Full-bleed image + scrim | Cover, chapter divider, mood page | Image `slice` + directional gradient scrim + floating title |
+| Framed or shaped picture | Portrait, product, place, evidence photo | Circle / rounded clip on `<image>`, hairline frame, caption |
+| Quote block | Pull quote, testimonial, source sentence | Oversized quotation mark or accent rule + text at lead size + attribution |
+| Timeline or step strip | Ordered events or stages | Baseline `<line>` with ticks/nodes, or chevron presets, labels above/below |
+
 - **Inherited containers**: preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Selected Chart/Table reference adaptation is owned by [`executor-visualization.md`](./executor-visualization.md); preview effects never override project styling or structural roles.
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first compose faithful primitives and exact presets as one page geometry system; use a Boolean only when the contour itself must merge, open, or fragment. Only when neither construction works should one page-specific polygon/path replace a stack of generic arrows.
 - **Phased generation** (recommended):
