@@ -205,7 +205,7 @@
       "max_tokens": 130000
     },
     "route.generate.quick-generate": {
-      "description": "Self-contained one-pass Generate profile with source intake, the fixed planning-capability batch, a conservative audit envelope for only the resolved preset or exact custom bases, conditional resource preparation, and complete flat SVG visual-construction authorities. Ceiling raised after BUDGET_LOAD_SET reported 108610 tokens.",
+      "description": "Self-contained one-pass Generate profile with source intake, the fixed planning-capability batch, a conservative audit envelope for only the resolved preset or exact custom bases, conditional resource preparation, and complete flat SVG visual-construction authorities. Ceiling raised after BUDGET_LOAD_SET reported 128946 tokens.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -214,6 +214,7 @@
         "skills/ppt-master/workflows/profiles/quick-generate.md",
         "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md",
+        "skills/ppt-master/references/executor-base.md",
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md",
         "skills/ppt-master/references/preset-shape-vocabulary.md",
@@ -257,20 +258,20 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 120000
+      "max_tokens": 130000
     },
     "route.generate.quick-generate.beautify": {
-      "description": "Quick Generate with the shared strict 1:1 Beautify profile. Ceiling raised after BUDGET_LOAD_SET reported 116355 tokens.",
+      "description": "Quick Generate with the shared strict 1:1 Beautify profile. Ceiling raised after BUDGET_LOAD_SET reported 136685 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 130000
+      "max_tokens": 140000
     },
     "route.generate.quick-generate.image-to-pptx": {
-      "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates.",
+      "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates. Ceiling raised after BUDGET_LOAD_SET reported 156580 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate.in-hand-image",
@@ -280,10 +281,10 @@
         "skills/ppt-master/references/image-base.md",
         "skills/ppt-master/references/image-generator.md"
       ],
-      "max_tokens": 145000
+      "max_tokens": 160000
     },
     "route.generate.quick-generate.video-design": {
-      "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery. Ceiling raised after BUDGET_LOAD_SET reported 154620 tokens.",
+      "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery. Ceiling raised after BUDGET_LOAD_SET reported 178699 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -293,10 +294,10 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 175000
+      "max_tokens": 180000
     },
     "route.generate.quick-generate.template-fusion": {
-      "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion; installed Layout/Deck ownership determines flat or structured authoring. Ceiling raised after BUDGET_LOAD_SET reported 125689 tokens.",
+      "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion; installed Layout/Deck ownership determines flat or structured authoring. Ceiling raised after BUDGET_LOAD_SET reported 150785 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -305,59 +306,59 @@
       "files": [
         "skills/ppt-master/references/pptx-structure-interface.md"
       ],
-      "max_tokens": 140000
+      "max_tokens": 155000
     },
     "route.generate.quick-generate.topic-research": {
-      "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring. Ceiling raised after BUDGET_LOAD_SET reported 111104 tokens.",
+      "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring. Ceiling raised after BUDGET_LOAD_SET reported 131440 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 125000
+      "max_tokens": 135000
     },
     "route.generate.quick-generate.icon": {
-      "description": "Quick Generate with project-local bundled icon selection and synchronization; the icon capability contract is already in the fixed planning context. Ceiling raised after BUDGET_LOAD_SET reported 108610 tokens.",
+      "description": "Quick Generate with project-local bundled icon selection and synchronization; the icon capability contract is already in the fixed planning context. Ceiling raised after BUDGET_LOAD_SET reported 128946 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate"
       ],
       "files": [],
-      "max_tokens": 120000
+      "max_tokens": 130000
     },
     "route.generate.quick-generate.in-hand-image": {
-      "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring. Ceiling raised after BUDGET_LOAD_SET reported 113046 tokens.",
+      "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring. Ceiling raised after BUDGET_LOAD_SET reported 133387 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 125000
+      "max_tokens": 135000
     },
     "route.generate.quick-generate.formula": {
-      "description": "Quick Generate with direct PowerPoint-native formula marker authoring. Ceiling raised after BUDGET_LOAD_SET reported 110614 tokens.",
+      "description": "Quick Generate with direct PowerPoint-native formula marker authoring. Ceiling raised after BUDGET_LOAD_SET reported 131188 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.executor.formula"
       ],
       "files": [],
-      "max_tokens": 125000
+      "max_tokens": 135000
     },
     "route.generate.quick-generate.hyperlink": {
-      "description": "Quick Generate with direct PowerPoint-native external and same-deck hyperlink authoring. Ceiling raised after BUDGET_LOAD_SET reported 110212 tokens.",
+      "description": "Quick Generate with direct PowerPoint-native external and same-deck hyperlink authoring. Ceiling raised after BUDGET_LOAD_SET reported 130116 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.executor.hyperlink"
       ],
       "files": [],
-      "max_tokens": 125000
+      "max_tokens": 135000
     },
     "route.generate.quick-generate.ai-two-types": {
-      "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types. Ceiling raised after BUDGET_LOAD_SET reported 140175 tokens.",
+      "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types. Ceiling raised after BUDGET_LOAD_SET reported 160162 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -365,7 +366,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 155000
+      "max_tokens": 165000
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution. Ceiling raised after BUDGET_LOAD_SET reported 115146 tokens.",
@@ -380,7 +381,7 @@
       "max_tokens": 145000
     },
     "route.generate.quick-generate.visualization": {
-      "description": "Quick Generate with complete Chart/Table expression vocabularies already in the fixed planning context, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar. Ceiling raised after BUDGET_LOAD_SET reported 126726 tokens.",
+      "description": "Quick Generate with complete Chart/Table expression vocabularies already in the fixed planning context, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar. Ceiling raised after BUDGET_LOAD_SET reported 147143 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
@@ -391,7 +392,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 140000
+      "max_tokens": 150000
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; image decision and layout authorities are already in the fixed planning context. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
@@ -2071,7 +2072,7 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "4925a1ead978",
+              "fingerprint": "0d87db8a5c40",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {

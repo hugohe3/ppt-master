@@ -539,6 +539,7 @@ terminal-status rows.
 
 Read fixed references together, never file by file:
 [`shared-standards-core.md`](../../references/shared-standards-core.md),
+[`executor-base.md`](../../references/executor-base.md),
 [`svg-effects.md`](../../references/svg-effects.md),
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
 [`preset-shape-vocabulary.md`](../../references/preset-shape-vocabulary.md),
@@ -552,10 +553,11 @@ Keep one-pass-selected mode/style files and realize that direction. Exact
 actually used by a custom: apply one basis under its behavior, synthesize several
 by their stated contributions, or follow the behavior directly when none exist.
 
-Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
-first-page gate, and completion routing. Excluding that file is not a capability
-exclusion; Quick loads the shared and conditional execution authorities here
-directly. Reuse the already-loaded image-layout authorities. When any image
+`executor-base.md` binds Quick authoring exactly as it binds Default, except
+its items marked `Default only` — the persisted-plan handoff in §2 / §2.1, the
+`Generation rhythm` and first-page gate, §6, and §7 — which Quick's transient
+§2 anchors, single final checker, and export steps below own instead. Reuse the
+already-loaded image-layout authorities. When any image
 exists, read once before the first affected page and reuse throughout the valid
 execution context: [`executor-image.md`](../../references/executor-image.md)
 and [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
