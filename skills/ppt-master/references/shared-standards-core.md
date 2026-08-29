@@ -28,6 +28,10 @@ Mandatory reference for every route that authors or regenerates slide visuals th
 
 **Reference — effects vocabulary**: Default and Quick Generate load [`svg-effects.md`](./svg-effects.md); its §6.1 Visual Job Router lists the visual jobs an effect can serve. Whether any compatible technique is added is the author's call.
 
+**Reference — where expression lives**: §4.2 owns editable text form, including
+per-run inline emphasis and leading; §4.3 owns grouping. §1.4's imported-PowerPoint
+metadata applies only to import, mirror, and round-trip routes.
+
 **Fidelity labels**:
 
 | Label | Meaning |
@@ -645,7 +649,7 @@ These forms are needed only when the stated PPT behavior matters:
 
 | Desired behavior | Required form |
 |---|---|
-| One editable PPT text frame with mixed formatting or multiline prose | Use one `<text>` per logical paragraph and non-positional `<tspan>` children for inline runs. Keep the first line as direct text; later lines use direct positioned `<tspan>` children that repeat parent `x` with positive relative `dy`; an all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` may join eligible lines. A font-size change, list marker, or larger accepted gap starts another paragraph. Sibling `<text>` elements are forbidden as one paragraph's line breaks; they remain valid for independent frames. |
+| One editable PPT text frame with mixed formatting or multiline prose | Use one `<text>` per logical paragraph and non-positional `<tspan>` children for inline runs. Per-run `fill` / `font-weight` / `font-size` is retained: export walks nested runs and emits one DrawingML run per styled segment, so an emphasised phrase stays inside the same editable frame, and a positioned line-break `<tspan>` may itself contain inline runs. Keep the first line as direct text; later lines use direct positioned `<tspan>` children that repeat parent `x` with positive relative `dy`; an all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` may join eligible lines. A font-size change, list marker, or larger accepted gap starts another paragraph. Sibling `<text>` elements are forbidden as one paragraph's line breaks; they remain valid for independent frames. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Outside structured mode, the first eligible visual layer may be a direct full-canvas `<rect>` or one inside a simple single-child group. Its fill must have a registered native mapping (solid, linear/radial gradient, or preset pattern), and it must have no transform, filter, clip, rounding, or visible stroke. Export writes the fill as Slide `p:bg`; image elements remain pictures. Structured routes use the narrower explicit solid-background ownership contract in [`pptx-structure-interface.md`](./pptx-structure-interface.md). |
 | Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep represented objects Slide-local; export emits one clean Master plus Blank Layout, removes stock content placeholders/Layout inventory, and retains the standard date/footer/slide-number hooks. Do not author Master/Layout identities, layers, or slots. Without a Layout/Deck owner, Quick uses the same ownership with converter-default theme scaffolding. |

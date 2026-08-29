@@ -57,6 +57,19 @@ never compete with it.
 
 ---
 
+## Authored Expression Range
+
+**Reference — not a constraint**: what a generated page can carry. Text — inline
+emphasis runs, lead-in, kicker, pull quote, hero number, takeaway line. Geometry
+— 187 Office presets, Boolean merge, connectors, freeform, page-field and
+outline-carrier composition. Image — full-bleed field, editorial crop, shaped
+picture, registered layers, scrim and spotlight, cross-page continuity. Paint —
+gradients, channel alpha, native shadow and glow, halftone, faceted form.
+Recurrence — one cross-page motif varied by page role. Each form's syntax lives
+in the selected runtime authority's construction references.
+
+---
+
 ## Global Execution Discipline
 
 1. **Serial execution** — Follow the selected authority's steps in order. A completed non-blocking step may continue directly to the next eligible step.

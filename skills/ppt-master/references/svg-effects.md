@@ -38,6 +38,11 @@ serve.
 | Surface / select | Name the target, confirm its owning subsection and fidelity, and let the Router recall candidates. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
 | Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
 
+**Reference — page-level recipes**: §6.13 carries a back-to-front layer stack for
+cover, divider, text-led explanation, process, evidence, comparison, closing, and
+cross-page motif pages. Read it with this router rather than after the page is
+already composed.
+
 **Default — one dominant composition scaffold (may override when a second
 scaffold performs an independent communication job)**: Integrate the page-scale
 move and every active Structure / Image / Chart / Table branch into one dominant
@@ -62,6 +67,7 @@ contracts are the boundary; membership in this table is not.
 | Picture/card/overlay elevation or boundary is unclear | Object or picture/carrier shadow, restrained glow, or hairline | §6.4; one light direction |
 | Native copy and image do not integrate | Scrim, fade, wash, vignette, off-center spotlight, or faux glass | §6.5 and the Image-Treatment Implementation Map; verify contrast; no backdrop blur |
 | Relationship state, direction, continuity, or boundary is unclear | Draft/optional/future → dash; direction → marker; undirected → solid; continuous flow → gradient stroke; repeated boundary → frame/contour/crop edge; exact grid → multi-subpath | §6.6 / §6.3; every line needs a job |
+| Body copy carries a load-bearing figure, contrast, or noun that does not survive a scan | Inline emphasis run — a nested `<tspan>` with its own fill or weight inside the same paragraph | §6.7; the frame stays one editable text object |
 | Short display text needs notation, silhouette, or material/image emphasis | Removed/former → strike; eyebrow distinction → tracking; display silhouette → outline/gradient; justified material/image emphasis → native picture/texture fill; luminous metric → glow; semantic list → native bullet | §6.7 / §6.3 / §6.4; no decorative body-copy treatment |
 | Tilt, repetition, or reversible asset direction helps composition | Rotate, translate/mirror, or local `<use>` | §6.8; never mirror text, logos, or directional evidence |
 | Resolved style needs hand, print, pixel, facets, layers, ribbon, or line-plus-area | Matching constructed recipe | §6.11; no generic decorative freeform |

@@ -17,7 +17,7 @@
   },
   "file_budgets": {
     "AGENTS.md": 3250,
-    "skills/ppt-master/SKILL.md": 1250,
+    "skills/ppt-master/SKILL.md": 1500,
     "skills/ppt-master/references/executor-base.md": 12000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 3500,
@@ -29,7 +29,7 @@
     "skills/ppt-master/references/executor-web-image.md": 750,
     "skills/ppt-master/references/executor-notes.md": 1000,
     "skills/ppt-master/references/shared-standards.md": 500,
-    "skills/ppt-master/references/shared-standards-core.md": 13000,
+    "skills/ppt-master/references/shared-standards-core.md": 14000,
     "skills/ppt-master/references/svg-effects.md": 16000,
     "skills/ppt-master/references/native-data-interface.md": 7750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
@@ -54,7 +54,7 @@
         "skills/ppt-master/SKILL.md",
         "skills/ppt-master/workflows/routing.md"
       ],
-      "max_tokens": 7750
+      "max_tokens": 8000
     },
     "support.sponsor-recommendation.en": {
       "description": "English sponsor context for explicit user requests for model, AI image model, API/provider, or hosted-service recommendations.",
