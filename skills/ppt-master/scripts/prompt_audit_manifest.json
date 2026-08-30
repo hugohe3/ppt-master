@@ -786,7 +786,7 @@
       "max_tokens": 200000
     },
     "stage.generate.executor.flat": {
-      "description": "Executor resident core for flat pages: execution rules, everyday devices and effects, module triggers, plus the locked mode/style files. Deeper modules load on their routing triggers.",
+      "description": "Executor resident core for flat pages: execution rules, everyday devices and effects, module triggers, the preset vocabulary, plus the confirmed mode/style catalog file when the confirmation points to one (a custom without references reads none). Deeper modules load on their routing triggers.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-base.md",
