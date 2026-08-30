@@ -5,6 +5,7 @@ Conventions and style guides for contributors and AI agents working in this repo
 | Rule | Scope |
 |---|---|
 | [`prompt-style.md`](./prompt-style.md) | Style guide for files under `skills/ppt-master/references/` — voice, sectioning, table-first, forbidden patterns |
+| [`prompt-layers.md`](./prompt-layers.md) | What belongs in a prompt file — craft vs minimal contract vs tool documentation, where each lives, and how to move content out without losing a rule |
 | [`code-style.md`](./code-style.md) | Style guide for Python under `skills/ppt-master/scripts/` — file headers, imports, CLI entry points, error handling, no-tests rule |
 | [`language.md`](./language.md) | Language rule for agent-facing Markdown and `docs/` — one language per file, non-English as content but never as a rule, no hard-coded output language |
 

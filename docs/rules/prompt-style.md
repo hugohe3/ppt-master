@@ -122,19 +122,10 @@ across a role file plus a shared technical file produced richer pages than a
 4,000-line, 12-file mandatory bundle; the larger bundle flattened expression
 while passing every structural gate. Treat that as the working ceiling. When a
 core grows past it, shrink it by removing what is not authoring guidance —
-never by demoting an everyday capability to a trigger. Every paragraph in a
-prompt file is one of three kinds, and only the first two belong there:
-
-| Kind | Test | Where it lives |
-|---|---|---|
-| Design judgment | Changes what the page looks like or says | The phase file that makes that decision, once |
-| Minimal contract | The one canonical form the model must write, plus a boundary the tools cannot enforce | Beside the capability it governs, as one form and one line |
-| Tool documentation | Spellings the checker already rejects, import/export normalization, `--strict` behavior, converter internals, restated procedure from another phase | `scripts/docs/`, or the single owning phase file — never a second prompt file |
-
-A rule that `svg_quality_checker.py` or exporter preflight already enforces
-needs no prose beyond its canonical form: the failing check teaches it at the
-moment it matters. Verify enforcement with the checker source before moving a
-rule out; an unenforced rule that affects export keeps one line.
+never by demoting an everyday capability to a trigger. What may stay in a
+prompt file at all — craft, minimal contract, or tool documentation — and the
+procedure for moving content out are owned by
+[`prompt-layers.md`](prompt-layers.md).
 
 Default Strategist's planning bundle covers resource/preparation and high-level
 expression options without local authoring parameters, because those choices are
