@@ -1,28 +1,20 @@
 # Design Spec Structure
 
-Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. This file owns its normal authoring structure. [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) provides structural lint for readable sections and page projection; it is not an execution lock and does not require textual equality with `spec_lock.md`.
-
-Strategist reads the complete final confirmation once, writes this artifact from that retained state plus source analysis, and audits every confirmed field here. Afterward, `spec_lock.md` is authored from the completed Design Spec plus current project/page/template context; normal lock authoring never reopens `result.json`.
+Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. This file owns its authoring structure; [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) lints readable sections and page projection — it is not an execution lock and requires no textual equality with `spec_lock.md`. Strategist reads the final confirmation once, writes this artifact from that retained state plus source analysis, and audits every confirmed field here; `spec_lock.md` is then authored from the completed Design Spec plus context without reopening `result.json`.
 
 ## 1. Author the complete artifact
 
-After final confirmation, compose the entire document in active context from the retained final state, source analysis, and project context. Then create `<project_path>/design_spec.md` once, from the first line through §X.
+Compose the entire document in active context, then create `<project_path>/design_spec.md` once, first line through §X. **Depth follows the confirmed `design_spec_depth`** — `brief` (default) or `complete`; both keep every required heading and machine-read field. `brief` serves a continuous run whose author also draws the pages: §I records production mechanics without restating Stage-1 prose, §VI may leave the scenario column empty, §IX `Content` is a short block list (one bullet per block in the phrasing that fits — a sentence for prose, `·`-joined parallel fragments, `/`-joined labels — never full copy), and `Layout` is one optional line. `complete` writes full wording and layout prose; split mode, `refine_spec: true`, and preservation profiles force it.
 
-**Depth follows the confirmed `design_spec_depth`** — `brief` (default) or `complete`; both keep every required heading and every machine-read field. `brief` serves a continuous run whose author also draws the pages — §I records production mechanics without restating Stage-1 prose, §VI may leave the scenario column empty, §IX `Content` is a short block list — one bullet per block, each in the phrasing that fits it (a real sentence for prose, `·`-joined parallel fragments, `/`-joined labels) — never full page copy, and `Layout` is one optional line. `complete` writes full wording and layout prose; split mode, `refine_spec: true`, and preservation profiles force it.
-
-**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, followed by `# <Project Name> - Design Spec`. Write every required section with final values and the complete page roster; include conditional §VII only when a real catalog reference is selected. Do not create a placeholder-bearing project file, copy example rows, or patch a scaffold field by field.
-
-`project_manager.py scaffold-spec` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. Resume and refine paths edit an existing completed Design Spec rather than replacing it with a scaffold.
+**Mandatory — new-project write**: the first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, then `# <Project Name> - Design Spec`; every required section carries final values and the complete roster; conditional §VII appears only with a real catalog reference. Never write a placeholder-bearing file, copy example rows, or patch a scaffold field by field (`project_manager.py scaffold-spec` is an optional manual troubleshooting tool, not part of Generate authoring; resume and refine edit the existing completed Design Spec).
 
 ---
 
 ## 2. Exact document contract
 
-Angle-bracketed text below is authoring notation, not project content. Resolve every universal value before writing the file; omit only rows explicitly marked conditional. Keep every required `##` heading; omit §VII when no real catalog reference is selected, while §VIII remains present even with no data rows. Do not copy examples, notation tokens, or a second schema description into the project artifact.
+Angle-bracketed text is authoring notation. Resolve every universal value before writing; omit only rows marked conditional; keep every required `##` heading (§VII omitted without a catalog reference; §VIII present even with no data rows); copy no examples, notation, or schema prose into the artifact.
 
 ### 2.1 Header and project contract
-
-Start with this exact heading order:
 
 ```markdown
 <!-- ppt-master-schema: design-spec/v1 -->
@@ -64,11 +56,9 @@ Start with this exact heading order:
 | Content Area | <usable bounds> |
 ```
 
-When a template workspace is active, append exactly one line after the §I table: `- **Template Application**: <confirmed or Strategist-resolved natural-language plan>`. Omit it for free design. Never replace this prose with internal reuse/adherence ids.
+With an active template workspace, append exactly one line after the §I table — `- **Template Application**: <confirmed or Strategist-resolved natural-language plan>` — never internal reuse/adherence ids; omit it for free design.
 
 ### 2.2 Visual, typography, layout, and icons
-
-Use these exact subsections and field shapes:
 
 ```markdown
 ## III. Visual Theme
@@ -123,7 +113,7 @@ Use these exact subsections and field shapes:
 - **Composition tendency**: <non-binding macro direction; no coordinates or authoring method>
 - **Cross-page continuity**: <what may recur or vary across the roster>
 - **Spacing posture**: <dense, open, or variable by page rhythm>
-- **Spacing anchors**: <five deck-wide px values — page margin, block gap, column gutter, corner radius, body leading — kept stable across pages like the color and type anchors>
+- **Spacing anchors**: <five deck-wide px values — page margin, block gap, column gutter, corner radius, body leading — kept stable like the color and type anchors>
 
 ## VI. Icon Usage Specification
 
@@ -134,9 +124,9 @@ Use these exact subsections and field shapes:
 | --- | --- |
 ```
 
-Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when actual content requires real brand marks; it is never a separate confirmation choice. The icon table records the synced SVG pool and, at `complete` depth, broad semantic scenarios — never page placement. User-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that bundled selection. Leave the §VI table empty when no bundled or brand SVG icons are prepared. Illustrated icons are AI image resources: their production sheet and placed slice rows belong in §VIII, and only placed slices project to `spec_lock.md images`.
+Preserve Title/Body characters and resolved stacks; omit a blank Typography upgrade and never place it in a stack. Each justified recurring family override adds its role to Font Plan plus `- **<Role> stack**: <complete ordered stack>` (roles: `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, `Code` — only recurring, intentional differences; a non-locked `Role rationale` only for an extra family); never collapse distinct Title/Body stacks or drop a declared role. Each Font Size Hierarchy value is a role anchor Executor may vary by `±2px` per occurrence; a short non-structural Hero/Display size may stay unlisted only while planned at most twice — its third occurrence needs a named row. Record every recurring palette role and size anchor the plan establishes, never one-off garnish. For confirmed custom directions add `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` under Theme Style as applicable. `Stroke Width` under §VI only for a stroke library. `simple-icons` accompanies the one primary library only when real brand marks are required and is never a separate confirmation choice. The §VI table records the synced SVG pool and, at `complete` depth, broad scenarios — never page placement; leave it empty when no bundled or brand icons are prepared. Other prepared SVGs under the project `icons/` remain usable without entering that selection. Illustrated icons are AI image resources: their sheet and placed slice rows belong in §VIII, and only placed slices project to `spec_lock.md images`.
 
-When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
+When §VIII contains any `Acquire Via: ai` row, add under §III:
 
 ```markdown
 ### AI Image Strategy
@@ -146,11 +136,9 @@ When §VIII contains any `Acquire Via: ai` row, add this subsection under §III 
 - **Mood**: <confirmed mood and analogy>
 ```
 
-For a selected custom rendering, also add `Image Rendering Behavior`; add `Image Rendering References` only when the confirmed custom direction actually uses catalog material. Never add a separate image palette.
+A custom rendering adds `Image Rendering Behavior`, and `Image Rendering References` only when catalog material is actually used; never a separate image palette.
 
 ### 2.3 Visualization and image resources
-
-Use the §VII table only when at least one real Chart/Table catalog reference is selected. Always keep the §VIII table, including when it has no data rows:
 
 ```markdown
 ## VII. Visualization Reference List
@@ -164,28 +152,13 @@ Use the §VII table only when at least one real Chart/Table catalog reference is
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
-§VII lists at most one `chart|table` reference per page: canonical Template key
-plus semantic Usage. Resolve `family/key`; never derive paths from bare keys.
-§IX owns child visuals, unmatched fallbacks, and qualitative relationships as
-free `Layout` / `Visualization` prose. Layout/Deck alone owns reusable
-PowerPoint structure. Omit empty §VII and recall diagnostics; legacy rows stay
-readable, while new specs use four columns.
+§VII lists at most one `chart|table` reference per page (canonical key plus semantic Usage; resolve `family/key`, never derive paths from bare keys; omit when empty; legacy rows stay readable, new specs use four columns). §IX owns child visuals, unmatched fallbacks, and qualitative relationships as free `Layout` / `Visualization` prose; Layout/Deck alone owns reusable PowerPoint structure. In §IX `Visualization`, key every independent data chart or pure text-grid table in `kebab-case` and add one `Native-ready` map `<key>=yes|no; ...` — `yes` by default, `no` only when the native payload cannot express the object; qualitative relationships and incidental microvisuals stay unkeyed.
 
-In §IX `Visualization`, key every independent data chart/pure text-grid table
-in `kebab-case` and add one `Native-ready` map: `<key>=yes|no; ...`. Decide
-`yes` by default; use `no` only when the native payload cannot express that
-object. Qualitative relationships/read order remain unkeyed prose, as do
-incidental microvisuals.
-
-In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Write one concise, non-empty `Layout pattern` suggestion in ordinary language; optionally cite hierarchical ids from the layout library when they help recall a technique. An image-led `adaptive` row names the page job the image resolves next to the composition serving it; a `no-crop` or supporting row keeps the concise suggestion alone. Set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them. Native formulas never enter this table or `spec_lock.md images`.
-
-§VIII `Layout pattern` is a per-resource preference. When a page uses several images, repeats one image in multiple views, or combines an image with native overlays, describe the page-level relationship and participating resources in §IX `Layout` / `Images`; do not duplicate an unchanged resource row merely to encode animation sequencing.
-
-Put native paint/overlay intent in §IX `Layout` plus `Images` for imagery—not a new field; state semantic job/layering, while Executor chooses type, stops, opacity, and geometry.
+§VIII authors every planned or required resource from the confirmed source boundary: one concise non-empty `Layout pattern` suggestion in ordinary language (optionally citing hierarchical ids from the layout library; an image-led `adaptive` row names the page job the image resolves next to the composition serving it); `Crop Policy` `adaptive` or `no-crop`; `Acquire Via` `ai`, `web`, `user`, `placeholder`, or `slice`; unresolved required assets kept as `Pending` or `Needs-Manual`; native formulas never enter it. `Layout pattern` is per-resource — page-level relationships among several images, repeated views, or native overlays belong in §IX `Layout` / `Images` (no duplicate rows to encode sequencing), and native paint/overlay intent goes there as semantic job/layering while Executor chooses type, stops, opacity, and geometry.
 
 ### 2.4 Complete page roster and notes
 
-Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is a complete page brief at `complete` depth and a short block list at `brief` depth — neither is a skeleton.
+One ordered Slide block per page; count and order equal §I `Page Count`; `Content` is a complete brief at `complete` depth and a short block list at `brief` — never a skeleton.
 
 ```markdown
 ## IX. Content Outline
@@ -211,33 +184,12 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Presentation purpose**: <the confirmed communication intent from §I>
 ```
 
-When Speaker Notes is disabled, keep §X with only
-`- **Generation**: disabled`; do not write filename, duration, style, or purpose
-placeholders. An explicit notes-off/audio-on conflict blocks before authoring.
+With Speaker Notes disabled, §X keeps only `- **Generation**: disabled`; an explicit notes-off/audio-on conflict blocks before authoring. When a final/literal narration script will become notes or audio, §X `Content` names the source and says `preserve verbatim`, with the segmented script kept in `notes/total.md`.
 
-When an explicit final/literal narration script will become notes or generated
-audio, make §X `Content` name that source and say `preserve verbatim`; keep the
-full segmented script in `notes/total.md`, not in §IX or this Design Spec.
-
-Append the optional line only when the capability earns a place; never write an
-empty or `none` placeholder:
-
-```markdown
-- **Motion suggestion**: <communication job plus desired page-entry or reveal relationship/order>
-```
-
-Add `Mathematical content` whenever a Slide needs a mathematical expression preserved exactly. Store the expression body as valid LaTeX without `$...$`, `$$...$$`, `\(...\)`, or `\[...\]` source delimiters; the field does not classify inline versus structural use. This is content authority for [`native-formula.md`](../references/native-formula.md), not a formula policy, marker, or implementation request; Executor chooses ordinary text, inline native math, or block native math. Add `Visualization` / `Images` when a Slide consumes §VII/§VIII or uses a page-local visual model. Name every value-driven geometry, qualitative relationship, cell grid, and child visual here; only independent Chart/Table entries use object keys. Describe qualitative order, linkage, hierarchy, grouping, contrast, overlap, and reading path freely—not as a model name or grammar enum. §IX may choose a custom Chart/Table fallback. Native construction creates no Design Spec field; Executor discovers and selects it independently during realization. Add `Motion suggestion` whenever transition/reveal advice strengthens communication, regardless of the Custom Animations outcome; state purpose and semantic order/relationship, not registry keys, options, timing, ids, or coverage. The suggestion never activates animation execution by itself, creates content, or binds implementation. Describe required visible image states in `Layout` / `Images` only for an explicit motion requirement or an enabled Custom Animations outcome. Add keyed `Native-ready` only for independent data charts or pure text-grid tables, `Fact IDs` for sourced claims, and `Data class: scenario` for invented demo values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition; apply the same split to `Closing impact` only when the deck genuinely resolves. Roster/order/content stay authoritative. §V/§IX layout, cover/closing composition, capability, motif, §VIII image-layout, and §VII Chart/Table directions remain References unless an explicit user/template/resource constraint promotes the named property; Executor considers each and may adopt, adapt, or decline it without upstream repair. Executor owns final geometry, hierarchy, treatment, and sparse local garnish.
-
-For free-design pages, describe `Layout` through relationships, hierarchy, visual focus, and optional macro region/span suggestions; do not prescribe element-level `x`, `y`, `width`, or `height`, fixed gaps, or an authoring method. Executor owns the final page composition and may depart from the recommendation while preserving its semantic job. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
+Optional Slide lines, added only when the capability earns a place (never an empty or `none` placeholder): `Mathematical content` (a valid delimiter-free LaTeX body — content authority for [`native-formula.md`](../references/native-formula.md), not a policy or marker; Executor chooses text, inline, or block); `Visualization` / `Images` when the Slide consumes §VII/§VIII or a page-local visual model, naming every value-driven geometry, qualitative relationship, cell grid, and child visual (only independent Chart/Table entries carry keys; qualitative order, linkage, hierarchy, grouping, contrast, overlap, and reading path are free prose, never a model name or grammar enum; §IX may choose a custom fallback; native construction is discovered by Executor, never a Design Spec field); `Motion suggestion` (purpose and semantic order/relationship, never registry keys, options, timing, ids, or coverage — it never activates execution, creates content, or binds implementation; required visible image states go in `Layout` / `Images` only for an explicit motion requirement or an enabled outcome); keyed `Native-ready`; `Fact IDs` for sourced claims; `Data class: scenario` for invented values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition, and `Closing impact` the same split only when the deck genuinely resolves. Roster, order, and content stay authoritative; §V/§IX layout, cover/closing composition, capability, motif, §VIII image-layout, and §VII directions remain References Executor may adopt, adapt, or decline without upstream repair, unless an explicit user/template/resource constraint promotes a named property. For free-design pages, `Layout` describes relationships, hierarchy, focus, and optional macro region/span suggestions — never element-level `x` / `y` / `width` / `height`, fixed gaps, or an authoring method; literal geometry is preserved only when the user requires it or a mirror/template contract owns it.
 
 ---
 
 ## 3. Machine validation
 
-```bash
-python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
-```
-
-Validation reads the Markdown directly. It reports missing or out-of-order I–X sections, unresolved `[fill...]` placeholders, missing per-slide `Audience move`, and a missing §III `AI Image Strategy` when an §VIII table selects `ai` acquisition.
-
-The schema validates structure only. Strategist role modules own field meaning, recommendation logic, page planning, image policy, and template policy. `spec_lock.md` owns stable execution anchors and routing selected in context; it is not an exhaustive value projection. On divergence, repair the Design Spec from the retained final state when Gate 1 fails, then re-author affected lock anchors from the audited Design Spec and current context. Never reopen `result.json` merely to author or validate the lock, and never use the lock to overwrite a valid Design Spec decision.
+`python3 skills/ppt-master/scripts/project_manager.py validate <project_path>` reads the Markdown directly and reports missing or out-of-order I–X sections, unresolved `[fill...]` placeholders, missing per-slide `Audience move`, and a missing §III `AI Image Strategy` when §VIII selects `ai`. The schema validates structure only; Strategist modules own meaning, and `spec_lock.md` owns stable anchors and routing, not an exhaustive projection. On divergence, repair the Design Spec from the retained final state when Gate 1 fails, then re-author affected lock anchors; never reopen `result.json` to author the lock or let the lock overwrite a valid Design Spec decision.

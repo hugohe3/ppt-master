@@ -280,3 +280,37 @@ See [`pptx-transitions.md`](./pptx-transitions.md) for the symmetric page-motion
 core, MCE handling, and slide-advance contract.
 See [`video-motion-plan.md`](./video-motion-plan.md) for the downstream
 animation-to-video contract.
+
+## 8. Sidecar Field Reference
+
+`animations.json` fields as validated by `animation_config.py validate` and consumed by export; the [`customize-animations`](../../workflows/stages/customize-animations.md) stage owns when and why each is written.
+
+| Field | Behavior |
+|---|---|
+| `defaults.transition` / `slides.<slide>.transition` | Deck-wide or slide-specific page transition object |
+| `transition.effect` | One of the 48 canonical native effects, or `none` (removes only the visual effect; timed advance remains) |
+| `transition.effect_options` | Only the selected effect's PowerPoint Effect Options (`pptx_animations.py --describe-transition <effect>`); requires an explicit `effect` |
+| `transition.duration` | Finite seconds greater than zero |
+| `transition.auto_advance` | Optional finite non-negative seconds before automatic advance; click stays enabled; valid with `effect: none` |
+| `transition.sound` | Optional project-relative `.wav` cue; valid with `effect: none`; a slide override of `null` clears an inherited default sound |
+| `morph.from` | Immediately preceding SVG stem for an explicit deterministic Morph transition |
+| `morph.pairs.<key>.from` / `.to` | Unique source/destination direct-root group ids receiving the shared PowerPoint name `!!<key>`; Morph by object only |
+| `defaults.animation` / `slides.<slide>.animation` | Deck-wide or slide-specific default object-animation behavior |
+| `animation.effect` | Default object effect: one canonical key, `auto`, `mixed`, `random`, or `none` |
+| `animation.duration` / `animation.stagger` / `animation.trigger` | Default schedule duration, delay between rows, and Start mode (`after-previous`, `with-previous`, `on-click`) |
+| `groups.<id>.effects[]` | Non-empty ordered array for a multi-duty lifecycle; every row names `effect`; cannot coexist with legacy single-effect fields in the same group |
+| `groups.<id>.effect` | Backward-compatible single-row form; old short names are read-only compatibility inputs |
+| `effects[].trigger` / legacy `trigger` | Row-specific Start mode; omitted values inherit `animation.trigger` |
+| `order` | Page-wide order for ordinary rows; ties keep SVG group order, then `effects[]` index; `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
+| `delay` | Row-specific seconds added to the resolved Start or shape trigger |
+| `duration` | Per-row schedule duration; scalable native trees keep internal ratios, while `entrance_appear` and instantaneous presets keep their authored duration and use the value for `after-previous` spacing |
+| `effect_options` | Effect-specific parameters (`direction`, `amount`, `color`, `font_name`, `relative`, `size`) limited to what the selected effect supports (`pptx_animations.py --describe <effect>`); requires an explicit canonical `effect` in the same block or row; `font_name` is one target-installed face |
+| `trigger_shape` | Different top-level group id for native **On Click of**; row-only, not inherited; implies `on-click` and accepts an explicit row `trigger` only when it is also `on-click` |
+| `repeat_count` / `repeat_duration` | Repeat count or total repeat span; mutually exclusive |
+| `auto_reverse`, `rewind` | Reverse each cycle and/or restore the pre-animation state |
+| `accelerate`, `decelerate`, `bounce_end` | `0..1` timing ratios; acceleration plus deceleration ≤ `1`; bounce needs an interpolated effect and cannot combine with deceleration |
+| `restart` | `always`, `when-not-active`, or `never` |
+| `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
+| `sound` | Object-animation cue: project-relative or absolute `.m4a` / `.mp3` / `.wav` on low-level inputs; bundled selections use the synced project-relative `.wav` path |
+
+An unlisted SVG inherits the resolved deck-wide settings; a listed slide may contain only the `transition`, `animation`, `groups`, or `morph` fields it overrides; chrome groups (`bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` / `logo` / `pagenumber`) are pinned to `none` unless explicitly named without a structural marker; a group carrying `data-pptx-layer` or a static role/placeholder marker never animates.
