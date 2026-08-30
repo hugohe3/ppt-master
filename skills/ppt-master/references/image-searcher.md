@@ -236,7 +236,7 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
    ([`executor-web-image.md`](./executor-web-image.md) §1);
 6. When the query variants, ranked pages, configured provider chain, permitted license stages, and eligible adopted-page package fallback are exhausted, mark the row `Needs-Manual`.
 
-**This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §6). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
+**This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §3). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
 
 ### Visual selection candidates (multimodal Generate; standalone opt-in)
 
@@ -363,7 +363,7 @@ Use `attribution_text` from the manifest as the **starting point**. Compress whe
 
 ## 8. Failure Handling (web-specific)
 
-Extends [`image-base.md`](./image-base.md) §6.
+Extends [`image-base.md`](./image-base.md) §3.
 
 | Situation | Behavior |
 |---|---|
@@ -384,7 +384,7 @@ as an intermediate success; `Failed` or `Needs-Manual` returns `1`.
 
 ## 9. Handoff with the Intent Owner
 
-Reference field is **intent description**, not a query. See [`image-base.md`](./image-base.md) §8 for the rule.
+Reference field is **intent description**, not a query. See [`image-base.md`](./image-base.md) §1 for the rule.
 
 Keep it intact as the acceptance contract. In Default Generate the owner is Strategist; in Quick Generate it is the current main agent's active-context resource decision. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
 
@@ -408,7 +408,7 @@ Executor does not interpret raw license strings — `license_tier` is sufficient
 
 ## 11. Task Completion Checkpoint
 
-In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
+In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §4:
 
 - [ ] Every required web row is `Sourced` with a downloaded original at `project/images/<filename>` OR is marked `Needs-Manual`; `Needs-Selection` remains incomplete
 - [ ] Each multimodal `Sourced` web image was selected from a bounded ranked thumbnail page and only its winner original was downloaded; a no-pass page advanced through remaining pages before query replacement. Without vision, only strict metadata candidates may become `Sourced`, with `selection_method: metadata-ranked`; unresolved or visually unprovable intent becomes `Needs-Manual` without pretending a visual check occurred

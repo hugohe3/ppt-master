@@ -703,7 +703,7 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 **Workflow** (manual fulfillment is already authorized; do not ask again inside acquisition):
 
 1. Verify `images/image_prompts.json` was written
-2. Set `status: "Needs-Manual"` on every affected item per [`image-base.md`](./image-base.md) §6
+2. Set `status: "Needs-Manual"` on every affected item per [`image-base.md`](./image-base.md) §3
 3. Apply the mode boundary:
    - Default Generate: continue to Step 6; Executor draws a dashed placeholder, but Step 7 blocks every export command until the supplied file is validated and the placeholder is replaced
    - Quick Generate: retain the prompt and `Needs-Manual` status, and block direct export until every required supplied file is validated and its row is reconciled to `Generated`

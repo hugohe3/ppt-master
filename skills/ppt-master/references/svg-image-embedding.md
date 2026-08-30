@@ -47,7 +47,7 @@ and filter/clip contracts.
    - Quick Generate → current main agent resolves the required resource in active context; explicit user paths/URLs/choices win, unspecified choices use automatic resolution, no interaction or persisted roster
 2. Prepare project-local resources before SVG authoring:
    - user → materialize the explicit source under project/images/ → Existing
-   - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §3 before ordinary `Acquire Via` dispatch
+   - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §1 before ordinary `Acquire Via` dispatch
    - Pending / Failed + ai  → Image_Generator executes the selected path → Generated, Default recovery decision, or Quick no-AI replan
    - Pending / Failed + web + vision → Image_Searcher saves at most 8 ranked previews → Needs-Selection → promote one original or fetch the next page → Sourced / Needs-Manual
    - Pending / Failed + web without vision → Image_Searcher accepts only a strict metadata-ranked best-only candidate and records that method → Sourced or Needs-Manual
