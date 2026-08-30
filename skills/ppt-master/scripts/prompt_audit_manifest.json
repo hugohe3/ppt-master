@@ -64,7 +64,13 @@
     "skills/ppt-master/workflows/stages/generate-audio.md": 4000,
     "skills/ppt-master/workflows/profiles/beautify-pptx.md": 5000,
     "skills/ppt-master/workflows/profiles/image-to-pptx.md": 3250,
-    "skills/ppt-master/workflows/edit-native-pptx.md": 4250
+    "skills/ppt-master/workflows/edit-native-pptx.md": 4250,
+    "skills/ppt-master/workflows/create-template.md": 10000,
+    "skills/ppt-master/references/template-designer.md": 7000,
+    "skills/ppt-master/workflows/create-template/create-brand.md": 1500,
+    "skills/ppt-master/workflows/create-template/create-style.md": 2000,
+    "skills/ppt-master/workflows/create-template/create-layout.md": 1500,
+    "skills/ppt-master/workflows/create-template/create-deck.md": 1500
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1404,15 +1410,6 @@
           "skills/ppt-master/templates/styles/workshop-teaching/templates/design_spec.md"
         ],
         "reason": "Style preset specs share the same method-only scope boundary by design."
-      },
-      {
-        "kind": "exact",
-        "fingerprint": "272bdc60fa52",
-        "paths": [
-          "skills/ppt-master/workflows/create-template/create-brand.md",
-          "skills/ppt-master/workflows/create-template/create-style.md"
-        ],
-        "reason": "Mutually exclusive child workflows share the same resolved-workspace handoff contract."
       }
     ]
   },
@@ -2000,12 +1997,6 @@
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
-              "path": "skills/ppt-master/workflows/create-template.md",
-              "role": "reference",
-              "fingerprint": "b26d839b24b9",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
               "path": "skills/ppt-master/workflows/stages/apply-template-workspace.md",
               "role": "consumer",
               "fingerprint": "8490326d972a",
@@ -2039,12 +2030,6 @@
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
               "fingerprint": "a67117d67b3e",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
-              "path": "skills/ppt-master/workflows/create-template.md",
-              "role": "reference",
-              "fingerprint": "40b13ab57503",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             }
           ]
@@ -2317,6 +2302,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/narration.md",
         "reason": "Narration tool behavior and flag reference; the generate-audio stage carries the procedure and confirmation contract."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/template-tools.md",
+        "reason": "Template creation tool behavior reference; create-template.md and template-designer.md carry the procedure and contract."
       }
     ]
   }

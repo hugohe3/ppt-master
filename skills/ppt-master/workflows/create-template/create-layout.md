@@ -4,54 +4,21 @@ description: Create Layout child workflow for a brand-neutral reusable page-stru
 
 # Create Layout Workflow
 
-Enter this child workflow only after [`Create Template`](../create-template.md) dispatches `kind: layout`.
+Enter only after [`Create Template`](../create-template.md) dispatches `kind: layout`. Create Template owns dispatch, the source taxonomy, scope, the confirmation gate, collision preflight, the structured authoring contract, validation commands, registration, completion, and the Generate handoff; Create Layout owns structure-only interpretation, layout brief fields, the brand-neutral spec, the SVG roster, and layout validation.
 
-## Responsibility Boundary
+**Hard rule — child workflow, not a top-level route**: executes only inside Create Template Steps 1–8.
 
-| Owner | Responsibilities |
-|---|---|
-| Create Template | Child-workflow dispatch plus the shared source taxonomy, `library` / `project` scope, confirmation gate, collision preflight, structured authoring contract, validation commands, registration, completion, and Generate PPTX handoff |
-| Create Layout | Structure-only interpretation, layout-specific brief fields, brand-neutral `design_spec.md`, SVG roster, and layout-specific validation |
+**Hard rule — brand-neutral structure only**: a layout owns canvas, page grammar, Master/Layout families, slot geometry, semantic text roles, alignment/wrapping/capacity behavior, page types, image behavior, density rhythm, and the prototype roster — no palette, typeface/weight identity, final type scale, logo, voice, icon identity, communication objective, audience outcome, narrative sequence, scenario copy, or example content downstream must preserve. Neutral colors, safe fonts, and provisional sizes may appear in prototypes for review; they are preview values, never identity or a locked scale. Downstream `layout` scope resolves appearance from Brand, reading mode, and project typography; `mirror` scope preserves literal source formatting.
 
-**Hard rule — child workflow, not a top-level route**: Create Layout executes only inside Create Template. It reuses the parent workflow's Steps 1–8 and never creates a competing entry route or second confirmation gate.
-
-**Hard rule — brand-neutral structure only**: A layout owns canvas, page grammar, Master/Layout families, slot geometry, semantic text roles, alignment/wrapping/capacity behavior, page types, image behavior, density rhythm, and the SVG prototype roster. It owns no brand palette, typeface/weight identity, final resolved type scale, logo, voice, icon identity, communication objective, audience outcome, required narrative sequence, fixed scenario copy, or example content that downstream generation is expected to preserve.
-
-Neutral colors, safe fonts, and provisional sizes may appear in SVG prototypes so the structure is reviewable. They are preview values, not a locked identity segment or final project type scale, and must not be written as brand truth in `design_spec.md`. The reusable rule is the text role and its spatial behavior. Downstream `layout` scope resolves actual appearance from Brand, reading mode, and confirmed project typography; explicit `mirror` scope preserves the literal source formatting instead.
-
-## Invocation Points
-
-1. Use §1–2 below while executing Create Template Steps 1–3.
-2. After Create Template Step 4 preflights `<template_workspace>` and `<design_spec_path>`, use §3 to author or materialize the layout workspace under the shared structured contract.
-3. Apply §4 in addition to Create Template Step 5, then continue through shared Steps 6–8.
+**Invocation**: §1–2 during Create Template Steps 1–3; after Step 4 preflights the workspace, §3 authors or materializes under the shared structured contract; §4 adds to Step 5, then shared Steps 6–8.
 
 ## 1. Layout Input Interpretation
 
-Use Create Template Step 1 for source ingestion and internal creation-strategy feasibility. Interpret source evidence only for reusable structure:
-
-- Canvas dimensions, grid, zones, page taxonomy, repeated chrome, image placement, density rhythm, placeholder geometry, semantic text roles, alignment, wrapping, and capacity may become layout facts or suggestions.
-- Colors, font families, branded weight choices, final absolute sizes, logos, voice, and icon style remain source context only. Do not copy them into the layout identity because a layout has no identity segment.
-- A source scenario may inform the content shapes or delivery conditions the geometry can support. Do not turn that fit into an application contract. If the reusable artifact prescribes the objective, outcome, narrative sequence, boilerplate, or content policy, return to Create Template dispatch and select Create Deck.
-- When the source is branded, state in plain language that Create Layout will omit the identity. The AI therefore derives an authored internal strategy. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
-- Internally, `standard` and `fidelity` inspect the complete source inventory and author a new Master/Layout/slot system. `mirror` may be derived only when the source-Slide-reachable contract is complete, brand-neutral, and application-neutral; it preserves that reachable structure and its visual facts in a new workspace without modifying the source. Never ask the user to choose among these labels.
-
-Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets may define or illustrate reusable structure. In a mixed bundle, combine those channels without treating identity-only evidence as layout ownership. Exact user-authored instructions remain decisions whether they arrive in chat or a user-written brief file; vague prose remains suggested interpretation until the shared confirmation gate.
+Use Create Template Step 1 for ingestion and strategy feasibility, reading evidence only for reusable structure: canvas, grid, zones, page taxonomy, repeated chrome, image placement, density rhythm, placeholder geometry, semantic text roles, alignment, wrapping, and capacity may become facts or suggestions; colors, font families, weights, absolute sizes, logos, voice, and icon style stay context only. A source scenario may inform supported content shapes and delivery conditions but never becomes an application contract — if the artifact prescribes objective, outcome, sequence, boilerplate, or content policy, return to dispatch and select Create Deck. When the source is branded, state plainly that identity will be omitted (so an authored strategy is derived); if the user wants identity retained, return to dispatch for Create Deck before the marker. `standard` / `fidelity` inspect the complete inventory and author a new system; `mirror` is derived only when the source-Slide-reachable contract is complete, brand-neutral, and application-neutral. Direct text, converted documents, images, and assets may define structure; identity-only evidence never grants ownership; user-authored instructions are decisions in any carrier, vague prose stays suggested until the gate.
 
 ## 2. Layout Brief and Schema
 
-Add these child-owned requirements to Create Template Step 2:
-
-| Field | Requirement |
-|---|---|
-| Layout ID and display name | Required; `layout_id` is a filesystem-safe ASCII slug |
-| Structural use cases | Required; describe content shapes and delivery settings the geometry can support, not communication objectives, audience outcomes, narrative sequence, or brand tone |
-| Canvas | Required; exact format, dimensions, and `viewBox` |
-| Page grammar | Required; page types, variants, grids, zones, semantic text roles, alignment/wrapping/capacity, density rhythm, and image behavior |
-| Native structure | Required; Master families, Layout ownership, slot vocabulary, and zero-slot Layouts where intentional |
-| Creation intent | Required as natural-language prose: what should remain recognizable, what should become reusable structure, and how broad the page vocabulary should be. The AI derives `replication_mode` internally from this intent and the evidence. |
-| Identity stripping | Required when branded reference material exists; list the identity facts intentionally excluded |
-
-Write this structure-only schema:
+Add to Create Template Step 2 (all required unless noted): Layout ID (ASCII slug) and display name; structural use cases (content shapes and delivery settings, not objectives, outcomes, sequence, or tone); canvas (exact format, dimensions, `viewBox`); page grammar (types, variants, grids, zones, text roles, alignment/wrapping/capacity, density, image behavior); native structure (Master families, Layout ownership, slot vocabulary, intentional zero-slot Layouts); creation intent as prose (what stays recognizable, what becomes reusable, how broad the vocabulary is — `replication_mode` is derived from it); identity stripping (required for branded references: the identity facts excluded).
 
 ```markdown
 ---
@@ -77,52 +44,14 @@ page_types: [cover, toc, chapter, content, ending]
 ## VII. Placeholder Overrides
 ```
 
-`replication_mode` is required machine provenance, not a user-facing choice. Omit `Placeholder Overrides` when no override exists. Omit Template Overview, Color Scheme, Typography, Logo, Voice, and every other identity section. Do not write `primary_color`.
-
-`Signature Design Elements` describes only reusable structure, including text-role hierarchy and spatial behavior without locking the final font identity or type scale. `Page Roster` lists every SVG with its Master/Layout identity, picker name, intended content shape, and slot behavior.
-
-`category: scenario` is a discovery-fit label only. It does not authorize a
-Template Overview or scenario-specific content policy.
+`replication_mode` is machine provenance, never a user choice. Omit `Placeholder Overrides` without overrides; omit Template Overview, Color Scheme, Typography, Logo, Voice, and every identity section; never write `primary_color`. `Signature Design Elements` describes reusable structure including text-role hierarchy and spatial behavior without locking font identity or scale; `Page Roster` lists every SVG with Master/Layout identity, picker name, content shape, and slot behavior. `category: scenario` is a discovery label and authorizes no Overview or scenario content policy.
 
 ## 3. Author or Materialize the Layout
 
-Follow Create Template Step 4 and the shared Template_Designer contract with `kind: layout`, `kind_dir: layouts`, and `id_key: layout_id` fixed. Do not ask the user to choose the kind again.
-
-The output is:
-
-```text
-<template_workspace>/
-├── templates/        # design_spec.md (project scope: design_spec.layout.<layout_id>.md) + SVG prototypes
-├── images/           # optional structural/example bitmaps
-├── icons/
-│   └── imported/     # optional imported vectors
-└── exports/          # conditional review evidence
-```
-
-Every SVG is a complete preview and declares one root Master and Layout under the shared structured contract. For authored modes, neutral preview paint must remain replaceable downstream. For mirror, first prove the source contract already satisfies the complete Layout boundary, then preserve its structure and supported visuals exactly as allowed by Create Template. Never call removal or replacement of source identity or application rules “mirror”.
+Follow Create Template Step 4 and the Template_Designer contract with `kind: layout`, `kind_dir: layouts`, `id_key: layout_id` fixed; never ask for the kind again. Output: `templates/` (spec plus prototypes), optional `images/` and `icons/imported/`, conditional `exports/`. Every SVG is a complete preview declaring one root Master and Layout; authored neutral paint stays replaceable downstream; for mirror, first prove the source contract satisfies the complete Layout boundary, then preserve its structure and supported visuals exactly as Create Template allows — removing or replacing identity or application rules is never "mirror".
 
 ## 4. Layout Validation
 
-In addition to Create Template Steps 5–6, verify:
+In addition to Create Template Steps 5–6: the spec contains `layout_id`, `kind: layout`, `summary`, canvas fields, `replication_mode`, `native_structure_mode: structured`, `page_count`, `page_types`; `layout_id` matches the library workspace ID; Signature Design Elements and Page Roster exist while Template Overview, application language, and identity sections do not; no `primary_color`, palette, typeface/weight, type-scale, logo, voice, or icon-identity claim (structural text roles and capacity rules may remain); every SVG satisfies the shared Master/Layout/slot contract with a bidirectionally complete roster; neutral paint is not described as identity; `replication_mode: mirror` is rejected for any source retaining organization identity or application rules.
 
-- The Design Spec contains `layout_id`, `kind: layout`, `summary`, canvas fields, `replication_mode`, `native_structure_mode: structured`, `page_count`, and `page_types`.
-- `layout_id` matches the confirmed workspace ID in library scope.
-- Signature Design Elements and Page Roster exist; Template Overview, application-contract language, and all identity sections do not.
-- `primary_color`, brand palette, brand typeface/weight claims, final project type-scale claims, logo, voice, and icon-identity claims are absent; structural text roles and capacity rules may remain.
-- Every SVG in the roster satisfies the shared Master/Layout/slot contract and the roster is bidirectionally complete.
-- Neutral prototype paint is not described as a locked brand identity.
-- `replication_mode: mirror` is rejected for any source that retains organization-specific identity or reusable application rules; use authored Layout mode or Create Deck instead.
-
-For library scope, Create Template Step 5 validates the directory/index identity with:
-
-```bash
-python3 skills/ppt-master/scripts/register_template.py <layout_id> --kind layout --dry-run
-```
-
-After that gate and any triggered Create Template Step 6 pass, Step 7 registers with:
-
-```bash
-python3 skills/ppt-master/scripts/register_template.py <layout_id> --kind layout
-```
-
-For project scope, skip both commands. The exact workspace root becomes the next Generate PPTX Step 3 input; downstream identity remains a Strategist decision unless an explicit Brand or Deck workspace is also supplied.
+Library scope validates with `register_template.py <layout_id> --kind layout --dry-run` and, after Step 5 and any triggered Step 6, registers with `register_template.py <layout_id> --kind layout`; project scope skips both. The exact root becomes the next Generate Step 3 input; identity remains a Strategist decision unless an explicit Brand or Deck workspace is also supplied.

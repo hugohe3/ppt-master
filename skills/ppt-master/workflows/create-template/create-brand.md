@@ -4,78 +4,36 @@ description: Create Brand workflow for an identity-only reusable workspace witho
 
 # Create Brand Workflow
 
-Enter this child workflow only after [`Create Template`](../create-template.md) dispatches `kind: brand`.
+Enter only after [`Create Template`](../create-template.md) dispatches `kind: brand`. Create Template owns dispatch, scope, the confirmation gate, collision preflight, registration, completion, and the Generate handoff; Create Brand owns brand analysis, the identity brief, the identity-only spec, adopted assets, and brand validation.
 
-## Responsibility Boundary
+**Hard rule — child workflow, not a top-level route**: executes only inside Create Template under its single shared gate; never a competing entry or second confirmation.
 
-| Owner | Responsibilities |
-|---|---|
-| Create Template | Child-workflow dispatch plus the shared `library` / `project` scope, confirmation gate, collision preflight, registration, completion, and Generate PPTX handoff contract |
-| Create Brand | End-to-end brand-specific analysis, identity brief, identity-only `design_spec.md`, adopted brand assets, and brand-specific validation |
+**Hard rule — identity only**: a brand owns color, typography, logo, voice, and icon style — no canvas, spacing system, page roster, SVG prototype, Master/Layout graph, placeholder contract, or preview PPTX.
 
-**Hard rule — child workflow, not a top-level route**: Create Brand executes only inside Create Template. It uses the parent workflow's single shared confirmation/preflight/registration contract and never creates a competing entry route or second confirmation gate.
-
-**Hard rule — identity only**: A brand owns color, typography, logo, voice, and icon style. It owns no canvas, spacing system, page roster, SVG prototype, Master/Layout graph, placeholder contract, or preview PPTX.
-
-## Invocation Points
-
-1. Use §1–2 below for brand analysis and identity fields, then execute Create Template Steps 2–3 with those child-owned fields.
-2. After Create Template Step 4 resolves and preflights `<template_workspace>` and `<design_spec_path>`, use §3 to materialize the confirmed identity.
-3. Run §4, then return its evidence to Create Template Steps 5, 7, and 8. Create Brand always skips shared Step 6.
+**Invocation**: §1–2 feed Create Template Steps 2–3; after Step 4 resolves and preflights `<template_workspace>` / `<design_spec_path>`, §3 materializes; §4 returns evidence to Steps 5, 7, and 8; Step 6 is always skipped.
 
 ## 1. Brand Input Analysis
 
 | Input | Read path | Facts it may support |
 |---|---|---|
-| SVG logo | Read the SVG and inspect literal `fill` / `stroke` values | Logo asset and literal colors |
+| SVG logo | Inspect literal `fill` / `stroke` | Logo asset and literal colors |
 | PNG/JPG logo | Inspect visually | Logo asset and approximate colors |
-| Official brand site or manual | Convert/read the source | Published colors, fonts, voice, usage restrictions |
-| Branded PPTX/PDF | Use the existing source converters and theme/package facts | Observed colors, typography, logo assets, and tone |
-| Pasted text, Markdown, or text document | Use direct text or the parent workflow's converted text output | Explicit identity values, usage rules, voice, and restrictions |
-| Verbal brief | Use the user's words directly | Any identity field the user explicitly supplies |
-| Mixed reference bundle | Run every applicable row and retain per-source provenance | Combined identity evidence; unresolved conflicts go to the shared confirmation gate |
-| No reference | No analysis | Empty skeleton only when the user explicitly requests it |
+| Official brand site or manual | Convert/read | Published colors, fonts, voice, usage restrictions |
+| Branded PPTX/PDF | Source converters and theme/package facts | Observed colors, typography, logo assets, tone |
+| Pasted text, Markdown, or document | Direct text or the parent's converted output | Explicit identity values, usage rules, voice, restrictions |
+| Verbal brief | The user's words | Any explicitly supplied field |
+| Mixed bundle | Every applicable row with per-source provenance | Combined evidence; conflicts go to the shared gate |
+| No reference | None | Empty skeleton only when explicitly requested |
 
-Use these provenance labels in the proposal and final Color Scheme table:
-
-- `fact` — literal value from an official asset or manual.
-- `user` — value explicitly authored by the user, whether in chat, pasted text, or a user-written brief file.
-- `approx` — visual estimate or pattern observed in an existing deck/site.
-
-**Hard rule — no inferred brand truth**: Do not promote a visual estimate, presentation convention, or observed neutral into an official brand fact. Do not invent semantic success/warning/error colors.
+Provenance labels for the proposal and the Color Scheme table: `fact` (literal value from an official asset or manual), `user` (explicitly authored by the user in any carrier), `approx` (visual estimate or observed pattern). **Hard rule — no inferred brand truth**: never promote an estimate, presentation convention, or observed neutral into an official fact, and never invent semantic success/warning/error colors.
 
 ## 2. Identity Brief Fields
 
-Surface these through Create Template's single shared Step 2–3 gate:
-
-| Field | Requirement |
-|---|---|
-| Brand display name and use cases | Required |
-| Primary color | Required; `#RRGGBB` plus provenance |
-| Secondary/accent/text/background colors | Include only when confirmed or supported by evidence; every written color uses `#RRGGBB` plus provenance |
-| Title/body typography | Required; retain provenance in surrounding prose when it is not official |
-| Logo | Optional; identify the default presenting entity, file, usage rule, and any trademark restriction |
-| Voice and tone | Required; formality, grammatical person, emoji policy, abbreviation policy |
-| Icon style | Required; `linear`, `filled`, `duotone`, or a confirmed custom description |
-| Adopted assets | Optional; list included and excluded candidates with reasons |
-
-When the user explicitly requests an empty skeleton, all identity values remain TODO comments, materialization stops after writing the file, and Create Template reports that the workspace is incomplete and unregistered.
+Surface through Create Template's Step 2–3 gate: brand display name and use cases (required); primary color (required, `#RRGGBB` plus provenance); secondary/accent/text/background colors (only when confirmed or evidenced, each with provenance); title/body typography (required, provenance in prose when unofficial); logo (optional: default presenting entity, file, usage rule, trademark restriction); voice and tone (required: formality, person, emoji policy, abbreviation policy); icon style (required: `linear`, `filled`, `duotone`, or a confirmed custom description); adopted assets (optional, with included/excluded reasons). An explicitly requested empty skeleton leaves every value as a TODO comment, stops after writing the file, and is reported as incomplete and unregistered.
 
 ## 3. Materialize the Confirmed Brand
 
-Create Template supplies an already resolved and collision-checked `<template_workspace>` and `<design_spec_path>`. Write only:
-
-```text
-<template_workspace>/
-├── templates/
-│   └── design_spec.md          # project scope: design_spec.brand.<brand_id>.md
-├── images/       # optional; logo/photos/illustrations only when adopted
-└── icons/        # optional; branded icon overrides only when adopted
-```
-
-Do not create optional directories or `exports/` solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and do not report it as Brand output. Bitmap references from `<design_spec_path>` use `../images/<name>`; branded icon references use `../icons/<name>`.
-
-Write this personality-only schema:
+Write only `templates/design_spec.md` (project: `design_spec.brand.<brand_id>.md`), plus optional `images/` (logo/photos when adopted) and `icons/` (branded icon overrides when adopted); never create optional directories or `exports/` to keep empty paths, and leave pre-existing project scaffolding untouched. References use `../images/<name>` and `../icons/<name>`.
 
 ```markdown
 ---
@@ -95,7 +53,7 @@ primary_color: "#XXXXXX"
 | Brand Name | <display name> |
 | Use Cases | <summary> |
 | Tone | <one-line tone summary> |
-| Sources | <official URL or bundled asset paths; include version/retrieval date when known> |
+| Sources | <official URL or bundled asset paths; version/retrieval date when known> |
 
 ## II. Color Scheme
 | Role | HEX | Provenance |
@@ -124,38 +82,13 @@ primary_color: "#XXXXXX"
 - Preference: linear \| filled \| duotone \| <custom>
 
 ## VII. Visual Assets
-- Include this section only when real `images/` or `icons/` assets exist.
+- Only when real `images/` or `icons/` assets exist.
 ```
 
-Preserve a supplied logo's extension. When multiple lockups exist, use descriptive filenames and name exactly one default presenting entity. Keep subsidiary/campaign alternates explicit; create another brand workspace when their identity differs materially.
+Keep a supplied logo's extension; with several lockups use descriptive filenames and name exactly one default presenting entity; create another workspace when a subsidiary/campaign identity differs materially.
 
 ## 4. Brand Validation
 
-Return these facts to Create Template:
+Return to Create Template: the spec exists with `brand_id`, `kind: brand`, `summary`, `primary_color`; `brand_id` matches the library workspace ID; sections I–VI exist and Page Roster / Signature Design Elements do not; no `*.svg`, `native_structure_mode`, Master/Layout, placeholder, canvas, or page-count field; every color is `#RRGGBB` with the primary row matching frontmatter and provenance `fact` / `approx` / `user`; every referenced asset exists in the workspace and no empty optional directory was created.
 
-- The Design Spec exists and contains `brand_id`, `kind: brand`, `summary`, and `primary_color`.
-- `brand_id` matches the confirmed workspace ID in library scope.
-- Required sections I–VI exist; Page Roster and Signature Design Elements do not exist.
-- No `*.svg`, `native_structure_mode`, Master/Layout, placeholder, canvas, or page-count fields were written.
-- Every color is `#RRGGBB`, the primary table row matches frontmatter, and provenance is `fact`, `approx`, or `user`.
-- Every referenced asset exists under the same workspace; this workflow created no optional directory or `exports/` directory solely to leave it empty. Pre-existing initialized-project scaffolding is allowed and remains untouched.
-
-For both scopes, Create Template Step 5 validates the portable Brand contract without registration:
-
-```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
-```
-
-For `library` scope, additionally validate the directory/index identity with:
-
-```bash
-python3 skills/ppt-master/scripts/register_template.py <brand_id> --kind brand --dry-run
-```
-
-After that gate passes, Create Template Step 7 registers with:
-
-```bash
-python3 skills/ppt-master/scripts/register_template.py <brand_id> --kind brand
-```
-
-For `project` scope, run only the shared validator, skip both registrar commands, and report `Not registered (project workspace)`. Downstream consumption always uses the explicit workspace root through Generate PPTX Step 3; a bare brand name never activates it.
+Both scopes run `svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring`; library adds `register_template.py <brand_id> --kind brand --dry-run` and, after the gate, Step 7 registers with `register_template.py <brand_id> --kind brand`. Project scope skips both registrar commands and reports `Not registered (project workspace)`. Downstream consumption always uses the explicit root through Generate Step 3; a bare brand name never activates it.
