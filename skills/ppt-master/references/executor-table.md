@@ -4,7 +4,7 @@
 
 Conditional Executor authority for semantic cell grids whose row/column intersections carry the information.
 
-**Trigger**: load when the page contains an actual cell-grid table or its primary reference uses `table/<key>`.
+**Trigger**: the page contains an actual cell-grid table or its primary reference uses `table/<key>`.
 
 ---
 
@@ -16,51 +16,22 @@ Conditional Executor authority for semantic cell grids whose row/column intersec
 | Independent visual zones compare categories without a shared row/column grid | [`executor-structure.md`](./executor-structure.md) |
 | Values determine marks, positions, lengths, areas, angles, radii, or color bins | [`executor-chart.md`](./executor-chart.md) |
 
-Graphical indicators may appear inside cells without changing the table family, provided the row/column grid still carries their meaning. A row of metric cards or two prose columns is a qualitative structure, not a table.
+**Hard rule — physical grid is insufficient**: a PowerPoint table object or rectangular drawing grid does not establish Table semantics. Dates or durations driving task-bar position and length route to `executor-chart.md`; qualitative stage/lane placement routes to `executor-structure.md`. Graphical indicators may sit inside cells while the grid still carries their meaning; a row of metric cards or two prose columns is a qualitative structure, not a table.
 
-**Hard rule — physical grid is insufficient**: A PowerPoint table object or a
-rectangular drawing grid does not establish Table semantics. Exact dates or
-durations that drive task-bar position and length route to
-[`executor-chart.md`](./executor-chart.md); qualitative stage/lane placement
-routes to [`executor-structure.md`](./executor-structure.md).
-
-When a `table/<key>` primary reference exists, [`executor-visualization.md`](./executor-visualization.md) owns resolution and flexible adaptation. A custom cell grid follows this branch without loading a catalog SVG.
-
-**Reference — not a constraint**: `record_table` covers heterogeneous record ×
-field grids; `metric_table` covers entity × KPI scanning;
-`comparison_matrix` covers heterogeneous criterion × alternative facts;
-`feature_matrix` covers capability states; `rating_matrix` covers one repeated
-ordinal scale; and `hierarchical_table` covers grouped/indented rows with detail
-and totals. These keys separate recurring cell grammars without changing the
-shared row/column information-model boundary.
+With a `table/<key>` primary reference, [`executor-visualization.md`](./executor-visualization.md) owns resolution and adaptation; a custom grid follows this branch without a catalog SVG. Catalog keys (`record_table` record × field, `metric_table` entity × KPI, `comparison_matrix` criterion × alternative, `feature_matrix` capability states, `rating_matrix` one repeated ordinal scale, `hierarchical_table` grouped rows with detail and totals) separate recurring cell grammars without changing this boundary.
 
 ---
 
 ## 2. Grid Construction
 
-**Hard rule — grid before decoration**: establish the complete logical grid before drawing fills, borders, badges, or other cell treatment.
+**Hard rule — grid before decoration**: establish the complete logical grid before fills, borders, badges, or other cell treatment: (1) resolve column/row counts, header rows, row labels, summaries, and rectangular spans from the content; (2) allocate widths and heights from semantic weight and real text/data fit — no default equal columns when labels or values differ materially; (3) place every value, unit, qualifier, status, and source note in its intersection; (4) align by content role with comparable numeric alignment and stable header/body hierarchy; (5) add rules, fills, banding, highlights, and in-cell indicators only after the grid reads correctly plain; (6) for a `<object-key>=yes` table, project the finished grid into the JSON in the same edit — `row_heights`, header fill/text/bold/alignment, whole-row or whole-column fills, first-column emphasis, padding, and per-side `borders` mirroring the drawn rules; a font size plus a uniform border is not a projection, and a graphical cell (inset badge, colored chip, mini bar) cannot be expressed by `a:tbl`, so return that object to `Native-ready=no`.
 
-1. Resolve column count, row count, header rows, row labels, summaries, and any rectangular visual spans from the authoritative content.
-2. Allocate column widths and row heights from semantic weight and real text/data fit; do not default to equal columns when labels or values differ materially.
-3. Place every cell value, unit, qualifier, status, and source-bearing note in its correct intersection.
-4. Apply alignment consistently by content role, including comparable numeric alignment and stable header/body hierarchy.
-5. Add rules, fills, banding, highlights, and in-cell indicators only after the grid reads correctly in plain form.
-6. For a `<object-key>=yes` table, project the finished grid into the JSON in the same edit: `row_heights`, header fill / text / bold / alignment, whole-row or whole-column fills, first-column emphasis, padding, and per-side `borders` mirroring the drawn rules; a font size plus a uniform border is not a projection. A graphical cell (inset badge, colored chip, mini bar) cannot be expressed by `a:tbl`: return that object to `Native-ready=no`.
+**Per-cell completeness**: never drop a row, column, summary, footnote, unit, or qualifier to imitate a lighter catalog preview; reflow text, widen the column, rebalance neighbors, or increase row height within the page's information contract and [`executor-base.md`](./executor-base.md) typography bounds.
 
-**Per-cell completeness**: never drop a row, column, summary, footnote, unit, or qualifier to imitate a lighter catalog preview. Reflow text, widen the affected column, rebalance adjacent columns, or increase row height while preserving the active page's information contract and [`executor-base.md`](./executor-base.md) typography bounds.
-
-**Visual span discipline**: merge only rectangular regions whose repeated boundaries would obscure an intended shared heading or group. Covered areas must not carry competing visible content. This branch owns the visible SVG geometry only; any native merge fields or payload topology belong exclusively to [`native-data-interface.md`](./native-data-interface.md).
-
-**Table chrome**: make header/body/summary roles distinguishable with the lightest sufficient combination of weight, fill, rule, and whitespace. Keep comparison scanning stable across the grid; decorative card treatment must not break row or column continuity.
+**Spans and chrome**: merge only rectangular regions whose repeated boundaries would obscure an intended shared heading or group, with no competing visible content in covered areas; native merge fields belong exclusively to [`native-data-interface.md`](./native-data-interface.md). Distinguish header/body/summary with the lightest sufficient weight, fill, rule, and whitespace; decorative card treatment must not break row or column continuity.
 
 ---
 
 ## 3. Object Boundary
 
-Treat each semantic table as one independently bounded page object even when it contains nested cell groups. Captions, source notes, and explanatory callouts may sit outside the grid when their ownership is visually explicit.
-
-Native readiness is decided per independent table object, not by the `table`
-family or numeric cells. Reuse its §IX/Quick semantic object key in the
-`Native-ready` map; only `<object-key>=yes` loads and follows
-[`native-data-interface.md`](./native-data-interface.md). All others remain
-ordinary Shape-first SVG geometry under [`executor-base.md`](./executor-base.md).
+Each semantic table is one independently bounded page object even with nested cell groups; captions, source notes, and callouts may sit outside the grid when ownership is visually explicit. Native readiness is decided per table object, not by family or numeric cells: reuse its §IX/Quick semantic object key in the `Native-ready` map; only `<object-key>=yes` loads [`native-data-interface.md`](./native-data-interface.md), everything else remains Shape-first SVG geometry.

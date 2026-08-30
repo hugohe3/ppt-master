@@ -4,7 +4,7 @@
 
 Conditional Executor authority for resolving one page-local Chart/Table `family/key` SVG reference and adapting it without turning the catalog preview into a page specification.
 
-**Trigger**: load only when Default `spec_lock.md page_visualizations` maps the current page to a canonical Chart/Table reference, a legacy `page_charts` row resolves to a live Chart/Table SVG, or Quick already selected one canonical Chart/Table reference in active context.
+**Trigger**: Default `spec_lock.md page_visualizations` maps the current page to a canonical Chart/Table reference, a legacy `page_charts` row resolves to a live Chart/Table SVG, or Quick already selected one canonical reference in active context.
 
 ---
 
@@ -17,30 +17,27 @@ Conditional Executor authority for resolving one page-local Chart/Table `family/
 
 | Active profile | Resolve from |
 |---|---|
-| Default Generate | Prefer the current `P<NN>: family/key` row from retained `spec_lock.md page_visualizations`, then read that page's `Page | Family | Template | Usage` row in Design Spec §VII; use a legacy `page_charts` row and its legacy §VII Usage only when the canonical row is absent |
-| Quick Generate | Use the canonical Chart/Table `family/key` and page-local purpose already selected in active context before SVG authoring |
+| Default Generate | The current `P<NN>: family/key` row in retained `spec_lock.md page_visualizations`, then that page's `Page \| Family \| Template \| Usage` row in Design Spec §VII; a legacy `page_charts` row and its §VII Usage only when the canonical row is absent |
+| Quick Generate | The canonical `family/key` and page-local purpose already selected in active context before SVG authoring |
 
-**Hard rule — one primary reference per page**: one page resolves at most one catalog SVG. The reference guides one dominant reusable Chart/Table information structure; secondary objects are authored from their actual content through the applicable branch without loading another catalog SVG. Independent Chart/Table children retain their §IX or Quick semantic object keys for scoped native/verification contracts.
-
-**Mandatory — shared resolution**: resolve the selected value through `visualization_recall.py validate`; consume its canonical `reference` and `path` instead of guessing a family or constructing a path from the input string. Add `--legacy-bare` only for a value read from legacy `page_charts`.
+**Mandatory — shared resolution**: resolve through `visualization_recall.py validate` and consume its canonical `reference` and `path`; never guess a family or build a path from the input string. Add `--legacy-bare` only for a value read from legacy `page_charts`.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/visualization_recall.py validate <family/key>
-python3 ${SKILL_DIR}/scripts/visualization_recall.py validate \
-  --legacy-bare <legacy-key>
+python3 ${SKILL_DIR}/scripts/visualization_recall.py validate --legacy-bare <legacy-key>
 ```
 
-New `page_visualizations` and Quick selections accept only canonical `chart/<key>` or `table/<key>`. A bare key is read-compatible only from legacy `page_charts`: it must resolve unambiguously to one live Chart/Table entry, otherwise stop for upstream correction. If canonical and legacy rows both exist for one page, stop on the duplicate contract even when both resolve to the same SVG.
+**Hard rule — one primary reference per page**: one page resolves at most one catalog SVG, guiding one dominant reusable Chart/Table structure; secondary objects are authored from their content through the applicable branch without another catalog SVG, keeping their §IX or Quick object keys for native/verification contracts. New `page_visualizations` and Quick selections accept only canonical `chart/<key>` or `table/<key>`; a bare key is read-compatible only from legacy `page_charts` and must resolve unambiguously, otherwise stop for upstream correction. Canonical and legacy rows for one page stop on the duplicate contract even when both resolve to the same SVG.
 
-**Legacy Structure boundary**: a retired Structure bare key is semantic intent, not a live visualization reference. Do not resolve it to an SVG or load this branch; recover the qualitative relationship from §IX and apply [`executor-structure.md`](./executor-structure.md) when the mandatory per-page Structure decision is yes. If §IX lacks enough meaning, return upstream for Design Spec repair.
+**Legacy Structure boundary**: a retired Structure bare key is semantic intent, not a reference — do not resolve it or load this branch; recover the relationship from §IX and apply [`executor-structure.md`](./executor-structure.md) when the per-page Structure decision is yes, or return upstream when §IX lacks meaning.
 
-Read the resolver-returned SVG once before its first use in the valid active context and reuse that reading until a known file change or context invalidation. Do not manually reopen indexes or scan family directories during Executor realization; the planning owner already reviewed the complete live registries, and the shared resolver owns canonical path resolution here.
+Read the resolver-returned SVG once before first use and reuse that reading until a known file change; do not reopen indexes or scan family directories during realization — the planning owner already reviewed the live registries.
 
 ---
 
 ## 2. Flexible Page-local Adaptation
 
-**Hard rule — reference, not lock**: the selected SVG is a page-local construction reference. The current §IX page block or Quick page decision plus authoritative source content owns the final information structure; the preview does not lock visualization type, geometry, styling, or native replacement.
+**Hard rule — reference, not lock**: the selected SVG is a page-local construction reference. The §IX page block or Quick page decision plus authoritative content owns the final information structure; the preview locks no visualization type, geometry, styling, or native replacement.
 
 | Preserve | Adapt freely |
 |---|---|
@@ -48,10 +45,6 @@ Read the resolver-returned SVG once before its first use in the valid active con
 | Selected Usage and valid information encoding | Borrow, recombine, simplify, extend, or depart when another realization preserves the information more faithfully |
 | Complete page content obligations | Palette, typography, container treatment, effects, background, and page chrome from project authorities |
 
-**Forbidden — preview substitution**:
+**Forbidden — preview substitution**: copying sample labels/data as content; omitting authoritative content to fit lighter preview density; spreading one page's reference to another page without its own mapping.
 
-- Do not copy sample labels/data as content.
-- Do not omit authoritative content to fit lighter preview density.
-- Do not spread one page's reference to another page without its own mapping.
-
-The namespace selects a reference registry and construction authority only; it does not assert native readiness or mirror a source PowerPoint object type. An imported table used to place duration-driven bars remains Chart semantics. Native eligibility is an independent per-object decision owned by [`native-data-interface.md`](./native-data-interface.md).
+The namespace selects a registry and construction authority only; it asserts no native readiness and mirrors no source PowerPoint object type — an imported table used to place duration-driven bars remains Chart semantics. Native eligibility is an independent per-object decision owned by [`native-data-interface.md`](./native-data-interface.md).

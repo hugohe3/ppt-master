@@ -21,10 +21,10 @@
     "skills/ppt-master/references/executor-base.md": 8000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 1750,
-    "skills/ppt-master/references/executor-visualization.md": 1250,
+    "skills/ppt-master/references/executor-visualization.md": 1000,
     "skills/ppt-master/references/executor-structure.md": 1750,
     "skills/ppt-master/references/topology-assembly.md": 3750,
-    "skills/ppt-master/references/executor-table.md": 1250,
+    "skills/ppt-master/references/executor-table.md": 1000,
     "skills/ppt-master/references/executor-image.md": 2000,
     "skills/ppt-master/references/executor-web-image.md": 750,
     "skills/ppt-master/references/executor-notes.md": 1000,
@@ -47,7 +47,9 @@
     "skills/ppt-master/references/confirm-surface.md": 3000,
     "skills/ppt-master/references/video-design.md": 2500,
     "skills/ppt-master/references/native-formula.md": 1500,
-    "skills/ppt-master/references/semantic-svg.md": 1500
+    "skills/ppt-master/references/semantic-svg.md": 1500,
+    "skills/ppt-master/references/native-hyperlinks.md": 1250,
+    "skills/ppt-master/references/canvas-formats.md": 1250
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1949,7 +1951,7 @@
             {
               "path": "skills/ppt-master/references/executor-visualization.md",
               "role": "compatibility",
-              "fingerprint": "055ab59c533e",
+              "fingerprint": "84c1c8a6bec5",
               "reason": "This site documents a legacy or omission compatibility boundary."
             },
             {
@@ -2081,7 +2083,7 @@
             {
               "path": "skills/ppt-master/references/executor-visualization.md",
               "role": "consumer",
-              "fingerprint": "8b173848afa7",
+              "fingerprint": "35b3aa28bcad",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
