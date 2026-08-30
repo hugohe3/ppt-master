@@ -1,246 +1,105 @@
 # Video-delivery Design Reference Manual
 
-Conditional design guidance for presentations whose intended use is a recorded,
-self-running, or video delivery.
+Conditional design guidance for presentations whose intended use is recorded, self-running, or video delivery.
 
-**Trigger**: load this reference when the effective delivery purpose is video,
-recorded narration, or unattended playback. Also load its script rules for an
-explicit final/literal narration input. Speaker notes, animation, or audio
-requested for an otherwise ordinary deck do not activate it alone. Explicit
-video/MP4 delivery does; Quick additionally activates §3's direct-delivery
-contract.
+**Trigger**: load when the effective delivery purpose is video, recorded narration, or unattended playback, and load its script rules for an explicit final/literal narration input. Speaker notes, animation, or audio requested for an ordinary deck do not activate it alone; explicit video/MP4 delivery does, and Quick additionally activates §3's direct-delivery contract.
 
-**Ownership**: this is a conditional Generate reference, not a profile or a new
-artifact route. Default keeps its Strategist and confirmation flow; Quick keeps
-its one-pass active-context flow. Existing notes, animation, audio, and native
-PowerPoint export stages retain their schemas and commands.
-When Beautify is active, its wording/page/order invariants still bind; apply
-this reference only inside the design and motion freedom that profile permits.
+**Ownership**: a conditional Generate reference, not a profile or artifact route. Default keeps Strategist and confirmation; Quick keeps its one-pass flow; notes, animation, audio, and native export stages keep their schemas and commands. Under Beautify, its wording/page/order invariants still bind — apply this reference only inside the freedom that profile permits.
 
 ---
 
 ## 1. Intake and Script State
 
-Classify supplied spoken material before planning:
-
 | Material | Treatment |
 |---|---|
-| Ordinary source or rough transcript | Use as source material; edit, condense, and reorganize under the selected route's normal content-divergence contract |
+| Ordinary source or rough transcript | Source material: edit, condense, reorganize under the route's normal content-divergence contract |
 | Explicit final/literal narration script | Preserve every spoken word and its order; segment only at semantic scene boundaries |
-| SRT used to generate new TTS | Preserve cue text when it is explicitly final; use source timecodes only as pacing evidence because the new synthesis timing becomes authoritative |
-| SRT bound to an existing recording | Preserve its text/audio timing authority; do not regenerate TTS or pretend that one long recording was split automatically |
-| Already page-separated final script | Preserve the supplied page boundaries unless the user explicitly permits restructuring |
-| Target platform, canvas, or duration | Use the existing canvas registry; resolve scene granularity, page count, and notes length together |
+| SRT used to generate new TTS | Preserve cue text when explicitly final; source timecodes are pacing evidence only, the new synthesis timing is authoritative |
+| SRT bound to an existing recording | Preserve its text/audio timing authority; do not regenerate TTS or pretend one long recording was split automatically |
+| Already page-separated final script | Preserve supplied page boundaries unless the user permits restructuring |
+| Target platform, canvas, or duration | Use the canvas registry; resolve scene granularity, page count, and notes length together |
 
-**Hard rule — final means explicit**: freeze wording only when the user identifies
-the script as final, literal, or verbatim. Never promote ASR output, subtitles,
-or a draft transcript into a literal contract by inference.
+**Hard rule — final means explicit**: freeze wording only when the user identifies the script as final, literal, or verbatim; never promote ASR output, subtitles, or a draft transcript into a literal contract by inference.
 
-**Default — semantic segmentation (may override for a user-authored page
-plan)**: one scene represents one coherent visual state or mental-map step, not
-one sentence, subtitle cue, or effect. Several cues may share a scene; one scene
-may contain several ordered reveals.
+**Final-script production input**: after the page roster is final and before SVG authoring, write the resolved per-slide script once to `notes/total.md` with `# Slide <number>` headings and `---` separators, each body segment verbatim. It is a production input, not a storyboard or substitute Design Spec; run `total_md_split.py` only after the SVG roster exists.
 
-**Final-script production input**: after the page roster is final but before SVG
-authoring, write the resolved per-slide script once to `notes/total.md`. Use
-`# Slide <number>` headings and `---` separators so the file can exist before SVG
-filenames do; preserve each body segment verbatim. It is a production input, not
-a storyboard or substitute Design Spec. Run `total_md_split.py` only after the
-SVG roster exists.
+**Default — semantic segmentation (may override for a user-authored page plan)**: one scene is one coherent visual state or mental-map step, not one sentence, cue, or effect; several cues may share a scene and one scene may hold several ordered reveals.
 
 ---
 
 ## 2. Scene and Page Planning
 
-**Default — quality follows purpose (may override)**: explanation prioritizes
-understanding; promotion or brand work may prioritize emotion, recall, or
-impact. Give every change a communication job.
+**Default — quality follows purpose (may override)**: explanation prioritizes understanding; promotion or brand work may prioritize emotion, recall, or impact. Give every change a communication job.
 
 | Narrative relationship | Page treatment |
 |---|---|
-| Several lines explain one idea | Keep one page/scene and reveal only the semantic units needed for that explanation |
-| One system persists | Before roster/notes freeze, derive states from the prior composition; keep orienting cues and change the semantic delta |
-| New evidence expands a known map | Retain orienting cues; adapt the active region and context as needed |
+| Several lines explain one idea | One page/scene; reveal only the semantic units the explanation needs |
+| One system persists | Derive states from the prior composition before roster/notes freeze; keep orienting cues, change the semantic delta |
+| New evidence expands a known map | Retain orienting cues; adapt the active region and context |
 | The same object changes position, scale, containment, or state | Consider compatible Morph endpoints when movement improves orientation |
-| The audience must adopt a genuinely new mental map | Start a new composition and make the transition explicit |
+| The audience must adopt a new mental map | Start a new composition and make the transition explicit |
 
-**Default — stable visual anchors (may override when the mental map resets)**:
-within one explanation, preserve recognizable roles, relationships, or spatial
-cues. Position, scale, and style may change while identity and orientation
-remain legible; reset for a new map.
+**Defaults (each may override for the stated reason)**:
 
-**Default — one semantic focus change per beat (may override for one inseparable
-idea)**: change several elements together only for one communication unit. Do
-not alter unrelated regions merely for busyness.
+- *Stable anchors* — within one explanation preserve recognizable roles, relationships, or spatial cues; position, scale, and style may change while identity and orientation stay legible; reset for a new map.
+- *One semantic focus change per beat* — change several elements together only for one inseparable communication unit; never alter unrelated regions for busyness.
+- *Scene chrome earns its place* — newly authored scenes do not carry a report-style header, footer, or page number by convention; let the semantic title join the composition and drop running chrome on cover, ending, and breathing scenes. Keep chrome the active profile's fidelity boundary requires, or that genuinely orients, identifies, or attributes.
+- *Screen for orientation, notes for speech* — keywords, structure, evidence, and relationships on the slide; full explanation in notes; never duplicate the narration as body copy, except literal on-screen copy.
 
-**Default — scene chrome earns its place (may override for navigation, identity,
-attribution, or fidelity)**: for newly authored recorded, self-running, or video
-scenes, do not carry a report-style fixed header, footer, or page number merely
-by deck convention. Let the semantic title participate in the scene composition,
-and omit nonessential running chrome especially on cover, ending, and breathing
-scenes. Retain source or template chrome when the active profile's fidelity
-boundary requires it, and retain new chrome when it genuinely orients the
-audience or carries required identity or attribution.
-
-**Default — screen for orientation, notes for speech (may override for literal
-on-screen copy)**: place keywords, structure, evidence, and relationships on the
-slide; keep full explanation in notes. Do not duplicate the narration script as
-body copy.
-
-**Page-count rule**: derive page/notes boundaries from scenes, mental-map arcs,
-endpoints, and duration—not cues or sentences. Profile-fixed count/order/content,
-including 1:1/fidelity, permits only existing-neighbor evaluation; never alter
-those invariants for motion.
+**Page count**: derive page/notes boundaries from scenes, mental-map arcs, endpoints, and duration — not cues or sentences. Profile-fixed count/order/content (1:1/fidelity) permits only existing-neighbor evaluation; never alter those invariants for motion.
 
 ---
 
 ## 3. Default and Quick Planning Handoff
 
-**Default**: Stage 1 confirms the existing open-text `delivery_context`; it does
-not ask a separate video question. When the confirmed value identifies
-recorded/self-running/video delivery, load this reference before authoring the
-three Stage-2 whole solutions. Apply its scene grammar to every direction; it
-does not add a style catalog or confirmation field. Record delivery context and
-afterlife in §I, visible states and optional motion jobs in §IX, and script/notes
-policy plus target duration in §X. When the final-script branch is active,
-create the frozen `notes/total.md` after the approved roster/lock is final and
-before Step 5 or split-mode handoff.
+**Default**: Stage 1 confirms the existing open-text `delivery_context`, no separate video question. When the confirmed value identifies recorded/self-running/video delivery, load this reference before authoring the three Stage-2 solutions and apply its scene grammar to every direction; it adds no catalog or confirmation field. Record delivery context and afterlife in §I, visible states and optional motion jobs in §IX, script/notes policy plus target duration in §X. On the final-script branch, create the frozen `notes/total.md` after the approved roster/lock and before Step 5 or split-mode handoff. Reading mode leans `presentation`; choose `balanced` when close-reading afterlife materially outweighs video delivery.
 
-**Default — reading mode (may override for durable close reading)**: recorded
-explanation leans `presentation`; choose `balanced` when close-reading afterlife
-materially outweighs video delivery.
-
-**Quick**: there is no Stage 1 or separate video-purpose confirmation. Explicit
-video/recorded/self-running intent activates this reference after source
-sufficiency is known and before the one-pass roster, resource, and motion
-decisions; absent that intent, keep ordinary Quick behavior. Load the script
-rules alone when an explicit final/literal narration will become notes/audio.
-Keep the applicable scene grammar and final-script handling in active context.
-A pre-SVG `notes/total.md` is an enabled production artifact, not a forbidden
-planning checkpoint; Quick still creates no root Design Spec, lock,
-confirmation payload, or storyboard.
-
-**Hard rule — Quick video Custom Animations**: when Quick generates a PPTX for
-recorded, self-running, or video delivery, enable Custom Animations before SVG
-authoring and complete the custom-animation stage before base export. Use
-semantic groups and page-specific choreography; deck-wide `-a auto` and page
-transitions do not satisfy this requirement. Individual pages or groups may
-remain static, so this is not an animation-coverage quota. A validated
-`animations.json` is required unless the user explicitly requests static or
-page-transition-only playback.
-
-**Mandatory — Quick direct video input**: when Quick must deliver a narrated
-video or MP4 rather than only a deck for later recording, enable Speaker Notes,
-Narration Audio, and video export; write the complete per-scene narration to
-`notes/total.md` before P01 and use it as page-design input. After the SVG
-roster, only agent-authored wording may be finalized; final/literal input remains
-verbatim. Before audio, complete the required Custom Animations configuration
-and decide whether narration governs any group timing.
+**Quick**: no Stage 1 or video-purpose confirmation. Explicit video/recorded/self-running intent activates this reference after source sufficiency is known and before the one-pass roster, resource, and motion decisions; absent that intent, ordinary Quick behavior. Load the script rules alone when an explicit final/literal narration becomes notes/audio. A pre-SVG `notes/total.md` is an enabled production artifact; Quick still creates no Design Spec, lock, confirmation payload, or storyboard.
 
 **Production outcomes**:
 
 | Need | Decision |
 |---|---|
 | Spoken delivery or a supplied final script | Enable Speaker Notes |
-| User asks the workflow to synthesize narration | Enable Narration Audio; Speaker Notes is its dependency |
+| User asks the workflow to synthesize narration | Enable Narration Audio (Speaker Notes is its dependency) |
 | Progressive reveal, continuing geometry, or timed emphasis materially aids explanation | Enable/load the appropriate animation capability |
-| Quick generates a PPTX for recorded, self-running, or video delivery | Enable Custom Animations before SVG authoring and validate `animations.json` before base export |
-| Quick directly delivers a narrated video or MP4 | Also enable Speaker Notes, Narration Audio, and video export; resolve narration-governed timing before audio, requiring timestamped page-local SRT for cue sync or subtitle delivery |
-| The user explicitly requests static playback or disables object motion | Keep object animation off; retain the remaining notes/audio/video outcomes as requested |
+| Quick generates a PPTX for recorded, self-running, or video delivery | **Hard rule**: enable Custom Animations before SVG authoring, use semantic groups and page-specific choreography, and complete the stage with a validated `animations.json` before base export; deck-wide `-a auto` and page transitions do not satisfy it; pages or groups may stay static — no coverage quota |
+| Quick directly delivers a narrated video or MP4 | **Mandatory**: also enable Speaker Notes, Narration Audio, and video export; write the complete per-scene narration to `notes/total.md` before P01 as page-design input (agent-authored wording may be finalized after the roster, final/literal input stays verbatim); resolve narration-governed timing before audio, requiring timestamped page-local SRT for cue sync or subtitle delivery |
+| The user explicitly requests static or page-transition-only playback | Keep object animation off; retain the remaining notes/audio/video outcomes |
 
-**Capability boundary**: Default generation does not force object animation or
-generated audio merely because a deck may later be recorded. Quick with an
-effective recorded/self-running/video delivery purpose does require Custom
-Animations, while explicit user instructions for static or
-page-transition-only playback remain authoritative. This requirement selects
-the capability, not motion coverage or one effect for every page.
+Default never forces object animation or audio merely because a deck may later be recorded; the Quick requirement selects the capability, not motion coverage.
 
 ---
 
 ## 4. SVG, Notes, and Motion Realization
 
-When §3 created `notes/total.md` before SVG, read it once before the first SVG
-and design each page around its corresponding spoken segment. Give every
-independently narrated or timed semantic unit a descriptive direct-root `<g
-id>`; keep inseparable units grouped. Preserve a final/literal script exactly;
-agent-authored direct-video narration may change only during its final-SVG
-validation before audio.
+When §3 created `notes/total.md` before SVG, read it once before the first SVG and design each page around its spoken segment. Give every independently narrated or timed semantic unit a descriptive direct-root `<g id>`; keep inseparable units grouped. Preserve a final/literal script exactly; agent-authored direct-video narration changes only during final-SVG validation before audio.
 
-**Hard rule — script/design consistency**: a final script is literal content.
-If the finished visual page introduces an independent claim or relationship the
-script does not explain, repair the page or return to planning; never rewrite or
-pad the final script during the late notes pass. Conversely, every spoken idea
-that requires visual orientation must have a visible state or deliberate
-speech-only treatment.
+**Hard rule — script/design consistency**: a final script is literal content. If a finished page introduces a claim or relationship the script does not explain, repair the page or return to planning — never rewrite or pad the script in the late notes pass. Every spoken idea needing visual orientation has a visible state or a deliberate speech-only treatment.
 
-**Motion readiness**: load `animations.md` before SVG authoring whenever the
-plan needs compatible Morph endpoints or page/object-specific motion. Author
-every required start/end state and real semantic group before the final checker;
-post-processing cannot invent missing visual endpoints or target IDs.
+**Motion**: load `animations.md` before SVG authoring whenever the plan needs Morph endpoints or page/object-specific motion, and author every required start/end state and semantic group before the final checker — post-processing cannot invent endpoints or target IDs. Use transitions, reveals, emphasis, and Morph only for a named communication job; `effect: none` remains valid. Auto-running narration uses `after-previous` / `with-previous`, never `on-click`.
 
-**Motion restraint**: use transitions, reveals, emphasis, and Morph only for a
-named communication job. There is no motion-coverage quota, and `effect: none`
-remains valid. Auto-running narration uses `after-previous` / `with-previous`,
-never `on-click`.
+**Mandatory when narration governs object motion**: before SVG, load `animations.md` and preserve semantic groups; before audio, create and validate canonical `animations.json`. After the base PPTX/report and timestamped page audio/SRT, map timed groups in `narration_timing.json`, derive `narration_animations.json`, and export the narrated PPTX/MP4. Only derived triggers/delays wait for SRT; identity, effect, and order do not. `-a auto` or inherited fixed stagger is not semantic synchronization. For a user-selected static/page-transition-only Quick exception, or ordinary Default narration-independent deck-wide motion, omit these sidecars and the object-sync claim.
 
-**Mandatory when narration governs object motion**: before SVG authoring, load
-`animations.md` and preserve real semantic groups; before audio, create and
-validate canonical `animations.json`. After the base PPTX/report and timestamped
-page audio/SRT, map timed groups in `narration_timing.json`, derive
-`narration_animations.json`, and export the narrated PPTX/MP4. Only derived
-triggers/delays wait for SRT; object identity, effect, and order do not. `-a
-auto` or inherited fixed stagger is not semantic synchronization. For an
-explicit user-selected static/page-transition-only Quick exception, or for
-ordinary Default narration-independent deck-wide motion, omit these sidecars
-and the object-sync claim.
+**Sound effects**: excluded from this pass and planning artifacts. After final SVG/motion, animation post-processing owns on-demand selection and native configuration. For direct narrated MP4, `generate-audio` owns the sound-delivery branch (§5); gain and limiting never enter `animations.json`.
 
-**Sound effects**: exclude them from this pass and planning artifacts. After
-final SVG/motion, animation post-processing owns on-demand selection and native
-PPTX configuration; otherwise remain silent. For direct narrated MP4 delivery,
-`generate-audio` owns the selected sound-delivery branch: native PowerPoint
-encoding plus triggered post-export mix, or an explicitly requested real-time
-PowerPoint slideshow capture. Video gain and limiting never enter
-`animations.json`; capture uses the balance actually heard during Slide Show.
-
-**Production sequence**: after the final SVG check, validate any pre-SVG
-narration against the visible pages; ordinary draft-source runs instead use the
-final-SVG-grounded notes generation. Split notes, execute the resolved motion
-path, and export the editable PPTX. Direct Quick video continues
-through audio and, when required, timestamped SRT. Custom Animations use the
-narrated-sidecar flow when narration governs group timing;
-narration-independent custom motion exports its canonical timing without an
-object-sync claim before the narrated PPTX and MP4.
+**Production sequence**: after the final SVG check, validate pre-SVG narration against the visible pages (draft-source runs use final-SVG-grounded notes generation instead); split notes, execute the resolved motion path, export the editable PPTX; direct Quick video continues through audio and, when required, timestamped SRT. Narration-governed Custom Animations use the narrated-sidecar flow; narration-independent custom motion exports its canonical timing without an object-sync claim before the narrated PPTX and MP4.
 
 ---
 
 ## 5. Delivery Boundary
 
-**Canonical artifact**: the editable PPTX remains canonical. `generate-audio`
-owns provider/voice/rate selection, page audio/SRT generation, semantic
-narration timing, narrated PPTX export, optional native PowerPoint video export,
-the explicit slideshow-capture handoff, and the triggered sound-effects mix for
-direct MP4 delivery.
+**Canonical artifact**: the editable PPTX. `generate-audio` owns provider/voice/rate selection, page audio/SRT, semantic narration timing, narrated PPTX export, optional native PowerPoint video export, the slideshow-capture handoff, and the triggered sound-effects mix.
 
-**Conditional MP4**: run `powerpoint_video.py --check` only for the native-export
-branch. If native Windows PowerPoint export is unavailable, keep the narrated
-PPTX as the successful upstream artifact. An explicit slideshow-capture choice
-may hand that artifact to a user-operated Windows PowerPoint recorder; it is not
-complete until the capture is returned and accepted. Do not substitute
-screenshots, HTML, or a third-party renderer and call it equivalent.
+**Conditional MP4**: run `powerpoint_video.py --check` only for the native-export branch. Without native Windows PowerPoint export, the narrated PPTX is the successful upstream artifact; an explicit slideshow-capture choice hands it to a user-operated PowerPoint recorder and is complete only when the capture is returned and accepted. Never substitute screenshots, HTML, or a third-party renderer.
 
 **Hard rule — choose one PowerPoint video sound boundary**:
 
 | Delivery branch | Sound contract |
 |---|---|
-| Native encoder | PowerPoint supplies visual animation and narration but may omit transition/object sounds. With resolved cues, treat its MP4 as raw and require the verified `video_sound_mix.py` output. |
-| Real-time slideshow capture | PowerPoint remains the renderer and audio player; a recorder captures the full-screen Slide Show and exactly one application/system-audio source. The accepted capture must contain narration and every configured cue once, and must not enter `video_sound_mix.py`. |
+| Native encoder | PowerPoint supplies visual animation and narration but may omit transition/object sounds; with resolved cues its MP4 is raw and requires the verified `video_sound_mix.py` output |
+| Real-time slideshow capture | PowerPoint renders and plays audio; a recorder captures the full-screen Slide Show and exactly one application/system-audio source; the accepted capture contains narration and every cue once and never enters `video_sound_mix.py` |
 
-The branches are mutually exclusive because mixing a capture would duplicate
-its cues. Keep the native cue configuration in the canonical PPTX. Slideshow
-capture is explicit and human-audited; it does not inherit the native mix
-receipt or become an automatic fallback.
+The branches are mutually exclusive because mixing a capture would duplicate its cues. Keep the native cue configuration in the canonical PPTX; capture is explicit and human-audited, never an automatic fallback.
 
-**Current boundary**: importing and automatically splitting one long finished
-recording is unsupported. Require page-level audio or an explicit page/time map;
-otherwise deliver the designed deck and frozen notes without claiming audio
-integration.
+**Current boundary**: importing and automatically splitting one long finished recording is unsupported. Require page-level audio or an explicit page/time map; otherwise deliver the deck and frozen notes without claiming audio integration.

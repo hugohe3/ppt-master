@@ -36,7 +36,7 @@
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 12000,
     "skills/ppt-master/references/strategist-image.md": 3250,
-    "skills/ppt-master/references/strategist-template.md": 3000,
+    "skills/ppt-master/references/strategist-template.md": 2500,
     "skills/ppt-master/templates/design_spec_reference.md": 4000,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
     "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
@@ -44,7 +44,8 @@
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
     "skills/ppt-master/workflows/generate-pptx.md": 10000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500,
-    "skills/ppt-master/references/confirm-surface.md": 3000
+    "skills/ppt-master/references/confirm-surface.md": 3000,
+    "skills/ppt-master/references/video-design.md": 2500
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1952,7 +1953,7 @@
             {
               "path": "skills/ppt-master/references/strategist-template.md",
               "role": "compatibility",
-              "fingerprint": "b0f9494f710a",
+              "fingerprint": "8f83a50b3f54",
               "reason": "This site documents a legacy or omission compatibility boundary."
             },
             {
@@ -2002,6 +2003,12 @@
               "role": "consumer",
               "fingerprint": "2a2c42538a76",
               "reason": "This stage documents how each Generate runtime consumes the prototype mapping."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist-template.md",
+              "role": "consumer",
+              "fingerprint": "bffb5ebb6180",
+              "reason": "Strategist plans page_layouts rows from complete Slide prototypes."
             }
           ]
         },
@@ -2026,12 +2033,6 @@
               "role": "reference",
               "fingerprint": "9cef05268f4f",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
-              "path": "skills/ppt-master/references/strategist-template.md",
-              "role": "producer",
-              "fingerprint": "fb6d05bac6e4",
-              "reason": "This producer projects the owner field into the planning contract."
             },
             {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
@@ -2126,7 +2127,7 @@
             {
               "path": "skills/ppt-master/references/strategist-template.md",
               "role": "producer",
-              "fingerprint": "f97c538adf92",
+              "fingerprint": "3d83dfd41293",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
@@ -2162,7 +2163,7 @@
             {
               "path": "skills/ppt-master/references/strategist-template.md",
               "role": "producer",
-              "fingerprint": "29a9e58295a9",
+              "fingerprint": "5eff475d59c9",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
