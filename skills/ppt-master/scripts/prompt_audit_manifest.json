@@ -61,7 +61,10 @@
     "skills/ppt-master/workflows/stages/web-image-review.md": 750,
     "skills/ppt-master/references/visual-review.md": 3500,
     "skills/ppt-master/workflows/stages/visual-review.md": 1750,
-    "skills/ppt-master/workflows/stages/generate-audio.md": 4000
+    "skills/ppt-master/workflows/stages/generate-audio.md": 4000,
+    "skills/ppt-master/workflows/profiles/beautify-pptx.md": 5000,
+    "skills/ppt-master/workflows/profiles/image-to-pptx.md": 3250,
+    "skills/ppt-master/workflows/edit-native-pptx.md": 4250
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -2095,7 +2098,7 @@
             {
               "path": "skills/ppt-master/workflows/profiles/beautify-pptx.md",
               "role": "producer",
-              "fingerprint": "308c0a3ef9d9",
+              "fingerprint": "e1bd978fcc83",
               "reason": "This producer projects the owner field into the planning contract."
             }
           ]
