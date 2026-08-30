@@ -1,39 +1,26 @@
 # Page Transitions & Per-Element Animations
 
-Execution contract for generated-PPTX **page transitions** and **per-element
-object animations**, including deterministic Morph object pairing. This file
-owns defaults, sidecar semantics, anchor selection, validation, and package
-read-back.
+Execution contract for generated-PPTX **page transitions** and **per-element object animations**, including deterministic Morph pairing: defaults, sidecar semantics, anchor selection, validation, and package read-back.
 
 ## Capability Menu — Open Here
 
-Motion here is several separate capabilities, not one dial. Two of them are
-decided **upstream, while pages are still being authored** — read this menu
-before the page plan is frozen, not only when a deck is already exported.
+Motion is several separate capabilities, not one dial; two of them are decided while pages are still being authored, so read this before the page plan is frozen.
 
 | What the deck needs | Reach for | Decided at |
 |---|---|---|
-| A generic deck-wide entrance build | `-a auto`; with the default `after-previous` Start mode, groups use fixed `--animation-stagger` timing rather than narration cues | Post-processing; §2, §4 |
-| Explicit object lifecycle choreography | An `animations.json` sidecar for selected enter/emphasize/move/exit/static duties, order, Start mode, and timing | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
-| Object reveals semantically synchronized to recorded narration | Narration-cue sync derives `narration_animations.json` from canonical `animations.json`, page-local SRT, and `narration_timing.json`; `-a auto` alone does not provide this mapping | Audio stage; [`generate-audio`](../workflows/stages/generate-audio.md) |
-| A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages, then select Morph and add explicit pairs when identity must be deterministic.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
-| A static full-bleed page that should stop looking frozen | Consider slow `path_*` motion on a visually subordinate image or atmospheric layer; §4.1 gives one starting recipe | Post-processing; §4.1 |
-| Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
+| A generic deck-wide entrance build | `-a auto`; with the default `after-previous` Start, groups use fixed `--animation-stagger` timing, not narration cues | Post-processing; §2, §4 |
+| Explicit object lifecycle choreography | An `animations.json` sidecar for selected enter/emphasize/move/exit/static duties, order, Start, timing | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
+| Object reveals synchronized to recorded narration | Narration-cue sync derives `narration_animations.json` from `animations.json`, page-local SRT, and `narration_timing.json`; `-a auto` alone does not | Audio stage; [`generate-audio`](../workflows/stages/generate-audio.md) |
+| A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages**, then select Morph and add explicit pairs when identity must be deterministic; there is no keyframe timeline anywhere — the difference between two editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
+| A static full-bleed page that should stop looking frozen | Slow `path_*` motion on a visually subordinate image or atmospheric layer | Post-processing; §4.1 |
+| Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recipes assembled from the mechanisms above; carousel and odometer need paired pages | §4.2 |
 | Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
-| A transition or object animation needs an audible cue | Optional `transition.sound` or object-animation `sound`; select it only after the visual motion solution is complete, then sync the chosen global-library ids into the project. For direct narrated MP4 delivery, [`generate-audio`](../workflows/stages/generate-audio.md) selects either the verified native-export mix or explicit real-time slideshow capture; never combine them | Post-motion; §2.2 |
-| Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
+| A transition or object animation needs an audible cue | Optional `transition.sound` or object `sound`, selected only after the visual solution is complete and synced from the global library; a narrated MP4 uses either the verified native-export mix or explicit slideshow capture, never both | Post-motion; §2.2 |
+| Nothing should move | `-t none` and per-element `none` | Export; §1 |
 
-**Hard rule — Morph geometry is an authoring decision; pairing is a later
-execution decision**: export cannot invent the two visible endpoint states.
-Author both consecutive pages while `svg_output/` is still being built. For
-deterministic identity, expose each endpoint as a compatible direct-root group
-and declare the pair in `animations.json` (§2.1); the source and destination ids
-and geometry may differ. `-t morph` without explicit pairs leaves matching to
-PowerPoint's heuristic and is not proof that the intended objects will tween.
+**Hard rule — Morph geometry is an authoring decision; pairing is a later execution decision**: export cannot invent endpoint states. Author both consecutive pages while `svg_output/` is being built; for deterministic identity expose each endpoint as a compatible direct-root group and declare the pair in `animations.json` (§2.1) — ids and geometry may differ. `-t morph` without pairs leaves matching to PowerPoint's heuristic.
 
-**Reference — not a constraint**: per-element animation stays off by default
-(§1). Auto-firing element builds on every page are an unsolicited "AI deck"
-tell; each capability above earns its place per page, not per deck.
+**Reference — not a constraint**: per-element animation stays off by default; auto-firing builds on every page are an unsolicited "AI deck" tell, and each capability earns its place per page.
 
 ---
 
@@ -41,56 +28,28 @@ tell; each capability above earns its place per page, not per deck.
 
 | Layer | Default | Why |
 |---|---|---|
-| Page transition | CLI: `fade`, 0.4s | Calm baseline that suits most decks; the public Python builder retains its legacy 0.5s default |
-| Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so object animation is opt-in. Turn on the content-aware canonical entrance policy with `-a auto`, or select one PowerPoint-native `entrance_*`, `emphasis_*`, `path_*`, or `exit_*` key explicitly |
-| Sound effects | **`none` (off)** | No global sound is copied and no `<project>/sounds/` directory is created unless a resolved transition or object-animation cue actually selects one |
+| Page transition | CLI `fade`, 0.4s (the public Python builder keeps its legacy 0.5s) | Calm baseline |
+| Per-element animation | **`none` (off)** | A page appears as a whole; opt in with `-a auto` or one explicit `entrance_*` / `emphasis_*` / `path_*` / `exit_*` key |
+| Sound effects | **`none` (off)** | No global sound is copied and no `<project>/sounds/` exists until a resolved cue selects one |
 
-To regenerate a deck with different settings, rerun the final checker when its current matching report is absent or stale, then rerun `svg_to_pptx.py` against the same `svg_output/`; the content-generation LLM need not rerun unless authored SVG requires repair. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
+To regenerate with different settings, rerun the final checker when its report is absent or stale, then rerun `svg_to_pptx.py` on the same `svg_output/`; the authoring LLM reruns only for SVG repair. `-s final` is diagnostic only.
 
 ---
 
 ## 2. Custom Object-Level Animation
 
-Per-element animation is off by default. To enable generic entrance reveals
-deck-wide, pass `-a auto` at export (no config needed). When a deck instead
-needs a specific object lifecycle—for example enter, move, emphasize, then
-exit—use the optional `animations.json` sidecar. The SVG remains the visual
-source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to
-create better semantic anchors without changing visible output, while the
-sidecar controls PPTX animation behavior.
+`-a auto` enables generic entrance reveals deck-wide with no config. A specific lifecycle — enter, move, emphasize, exit — uses the optional `animations.json` sidecar: the SVG stays the visual source, the custom stage may regroup, rename, and re-bound anchors without changing visible output, and the sidecar controls PPTX behavior. Run [`customize-animations`](../workflows/stages/customize-animations.md) when `animations.json` exists, when the user asks to tune order/effects/timing/object reveals, or when the effective Custom Animations outcome in `design_spec.md §I` is enabled; a §IX `Motion suggestion` informs an active pass but never triggers it.
 
-Run the [`customize-animations`](../workflows/stages/customize-animations.md)
-post-processing stage when the project already carries `animations.json`, when
-the user explicitly asks to tune animation order/effects/timing/object-level
-reveals, or when the effective Custom Animations outcome in
-`design_spec.md §I` is enabled. A §IX `Motion suggestion` remains Strategist
-advice and informs an active pass, but never triggers the stage alone.
-
-**Hard rule — semantic anchors before object-targeted sidecar entries**: when
-object animation is in scope, derive motion units and their lifecycle duties
-from page meaning and narration, then regroup coarse/fragmented Slide-local
-content without changing its appearance. Only post-regroup top-level ids are
-valid object targets.
+**Hard rule — semantic anchors before object-targeted entries**: derive motion units and duties from page meaning and narration, regroup coarse or fragmented Slide-local content without changing appearance, and target only post-regroup top-level ids.
 
 ```bash
-# Inspect the real anchors after the semantic regrouping pass
-python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
-
-# Build a neutral editable scaffold from the post-regroup anchors when useful
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
-
-# Validate references before export
-python3 skills/ppt-master/scripts/animation_config.py validate <project>
-
-# Export reads <project>/animations.json automatically when present
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project>   # real anchors after regrouping
+python3 skills/ppt-master/scripts/animation_config.py scaffold <project>      # neutral editable scaffold (effect: none, {} placeholders)
+python3 skills/ppt-master/scripts/animation_config.py validate <project>      # before export
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project>                    # reads <project>/animations.json automatically
 ```
 
-The scaffold keeps `defaults.animation.effect: none` and may list untouched
-groups as empty `{}` placeholders; creating it does not opt the deck into
-object motion. Populate only adopted motion units.
-
-Sparse sidecar excerpt (unlisted slides inherit resolved defaults):
+Sparse sidecar (unlisted slides inherit resolved defaults):
 
 ```json
 {
@@ -112,552 +71,137 @@ Sparse sidecar excerpt (unlisted slides inherit resolved defaults):
 }
 ```
 
-Rules:
+**Contract**:
 
-- `slides` keys match SVG stems (`03_market.svg` → `03_market`).
-- `groups` keys match top-level `<g id="...">` anchors.
-- A populated group block chooses exactly one representation: the
-  backward-compatible single-effect object, or
-  `{ "effects": [row, ...] }`. `effects` is non-empty and mutually exclusive
-  with every legacy single-effect field; each row explicitly names `effect`.
-  An untouched scaffold `{}` remains a neutral placeholder.
-- `effect: none` in the legacy form removes that group from the object-animation
-  sequence and is useful for overriding inherited generic animation.
-- `effects[]` permits the same PowerPoint shape to carry several Animation Pane
-  rows. `order` sorts ordinary rows across the slide; ties retain SVG group
-  order and then array order. `trigger_shape` rows keep that relative ordering
-  in separate interactive sequences rather than interleaving with the main
-  sequence. Ordering never changes slide layering.
-- `delay` is seconds added to that row's resolved Start.
-- `trigger` may be set per legacy row or `effects[]` row; otherwise it inherits
-  the resolved slide Start mode.
-- `trigger_shape` is a row-specific reference to another unique, triggerable
-  top-level group. It maps to PowerPoint **Trigger → On Click of**, makes only
-  that row interactive, and uses `delay` as `TriggerDelayTime`. It implies
-  `on-click`; an explicit row `trigger` may accompany it only when also
-  `on-click`.
-- `duration` overrides the per-row schedule duration. `entrance_appear`
-  remains a 1ms visibility flip, and instantaneous native emphasis presets
-  retain their PowerPoint-authored duration; the configured value still spaces
-  the next `after-previous` row.
-- `effect_options` requires an explicit canonical `effect` in the same legacy
-  block or `effects[]` row and accepts only parameters PowerPoint exposes for
-  that effect:
+- `slides` keys are SVG stems; `groups` keys are top-level `<g id>` anchors. A populated group is either the legacy single-effect object or `{ "effects": [row, …] }` (non-empty, each row naming `effect`, mutually exclusive with legacy fields); `{}` is a neutral placeholder; legacy `effect: none` removes the group from the sequence and overrides inherited generic animation.
+- `effects[]` lets one shape carry several Animation Pane rows; `order` sorts rows across the slide (ties keep SVG group order, then array order), `trigger_shape` rows sort within their own interactive sequence, and ordering never changes layering.
+- `delay` adds seconds to the resolved Start; `trigger` per row otherwise inherits the slide Start mode; `trigger_shape` references another unique triggerable top-level group (PowerPoint **Trigger → On Click of**), makes only that row interactive, uses `delay` as `TriggerDelayTime`, and implies `on-click`.
+- `duration` overrides the row schedule (`entrance_appear` stays a 1 ms flip and instantaneous native emphasis keeps its authored duration, but the configured value still spaces the next `after-previous` row).
+- `effect_options` requires an explicit canonical `effect` and accepts only what PowerPoint exposes: `direction` (directional entrance/exit effects), `amount` (wheel spokes `1`/`2`/`3`/`4`/`8`, spin degrees, transparency ratio), `color` (`#RRGGBB` or `theme:<scheme-color>`), `font_name` (required for `emphasis_change_font`; one installed face), `size` (grow/shrink), `relative` (motion paths). `python3 skills/ppt-master/scripts/pptx_animations.py --describe <effect>` prints each effect's exact contract.
+- Any block or row may set `repeat_count` or `repeat_duration` (exclusive), `auto_reverse`, `rewind`, `accelerate`, `decelerate` (ratios `0..1`; `bounce_end` needs an interpolated behavior and excludes `decelerate`), `restart` (`always` / `when-not-active` / `never`), `after_effect` (`none` / `dim` with `color` / `hide` / `hide-on-next-click`), and `sound` (project-relative or absolute `.m4a` / `.mp3` / `.wav`; new output uses a project-relative path synced under §2.2, never `templates/sounds/`). `Speed` and smooth start/end derive from `duration` and `accelerate`/`decelerate`.
+- This is the complete surface for the top-level-group model: no paragraph/text-range builds (grouped SVG is not emitted as paragraph builds), no media commands (audio/video workflows own them).
+- `--animation none` overrides the sidecar and disables all per-element animation; a sidecar group may override the legacy chrome-name heuristic but never `data-pptx-layer` or an explicit static role/placeholder; unknown effects, modes, triggers, or invalid numeric/order fields fail validation with no fallback.
 
-  | Option | Applies to |
-  |---|---|
-  | `direction` | Directional Fly/Crawl/Wipe/Peek/Strips/Split/Stretch/Zoom and related entrance/exit effects |
-  | `amount` | Wheel spokes (`1`, `2`, `3`, `4`, `8`), emphasis Spin degrees, or Transparency ratio |
-  | `color` | Color-capable emphasis effects; `#RRGGBB` or `theme:<scheme-color>` |
-  | `font_name` | Change Font; required for `emphasis_change_font`; one installed PowerPoint face, not a CSS list |
-  | `size` | Grow/Shrink |
-  | `relative` | Motion paths (`true` = shape-relative, `false` = fixed slide path) |
-- Any animation block or effect row may set `repeat_count` or `repeat_duration`
-  (mutually exclusive), `auto_reverse`, `rewind`, `accelerate`, `decelerate`,
-  `bounce_end`, `restart`, `after_effect`, and `sound`. Ratios are `0..1`;
-  `bounce_end` requires an interpolated behavior and cannot combine with
-  `decelerate`; `restart` is `always`, `when-not-active`, or `never`;
-  `after_effect` is `none`, `dim` (with `color`), `hide`, or
-  `hide-on-next-click`; `sound` is a project-relative or absolute `.m4a`,
-  `.mp3`, or `.wav` path. New generated configurations use a project-relative
-  path. A bundled library choice first follows §2.2 and resolves to a
-  project-local `.wav`; never point new output at `templates/sounds/`.
-- `Speed` and smooth start/end are not duplicate sidecar fields: they are
-  derived from `duration` and `accelerate`/`decelerate`.
-- This is the complete parameter surface for the generated top-level-group
-  target model, including multiple ordered effects on one group. PowerPoint
-  paragraph/text-range build fields are intentionally absent because grouped
-  SVG content is not emitted as paragraph builds; media play/pause/stop
-  commands remain in the audio/video workflows.
-- Run `python3 skills/ppt-master/scripts/pptx_animations.py --describe
-  <canonical_effect>` for that effect's exact option values and full parameter
-  contract.
-- `--animation none` overrides the sidecar and disables all per-element animation.
-- An explicit sidecar group may override the legacy chrome-name heuristic, but it cannot override `data-pptx-layer` or an explicit static role/placeholder marker.
-- Unknown effects, modes, or triggers and invalid numeric/order fields fail validation; no fallback effect is substituted.
-
-**Inheritance**: the sidecar and its `defaults` block are optional. Unlisted
-slides and omitted slide fields inherit `defaults.transition` /
-`defaults.animation`, then CLI/exporter resolution. Explicit CLI flags override
-the corresponding sidecar default/slide fields; explicit group overrides remain
-unless `-a none` hard-disables all object motion. Groups inherit the resolved
-slide duration, Start mode, timing modifiers, after-effect, and sound into each
-legacy or `effects[]` row. `effect_options` remains coupled to an explicit
-effect; `trigger_shape` is never inherited; omitted `order`/`delay` use
-exporter defaults.
+**Inheritance**: sidecar and `defaults` are optional; unlisted slides and omitted fields inherit `defaults.transition` / `defaults.animation`, then CLI resolution. Explicit CLI flags override the corresponding sidecar default/slide fields; explicit group overrides remain unless `-a none`. Groups inherit the resolved slide duration, Start, timing modifiers, after-effect, and sound; `effect_options` stays coupled to an explicit effect; `trigger_shape` is never inherited; omitted `order`/`delay` use exporter defaults.
 
 ### 2.1 Deterministic Morph Object Pairing
 
-When one semantic object continues across two adjacent slides, the destination
-slide may declare explicit forced-Morph pairs. This is separate from `groups`:
-Morph owns cross-slide identity, while `groups` owns Animation Pane rows.
-The generated names follow Microsoft's
-[forced object-matching convention](https://support.microsoft.com/en-us/powerpoint/morph-transition-tips-and-tricks).
+When one semantic object continues across adjacent slides, the destination slide declares forced-Morph pairs — separate from `groups` (Morph owns cross-slide identity; `groups` owns Animation Pane rows) — following Microsoft's [forced object-matching convention](https://support.microsoft.com/en-us/powerpoint/morph-transition-tips-and-tricks):
 
 ```json
 {
   "version": 1,
   "slides": {
     "02_detail": {
-      "transition": {
-        "effect": "morph",
-        "effect_options": { "morph_by": "object" },
-        "duration": 0.8
-      },
-      "morph": {
-        "from": "01_overview",
-        "pairs": {
-          "hero-image": {
-            "from": "hero-overview",
-            "to": "hero-detail"
-          }
-        }
-      }
+      "transition": { "effect": "morph", "effect_options": { "morph_by": "object" }, "duration": 0.8 },
+      "morph": { "from": "01_overview", "pairs": { "hero-image": { "from": "hero-overview", "to": "hero-detail" } } }
     }
   }
 }
 ```
 
-- `morph` belongs to the destination slide. `morph.from` must be the
-  immediately preceding SVG stem in export order.
-- `animation_config.py scaffold` never guesses cross-slide identity. Add pairs
-  from the semantic motion plan after inspecting the final direct-root ids.
-- Each `pairs` key is a stable identity; its `from` and `to` values are unique
-  direct-root `<g id>` values on the source and destination slides. Supply the
-  key without `!!`; export writes the PowerPoint Selection Pane name
-  `!!<key>` on both objects.
-- A destination with explicit pairs must explicitly set `effect: morph`.
-  `morph_by` may be omitted for its `object` default or set to `object`;
-  `word`/`character` are rejected. A CLI transition override that changes the
-  resolved effect fails export.
-- A middle slide may continue the same object into another Morph transition,
-  but the same group must retain the same key. One key cannot name two objects
-  on one slide, and one object cannot carry two keys. Every `!!` key shared by
-  two adjacent Morph pages must be declared in that destination's `pairs`;
-  undeclared forced matches are rejected.
-- Explicit pairing can coexist with in-slide object animation and remains
-  active when `-a none` disables Animation Pane rows. `--no-animations`
-  disables the sidecar and all page/object motion.
-- The exporter resolves both group ids to final Slide-local PowerPoint shapes,
-  writes names only after Master/Layout processing, then reopens the package
-  and verifies adjacency, Morph by object, one name per slide, and matching
-  OOXML object types. Missing, structural, moved, ambiguous, or mismatched
-  targets fail instead of falling back to automatic Morph matching.
+`morph` belongs to the destination and `morph.from` is the immediately preceding stem in export order; `scaffold` never guesses identity — add pairs from the motion plan after inspecting final direct-root ids. Each pair key is a stable identity whose `from`/`to` are unique direct-root ids on the two slides, written without `!!` (export writes the Selection Pane name `!!<key>` on both). A destination with pairs sets `effect: morph` explicitly (`morph_by` omitted or `object`; `word`/`character` rejected; a CLI override that changes the effect fails). A middle slide may continue an object into another Morph under the same key; one key never names two objects on a slide, one object never carries two keys, and every `!!` key shared by adjacent Morph pages must be declared. Pairing coexists with in-slide animation and survives `-a none`; `--no-animations` disables everything. The exporter resolves both ids to final Slide-local shapes, writes names after Master/Layout processing, then reopens the package to verify adjacency, Morph by object, one name per slide, and matching object types — missing, structural, moved, ambiguous, or mismatched targets fail rather than falling back.
 
 ### 2.2 On-Demand Sound Selection
 
-**Hard rule — select after motion, materialize after selection**: sound is not a
-Strategist resource and does not belong in `design_spec.md`, `spec_lock.md`, or
-pre-SVG resource preparation. First complete the SVG roster and resolve the
-transition/object-motion solution. Only when a specific cue is then selected,
-copy its global-library file into the project and reference that local copy.
-
-| Source | Action |
-|---|---|
-| Bundled CC0 library | Read the complete objective [`sound-vocabulary.md`](../templates/sounds/sound-vocabulary.md), select one exact id from the resolved auditory job, sync only that selection, then use the corresponding `sounds/<namespace>/<file>.wav` path |
-| User-provided audio already inside the project | Reference its existing project-relative `.m4a`, `.mp3`, or `.wav` path for object animation; a transition sound uses `.wav` |
-| External absolute file | The low-level object-animation path remains compatible, but new generated projects should copy or sync the intended file into the project and use a relative path |
-| No concrete auditory cue job | Keep `sound` omitted; do not create `<project>/sounds/` and do not copy the library |
+**Hard rule — select after motion, materialize after selection**: sound is not a Strategist resource and never appears in `design_spec.md`, `spec_lock.md`, or pre-SVG preparation. After the roster and motion solution are final, and only when a specific cue is selected: read the complete [`sound-vocabulary.md`](../templates/sounds/sound-vocabulary.md), choose one exact id for the auditory job, sync only that id, and reference the project-local `sounds/<namespace>/<file>.wav`; user audio already in the project is referenced by its project-relative path (`.m4a` / `.mp3` / `.wav` for objects, `.wav` for transitions); with no concrete cue job omit `sound` and create no `sounds/`.
 
 ```bash
-# Optional exact filtering only after the complete vocabulary is in context
-python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
-
-# Materialize only the chosen ids
-python3 skills/ppt-master/scripts/sound_sync.py \
-  <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]
+python3 skills/ppt-master/scripts/sound_sync.py list --query <term>                       # optional exact filtering after the vocabulary is in context
+python3 skills/ppt-master/scripts/sound_sync.py <project_path> <namespace>/<sound_id> [...]  # materialize only the chosen ids
 ```
 
-`sound_sync.py` is the only bundled-library materialization path. Stable ids
-include their namespace; copied files remain under
-`<project_path>/sounds/<namespace>/`. The exporter never reads the global
-`templates/sounds/` library directly, and sidecars store paths rather than
-library ids.
-
-**Default — silence (may override for a specific cue)**: do not add sound to
-demonstrate capability or spread it across a deck for coverage. A sound may
-support a named transition, reveal, confirmation, warning, or drawn/moving
-gesture after the corresponding visual behavior is already selected.
-
-**Hard rule — PPTX and MP4 are separate sound deliveries**: sound fields and
-package read-back prove the editable PPTX contains the intended native cue;
-they do not prove PowerPoint's video encoder placed it in the MP4 audio track.
-For direct narrated MP4 delivery with resolved cues, follow `generate-audio`
-and choose exactly one branch: mix from the final narrated trace plus final
-PPTX after native encoding, or explicitly capture the live PowerPoint Slide
-Show with system audio. Never mix the capture again. Keep post-production gain
-and limiter settings out of `animations.json`.
+`sound_sync.py` is the only library materialization path; the exporter never reads `templates/sounds/`, and sidecars store paths, not ids. **Default — silence**: never add sound to demonstrate capability or for coverage; a sound supports a named transition, reveal, confirmation, warning, or gesture after that visual behavior is selected. **Hard rule — PPTX and MP4 are separate deliveries**: sound fields and read-back prove the PPTX carries the cue, not that PowerPoint's encoder put it in the MP4; a narrated MP4 with cues follows `generate-audio` — mix from the final narrated trace plus final PPTX, or capture the live Slide Show with system audio, never both — and keeps gain/limiter settings out of `animations.json`.
 
 ---
 
 ## 3. Page Transitions
 
-**Reference — not a constraint**: choose a transition from the relationship
-between adjacent pages, not from gallery coverage. Run this playbook before
-selecting a canonical key:
-
-| Pass | Decision |
-|---|---|
-| Relate | Decide whether the destination continues the same object or space, advances in a meaningful direction, opens a new section, or intentionally breaks continuity. |
-| Diagnose | Name the transition's job: neutral continuity, immediate cut, directional progress, object/state continuity, spatial movement, or a deliberate thematic beat. |
-| Select | Use the smallest family that performs that job; keep `fade` when no stronger relationship exists. |
-| Coordinate | Align direction, duration, and recurrence with reading order, narration, and the deck's established motion language. |
-| Stop | Keep `fade` or `none` when another effect adds no meaning; never vary transitions for catalog coverage. |
+**Reference — not a constraint**: choose from the relationship between adjacent pages, not gallery coverage — relate (same object or space, directional advance, new section, deliberate break), diagnose the job (continuity, cut, direction, object/state continuity, spatial movement, thematic beat), select the smallest family, coordinate direction, duration, and recurrence with reading order and narration, and keep `fade` or `none` when nothing adds meaning.
 
 | Page relationship | Candidate family |
 |---|---|
 | Ordinary continuation within one section | `fade` |
 | Immediate change with no continuity to preserve | `none` or `cut` |
-| Directional steps, timeline, or layer progression | `push` / `wipe`; use `cover` / `uncover` when an overlay relationship is visible |
-| The same semantic object or scene changes across adjacent pages | `morph`; use §2.1 pairs when identity must be deterministic |
+| Directional steps, timeline, or layer progression | `push` / `wipe`; `cover` / `uncover` for a visible overlay relationship |
+| The same object or scene changes across adjacent pages | `morph`; §2.1 pairs for deterministic identity |
 | Section opening, key reveal, or marked state boundary | Selective `split` / `reveal` / `shape` / `flash` / `random_bars` |
-| A repeated collection advances through one spatial frame | `pan` / `conveyor` / `ferris_wheel`; use the §4.2 Morph carousel when individual cards need deterministic identity |
+| A repeated collection advances through one spatial frame | `pan` / `conveyor` / `ferris_wheel`; the §4.2 Morph carousel for deterministic cards |
 | The viewpoint travels around or through a continuous space | `rotate` / `window` / `orbit` / `fly_through` |
-| The narrative or theme supports a stage, paper, or physical-page metaphor | Selective `fall_over` / `drape` / `curtains` / `wind` / `prestige` / `peel_off` / `page_curl` / `airplane` / `origami` / `doors` |
-| A disruptive beat represents breakage, collapse, or dispersal | Selective `fracture` / `crush` / `dissolve` / `vortex` / `shred` |
-| A marked reveal benefits from a geometric, timed, or textured pattern | Selective `checkerboard` / `blinds` / `clock` / `ripple` / `honeycomb` / `glitter` / `comb` |
-| A card, panel, gallery, or viewpoint visibly turns or changes face | Selective `switch` / `flip` / `gallery` / `cube` / `box` / `zoom` |
-| Unpredictability is itself the requested behavior | `random`; never use it merely to create variety |
+| A stage, paper, or physical-page metaphor | Selective `fall_over` / `drape` / `curtains` / `wind` / `prestige` / `peel_off` / `page_curl` / `airplane` / `origami` / `doors` |
+| Breakage, collapse, or dispersal | Selective `fracture` / `crush` / `dissolve` / `vortex` / `shred` |
+| A geometric, timed, or textured reveal | Selective `checkerboard` / `blinds` / `clock` / `ripple` / `honeycomb` / `glitter` / `comb` |
+| A card, panel, gallery, or viewpoint visibly turns | Selective `switch` / `flip` / `gallery` / `cube` / `box` / `zoom` |
+| Unpredictability itself is requested | `random`; never for variety |
 
 ```bash
-# Pick a different effect
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
-
-# Remove the visual transition
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
-
-# Auto-advance every 5 seconds (kiosk-style playback)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
-
-# Auto-advance with no visual transition
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5            # kiosk playback
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advance 5
 ```
 
-The native registry covers PowerPoint's complete Subtle, Exciting, and Dynamic
-Content gallery: 48 canonical keys. New selection, sidecars, plans, conversion
-traces, and writers use only those keys. Run `pptx_animations.py --list` for
-the categorized identifiers.
-
-Eight old low-level names remain accepted only as compatibility inputs. They
-desugar to a native key plus native `effect_options`: for example, `diamond`
-becomes `shape` with `shape: diamond`, and `wedge` becomes `clock` with
-`style: wedge`. They are never selected for new output.
-
-Effects expose their real PowerPoint Effect Options through
-`transition.effect_options`. Common examples include Push/Wipe direction,
-Morph by object/word/character, Reveal through black, Shape geometry, Page
-Curl direction/pages, Glitter pattern/direction, and Fly Through bounce. Run
-`pptx_animations.py --describe-transition <effect>` for the exact
-effect-specific contract; unknown or inapplicable options fail validation.
-`none` removes the visual effect. Effects that require newer Office namespaces
-carry a real PowerPoint effect in `mc:Choice` and a `fade` fallback for older
-consumers; validation requires the requested primary effect and never accepts
-the fallback as a silent substitute.
-
-An optional `transition.sound` adds one `.wav` cue to the transition. It is a
-sidecar field rather than a CLI flag. Bundled choices must first be synced by
-§2.2 and referenced through their project-relative path. `effect: none` may
-still carry a transition sound and/or automatic advance without restoring a
-visual effect. A slide-level `transition.sound: null` explicitly clears an
-inherited default transition sound for that page.
-
-Flags:
-
-- `-t/--transition` — native effect name, compatibility input, or `none` for no visual transition. Default: `fade`. `none` does not remove an explicitly configured automatic advance.
-- `--transition-duration` — seconds, default `0.4`.
-- `--auto-advance` — seconds; click remains enabled, so the slide advances on click or when the timer expires. Omit for presenter-controlled advance.
-
-**Hard rule — no silent downgrade**: an unknown transition effect, unsupported Effect Option, or invalid/non-finite duration fails export. It is never replaced by `fade`. Recorded narration keeps the resolved visual transition; `-t none --recorded-narration ...` writes narration-driven advance timing without restoring a visual effect.
+The registry covers PowerPoint's complete Subtle, Exciting, and Dynamic Content gallery — 48 canonical keys (`pptx_animations.py --list`); eight old low-level names desugar to a native key plus options (`diamond` → `shape` + `shape: diamond`, `wedge` → `clock` + `style: wedge`) and are never selected for new output. `transition.effect_options` exposes the real Effect Options (Push/Wipe direction, Morph by object/word/character, Reveal through black, Shape geometry, Page Curl direction/pages, Glitter pattern, Fly Through bounce; `pptx_animations.py --describe-transition <effect>`); unknown options fail. Effects needing newer namespaces carry a `mc:Choice` plus a `fade` fallback that validation never accepts as a substitute. `transition.sound` (a sidecar field, `.wav`, synced under §2.2) may accompany `effect: none`; a slide-level `sound: null` clears an inherited default. Flags: `-t/--transition` (native key, compatibility input, or `none`; default `fade`; `none` keeps an explicit auto-advance), `--transition-duration` (default `0.4`), `--auto-advance` (seconds; click still advances). **Hard rule — no silent downgrade**: an unknown effect, unsupported option, or invalid duration fails export and is never replaced by `fade`; `-t none --recorded-narration …` writes narration-driven advance without restoring a visual effect.
 
 ### 3.1 Morph — author an action as the difference between two pages
 
-Morph tweens objects it can match across consecutive slides. That makes it a general mechanism, not just a transition: **any continuous action can be authored as two static pages plus a Morph transition**, with no keyframe timeline anywhere. Duplicate the page, change one property on one object, and PowerPoint interpolates the rest. Use §2.1 explicit pairs when the match must be deterministic.
+Morph tweens matched objects across consecutive slides, so any continuous action is two static pages plus Morph: duplicate the page, change one property, PowerPoint interpolates. Off-canvas → on-canvas reads as slide-in, drawer, card extending; rotation as flip, turn, hinge; a scaled image container as camera push-in; a dropping scrim or growing cut as progressive reveal; the same wide image at two `x` offsets as camera pan (`#C2-01`). Chain three or more pages for extend–hold–retract.
 
-| Change between the two pages | Reads as |
-|---|---|
-| Object sits off-canvas, then on-canvas | Slide-in, drawer pull, card extending |
-| Object rotates | Flip, turn, hinge |
-| Image container scales up | Camera push-in |
-| Scrim opacity drops, or a cut contour grows | Progressive reveal |
-| Same wide image at two `x` offsets | Camera pan (see image-layout-patterns `#C2-01`) |
-
-Chain three or more pages to build a sequence — extend, hold, retract — where each page is still an ordinary editable slide.
-
-**Hard rule — matching needs compatible object identity, not identical SVG
-geometry**: for generated decks, prefer §2.1 deterministic pairs. The source
-and destination direct-root group ids may differ, and position, size, crop, or
-other visible state is expected to change; both endpoints must still resolve to
-one compatible top-level PowerPoint object kind. Automatic Morph without pairs
-is heuristic and may cross-fade instead of tweening.
-
-**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. A wholly off-canvas endpoint must be one direct-root `<g id>` with valid `data-pptx-bounds` and `data-pptx-morph-staging="true"`; when Morph remains enabled, pair it explicitly under §2.1. The marker only declares an intentional invisible endpoint; it cannot excuse a partially clipped group or text carrier.
-
-**When Morph refuses to match**: PowerPoint pairs compatible object kinds; a
-shape and a picture will cross-fade instead of tweening. For generated pages,
-declare the identity through the destination slide's `morph` block (§2.1).
-The exporter writes the shared `!!<key>` name after structure processing and
-reads the package back. Do not author `data-pptx-shape-name` for this purpose;
-that attribute remains importer metadata for mirror/preserve packages
-([`svg-effects.md`](./svg-effects.md) §6.6).
-
-**Not supported — Slide Zoom / Summary Zoom.** Click-to-jump navigation built on PowerPoint's Zoom objects (the "click a portrait, zoom into that section" pattern) has no exporter path. Build click-driven navigation with `trigger_shape` on ordinary object animations instead, or with plain hyperlinks.
-
-**No 3D**: perspective rotation, extrusion, and shear are outside the SVG contract — `skewX` / `skewY` and shear matrices fail closed ([`svg-effects.md`](./svg-effects.md) §6.8). Build the same impression with 2D means — offset, scale, overlap, and per-facet lightness — rather than attempting a 3D tilt.
+**Hard rule — matching needs compatible identity, not identical geometry**: prefer §2.1 pairs; ids and visible state may differ, but both endpoints must resolve to one compatible top-level PowerPoint object kind — a shape and a picture cross-fade instead of tweening. Automatic Morph is heuristic. **Give text somewhere to come from**: text present only on the second page can only fade in — place the next page's copy just below the canvas and the previous page's just above, so blocks slide through the frame; a wholly off-canvas endpoint is one direct-root `<g id>` with valid `data-pptx-bounds` and `data-pptx-morph-staging="true"`, explicitly paired when Morph stays enabled; the marker never excuses a partially clipped group. Declare identity through the destination's `morph` block, never `data-pptx-shape-name` (importer metadata, [`svg-effects.md`](./svg-effects.md) §6.6). **Not supported**: Slide Zoom / Summary Zoom (build click navigation with `trigger_shape` or hyperlinks) and 3D — perspective, extrusion, and shear fail closed ([`svg-effects.md`](./svg-effects.md) §6.8); build the impression with offset, scale, overlap, and per-facet lightness.
 
 ---
 
 ## 4. Per-Element Animations
 
-Off by default — enable deck-wide with `-a auto` (or another effect). Once enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
+Off by default; enable with `-a auto` (or another effect), select a canonical effect with `--animation entrance_fade`, and choose Start with `--animation-trigger on-click|with-previous|after-previous` — PowerPoint's Start dropdown: `on-click` (each click reveals the next group; only for a controlled semantic reveal; forbidden with `--recorded-narration`), `with-previous` (one coordinated beat; stagger ignored), `after-previous` (default click-free cascade with `--animation-stagger`). **Default — one dominant deck rhythm and normally one mode per slide (may mix for a distinct simultaneous or presenter-controlled beat)**. Row-specific `trigger_shape` is PowerPoint's separate Trigger → On Click of, not a fourth mode.
 
-- **`on-click`** — each click reveals the next group. Use only for a controlled semantic reveal; live delivery alone is insufficient. Forbidden with `--recorded-narration`.
-- **`with-previous`** — groups start together as one coordinated beat. Stagger ignored.
-- **`after-previous`** (default) — click-free cascade on slide entry with `--animation-stagger` spacing. Use when controlled reveals are unnecessary.
-
-**Default — coherent Start rhythm (may override when a semantic beat needs
-different control)**: Keep one dominant deck rhythm and normally one mode per
-slide. Mix only for a distinct simultaneous or presenter-controlled beat.
-
-Enable with `-a auto`, select a canonical effect with
-`--animation entrance_fade`, and choose Start behavior with
-`--animation-trigger on-click|with-previous|after-previous`.
-
-PowerPoint's separate **Trigger → On Click of** behavior uses row-specific
-`trigger_shape`. It links that row to another top-level group while unlinked
-rows keep the slide Start mode; it is not a fourth deck-wide Start mode.
-
-**Mandatory — lifecycle before effect selection**: start from `static`, then
-classify semantic `initial → action → end` before choosing an effect. Generic
-staged reveals normally use `enter`; narrower communication jobs select their
-matching lifecycle instead.
+**Mandatory — lifecycle before effect**: start from `static`, classify `initial → action → end`, then choose the effect; generic staged reveals are `enter`, narrower jobs select their lifecycle.
 
 | Duty | State contract | Use when | Effect family |
 |---|---|---|---|
-| `static` | present → hold as reference → present | Motion adds no clarity or intended feeling | No row; legacy `effect: none` only suppresses inheritance |
-| `enter` | absent → introduce → present | Information should be withheld, ordered, or revealed with narration | `entrance_*`; modes only for generic reveal |
-| `emphasize` | present → redirect attention → present/altered | An already visible object must regain attention or show a local change; never substitute for its first reveal | Explicit `emphasis_*` |
-| `move` | state/position A → progress → state/position B | The trajectory carries spatial or causal meaning, or §4.1 adopts subordinate ambient motion; use Morph for cross-page continuity | Explicit `path_*`, or endpoint pages + Morph |
-| `exit` | present → retire → absent | The same slide must remove, replace, or make room for content; an ordinary page change needs no object exit | Explicit `exit_*` |
+| `static` | present → hold → present | Motion adds no clarity or feeling | No row; legacy `effect: none` only suppresses inheritance |
+| `enter` | absent → introduce → present | Information is withheld, ordered, or revealed with narration | `entrance_*`; modes only for generic reveal |
+| `emphasize` | present → redirect attention → present/altered | A visible object must regain attention or show a local change; never its first reveal | Explicit `emphasis_*` |
+| `move` | A → progress → B | The trajectory carries spatial or causal meaning, or §4.1 ambient motion; Morph for cross-page continuity | Explicit `path_*`, or endpoint pages + Morph |
+| `exit` | present → retire → absent | The same slide must remove, replace, or make room; a page change needs no exit | Explicit `exit_*` |
 
-**Default — restrained entrance-led choreography (may override for content,
-tone, or the request)**: Use entrances for ordinary builds. Add emphasis or
-exit sparingly, only for a real duty and fitting effect. Multiple `effects[]`
-rows require multiple duties.
+**Default — restrained entrance-led choreography (may override for content, tone, or the request)**: entrances for ordinary builds; emphasis or exit only for a real duty; several `effects[]` rows only for several duties.
 
-The registry exposes two layers:
-
-- **203 PowerPoint-native object presets**: 53 `entrance_*` presets, 33
-  `emphasis_*` effects, 64 `path_*` motion paths, and 53 `exit_*` effects.
-  Examples include `entrance_bounce`, `emphasis_spin`, `path_circle`, and
-  `exit_faded_zoom`. Each native key carries the complete PowerPoint-authored
-  behavior tree, not a generic filter approximation.
-- **29 legacy compatibility inputs**, listed by `--list`; new output never
-  selects them.
-
-Run the registry command for the exact categorized key list:
-
-```bash
-python3 skills/ppt-master/scripts/pptx_animations.py --list
-```
-
-Compatibility names normalize before selection and writing: for example,
-`fade` resolves to `entrance_fade`; every old Fly direction name resolves to
-`entrance_fly`; every old Wipe direction name resolves to `entrance_wipe`; and
-`cut` resolves to `entrance_appear` because current PowerPoint has no separate
-Cut object effect. Directional aliases preserve their old direction through
-`effect_options`; legacy `wheel` maps to `entrance_wheel` with four spokes.
-These names are accepted only as compatibility inputs.
-Automatic selection, new sidecars, conversion traces, and writers use
-canonical keys.
-
-The native keys mirror the object-capable `MsoAnimEffect` surface. The four
-media commands—play, pause, stop, and play from bookmark—are not object effects
-for SVG groups and remain owned by the audio/video workflows.
-
-- `auto` handles generic `enter` duties only and maps semantic ids to canonical entrances: charts/tables/timelines use
-  `entrance_wipe`; cards/steps use `entrance_fly`; titles/takeaways use
-  `entrance_fade`; image-like ids cycle a richer pool; unmatched ids cycle
-  fade/wipe/fly/zoom.
-- `mixed` (legacy mode name) handles generic `enter` duties only and is
-  deterministic. The first animated group on each
-  slide uses `entrance_fade`; later groups cycle through a 16-effect canonical
-  PowerPoint entrance pool across the deck. The mode name remains compatible;
-  it no longer selects hand-authored compatibility rows.
-- `random` handles generic `enter` duties only and samples from the same
-  canonical PowerPoint entrance pool.
-  Resolution is seeded from the effective deck input, so the same input
-  produces the same choices; `--conversion-trace` records every resolved effect
-  when diagnostics are enabled.
-
-`entrance_appear` is excluded from every variation pool because it has no
-visible motion. `auto`, `mixed`, and `random` never satisfy an adopted
-`emphasize`, `move`, or `exit` duty; those require explicit canonical effects.
-
-Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start;
-`--animation-duration` and `--animation-stagger` control base timing;
-`--animation-config` selects a sidecar; `--no-animations` disables page/object
-motion but preserves narration audio and recorded advance timing.
-
-> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. Narration-cue sync uses `narration_animations.json` and blocks when only canonical `animations.json` exists. Narration-independent custom motion explicitly passes `--animation-config animations.json`, even when a derived sidecar also exists. With no sidecar, pass `--inherit-motion-from <base_postflight_report>`; explicit all-motion-off uses `--no-animations`.
+The registry has **203 native object presets** — 53 `entrance_*`, 33 `emphasis_*`, 64 `path_*`, 53 `exit_*` (e.g. `entrance_bounce`, `emphasis_spin`, `path_circle`, `exit_faded_zoom`), each carrying the complete PowerPoint behavior tree — plus 29 legacy compatibility inputs that normalize before selection (`fade` → `entrance_fade`, old Fly/Wipe direction names → `entrance_fly` / `entrance_wipe` with the direction in `effect_options`, `cut` → `entrance_appear`, `wheel` → `entrance_wheel` with four spokes) and are never written. `python3 skills/ppt-master/scripts/pptx_animations.py --list` prints the categorized keys; media play/pause/stop belong to the audio/video workflows. Modes handle generic `enter` only: `auto` maps semantic ids to canonical entrances (charts/tables/timelines `entrance_wipe`, cards/steps `entrance_fly`, titles/takeaways `entrance_fade`, image-like ids a richer pool, others fade/wipe/fly/zoom); `mixed` is deterministic (`entrance_fade` first, then a 16-effect canonical pool); `random` samples the same pool, seeded from the effective deck input so results repeat; `entrance_appear` is excluded from every pool; none satisfies an adopted `emphasize`, `move`, or `exit`. Flags: `-a/--animation`, `--animation-trigger`, `--animation-duration`, `--animation-stagger`, `--animation-config <sidecar>`, `--no-animations` (kills page/object motion, keeps narration audio and recorded advance). `--recorded-narration` rejects `on-click` and `trigger_shape`; narration-cue sync uses `narration_animations.json` and blocks on a bare canonical sidecar; narration-independent custom motion passes `--animation-config animations.json` explicitly; with no sidecar pass `--inherit-motion-from <base_postflight_report>`.
 
 ### 4.1 Slow ambient motion — the page that breathes
 
-**Reference — not a constraint**: ambient motion can keep a static page from
-feeling frozen when it remains visually subordinate to the message. A common
-starting recipe is `path_left` or `path_right` on a background image, started
-`with-previous` and paced much more slowly than a content reveal. The same
-principle may suit another atmospheric or non-information-bearing layer. Choose
-duration, distance, and moving-object count from the composition and delivery
-context.
-
-Keep a full-bleed moving image covering the canvas at both endpoints; exposing
-the slide beneath it is a visible failure.
-
-It pairs naturally with a fixed foreground: with image-layout-patterns `#M1-07`, the scrim and its cut contour stay locked while the world moves behind the cuts, which reads as looking through windows rather than as a sliding photo. The same logic applies to `#M1-10` and `#P1-09`.
-
-Motion remains subordinate: avoid competing ambient paths or movement that
-reduces the readability of body copy or data. Multiple coordinated layers are
-valid when they express one intentional depth or atmosphere relationship.
+**Reference — not a constraint**: `path_left` / `path_right` on a background image, started `with-previous` and paced far slower than a content reveal, keeps a static page from feeling frozen while staying subordinate; the same applies to any non-information-bearing layer, with duration, distance, and moving-object count from the composition. A full-bleed moving image must cover the canvas at both endpoints. With a fixed foreground (`#M1-07`, also `#M1-10`, `#P1-09`) the scrim and its cuts stay locked while the world moves behind them — windows, not a sliding photo. Coordinated layers are valid for one depth or atmosphere relationship; competing paths or motion that hurts copy or data are not.
 
 ### 4.2 Recurring recipes
 
-Four combinations that recur constantly in authored decks. Each is built from
-mechanisms already defined above — none needs a new capability.
-
-**Carousel** (Morph, §2.1 and §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Explicitly pair each moving content unit across adjacent pages; the fixed frames stay static and need no pair. Scales to any number of images with one page each.
-
-**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#M1-08`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. A small stagger, such as `0.1s`, can make digit columns settle in sequence; synchronized motion is also valid when it fits the intended rhythm.
-
-**Parallax depth** (morph) — move a background layer a *short* distance and a foreground layer a longer one between two pages. The differing travel is read as depth. Keep both layers' z-order identical on both pages; a layer that changes stacking between pages breaks the tween and the transition jumps.
-
-**Flip-card / click-to-reveal** (`trigger_shape`, §4) — pair a face group and a back group at the same position, give the face an exit and the back an entrance, and set the back's `trigger_shape` to the face's id. Clicking the face plays both. This is the supported route for click-driven interaction; PowerPoint's Zoom objects are not (§3.1).
+- **Carousel** (Morph, §2.1/§3.1): hold a fixed row of card frames and rotate the content through them one position per page, pairing each moving content unit; frames stay static and unpaired.
+- **Odometer** (Morph or path): a vertical 0–9 strip shown through a window of background-filled rectangles (`#M1-08`); shift the strip so the target digit lands, then morph or `path_up`; a `0.1s` stagger settles columns in sequence.
+- **Parallax depth** (Morph): move the background a short distance and the foreground a longer one; keep z-order identical on both pages or the tween jumps.
+- **Flip-card / click-to-reveal** (`trigger_shape`): a face group and a back group at the same position, face with an exit and back with an entrance whose `trigger_shape` is the face's id — the supported click-driven route (Zoom objects are not, §3.1).
 
 ---
 
 ## 5. Anchor Logic — Top-Level `<g id="...">`
 
-Per-element animations are anchored on **top-level `<g id="...">` content
-groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). IDs must
-be unique within the page. A backward-compatible single-effect group produces
-one Animation Pane row; `effects[]` may produce several ordered rows targeting
-the same PowerPoint shape. Each row inherits the slide Start mode unless it
-declares its own `trigger`. Nested implementation groups may remain anonymous
-because the sidecar does not target them.
-
-**Hard rule — existing groups are not custom-animation intent**: the
-pre-existing SVG hierarchy is implementation evidence, not an authoritative
-motion plan. During the custom-animation stage, derive one group per logical
-motion unit from claims, comparisons, sequence, causality, and narration beats;
-split coarse wrappers and merge fragmented atoms when needed, then use
-`list-groups` only after that rewrite. This is also the granularity PowerPoint
-uses for group-select / group-move. Do not split or merge units to hit a target
-count.
-
-**Chrome stays static.** `data-pptx-layer` and explicit static
-role/placeholder markers are absolute. The legacy chrome-like ID heuristic
-(background, header/footer, decor, watermark, page number, nav, logo, rule)
-applies only to a top-level group that itself lacks `data-pptx-layer`,
-`data-pptx-role`, and `data-pptx-placeholder` semantics; an explicit sidecar
-entry may override only this name heuristic. Keep wrappers and use
-`effect: none` for static content.
-
-**Fallback for flat SVGs** (no top-level `<g>` wrappers, only raw `<rect>` / `<text>` / `<path>` at the root):
-
-- ≤ 8 visible top-level primitives → each becomes one anchor (capped to avoid 70+ atom cascades on dense pages).
-- > 8 → animation is skipped on that slide. The slide still renders, just without object animation.
-
-Executors should wrap logical sections in `<g id>` regardless of whether you plan to animate. [`shared-standards-core.md`](./shared-standards-core.md) requires it.
+Animations anchor on unique top-level `<g id>` content groups (`cover-title`, `card-1`); a single-effect group yields one Animation Pane row, `effects[]` several, each inheriting the slide Start unless it declares `trigger`; nested groups stay anonymous and untargeted. **Hard rule — existing groups are not custom-animation intent**: during the custom stage derive one group per logical motion unit from claims, comparisons, sequence, causality, and narration — splitting coarse wrappers and merging fragments without changing appearance, never to hit a count — and run `list-groups` only after that rewrite. **Chrome stays static**: `data-pptx-layer` and explicit static role/placeholder markers are absolute; the legacy chrome-name heuristic (background, header/footer, decor, watermark, page number, nav, logo, rule) applies only to unmarked top-level groups and only it may be overridden by a sidecar entry. Flat SVGs with no top-level `<g>`: ≤8 visible root primitives each become an anchor, more skips animation on that slide. Wrap logical sections in `<g id>` regardless ([`shared-standards-core.md`](./shared-standards-core.md)).
 
 ---
 
 ## 6. Validation and Read-Back
 
-Animation configuration is strict. Export fails on an unknown effect, mode, or
-trigger; invalid timing/order values; a missing slide/group/`trigger_shape`
-reference; a self-trigger; or any attempt to animate or trigger from a
-structural layer. These errors never downgrade or silently omit a target.
-
-Generated export reads each slide's timing tree back and checks row count/order,
-including repeated rows on one shape, trigger, trigger shape, shape target,
-preset class, resolved effect tuple, native behavior signature, duration, and
-timeline offset. Package validation then checks root
-timing placement, unique and valid `p:cTn` ids, and every `p:spTgt` reference.
-Deterministic Morph additionally checks the final adjacent slide parts for the
-requested `!!` names, one-to-one uniqueness, compatible object types, and a
-real Morph-by-object transition on the destination.
-The writer does not emit `p:bldP` for groups or pictures. Direct-PPTX preserve
-mode tolerates unchanged legacy group/picture `p:bldP` rows from earlier PPT
-Master exports; new generated packages remain strict.
-
-Narration injection preserves animation and updates both p14 Choice/Fallback
-when bounce timing is present; unsupported nested timing fails safely.
-Direct-PPTX routes fingerprint source
-object-animation timing before and after their allowed edits, then run
-structural package validation; they do not author or normalize animation
-effects.
-
-`pptx_to_svg.py` uses the same generated-transition read-back validator to
-project supported source `p:transition` into canonical `animations.json` rows.
-It retains the registry effect, effective options, exact duration, automatic
-advance, and supported WAV sound; the sidecar defaults to `none` so absent
-source transitions remain absent on re-export. Unknown or inexact native
-carriers stay diagnosed/direct-preserve. This is a closed PPT Master-owned
-contract, not an arbitrary OOXML transition normalizer.
-
-For source `p:timing`, the importer accepts only current generated behavior
-trees whose registry effect/options, pane order, Start trigger, exact duration,
-relative delay, and target/optional trigger shape map to unique top-level slide
-SVG groups. It emits one group row or `effects[]` in the same sidecar. Rows
-without a native duration, advanced timing modifiers, sounds, builds/media
-commands, unknown behavior trees, and unmapped targets remain diagnosed/direct-
-preserve; no timing value is inferred.
-
-**Validation boundary**: these checks prove PPTX timing, relationships, and
-embedded sound parts. They are not final-video audio acceptance. The
-native-export branch requires a triggered `video_sound_mix.py` receipt; the
-slideshow-capture branch requires the human picture/audio/all-cue acceptance
-owned by `generate-audio` and never claims that receipt.
+Export fails on an unknown effect, mode, or trigger; invalid timing or order; a missing slide, group, or `trigger_shape`; a self-trigger; or animating or triggering from a structural layer — never downgrading or omitting a target. It reads each slide's timing tree back (row count and order including repeats on one shape, trigger, trigger shape, target, preset class, effect tuple, behavior signature, duration, offset), validates root timing placement, unique `p:cTn` ids, and every `p:spTgt`, and for deterministic Morph checks the adjacent parts for the `!!` names, one-to-one uniqueness, compatible types, and a real Morph-by-object transition. The writer emits no `p:bldP` for groups or pictures (preserve mode tolerates legacy ones). Narration injection preserves animation and keeps p14 Choice/Fallback in sync; direct-PPTX routes fingerprint source timing before and after their edits and never author effects. `pptx_to_svg.py` projects supported source `p:transition` (registry effect, options, exact duration, auto-advance, WAV sound; sidecar default `none`) and only current generated `p:timing` trees (registry effect, pane order, Start, exact duration, relative delay, unique top-level targets) into `animations.json`; unknown carriers, missing durations, advanced modifiers, sounds, builds, and unmapped targets stay diagnosed/direct-preserve with no inferred value. These checks prove PPTX timing and embedded sound parts, not final-video audio: the native-export branch needs a `video_sound_mix.py` receipt and the capture branch the human acceptance owned by `generate-audio`.
 
 ---
 
 ## 7. Video Adaptation Contract
 
-Video renderers consume the resolved conversion trace through
-`video_motion_plan.py`, never a raw sidecar or delay-only inference. The plan
-locks identity, order, effect, direction, and timing; video may refine only its
-declared renderer parameters. Unsupported families fail visibly. See
-[`video-motion-plan.md`](../scripts/docs/video-motion-plan.md).
-
-On the native-export mix branch, direct narrated video sound uses the final
-resolved trace for cue order and offsets, the final PPTX relationships for the
-exact embedded audio bytes, and page-level narration correlation for the
-exported-video clock. It never reads sound timing from a raw sidecar or
-filename. The explicit slideshow-capture branch records PowerPoint's real-time
-playback instead and does not consume the trace for sound mixing.
-
----
+Video renderers consume the resolved conversion trace through `video_motion_plan.py` ([`video-motion-plan.md`](../scripts/docs/video-motion-plan.md)), never a raw sidecar or delay inference; the plan locks identity, order, effect, direction, and timing, video refines only its declared renderer parameters, and unsupported families fail visibly. The native-export mix uses the final trace for cue order and offsets, the final PPTX relationships for the embedded bytes, and page-level narration correlation for the clock; the slideshow-capture branch records real-time playback and does not consume the trace.
 
 ## 8. Limitations
 
-- Generated animation belongs to the native PPTX built from `svg_output/`.
-  `svg_final/` is a static preview, and inserting it as one SVG picture does
-  not create object anchors.
-- PowerPoint OOXML is the compatibility target; other presentation apps may
-  reinterpret individual native behavior trees.
-- PowerPoint's native MP4 encoder may omit transition and object-animation
-  sounds even when the PPTX package is valid. Direct sound-enabled MP4 delivery
-  therefore uses either the post-export mix or the explicit real-time
-  slideshow-capture contract owned by `generate-audio`; the branches never
-  stack.
-- Direct-PPTX routes preserve unknown transition `AlternateContent`; timing
-  edits keep Choice and Fallback advance attributes synchronized.
-
----
+Generated animation belongs to the native PPTX built from `svg_output/` (`svg_final/` is static and inserting it creates no anchors); PowerPoint OOXML is the compatibility target and other apps may reinterpret behavior trees; PowerPoint's MP4 encoder may drop transition and object sounds, so sound-enabled MP4 uses the post-export mix or the capture contract; direct-PPTX routes preserve unknown transition `AlternateContent` and keep Choice/Fallback advance attributes synchronized.
 
 ## 9. Implementation References
 
-See [`pptx_transitions.py`](../scripts/pptx_transitions.py),
-[`svg-pipeline.md`](../scripts/docs/svg-pipeline.md),
-[`pptx-transitions.md`](../scripts/docs/pptx-transitions.md),
-[`pptx-animations.md`](../scripts/docs/pptx-animations.md), and
-[`video-motion-plan.md`](../scripts/docs/video-motion-plan.md).
+[`pptx_transitions.py`](../scripts/pptx_transitions.py), [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md), [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md), [`pptx-animations.md`](../scripts/docs/pptx-animations.md), [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md).
