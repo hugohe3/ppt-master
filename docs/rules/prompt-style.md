@@ -105,18 +105,44 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 | Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster. During that roster composition, resolve each page's semantic carrier mix—background, text/lettering, native-geometry/relationship jobs, imagery/symbols, and data carriers—in one pass before deriving external-resource rows. Recommend high-level composition, visual focus, and continuity as Reference when useful, without selecting a local authoring capability or element geometry; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
 | Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize each page by resolving the actual carrier combination, geometry, composition, hierarchy, and treatment together before coordinates. Discover and invoke local deterministic authoring capabilities without an upstream capability selection. Consider each field explicitly labeled `suggestion` or Reference, then adopt, adapt, or decline it while preserving its semantic job and every binding constraint. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
 
-**Hard rule — capability knowledge precedes selection**: physical file
-boundaries do not imply runtime lazy-loading. A role loads the complete decision
-authorities for every capability it owns before choosing among those
-capabilities; otherwise the load trigger circularly depends on a choice made
-without that capability. Default Strategist's fixed planning bundle covers
-resource/preparation and high-level expression options without local authoring
-parameters. Executor's fixed construction bundle covers locally callable
-authoring options. Quick loads both decision surfaces in its one context. Only
-post-selection mechanics whose trigger is independently observable may remain
-conditional. For example, an actual `ai` / `slice` resource row may trigger
-Image_Generator backend, prompt-assembly, and per-image type details after
-planning; those mechanics are not a missing Strategist capability.
+**Hard rule — capability knowledge precedes selection**: a role must know that
+a capability exists before choosing among capabilities; otherwise a load trigger
+circularly depends on a choice made without that capability. Every construction
+capability an ordinary deck may use — effects, native shapes and their complete
+preset vocabulary, relationship grammar, topology assembly — therefore stays in
+the always-read core of the authoring role. Only a capability that most decks
+never touch (formula, hyperlink, chart/table branches, structured templates,
+video, animation, web-image attribution) is loaded on its own observable
+trigger, and the core still names it in one menu row.
+
+**Hard rule — core volume ceiling**: the always-read core of an authoring role
+stays small enough that its own content is not diluted by what follows. Measured
+against the v2.13.0 baseline, an Executor-phase core of roughly 1,300 lines
+across a role file plus a shared technical file produced richer pages than a
+4,000-line, 12-file mandatory bundle; the larger bundle flattened expression
+while passing every structural gate. Treat that as the working ceiling. When a
+core grows past it, shrink it by removing what is not authoring guidance —
+never by demoting an everyday capability to a trigger. Every paragraph in a
+prompt file is one of three kinds, and only the first two belong there:
+
+| Kind | Test | Where it lives |
+|---|---|---|
+| Design judgment | Changes what the page looks like or says | The phase file that makes that decision, once |
+| Minimal contract | The one canonical form the model must write, plus a boundary the tools cannot enforce | Beside the capability it governs, as one form and one line |
+| Tool documentation | Spellings the checker already rejects, import/export normalization, `--strict` behavior, converter internals, restated procedure from another phase | `scripts/docs/`, or the single owning phase file — never a second prompt file |
+
+A rule that `svg_quality_checker.py` or exporter preflight already enforces
+needs no prose beyond its canonical form: the failing check teaches it at the
+moment it matters. Verify enforcement with the checker source before moving a
+rule out; an unenforced rule that affects export keeps one line.
+
+Default Strategist's planning bundle covers resource/preparation and high-level
+expression options without local authoring parameters, because those choices are
+persisted into artifacts other roles consume. Only post-selection mechanics whose
+trigger is independently observable stay conditional: an actual `ai` / `slice`
+resource row triggers Image_Generator backend, prompt-assembly, and per-image
+type details after planning, and those mechanics are not a missing Strategist
+capability.
 
 **Hard rule — native shapes are authoring capabilities, not prepared
 resources**: a prepared resource needs a stable project-local file/path before

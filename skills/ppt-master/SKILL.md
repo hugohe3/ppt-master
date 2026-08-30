@@ -70,6 +70,18 @@ in the selected runtime authority's construction references.
 
 ---
 
+## Phase Frame
+
+Every route is one Plan → Do·Check·Act cycle: Plan ends when every authoring
+input exists as a file or retained decision; Do authors pages, Check runs the
+route's gates, Act repairs at the owning layer (discipline 7), and the cycle
+ends at export. Step numbers stay as written.
+
+| Phase | Default | Quick | Edit Native | Create Template |
+|---|---|---|---|---|
+| **Plan** | Steps 1–5 | §2 | §1–4 | Steps 1–3 |
+| **Do·Check·Act** | Steps 6–7 | §3–4 | §5–7 | Steps 4–8 |
+
 ## Global Execution Discipline
 
 1. **Serial execution** — Follow the selected authority's steps in order. A completed non-blocking step may continue directly to the next eligible step.
@@ -78,7 +90,7 @@ in the selected runtime authority's construction references.
 4. **Gate before entry** — Verify every listed prerequisite before entering a step.
 5. **No speculative execution** — Do not prepare later-phase artifacts before their owning step.
 6. **Deterministic routing** — Do not add a route-choice question when [`routing.md`](workflows/routing.md) resolves the request. If a route prerequisite is missing, state it and stop that route.
-7. **Owning-source recovery** — On failure, repair or regenerate the owning source artifact and resume from the route's declared pointer. Do not silently downgrade a required artifact.
+7. **Act at the owning layer** — On failure, repair at the shallowest layer that owns the fault: the page for a page-local issue, the Plan artifact for a roster/spec/resource fault, the owning source artifact for a tool failure; then resume from the route's declared pointer. Do not silently downgrade a required artifact.
 
 ## Global Communication Rules
 
