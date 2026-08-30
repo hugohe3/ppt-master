@@ -73,7 +73,13 @@
     "skills/ppt-master/workflows/create-template/create-deck.md": 1500,
     "skills/ppt-master/workflows/stages/customize-animations.md": 4250,
     "skills/ppt-master/references/svg-image-embedding.md": 1750,
-    "skills/ppt-master/references/image-layout-spec.md": 2250
+    "skills/ppt-master/references/image-layout-spec.md": 2250,
+    "skills/ppt-master/templates/README.md": 1750,
+    "skills/ppt-master/templates/brands/README.md": 750,
+    "skills/ppt-master/templates/styles/README.md": 1250,
+    "skills/ppt-master/templates/layouts/README.md": 1500,
+    "skills/ppt-master/templates/decks/README.md": 1250,
+    "skills/ppt-master/templates/icons/README.md": 1750
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1201,15 +1207,6 @@
     "accepted": [
       {
         "kind": "exact",
-        "fingerprint": "7c36a9231d14",
-        "paths": [
-          "skills/ppt-master/templates/decks/README.md",
-          "skills/ppt-master/templates/layouts/README.md"
-        ],
-        "reason": "Shared boilerplate between sibling template-kind docs; kept in lockstep on purpose."
-      },
-      {
-        "kind": "exact",
         "fingerprint": "d886e9fcb8dc",
         "paths": [
           "skills/ppt-master/templates/brands/中国电信/templates/design_spec.md",
@@ -1307,15 +1304,6 @@
           "skills/ppt-master/templates/brands/xiaomi/templates/design_spec.md"
         ],
         "reason": "Corporate brand presets share the same consistent icon convention by design."
-      },
-      {
-        "kind": "exact",
-        "fingerprint": "6a432b0cc1df",
-        "paths": [
-          "skills/ppt-master/templates/decks/README.md",
-          "skills/ppt-master/templates/layouts/README.md"
-        ],
-        "reason": "Sibling Deck and Layout docs keep the shared replication-mode explanation in lockstep."
       },
       {
         "kind": "exact",

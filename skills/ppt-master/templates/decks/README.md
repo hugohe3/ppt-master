@@ -1,62 +1,23 @@
 # Deck Templates
 
-**Deck = a reusable solution for a recurring presentation family.** It owns an
-application context together with presentation identity and reusable page
-structure. The application context states which communication situations the
-template serves, which audience outcomes it supports, and which narrative/page
-roles commonly appear. It describes the resource; it does not decide which
-pages or visible content a future presentation must retain.
-A deck template is not a finished content deck, and `kind: deck` does not mean
-“mirror the source PPT”. Its construction mode decides whether the system is
-newly authored or materialized from validated source facts.
+**Deck = a reusable solution for a recurring presentation family**: descriptive application context (which situations it serves, which outcomes it supports, which narrative/page roles commonly appear) together with presentation identity and reusable structure. It describes the resource without deciding which pages or content a future presentation must keep; a deck template is not a finished content deck, and `kind: deck` does not mean "mirror the source PPT" — the creation strategy decides whether the system is newly authored or materialized from validated facts. The shared kind and workspace model lives in the parent [`README.md`](../README.md).
 
 | Axis | Deck behavior |
 |---|---|
-| Template kind | `deck`: descriptive application context + integrated identity + structure |
-| Internal creation strategy | AI derives `standard` / `fidelity` for a new system or `mirror` for validated source-package materialization; the field is tool provenance, not a user choice |
-| Application planning | Strategist automatically decides which prototypes to select, repeat, skip, or reorganize and derives the exporter behavior |
-| PPTX structure | The workspace is `structured`; the derived application plan decides whether generated pages compile its structure or use it only as visual reference |
+| Template kind | `deck`: application context + integrated identity + structure |
+| Internal creation strategy | AI-derived `standard` / `fidelity` for a new system or `mirror` for validated source materialization; tool provenance, not a user choice |
+| Application planning | Strategist decides which prototypes to select, repeat, skip, or reorganize and derives the exporter behavior |
+| PPTX structure | The workspace is `structured`; the plan decides whether pages compile its structure or use it as visual reference |
 
-The discovery source of truth is [`decks_index.json`](./decks_index.json)
-(`deck_id → { summary, canvas_format, page_count, primary_color }`). This README
-defines the kind and intentionally does not enumerate installed decks. The
-shared kind and workspace model lives in the parent
-[`README.md`](../README.md).
-
-Index `summary` values lead with the recurring presentation family and intended
-outcome. Visual tone alone is not enough to select a Deck; open its Template
-Overview when application fit must be judged in detail.
-
----
+[`decks_index.json`](./decks_index.json) (`deck_id → { summary, canvas_format, page_count, primary_color }`) is the discovery source of truth; this README enumerates no decks. Index summaries lead with the presentation family and outcome — visual tone alone never selects a Deck; open its Template Overview to judge fit.
 
 ## Selection and installation
 
-Selection follows the parent README's Default Stage-1
-[`generate-pptx`](../../workflows/generate-pptx.md) template-choice contract.
-Its Deck choices come only from `decks_index.json`; no
-directory scan or bare-ID/style-phrase match is allowed. A supplied exact root
-appears in the same selector, defaults Stage 1 to template mode, and preselects
-that specific candidate only when it is the sole supplied root. Registered
-exact roots are `library`; other exact roots remain
-`explicit`. Choosing and confirming an entry runs the conditional
-[`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
-stage, which owns path normalization, compatibility checks, installation, and
-installation after Stage 1 and before Stage 2. Template-aware reading begins in final Stage 2 from the
-installed project-local copy.
-Quick applies a supplied exact Deck root directly and otherwise uses flat free
-design. It authors the installed Master/Layout/slot contract as lockless
-structured Slides unless the user explicitly requests visual-only flat use.
-This file owns the Deck schema and application-context boundary. Chat discovery
-reads the same index and returns exact roots; a bare ID never resolves
-implicitly.
-
----
+Selection follows the parent contract: Deck choices come only from the index (no directory scan or bare-ID/style-phrase match); a supplied exact root joins the selector and is preselected only when sole; [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md) installs it before Stage 2; Quick applies a supplied exact root directly and authors the installed Master/Layout/slot contract as lockless structured Slides unless the user explicitly requests visual-only flat use.
 
 ## `design_spec.md` contract
 
-The spec stores portable metadata plus package-owned application, identity,
-and structure rules. It does not repeat generic SVG rules, spacing libraries,
-font-ratio bands, or the canonical placeholder table.
+Portable metadata plus package-owned application, identity, and structure rules; no generic SVG rules, spacing libraries, font-ratio bands, or the canonical placeholder table.
 
 ```markdown
 ---
@@ -85,66 +46,12 @@ page_count: <N>
 ## VII. Placeholder Overrides      # omit when none
 ```
 
-`replication_mode` records how the workspace was produced. Create Template
-derives it from the natural-language brief and source evidence; users do not
-need to select or understand this field.
-
-`Template Overview` is descriptive application context, not a style
-description or future-use policy. It identifies the recurring presentation
-family, intended audiences and outcomes, delivery/reading assumptions, and
-representative narrative or page roles. These values may be broad when the
-source supports a family of related uses, but they must be specific enough to
-help Strategist understand the resource.
-
-`Page Roster` must list every SVG and its declared Master/Layout identity, then
-describe its observed or intended role, visual character, reusable slots, and
-structural capacity. It must not mark pages required/optional/repeatable or
-content fixed/replaceable/example-only. Strategist inspects the actual roster
-and current material and decides what to use.
-
-Every additional authored Master represents a distinct reusable design family,
-not one Layout or an organizational duplicate.
-
----
+`replication_mode` records how the workspace was produced. `Template Overview` is descriptive application context — family, intended audiences/outcomes, delivery/reading assumptions, representative roles — broad when the source supports related uses yet specific enough to help Strategist understand the resource. `Page Roster` lists every SVG with its Master/Layout identity, role, visual character, reusable slots, and capacity, never marking pages required/optional/repeatable or content fixed/replaceable/example-only. Every additional authored Master is a distinct reusable design family.
 
 ## Structured SVG contract
 
-Every SVG is a complete preview and declares one root Master and Layout.
-Master/Layout fixed visuals are direct atoms. Reusable content regions are
-top-level slot groups with positive bounds and exactly one compatible carrier;
-zero-slot Layouts are valid. `{{...}}` is the authoring vocabulary, while
-`data-pptx-placeholder*` is the native reconstruction contract.
-
-`standard` and `fidelity` author new SVGs and a new Master/Layout/slot system.
-`mirror` preserves existing source identities, parentage, assignments,
-placeholder facts, and supported visuals in a new workspace without semantic
-synthesis. Legacy semantic contracts are not upgraded in place; create a new
-workspace through [`create-template`](../../workflows/create-template.md). A
-flat directory shape alone is not a legacy signal.
-
----
+Every SVG is a complete preview declaring one root Master and Layout; fixed visuals are direct atoms; reusable regions are top-level slot groups with positive bounds and exactly one compatible carrier; zero-slot Layouts are valid; `{{...}}` is the authoring vocabulary and `data-pptx-placeholder*` the native contract. `standard` / `fidelity` author new SVGs and structure; `mirror` preserves source identities, parentage, assignments, placeholder facts, and supported visuals without synthesis; legacy contracts are never upgraded in place, and a flat directory shape alone is not a legacy signal.
 
 ## Workspace and creation
 
-```text
-<template_workspace>/
-├── templates/                # design_spec.md + SVG prototypes
-├── images/                   # optional bitmaps; SVG href is ../images/<name>
-├── icons/
-│   └── imported/             # optional canonical imported vectors
-└── exports/                  # review evidence; ignored during template use
-    └── <deck_id>_template_preview.pptx
-```
-
-Library scope writes `skills/ppt-master/templates/decks/<deck_id>/` and updates
-the index. Project scope uses an initialized `projects/<name>/` workspace and
-does not register globally. Empty optional directories are omitted.
-
-1. Enter [`workflows/create-template.md`](../../workflows/create-template.md), which dispatches recurring-application output with integrated identity and structure to [`create-deck.md`](../../workflows/create-template/create-deck.md).
-2. Validate with `svg_quality_checker.py --template-mode`.
-3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
-4. In library scope, register with `register_template.py <id> --kind deck`.
-
-See also [`styles/`](../styles/) for direction/method packages,
-[`layouts/`](../layouts/) for structure-only packages, and
-[`brands/`](../brands/) for identity-only packages.
+`templates/` (spec + prototypes), optional `images/` (`../images/<name>`), optional `icons/imported/`, and `exports/<deck_id>_template_preview.pptx` as review evidence. Library scope writes `skills/ppt-master/templates/decks/<deck_id>/` and updates the index; project scope uses an initialized `projects/<name>/` root without registration. Enter [`create-template.md`](../../workflows/create-template.md) (dispatching to [`create-deck.md`](../../workflows/create-template/create-deck.md)), validate with `svg_quality_checker.py --template-mode`, run `template_preview_pptx.py` on request and always for multiple Masters, and in library scope register with `register_template.py <id> --kind deck`. See [`styles/`](../styles/), [`layouts/`](../layouts/), and [`brands/`](../brands/) for the other kinds.
