@@ -35,4 +35,4 @@ Form one coherent argument in intended reading/reveal order — proposition → 
 | `balanced` | Connect visible claim and evidence, explain the trade-off, bridge forward |
 | `presentation` | Carry reasoning, context, and supporting detail intentionally omitted from the sparse page |
 
-Put transitions naturally in the opening sentence; never label them. When `notes/total.md` is complete, return to Generate Step 7.1 (Default) or `quick-generate.md` §4 (Quick); each route owns splitting and its success criterion.
+Put transitions naturally in the opening sentence when useful; never label them. When `notes/total.md` is complete, return to Generate Step 7.1 (Default) or `quick-generate.md` §4 (Quick); each route owns splitting and its success criterion.

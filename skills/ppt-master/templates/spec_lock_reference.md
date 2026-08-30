@@ -83,8 +83,8 @@ Typography projection (excluding Character/upgrade References): Title font stack
 - Custom reference fields: comma-separated exact catalog ids without duplicates, valid only for `custom`; omit for a genuinely novel direction.
 - `stroke_width`: `1.5`, `2`, or `3`, only for `tabler-outline`.
 - `page_rhythm`: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
-- `page_visualizations`: `P` + digits followed by `chart|table`, `/`, and one canonical key resolving to one SVG through the matching live index. Legacy `page_charts`: `P` + digits and one bare key; never added to a new lock.
-- `pptx_masters`: `<master_key>: <PowerPoint picker name>`. `pptx_layouts`: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. `page_pptx_layouts`: `P` + digits followed by a declared Layout key. `page_layouts`: `P` + digits followed by a complete Slide template SVG basename; definition-only `layout_<layout_key>` files are obsolete and invalid as sources.
+- `page_visualizations`: `P` + at least two digits followed by `chart|table`, `/`, and one canonical key resolving to one SVG through the matching live index. Legacy `page_charts`: `P` + at least two digits and one bare key; never added to a new lock.
+- `pptx_masters`: `<master_key>: <PowerPoint picker name>`. `pptx_layouts`: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. `page_pptx_layouts`: `P` + at least two digits followed by a declared Layout key. `page_layouts`: `P` + at least two digits followed by a complete Slide template SVG basename; definition-only `layout_<layout_key>` files are obsolete and invalid as sources.
 
 ```markdown
 ## mode
