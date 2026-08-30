@@ -29,7 +29,7 @@
     "skills/ppt-master/references/executor-web-image.md": 750,
     "skills/ppt-master/references/executor-notes.md": 1000,
     "skills/ppt-master/references/shared-standards.md": 500,
-    "skills/ppt-master/references/shared-standards-core.md": 14000,
+    "skills/ppt-master/references/shared-standards-core.md": 7000,
     "skills/ppt-master/references/svg-effects.md": 16000,
     "skills/ppt-master/references/native-data-interface.md": 7750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
@@ -2008,12 +2008,6 @@
               "role": "consumer",
               "fingerprint": "2a2c42538a76",
               "reason": "This stage documents how each Generate runtime consumes the prototype mapping."
-            },
-            {
-              "path": "skills/ppt-master/references/shared-standards-core.md",
-              "role": "reference",
-              "fingerprint": "846de4145cbe",
-              "reason": "This reference distinguishes durable Default mappings from Quick active-context use."
             }
           ]
         },
@@ -2037,12 +2031,6 @@
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
               "fingerprint": "3061c1488d1d",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
-              "path": "skills/ppt-master/references/shared-standards-core.md",
-              "role": "reference",
-              "fingerprint": "e27448d68611",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2329,6 +2317,10 @@
       {
         "glob": "skills/ppt-master/templates/schemas/*.json",
         "reason": "Machine-consumed validation schemas; they are not loaded into model runtime context."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/svg-contract.md",
+        "reason": "Closed SVG grammar reference for checker/exporter behavior; the always-read core carries the canonical forms, and generation roles open this file only when a check fails."
       }
     ]
   }

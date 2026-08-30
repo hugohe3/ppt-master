@@ -1090,8 +1090,10 @@ this only for manual checks outside `finalize_svg.py`.
 The always-on SVG authoring contract lives in
 [`shared-standards-core.md`](../../references/shared-standards-core.md), with
 advanced effects, native data objects, and structured PPTX metadata owned by
-their conditionally loaded modules. This tool guide does not repeat accepted
-syntax, rejected constructs, or conditional limits.
+their conditionally loaded modules. The complete closed grammar those files
+rely on — mapping tables, accepted-but-warned spellings, rejection boundaries,
+and imported native-shape metadata — is documented in
+[`svg-contract.md`](svg-contract.md). This tool guide does not repeat it.
 
 `svg_quality_checker.py` validates source SVG before finalization.
 `finalize_svg.py` and native export apply the preprocessing required by that
