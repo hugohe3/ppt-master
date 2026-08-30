@@ -43,7 +43,8 @@
     "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
     "skills/ppt-master/workflows/generate-pptx.md": 16000,
-    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
+    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500,
+    "skills/ppt-master/references/confirm-surface.md": 3000
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -159,7 +160,6 @@
       ],
       "files": [
         "skills/ppt-master/workflows/generate-pptx.md",
-        "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/strategist.md",
         "skills/ppt-master/references/strategist-image.md",
         "skills/ppt-master/references/canvas-formats.md",
@@ -170,7 +170,7 @@
         "skills/ppt-master/references/modes/_index.md",
         "skills/ppt-master/references/visual-styles/_index.md",
         "skills/ppt-master/references/image-renderings/_index.md",
-        "skills/ppt-master/scripts/docs/confirm_ui.md",
+        "skills/ppt-master/references/confirm-surface.md",
         "skills/ppt-master/templates/icons/README.md",
         "skills/ppt-master/templates/charts/chart-vocabulary.md",
         "skills/ppt-master/templates/tables/table-vocabulary.md",
@@ -212,7 +212,6 @@
       ],
       "files": [
         "skills/ppt-master/workflows/profiles/quick-generate.md",
-        "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/executor-base.md",
         "skills/ppt-master/references/svg-effects.md",
@@ -863,8 +862,7 @@
       ],
       "files": [
         "skills/ppt-master/workflows/generate-pptx.md",
-        "skills/ppt-master/workflows/stages/resume-execute.md",
-        "skills/ppt-master/references/artifact-ownership.md"
+        "skills/ppt-master/workflows/stages/resume-execute.md"
       ],
       "max_tokens": 115000
     },
@@ -1152,6 +1150,14 @@
         "skills/ppt-master/references/svg-effects.md"
       ],
       "max_tokens": 16000
+    },
+    "governance.artifact-ownership": {
+      "description": "Global artifact ownership matrix, invariants, and regeneration rules; read on an ownership question, a recovery/resume, or a route that edits existing artifacts.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/artifact-ownership.md"
+      ],
+      "max_tokens": 6000
     }
   },
   "duplicates": {
@@ -1896,12 +1902,6 @@
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
-              "path": "skills/ppt-master/references/strategist.md",
-              "role": "producer",
-              "fingerprint": "4c133143e2f2",
-              "reason": "This producer projects the owner field into the planning contract."
-            },
-            {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
               "fingerprint": "90feed81f021",
@@ -1947,12 +1947,6 @@
               "path": "skills/ppt-master/references/strategist-template.md",
               "role": "compatibility",
               "fingerprint": "b0f9494f710a",
-              "reason": "This site documents a legacy or omission compatibility boundary."
-            },
-            {
-              "path": "skills/ppt-master/references/strategist.md",
-              "role": "compatibility",
-              "fingerprint": "ba50ab71bc88",
               "reason": "This site documents a legacy or omission compatibility boundary."
             },
             {
@@ -2090,7 +2084,7 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "1c8aa960c9e4",
+              "fingerprint": "841748c7d17e",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
@@ -2192,7 +2186,7 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "46405fcad30f",
+              "fingerprint": "7deac145d181",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
@@ -2321,6 +2315,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/svg-contract.md",
         "reason": "Closed SVG grammar reference for checker/exporter behavior; the always-read core carries the canonical forms, and generation roles open this file only when a check fails."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/confirm_ui.md",
+        "reason": "Confirm UI server/schema reference; the Strategist reads references/confirm-surface.md for the surface decision and authoring payloads."
       }
     ]
   }

@@ -26,77 +26,7 @@
 
 **Hard rule**: Keep detailed Confirm UI behavior here. The Generate route may summarize orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
 
-**Mandatory surface decision — before any UI command**: Resolve the most recent
-explicit confirmation-surface instruction for this run before running
-`--daemon` or `--wait-only`. Unrelated later messages do not reset the selected
-branch. A new explicit selection may change it before launch; once confirmation
-starts in chat or UI switches to chat, keep chat for the rest of this run.
-
-| Most recent explicit surface instruction | Branch |
-|---|---|
-| The user explicitly delegates confirmation | Make the combined Stage-1 communication/template decision, install it, then present one complete final summary. Do not launch the page or fabricate UI receipts. |
-| Otherwise, the user asks for or agrees to personally confirm in chat, or declines the confirmation page | Use chat for both Strategist stages; Stage 1 includes the template/free-design choice. Do not launch the page, run `--wait-only`, or require UI-authored receipts. |
-| No explicit confirmation-surface instruction exists for this run | Use the page as the default. |
-
-Interpret the instruction semantically: “confirm here”, “use the chat window”, or
-“do not open the confirmation page” are sufficient; no literal `chat-only`
-keyword is required. Invoking a chat-question tool by itself does not select the
-chat branch—the user's instruction does. Both branches preserve the same
-Stage-1 communication/template decision, installation handoff, and template-aware
-final Stage 2; the chat branch records the same `design_spec_depth` value in its
-confirmation summary.
-
-**Chat/delegated Stage-1 listing**: Author the communication recommendation
-before reading the four indexes, then present that recommendation together with
-an explicit free-design/template-mode choice. Only template mode expands the
-registered candidates and supplied exact roots, and it requires at least one
-selection. Ordinary requests initialize free design; explicit template intent
-or any supplied exact root initializes template mode. Exactly one supplied root
-may also seed that candidate, while multiple roots remain unselected. Under
-explicit delegation, make the same decision, install
-it, and only then derive Stage 2. Do not launch the page or fabricate receipts.
-
-**Fallback rule**: When no surface was selected before launch, the page is the
-default. Use chat when the user answers either always-on handoff in chat, or
-after launch failure/timeout and one re-check of `result.json` plus the
-Stage-1-sidecar `template_selection.json` when Stage 1 is active. A chat-question
-tool alone is not a launch failure. Preserve the combined Stage-1 decision and
-keep communication prompts open-ended.
-
-**In-run UI → chat switch — any phase or stage**: If the user explicitly selects chat
-after the UI server has launched—while `--wait-only` is active, before that wait
-starts, or after it times out while the server remains live:
-
-1. If a wait is active, interrupt it and confirm that its process has exited.
-   Only the return code from this deliberate wait interruption is expected to
-   be non-zero.
-2. Run `server.py <project_path> --shutdown` and require that cleanup to
-   succeed. The browser tab may remain open, but its stopped server makes it
-   inactive.
-3. Re-check the active receipt once. During Stage 1, require both `result.json`
-   and `template_selection.json` from the same submission; during Stage 2, check
-   `result.json`. Retain only values persisted before shutdown; an unsubmitted
-   browser draft is not confirmed.
-4. Continue the unresolved current phase/stage and everything remaining in chat. Do
-   not call `--wait-only` again, recover the server, or relaunch the page during
-   this run.
-
-**Always-on Stage-1 chat handoff**: After writing `template_options.json` and
-template-independent `recommendations.stage1.json`, launch the healthy daemon
-without `--wait`. Immediately post its actual URL plus one compact localized
-summary of the current communication recommendation and template choice state:
-audience, communication intent, audience outcome, core message, delivery
-context, artifact afterlife, `content_divergence`, canvas, and whether the
-default is free design or template mode, including any sole preselected root. Explain
-that template mode expands the registered-kind and supplied-root selectors.
-Show a blank prose value as “not specified” without changing it. End with an
-explicit localized line saying that, if the page did not open, the user may
-confirm or revise the same communication and template choices in chat. Only
-then run `--wait-only --wait-stage stage1`. A chat
-reply to that handoff applies the in-run switch above without waiting for
-timeout. The handoff is context, not confirmation, and silence confirms
-nothing. After launch failure/timeout and the required result re-check, present
-the same combined Stage-1 items as open chat questions and wait explicitly.
+**Model-facing procedure lives elsewhere**: the surface decision, chat/delegated listing, always-on Stage-1 chat handoff, in-run UI → chat switch, and the authoring shapes of `recommendations.stage1.json`, `recommendations.stage2.json`, and `result.json` are owned by [`confirm-surface.md`](../../references/confirm-surface.md), which the Strategist reads. This document keeps the server lifecycle, the template-selection sidecar, catalogs, the progression guard, and the complete field semantics that the server validates.
 
 ## `confirm_ui/server.py`
 

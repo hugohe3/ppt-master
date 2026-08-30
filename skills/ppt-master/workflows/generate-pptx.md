@@ -36,7 +36,7 @@ request does not explicitly select Quick.
 | Main pipeline sequencing | This file | Owns Step 1–7 order, gates, role switching, and mandatory commands |
 | Artifact ownership | [`artifact-ownership.md`](../references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
 | Failure recovery | [`failure-recovery.md`](./governance/failure-recovery.md) | Owns stop/continue policy and resume pointers |
-| Confirm UI details | [`confirm_ui.md`](../scripts/docs/confirm_ui.md) | Owns the JSON schema, launcher behavior, staged-result contract, port strategy, and chat fallback details |
+| Confirmation surface | [`confirm-surface.md`](../references/confirm-surface.md) | Owns the surface decision, in-run switch, and the Stage-1/Stage-2/result payload shapes; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns server lifecycle and the template-selection sidecar |
 | Confirmed template application | [`apply-template-workspace.md`](./stages/apply-template-workspace.md) | Owns validation and installation after Stage 1 confirms library or explicit workspace roots; skip for confirmed free design |
 
 ## Workflow
@@ -174,7 +174,7 @@ root remains `explicit`. Candidate provenance never changes later validation,
 installation, or precedence.
 
 Resolve the confirmation surface under
-[`confirm_ui.md`](../scripts/docs/confirm_ui.md). In the UI branch, run
+[`confirm-surface.md`](../references/confirm-surface.md). In the UI branch, run
 `--reset-template-selection`, then write
 `<project_path>/confirm_ui/template_options.json` with schema version `1`,
 `phase: "template"`, the UI language, and all supplied exact roots as absolute
@@ -272,7 +272,7 @@ is confirmed; a bare template/style name does not.
 
 **Fact channels** (owned by [`artifact-ownership.md`](../references/artifact-ownership.md) §1–2): before Stage 1, read the compact machine facts already in `<project_path>/analysis/` — `source_profile.json`'s `decks[]` digests (canvas, chart/table/SmartArt structure per source deck), opening a deck's `<stem>.identity.json` / `<stem>.slide_library.json` only when its raw facts are needed. Content — text, tables, chart values, SmartArt wording — comes from the content-type files in `sources/` (`<stem>.md` and any archived `.txt` / `.csv` / `.json` / `.yaml`), never from the structural digest; `*.conversion_profile.json` and `*_files/image_manifest.json` are sidecars, not content. A source deck's palette, typography, and visual identity are reference, not constraint: inherit where they fit the content and confirmed style, design fresh where they do not. `analysis/image_analysis.csv` arrives at the image step below and is a regenerated view of `images/`, not a durable store.
 
-**Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
+**Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm-surface.md`](../references/confirm-surface.md) owns the surface decision and payload shapes, and [`confirm_ui.md`](../scripts/docs/confirm_ui.md) the server lifecycle and sidecar contract.
 
 ⛔ **BLOCKING**: The two-stage Strategist confirmation is the always-on user
 gate unless explicitly delegated. Stage 1 confirms the communication contract
@@ -287,7 +287,7 @@ unusual overrides—are authoritative.
 
 **Confirmation ownership and surface**: Only the user confirms. Before any
 confirmation server command, apply
-`confirm_ui.md`'s surface
+`confirm-surface.md`'s surface
 decision to this run's most recent explicit surface instruction and retain that
 branch as the owner specifies. A natural-language request or agreement to
 personally confirm in chat, or to avoid the page, selects the chat branch without
@@ -306,7 +306,7 @@ Stage-2 summary without fabricating UI results. Silence confirms nothing.
 **UI branch only** — Step 3 wrote `template_options.json` but did not launch or
 wait. Create `confirm_ui/recommendations.stage1.json` without reading template
 candidate content, then launch the combined Stage-1 page and post
-`confirm_ui.md`'s required communication + template-choice summary/fallback:
+`confirm-surface.md`'s required communication + template-choice summary/fallback:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
@@ -366,7 +366,7 @@ or `templates` with at least one server-resolved root.
    ```
 
 If the user selects chat any time after the UI server launches, immediately
-apply `confirm_ui.md`'s in-run switch procedure. Continue the unresolved current
+apply `confirm-surface.md`'s in-run switch procedure. Continue the unresolved current
 stage and all remaining stages in chat; do not enter UI interruption recovery
 or relaunch the server.
 
