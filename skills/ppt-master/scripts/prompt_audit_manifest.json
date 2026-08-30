@@ -32,7 +32,7 @@
     "skills/ppt-master/references/shared-standards-core.md": 7000,
     "skills/ppt-master/references/svg-effects.md": 9500,
     "skills/ppt-master/references/native-data-interface.md": 5000,
-    "skills/ppt-master/references/pptx-structure-interface.md": 4750,
+    "skills/ppt-master/references/pptx-structure-interface.md": 3000,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 12000,
     "skills/ppt-master/references/strategist-image.md": 3250,
@@ -1986,12 +1986,6 @@
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
-              "path": "skills/ppt-master/references/pptx-structure-interface.md",
-              "role": "reference",
-              "fingerprint": "2db6a34d15d7",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
               "fingerprint": "e5c9c162d0ff",
@@ -2030,7 +2024,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "3061c1488d1d",
+              "fingerprint": "9cef05268f4f",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2126,7 +2120,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "f1339baac6db",
+              "fingerprint": "b10eddc66b34",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2162,7 +2156,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "d35af1a163ac",
+              "fingerprint": "51fe75ceb256",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {

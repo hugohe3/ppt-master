@@ -939,6 +939,30 @@ Dependency:
 pip install python-pptx
 ```
 
+### Structured export mechanics
+
+Checker and exporter behavior behind [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md) §2.
+
+**Master text styles**: the effective `title` anchor maps to every `a:defRPr@sz` in Master `p:titleStyle`. Level 1 in `p:bodyStyle` and `p:otherStyle` uses the `body` anchor; levels 2–9 descend deterministically from `15/16` through `8/16` of that size, rounded to 0.5 pt and floored at the smaller of 8 pt or the body size. Only `p:txStyles//a:defRPr@sz` changes; indentation, bullets, margins, paragraph settings, and direct run sizes on generated slides are untouched. Default reads the anchors from `spec_lock.md`; missing `title` / `body` rows fail flat or structured export. Structured Quick infers anchors from semantic slot carriers with deterministic fallbacks; flat Quick keeps stock defaults.
+
+| Master style | Effective source | XML field changed |
+|---|---|---|
+| `p:titleStyle` | title anchor | every `a:defRPr@sz` |
+| `p:bodyStyle` | body anchor | level 1 plus derived level 2–9 `a:defRPr@sz` |
+| `p:otherStyle` | body anchor | level 1 plus derived level 2–9 `a:defRPr@sz` |
+
+**Layout level-one text default**: for every text-bearing placeholder whose first prototype run has a direct `a:rPr@sz`, export copies that size to the generated Layout prompt run and `p:txBody/a:lstStyle/a:lvl1pPr/a:defRPr@sz`; Slide direct runs and Layout levels 2–9 are not rewritten.
+
+**Placeholder identity**: export writes the semantic type on both the Layout and Slide carrier (except `obj`, already the OOXML default). Date, footer, and slide-number placeholders enable the matching Layout `p:hf` flags; a date placeholder also gets a `datetimeFigureOut` field in the Layout while the Slide keeps its authored date text. An omitted `p:ph@idx` has effective value `0`, so an omitted-index title reserves `0`; every other indexed placeholder on that Layout uses a unique OOXML UInt32 index. An imported title with an explicit index keeps that exact index.
+
+**Text carriers**: a multiline text placeholder stays one native text frame under default export and `--reflow-text`; `--no-merge` cannot supply several line shapes as one placeholder. A whitespace-only marked carrier materializes one invisible U+200B run so it still becomes a native text shape. On a materialized mirror, an imported text carrier may keep the source shape's positive `data-pptx-frame="x y width height"`; that frame owns the Slide carrier `a:xfrm` and the converter reconstructs text-body insets from the visible anchor/baseline instead of shrinking to glyph bounds, while `data-pptx-bounds` remains the reusable Layout default.
+
+**Visibility attributes**: `data-pptx-show-master-shapes` writes the Layout's `p:sldLayout@showMasterSp` and must repeat the same value on every SVG sharing that Layout key; `data-pptx-show-inherited-shapes` writes this Slide's `p:sld@showMasterSp`. Both accept only exact lowercase `true` / `false`; omission means `true`.
+
+**Static structure consistency**: the same master element ids on every slide and the same layout element ids on every slide sharing a layout must compile to identical OOXML within that group. Static objects may carry shapes, text, or images; non-image/external relationships are rejected. Interleaved layers fail: paint order is Master background, Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms, then slot groups and Slide-local content. Structured export narrows background ownership to a direct full-canvas solid `<rect>` and disables the generic conversion-level promotion; an unmarked full-canvas solid rect in the background plane is treated as Slide scope.
+
+**Final-package read-back gate**: before publishing, export reopens the temporary structured PPTX and verifies that each Slide targets exactly one Layout, one Layout key resolves to one part, distinct keys do not collapse, and every declared Layout—including unused ones—is registered through its Master and the Presentation; that physical Slide/Layout/Master part rosters, content-type overrides, and registrations are exact; the Layout picker name, Master picker identity, placeholder type and effective index, `p:hf` flags, design-zone frame, prompt size, and level-one default size; every owned `p:bg` as an exact zero-or-one payload against the pre-promotion result (preserving the base Master background when none replaces it); the exact top-level shape-name roster and order of every Slide, Layout, and Master; carrier-bound slot bindings, ordinary composite visible carriers, hidden composite proxies, and zero-slot Layouts with no placeholder. Later Slides may keep different Slide-local geometry; only the reusable Layout frame is checked. Any mismatch fails export without replacing the requested output.
+
 ## `total_md_split.py`
 
 Split `total.md` into per-slide note files.

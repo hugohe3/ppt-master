@@ -4,210 +4,78 @@
 
 Conditional interface for PowerPoint Master, Layout, fixed-layer, and placeholder authoring. In Generate, load only for Default `spec_lock.md pptx_structure.mode: structured` or Quick structured Slide authoring from an installed Layout/Deck owner.
 
-**Cross-reference map**: unqualified §1.5 and §4.2 references point to [`shared-standards-core.md`](./shared-standards-core.md); this file's own sections are §1–§3.
+**Cross-reference map**: unqualified §1.5 and §4.2 references point to [`shared-standards-core.md`](./shared-standards-core.md); this file's own sections are §1–§3. Exporter and read-back mechanics live in [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md#structured-export-mechanics).
 
 ## 1. PPTX Structure Routing
 
-Every new SVG project declares one deterministic route. Free-design, brand-only, and `template_reuse_scope: style` projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export keeps all represented content Slide-local while materializing one clean project-owned Master plus one Blank Layout from the current color/typography lock; stock content placeholders and unused built-in Layouts are removed, while the standard date/footer/slide-number capability hooks remain. Deck/layout template projects whose AI-derived lock records `template_reuse_scope: mirror|layout` use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use the validated source identities and parentage declared by the newly authored compact workspace.
+Every new SVG project declares one deterministic route:
 
-**Quick exception**: Lock-row/Strategist statements below are Default-only. Quick keeps free/Brand/Style-only flat; an installed Layout/Deck owner is structured unless visual-only, with identities on SVG roots and title/body anchors inferred from slot carriers.
+| Project | `pptx_structure.mode` | Structure metadata |
+|---|---|---|
+| Free-design, brand-only, `template_reuse_scope: style` | `flat` | none; omit `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`; export materializes one clean project-owned Master plus one Blank Layout from the lock and keeps every object Slide-local |
+| Layout/Deck template with `template_reuse_scope: mirror\|layout` | `structured` | §2; `standard` / `fidelity` templates use their authored contract, mirror templates use the validated source identities and parentage of the compact workspace |
 
-**Hard rule — no structure inference**: Flat export performs no promotion or deduplication; every object stays Slide-local. Structured template export compiles only declared root identities, atomic fixed layers, and slot groups—it does not assign Layout families, cluster pages, infer placeholders, repair missing metadata, or migrate legacy contracts. Create a new current workspace through [`create-template`](../workflows/create-template.md) before generating structured pages.
+**Quick exception**: Lock-row/Strategist statements in this file are Default-only. Quick keeps free/Brand/Style-only flat; an installed Layout/Deck owner is structured unless visual-only, with identities on SVG roots and title/body anchors inferred from slot carriers.
 
-**Layout reuse**: Reuse one Layout key only when its ordered fixed Layout atoms and slot ids/types/effective indices/default bounds/binding modes are identical. Different wording, data, imagery, crop, or Slide-local carrier geometry does not create a new Layout. A genuinely different reusable contract gets a new key even when both pages are semantically `content`.
+**Hard rule — no structure inference**: Flat export promotes and deduplicates nothing. Structured export compiles only declared root identities, atomic fixed layers, and slot groups; it never assigns Layout families, clusters pages, infers placeholders, repairs missing metadata, or migrates legacy contracts. Create a current workspace through [`create-template`](../workflows/create-template.md) before generating structured pages.
 
-**Zero-slot Layout**: A named Layout may contain no slots and no fixed Layout atoms. This is valid for a cover, poster, full-visual page, or other fixed composition. Do not manufacture an empty `utility` kind or full-page fake `object` slot.
+**Layout reuse**: Reuse one Layout key only when its ordered fixed Layout atoms and slot ids/types/effective indices/default bounds/binding modes are identical. Different wording, data, imagery, crop, or Slide-local carrier geometry does not create a new Layout; a genuinely different reusable contract gets a new key even when both pages are semantically `content`. A Layout may have zero slots and zero fixed atoms — valid for a cover, poster, or full-visual page; do not manufacture an empty `utility` kind or a full-page fake `object` slot.
 
 **Adaptive change**: `strict` preserves the prototype. `adaptive` retains its Master and uses only a Layout declared in Default's plan/lock or permitted by Quick's frozen Template Application. Required atom/slot-contract changes return Default for repair/readback/validation; Quick creates a new Layout only under that permission. Never mutate a reused key.
 
 ## 2. Explicit PPTX Master / Layout / Placeholder Metadata
 
-**Trigger**: This explicit metadata interface applies only to new pages generated from a current deck/layout template workspace with `template_reuse_scope: mirror|layout`. `spec_lock.md` declares `pptx_structure.mode: structured`, complete unique `pptx_masters` / `pptx_layouts` rosters, one `page_pptx_layouts` assignment per generated page, and `page_layouts` as authoring-prototype provenance. `template_reuse_scope: style`, free-design, and brand-only SVGs use `mode: flat` and none of these metadata fields.
+**Trigger**: new pages generated from a current deck/layout workspace with `template_reuse_scope: mirror|layout`. `spec_lock.md` declares `pptx_structure.mode: structured`, complete unique `pptx_masters` / `pptx_layouts` rosters, one `page_pptx_layouts` assignment per generated page, and `page_layouts` as authoring-prototype provenance.
 
-**Project lock**: A Master row is `<master_key>: <PowerPoint picker name>`. A unique Layout row is `<layout_key>: <master_key> | <PowerPoint picker name> | <prototype source>`, where the source is a generated `P<NN>` or installed `template:<basename>`. A page assignment is `P<NN>: <layout_key>` under `page_pptx_layouts`. The SVG root values MUST match the assigned definition. A Layout key belongs to exactly one Master and must be globally unique. Reuse one key only when prototypes share identical ordered Layout atoms and slot ids/types/effective indices/default bounds/binding modes. An unused Layout uses a template SVG source and remains registered without a published carrier slide. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows.
+**Project lock rows**: Master `<master_key>: <PowerPoint picker name>`; unique Layout `<layout_key>: <master_key> | <PowerPoint picker name> | <prototype source>` where the source is a generated `P<NN>` or installed `template:<basename>`; page assignment `P<NN>: <layout_key>` under `page_pptx_layouts`. SVG root values MUST match the assigned definition. A Layout key belongs to exactly one Master and is globally unique; an unused Layout uses a template SVG source and stays registered without a published carrier slide. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows — they become the Master text styles.
 
-**Template behavior**: Strict preserves the selected prototype's Master/Layout/slot contract. Adaptive realizes only a Layout allowed by §1 and never mutates a reused key. Mirror-created prototypes preserve validated source identity, parentage, slots, meaning, and similar presentation in compact new SVG; paint/geometry nodes need not be isomorphic. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize replacement topology or fill missing facts.
-
-Imported inherited-shape visibility remains an immutable analysis fact until a
-structured mirror is materialized. The final mirror root carries that fact with
-the two optional canonical booleans below so export can write the preserved source
-package fields without inferring visibility from which shapes happen to be
-present. Authored `standard` / `fidelity` templates normally omit both and use
-the default `true`. See
-[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
-
-**Master text-style contract**: Default reads title/body anchors from its lock;
-structured Quick infers them from semantic slot carriers with deterministic
-fallbacks, while flat Quick retains stock defaults. An effective `title` anchor
-maps to every `a:defRPr` in Master `p:titleStyle`. Level 1 in both
-`p:bodyStyle` and `p:otherStyle` uses the declared `body` anchor; levels 2–9
-use a deterministic descending hierarchy from `15/16` through `8/16` of that
-size, rounded to 0.5 pt and floored at the smaller of 8 pt or the body size.
-Existing per-level indentation and bullet properties remain unchanged.
-
-| Master style | Effective source | XML field changed |
-|---|---|---|
-| `p:titleStyle` | title anchor | Every `a:defRPr@sz` |
-| `p:bodyStyle` | body anchor | Level 1 plus derived level 2–9 `a:defRPr@sz` |
-| `p:otherStyle` | body anchor | Level 1 plus derived level 2–9 `a:defRPr@sz` |
-
-**Hard rule — narrow scope**: This Master update changes only Master
-`p:txStyles//a:defRPr@sz`; it preserves level indentation, bullet, margin, and
-paragraph settings. It does not rewrite direct run sizes on generated slides,
-so the initial slide rendering remains controlled by the authored SVG. Missing
-Default `title` or `body` rows fail flat or structured export; Quick structured
-uses inferred/fallback anchors.
-
-**Layout level-one text-default contract**: For every text-bearing placeholder
-whose first prototype run has a direct `a:rPr@sz`, explicit Layout export copies that
-size to the generated Layout prompt run and
-`p:txBody/a:lstStyle/a:lvl1pPr/a:defRPr@sz`. It does not rewrite Slide direct
-runs or Layout levels 2–9. This preserves the layout-specific size when
-level-one placeholder text is inserted or reset; placeholders without a direct
-prototype size remain unchanged.
+**Template behavior**: Strict preserves the selected prototype's Master/Layout/slot contract. Adaptive realizes only a Layout allowed by §1 and never mutates a reused key. Mirror-created prototypes preserve validated source identity, parentage, slots, meaning, and similar presentation in compact new SVG; paint/geometry nodes need not be isomorphic. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize replacement topology or fill missing facts. Imported inherited-shape visibility is an analysis fact carried by the two optional root booleans below; authored `standard` / `fidelity` templates normally omit both (see [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary)).
 
 | Metadata | Placement | Behavior |
 |---|---|---|
 | `data-pptx-master="master-default"` | root `<svg>` | Binds the slide to one generated Slide Master key |
-| `data-pptx-master-name="Default Master"` | root `<svg>` | Sets the Master picker/display name |
+| `data-pptx-master-name="Default Master"` | root `<svg>` | Master picker/display name |
 | `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
-| `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
-| `data-pptx-show-master-shapes="false"` | root `<svg>` | Accepts exact lowercase `true` or `false` and writes the assigned Layout's `p:sldLayout@showMasterSp`; every SVG using the same Layout key must repeat the same value; omission means `true` |
-| `data-pptx-show-inherited-shapes="false"` | root `<svg>` | Accepts exact lowercase `true` or `false` and writes this Slide's `p:sld@showMasterSp`; `false` hides inherited Layout and Master shapes without removing backgrounds, placeholders, parts, or parent relationships; omission means `true` |
-| `data-pptx-layer="master"` | direct semantic atom | Moves one repeated static object/background into the named Slide Master; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
-| `data-pptx-layer="layout"` | direct semantic atom | Moves one repeated static object/background into the selected Layout; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
-| `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
-| `data-pptx-placeholder="..."` | direct slot `<g id>` | Declares a reusable Layout slot whose visible content remains Slide-local |
-| `data-pptx-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units with at most two decimals per value |
-| `data-pptx-idx="1"` | slot `<g>` | Retains an imported source Layout placeholder index; optional for reconstructed layouts |
+| `data-pptx-layout-name="Title and Content"` | root `<svg>` | Layout picker name; defaults from the layout key |
+| `data-pptx-show-master-shapes="false"` | root `<svg>` | Optional; exact lowercase `true` / `false`; the assigned Layout's `showMasterSp`, repeated identically by every SVG sharing the key; omission means `true` |
+| `data-pptx-show-inherited-shapes="false"` | root `<svg>` | Optional; exact lowercase `true` / `false`; this Slide's `showMasterSp` — `false` hides inherited shapes without removing backgrounds, placeholders, parts, or parents; omission means `true` |
+| `data-pptx-layer="master"` / `"layout"` | direct semantic atom | Moves one repeated static object/background into the Master or the selected Layout; ordinary `<g>` is forbidden, one validated compact authored-preset `<g>` (§1.5) is the atomic exception |
+| `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | One-page background override written as Slide `p:bg` |
+| `data-pptx-placeholder="..."` | direct slot `<g id>` | Reusable Layout slot whose visible content stays Slide-local |
+| `data-pptx-bounds="x y width height"` | slot `<g>` | Mandatory positive reusable design-zone frame in SVG user units, at most two decimals per value |
+| `data-pptx-idx="1"` | slot `<g>` | Retains an imported source placeholder index; optional for reconstructed layouts |
 | `data-pptx-carrier="true"` | one compatible direct child of a normal slot | Binds that visible child as the real Slide placeholder carrier |
 | `data-pptx-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
-
-**Hard rule — explicit only**: On a structured `template_reuse_scope: mirror|layout` route, every SVG requires the four root Master/Layout identity attributes. Optional inherited-shape visibility uses only exact lowercase `true` / `false`; other spellings fail, and omission means `true`. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat `template_reuse_scope: style`, free-design, and brand-only pages omit the structural markers and visibility attributes; ordinary groups still use the shared `data-pptx-bounds` module contract.
-
-**Identity is not layer membership**: An SVG `id` identifies one element and
-must be unique inside that SVG document. Any number of direct atoms may repeat
-the same `data-pptx-layer="master"` or `data-pptx-layer="layout"` value; the
-layer attribute, never the `id`, determines ownership. Separate standalone SVG
-pages may repeat the same stable fixed-atom `id` when they declare the same
-Master/Layout contract. Unmarked visual content is Slide-local, except that the
-optional direct solid Slide-background marker below makes one-page background
-ownership explicit.
-
-**Layer order**: Author the SVG in PowerPoint paint order: Master background,
-Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms,
-then slot groups and Slide-local content groups. Backgrounds are a special inheritance
-plane beneath every shape; this order keeps standalone SVG preview and
-PowerPoint rendering aligned. The exporter rejects interleaved layers.
-
-**Solid background ownership**: Structured export deliberately narrows scoped
-background ownership to a direct full-canvas solid `<rect>` and disables the
-generic conversion-level promotion described in §4.2. Mark the solid rect
-`data-pptx-layer="master"` for the deck-wide default,
-`data-pptx-layer="layout"` for a page-type override, or
-`data-pptx-layer="slide"` for a one-slide override. An unmarked direct
-full-canvas solid rect in the background plane is also treated as Slide scope.
-A Layout background overrides the Master background; a Slide background
-overrides both. Use the Master for a globally stable color and the Layout for
-cover/section/content variants under the same design language. Gradient and
-preset-pattern rects remain ordinary shapes on declared Master/Layout layers
-or as Slide-local content; images remain pictures. Textures, transformed rects,
-and visible-stroke rects also remain ordinary objects.
 
 | Placeholder value | Direct carrier inside slot `<g>` | PowerPoint placeholder |
 |---|---|---|
 | `title`, `subtitle`, `body` | one `<text data-pptx-carrier="true">` | `title`, `subTitle`, `body` |
 | `date`, `footer`, `slide-number` | one `<text data-pptx-carrier="true">` | `dt`, `ftr`, `sldNum` |
-| `picture` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `pic` |
-| `chart`, `table` | one matching `data-pptx-replace-with` marker group, marked as carrier | `chart`, `tbl` |
-| `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
-| `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
+| `picture`, `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `pic`, `media` |
+| `chart`, `table` | one matching `data-pptx-replace-with` marker group, marked as carrier; requires `--native-charts-and-tables` | `chart`, `tbl` |
+| `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; or the slot declares `binding="proxy"` | `obj` |
 
-A template-owned chart/table carrier may declare
-`data-pptx-native-authority="json"`. Its inline metadata, marker identity,
-bounds, and slot binding remain structural facts; its non-metadata SVG preview
-children are derived and may be regenerated without changing that contract.
+**Hard rule — explicit only**: on a structured route every SVG carries the four root identity attributes; every Master/Layout atom and slot is a direct root child with a unique stable `id`; `data-pptx-layout-kind`, `distilled`, and `utility` are legacy and fail. Flat pages omit the structural markers and visibility attributes; ordinary groups still use the shared `data-pptx-bounds` contract. The `id` identifies an element; `data-pptx-layer`, never the `id`, decides ownership, and separate pages may repeat the same fixed-atom `id` under the same Master/Layout contract. Unmarked content is Slide-local.
 
-**Text slot carrier**: A multiline text placeholder must remain one native text
-frame. Default export and `--reflow-text` do; `--no-merge` cannot supply several
-line shapes as one PowerPoint placeholder prototype/binding. Leave strict-line
-text Slide-local when separate frames are required.
+**Layer order**: author in PowerPoint paint order — Master background, Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms, then slot groups and Slide-local content. Backgrounds are the inheritance plane beneath every shape; keeping this order aligns SVG preview with PowerPoint rendering.
 
-For a materialized mirror, an imported text carrier may additionally keep the
-source shape's positive `data-pptx-frame="x y width height"`. That frame owns
-the Slide carrier `a:xfrm`; the converter reconstructs text-body insets from the
-visible SVG anchor/baseline instead of shrinking the shape to glyph bounds.
-`data-pptx-bounds` remains the reusable Layout default and may
-legitimately differ. Do not add `data-pptx-frame` to an authored
-`standard` / `fidelity` carrier merely to duplicate its Layout bounds.
+**Solid background ownership**: only a direct full-canvas solid `<rect>` can own a scoped background. Mark it `layer="master"` for the deck-wide default, `layer="layout"` for a page-type variant under the same design language, `layer="slide"` for a one-slide override; Layout overrides Master, Slide overrides both. Gradient/pattern rects, textures, transformed rects, and visible-stroke rects remain ordinary shapes on declared layers or Slide-local; images remain pictures.
 
-**Blank text carrier**: Leave a marked text carrier empty or whitespace-only
-when the placeholder must remain visually blank. Export materializes one
-invisible U+200B run so the carrier still becomes a native PowerPoint text
-shape. Do not insert a dummy dash, shrink text below the DrawingML 1pt minimum,
-or hide a visible glyph with opacity/background paint; those workarounds either
-leak content or produce a PPTX that PowerPoint repairs.
+**Slot bounds**: derive `data-pptx-bounds` from the intended design zone, column, panel inset, safe area, or picture frame — never from text length, glyph width, line count, or a tight content box. Repeat the same slot ids/types/effective indices/default bounds/binding modes on every slide using that Layout; Slide content and local carrier geometry may differ from the default frame. A template-owned chart/table carrier may declare `data-pptx-native-authority="json"`; its metadata, marker identity, bounds, and slot binding are structural facts while its preview children are derived.
 
-`title` is normally type-matched without an index in reconstructed layouts; if
-an imported source title explicitly has one, preserve that exact index. Every
-indexed placeholder on one layout uses a unique OOXML UInt32 index. Structured export writes the semantic type on both the Layout and Slide carrier (except `obj`, whose OOXML default is already `obj`) so PowerPoint and `python-pptx` retain the same identity. A composite object slot instead keeps its visible group ordinary and uses a hidden transparent proxy.
-Date, footer, and slide-number placeholders enable their matching Layout `p:hf`
-flags; a date placeholder also gets a `datetimeFigureOut` field in the reusable
-Layout definition. The current Slide keeps its authored date content.
-
-Because an omitted `p:ph@idx` has the effective value `0`, an omitted-index
-title reserves `0`; no other placeholder on that Layout may use the same
-effective index.
-
-**Slot prototype**: The prototype source declared by the unique Layout definition supplies that Layout's placeholder formatting. `data-pptx-bounds` supplies the reusable default frame and is mandatory on every slot. Derive it from
-the intended design zone, column, panel inset, safe area, or picture frame —
-never from text length, glyph width, line count, or a tight content bounding
-box. Repeat the same slot ids/types/effective indices/default bounds/binding modes on every slide using that Layout. The Layout owns the reusable `p:ph`; normal visible carriers keep a matching Slide binding so approved rendering stays identical. A composite `object` proxy adds one hidden transparent binding shape to suppress empty inherited placeholder paint. Bounds define the Layout default only; actual Slide content and local carrier geometry may differ.
-
-**Final-package read-back gate**: After writing a temporary structured PPTX and before publishing it, export reopens the package and
-verifies that each published Slide targets exactly one Layout, one Layout key always resolves to the
-same part, different keys do not collapse onto one part, and every declared Layout—including one unused by all published Slides—is
-registered through its Master and the Presentation. Physical Slide/Layout/
-Master part rosters, their content-type overrides, and their Presentation/
-Master registrations must be exact. It also verifies the Layout picker name,
-Master picker identity, placeholder type and effective index, matching `p:hf` flags, explicit design-zone frame, direct prompt size, and level-one default size.
-Every owned `p:bg` is checked as an exact zero-or-one payload against the pre-
-promotion result; this includes preserving the base Master background when no
-authored Master background replaces it. During the same export, every finished
-Slide, Layout, and Master must reproduce its exact top-level shape-name roster
-and order after packaging. The gate verifies that each carrier-bound slot owns the expected Slide binding, each composite visible carrier remains ordinary, and every composite binding proxy is hidden. A zero-slot Layout must read back with no placeholder. Later slides may keep different Slide-local geometry; only the reusable
-Layout frame is checked against the explicit/prototype contract. Any mismatch
-fails export without replacing the requested output.
-
-**Static structure consistency**: Repeat the same master element ids on every
-slide and the same layout element ids on every slide sharing a layout. Their
-generated OOXML must be identical within the affected master/layout group.
-Static structure may carry shapes, text, or images; non-image/external
-relationships are rejected. Every static object is atomic. An ordinary
-`<g data-pptx-layer="master|layout">` is forbidden; the validated compact
-authored-preset group from §1.5 is the sole group exception because it compiles
-to one native object. A full-canvas first rect may be marked as a Master or
-Layout background.
-
-**Native object slot carriers**: `chart` / `table` slots require
-`--native-charts-and-tables`; fallback groups contain several shapes and cannot map to one
-PowerPoint placeholder. `object` is the generic PowerPoint content slot and
-uses either one carrier object—including one validated compact authored-preset
-group—or the explicit composite proxy downgrade. `media` currently binds
-an authored image/crop to a native `media` placeholder; it does not synthesize
-video or audio media from a decorative SVG group.
+**Text carriers**: a multiline placeholder stays one native text frame, so leave strict-line text Slide-local when separate frames are required. Leave a carrier empty or whitespace-only when the placeholder must be visually blank — export materializes an invisible run; never insert a dummy dash, sub-1pt text, or an opacity-hidden glyph. A materialized mirror carrier may keep the source `data-pptx-frame`; do not add it to an authored `standard` / `fidelity` carrier merely to duplicate its bounds. `object` is the generic content slot; `media` binds an authored image/crop and does not synthesize video or audio from a decorative group.
 
 ## 3. Legacy Template Input Boundary
 
-Existing structured/template projects or source-analysis packages that carry `analysis/native_structure.json` / `sources/source.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or an incomplete root Master identity are not generation/export inputs and are never upgraded in place. Create a separate current workspace through [`create-template`](../workflows/create-template.md). A project explicitly declaring `pptx_structure.mode: flat` is the current free-design/brand-only route and needs no conversion merely because it has no Master/Layout metadata.
+Projects or analysis packages carrying `analysis/native_structure.json` / `sources/source.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or an incomplete root Master identity are not generation/export inputs and are never upgraded in place; create a separate current workspace through [`create-template`](../workflows/create-template.md). A project explicitly declaring `mode: flat` is the current free-design/brand-only route and needs no conversion.
 
 | Available source | Allowed create-template behavior |
 |---|---|
 | Original PPTX Type A | `standard` / `fidelity` author new topology; `mirror` authors compact SVG from parsed evidence while preserving supported Master/Layout/placeholder facts that still exist in the package |
 | Legacy or unstructured SVG Type B | `standard` / `fidelity` use pages as visual/contextual reference and author a complete new contract; old metadata is not output topology |
-| Complete current SVG Type B | `mirror` may author a compact equivalent while preserving the explicit current contract in a new workspace; authored modes may replace it |
+| Complete current SVG Type B | `mirror` may author a compact equivalent preserving the explicit current contract in a new workspace; authored modes may replace it |
 
-Without an original PPTX or complete current Type B contract, do not claim mirror or source-topology recovery. After template creation, Generate PPTX Step 6 (or Quick §3) authors new structured `svg_output/` pages; the exporter only compiles those declarations and never derives, repairs, or migrates structure.
+Without an original PPTX or complete current Type B contract, do not claim mirror or source-topology recovery. After template creation, Generate Step 6 (or Quick §3) authors new structured `svg_output/` pages; the exporter only compiles those declarations.
 
 ---
