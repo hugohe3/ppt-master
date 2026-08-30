@@ -263,7 +263,7 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 
 | Signal | Reading |
 |---|---|
-| Two or more issues share a category and direction | Method-level bias — resolve to the authoritative rule before P02 (for text extents, the shared estimator `python3 ${SKILL_DIR}/scripts/text_measure.py measure|wrap|box`: calibrate each role once, measure only lines near a limit, batch via `--stdin`); a correction fitted to the observed offset patches only this sample |
+| Two or more issues share a category and direction | Method-level bias — resolve to the authoritative rule before P02 (for text extents: fix the P01 per-role calibration from `python3 ${SKILL_DIR}/scripts/text_measure.py measure`, then every later page estimates by that arithmetic and measures nothing); a correction fitted to the observed offset patches only this sample |
 | One isolated issue tied to this page's structure | Page-local — fix and continue |
 | A recurring element appears for the first time (furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
 
