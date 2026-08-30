@@ -69,9 +69,7 @@ Every coordinated Stage-2 direction carries one complete `rendering: custom` can
 - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
 ```
 
-**Hard rule**: three complete rendering candidates are mandatory in every fresh Stage-2 direction set; AI source recommendation remains independent. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
-
-Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. One rendering may supply the complete treatment unchanged; when several are named, each contributes a distinct executable job across line, texture, depth, material, or mood. Reference count has no fixed cap; count is an outcome, not a target. A four-basis direction may assign `vector-illustration` to silhouette clarity, `minimalist-swiss` to negative-space composition, `screen-print` to restrained halftone texture, and `warm-scene` to light and mood; list all four ids. Omit every rendering whose contribution cannot be stated and never add a second merely to imply synthesis. A custom using no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
+Candidate authoring, the three-per-direction rule, and `image_rendering_references` projection are owned by [`strategist-image.md`](../strategist-image.md) §2.
 
 ---
 

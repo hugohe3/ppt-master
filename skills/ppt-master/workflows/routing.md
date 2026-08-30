@@ -85,16 +85,7 @@ Quick activation; Beautify may select either runtime, but never both.
 
 ## 4. Template and Master/Layout Boundary
 
-**Hard rule — no direct structure grafting**: An existing PPTX or SVG is never upgraded in place by adding Master/Layout/placeholder structure. If reusable native structure is required:
-
-1. Run [`create-template`](./create-template.md) to produce a separate validated workspace.
-2. Pass that workspace root to Default as a Stage-1 template candidate, or supply its exact root directly to explicit Quick Generate.
-3. Author new structured SVG pages whose Master/Layout contract exists from their first generated draft.
-4. Export a new PPTX from those pages.
-
-When a PPTX already contains native Master/Layout parts, `create-template` mirror may read and preserve those existing package facts in the new workspace. It does not infer missing historical intent. An incomplete or legacy SVG package may guide `standard` / `fidelity` visually, but it is not mutated into a structured template and cannot claim source-topology recovery.
-
-**Hard rule — no automatic structure upgrade**: Free-design, brand-only, and style-only generation remains `pptx_structure.mode: flat`. Repeated Slide-local objects never trigger `structured`, Master/Layout promotion, placeholder inference, or deduplication. The minimal Master plus Blank Layout emitted by flat export is package scaffolding, not an inferred reusable design master.
+**Hard rule — no direct structure grafting or automatic upgrade**: an existing PPTX or SVG is never upgraded in place by adding Master/Layout/placeholder structure — run [`create-template`](./create-template.md) for a separate validated workspace, then pass its root to Default Stage 1 or explicit Quick and author new structured pages. Free-design, brand-only, and style-only generation stays `pptx_structure.mode: flat`; repeated Slide-local objects never trigger `structured`.
 
 | Input | Route behavior |
 |---|---|
@@ -160,14 +151,4 @@ corresponding directories to construct or supplement the catalog:
 | Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
 | Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
 
-**Hard rule — one Stage-1 confirmation, delayed template reading**: Author the
-communication recommendation without reading candidate workspaces. Stage 1
-confirms that contract and the template/free-design choice together. Only then
-validate/install selected roots and complete the handoff. Stage 2 waits for that
-handoff, reads only the installed project-local state, and decides how to apply
-it; it never reselects a template.
-
-**Forbidden — fuzzy resolution**: Never resolve a bare name to a local template
-directory on the user's behalf. A library choice comes from an index-derived
-root; an unregistered workspace requires an explicit root, including the exact
-validated workspace handed off by Create Template in the current conversation.
+**Hard rule — index-derived roots only**: never resolve a bare name to a local template directory on the user's behalf; a library choice comes from an index-derived root, and an unregistered workspace requires an explicit root (including the exact workspace handed off by Create Template in the current conversation). Stage-1 ordering and delayed template reading are owned by [`generate-pptx`](./generate-pptx.md) Steps 3–4.
