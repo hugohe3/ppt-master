@@ -43,7 +43,7 @@
     "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
     "skills/ppt-master/workflows/generate-pptx.md": 10000,
-    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500,
+    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 2750,
     "skills/ppt-master/references/confirm-surface.md": 3000,
     "skills/ppt-master/references/video-design.md": 2500,
     "skills/ppt-master/references/native-formula.md": 1500,
@@ -54,7 +54,11 @@
     "skills/ppt-master/references/artifact-ownership.md": 4500,
     "skills/ppt-master/workflows/governance/failure-recovery.md": 2750,
     "skills/ppt-master/workflows/stages/resume-execute.md": 1750,
-    "skills/ppt-master/workflows/stages/refine-spec.md": 1000
+    "skills/ppt-master/workflows/stages/refine-spec.md": 1000,
+    "skills/ppt-master/workflows/stages/verify-charts.md": 2500,
+    "skills/ppt-master/workflows/stages/topic-research.md": 2000,
+    "skills/ppt-master/workflows/stages/live-preview.md": 1000,
+    "skills/ppt-master/workflows/stages/web-image-review.md": 750
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1998,7 +2002,7 @@
             {
               "path": "skills/ppt-master/workflows/stages/apply-template-workspace.md",
               "role": "consumer",
-              "fingerprint": "2a2c42538a76",
+              "fingerprint": "8490326d972a",
               "reason": "This stage documents how each Generate runtime consumes the prototype mapping."
             },
             {
@@ -2299,6 +2303,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/confirm_ui.md",
         "reason": "Confirm UI server/schema reference; the Strategist reads references/confirm-surface.md for the surface decision and authoring payloads."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/svg_editor.md",
+        "reason": "Browser editor behavior and lifecycle reference; the live-preview stage carries the launch and annotation procedure."
       }
     ]
   }

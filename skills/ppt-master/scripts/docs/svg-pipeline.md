@@ -1084,6 +1084,53 @@ python3 scripts/svg_position_calculator.py analyze <svg_file>
 
 Use this after SVG generation to inspect existing SVG geometry when manual comparison needs more context.
 
+### Verification recipes
+
+Used by the [`verify-charts`](../../workflows/stages/verify-charts.md) stage for chart objects whose geometry reduces to repeated direct calculations (`decomposable-calc` / `partial-calc`), a closed formula (`formula-verify`), or inspection only (`manual-verify`). Every recipe produces one receipt line; a page that cannot be reduced cleanly is marked `manual-verify` with the reason, never dropped.
+
+**Stacked bar** — for N stacked series on the same categories, run `calc bar` N times. Pass each segment's height as the data value and shift `--area`'s `y_max` down by the sum of all lower segments for that category; compare each segment's `(x, y, width, height)`.
+
+```bash
+# two-series stack at "Q1" with bottom=30, top=20, plot y from 100 to 500
+python3 scripts/svg_position_calculator.py calc bar --data "Q1:30,Q2:..." --area "x_min,100,x_max,500" --bar-width 80 --value-range=0,axis_max
+python3 scripts/svg_position_calculator.py calc bar --data "Q1:20,Q2:..." --area "x_min,100,x_max,<500 - bottom_height_px>" --bar-width 80 --value-range=0,axis_max
+```
+
+**Stacked area** — run `calc line` N times on cumulative y-values (series 1 raw; series 2 = s1+s2; …); each call yields one band's top boundary, and each band's path closes to the previous band's top, not `y_max`. Negative segments or percent-stacked totals other than 100 are `manual-verify`.
+
+**Dumbbell** — the two endpoints are points, not bar ends (`calc bar --horizontal` anchors at `x_min`). Number categories `0.5, 1.5, …, N-0.5` with `--y-range=0,N` (swap axes for vertical dumbbells), set `--x-range` from ticks, run `calc line` once per endpoint series with identical `--area` / ranges; each `(SVG_X, SVG_Y)` is the endpoint circle's `(cx, cy)`, and the connector is `x1=cx_left, x2=cx_right, y1=y2=cy`.
+
+```bash
+python3 scripts/svg_position_calculator.py calc line --data "42:0.5,55:1.5,37:2.5" --area "100,100,700,460" --x-range=0,100 --y-range=0,3
+python3 scripts/svg_position_calculator.py calc line --data "68:0.5,71:1.5,49:2.5" --area "100,100,700,460" --x-range=0,100 --y-range=0,3
+```
+
+**Pareto** — `calc bar` on the descending values with the bar-axis range; precompute cumulative percentages; `calc line` on `0.5:cum1,…,N-0.5:cumN` with `--x-range=0,N`, the right-side percentage axis as `--y-range` (usually `0,100`), and the same `--area` (the `n - 0.5` offset centers each point on its bar). Compare bars, line, and markers separately.
+
+**Dual-axis line** — read each Y-axis tick range independently; run `calc line` once per series with its own `--y-range` and a shared `--x-range` / area; never apply the left scale to the right series.
+
+**Bullet** — bands overlap in one y row, so run `calc bar --horizontal` once per band with a single data point: `--data "<band>:<right_edge_value>" --area "<x_min>,<band_y>,<x_max>,<band_y+band_height>" --bar-width <band_height>` (widest band's right edge = axis max). Run once more for the actual bar with its inset area; the target marker is a `<line>` at `x = x_min + target/axis_max × area_width`.
+
+**Butterfly** — read the value range and center-line `cx`; run `calc bar --horizontal` once per side with `x_min = cx`, `x_max = cx + side_width`; right bars map directly, left bars mirror as `x = cx - width`; verify both sides share `y + height/2` per category.
+
+**Grouped bar** — with N series and group width `W`, each series bar is `W/N` wide at offset `(i - 1) × W/N`; run `calc bar` once per series with the same `--area` / `--value-range` and `--bar-width` set to the inner width; the per-category center is the group center, so `x = group_center - W/2 + (i-1) × W/N`.
+
+**Box plot** — five y-values per category on one axis. Run `calc bar` once treating the box (Q3 − Q1) as a synthetic segment with `y_max` shifted to the Q1 baseline; median and whisker y = `y_axis_top + (axis_max - value) × pixels_per_unit`.
+
+**Gantt** — pixels-per-unit from the header tick positions `(x_unit_n - x_unit_1) / (n - 1)`; run `calc line` over `start_index:row_y` and again over `end_index:row_y` — the two `SVG_X` values are `x` and `x + width`; row y is read directly. A qualitative stage/lane plan not derived from dates is not a chart and never enters verification.
+
+**Waterfall** — compute running totals (`cum[i] = cum[i-1] ± delta[i]`, reset for totals); build `top[i] = max(cum_before, cum_after)` and `bot[i] = min(...)`; run `calc bar` twice with identical parameters — the `top` run's `Y` is `y`, `height = bot.Y - top.Y`; connectors run from `(x + width, Y_i)` to `(x_next, Y_{i+1})` at the shared cumulative value; total bars use `bot = 0`.
+
+**Bubble / plotted 2×2 matrix** — `calc line` verifies `cx/cy` from x/y values and ticks. For `matrix_2x2`, the axis midpoint must match the quadrant split; Low/High-only axes need an explicit numeric mapping from the active §IX decision or an SVG comment, otherwise record `xy=manual (scale missing)`. Verify radius only when a size scale is declared (`radius = sqrt(value) * k` or min/max mapping) — `spec_lock.md` is not a size-scale authority; otherwise record `radius=manual (scale missing)` and inspect ordering by hand.
+
+**Bar-of-pie / pie-of-pie** — replace the expanded tail with one aggregate value and `calc pie` the main pie; `pie_of_pie` runs `calc pie` again on the tail at the secondary center/radius, `bar_of_pie` verifies each detail height as `tail_value / sum(tail) × detail_height` with no gaps or overlap; the aggregate slice equals the sum of expanded values and connectors touch both plot regions.
+
+**Stock** — `calc line` for open, high, low, close on the shared price axis; the wick spans `high_y..low_y`, the body `min(open_y, close_y)..max(...)`; body color follows `close >= open` and stays inside its wick.
+
+**Formula-verify** (no calc call): progress bar `fill_width = value / max × track_width`; gauge `needle_angle = start_angle + value / max × sweep_angle`, compared against `transform="rotate(α …)"` or the endpoint `(cx + L·cos α, cy + L·sin α)`; funnel `top_width = prev.bottom_width`, `bottom_width = top_width × next_value / curr_value`, inset `(top_width - bottom_width) / 2`, first top width from the outer frame; sunburst arc length `node_value / root_total × 2πr` per ring with offsets from cumulative siblings plus any declared gap, children inside the parent span, siblings summing to the parent. The receipt quotes the formula and result (`formula=0.92×700=644px`).
+
+**Manual-verify**: sankey — link widths proportional to flow, node totals in = out; heatmap — grid positions are fixed, verify each cell's color falls in the bin matching its value and extremes use the legend's high/low colors; treemap — `width × height ≈ total_area × value / sum(values)` for top-level cells, nested cells summing to the parent; word cloud — font sizes monotonic with declared weights or bins, then inspect bounds for overlap and clipping; position is layout-driven.
+
 ## Advanced Standalone Tools
 
 ### `flatten_tspan.py`
