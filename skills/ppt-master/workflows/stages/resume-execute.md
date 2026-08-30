@@ -102,7 +102,7 @@ Then continue the documented pipeline:
 - For each page, make the mandatory Structure decision from retained §IX after its content/communication move is established and before any geometry; a `yes` result loads `executor-structure.md` before realization and creates no artifact or lock row
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
-- Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load
+- Generate pages sequentially from the retained planning artifacts. Use `page-context` only for explicit diagnostics/telemetry or an unresolved path-SHA question ([`artifact-ownership.md`](../../references/artifact-ownership.md) §1), never as a routine pre-page load
 - Quality Check Gate
 - Speaker notes generation only when the effective Speaker Notes outcome is enabled
 - Conditional custom-animation handling under the effective outcome,

@@ -592,7 +592,7 @@ sidecars, or guessed family paths.
 
 > Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
-**Page-context**: use the read-only projector only for the diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load.
+**Page-context**: use the read-only projector only for explicit diagnostics/telemetry or an unresolved page/template/chart path-SHA question ([`artifact-ownership.md`](../references/artifact-ownership.md) §1), never as a routine pre-page load.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: P01 → first-page gate → remaining pages (one page gate per first-exercised `not-exercised` item) → final gate. After context invalidation, reload under §2.1 before continuing.

@@ -1,6 +1,6 @@
 # Executor Flat and Shared Core
 
-Always-loaded Executor authority for flat SVG page authoring and behavior shared by every Generate route; Default and Quick both load it. Items marked `Default only` bind to the persisted Design Spec / `spec_lock.md`. Quick applies the same craft to the transient anchors it resolved under [`quick-generate.md`](../workflows/profiles/quick-generate.md) §2, and its own pacing, single final checker, and export steps replace §3 `Generation rhythm`, the first-page gate, §6, and §7. Load conditional branches only when their trigger is present.
+Always-loaded Executor authority for flat SVG page authoring and behavior shared by every Generate route; Default and Quick both load it. Items marked `Default only` bind to the persisted Design Spec / `spec_lock.md`. Quick applies the same craft to the transient anchors it resolved under [`quick-generate.md`](../workflows/profiles/quick-generate.md) §2, and its own pacing, single final checker, and export steps replace §3 `Generation rhythm`, the first-page gate, and §6. Load conditional branches only when their trigger is present.
 
 **Conditional branch routing**:
 
