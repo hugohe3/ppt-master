@@ -58,6 +58,40 @@ Read this before §1: the expression vocabulary every page draws from. The contr
 
 **Reference — page-level recipes**: [`svg-effects.md`](./svg-effects.md) §6.13 stacks cover, divider, text-led, process, evidence, comparison, closing, and cross-page-motif pages back to front.
 
+**Reference — everyday effects and aesthetic defaults (self-contained; the full contract and rarer techniques are [`svg-effects.md`](./svg-effects.md))**:
+
+- **Color**: 60-30-10 as the starting proportion (dominant field ≈ 60%, support ≈ 30%, accent ≈ 10%), at most four hues per page, body text contrast ≥ 4.5:1; cover and chapter pages may use the theme color as a large field; same-hue gradients add depth; the accent color goes on the key number or word to create focus, not everywhere; cool tones read technical, warm tones energetic, dark fields grave; trends use green up / red down / gray flat with the deck's polarity roles.
+- **Rhythm and weight**: follow a data-heavy page with a breathing page; balance visual weight — dark or large elements are heavy, light or small ones light — across left/right and top/bottom; keep layout consistent within a chapter and vary between chapters. A consulting-style content page may add an assertion headline, a one-sentence takeaway band under the title, and a muted source note at the page bottom.
+- **Depth through restraint**: depth comes from rhythm (flat vs lifted, dense vs spacious), not shadows everywhere — shadow 2–3 genuinely floating objects per page at most (card over a photo or colored panel, the primary CTA, an overlay) and keep peer-grid cards, dividers, and body containers flat; reach for weight, spacing, accent bars, and tints before shadow; pick one weight tool per container (shadow, border, gradient fill, or strong tint — never stacked); one light source per page (`dx="0"`, `dy="4"`–`"8"`); the shadow is felt, not seen — resting `flood-opacity` 0.06–0.10, raised at most 0.20 (above that is the Office 2007 look); on dark fields use a light hairline or a restrained glow instead of black shadow.
+- **Image overlays**: a directional scrim darkest beside the text (`0.88 → 0.30 → 0`), a bottom fade under a lower title (`0 → 0.72`), a radial vignette for atmosphere (`0 → 0.58`), or a brand wash (`0.80 → 0.10`); never a uniform flat opacity over the whole image or a solid black plate.
+- **Lines**: `stroke-dasharray` `4,4` separator, `2,2` placeholder outline, `8,4` timeline or flow connector, `8,4,2,4` dimension line; `marker-end` for connector arrowheads; divider hairlines at 0.2–0.3 alpha.
+- **Inline emphasis**: lift numerical results, before/after contrasts, and one or two load-bearing nouns per sentence as bold runs in the primary color; never connectives, common verbs, every noun, decorative adjectives, or structural text (footer, axis, legend, page number); reserve green/red for real polarity.
+
+```xml
+<defs>
+  <filter id="softShadow" x="-15%" y="-20%" width="130%" height="150%">
+    <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.10"/>
+  </filter>
+  <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="b"/>
+    <feFlood flood-color="#1A73E8" flood-opacity="0.45" result="c"/>
+    <feComposite in="c" in2="b" operator="in" result="g"/>
+    <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <linearGradient id="field" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#1A73E8"/><stop offset="100%" stop-color="#0D47A1"/>
+  </linearGradient>
+  <linearGradient id="scrim" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0.85"/>
+    <stop offset="55%" stop-color="#1A1A2E" stop-opacity="0.30"/>
+    <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="60" y="60" width="400" height="240" rx="12" fill="#FFFFFF" filter="url(#softShadow)"/>   <!-- card floating over a photo/panel -->
+<image href="../images/cover.jpg" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+<rect x="0" y="0" width="1280" height="720" fill="url(#scrim)"/>   <!-- text sits on the dark side -->
+```
+
 ---
 
 ## 1. Effect Capability Discovery

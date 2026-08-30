@@ -135,7 +135,7 @@ Record the style and rationale in `design_spec.md`, then project `- visual_style
 
 **Hard rule**: user-specified colors are truth — lock supplied HEX, brand colors, or natural-language directives (templates follow inherited-design precedence). Every direction fills all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`), repeating fixed roles and varying only open ones; never an empty palette. In §III derive the standard `secondary_text` and `divider` neutrals and project them to `spec_lock.md colors`; §V fixes the five deck-wide spacing anchors.
 
-**Reference — not a constraint**: WCAG AA body contrast is 4.5:1. Without user/template colors, propose project-specific directions from content and style; `scripts/config.py` industry colors and the dominant/support/accent hierarchy are recall aids, never default locks, ratios, or quotas.
+**Reference — not a constraint**: starting proportions follow the 60-30-10 rule (dominant ≈ 60%, support ≈ 30%, accent ≈ 10%), body contrast is at least 4.5:1 (WCAG AA), and a page carries at most four hues; color carries mood — cool tones read technical and calm, warm tones energetic and approachable, dark fields grave and premium. Without user/template colors, propose project-specific directions from content and style; `scripts/config.py` industry anchors (finance/business navy `#003366`, technology bright blue `#1565C0`, healthcare teal `#00796B`, government red `#C41E3A`) and the dominant/support/accent hierarchy are recall aids, never default locks or quotas.
 
 **Lock recurring semantic anchors, not every paint**: add neutral roles the style and page plan give a stable meaning — `surface`, `grid`, `scrim`, `overlay`, `block-shade` — and leave page-local tints, gradient stops, shadow/glow colors, and one-off tones to execution, promoting one only when it becomes a reusable named role.
 
@@ -170,7 +170,9 @@ AI illustrated icons are not a base option, add-on, field, or key — like decor
 
 🚧 **GATE**: apply the chosen custom behavior and only the already-loaded `visual_style_references` files. The title carries the character; the body may stay neutral.
 
-**Family selection**: user/template typography is authoritative — repeat fixed stacks with `typography.fixed: true` in every direction (reasonable repetition is non-blocking; no extra font round). Each direction carries `heading` / `body` `primary`, `css`, and a positive `body_size`, plus `english` only for a non-English deck. Resolve the delivery target under [`shared-standards-core.md`](./shared-standards-core.md) §4.1 and name concrete target-installed/approved PowerPoint faces (the Confirm UI catalog is manual choice, not a whitelist); at most four families; a brand/web face leads only after user-confirmed installation, otherwise export a safe face and keep it as a Design Spec reference (fonts are not embedded; CSS tails are preview aids, not PowerPoint fallbacks). Avoid near-equivalent splits (YaHei↔PingFang, SimSun↔Songti, Arial↔Helvetica↔Segoe UI, Times↔Times New Roman). Vary the axis by the locked style — serif×sans, Kai/FangSong×hei, hei×song, double-serif, display×neutral, same-family weight, sans+mono — as recall seeds, not presets.
+**Family selection**: user/template typography is authoritative — repeat fixed stacks with `typography.fixed: true` in every direction (reasonable repetition is non-blocking; no extra font round). Each direction carries `heading` / `body` `primary`, `css`, and a positive `body_size`, plus `english` only for a non-English deck. Resolve the delivery target under [`shared-standards-core.md`](./shared-standards-core.md) §4.1 and name concrete target-installed/approved PowerPoint faces (the Confirm UI catalog is manual choice, not a whitelist); at most four families; a brand/web face leads only after user-confirmed installation, otherwise export a safe face and keep it as a Design Spec reference (fonts are not embedded; CSS tails are preview aids, not PowerPoint fallbacks). Avoid near-equivalent splits (YaHei↔PingFang, SimSun↔Songti, Arial↔Helvetica↔Segoe UI, Times↔Times New Roman). Fonts in one deck form contrast (different family, weight, or proportion) or concord (one family throughout); propose one of each unless the user or template fixes the stack, and never default to title = body without a reason.
+
+**Reference — PPT-safe faces and pairings (recall seeds, not presets)**: pre-installed leads — CJK sans `Microsoft YaHei` / `SimHei` (macOS `PingFang SC` / `Heiti SC`), CJK serif `SimSun` / `FangSong` / `KaiTi` (`Songti SC`), Latin sans `Arial` / `Calibri` / `Segoe UI` / `Verdana` / `Trebuchet MS`, Latin serif `Times New Roman` / `Georgia` / `Cambria` / `Palatino` / `Garamond`, mono `Consolas` / `Courier New`, display `Impact` / `Arial Black`; keep at most one macOS-only family per stack. The title carries the style's character — `ink-wash` → `KaiTi` / `FangSong`; `brutalist` / `memphis` / `vintage-poster` / `zine` → `SimHei` / `Impact`; `editorial` / `data-journalism` / `photo-editorial` → `Georgia` / `Cambria` / `SimSun`; `dark-tech` / `blueprint` → clean sans + `Consolas`; `swiss-minimal` / `soft-rounded` → grotesque or friendly sans; a neutral sans title where the style asks for character is the failure to avoid, and `Microsoft YaHei` / `Arial` are neutral tails, not the automatic lead. Axes: serif × sans (`Georgia, KaiTi` × `Microsoft YaHei`), Kai × hei, FangSong × hei (`FangSong` × `SimHei`), double serif (`Palatino, FangSong` × `Cambria, SimSun`), same family with 900 / 300 weight, display × neutral (`Impact, SimHei` × `Arial, Microsoft YaHei`), cool academic serif (`Cambria, SimSun` × `Times New Roman, SimSun`), hei × song for 政务, sans body + `Consolas` code. Non-pre-installed directions — retro/pixel Press Start 2P / VT323, rounded Nunito / Quicksand / OPPO Sans (safe substitute `Trebuchet MS` / `Verdana`), modern web Inter / HarmonyOS Sans / Source Han, calligraphic 隶书 / 华文行楷 / 华文新魏 (safe substitute `KaiTi` / `FangSong`, titles only), brand faces — need target installation or stay Design Spec references.
 
 **Role extension after confirmation**: while authoring §IX and §IV, add a lowercase snake_case role with an exact stack only for a recurring role that materially needs a different family (`annotation`, `footer`, `footnote`, `data`, `emphasis`, `quote`, `code`), coherent with the confirmed heading/body system and locked style; one-off garnish stays omitted, confirmation is not reopened, and one compact `Role rationale` line in §IV names any added role.
 
@@ -264,7 +266,9 @@ Mode: [`modes/_index.md`](./modes/_index.md) → `pyramid` / `narrative` / `inst
 
 ## 3. Color Selection Reference
 
-No universal palette: user / brand → active template → project-specific proposal, with `scripts/config.py` industry anchors as optional recall. Count and distribution follow encoding, style, and natural assets. Lock the stable role set the deck needs, including recurring neutrals (`surface`, `grid`, `scrim`, `overlay`, `block-shade`), as identity anchors rather than an exhaustive paint list; Executor derives tints, shades, alpha, gradients, and effects and adds sparse page-local accents that never form a competing palette, while Strategist owns reusable positive / warning / negative roles.
+No universal palette: user / brand → active template → project-specific proposal, with `scripts/config.py` industry anchors as optional recall. Count and distribution follow encoding, style, and natural assets, with 60-30-10 as the starting proportion.
+
+**Reference — color knowledge base (recall aids, never defaults)**: consulting brands — Deloitte `#0076A8`, McKinsey `#005587`, BCG `#003F6C`, PwC `#D04A02`, EY `#FFE600`; versatile anchors — tech blue `#2196F3`, vibrant orange `#FF9800`, growth green `#4CAF50`, professional purple `#9C27B0`, alert red `#F44336`; data-visualization polarity ramps — positive green `#2E7D32 → #4CAF50 → #81C784`, warning yellow `#F57C00 → #FFA726 → #FFD54F`, negative red `#C62828 → #EF5350 → #E57373`. Lock the stable role set the deck needs, including recurring neutrals (`surface`, `grid`, `scrim`, `overlay`, `block-shade`), as identity anchors rather than an exhaustive paint list; Executor derives tints, shades, alpha, gradients, and effects and adds sparse page-local accents that never form a competing palette, while Strategist owns reusable positive / warning / negative roles.
 
 ---
 
@@ -272,14 +276,16 @@ No universal palette: user / brand → active template → project-specific prop
 
 **Reference — not a constraint**: macro vocabulary only; proportion follows information weight, and Executor may adopt, adapt, or decline after reading the page. Repeating symmetric card grids without a page job is a failure mode.
 
-| Content relationship | Useful starting structure |
-|---|---|
-| One focal claim | centered single column, negative space, or full-bleed + floating text |
-| Equal comparison | symmetric split or a true matrix |
-| Dominant evidence + takeaway | asymmetric split with one dominant field |
-| Parallel sequence | three-column, process line, or Z-pattern |
-| Core + surrounding forces | center-radiating or hub-spoke |
-| Wide visual + explanation | top-bottom split |
+| Content relationship | Useful starting structure | PPT 16:9 reference dimensions |
+|---|---|---|
+| One focal claim | centered single column, negative space (one element in 40–60% whitespace), or full-bleed + floating text | content width 800–1000 px centered; full-bleed image 1280×720 with an opacity overlay under the text |
+| Equal comparison | symmetric split (5:5) or a true matrix / four quadrants | column ratio 1:1 with a 40–60 px gap; quadrant about 560×250 px with 20–30 px gaps |
+| Dominant evidence + takeaway | asymmetric split (3:7 / 2:8) with one dominant field | heavier side 840–1024 px, lighter side 256–440 px |
+| Parallel sequence | three-column, process line, Z-pattern / waterfall | 1:1:1 columns with 30–40 px gaps; 3–5 alternating blocks guiding the eye in a Z |
+| Core + surrounding forces | center-radiating or hub-spoke | center element 200–300 px with 4–6 satellite nodes |
+| Wide visual + explanation | top-bottom split, or figure-text overlap for a hero moment | image full width, text area ≥ 150 px high; overlap places the headline against the image edge, not beside it |
+
+PPT 16:9 (1280×720) key dimensions: safe area 1200×640 (40 px margins); title area 1200×100; content area 1200×500; footer area 1200×40. Reference values only — proportion follows information weight.
 
 Once the roster and planned resources are known, recommend a cross-page motif or element family when it can carry identity or meaning — title/corner ornaments, a directional contour, an opening, a line lattice, an oversized numeral — recording its continuity job and reuse mode in §III `Theme` and mentioning it only in the §IX `Layout` blocks that benefit; Executor owns its geometry and may decline it; no motif field, lock row, or quota.
 

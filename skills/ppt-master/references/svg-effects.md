@@ -220,7 +220,11 @@ paper-layer treatment flips every affected layer together, so one plane keeps
 one light direction.
 
 **Reference — not a constraint**: use no more elevation categories than the
-hierarchy needs; a page may reuse one category across several related objects.
+hierarchy needs; a page may reuse one category across several related objects,
+but two or three shadowed objects usually read cleanest — check that a fourth
+earns its weight. Pick one weight tool per container — shadow, border,
+gradient fill, or strong tint — never stacked; peer-grid cards, dividers,
+body containers, and background panels stay on the floor.
 Same-family colored shadow is reserved for a focal accent. On dark backgrounds
 a light hairline or restrained glow separates surfaces; glow on body copy
 reduces legibility. For older/strict renderers, replace a filter with two or
