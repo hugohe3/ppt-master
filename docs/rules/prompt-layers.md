@@ -28,6 +28,21 @@ The prompt files are read by a model before it plans a deck and hand-writes SVG 
 | `scripts/docs/<topic>.md` | Tool documentation. A contract reference that mirrors a prompt file keeps that file's section numbers (`svg-contract.md` §1.1–§2.2 mirror `shared-standards-core.md`, Part II §6.2–§6.10 mirror `svg-effects.md`) so a pointer resolves in either direction | Nobody during generation; `coverage.exempt` in the manifest with a reason |
 | `templates/*_reference.md`, `templates/schemas/*.json` | Artifact grammar the model authors against (`design_spec.md`, `spec_lock.md`) | Read at authoring time by the owning Step |
 
+**Hard rule — contract before craft, both short**: inside a file, and inside
+each section, state the contract first — the routing/menu rows and the one
+canonical form — then the craft that uses it. A recall index (a routing table,
+the Visual Job Router, the everyday device menu) counts as contract: it is the
+list of what exists, and it stays at the top because a capability the model
+has not seen is a capability it will not use. Anything that is plain SVG or
+XML behavior — what `<use>` does, what a path command means, that a transform
+composes — gets one line or nothing; the model knows SVG, and the prompt only
+records where this pipeline departs from it. Craft is written as the decision
+and its test, not as an essay: one labelled paragraph or one table per
+decision, examples only where a form is easier shown than told. A long
+passage is justified only when the decision genuinely has that many moving
+parts; length that comes from restating context, hedging, or listing every
+case is what makes a rule hard to recall at authoring time.
+
 **Hard rule — one owner, pointers elsewhere**: a rule is stated in full in exactly one file. Every other file that needs it carries a pointer naming the file and section, not a paraphrase. A paraphrase is a second owner: it drifts, contradicts the original after the next edit, and doubles the tokens. The cross-file duplicate check in `prompt_audit.py` catches verbatim copies only; paraphrases are caught by reading.
 
 **Hard rule — everyday capabilities stay in the core**: effects, native shapes and their preset vocabulary, relationship grammar, and topology assembly are read before the first page by both Default and Quick. Only a capability most decks never touch (formula, hyperlink, chart/table branches, structured templates, video, animation, web-image attribution) loads on its own observable trigger, and the always-read core still names it in one routing row. Demoting an everyday capability to a trigger does not shrink the run — nearly every deck fires the trigger — and it reintroduces the failure where a capability not in context is never used.

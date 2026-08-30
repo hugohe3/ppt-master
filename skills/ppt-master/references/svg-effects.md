@@ -401,21 +401,12 @@ descendant alpha (§2.2).
 
 ### 6.9 Freeform Shapes and Curves
 
-| Input | Native normalization | Fidelity |
-|---|---|---|
-| `M/L/H/V`, absolute or relative | Absolute `M/L` | `Native-normalized` |
-| `C` | Cubic Bézier | `Native-normalized` |
-| `S/Q/T` | Explicit cubic controls | `Native-normalized` |
-| `A` | Cubic segments of at most 90° | `Approximate` |
-| `Z`; polygon/polyline | Closed/open freeform | `Native-normalized` |
-
-Write `path@d` and `points` with finite unitless ordinary decimals and only
-these commands; a path starts with `M`, arc flags are `0`/`1`, a polygon has
-≥3 pairs and a polyline ≥2. Command identity, relative coordinates, shorthand,
-arc parameters, and original handles are not retained; geometry needs non-zero
-bounds. Do not depend on `fill-rule="evenodd"` — build explicit visible
-geometry, bake an essential knockout, or on a fixed background use a
-background-colored overlay.
+Every SVG path command, `<polygon>`, and `<polyline>` is accepted; export
+normalizes to absolute `M/L` and cubic Béziers, and arcs become ≤90° cubic
+segments (`Approximate`). Write `d` and `points` as finite unitless ordinary
+decimals; geometry needs non-zero bounds; do not depend on
+`fill-rule="evenodd"` — build explicit visible geometry, bake an essential
+knockout, or on a fixed background use a background-colored overlay.
 
 **Reference — not a constraint**: use the fewest curve segments and control
 points that preserve the intended silhouette. Set endpoints and tangent
