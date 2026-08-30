@@ -86,7 +86,7 @@
     "slides": {
       "section": "content_outline",
       "heading_pattern": "^Slide[ \\t]+(?:[0-9]+|NN)\\b",
-      "required_fields": ["Audience move"]
+      "required_fields": ["Audience move", "Relationships"]
     }
   }
 }

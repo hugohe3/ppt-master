@@ -57,7 +57,8 @@ Notes:
 - `validate` parses the existing Markdown artifacts against
   `templates/schemas/design_spec.schema.json` and
   `templates/schemas/spec_lock.schema.json`. It reports missing sections and
-  fields, illegal enums, malformed page keys, and unmet conditional sections.
+  fields, including per-slide `Audience move` and `Relationships` lines,
+  illegal enums, malformed page keys, and unmet conditional sections.
   When optional custom reference lists are present, it also requires every id
   to resolve to the matching mode, visual-style, or image-rendering catalog,
   rejects duplicates, and rejects reference rows on non-custom selections;

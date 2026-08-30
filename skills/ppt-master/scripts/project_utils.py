@@ -342,6 +342,7 @@ def validate_communication_trace(
         return errors
 
     missing_moves = []
+    missing_relationships = []
     for index, slide_match in enumerate(slide_matches):
         block_end = (
             slide_matches[index + 1].start()
@@ -355,11 +356,23 @@ def validate_communication_trace(
             flags=re.IGNORECASE | re.MULTILINE,
         ) is None:
             missing_moves.append(slide_match.group(1))
+        if re.search(
+            r'^[ \t]*-[ \t]+(?:\*\*)?Relationships(?:\*\*)?[ \t]*:',
+            slide_block,
+            flags=re.IGNORECASE | re.MULTILINE,
+        ) is None:
+            missing_relationships.append(slide_match.group(1))
     if missing_moves:
         errors.append(
             'Communication trace: every design_spec.md §IX Slide block must '
             'contain an Audience move line; missing on Slide '
             f'{", ".join(missing_moves)}.',
+        )
+    if missing_relationships:
+        errors.append(
+            'Communication trace: every design_spec.md §IX Slide block must '
+            'contain a Relationships line; missing on Slide '
+            f'{", ".join(missing_relationships)}.',
         )
     return errors
 
