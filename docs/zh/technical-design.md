@@ -123,7 +123,7 @@ narration 标记。
 
 凡是通过 SVG 创作或重新设计页面的工作流，`svg_output/` 都是完整的页面设计权威，但这里的 SVG 专指项目合同接受的项目规范化 SVG，而不是任意浏览器可渲染的 SVG。最终幻灯片中应出现的文字、图片、形状、图示、图表 / 表格 fallback、背景和模板派生布局元素，都必须已经存在于对应页面 SVG 中，或被它明确引用。默认流程由模板、`design_spec.md` 和 `spec_lock.md` 指导 SVG 创作；`quick-generate` 则使用当前上下文决策和 SVG 中的显式值。导出器不能把规划输入当成第二层画面来源，在导出阶段补入 SVG 缺失的页面内容。
 
-始终必读的 core 还负责兜底视觉质量与数值行距默认值。显式用户要求、模板 / 品牌和已锁定风格可以覆盖相容的美学默认；这些上层权威未规定时，层级、字体、对齐、留白、有目的的素材使用以及按密度设置的行距范围仍然生效。Default 与 Quick Generate 始终加载 `svg-effects.md`，并在完成每页前运行 §6.1 职能诊断；Visual Job Router 是诊断结果的召回入口。任何美学选择都不能覆盖技术上的 Required / Forbidden 边界。
+始终必读的 core 还负责兜底视觉质量与数值行距默认值。显式用户要求、模板 / 品牌和已锁定风格可以覆盖相容的美学默认；这些上层权威未规定时，层级、字体、对齐、留白、有目的的素材使用以及按密度设置的行距范围仍然生效。Default 与 Quick Generate 在 executor-base 路由触发时加载 `svg-effects.md`(日常效果已内置在执行核心)，并在完成每页前运行 §6.1 职能诊断；Visual Job Router 是诊断结果的召回入口。任何美学选择都不能覆盖技术上的 Required / Forbidden 边界。
 
 最小语义标记不会削弱这条闭包。自由设计、仅 Brand/Style，以及 Default 的 `template_reuse_scope: style` 页面采用 flat 的 Slide 本地所有权：所有已表达对象保持在 Slide，不创作 Master/Layout 身份、分层或 placeholder metadata。Default flat 导出器根据当前配色/字体 lock 生成一个属于本项目的干净 Master 和一个 Blank Layout；Quick 的无锁 flat 导出使用转换器默认 theme 壳。两者都不会提升任何 Slide 内容。Default 的 `template_reuse_scope: mirror|layout`，以及安装了 Layout/Deck 结构所有者的 Quick，使用 structured 路线；每张新页面从第一版 SVG 起就声明 Master/Layout 身份。固定 Master/Layout 视觉是根节点直接原子元素；可复用内容槽位是顶层 group，带显式设计区域 bounds 和一个兼容 carrier；复合 `object` 区域走显式 proxy 降级，Layout 也允许零槽。`data-pptx-role` 只补充专用 metadata 尚未表达的少量页面框架、package 或动画行为。带旧结构语义的模板包不能原地升级，也不能作为 Step 3 的 structured 输入：先通过 `create-template` 创建新工作区；原生 PPTX 只提供包内仍然存在的事实，旧 SVG 只作为视觉参考；随后由 Generate PPTX 路线按照 AI 推导的应用计划创作新页面。flat 项目是有意不带 mapping，不算 legacy。导出器不推断、修补或迁移 Master/Layout 归属与 placeholder；Quick 只根据已经显式且全页完整的 SVG 合同判断使用 flat 还是 structured 打包。
 

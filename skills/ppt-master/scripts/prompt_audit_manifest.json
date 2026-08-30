@@ -1170,7 +1170,7 @@
       "max_tokens": 5000
     },
     "stage.shared.svg-effects": {
-      "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
+      "description": "Advanced SVG paint, effects, transforms, and geometry authority, loaded by Generate Executor contexts on the executor-base trigger (first visual job beyond the everyday block) and conditionally by other SVG-authoring routes.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/svg-effects.md"

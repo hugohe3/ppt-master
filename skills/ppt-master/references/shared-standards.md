@@ -5,7 +5,7 @@ Compatibility router for the split SVG specifications. Runtime routes load the c
 | Scope | Authority | Trigger |
 |---|---|---|
 | XML/SVG foundation, shared visual-quality defaults, page closure, grouping | [`shared-standards-core.md`](./shared-standards-core.md) | Always for SVG authoring |
-| Advanced effects and geometry | [`svg-effects.md`](./svg-effects.md) | Always for Default / Quick Generate; otherwise when the corresponding effect or geometry is used |
+| Advanced effects and geometry | [`svg-effects.md`](./svg-effects.md) | Default / Quick Generate on the executor-base routing trigger (first visual job beyond the everyday block); otherwise when the corresponding effect or geometry is used |
 | Preset patterns and native chart/table metadata | [`native-data-interface.md`](./native-data-interface.md) | Corresponding native-data interface is used |
 | Master/Layout/placeholder structure | [`pptx-structure-interface.md`](./pptx-structure-interface.md) | Default structured lock, or Quick installed Layout/Deck structured authoring |
 

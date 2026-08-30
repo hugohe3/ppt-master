@@ -107,13 +107,16 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 
 **Hard rule — capability knowledge precedes selection**: a role must know that
 a capability exists before choosing among capabilities; otherwise a load trigger
-circularly depends on a choice made without that capability. Every construction
-capability an ordinary deck may use — effects, native shapes and their complete
-preset vocabulary, relationship grammar, topology assembly — therefore stays in
-the always-read core of the authoring role. Only a capability that most decks
-never touch (formula, hyperlink, chart/table branches, structured templates,
-video, animation, web-image attribution) is loaded on its own observable
-trigger, and the core still names it in one menu row.
+circularly depends on a choice made without that capability. The always-read
+core of the authoring role therefore carries the recall of every construction
+capability — the everyday device menu and effects, the complete preset
+vocabulary, the Structure decision, and one routing row per deeper module —
+while the deeper module itself (effects beyond the everyday block, native-shape
+authoring, relationship grammar and topology assembly, and the rarer formula,
+hyperlink, chart/table, structured-template, video, animation, and web-image
+files) is loaded on its own observable trigger, read completely on first use,
+and kept for the run. The owning rule is
+[`prompt-layers.md`](prompt-layers.md) §2.
 
 **Hard rule — core volume ceiling**: the always-read core of an authoring role
 stays small enough that its own content is not diluted by what follows. Measured
