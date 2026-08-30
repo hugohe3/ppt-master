@@ -4,152 +4,60 @@ description: Shared post-processing stage for narration audio, PPTX embedding, P
 
 # Generate Audio Stage
 
-> Shared narration stage. Run after the owning route's notes step. Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice produce per-slide audio/SRT from synthesis timing. Qwen is audio-only because its TTS API exposes no timing. The caller owns final PPTX integration.
+> Shared narration stage, run after the owning route's notes step. Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice produce per-slide audio/SRT pairs; Qwen is audio-only because its API exposes no timing. The caller owns final PPTX integration. Context-independent: it reads `notes/*.md` and the selected voice catalog, chooses no route, and patches no slide design. Tool behavior, prerequisites, keys, and every flag are documented in [`narration.md`](../../scripts/docs/narration.md).
 
-This stage is **context-independent**: it reads `notes/*.md` and queries the selected TTS voice catalog, so either owning route may invoke it in a fresh session. It does not choose the top-level route and does not patch slide design.
+**Trigger**: Generate PPTX — the effective `Narration Audio` outcome in `design_spec.md` §I is `enabled` (a later explicit request first updates that outcome and provenance); Quick — the request or active-context decision selects narration; Edit Native PPTX — the confirmed plan enables narration.
 
-**Trigger**: In Generate PPTX, run when the effective `Narration Audio` outcome
-in `design_spec.md` §I is `enabled`; a later explicit request first updates that
-outcome and its provenance. Quick Generate instead runs when the request or
-current agent's active-context decision selects narration. In Edit Native
-PPTX, run when the confirmed plan enables narration.
-
-**Hard dependency — speaker notes**: Audio requires complete per-slide speaker
-notes. Generate PPTX additionally requires its effective `Speaker Notes`
-outcome to be enabled; Edit Native PPTX follows its confirmed plan, where
-narration requires a note for every output page. Quick records the same dependency
-in active context. Do not enter audio generation while the owning route's notes
-are missing or incomplete; generate and validate those notes first, then resume
-this stage.
+**Hard dependency — speaker notes**: audio requires complete per-slide notes: Generate additionally requires its effective `Speaker Notes` outcome enabled; Edit Native follows its confirmed plan (a note for every output page); Quick records the same dependency. Never enter audio generation with missing or incomplete notes — generate and validate them first. Missing notes recover through the owning route: Generate returns to its notes branch and runs `total_md_split.py <project_path>`; Edit Native returns to [`edit-native-pptx`](../edit-native-pptx.md) §6 and writes `notes/<svg-stem>.md` per output page; never run the Generate splitter on a round-trip workspace.
 
 ## When to Run
 
-- Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Edit Native PPTX, notes are `notes/<svg-stem>.md` keyed by output page; the round-trip roster comes from `page_plan.json` and copies inherit source notes.
-- Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
-- The stage is page-level only: one note becomes `audio/<stem>.<audio-ext>` plus `audio/<stem>.srt` on provider-timed paths, or one audio file with Qwen / explicit CosyVoice audio-only mode. Never substitute one long track or automatic splitting.
-- Final/literal script notes are synthesized verbatim. Source SRT timecodes are pacing evidence only; new provider timing owns the generated audio/SRT set.
-- SRT bound to an authoritative existing recording does not enter TTS. Recorded narration requires page-level audio or an explicit page/time map; automatic long-track splitting is unsupported.
-- A fully successful run writes a compact `audio/manifest.json` with only provider/model, audio/subtitle format, relevant voice settings, and a SHA-256 fingerprint instead of the raw cloud voice ID. It has no per-slide inventory, artifact hashes, or API keys and is not a normal generation input. The flat `audio/` directory is the single active narration set; do not create provider subdirectories unless the user explicitly asks to preserve multiple variants.
-- PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
-- PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
-- Optional automatic video export requires Windows PowerPoint 2016+ and runs
-  through `powerpoint_video.py`; the command waits for PowerPoint's native
-  encoder to finish before returning.
-- Optional slideshow capture is an explicit manual Windows PowerPoint handoff;
-  it is never an automatic fallback or project dependency.
-- macOS PowerPoint may export MP4/MOV manually, but it has no equivalent
-  `CreateVideo` automation contract and its movie export does not preserve
-  animation effects. Do not replace the missing API with UI scripting.
-- Optional post-export video calibration requires `ffmpeg` plus `numpy`; it runs only after a finished PowerPoint video is supplied or created.
-- Direct MP4 delivery with resolved transition/object-animation sound cues also
-  requires `ffmpeg` plus `numpy`. It renders an independent SFX stem, mixes it
-  after native PowerPoint export, and validates the actual mixed audio track.
-- High-quality cloud mode: provider API key is set before use:
-  - ElevenLabs: `ELEVENLABS_API_KEY`
-  - MiniMax: `MINIMAX_API_KEY`
-  - Qwen: `QWEN_API_KEY` or `DASHSCOPE_API_KEY`
-  - CosyVoice: `COSYVOICE_API_KEY` or `DASHSCOPE_API_KEY`
-  - Keys may live in the current process environment or the first `.env` found in this order: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`
-- The deck is in a single dominant language (mixed-language decks: pick the dominant one — the AI uses judgment, not a heuristic).
-
-If per-slide notes are missing, recover through the owning route. Generate
-PPTX returns to its enabled notes branch and then runs
-`total_md_split.py <project_path>`; Edit Native PPTX returns to
-[`edit-native-pptx`](../edit-native-pptx.md) §6 and writes `notes/<svg-stem>.md`
-per output page. Never run the Generate splitter against a round-trip workspace.
+- Per-page notes exist at `notes/*.md` — split from `notes/total.md` in Generate Step 7.1, or `notes/<svg-stem>.md` keyed by output page in Edit Native (roster from `page_plan.json`, copies inherit source notes).
+- The stage is page-level only: one note → one audio file (plus SRT on provider-timed paths). Never substitute one long track or automatic splitting; SRT bound to an authoritative existing recording does not enter TTS, and recorded narration requires page-level audio or an explicit page/time map.
+- Final/literal script notes are synthesized verbatim; source SRT timecodes are pacing evidence only.
+- The deck is in one dominant language (mixed decks: pick the one the audience hears most — judgment, not a heuristic).
+- Optional native video export runs only through `powerpoint_video.py` on Windows PowerPoint 2016+; slideshow capture is an explicit manual Windows handoff, never an automatic fallback; direct MP4 delivery with resolved sound cues additionally needs `ffmpeg` plus `numpy`.
 
 ---
 
 ## Step 1: Determine the deck's language
 
-The AI already knows the deck's language from writing the notes. No detection script needed.
-
-- Identify the primary language from the notes content: `zh` / `en` / `ja` / `ko` / etc.
-- For mixed-language decks (e.g. Chinese with English technical terms), pick the language the audience will hear most of.
-- For Chinese specifically: pick the locale based on context — `zh-CN` (mainland mandarin, default), `zh-TW` (Taiwanese mandarin), or `zh-HK` (Cantonese). Default Generate may ask when context is unclear; Quick chooses the best supported default and continues.
+The AI already knows it from writing the notes — no detection script. Identify `zh` / `en` / `ja` / `ko` / …; for Chinese choose `zh-CN` (default), `zh-TW`, or `zh-HK` from context — Default may ask when unclear, Quick chooses the best supported default.
 
 ---
 
 ## Step 2: Choose audio backend and pull the voice catalog
 
-Default to **edge** unless the user explicitly asks for a cloud provider / higher-quality cloud narration / a cloned voice.
-
-**edge backend**:
+Default to **edge** unless the user asks for a cloud provider, higher-quality cloud narration, or a cloned voice.
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice> --list-voices
 ```
 
-**ElevenLabs backend**:
-
-```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
-```
-
-**Cloud providers using explicit voice IDs/names**:
-
-```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
-```
-
-The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
-
-- **Cover both genders** when both exist for the locale.
-- **For edge**: prefer `COMMON_VOICES`-listed voices (curated set inside `notes_to_audio.py`) when the locale has them — they are battle-tested.
-- **For ElevenLabs**: prefer voices already present in the user's account; if the user provides a specific `voice_id`, do not override it.
-- **For MiniMax / Qwen / CosyVoice**: if the user provides a cloned `voice_id`, use it directly. Do not attempt voice cloning inside this narration stage.
-- **For CosyVoice subtitles**: use a cloned voice from a supported v3.5/v3/v2 model or a system voice marked timestamp-supported. Model and voice families must match. Use `--cosyvoice-audio-only` only when the user accepts no page-local SRT.
-- **Match the deck's tone** — pick the strongest recommendation based on style:
-  - Chinese consultant / data-driven / financial-report deck → a steady male voice (e.g. `zh-CN-YunjianNeural`) or a clear female voice (e.g. `zh-CN-XiaoxiaoNeural`)
-  - Chinese general / teaching / product-introduction deck → a bright female or young male voice (e.g. `zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`)
-  - Chinese launch event / broadcast deck → a broadcast-toned male voice (e.g. `zh-CN-YunyangNeural`)
-  - English consultant deck → `en-US-GuyNeural` (steady) or `en-US-JennyNeural` (clear)
-  - Japanese / Korean → pick from `ja-JP-*` / `ko-KR-*` neural voices, mark gender + tone
-
-For each candidate, write a **one-line description in the user's chat language** covering: gender · tone · best-fit scenario. For cloud providers, include the voice name/ID exactly as it must be passed to `--voice-id`.
+From the flat list, pick **3–6 candidates**: cover both genders when the locale has them; for edge prefer the curated `COMMON_VOICES` set; for ElevenLabs prefer voices already in the user's account and never override a user-supplied `voice_id`; for MiniMax / Qwen / CosyVoice use a supplied cloned `voice_id` directly and never attempt cloning here; for CosyVoice subtitles use a timestamp-capable model/voice pair, and `--cosyvoice-audio-only` only when the user accepts no page-local SRT. Match the deck's tone — a Chinese consultant / financial deck leans a steady male (`zh-CN-YunjianNeural`) or clear female (`zh-CN-XiaoxiaoNeural`) voice; teaching / product decks a bright female or young male (`zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`); launch / broadcast decks `zh-CN-YunyangNeural`; English consultant decks `en-US-GuyNeural` or `en-US-JennyNeural`; Japanese / Korean from `ja-JP-*` / `ko-KR-*` with gender + tone noted. Describe each candidate in one line in the user's chat language (gender · tone · best-fit scenario), with the exact name/ID to pass to `--voice-id` for cloud providers.
 
 ---
 
 ## Step 3: Resolve generation settings
 
-**Quick exception**: do not pause. Apply explicit user values, then resolve
-unspecified provider, voice, rate, and embed choices from the recommended-value
-rules below. Keep video off unless the caller selected direct video; then embed
-the narrated PPTX and continue to native video only when
-`powerpoint_video.py --check` succeeds. If final resolved motion contains sound
-cues, continue automatically through the post-export mix without another
-question. An explicit slideshow-capture request instead stops at the
-capture-ready narrated PPTX until the user supplies the recorded MP4; it never
-silently switches to native export. Require a timestamp-capable provider only
-when narration-cue sync or subtitle delivery needs page-local SRT; on the
-native-export branch, audio-only narration can still calibrate the sound mix
-from its complete per-page tracks.
+**Quick exception**: do not pause. Apply explicit user values, resolve the rest from the recommended-value rules, keep video off unless the caller selected direct video (then embed the narrated PPTX and continue to native video only when `powerpoint_video.py --check` succeeds); with resolved sound cues continue automatically through the post-export mix. An explicit slideshow-capture request stops at the capture-ready narrated PPTX until the user supplies the recorded MP4 — never silently switching to native export. Require a timestamp-capable provider only when cue sync or subtitle delivery needs page-local SRT.
 
-**Default / Edit Native — one-shot interaction (mandatory)**:
+**Default / Edit Native — one-shot interaction (mandatory)**: send one message that resolves all five decisions with a recommended value each; never split into rounds. Run `powerpoint_video.py --check` before offering automatic video export (an explicit slideshow-capture choice skips the check and uses the manual handoff). **Cloned-voice fast path**: when the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" with a `voice_id`, skip the recommendation list, pin the named provider and `voice_id`, and confirm only rate + embed + video. "Embed" means SVG re-export for Generate or `svg_to_pptx.py --roundtrip --recorded-narration audio` for Edit Native.
 
-For Default or Edit Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
-An explicit slideshow-capture choice does not run this availability check; it
-uses the manual Windows playback handoff below.
-
-**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the named provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) and pin that `voice_id`. Quick applies its exception above; Default and Edit Native confirm only rate + embed + video.
-
-**Message template** (Chinese; translate to user's chat language if different). “Embed” means caller-specific integration: SVG re-export for Generate PPTX, or `svg_to_pptx.py --roundtrip --recorded-narration audio` for Edit Native PPTX.
+**Message template** (Chinese; translate to the user's chat language):
 
 > 检测到 notes 主语言为 **<语言>**（locale: `<locale>`）。基于 deck 调性（<风格>），我推荐以下配置：
 >
-> **生成模式**：⭐ 推荐 `<edge|elevenlabs|minimax|qwen|cosyvoice>`（理由：<一句话，如"无需配置，稳定生成"或"用户要求高质量云端音色">）。
+> **生成模式**：⭐ 推荐 `<edge|elevenlabs|minimax|qwen|cosyvoice>`（理由：<一句话>）。
 >
 > **音色**：
 > - **[1] <ShortName>** — <性别·调性·适用场景> ⭐ **推荐**
 > - [2] <ShortName> — <性别·调性·适用场景>
 > - [3] <ShortName> — <性别·调性·适用场景>
-> - [4] <ShortName> — <性别·调性·适用场景>
-> - [5] <ShortName> — <性别·调性·适用场景>
 > - 也可直接输入清单中的其他 ShortName。
 >
-> **语速/风格参数**：⭐ 推荐 `<rate or provider defaults>`（理由：<一句话，如"页均 2–3 句，正常语速听感最稳"或"ElevenLabs 默认 voice settings 保留音色原始表现最稳">）。
+> **语速/风格参数**：⭐ 推荐 `<rate or provider defaults>`（理由：<一句话>）。
 >
 > **生成完是否重新导出嵌入音频的 PPTX**：⭐ 推荐 **是**（一次到位，自动按音频时长设页面停留）。
 >
@@ -157,293 +65,60 @@ uses the manual Windows playback handoff below.
 >
 > 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"或"用 MiniMax 的 voice_id xxx"）。
 
-**Recommended-value rules**:
-- **Generation mode**: default `edge`; follow the user's choice when they name a cloud provider / voice ID. Do not recommend Qwen when page-local SRT, subtitle animation, or video subtitles are needed; if the user insists, state that only audio is delivered and skip the SRT step.
-- **Voice**: pick the Step 2 candidate that fits the deck's tone best.
-- **Rate**: edge defaults to `+0%`; recommend `-5%` for dense notes (>4 long sentences per page) and `+5%` for short, tight notes; going outside this range needs a stated reason. Cloud providers keep provider defaults unless the user explicitly asks to change speed or style.
-- **Embed**: recommend yes by default, unless the user already has a customized PPTX they do not want overwritten.
-- **Video**: recommend native encoding when `powerpoint_video.py --check` succeeds; use slideshow capture only on an explicit user choice. When automation is unavailable, deliver the narrated PPTX; never silently switch to screen recording or a third-party renderer.
+**Recommended-value rules**: mode — `edge` by default, the user's named provider/voice otherwise; never recommend Qwen when page-local SRT, subtitle animation, or video subtitles are needed, and if the user insists state that only audio is delivered. Voice — the Step 2 candidate that best fits the tone. Rate — edge `+0%`; `-5%` for dense notes (>4 long sentences per page), `+5%` for short tight notes, anything beyond needs a stated reason; cloud providers keep defaults unless asked. Embed — yes unless the user has a customized PPTX they do not want overwritten. Video — native encoding when `--check` succeeds; slideshow capture only on explicit choice; when automation is unavailable, deliver the narrated PPTX and never switch to screen recording or a third-party renderer.
 
 ---
 
 ## Step 4: Execute (no further interaction)
 
-**Blocking notes preflight**: `notes_to_audio.py` resolves the complete notes
-roster from `svg_output/*.svg` on Generate projects or from `page_plan.json` /
-the identity roster on Edit Native PPTX round-trip workspaces (copies inherit
-source notes). Before any TTS request,
-every expected note must exist, be readable, and contain spoken text. Exit code
-`2` returns the caller to its notes-generation step; never continue with partial
-audio generation.
-
-Run sequentially — do NOT bundle:
+`notes_to_audio.py` runs a blocking notes preflight (every expected note exists, is readable, and contains spoken text); exit `2` returns the caller to notes generation — never continue with partial audio. Run sequentially, never bundled; if a dependency or API key is missing, fix it and re-run, never swallow the error.
 
 ```bash
-# 1A. Generate audio with edge (default)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
-  --voice <chosen-ShortName> --rate <chosen-rate>
+# 1. Generate audio (one provider form; flags in narration.md)
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice <ShortName> --rate <rate>
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider <elevenlabs|minimax|qwen|cosyvoice> --voice-id <id> [provider model flag]
 
-# 1B. Or generate audio/SRT pairs with ElevenLabs
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
-  --provider elevenlabs --voice-id <chosen-voice-id> \
-  --elevenlabs-model eleven_multilingual_v2
+# 2A. Only when narration-cue sync is selected and page SRT + animations.json exist
+python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> --narration-start-floor 0.8 --narration-padding 0.5 --force
 
-# 1C. Or generate audio with MiniMax
-# Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
-  --provider minimax --voice-id <chosen-voice-id> \
-  --minimax-model speech-2.8-hd
+# 2B. Re-export with audio embedded (Quick adds --quick-generate --with-notes; the native-export
+#     mix branch also passes --conversion-trace <final_narrated_trace>)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio --narration-start-floor 0.8 --narration-padding 0.5 --inherit-motion-from "<base_postflight_report>"
+#     narration-independent custom motion: add --animation-config animations.json; all-motion-off: --no-animations instead of --inherit-motion-from
 
-# 1D. Or generate audio only with Qwen TTS (the API returns no timestamps)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
-  --provider qwen --voice-id <chosen-voice> \
-  --qwen-model qwen3-tts-flash --qwen-language-type Chinese
+# 2C. Only when page-local SRT exists
+python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> --pptx <final_narrated_pptx> --force
 
-# 1E. Or generate audio/SRT pairs with a timestamp-capable CosyVoice voice
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
-  --provider cosyvoice --voice-id <chosen-voice> \
-  --cosyvoice-model cosyvoice-v3-flash
+# 2D. Optional native video through installed Windows PowerPoint
+python3 skills/ppt-master/scripts/powerpoint_video.py <final_narrated_pptx> -o <raw_powerpoint_video.mp4>
 
-# 2A. Only when narration-cue sync is selected and page SRT + animations.json
-#     exist, author or refresh narration_timing.json
-#     by matching SVG group semantics to SRT topics, then derive the narrated
-#     sidecar. Reuse current SVG semantics when complete; otherwise read only
-#     the missing or stale svg_output pages.
-python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
-  --narration-start-floor 0.8 --narration-padding 0.5 --force
+# 2E. Only when final resolved motion has sound cues and direct MP4 delivery is selected
+python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> --pptx <final_narrated_pptx> --trace <final_narrated_trace> --video <raw_powerpoint_video.mp4> -o <final_mixed_video.mp4> --stem-output <final_sfx_stem.wav> --report-output <sound_mix_report.json> --force
 
-# 2B. Re-export with audio embedded
-#     Use the base export's [REPORT] path to preserve source-bound deck motion.
-#     Quick Generate adds --quick-generate --with-notes to every re-export below.
-#     For the native-export mix branch when final motion has sound cues, also
-#     pass --conversion-trace <final_narrated_trace>. Explicit slideshow capture
-#     does not require that trace for sound delivery.
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --recorded-narration audio \
-  --narration-start-floor 0.8 --narration-padding 0.5 \
-  --inherit-motion-from "<base_postflight_report>"
-
-# Optional: use the canonical presentation animation instead
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --recorded-narration audio \
-  --narration-start-floor 0.8 --narration-padding 0.5 \
-  --animation-config animations.json \
-  --inherit-motion-from "<base_postflight_report>"
-
-# Optional: export narration with no object or page-transition animation
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --recorded-narration audio \
-  --narration-start-floor 0.8 --narration-padding 0.5 \
-  --no-animations
-
-# 2C. Only when page-local SRT exists, merge it against timing values read
-#     from the final PPTX
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
-  --pptx <final_narrated_pptx> --force
-
-# 2D. Optional: export the raw video through installed Windows PowerPoint
-#     and wait for completion
-python3 skills/ppt-master/scripts/powerpoint_video.py \
-  <final_narrated_pptx> -o <raw_powerpoint_video.mp4>
-
-# 2E. Only when final resolved motion has sound cues and direct MP4 delivery is
-#     selected, derive the exact embedded sounds from the final narrated PPTX,
-#     calibrate cue times against raw video narration, and publish the verified
-#     SFX stem, mixed MP4, and report. Defaults are about 35% for transitions,
-#     25% for object cues, and a -1 dBFS limiter.
-python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> \
-  --pptx <final_narrated_pptx> \
-  --trace <final_narrated_trace> \
-  --video <raw_powerpoint_video.mp4> \
-  -o <final_mixed_video.mp4> \
-  --stem-output <final_sfx_stem.wav> \
-  --report-output <sound_mix_report.json> --force
-
-# 2F. Only when page-local SRT exists, align the frozen narration text against
-#     the final delivery video: mixed when 2E ran, captured when the explicit
-#     slideshow-capture handoff returned an MP4, otherwise the raw video.
-python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
-  --video <final_delivery_video.mp4> --language <language> --force
+# 2F. Only when page-local SRT exists: align against the final delivery video (mixed, captured, or raw)
+python3 skills/ppt-master/scripts/video_subtitles.py <project_path> --video <final_delivery_video.mp4> --language <language> --force
 ```
 
-**Explicit slideshow capture**: desktop Windows PowerPoint plays the final
-narrated PPTX full-screen from the beginning with automatic, click-free timing;
-capture only the deck frame and one application/system-audio source, with mic,
-UI, pointer, and notifications absent. Trim short head/tail handles. Human-check
-streams, narration, every cue once, complete motion, and no dropped frames. The
-capture has no machine cue receipt and must never enter `video_sound_mix.py`.
-If the host cannot capture, report only the capture-ready PPTX handoff. Align
-page SRT against an accepted capture and append one compact `workflow_log.py`
-note.
+**Mandatory when narration-cue sync is selected — semantic animation context**: before writing or refreshing `narration_timing.json`, confirm the active context holds the current top-level SVG group IDs and visible group-content semantics for every affected page; reuse it without rereading when complete and still matching `svg_output/`, otherwise read only the missing or stale pages read-only. Combine those semantics with the page SRT topics/timestamps and `animations.json` — group order alone is not a semantic mapping, and the positional fallback's warning is required repair. Preserve the title reveal decision from the custom-animation pass: assign a title group a `cue` only when the user or the motion plan explicitly chose `narration-cued`; never infer it because notes mention the title.
 
-**Default — bounded Edge concurrency (may override)**: Generate up to three
-slide-level audio/SRT pairs concurrently. Use `--concurrency <N>` to tune the
-Edge path or `--concurrency 1` for serial troubleshooting. Cloud providers
-remain serial.
-
-If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
-
-The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. SRT cues use the service's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-visible-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary. Override the limit with `--subtitle-max-chars`. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails instead of silently distorting timing. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue.
-
-MiniMax reads word timing from its synchronous subtitle file. ElevenLabs uses `/with-timestamps` and original-text character alignment. CosyVoice enables HTTP streaming plus `word_timestamp_enabled`, then uses the final audio URL and word timing from that synthesis; unsupported model/voice pairs fail without replacing the prior pair unless `--cosyvoice-audio-only` was explicit. Qwen exposes no timing, so it remains audio-only and this stage never estimates SRT timing.
-
-Provider-timed paths share punctuation-first, `--subtitle-max-chars`-bounded regrouping, exact-text validation, and rollback-safe pair publication. See [`docs/audio-narration.md`](../../../../docs/audio-narration.md) for current model and audio-parameter recommendations.
-
-Before generation starts, `notes_to_audio.py` removes stale `audio/manifest.json` and `audio/total.srt`; an incomplete run therefore cannot claim the previous set's provenance or merged timeline. A successful audio-only provider run also removes same-stem stale SRT files. The new manifest is published atomically only after the complete page roster succeeds.
-
-**Mandatory when narration-cue sync is selected — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
-
-> Narration-cue sync with `animations.json` requires `narration_timing.json`.
-> Narration-independent custom motion instead passes `--animation-config animations.json`
-> and makes no object-sync claim. Explicit `--no-animations`
-> bypasses both. Without a timing sidecar, `narration_sync.py animations` maps
-> groups **positionally** (group N → cue N) and warns when later objects may
-> reveal during an earlier topic. Treat that warning as required repair: author
-> the semantic plan and re-derive.
-
-**Narration animation ownership**: When narration-cue sync is selected, `animations.json` remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group—not each effect row—to the SRT cue that speaks about that content. For `effects[]`, the cue anchors the group's first active row; later rows keep global order and their relative delay. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
-
-**Title timing handoff when canonical animation exists**: preserve the title reveal decision already made by the custom-animation pass. Assign a title group to an SRT cue only when the user's request or the active motion plan explicitly chose `narration-cued`; otherwise leave its `cue` omitted in `narration_timing.json` so it keeps the canonical relative delay from `animations.json`. Do not infer `narration-cued` merely because speaker notes mention the title.
-
-**Narrated export animation selection**:
-
-| Sidecar state | Behavior |
+| Sidecar state | Narrated export |
 |---|---|
-| `narration_animations.json` exists and narration-cue sync is selected | Use it |
-| Only canonical `animations.json` exists and narration-cue sync is selected | Block until narration synchronization creates the derived sidecar |
-| Canonical `animations.json` exists and motion is narration-independent, whether or not a derived sidecar also exists | Pass `--animation-config animations.json`; do not claim object sync |
-| Both are absent | Create no sidecar; inherit the base report's deck motion |
+| `narration_animations.json` exists and cue sync is selected | Use it |
+| Only canonical `animations.json` exists and cue sync is selected | Block until synchronization creates the derived sidecar |
+| Canonical `animations.json` exists and motion is narration-independent | `--animation-config animations.json`; claim no object sync |
+| Both absent | No sidecar; inherit the base report's deck motion |
 
-Generate passes the base report through `--inherit-motion-from`: inherited
-`-a none` preserves explicit objects-off, while final Stage-2 `false` does not.
-Only explicit all-motion-off uses `--no-animations`. Invalid reports block;
-page-start lead-in, audio duration, and page-tail padding own final advance.
+Pacing defaults are `narration_start_floor=0.8` s and `narration_padding=0.5` s without a confirmation question unless the user supplies values. For Qwen or explicit CosyVoice audio-only mode, embed/export normally but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and final-video subtitle alignment; pass canonical narration-independent motion explicitly when present; a native-export sound mix may still run from page audio. Never present missing subtitle artifacts or object sync as generated.
 
-**Narration pacing controls**: page-front and page-tail timing are independent,
-optional parameters. Unless the user supplies values, use
-`narration_start_floor=0.8` seconds and `narration_padding=0.5` seconds without
-adding a confirmation question. For a destination-page transition of `T`
-seconds, the post-transition lead-in is
-`max(0, narration_start_floor - T)`: narration never begins during the
-transition, while a longer transition is not stretched. Apply the same
-lead-in to embedded narration, cue-bound object animation, subtitle offsets,
-and slide advance. Uncued title or decorative animation keeps its canonical
-relative timing. Setting the start floor to `0` means narration begins as soon
-as the transition completes; it does not bypass the transition.
-
-When canonical custom animation is synchronized,
-`<project_path>/narration_timing.json` is the explicit semantic mapping for
-narrated object animation. It is fingerprinted to the ordered SRT set; `cue`
-is the 1-based subtitle cue, and omitted `cue` keeps that group's canonical
-relative delay. Reuse a complete current mapping when its fingerprint and SVG
-group semantics remain valid; rebuild only affected pages when either input
-changed.
-
-Get the exact fingerprint value with:
-
-```bash
-python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
-```
-
-```json
-{
-  "version": 1,
-  "srt_sha256": "<sha256 of the ordered page-local SRT set>",
-  "narration_start_floor": 0.8,
-  "narration_padding": 0.5,
-  "slides": {
-    "01_title": {
-      "groups": [
-        { "id": "page-title", "cue": 1 },
-        { "id": "supporting-visual" }
-      ]
-    }
-  }
-}
-```
-
-`narration_sync.py subtitles` may still write `<project_path>/audio/total.srt` as a PPTX-timeline diagnostic. It is not the delivery subtitle for a finished video.
-
-When video export was selected, `powerpoint_video.py` opens the final narrated
-PPTX through local Windows PowerPoint, requests its native video encoder with
-recorded timings and narrations enabled, and polls `CreateVideoStatus` until the
-MP4 succeeds, fails, or times out. The interface is synchronous to its caller
-even though PowerPoint performs encoding asynchronously. It preserves the
-native visual-animation and narration path rather than re-rendering the deck,
-but does not reliably write transition or object-animation sounds into the MP4
-audio track. This is the default automated video path; an explicitly selected
-slideshow capture bypasses `CreateVideo` but still uses desktop PowerPoint as
-the real-time renderer and audio player.
-
-If native video export fails, keep the narrated PPTX as a successful upstream
-artifact and report the video failure separately. Do not regenerate audio or
-the PPTX unless their own validation failed.
-
-On the native-export path, when the final narrated trace and PPTX contain sound
-cues, treat the PowerPoint MP4 as a raw intermediate. `video_sound_mix.py`
-cross-checks that trace against the final PPTX read-back, extracts the exact
-embedded sound relationships, calibrates every page against the raw video's
-narration, renders a float SFX stem, and mixes it with narration at unity gain.
-Transition cues default to about 35%, object cues to about 25%; `amix`
-normalization and ducking remain off, and a -1 dBFS peak limiter follows the
-mix. The receipt must prove a non-silent stem, preserved video-stream hash,
-changed and present final audio, duration parity, non-clipping true peak, and
-correlation between the added final-audio component and the stem. A valid
-`animations.json` or OOXML package alone is not MP4 audio acceptance.
-
-After the final delivery MP4 exists, `video_subtitles.py` takes the exact
-narration text frozen in the page SRT set and force-aligns it against that
-finished video's actual audio track with `stable-ts`. Use the mixed MP4 when
-sound mixing ran, the accepted capture when slideshow recording ran, otherwise
-the raw PowerPoint MP4. Long delivery cues may be split for display at this
-final stage. This writes a same-stem external SRT without changing the MP4,
-notes, page SRT, or animation files.
-
-This stage keeps subtitles as external SRT files and never burns them in.
-Automatic export is an optional Windows PowerPoint integration. When it is
-unavailable, stop after the narrated PPTX unless explicit capture is selected;
-that handoff remains incomplete until a real capture is accepted.
-
-**Caller integration**:
+**Explicit slideshow capture**: desktop Windows PowerPoint plays the final narrated PPTX full-screen from the beginning with automatic timing; capture only the deck frame and one application/system-audio source with mic, UI, pointer, and notifications absent; trim short head/tail handles; human-check streams, narration, every cue once, complete motion, and no dropped frames. The capture has no machine cue receipt and never enters `video_sound_mix.py`. If the host cannot capture, report only the capture-ready PPTX handoff; align page SRT against an accepted capture and append one compact `workflow_log.py` note. If native video export fails, keep the narrated PPTX as the successful upstream artifact and report the video failure separately. Subtitles stay external SRT and are never burned in.
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | Derive narration-cued motion when selected; otherwise pass canonical motion, inherit base motion, or use explicit all-motion-off. Export with `--recorded-narration audio`; Quick also passes `--quick-generate --with-notes`. Native video uses conversion trace plus raw export and cue mix as required. Explicit capture returns the narrated PPTX for the handoff above, skips trace-only sound work and mixing, then aligns subtitles against the accepted capture. |
-| Edit Native PPTX | Return to [`edit-native-pptx`](../edit-native-pptx.md) §7 and export with `--roundtrip --recorded-narration audio --use-narration-timings`. Native video passes its final PPTX to `powerpoint_video.py`; explicit capture uses the same handoff above and skips mixing. |
-
-For Qwen or explicit CosyVoice audio-only mode, embed/export the audio normally
-but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and
-final-video subtitle alignment. Pass canonical narration-independent custom
-motion explicitly when present. On the native-export branch, a direct-MP4 sound
-mix may still run because page audio, not SRT, supplies its correlation
-template. Never present missing subtitle artifacts or object sync as generated.
-
-For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using page-start lead-in plus audio duration plus page-tail padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
-
-**Narrated SVG export**: use the default text-flow mode. It keeps authored line breaks in one editable, no-wrap text frame; narration does not require per-line text frames.
+| Generate PPTX | Derive narration-cued motion when selected; otherwise pass canonical motion, inherit base motion, or use explicit all-motion-off. Export with `--recorded-narration audio` (Quick also `--quick-generate --with-notes`). Native video uses conversion trace plus raw export and cue mix as required; explicit capture returns the narrated PPTX for the handoff, skips trace-only sound work and mixing, then aligns subtitles against the accepted capture |
+| Edit Native PPTX | Return to [`edit-native-pptx`](../edit-native-pptx.md) §7 and export with `--roundtrip --recorded-narration audio --use-narration-timings`; native video passes the final PPTX to `powerpoint_video.py`; explicit capture uses the same handoff and skips mixing |
 
 ---
 
 ## Step 5: Completion report
 
-Output one summary block listing:
-
-- Number of audio files generated and their location (`<project_path>/audio/*`).
-- For provider-timed subtitles, number of matching page-local SRT files and their location (`<project_path>/audio/*`); for Qwen or explicit CosyVoice audio-only mode, report that no page-local SRT was generated.
-- Narration provider/model plus the `<project_path>/audio/manifest.json` provenance path.
-- For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
-- For Generate PPTX, report derived narration animation coverage/path when cue sync ran, the canonical config path for narration-independent custom motion, or inherited/all-motion-off state.
-- When native video export was selected, the raw PowerPoint MP4 path/status.
-  When resolved cues triggered sound mixing, also report the final mixed MP4,
-  SFX stem, cue count, and `video_sound_mix.py` receipt; otherwise identify the
-  raw MP4 as final.
-- For slideshow capture, report the capture-ready PPTX handoff or accepted MP4
-  plus system-audio and human picture/narration/all-cue status; never report a
-  mix receipt.
-- When page-local SRT was merged, the PPTX-timeline `audio/total.srt` path.
-- When final-video subtitle alignment ran, the aligned delivery SRT path and
-  whether its source was the mixed, captured, or raw final video;
-  otherwise do not claim a video-aligned subtitle.
-- The provider, voice, and rate/settings actually used.
-- The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
-- For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+One summary block: audio file count and location (`<project_path>/audio/*`); page-local SRT count and location, or "no page-local SRT" for Qwen / CosyVoice audio-only; provider/model plus the `audio/manifest.json` path; for narrated object animation, whether SVG semantics were reused or which pages were reread, plus mapping coverage and fallback count; for Generate, the derived narration animation coverage/path, the canonical config path for narration-independent motion, or the inherited/all-motion-off state; the raw PowerPoint MP4 path/status when native export was selected, and with sound mixing the final mixed MP4, SFX stem, cue count, and `video_sound_mix.py` receipt (otherwise the raw MP4 is final); for slideshow capture, the capture-ready PPTX handoff or accepted MP4 plus system-audio and human picture/narration/all-cue status, never a mix receipt; the PPTX-timeline `audio/total.srt` path when merged; the aligned delivery SRT path and its source video when alignment ran; provider, voice, and rate/settings used; the caller-owned integration result (narrated export path, enhanced native PPTX path, or "audio only"); and, when Generate embedding was skipped, the one-line hint `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.

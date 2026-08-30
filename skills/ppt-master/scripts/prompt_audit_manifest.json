@@ -60,7 +60,8 @@
     "skills/ppt-master/workflows/stages/live-preview.md": 1000,
     "skills/ppt-master/workflows/stages/web-image-review.md": 750,
     "skills/ppt-master/references/visual-review.md": 3500,
-    "skills/ppt-master/workflows/stages/visual-review.md": 1750
+    "skills/ppt-master/workflows/stages/visual-review.md": 1750,
+    "skills/ppt-master/workflows/stages/generate-audio.md": 4000
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -2309,6 +2310,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/svg_editor.md",
         "reason": "Browser editor behavior and lifecycle reference; the live-preview stage carries the launch and annotation procedure."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/narration.md",
+        "reason": "Narration tool behavior and flag reference; the generate-audio stage carries the procedure and confirmation contract."
       }
     ]
   }
