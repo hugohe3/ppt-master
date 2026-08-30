@@ -2,7 +2,7 @@
 
 # SVG Effects and Geometry Specification
 
-Authority for advanced paint, effects, transforms, freeform/radial geometry, and constructed visual styles. Default and Quick Generate load it before SVG authoring; other SVG-authoring routes follow their workflow trigger. It keeps the form the model writes and the design decisions behind each technique; the complete grammar the checker and exporter enforce for every section is in [`svg-contract.md`](../scripts/docs/svg-contract.md) Part II, section for section.
+Authority for advanced paint, effects, transforms, freeform/radial geometry, and constructed visual styles. Default and Quick Generate load it before SVG authoring; other SVG-authoring routes follow their workflow trigger. It keeps the form the model writes and the design decisions behind each technique; the complete grammar the checker and exporter enforce for §6.2–§6.10 is in [`svg-contract.md`](../scripts/docs/svg-contract.md) Part II under the same section numbers; §6.1 and §6.11–§6.13 are design guidance with no separate contract.
 
 **Cross-reference map**: unqualified §1, §2, and §4 references point to [`shared-standards-core.md`](./shared-standards-core.md); §6 references are local to this file.
 
@@ -318,8 +318,10 @@ Generated text uses only the canonical values: `font-weight` `normal` / `bold`
 `<text>` or above, `text-decoration` `underline` / `line-through` / both,
 direct `baseline-shift="super|sub"` on `<tspan>`, and unitless-px
 `letter-spacing` and `font-size`. Inheritable text declarations belong only on
-`<svg>`, `<g>`, `<text>`, or `<tspan>`; `xml:space="preserve"` on `<text>` /
-`<tspan>` is the one whitespace control. Every other `font-*` / `text-*`
+`<svg>`, `<g>`, `<text>`, or `<tspan>`; `xml:space` (`default` or `preserve`) on
+`<text>` / `<tspan>` is the one whitespace control — it inherits through the
+text tree and may be reset on a child `<tspan>`, so one frame can mix
+collapsed and preserved runs. Every other `font-*` / `text-*`
 property has no native mapping and is an error.
 
 | Treatment | SVG surface | Result / boundary |
@@ -475,6 +477,9 @@ radii, start, and sweep flags.
 **Sunburst — `Approximate`**: one explicit annular sector per node; each depth
 owns one radius band and child angular intervals partition the parent. Do not
 use one `evenodd` compound ring.
+
+A thin circle with a §6.6 preset or two-number dash stays a `Native-normalized`
+ellipse line; the shorthand below is for thick ring segments only.
 
 **Thick-circle shorthand — `Approximate`, non-position-sensitive only**: one
 `fill="none"` circle per segment with a two-value `dash gap` covering the
