@@ -503,35 +503,14 @@ Prepare only the resource paths needed by the decided pages:
 
 **Quick exhausted-automation no-AI replan**: Follow [`image-generator.md`](../../references/image-generator.md) §7 when an automated AI path or its required dependent slicing is exhausted: ask no path question, enter no manual fallback, remove the affected AI jobs and stale manifest entries, preserve their communication content with native editable text/SVG or already prepared non-AI assets, and continue the same run. An explicitly selected `manual` path remains subject to the file-readiness gate. To retain AI imagery after automated failure, repair the generation capability and start a new Quick run.
 
-**Image inspection boundary**: acquisition-time suitability review follows the
-owning AI/web/slice reference. Once resources reach terminal status, SVG
-authoring follows `executor-image.md`'s narrow placement inspection: inspect only
-one specifically ambiguous `Existing`/`Sourced` asset and never routinely reopen
-`Generated` outputs. Image to PPTX is the narrow fidelity exception: inspect
-every normalized page once for its inventory, inspect every generated
-reconstruction layer or shared plate once, and inspect the final recomposition
-against the canonical frame. Reopen only the current page or one unresolved
-region after that required comparison.
+**Image inspection boundary**: acquisition-time suitability review follows the owning AI/web/slice reference; SVG authoring inspects only one specifically ambiguous `Existing`/`Sourced` asset under `executor-image.md` and never routinely reopens `Generated` outputs. Image to PPTX is the fidelity exception: inspect every normalized page and generated layer once, then the final recomposition against the canonical frame.
 
 After image resources change, run `analyze_images.py` so
 `analysis/image_analysis.csv` reflects the files that SVG authoring will use.
 Operational manifests and provenance are resource truth, not a hidden design
 strategy.
 
-Every required file-backed resource must reach a usable terminal state before
-its page. Web `Needs-Selection` blocks until one thumbnail is promoted or the
-bounded ranked pages and materially different query variants are exhausted;
-only then may a vision-capable owner fetch one adopted-page source package,
-review its companion images, and promote only accepted files; never auto-expand
-facts URLs or use those packages as the initial pool.
-`Needs-Manual` blocks even when an unverified file exists. With no visual
-capability, only the strict metadata-ranked web path may reach `Sourced`, and
-its provenance must say `selection_method: metadata-ranked` rather than imply
-visual confirmation. After selection or manual supply/replacement, validate
-evidence and reconcile to `Existing`, `Generated`, or `Sourced`; never bypass
-status by preview/file presence or substitute unrelated material. Native
-formula markers are authored page content, not file-backed resources or
-terminal-status rows.
+Every required file-backed resource reaches a usable terminal state (`Existing`, `Generated`, or `Sourced` under [`svg-image-embedding.md`](../../references/svg-image-embedding.md)) before its page. Web `Needs-Selection` blocks until one thumbnail is promoted or the bounded ranked pages and materially different query variants are exhausted; only then may a vision-capable owner fetch one adopted-page source package and promote accepted files. `Needs-Manual` blocks even when an unverified file exists; without vision, only the strict metadata-ranked web path may reach `Sourced`, and its provenance says so. Never bypass status by preview or file presence, and never substitute unrelated material. Native formula markers are authored page content, not file-backed resources.
 
 ---
 
@@ -565,14 +544,7 @@ and [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 `Status: Sourced` image or filename recorded in `image_sources.json`.
 Reread only after a known file change or context invalidation.
 
-`executor-structure.md` is loaded once before all SVG authoring so every
-`Structure=yes` result can resolve its qualitative topology.
-`topology-assembly.md` supplies assembly and relative-registration material for
-that resolved topology; `native-shape-authoring.md` owns the two-step assembly
-gate, contour selection, and compound page geometry for both Structure results.
-Reuse all three throughout the valid execution context; before P01, read the
-complete preset vocabulary once, then reread only after a known file change or
-context invalidation.
+`executor-structure.md`, `topology-assembly.md`, and `native-shape-authoring.md` are read once before all SVG authoring and reused for every page; read the complete preset vocabulary before P01, and reread any of them only after a known file change or context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
 or more images, after its content and communication move are
@@ -602,48 +574,9 @@ reconstructed asset, and use the active-context registered layer/plate stack
 for scene imagery. Run either ordinary decision only for additional non-source
 content whose placement or geometry is not already fixed by that surface.
 
-**Mandatory — per-page Structure decision**: after the current page's content
-and communication move are determined, but before choosing any geometry or
-shape, decide whether geometry must carry qualitative `order`, `link`, `parent`,
-`membership`, `contrast`, or `overlap`. Keep the yes/no result and, when yes,
-the relationship meaning and reading path in active context only; create no
-artifact, spec, lock, manifest, or extra pass.
+**Mandatory — per-page Structure decision and geometry move**: after the current page's content and communication move are determined but before any geometry, decide whether geometry must carry qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` ([`executor-base.md`](../../references/executor-base.md) §2.1); `no` stays on the shared base path, `yes` applies the Shape Composition Grammar and its topology assembly. Then apply [`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1 to the transient geometry job, actual content, retained deck shape language, resolved style, and complete loaded native vocabulary before writing coordinates; use `describe --compact` only when objective geometry facts could change a serious candidate. A primitive remains valid when it wins that comparison; there is no preset quota. Keep both decisions in active context only — no artifact, lock, manifest, or extra pass — and never let the capability menu, visualization recall, or template geometry stand in for them.
 
-- `no` → use Quick's shared base authoring path in this section.
-- `yes` → apply the already-loaded Shape Composition Grammar before drawing.
-
-This decision is mandatory on every page and cannot be satisfied by the
-capability menu, visualization recall, template geometry, or a later check.
-
-**Mandatory — independent per-page geometry move**: after the Structure result
-and any applicable topology resolve, apply
-[`native-shape-authoring.md`](../../references/native-shape-authoring.md) §2.1
-to the transient geometry job, actual content, retained deck shape language,
-resolved style, and complete loaded native vocabulary before writing
-coordinates. Select through direct semantic comparison; use `describe --compact` only when objective geometry
-facts could change a serious candidate decision. This move owns the exact-fit
-geometry gate, independent relationship / carrier fit,
-contour-family / exact-result choice, reader effect for a generic or undrawn
-result, running actual-geometry signature, and materialization boundary. A
-primitive remains valid when it wins this comparison; there is no preset quota.
-Apply the move to both `no` and `yes`; keep the current decision in active
-context and never change the Structure result.
-
-| Deterministic trigger | Additional authority |
-|---|---|
-| A selected primary Chart/Table `family/key` | [`executor-visualization.md`](../../references/executor-visualization.md), then the matching Chart/Table authority |
-| Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
-| Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
-| Any mathematical notation that may require native math | [`native-formula.md`](../../references/native-formula.md) before choosing ordinary text, inline native math, or block native math |
-| Any external or same-deck click hyperlink | [`native-hyperlinks.md`](../../references/native-hyperlinks.md) before authoring its inline or whole-object SVG anchor |
-| A used preset pattern fill, or one independent Chart/Table object resolved as `<object-key>=yes` in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
-| Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
-
-Chart/Table reference and final information model are independent loading
-signals; load every applicable authority. Selection never makes an object
-native-ready or replaces the per-page Structure decision.
-
-Keep the core's shared visual-quality / leading defaults active while authoring, with `svg-effects.md` §6.1's Visual Job Router as recall. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery. Treat selected style composition examples as generative vocabulary rather than a finite layout menu.
+Conditional authorities load on the triggers in `executor-base.md`'s routing table (Chart/Table branches, native data, formula, hyperlink); Quick additionally runs [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker whenever any data-driven chart geometry exists. Chart/Table reference and final information model are independent loading signals; selection never makes an object native-ready or replaces the Structure decision. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries, carrier eligibility, or native capability discovery.
 
 **Per-page execution anchors**: apply the transient core-message, typography-role, semantic-color, body-frame, density, and composition anchors resolved in §2 while authoring; they guide the current run without creating a persisted planning artifact.
 
@@ -820,28 +753,13 @@ or lock.
 ```markdown
 ## ✅ Quick Generate Complete
 
-- [x] All required source/resource preparation is complete
-- [x] The fixed planning-capability batch was read before the roster, and every selected detail source was read
-- [x] The complete 187-name native preset vocabulary was read before P01; each page chose from that full capability surface, with objective candidate details inspected only when needed
-- [x] Every page considered suitable carrier combinations without a coverage quota or single-carrier assumption
-- [x] The proactive decorative-lettering capability scan ran before carrier selection; every selected lettering job entered an AI item or lettering sheet/slice job, and zero selected jobs remained valid
-- [x] The deck shape language remained active independently of any optional motif; every page not bound to literal supplied geometry carried its geometry job into authoring, resolved each drawn contour from its exact family and job, retained the reader effect for any generic or undrawn result, and compared its actual geometry signature before the next page; repetition served the same page job / relationship or continuity motif
-- [x] Image need was decided independently of credentials; any zero-image deck followed a complete roster review in which no image job improved communication or the selected non-image carriers fully carried it
-- [x] Every `slice_names` output exists after an exit-0 strict-alpha run, and no page whose chosen composition depends on a slice was authored or exported without it
-- [x] Every image-bearing page made its one pre-geometry composition decision
-- [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
-- [x] Every exhausted automated AI job was replanned under the declared no-AI rule, with its filename, attempted path, concrete error, and replacement carrier retained for final disclosure; N/A when no such replan occurred
-- [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
-- [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
-- [x] Resolved SVG pages and their project-local references exist
-- [x] The frozen Template Application paragraph was applied; every installed Layout/Deck SVG was read, and any page-specific exception names an exact SVG basename
-- [x] Quick structure matches the installed template capability: free/Brand/Style-only pages are flat, while a Layout/Deck structure owner remains explicit and all-page consistent unless the user explicitly requested visual-only use
-- [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
-- [x] Every triggered capability-specific preparation and pre-checker verification completed
-- [x] The current final report's carrier receipt was compared with the retained page jobs and any factual contradiction was repaired before export, without treating counts as quotas
-- [x] The lockless final SVG quality report passes and matches the current SVGs
+- [x] Source/resource preparation complete; the fixed planning-capability batch and every selected detail source were read before the roster
+- [x] The complete preset vocabulary was read before P01; each page resolved its Structure decision, geometry move, and carrier mix without a coverage quota, and compared its geometry signature before the next page
+- [x] Image need was decided independently of credentials; every image decided its own source, every `slice_names` output exists after an exit-0 strict-alpha run, and every exhausted AI job was replanned under the no-AI rule with its disclosure retained
+- [x] Every selected formula and hyperlink uses its checker-valid native form
+- [x] The frozen Template Application paragraph was applied, every installed Layout/Deck SVG was read, and Quick structure matches the installed capability (flat vs explicit all-page structured)
+- [x] The carrier receipt was compared with the retained page jobs and any factual contradiction repaired; the lockless final report passes and matches the current SVGs
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
-- [x] One native PPTX exists under `exports/` or the explicit output path
-- [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used. For every no-AI replan, report the affected AI job, attempted path, concrete error, replacement carrier, and that retaining AI imagery requires repairing generation capability and starting a new Quick run
+- [x] One native PPTX exists under `exports/` or the explicit output path; no Strategist, confirmation, root Design Spec, or lock artifact was created
+- [ ] **Next**: Report the base PPTX and any narrated PPTX, MP4, or capture-ready handoff, plus the resolved mode, visual style, and image sources actually used; for every no-AI replan, report the affected job, attempted path, concrete error, replacement carrier, and that retaining AI imagery requires repairing generation capability and a new Quick run
 ```
