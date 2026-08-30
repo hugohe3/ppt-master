@@ -57,7 +57,7 @@ python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
 | Job | State what the object must do for the reader before naming a shape | Page role plus any real relationship, direction, aspect, text load, or literal scope |
 | Browse | Compare that job against the complete vocabulary: category → family → exact name | A small candidate set chosen by meaning |
 | Inspect | `describe --compact` only when exact facts could change the decision | Objective geometry evidence |
-| Select | The contour whose inference and character fit the page — a neutral primitive when neutrality is useful | One contour; no syntax yet |
+| Select | The contour whose inference and character fit the page | One contour; no syntax yet |
 | Encode | §1's materialization gate | Primitive, helper preset, Boolean result, or necessary freeform |
 
 **Hard rule — semantic fit, not name association**: a preset name, topic word, or metaphor is not evidence of use; respect `literal_only` and `scope`. A scroll is not a generic playbook carrier, a lightning bolt is not price tension, `chartX` / `chartStar` / `chartPlus` are partition symbols not charts, a flowchart symbol belongs only in an actual flowchart, an `actionButton*` creates no action or link, and logos, icon glyphs, illustrations, brand contours, and data marks are never presets. The vocabulary exposes contours; Executor chooses them; §1 chooses syntax. Export never scans or upgrades existing geometry.
