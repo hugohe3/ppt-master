@@ -49,7 +49,12 @@
     "skills/ppt-master/references/native-formula.md": 1500,
     "skills/ppt-master/references/semantic-svg.md": 1500,
     "skills/ppt-master/references/native-hyperlinks.md": 1250,
-    "skills/ppt-master/references/canvas-formats.md": 1250
+    "skills/ppt-master/references/canvas-formats.md": 1250,
+    "skills/ppt-master/workflows/routing.md": 3000,
+    "skills/ppt-master/references/artifact-ownership.md": 4500,
+    "skills/ppt-master/workflows/governance/failure-recovery.md": 2750,
+    "skills/ppt-master/workflows/stages/resume-execute.md": 1750,
+    "skills/ppt-master/workflows/stages/refine-spec.md": 1000
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -1915,7 +1920,7 @@
             {
               "path": "skills/ppt-master/workflows/routing.md",
               "role": "consumer",
-              "fingerprint": "a287404b8f1e",
+              "fingerprint": "b3ea6e828373",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
@@ -1965,12 +1970,6 @@
               "role": "compatibility",
               "fingerprint": "39d5baf1e189",
               "reason": "This site documents a legacy or omission compatibility boundary."
-            },
-            {
-              "path": "skills/ppt-master/workflows/stages/resume-execute.md",
-              "role": "compatibility",
-              "fingerprint": "023cf4d8ecbd",
-              "reason": "This site documents a legacy or omission compatibility boundary."
             }
           ]
         },
@@ -1978,12 +1977,6 @@
           "field": "page_layouts",
           "owner_fingerprint": "64d28e112785",
           "projections": [
-            {
-              "path": "skills/ppt-master/references/artifact-ownership.md",
-              "role": "reference",
-              "fingerprint": "be5e3881ee0d",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
@@ -2020,12 +2013,6 @@
           "field": "page_pptx_layouts",
           "owner_fingerprint": "f436e6ae4bb8",
           "projections": [
-            {
-              "path": "skills/ppt-master/references/artifact-ownership.md",
-              "role": "reference",
-              "fingerprint": "e05b75f54145",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
@@ -2111,12 +2098,6 @@
           "owner_fingerprint": "1037e878eaa1",
           "projections": [
             {
-              "path": "skills/ppt-master/references/artifact-ownership.md",
-              "role": "reference",
-              "fingerprint": "447cd531facc",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
-            {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
               "fingerprint": "dc21169163b7",
@@ -2146,12 +2127,6 @@
           "field": "pptx_masters",
           "owner_fingerprint": "7cbe6ec7056e",
           "projections": [
-            {
-              "path": "skills/ppt-master/references/artifact-ownership.md",
-              "role": "reference",
-              "fingerprint": "7eba0fa766a6",
-              "reason": "This reference mirrors the owner field grammar or ownership boundary."
-            },
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
