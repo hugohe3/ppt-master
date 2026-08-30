@@ -129,8 +129,9 @@ vocabulary, the Structure decision, and one routing row per deeper module —
 while the deeper module itself (effects beyond the everyday block, native-shape
 authoring, relationship grammar and topology assembly, and the rarer formula,
 hyperlink, chart/table, structured-template, video, animation, and web-image
-files) is loaded on its own observable trigger, read completely on first use,
-and kept for the run. The owning rule is
+files) is loaded when its observable trigger appears — evaluated once over the
+whole roster before P01, or at the page that first reaches an unforeseen
+capability — read completely, and kept for the run. The owning rule is
 [`prompt-layers.md`](prompt-layers.md) §2.
 
 **Hard rule — core volume ceiling**: the always-read core of an authoring role
