@@ -184,7 +184,7 @@ Materialize through [`native-shape-authoring.md`](./native-shape-authoring.md) �
 
 ## 4. Icon Usage
 
-Strategist chooses at most one primary bundled stylistic library, plus `simple-icons` for real brand marks; Executor draws from the complete prepared project-local pool ([`../templates/icons/README.md`](../templates/icons/README.md)). Any SVG under `<project_path>/icons/<lib>/` is prepared material; authoring, preview, finalization, and export resolve only complete case-sensitive `library/name` references there (`tabler-outline/award`, never `Award`; custom files keep their exact case), with no global or template-source fallback.
+Strategist chooses at most one primary bundled stylistic library and may select `simple-icons` alone or alongside it for real brand marks; Executor draws from the complete prepared project-local pool ([`../templates/icons/README.md`](../templates/icons/README.md)). Any SVG under `<project_path>/icons/<lib>/` is prepared material; authoring, preview, finalization, and export resolve only complete case-sensitive `library/name` references there (`tabler-outline/award`, never `Award`; custom files keep their exact case), with no global or template-source fallback.
 
 ```xml
 <use data-icon="chunk-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
@@ -193,7 +193,7 @@ Strategist chooses at most one primary bundled stylistic library, plus `simple-i
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="2"/>
 ```
 
-**Hard rule — color and stroke**: always `fill="#HEX"` on `<use data-icon>`, never `stroke` or `fill="none"`, even for stroke libraries. `stroke-width` (`tabler-outline` only) is `1.5`, `2`, or `3`; a declared `spec_lock.md icons.stroke_width` applies deck-wide, and a stroke-library lock without it uses `2` with one warning. `finalize_svg.py` embeds placeholders automatically.
+**Hard rule — color and stroke**: always `fill="#HEX"` on `<use data-icon>`, never `stroke` or `fill="none"`, even for stroke libraries. `stroke-width` (`tabler-outline` only) is `1.5`, `2`, or `3`; a declared `spec_lock.md icons.stroke_width` applies deck-wide, and new authoring declares it, and a legacy stroke-library lock without it uses `2` with one warning. `finalize_svg.py` embeds placeholders automatically.
 
 **Missing project-local icon** (`test -f "<project_path>/icons/<lib>/<name>.svg"`) → return to Strategist's preparation / `icon_sync.py` gate; Executor never searches the global library, picks an alternative, or copies a candidate. Executor may combine project-local icons freely across namespaces and styles but may not acquire a new one or treat a globally resolvable file as prepared.
 
@@ -201,7 +201,7 @@ Strategist chooses at most one primary bundled stylistic library, plus `simple-i
 
 ## 5. Font Usage
 
-Default reads typography from `spec_lock.md` (Quick: its transient §2 anchor): `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1. Under [`native-formula.md`](./native-formula.md), blocks use marker style and inline math inherits size and solid fill, exporting in Cambria Math.
+Default reads typography from `spec_lock.md` (Quick: its transient §2 anchor): `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1. Under [`native-formula.md`](./native-formula.md), blocks use marker style and inline math inherits size and solid fill, exporting in Cambria Math with the project text language.
 
 **Default — locked-stack realization (may vary treatment)**: express the Design Spec Character Reference through scale, weight, spacing, color, and composition while keeping the locked family; put the common stack on root `<svg>`, omit matching descendants, and override at the nearest clear `<g>`, `<text>`, or `<tspan>`.
 

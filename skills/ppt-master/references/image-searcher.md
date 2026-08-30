@@ -91,6 +91,7 @@ python3 scripts/image_search.py "<query>" --filename <name>.jpg --slide <slide_i
 | `--candidate-page` | `1` | Ranked page; page 2 starts at rank 9 |
 | `--promote <candidate>` | — | Download exactly one selected original, enforce gates, write provenance |
 | `--from-url <url>` | — | Manual replacement recorded as `license_tier: manual`; works without vision |
+| `--manifest <path>` | `images/image_queries.json` | Override the manifest path |
 
 **Batch mode (≥2 web rows) — preferred**: write every row into `image_queries.json` and run one concurrent batch (the web sister of `image_gen.py --manifest`); add `--save-candidates` whenever the agent can inspect images:
 
@@ -113,7 +114,7 @@ Required per item: `filename`, `query`, `status`; optional: `query_variants`, `c
 
 **Ranking** orders provider metadata, never pixels, and must not be tuned into a taste engine: hard-reject invalid licenses and zero relevance; in best-only mode reject any candidate missing a `required_terms` group; in thumbnail mode keep strict matches first and admit a near match only when exactly one group is missing and the finding query still has strong relevance (marked `identity_evidence: visual-verification-required`, never auto-promoted); then metadata-verified identity in the title outranks a URL-only match; concrete query tokens match whole ASCII tokens (`office` ≠ `officer`) and dominate generic words; orientation is a small penalty, no-attribution a small bonus, pixel count capped so a huge weak match cannot beat a smaller accurate one.
 
-**Suitability review** — a top hit is downloadable and token-relevant, not visually suitable:
+**Suitability review** — a top hit is downloadable and token-relevant, not visually suitable (the reviewer receives only the locked row intent plus candidate sidecars/sheets, never the full planning or acquisition context):
 
 - **With vision**: `--save-candidates` saves at most the first 8 ranked previews under `candidates/<stem>/review/` and the sheet; run [`web-image-review.md`](../workflows/stages/web-image-review.md) — one isolated reviewer for the batch when available, otherwise local review — then only the image owner promotes the returned filename. Never promote the least-bad candidate; if none passes and `has_more_candidates` is true, fetch `--candidate-page 2` before changing the query. For exact entities, `required_terms` gates metadata and the review image confirms the pixels show the subject and satisfy the focal/crop intent; a generic `required_terms` pass is not acceptance (matching `Ground Fissure` can return an unrelated station named Yunlong).
 - **Without vision**: omit `--save-candidates`; the tool excludes near matches, downloads only the first candidate passing every strict metadata, license, and dimension gate, and records `selection_method: metadata-ranked` — never described as visual confirmation. With no strict candidate, or an intent that needs a viewpoint, crop, expression, or fine identity metadata cannot establish, mark `Needs-Manual`; Quick opens no interaction.
@@ -164,7 +165,7 @@ Each successful download appends or replaces one entry keyed on `filename`; the 
 
 ## 7. On-Slide Attribution Contract
 
-For `license_tier: attribution-required`, every slide using the asset carries a visible, readable credit bound unambiguously to it, preserving author, source/provider, and CC BY / CC BY-SA facts from `attribution_text`. Position, size, color, per-image versus combined credits, labels, and contrast treatment belong to the page — a compact credit near the image edge or footnote area for one image, per-image credits or one labeled combined line for several, a quiet region (scrim only when contrast fails) on a hero. Compress without dropping required facts: `team.jpg — "Untitled" via Openverse — license: CC0 (...)` → `via Openverse / CC0`; `team.jpg — "Sunset" by Jane Doe via Wikimedia Commons — license: CC BY-SA 4.0 (...)` → `© Jane Doe / Wikimedia / CC BY-SA 4.0`.
+For `license_tier: attribution-required`, every slide using the asset carries a visible, readable credit bound unambiguously to it, preserving author, source/provider, and CC BY / CC BY-SA facts from `attribution_text`. Position, size, color, per-image versus combined credits, labels, and contrast treatment belong to the page — a compact credit near the image edge or footnote area for one image, per-image credits or one labeled combined line for several, a quiet region (a scrim or gradient only when contrast fails) on a hero. Compress without dropping required facts: `team.jpg — "Untitled" via Openverse — license: CC0 (...)` → `via Openverse / CC0`; `team.jpg — "Sunset" by Jane Doe via Wikimedia Commons — license: CC BY-SA 4.0 (...)` → `© Jane Doe / Wikimedia / CC BY-SA 4.0`.
 
 ---
 

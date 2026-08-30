@@ -2170,7 +2170,7 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "8d41ffc7f9fb",
+              "fingerprint": "fd5bce3b80c9",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
