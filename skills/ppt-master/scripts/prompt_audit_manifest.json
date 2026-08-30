@@ -31,7 +31,7 @@
     "skills/ppt-master/references/shared-standards.md": 500,
     "skills/ppt-master/references/shared-standards-core.md": 7000,
     "skills/ppt-master/references/svg-effects.md": 9500,
-    "skills/ppt-master/references/native-data-interface.md": 7750,
+    "skills/ppt-master/references/native-data-interface.md": 5000,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 12000,
@@ -1912,6 +1912,12 @@
               "role": "consumer",
               "fingerprint": "a287404b8f1e",
               "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/native-data-interface.md",
+              "role": "consumer",
+              "fingerprint": "d33ef827f5ea",
+              "reason": "Table run typography mirrors the deck font contract for native export."
             }
           ]
         },
