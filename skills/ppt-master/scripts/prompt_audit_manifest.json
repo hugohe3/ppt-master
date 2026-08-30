@@ -34,11 +34,11 @@
     "skills/ppt-master/references/native-data-interface.md": 5000,
     "skills/ppt-master/references/pptx-structure-interface.md": 3000,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
-    "skills/ppt-master/references/strategist.md": 12000,
+    "skills/ppt-master/references/strategist.md": 13000,
     "skills/ppt-master/references/strategist-image.md": 3250,
     "skills/ppt-master/references/strategist-template.md": 2500,
     "skills/ppt-master/templates/design_spec_reference.md": 3500,
-    "skills/ppt-master/templates/spec_lock_reference.md": 2250,
+    "skills/ppt-master/templates/spec_lock_reference.md": 2500,
     "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
     "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
@@ -2096,7 +2096,7 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "f59b7294bcb0",
+              "fingerprint": "0bf67e7eef14",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {

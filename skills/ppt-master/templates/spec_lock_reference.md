@@ -23,7 +23,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `icons` | `library`, `inventory` | `library` is the primary bundled style or `none`; `simple-icons/*` may be prepared alone or alongside it; `inventory` indexes the curated synced pool, not page usage or every usable project icon; `stroke_width` conditional |
 | `page_rhythm` | One `P<NN>` row per page | `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | `flat`, `structured` |
-| `forbidden` | Literal list items | General standards stay in their owning reference |
+| `forbidden` | Literal list items | The technical baseline rows stay untagged; every other row is a prohibition the user stated in their own words (request, chat, `image_notes`), quoted verbatim and ending with `(user)`; nothing else enters — general standards stay in their owning reference, a template's rules stay in its installed spec, and a confirmed `visual_style_behavior` binds as identity prose without becoming a lock row |
 
 Optional data sections: `images`, `page_visualizations` (Chart/Table only). New locks never write legacy `page_charts` (existing locks may keep it read-only); never declare one page in both.
 
@@ -31,7 +31,10 @@ Optional data sections: `images`, `page_visualizations` (Chart/Table only). New 
 ## forbidden
 - `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
 - HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
+- 不要用任何阴影和发光 (user)
 ```
+
+A `(user)` row is the user's sentence, not a paraphrase and never widened; a Strategist-drafted direction — even once confirmed — is identity prose in `visual_style_behavior`, not a prohibition, so nothing is projected from it into this section. `project_manager.py validate` rejects an untagged non-baseline row.
 
 ---
 

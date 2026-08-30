@@ -62,6 +62,8 @@ Notes:
   When optional custom reference lists are present, it also requires every id
   to resolve to the matching mode, visual-style, or image-rendering catalog,
   rejects duplicates, and rejects reference rows on non-custom selections;
+  under `## forbidden` on versioned locks, every non-empty, non-baseline list
+  item must end with `(user)`;
   it does not rewrite either artifact or compare their values for textual
   equality. It also does not prove final-confirmation → Design Spec fidelity or
   Design Spec/context → lock semantic fidelity; Generate Step 4 owns those two

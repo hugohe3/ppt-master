@@ -93,6 +93,7 @@ _MARKDOWN_DATA_LINE_RE = re.compile(
     r"^[ \t]*-[ \t]+(?:\*\*)?([^:\n*]+?)(?:\*\*)?[ \t]*:[ \t]*(.*)$",
     re.MULTILINE,
 )
+_MARKDOWN_LIST_ITEM_RE = re.compile(r"^[ \t]*-[ \t]+(.*)$")
 _IMAGE_PATH_SUFFIXES = frozenset(
     {
         ".bmp",
@@ -120,6 +121,14 @@ _LEGACY_IMAGE_METADATA_KEYS = frozenset(
     }
 )
 _LEGACY_SPEC_LOCK_FORBIDDEN = frozenset({"Mixing icon libraries"})
+_LEGACY_SPEC_LOCK_FORBIDDEN_ANCHORS = (
+    "<style>",
+    "<foreignObject>",
+    "HTML named entities",
+    "Mixing icon libraries",
+    "rgba()",
+    "<g opacity",
+)
 _SCAFFOLD_TOKEN_RE = re.compile(r"\{\{[A-Z_]+\}\}")
 _SCHEMA_MARKER_RE = re.compile(
     r"^<!--[ \t]+ppt-master-schema:[ \t]*([a-z0-9-]+/v[1-9][0-9]*)[ \t]+-->$",
@@ -424,6 +433,47 @@ def default_spec_lock_forbidden() -> frozenset[str]:
         if line.strip()
     )
     return current | _LEGACY_SPEC_LOCK_FORBIDDEN
+
+
+def _normalize_forbidden_row(row: str) -> str:
+    """Collapse whitespace for baseline comparison and diagnostics."""
+    return " ".join(row.split())
+
+
+def _validate_spec_lock_forbidden(
+    section: Mapping[str, object] | None,
+) -> list[str]:
+    """Require provenance tags on non-baseline rows in a versioned lock."""
+    if section is None:
+        return []
+
+    baseline = {
+        _normalize_forbidden_row(row)
+        for row in default_spec_lock_forbidden()
+    }
+    errors: list[str] = []
+    row_number = 0
+    for line in str(section.get("body", "")).splitlines():
+        match = _MARKDOWN_LIST_ITEM_RE.match(line)
+        if match is None:
+            continue
+        row = _normalize_forbidden_row(match.group(1))
+        if not row:
+            continue
+        row_number += 1
+        if (
+            row in baseline
+            or any(
+                anchor in row for anchor in _LEGACY_SPEC_LOCK_FORBIDDEN_ANCHORS
+            )
+            or row.endswith("(user)")
+        ):
+            continue
+        errors.append(
+            f"spec_lock.md forbidden: row {row_number} is not a baseline rule "
+            f"and lacks the (user) tag: {row[:60]}"
+        )
+    return errors
 
 
 def _load_markdown_schema(schema_path: Path) -> dict[str, object]:
@@ -977,6 +1027,8 @@ def _validate_spec_lock_relations(
     """Validate cross-section references that JSON field rules cannot express."""
     markdown_name = markdown_path.name
     errors: list[str] = []
+
+    errors.extend(_validate_spec_lock_forbidden(matched.get("forbidden")))
 
     def fields(section_id: str) -> dict[str, str]:
         section = matched.get(section_id)

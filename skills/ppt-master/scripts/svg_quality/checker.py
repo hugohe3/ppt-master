@@ -816,6 +816,8 @@ SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES = 2
 # Oversampling alone does not imply distortion and is often harmless for small
 # logos. Warn about downscaling only when the source also has material on-disk
 # weight, because PPTX embeds the compressed source asset rather than raw pixels.
+# 1280px=96 SVG px/in; at 1.5 device px/SVG px on 1080p, 2x becomes ~3x on-screen—visibly soft; smaller is not warned.
+IMAGE_UPSCALE_WARN_RATIO = 2.0
 IMAGE_DOWNSIZE_WARN_RATIO = 4.0
 IMAGE_DOWNSIZE_WARN_MIN_BYTES = 1024 * 1024
 
@@ -4753,12 +4755,13 @@ class SVGQualityChecker:
                     )
                     fit_label = 'meet'
 
-                if render_scale > 1.0:
+                if render_scale > IMAGE_UPSCALE_WARN_RATIO:
                     result['warnings'].append(
                         f"Image {href} is {actual_w}x{actual_h} and renders at "
                         f"{render_scale:.2f}x scale in a "
                         f"{int(display_w)}x{int(display_h)} {fit_label} frame "
-                        "— may appear blurry"
+                        f"— about {render_scale * 1.5:.1f}x on a 1080p projector, "
+                        "visibly soft; use a larger source or a smaller frame"
                     )
                 elif (
                     render_scale < 1.0 / IMAGE_DOWNSIZE_WARN_RATIO
