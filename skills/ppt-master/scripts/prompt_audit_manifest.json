@@ -421,7 +421,7 @@
       "max_tokens": 150000
     },
     "route.generate.planning-image": {
-      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; image decision and layout authorities are already in the fixed planning context. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
+      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; the image decision authority is already in the fixed planning context (image-layout files are Executor's). Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning"
@@ -2066,7 +2066,7 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "098225552ea9",
+              "fingerprint": "b63e7a4de45e",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {

@@ -2410,6 +2410,7 @@ class SVGQualityChecker:
             'text_elements': text_count,
             'images': image_receipt,
             'icons': icon_count,
+            'effects': self._carrier_effect_receipt(root, parent_by_id),
             'geometry': {
                 'svg_elements': dict(geometry_counts),
                 'preset_shapes': sum(preset_names.values()),
@@ -2419,6 +2420,139 @@ class SVGQualityChecker:
             },
             'native_objects': dict(native_objects),
         }
+
+    @classmethod
+    def _carrier_effect_receipt(
+        cls,
+        root: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Dict:
+        """Count factual visible effect declarations and resolved references."""
+        ignored_tags = frozenset({
+            'clippath',
+            'defs',
+            'marker',
+            'mask',
+            'pattern',
+            'symbol',
+        })
+        emphasis_properties = (
+            'fill',
+            'font-weight',
+            'font-size',
+            'font-style',
+            'text-decoration',
+            'letter-spacing',
+        )
+        definition_kinds: Dict[str, str] = {}
+        for element in root.iter():
+            definition_id = (element.get('id') or '').strip()
+            if definition_id:
+                definition_kinds[definition_id] = _local_name(element).casefold()
+
+        def declared_value(
+            element: ET.Element,
+            style_values: Dict[str, str],
+            name: str,
+        ) -> str | None:
+            if name in style_values:
+                return style_values[name]
+            return element.get(name)
+
+        def reference_kind(value: str | None) -> str:
+            match = re.fullmatch(
+                r'url\(\s*#([^)]+?)\s*\)',
+                (value or '').strip(),
+                re.IGNORECASE,
+            )
+            return definition_kinds.get(match.group(1), '') if match else ''
+
+        def has_ignored_ancestor(element: ET.Element) -> bool:
+            current: ET.Element | None = element
+            while current is not None and current is not root:
+                if _local_name(current).casefold() in ignored_tags:
+                    return True
+                current = parent_by_id.get(id(current))
+            return False
+
+        effects = Counter({
+            'inline_emphasis_runs': 0,
+            'gradient_uses': 0,
+            'filter_uses': 0,
+            'text_effects': 0,
+        })
+        gradient_kinds = {'lineargradient', 'radialgradient'}
+        text_paint_kinds = gradient_kinds | {'pattern'}
+
+        for element in root.iter():
+            if (
+                element is root
+                or has_ignored_ancestor(element)
+                or cls._has_non_visual_ancestor(element, root, parent_by_id)
+                or cls._is_hidden_element(element, parent_by_id)
+                or cls._has_zero_opacity(element, parent_by_id)
+            ):
+                continue
+
+            style_values = (
+                _parse_inline_style(element.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            fill_kind = reference_kind(
+                declared_value(element, style_values, 'fill')
+            )
+            raw_stroke = declared_value(element, style_values, 'stroke')
+            stroke_kind = reference_kind(raw_stroke)
+            effects['gradient_uses'] += sum(
+                kind in gradient_kinds for kind in (fill_kind, stroke_kind)
+            )
+
+            raw_filter = declared_value(element, style_values, 'filter')
+            if reference_kind(raw_filter) == 'filter':
+                effects['filter_uses'] += 1
+
+            tag = _local_name(element).casefold()
+            if tag == 'tspan':
+                current = parent_by_id.get(id(element))
+                inside_text = False
+                while current is not None:
+                    if _local_name(current).casefold() == 'text':
+                        inside_text = True
+                        break
+                    current = parent_by_id.get(id(current))
+                if (
+                    inside_text
+                    and not any(
+                        element.get(name) is not None
+                        for name in ('x', 'y', 'dx', 'dy')
+                    )
+                    and any(
+                        name in style_values or element.get(name) is not None
+                        for name in emphasis_properties
+                    )
+                ):
+                    effects['inline_emphasis_runs'] += 1
+
+            if tag in {'text', 'tspan'}:
+                has_filter = (
+                    'filter' in style_values
+                    or element.get('filter') is not None
+                )
+                has_stroke = bool(
+                    raw_stroke
+                    and raw_stroke.strip()
+                    and raw_stroke.strip().casefold() != 'none'
+                )
+                if (
+                    fill_kind in text_paint_kinds
+                    or stroke_kind in text_paint_kinds
+                    or has_filter
+                    or has_stroke
+                ):
+                    effects['text_effects'] += 1
+
+        return dict(effects)
 
     @staticmethod
     def _carrier_native_replacement_kind(element: ET.Element) -> str:
@@ -8638,6 +8772,10 @@ class SVGQualityChecker:
             'preset_shapes': 0,
             'page_frame_elements': 0,
             'marker_uses': 0,
+            'inline_emphasis_runs': 0,
+            'gradient_uses': 0,
+            'filter_uses': 0,
+            'text_effects': 0,
         })
         pages_with = Counter({
             'images': 0,
@@ -8646,6 +8784,10 @@ class SVGQualityChecker:
             'charts': 0,
             'tables': 0,
             'formulas': 0,
+            'inline_emphasis_runs': 0,
+            'gradient_uses': 0,
+            'filter_uses': 0,
+            'text_effects': 0,
         })
         geometry_counts: Counter[str] = Counter()
         preset_names: Counter[str] = Counter()
@@ -8656,6 +8798,7 @@ class SVGQualityChecker:
             images = receipt['images']
             geometry = receipt['geometry']
             native = receipt['native_objects']
+            effects = receipt.get('effects', {})
             totals['text_elements'] += receipt['text_elements']
             totals['image_placements'] += images['placements']
             totals['icons'] += receipt['icons']
@@ -8679,6 +8822,16 @@ class SVGQualityChecker:
                 pages_with['tables'] += 1
             if native.get('formula_block') or native.get('formula_inline'):
                 pages_with['formulas'] += 1
+            for name in (
+                'inline_emphasis_runs',
+                'gradient_uses',
+                'filter_uses',
+                'text_effects',
+            ):
+                count = effects.get(name, 0)
+                totals[name] += count
+                if count > 0:
+                    pages_with[name] += 1
 
         totals['svg_geometry_elements'] = sum(geometry_counts.values())
         frame_share_range = (
@@ -8716,6 +8869,17 @@ class SVGQualityChecker:
             f"native presets {totals['preset_shapes']} | "
             f"page-frame elements {totals['page_frame_elements']} | "
             f"marker uses {totals['marker_uses']}"
+        )
+        pages_with = receipt['pages_with']
+        print(
+            f"  Effects: inline emphasis {totals['inline_emphasis_runs']} "
+            f"(pages {pages_with['inline_emphasis_runs']}) | "
+            f"gradients {totals['gradient_uses']} "
+            f"(pages {pages_with['gradient_uses']}) | "
+            f"filters {totals['filter_uses']} "
+            f"(pages {pages_with['filter_uses']}) | "
+            f"text effects {totals['text_effects']} "
+            f"(pages {pages_with['text_effects']})"
         )
         print(
             f"  Native objects: charts {native.get('chart', 0)} | "
