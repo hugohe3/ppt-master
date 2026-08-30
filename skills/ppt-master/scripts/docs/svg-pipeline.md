@@ -973,6 +973,19 @@ Behind [`native-formula.md`](../../references/native-formula.md) §3. The compil
 
 **Compatibility**: the package uses standard editable Office Math and keeps the PowerPoint 2010+ target; the executable profile is pinned to the documentation versions above. Repository verification covers compilation, OMML structure, and PPTX packaging, not a Microsoft 365 UI rendering/editability certification. Earlier PowerPoint versions are not the source-profile baseline; WPS, Keynote, LibreOffice, and other clients receive no embedded fallback. Reverse import is described in [`conversion.md`](conversion.md#native-formula-reverse-import).
 
+## `visual_review.py`
+
+Pure render-and-validate tool for the [`visual-review`](../../workflows/stages/visual-review.md) stage; it never edits SVGs and reads no rubric rule.
+
+```bash
+python3 scripts/visual_review.py <project_path> [--pages <token> ...] [--server-url http://127.0.0.1:<P>]
+```
+
+- Requires `playwright` plus chromium and a running live-preview server for the same project; without `--server-url` it discovers the port from `<project>/live_preview/lock.json`, and in either case validates `/api/health` against the target project and rejects a server for another project.
+- Output PNG matches the live-preview browser (inlined `<use data-icon>`, resolved `<image href>`); the root SVG `viewBox` is the canvas source of truth, and each successful page record carries `view_box`, `width` / `height`, and raster `png_width` / `png_height`; output dimensions equal that record's raster size. A record with `"all_background": true` rendered to a blank surface.
+- Renders are serialized by `<project>/.preview/.render.lock`, so concurrent invocation is safe.
+- Exit codes: `0` all requested pages rendered; `2` live-preview server unreachable or serving a different project; `3` playwright/chromium missing or unable to launch; `4` page-level render failure (details on stderr, partial output on disk).
+
 ## `total_md_split.py`
 
 Split `total.md` into per-slide note files.

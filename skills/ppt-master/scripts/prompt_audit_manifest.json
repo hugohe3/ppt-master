@@ -58,7 +58,9 @@
     "skills/ppt-master/workflows/stages/verify-charts.md": 2500,
     "skills/ppt-master/workflows/stages/topic-research.md": 2000,
     "skills/ppt-master/workflows/stages/live-preview.md": 1000,
-    "skills/ppt-master/workflows/stages/web-image-review.md": 750
+    "skills/ppt-master/workflows/stages/web-image-review.md": 750,
+    "skills/ppt-master/references/visual-review.md": 3500,
+    "skills/ppt-master/workflows/stages/visual-review.md": 1750
   },
   "load_sets": {
     "bootstrap.routing": {

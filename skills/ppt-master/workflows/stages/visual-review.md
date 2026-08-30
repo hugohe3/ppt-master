@@ -4,51 +4,24 @@ description: Optional quality-gate stage for per-page rubric-based visual review
 
 # Visual Review Stage
 
-> Optional Generate-PPTX quality stage. Goal: reduce human iteration by letting AI subagents visually self-check each rendered slide against a fixed rubric and apply atomic position/spacing fixes.
->
-> Reads `<project>/svg_output/<page>.svg` and a pre-rendered PNG of each slide, then either applies a fix or flags `needs_human`. When an installed Style exists, it also reads that workspace's `Review Focus` as supplemental acceptance context. **Never touches** brand decisions, layout structure, or other files.
->
-> This stage is **context-independent** — invokable in a fresh chat session with only `<project_path>` as input. No upstream conversation context required.
-
-## Positioning
-
-This is an **optional auxiliary loop**, opt-in only. The [`generate-pptx`](../generate-pptx.md) Step 1–7 pipeline does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
-
-**Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` + the short Style Review Focus when present, and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
+> Optional, opt-in Generate-PPTX quality stage: AI subagents visually self-check each rendered slide against the fixed rubric in [`references/visual-review.md`](../../references/visual-review.md) and apply atomic position/spacing fixes or flag `needs_human`. When an installed Style exists, its `Review Focus` is supplemental acceptance context. Never touches brand decisions, layout structure, or other files. Context-independent — invokable in a fresh chat with only `<project_path>`.
 
 ## When to Run
 
-- Executor ([`generate-pptx`](../generate-pptx.md) Step 6) has finished all pages
-- `svg_quality_checker.py` has passed
-- Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not** yet run
-- The user has explicitly requested visual review
+Only when the user explicitly requests visual review — never auto-invoked from model capability or deck size — after Executor has finished all pages and `svg_quality_checker.py` has passed, before `finalize_svg.py` / `svg_to_pptx.py`. Run [`verify-charts`](./verify-charts.md) first for decks with data charts; this stage covers rhythm, collision, and alignment, not coordinate math. Do not run when `svg_output/` is incomplete, the static checker has not passed, or the user is already in a `live-preview` annotation loop.
 
-For decks containing data charts, run [`verify-charts`](./verify-charts.md) first — visual-review focuses on visual rhythm / collision / alignment, not chart coordinate math.
-
-## When NOT to Run
-
-- The project has no `svg_output/<page>.svg` files yet — finish Executor first
-- `svg_quality_checker.py` has not been run or has failed — fix static violations first
-- User has already applied annotations via the `live-preview` stage and is in a fixed-edit loop — describe changes directly, do not re-trigger rubric
-- The user has not asked for it — do not auto-invoke based on inferred model capability or deck size
+**Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` (+ Style Review Focus) and processes K SVG+PNG pairs — on the order of 100–150K additional input tokens for a 20-page deck at K=5.
 
 ---
 
 ## Prerequisites
 
 ```bash
-# 1. playwright + chromium installed (the PNG renderer)
-pip install playwright
-python3 -m playwright install chromium
-
-# 2. live-preview server running for this project (provides inlined SVG fetch)
-python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --no-browser
-# (single instance per project — if it's already running, skip)
+pip install playwright && python3 -m playwright install chromium          # PNG renderer
+python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --no-browser   # live-preview server (skip if already running)
 ```
 
-The renderer (`visual_review.py`) does **not** auto-start the live-preview server. Without `--server-url`, it discovers the actual port from the target project's `live_preview/lock.json`; an explicit `--server-url` overrides discovery. In either case it validates `/api/health` against the resolved target project before rendering and rejects a server for another project.
-
-> **Why playwright, not cairosvg**: cairo's text API has no font-fallback chain, so CJK characters render as tofu boxes for any deck whose font-family list relies on system fallback (Microsoft YaHei / PingFang SC / etc.). Playwright drives a real chromium and produces output identical to what the live-preview browser shows — the only fidelity-preserving option for bilingual decks.
+The renderer does not auto-start the server; it discovers the port from `live_preview/lock.json` (or an explicit `--server-url`) and validates `/api/health` against the target project. Playwright, not cairosvg, because cairo has no font-fallback chain and renders CJK as tofu; chromium output matches the live-preview browser.
 
 ---
 
@@ -58,121 +31,48 @@ The renderer (`visual_review.py`) does **not** auto-start the live-preview serve
 python3 skills/ppt-master/scripts/visual_review.py <project_path>
 ```
 
-This writes one PNG per page to `<project_path>/.preview/<page>.png`, sized from that SVG root's `viewBox`, with `<use data-icon>` inlined and `<image href>` resolved exactly as the live-preview browser sees them. Each successful page record in the JSON summary includes the exact canvas plus its raster dimensions. Renders are serialized via a project-local file lock — safe to invoke concurrently.
+Writes one PNG per page to `<project_path>/.preview/<page>.png`, sized from the root `viewBox` with icons inlined and images resolved; each successful record carries the exact canvas and raster dimensions (contract and exit codes in [`svg-pipeline.md`](../../scripts/docs/svg-pipeline.md#visual_reviewpy)).
 
-Exit codes:
-
-- `0` — all pages rendered
-- `2` — live-preview server unreachable or serving a different project (start the target project's server per Prerequisites)
-- `3` — playwright python / chromium not installed (or browser failed to launch)
-- `4` — one or more page-level render failures (see stderr; partial output is on disk)
-
-If any page comes back with `"all_background": true` in the JSON summary, that page rendered to a blank surface — investigate before continuing (broken `<use>` reference, missing image asset, etc.).
-
-**Mandatory — normalize partial renders before dispatch**: parse the renderer
-summary before Step 2. Dispatch only records with `"ok": true`,
-`"all_background": false`, and a complete `canvas` object. For every other page,
-the main agent adds a `render_failed` row directly to the aggregate with the
-renderer error or blank-surface reason; no per-page `.review/<page>.json` is
-expected until that page renders successfully. Exit `2` or `3` stops dispatch
-entirely. Exit `4` may still review the successful subset, but the stage cannot
-finish cleanly until every failed page is retried or handed off per Step 4.
+**Mandatory — normalize partial renders before dispatch**: dispatch only records with `"ok": true`, `"all_background": false`, and a complete `canvas`. For every other page the main agent adds a `render_failed` row to the aggregate with the renderer error or blank-surface reason (a blank surface usually means a broken `<use>` reference or missing image asset). Exit `2` or `3` stops dispatch; exit `4` may review the successful subset, but the stage cannot finish until every failed page is retried or handed off per Step 4.
 
 ---
 
 ## Step 2 — Spawn the review team
 
-Create a team and dispatch one orchestrator agent. The orchestrator partitions the N pages into batches of ≤ K pages (default **K = 5**) and spawns one subagent per batch **in parallel** (single message, `ceil(N/K)` parallel `Agent` calls). Each batch subagent reads the fixed inputs (rubric + `design_spec.md` + `spec_lock.md` + conditional Style Review Focus) **once**, then iterates over its assigned pages sequentially.
-
-Before dispatch, look for `<project>/templates/design_spec.style.*.md`. For each one found, read only its `## VII. Review Focus` once and include those checks in every batch prompt. Otherwise pass no Style supplement. This lookup never triggers visual review; it runs only after the user has already activated this stage. The supplement cannot weaken the fixed rubric or widen edit permissions.
+Before dispatch, look for `<project>/templates/design_spec.style.*.md`; for each, read only its `## VII. Review Focus` once and include those checks in every batch prompt — this lookup never triggers the stage and cannot weaken the rubric or widen edit permissions.
 
 ```text
 TeamCreate(team_name="visual-review-<project>", agent_type="orchestrator")
-Agent(
-  team_name="visual-review-<project>",
-  subagent_type="general-purpose",
-  name="orchestrator",
-  prompt=<orchestrator-prompt>,
-)
+Agent(team_name="visual-review-<project>", subagent_type="general-purpose", name="orchestrator", prompt=<orchestrator-prompt>)
 ```
 
-The orchestrator prompt must be self-contained and is the **single** place where dispatch shape, batch size, and forbid lists are stated — the rubric (`references/visual-review.md`) defines the contract those prompts must satisfy. Required fields (all absolute paths):
+The orchestrator partitions N pages into batches of ≤ K (default 5) and spawns one subagent per batch in parallel; each subagent reads the fixed inputs once, then iterates its pages. The orchestrator prompt is self-contained and the single place stating dispatch shape, batch size, and forbid lists; it carries (absolute paths): `<project_path>`; the full page list with `page_role` and each successful renderer record's `canvas` (parse `design_spec.md` §IX — **fixed compatibility default**: a `design_spec.md` without §IX uses `content` for every page and flags it in the report; a missing `design_spec.md` is restored through [`failure-recovery.md`](../governance/failure-recovery.md) §3 first); batch size K (10 for token-sensitive large decks, 3 for high-fidelity short decks — rubric §6.1); iteration budget (default 1; 2 only for final-cut runs — see the appendix); the rubric path; the Style Review Focus excerpt with its wording and source path when found; the dispatch contract reference (rubric §6); and the subagent forbid list (no edits to other pages, `design_spec.md`, `spec_lock.md`, `templates/`, `animations.json`, `image_prompts.json`, `images/`).
 
-- `<project_path>` — project root
-- Full page list with `page_role` and the successful renderer record's `canvas` per page (parse `<project>/design_spec.md` §IX outline; **fixed compatibility default**: if an existing `design_spec.md` lacks §IX, use `content` for every page and flag this in the final report; if `design_spec.md` itself is missing, restore it through [`failure-recovery.md`](../governance/failure-recovery.md) §3 before dispatch). Pass `canvas` through verbatim; do not assume a fixed slide size.
-- Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
-- Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
-- Path to the rubric: `skills/ppt-master/references/visual-review.md`
-- Style Review Focus excerpt, only when the conditional lookup above found one; preserve its wording and source path
-- Dispatch contract reference: rubric [§6](../../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
-- Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, anything under `templates/`, `animations.json`, `image_prompts.json`, or `images/`
-
-**Host compatibility**: `TeamCreate` and `SendMessage` are Claude-Code-specific multi-agent primitives. On hosts without those primitives (Cursor, VS Code + Copilot, Codebuddy, etc.) the main agent processes batches sequentially — same partitioning, same per-batch prompts, no parallel dispatch. Token savings from shared fixed inputs still apply; wall-clock time grows roughly N/K-fold.
+**Host compatibility**: `TeamCreate` and `SendMessage` are Claude-Code primitives; on other hosts the main agent processes the same batches sequentially with the same prompts — token savings persist, wall-clock grows roughly N/K-fold.
 
 ---
 
 ## Step 3 — Aggregate findings
 
-The orchestrator emits the aggregate Markdown table back to you (the main agent):
-
-```
-| page | role | status | hard_hits | soft_hits | fixes_applied | needs_human_reason |
-|------|------|--------|-----------|-----------|---------------|---------------------|
-```
-
-Statuses:
-
-- `ok` — page passed clean, no fixes applied
-- `fixed` — at least one fix applied, all Hard rules now pass
-- `needs_human` — fix attempted but rolled back (rule §4.2), or rule violation requires brand/structure decision outside the rubric's scope
-- `render_failed` — Iteration 0 PNG sanity failed (rare; usually means renderer / server issue)
-- `prereq_failed` — static checker hadn't been run
-
-Plus a brand-token aggregate at `<project>/.review/brand_review.json` if any §1.1 escalations occurred — review this once at the end of the run, not per page.
+The orchestrator returns `| page | role | status | hard_hits | soft_hits | fixes_applied | needs_human_reason |`, where `ok` = clean, `fixed` = fixes applied and Hard rules pass, `needs_human` = a fix was rolled back (rubric §4.2) or the violation needs a brand/structure decision, `render_failed` = iteration-0 sanity failed, `prereq_failed` = static checker not run — plus `<project>/.review/brand_review.json` when §1.1 escalations occurred, reviewed once at the end.
 
 ---
 
 ## Step 4 — Decide next move
 
-For each row in the table:
-
-- `ok` / `fixed` — no action; the SVG has been updated in-place (originals are at `<project>/.review/backup/<page>.iter<N>.svg`)
-- `needs_human` — read the page's JSON `needs_human_items[].suggested_fix_summary`, decide with the user whether to apply or defer
-- `render_failed` — re-run `visual_review.py` for that page only (`--pages <token>`); if it persists, hand off to manual review
-- `prereq_failed` — go back and run `svg_quality_checker.py`
-
-If `brand_review.json` is non-empty, that's a single decision applied across the deck (e.g., bump footer text color from `#6E7681` to `#8B949E` — one change, every page benefits). Do this once, then optionally re-run visual-review for the affected pages only.
-
-After the table is clean, continue to [`generate-pptx`](../generate-pptx.md)
-Step 7. That authority owns the serial commands, gates, and success criteria for
-post-processing and export.
+`ok` / `fixed` — nothing to do; the SVG was updated in place with originals at `<project>/.review/backup/<page>.iter<N>.svg`. `needs_human` — read `needs_human_items[].suggested_fix_summary` and decide with the user. `render_failed` — re-run `visual_review.py --pages <token>`; if it persists, hand off to manual review. `prereq_failed` — run `svg_quality_checker.py`. A non-empty `brand_review.json` is one deck-wide decision (e.g. bump a footer token deck-wide); apply it once, then optionally re-review the affected pages. When the table is clean, continue to [`generate-pptx`](../generate-pptx.md) Step 7.
 
 ---
 
 ## Notes & invariants
 
-- **Single source of truth for rules**: [`references/visual-review.md`](../../references/visual-review.md). This stage file is just the orchestration — never restate or paraphrase rules here.
-- **Concurrency**: `visual_review.py` serializes renders via `<project>/.preview/.render.lock`. Subagents must never call the renderer directly without the lock.
-- **Iteration budget**: default 1 iteration. Bumping to 2 doubles render cost and roughly triples token cost. Only worth it for high-stakes / final-cut decks.
-- **Don't-touch (rubric §3)** is hard-enforced by subagents. If you want the subagent to e.g. change a brand color, that is **out of scope** — make the change manually first, then re-render & re-review.
-- **Backups**: every modified SVG has a `.review/backup/<page>.iter<N>.svg` rollback anchor. Restore by `cp`.
-- **The rubric is not the designer**: it catches collisions, drift, and rhythm errors — it does not improve a fundamentally weak layout. If 80%+ of pages come back `needs_human`, the Design Spec's pattern selection or Executor's realization geometry is the root cause, not this stage.
-- **Playwright output discipline**: when an agent uses the playwright MCP tool `browser_take_screenshot` directly (outside the `visual_review.py` script), the `filename` parameter is resolved against the CWD (typically the repo root) — passing a bare relative path will create stray directories inside the repository. Always pass an absolute path:
-  - One-off probe / ad-hoc inspection → `/tmp/probe-<topic>-<n>.png`
-  - Project artifact (replaces what the script would have produced) → `<project_path>/.preview/<page>.png` (absolute)
-  - Never write to `<repo>/<anything>.png` or `<repo>/<some_dir>/...` — those are caught by `.gitignore` patterns but the cleanup burden is real
-
-  The `visual_review.py` script handles output paths correctly on its own; this rule only applies to direct playwright MCP usage during interactive exploration or recovery.
+- The rubric is the single source of rules; this file is orchestration only and never restates them.
+- Don't-touch (rubric §3) is hard-enforced: a brand color change is out of scope — make it manually, then re-render and re-review.
+- The rubric catches collisions, drift, and rhythm errors, not a fundamentally weak layout; if 80%+ of pages come back `needs_human`, the root cause is the Design Spec's pattern selection or Executor geometry.
+- Direct playwright MCP `browser_take_screenshot` resolves `filename` against the CWD (usually the repo root): always pass an absolute path — `/tmp/probe-<topic>-<n>.png` for ad-hoc probes, `<project_path>/.preview/<page>.png` for project artifacts; never write under the repository. `visual_review.py` handles its own paths.
 
 ---
 
 ## Appendix: Iteration loop (opt-in)
 
-Default behavior is single-iteration review: one scan, fix in place, write the report. The full iteration loop in [`references/visual-review.md`](../../references/visual-review.md) §4.1 supports:
-
-1. Iteration 1: scan + fix
-2. Re-render via `visual_review.py --pages <token>`
-3. Iteration 2: re-verify changed elements + scan for new Hard hits
-4. Rollback on any new Hard hit introduced by a fix
-
-To enable, set iteration budget = 2 in the orchestrator prompt (this is a prompt-level instruction to subagents; neither `visual_review.py` nor the harness enforces it). Each added iteration roughly doubles render cost and triples token cost on the affected pages — reserve for final-cut runs only.
+Default is one iteration. With budget 2 in the orchestrator prompt (a prompt-level instruction; neither the script nor the harness enforces it): iteration 1 scan + fix → re-render via `visual_review.py --pages <token>` → iteration 2 re-verify changed elements and scan for new Hard hits, rolling back any fix that introduced one (rubric §4.1–§4.2). Each added iteration roughly doubles render cost and triples token cost; reserve for final-cut runs.
