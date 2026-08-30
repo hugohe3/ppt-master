@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 3250,
     "skills/ppt-master/SKILL.md": 1750,
-    "skills/ppt-master/references/executor-base.md": 9750,
+    "skills/ppt-master/references/executor-base.md": 11000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 1750,
     "skills/ppt-master/references/executor-visualization.md": 1000,
@@ -42,7 +42,7 @@
     "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
     "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
-    "skills/ppt-master/workflows/generate-pptx.md": 10000,
+    "skills/ppt-master/workflows/generate-pptx.md": 11000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 2750,
     "skills/ppt-master/references/confirm-surface.md": 3000,
     "skills/ppt-master/references/video-design.md": 2500,
@@ -2070,7 +2070,7 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "414e605bfaec",
+              "fingerprint": "098225552ea9",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {

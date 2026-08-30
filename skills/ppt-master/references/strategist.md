@@ -271,20 +271,9 @@ No universal palette: user / brand → active template → project-specific prop
 
 ---
 
-## 4. Layout Pattern Library
+## 4. Layout Reference and Motif
 
-**Reference — a starting sketch, never a constraint**: macro vocabulary only; proportion follows information weight, and Executor adjusts or replaces it freely after reading the page. Repeating symmetric card grids without a page job is a failure mode.
-
-| Content relationship | Useful starting structure |
-|---|---|
-| One focal claim | centered single column, negative space (one element carried by generous whitespace), or full-bleed + floating text |
-| Equal comparison | symmetric split or a true matrix / four quadrants |
-| Dominant evidence + takeaway | asymmetric split with one dominant field |
-| Parallel sequence | three-column, process line, or Z-pattern / waterfall |
-| Core + surrounding forces | center-radiating or hub-spoke |
-| Wide visual + explanation | top-bottom split, or figure-text overlap for a hero moment |
-
-Executor owns the geometry (its reference dimensions live in [`executor-base.md`](./executor-base.md)); never write element-level sizes or coordinates into §IX.
+**Reference — a starting sketch, never a constraint**: a §IX `Layout` line names the macro relationship the page's content suggests (one focal claim, equal comparison, dominant evidence + takeaway, parallel sequence, core + surrounding forces, wide visual + explanation) in ordinary words; Executor owns the structure and geometry that realize it (its layout-structure vocabulary lives in [`executor-base.md`](./executor-base.md) Page Expression Core) and adjusts or replaces the line freely after reading the page. Never write element-level sizes or coordinates into §IX.
 
 Once the roster and planned resources are known, recommend a cross-page motif or element family when it can carry identity or meaning — title/corner ornaments, a directional contour, an opening, a line lattice, an oversized numeral — recording its continuity job and reuse mode in §III `Theme` and mentioning it only in the §IX `Layout` blocks that benefit; Executor owns its geometry and may decline it; no motif field, lock row, or quota.
 
