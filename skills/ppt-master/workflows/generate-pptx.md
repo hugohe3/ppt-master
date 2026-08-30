@@ -755,6 +755,17 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 - The JSON report is written to `validation/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 - **Hard rule — token-safe report handling**: On a successful checker run, use the exit status and terminal summary as gate evidence. Do not open, `cat`, or otherwise load the complete JSON report into model context. Read it only for failure investigation, an explicit audit request, or a field absent from stdout; extract only the required field(s).
 
+**Mandatory — final carrier-receipt review**: the final checker prints one
+factual `[CARRIERS]` summary and stores per-page detail under
+`files[].info.carrier_receipt`. Compare the summary with the retained page jobs,
+chosen resource roles, and running geometry signatures before export. Counts
+and diversity never create a quota or prove quality; zero preset use alone
+neither proves fit nor establishes a defect. When the facts contradict an
+active decision — an adopted preset absent from output, a primary image reduced
+to a minor frame, unrelated jobs collapsing to one neutral construction — read
+only the affected receipt rows, repair those pages in one consolidated pass,
+and rerun the final checker.
+
 **Logic Construction Phase (conditional)**: after the SVG quality gate passes,
 when the effective Speaker Notes outcome in `design_spec.md §I` is enabled, load
 [`executor-notes.md`](../references/executor-notes.md). When the prepared final

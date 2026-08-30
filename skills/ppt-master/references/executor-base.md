@@ -25,7 +25,7 @@ Evaluate branches from each object's actual information model, not only from a C
 
 **Hard rule — flat PowerPoint structure**: Free-design, brand-only, Style-only, and every `template_reuse_scope: style` project use `pptx_structure.mode: flat`: write no root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder`; every visible object remains Slide-local, and the root declares exactly one canonical `data-pptx-page-role` (`cover` / `toc` / `section` / `content` / `ending`). A Style workspace supplies reusable communication/design direction, composition rhythm, and information-expression defaults without page prototypes. Its identity-adjacent color, typography, icon, and image defaults yield to the final Brand/Deck identity and confirmed project lock. When a Style is installed alongside Layout/Deck, it changes only Direction / method and follows the resolved non-Style structure route. Export materializes one clean project-owned Master plus one Blank Layout from the current lock. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by specialized metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
 
-**Hard rule — supported PPTX route**: The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter. Step 7.2 generates `svg_final/` as an optional self-contained visual preview that may be inserted as an SVG picture; its absence never blocks export. Do not treat PowerPoint's manual Convert-to-Shape operation as an authoring target or compatibility requirement.
+**Hard rule — supported PPTX route**: the only supported generated-PPTX path is `svg_output/` through the project converter; `svg_final/` is an optional preview and PowerPoint's manual Convert-to-Shape is not an authoring target ([`shared-standards-core.md`](./shared-standards-core.md) §4.2).
 
 > Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
 
@@ -102,19 +102,7 @@ Before the first SVG page, output a confirmation listing: the compact communicat
 
 > Quick has no Design Spec or lock: skip the artifact reads, roster, recovery, and lock re-read rules in this section, but apply its reading-mode, authored-texture, `page_rhythm`, and typography-anchor tables to the transient anchors from `quick-generate.md` §2.
 
-- **Valid**: if the exact complete Design Spec and lock remain in the unchanged, uncompacted active context, reuse both for every page. Do not reread or poll them. The one scheduled exception is the five-page lightweight lock re-read defined below.
-- **Invalid**: fresh/resumed/restarted execution, compaction/summary-only recovery, or an external/unknown change requires one complete read of `design_spec.md`, then `spec_lock.md`, plus triggered references/template inputs. Mid-deck recovery also reads the latest completed SVG and, when images are used, current image metadata.
-- **Uncertain**: consult the retained lock first, then only the owning Design Spec fragment; use sources only for facts. Design Spec remains upstream on conflict.
-
-**On-demand page-context diagnostic**: only for explicit telemetry/debugging or an unresolved page/template/visualization path-SHA question; never as a pre-page gate:
-
-```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py page-context <project_path> P<NN> [--record-usage]
-```
-
-Consume stdout directly; stop on non-zero exit. The projection is derived, not authoritative. Use `--record-usage` only for measurement.
-
-**Same-context repair**: in a valid uncompacted context, a bounded repair that preserves roster/order/identity/communication needs only affected Design Spec/lock fragment readback plus `project_manager.py validate`. Any broader or invalid-context repair requires the complete reads above.
+**Context validity**: reuse the retained Design Spec and lock for every page while the context is unchanged and uncompacted — do not reread or poll them; the five-page lock re-read below is the one scheduled exception. A fresh, resumed, restarted, compacted, or externally changed context rereads `design_spec.md`, then `spec_lock.md`, once, plus triggered references/template inputs and the latest completed SVG when mid-deck, per [`failure-recovery.md`](../workflows/governance/failure-recovery.md). On local uncertainty consult the retained lock first, then only the owning Design Spec fragment; use sources only for facts, and the Design Spec remains upstream on conflict. A bounded same-context repair that preserves roster/order/identity/communication needs only the affected fragment readback plus `project_manager.py validate`.
 
 **Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. Never add, drop, merge, split, or reorder while drawing. In a continuous run the same context may first repair the affected §IX blocks and `page_rhythm` rows and rerun `project_manager.py validate` when the page count stays inside the Stage-1 confirmed range; leaving that range reconfirms Stage 1.
 
@@ -124,7 +112,7 @@ Consume stdout directly; stop on non-zero exit. The projection is derived, not a
 
 **Hard rule — content vs expression**: `design_spec.md §IX` owns each page's semantic content and supplies either complete preferred wording and block texture (`complete` depth) or a short block list (`brief` depth); written expression choices are not verbatim requirements unless explicitly literal. Executor may paraphrase, condense repetition, regroup or reorder material within the same page, and switch among prose, bullets, keywords, labels, or visual annotation when fit or readability benefits. The result must remain information-equivalent: preserve the `Core message`, `Audience move`, and every substantive claim, fact, data value, proper name, qualifier or caveat, relationship, key argument or evidence, and literal requirement. Never add a claim, move content across pages, or drop information to make the layout fit; return an unfit or underspecified block for Design Spec repair.
 
-Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. A page-context delta overrides neither facts nor constraints. Deprecated `page-context --bundle` is a compatibility no-op.
+Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row.
 
 **Source verification**: §IX owns the page brief at its confirmed depth; the page delta does not carry the source corpus. Read sources only to resolve listed `Fact IDs` or verify required claims, quotes, names, or data. Do not add facts, claims, or selected content. Return underspecified blocks for Design Spec repair.
 
@@ -150,7 +138,7 @@ Apply the content-vs-expression contract above within the selected reading mode.
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
-**Missing `spec_lock.md` or `design_spec.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not silently downgrade. A failed on-demand `page-context` diagnostic is also not evidence that a required planning artifact may be bypassed.
+**Missing `spec_lock.md` or `design_spec.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not silently downgrade.
 
 **Missing field in an existing lock**: follow [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2.
 
@@ -204,7 +192,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 ## 3. Execution Guidelines
 
-- **Element grouping (Mandatory)**: wrap each logical Slide-local body unit in a descriptive, page-unique top-level `<g id>`. Every visible direct root `<g>` except a compact helper-authored preset atom declares root-coordinate `data-pptx-bounds="x y width height"`; that text-free atom stays top-level when standalone, uses `data-pptx-frame`, and never carries bounds. Frame/native coordinates do not replace bounds on any other group, and placeholder bounds also supply the slot frame. Nested groups need no bounds and any such values are ignored. Checker fails ordinary root-group overlap exceeding `1px` on both axes; structured slots, structural-role groups, and off-canvas Morph staging groups are exempt, but structured Slide-local groups are not. Checker compares root bounds with the `viewBox`, recursively checks estimable text—including both shared multiline forms—against its root module with DrawingML wrapping headroom, and independently checks every estimable visible text carrier against the page without that headroom: through `1px` is ignored; module overflow warns through `5%` and fails above it, while larger page overflow always fails. Unestimable visible text receives an advisory warning. Only a wholly off-canvas direct-root Morph endpoint may set `data-pptx-morph-staging="true"`; keep its text inside its own module bounds, use an explicit pair when Morph remains enabled, and never use the marker for partial overflow. Images, shapes, paths, `<use>`, effects, and object frames remain geometrically free. Flat pages use ordinary groups; structured slots already qualify, while titles, direct Master/Layout atoms, and canvas-level static framing may remain root primitives. On flat pages, give a root background image or full-canvas scrim/decoration rectangle a stable `id` plus `data-pptx-role="background"` / `"decoration"`; never wrap it only to silence the advisory.
+- **Element grouping (Mandatory)**: wrap each logical Slide-local body unit in a descriptive, page-unique top-level `<g id>` carrying root-coordinate `data-pptx-bounds="x y width height"`; a helper-authored preset atom stays top-level with `data-pptx-frame` and no bounds, and nested groups need none. On flat pages give a root background image or full-canvas scrim/decoration rectangle a stable `id` plus `data-pptx-role="background"` / `"decoration"` instead of wrapping it. Overlap and text-overflow thresholds, exemptions, and the Morph staging marker are defined once in [`shared-standards-core.md`](./shared-standards-core.md) §4.3.
 - **Reference — not a constraint**: top-level groups set semantic and automatic-animation granularity, but they may contain descriptive nested `<g>` edit groups when the page has meaningful internal subunits. Nested groups need no bounds and create no automatic animation step; use or omit them from the page's actual editing semantics, with no default pattern, depth, or quota.
 - **Default — size `data-pptx-bounds` as the intended module zone, not a glyph box (may skip when no text is estimable)**: make the zone as generous as the canvas and sibling layout allow, without overlapping another module zone. An untransformed line spans `y - 0.85 × font_size` to `y + 0.35 × font_size`; width uses the shared SVG-to-PPTX per-run estimate and safety headroom. The same estimator is callable before writing: `python3 ${SKILL_DIR}/scripts/text_measure.py measure|wrap|box ...` measures lines, wraps one paragraph to a max width as ready `<tspan>` rows, and computes a text block's module zone; one calibration per role serves the deck, and later calls are for lines that approach a limit, batched through `--stdin`. If text does not fit, first expand a zone that has unused non-overlapping space; otherwise reflow or adapt. Larger bounds do not repair off-canvas text.
 - **Spec adherence**: follow binding color, canvas, typography, identity, resource, and template anchors; apply layout and other Reference directions under §2.1 without turning them into locks
@@ -221,20 +209,9 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Inherited containers**: preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Selected Chart/Table reference adaptation is owned by [`executor-visualization.md`](./executor-visualization.md); preview effects never override project styling or structural roles.
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first compose faithful primitives and exact presets as one page geometry system; use a Boolean only when the contour itself must merge, open, or fragment. Only when neither construction works should one page-specific polygon/path replace a stack of generic arrows.
 - **Phased generation** (recommended):
-  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Apply every triggered information-model branch while drawing. **MUST embed one object-scoped plot-area marker** per §IX-named or Quick-promoted value-driven chart object under [`executor-chart.md`](./executor-chart.md) §2; coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)). Write every `<object-key>=yes` native marker plus JSON metadata atomically under [`native-data-interface.md`](./native-data-interface.md) §2, then record its fallback baseline before that page's gate with `python3 ${SKILL_DIR}/scripts/stamp_native_fallbacks.py <project_path>/svg_output/<page>.svg --write`; rerun it after any later visible edit inside the marker group, because a missing or stale baseline blocks the canonical gate and native Chart/Table export. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it; several presets selected for one page are generated in one `preset_shape_svg.py render-batch --input -` round (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG; when justified, one registered [`svg-effects.md`](./svg-effects.md) §6.4 shadow/glow stays on the helper-authored shape). **First-page gate (Mandatory — Default only; Quick runs only its one final checker)**: after completing the first page, run `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --canonical-authoring --stage first-page --json` directly without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page; the only further mid-run checker call is the first-exercise page gate (`--stage page --page <svg>`) on the first page that exercises a `not-exercised` item.
-  2. **Quality Check Gate**: only after every planned SVG exists, run `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --canonical-authoring --stage final --json` (Quick adds its route flag) directly on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
+  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency, applying every triggered information-model branch while drawing. **MUST embed one object-scoped plot-area marker** per §IX-named or Quick-promoted value-driven chart object under [`executor-chart.md`](./executor-chart.md) §2; coordinate calibration is a post-generation step ([`verify-charts`](../workflows/stages/verify-charts.md)). Write every `<object-key>=yes` native marker plus JSON metadata atomically under [`native-data-interface.md`](./native-data-interface.md) §2, then record its fallback baseline before that page's gate with `python3 ${SKILL_DIR}/scripts/stamp_native_fallbacks.py <project_path>/svg_output/<page>.svg --write`; rerun it after any later visible edit inside the marker group. **Reach for native presets** per §3.0 as you draw each page — decided by the object's intent as you create it, never by scanning finished paths; several presets selected for one page are generated in one `preset_shape_svg.py render-batch --input -` round (gradient/pattern paint stays ordinary SVG; a justified [`svg-effects.md`](./svg-effects.md) §6.4 shadow/glow stays on the helper-authored shape).
+  2. **Quality gates**: the route owns them — [`generate-pptx.md`](../workflows/generate-pptx.md) Step 6 runs the first-page gate, the first-exercise page gate, the final gate, and the carrier-receipt review; [`quick-generate.md`](../workflows/profiles/quick-generate.md) §4 runs its one lockless final check. Run each checker unfiltered, review its complete issue set, fix every error plus selected warnings in one consolidated pass, verify once, and never check between individual fixes or `cat` a passing report into context. Every `warning` is advisory. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase (conditional)**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity only when the effective Speaker Notes outcome is enabled.
-
-**Mandatory — final carrier-receipt review**: The final checker prints one
-factual `[CARRIERS]` summary and stores per-page detail under
-`files[].info.carrier_receipt`. Compare the summary with the retained page jobs,
-chosen resource roles, and running geometry signatures before export. Counts
-and diversity never create a quota or prove quality; zero preset use alone
-neither proves fit nor establishes a defect.
-When the facts contradict an active decision—such as an adopted preset absent
-from output, a primary image reduced to a minor frame, or unrelated jobs
-collapsing to one neutral construction—read only the affected receipt rows,
-repair those pages in one consolidated pass, and rerun the final checker.
 
 ### 3.0 Native Shape Selection
 
@@ -263,17 +240,7 @@ reader effect for a generic or undrawn result, running geometry signature, and
 materialization boundary for both `Structure=no` and `Structure=yes`. Keep the
 current decision in active context and never change the Structure result.
 
-| Selected result | Authoring form |
-|---|---|
-| Selected exact non-Connector stock contour | Use ordinary SVG only when the exporter maps it to that same contour; otherwise call `preset_shape_svg.py render` and paste its complete stdout fragment. |
-| Straight relationship / divider / leader | Use `<line>`; add a registered marker under [`shared-standards-core.md`](./shared-standards-core.md) §1.1 only when direction is meaningful. |
-| Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
-| Selected text/content boundary needs no filled surface | Use its exact authoring form with `fill="none"` and a visible stroke; keep text and other content independent. |
-| Two or more native shapes should form one page-level geometry system | Follow [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1: compose faithful primitives and presets as independent siblings first, then materialize only contours that require Boolean semantics. |
-| Supported closed-shape / resolvable-text operands need union, cutout, overlap, symmetric difference, or fragmentation | Use `shape_boolean_svg.py` when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
-| Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
-| Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, exact presets, their independent composition, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
-| Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
+Materialize the selected contour through the authoring-form table in [`native-shape-authoring.md`](./native-shape-authoring.md) §1: an ordinary primitive when the exporter maps it to the same contour, otherwise the helper fragment; `<line>` for a straight relationship and a `bentConnector*` / `curvedConnector*` preset for a stock bend or curve; independent siblings for a page-level geometry system; `shape_boolean_svg.py` only when one contour must merge, cut, or fragment; ordinary path/polygon only for geometry none of those express.
 
 **Hard rule — freeform is the last construction tier**: before hand-authoring a
 stock-looking `<path>` / `<polygon>`, complete contour selection, simplest exact
@@ -294,19 +261,7 @@ generates one compact atomic `<g>` from the shared 187-shape registry, with
 semantic metadata and base paint written once. Rerun that helper when geometry
 or paint changes; never edit one of its direct paths.
 
-**Default — relationship geometry**: use `<line>` for a straight relationship.
-When a relationship genuinely needs a bend or curve and a stock Connector
-contour fits, prefer the matching `bentConnector*` / `curvedConnector*` preset
-over a hand-authored SVG Bézier. Use an open freeform path only when a straight
-line and the native Connector families cannot faithfully express the required
-route, data geometry, or locked hand-drawn / organic style. A directional solid
-object remains an ordinary `shape` preset such as `rightArrow` or `chevron`.
-
-Authored Connector presets export as unconnected `p:cxnSp` objects: they do not
-bind to node sites or follow moved nodes. Never hand-add endpoint/site metadata
-or claim attachment semantics. Imported Connector topology stays under the
-preserve/mirror contract. `actionButton*` presets provide visual geometry only,
-not actions or hyperlinks.
+**Default — relationship geometry**: `<line>` for a straight relationship; a stock Connector preset for a genuine bend or curve; an open freeform path only when neither expresses the required route, data geometry, or locked hand-drawn / organic style. A directional solid object remains an ordinary `shape` preset such as `rightArrow` or `chevron`. Authored Connector presets export unconnected (no endpoint attachment), and `actionButton*` presets provide geometry only.
 
 **Hard rule — narrow helper scope**: Both helpers print only their documented
 stdout fragment(s); neither writes a page or chooses layout. Read every returned
@@ -331,24 +286,10 @@ Strategist chooses at most one primary bundled stylistic library and may select 
 **Built-in icons — Placeholder method (recommended)**:
 
 ```xml
-<!-- chunk-filled (straight-line geometry, sharp corners, structured) -->
 <use data-icon="chunk-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
-
-<!-- tabler-filled (bezier-curve forms, smooth & rounded contours) -->
-<use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
-
-<!-- tabler-outline (light, line-art style — screen-only decks) -->
-<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587"/>
-
-<!-- phosphor-duotone (single color + 20% backplate — soft depth without solid weight) -->
-<use data-icon="phosphor-duotone/house" x="100" y="200" width="48" height="48" fill="#005587"/>
-
-<!-- simple-icons (brand logos — used alongside the deck's primary library, only for real company/product marks) -->
 <use data-icon="simple-icons/github" x="100" y="200" width="48" height="48" fill="#181717"/>
-
-<!-- tabler-outline with thin / bold stroke (stroke-style libraries only) -->
-<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="1.5"/>
-<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="3"/>
+<!-- stroke-style libraries (tabler-outline) may add stroke-width 1.5 | 2 | 3 -->
+<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="2"/>
 ```
 
 > ⚠️ **Color**: ALWAYS use `fill="#HEX"` on `<use data-icon="...">`. NEVER use `stroke` or `fill="none"`, even for stroke-style libraries.
@@ -382,21 +323,6 @@ Default reads typography from `spec_lock.md` (Quick: from its transient §2 typo
 
 ---
 
-## 6. Completion Routing (Default only)
+## 6. Completion and Export (Default only)
 
-After every SVG page passes the final quality check, load
-[`executor-notes.md`](./executor-notes.md) and complete its notes contract only
-when the effective Speaker Notes outcome in `design_spec.md §I` is enabled.
-When disabled, proceed directly to the route's conditional motion handling and
-Step 7.
-
-## 7. Next Steps After Completion (Default only)
-
-> **Auto-continuation**: After Visual Construction Phase and any enabled Logic Construction Phase are complete, the Executor proceeds directly to the post-processing pipeline.
-
-**Post-processing & Export**: Follow [`generate-pptx.md`](../workflows/generate-pptx.md)
-Step 7. That workflow owns the serial commands, gates, success criteria, and
-published artifacts; [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md) owns
-tool-specific flags and behavior.
-
-`svg_final/` may be opened directly or manually inserted into PowerPoint as an SVG picture. It is not a second PPTX route. Use `-s final` only for converter diagnostics; release exports use the default `svg_output/` source. Manual Convert-to-Shape behavior is unsupported.
+After every SVG page passes the final quality check, load [`executor-notes.md`](./executor-notes.md) only when the effective Speaker Notes outcome in `design_spec.md §I` is enabled, then proceed directly to the route's conditional motion handling and [`generate-pptx.md`](../workflows/generate-pptx.md) Step 7, which owns the serial post-processing and export commands.

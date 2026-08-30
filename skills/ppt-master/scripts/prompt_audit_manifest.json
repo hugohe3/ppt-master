@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 3250,
     "skills/ppt-master/SKILL.md": 1750,
-    "skills/ppt-master/references/executor-base.md": 12000,
+    "skills/ppt-master/references/executor-base.md": 10000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 3500,
     "skills/ppt-master/references/executor-visualization.md": 1250,
@@ -42,7 +42,7 @@
     "skills/ppt-master/templates/charts/chart-vocabulary.md": 1250,
     "skills/ppt-master/templates/tables/table-vocabulary.md": 500,
     "skills/ppt-master/templates/sounds/sound-vocabulary.md": 6250,
-    "skills/ppt-master/workflows/generate-pptx.md": 18000,
+    "skills/ppt-master/workflows/generate-pptx.md": 19000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
   },
   "load_sets": {
