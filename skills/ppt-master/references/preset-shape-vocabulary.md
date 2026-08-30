@@ -1,8 +1,8 @@
 # Native Preset Shape Vocabulary
 
 This is Executor's complete authoring-side map of the 187 registered DrawingML
-preset names. Read it once before choosing a newly authored page or template
-contour. The Office categories and family descriptions expose what exists and
+preset names. Read it once, completely, with the executor core before the first page
+(Generate) or at authored-mode entry (Create Template). The Office categories and family descriptions expose what exists and
 what each contour objectively depicts; the current page's meaning, visual
 system, and composition determine whether and how to use it.
 

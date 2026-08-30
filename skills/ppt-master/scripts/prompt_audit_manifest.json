@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 3250,
     "skills/ppt-master/SKILL.md": 1750,
-    "skills/ppt-master/references/executor-base.md": 9250,
+    "skills/ppt-master/references/executor-base.md": 9750,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 1750,
     "skills/ppt-master/references/executor-visualization.md": 1000,
@@ -249,12 +249,8 @@
         "skills/ppt-master/workflows/profiles/quick-generate.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/executor-base.md",
-        "skills/ppt-master/references/svg-effects.md",
-        "skills/ppt-master/references/native-shape-authoring.md",
         "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
-        "skills/ppt-master/references/executor-structure.md",
-        "skills/ppt-master/references/topology-assembly.md",
         "skills/ppt-master/references/canvas-formats.md",
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/image-layout-patterns.md",
@@ -292,7 +288,7 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 130000
+      "max_tokens": 115000
     },
     "route.generate.quick-generate.beautify": {
       "description": "Quick Generate with the shared strict 1:1 Beautify profile. Ceiling raised after BUDGET_LOAD_SET reported 136685 tokens.",
@@ -790,17 +786,13 @@
       "max_tokens": 200000
     },
     "stage.generate.executor.flat": {
-      "description": "Incremental flat Executor core with complete visual-construction authorities and a conservative audit envelope for only the locked preset or exact custom references; selection indexes remain planning-only.",
+      "description": "Executor resident core for flat pages: execution rules, everyday devices and effects, module triggers, plus the locked mode/style files. Deeper modules load on their routing triggers.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-base.md",
         "skills/ppt-master/references/shared-standards-core.md",
-        "skills/ppt-master/references/svg-effects.md",
-        "skills/ppt-master/references/native-shape-authoring.md",
-        "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
-        "skills/ppt-master/references/executor-structure.md",
-        "skills/ppt-master/references/topology-assembly.md",
+        "skills/ppt-master/references/preset-shape-vocabulary.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
           "exclude": [
@@ -822,7 +814,7 @@
           "allow_repeat": true
         }
       ],
-      "max_tokens": 71000
+      "max_tokens": 35000
     },
     "stage.generate.executor.structured": {
       "description": "Structured template execution layered on the flat/shared core.",
@@ -1170,13 +1162,12 @@
       "max_tokens": 1000
     },
     "stage.generate.executor.native-shape": {
-      "description": "Complete stock PowerPoint shape vocabulary, selection, and Boolean materialization authority, always included in Generate Executor contexts. Ceiling raised after BUDGET_LOAD_SET reported 9139 tokens.",
+      "description": "Native-shape selection and Boolean construction; loaded the first time a page's contour reaches beyond basic primitives (the preset vocabulary stays in the resident core).",
       "scope": "incremental",
       "files": [
-        "skills/ppt-master/references/native-shape-authoring.md",
-        "skills/ppt-master/references/preset-shape-vocabulary.md"
+        "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 10000
+      "max_tokens": 5000
     },
     "stage.shared.svg-effects": {
       "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
@@ -1193,6 +1184,53 @@
         "skills/ppt-master/references/artifact-ownership.md"
       ],
       "max_tokens": 6000
+    },
+    "stage.generate.executor.effects": {
+      "description": "Advanced effects and constructed styles; loaded the first time a page's visual job reaches beyond the everyday block in executor-base.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/svg-effects.md"
+      ],
+      "max_tokens": 10000
+    },
+    "stage.generate.executor.structure": {
+      "description": "Qualitative relationship grammar and topology assembly; loaded at the first page whose Structure decision is yes.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/executor-structure.md",
+        "skills/ppt-master/references/topology-assembly.md"
+      ],
+      "max_tokens": 5000
+    },
+    "route.generate.quick-generate.effects": {
+      "description": "Quick Generate plus the effects module on its executor-base trigger.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.effects"
+      ],
+      "files": [],
+      "max_tokens": 130000
+    },
+    "route.generate.quick-generate.native-shape": {
+      "description": "Quick Generate plus the native-shape module on its executor-base trigger.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.native-shape"
+      ],
+      "files": [],
+      "max_tokens": 130000
+    },
+    "route.generate.quick-generate.structure": {
+      "description": "Quick Generate plus the structure module on its executor-base trigger.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.structure"
+      ],
+      "files": [],
+      "max_tokens": 130000
     }
   },
   "duplicates": {

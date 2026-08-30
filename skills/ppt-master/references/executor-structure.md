@@ -2,7 +2,7 @@
 
 # Executor Shape Composition Grammar
 
-Runtime grammar for Slide-local qualitative relationships built from editable shapes; not a diagram catalog. Default and Quick read it once with their fixed construction bundle and reuse it for every per-page decision; loading it selects no `Structure=yes` and creates no geometry quota.
+Runtime grammar for Slide-local qualitative relationships built from editable shapes; not a diagram catalog. Default and Quick read it once at the first page whose Structure decision is `yes` and reuse it for every later page; loading it selects no `Structure=yes` and creates no geometry quota.
 
 **Hard rule — no Structure catalog**: never recall or resolve `structure/<key>`; compose from authoritative content, §IX relationships, the communication move, and the active visual system.
 

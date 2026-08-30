@@ -216,19 +216,19 @@ Load only the references the rows need; a mixed deck writes both `image_prompts.
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete.
 
 ```
-Read ${SKILL_DIR}/references/executor-base.md              # REQUIRED: flat/shared execution core
-Read ${SKILL_DIR}/references/shared-standards-core.md      # REQUIRED: SVG contract + shared aesthetic/leading baseline
-Read ${SKILL_DIR}/references/svg-effects.md                # REQUIRED: effects/construction vocabulary
-Read ${SKILL_DIR}/references/native-shape-authoring.md     # REQUIRED: native-shape selection and Boolean construction
-Read ${SKILL_DIR}/references/preset-shape-vocabulary.md    # REQUIRED: complete 187-name authoring vocabulary
-Read ${SKILL_DIR}/references/executor-structure.md         # REQUIRED: qualitative relationship and topology grammar
-Read ${SKILL_DIR}/references/topology-assembly.md          # REQUIRED: topology assembly material
-Read ${SKILL_DIR}/references/semantic-svg.md               # REQUIRED: semantic metadata boundary
+Read ${SKILL_DIR}/references/executor-base.md              # REQUIRED core: execution rules, device menu, everyday effects, module triggers
+Read ${SKILL_DIR}/references/shared-standards-core.md      # REQUIRED core: SVG contract + shared aesthetic/leading baseline
+Read ${SKILL_DIR}/references/semantic-svg.md               # REQUIRED core: semantic metadata boundary
+Read ${SKILL_DIR}/references/preset-shape-vocabulary.md    # REQUIRED core: complete 187-name preset vocabulary
 Read ${SKILL_DIR}/references/modes/<resolved-id>.md        # one preset id, or each `mode_references` id
 Read ${SKILL_DIR}/references/visual-styles/<resolved-id>.md # one preset id, or each `visual_style_references` id
+# Triggered modules — read completely the first time a page needs them (executor-base routing table):
+#   executor-structure.md + topology-assembly.md      first `Structure = yes` page
+#   native-shape-authoring.md                         first contour beyond rect / roundRect / circle / ellipse / line, or a Boolean / freeform
+#   svg-effects.md                                    first visual job beyond the everyday block
 ```
 
-Read these as one batch with the exact detail files named by the retained `spec_lock.md`; never reopen the planning indexes, infer adjacent bases, glob a catalog, or blend unselected identities (an unreferenced custom follows its behavior alone). Conditional modules load on [`executor-base.md`](../references/executor-base.md)'s routing table, never by analogy; `video-design.md` is read before the first SVG when §I records recorded/self-running/video delivery or §X a literal script. `executor-structured.md` owns template specs and prototypes; `executor-visualization.md` resolves a selected reference to one SVG plus its family branch. Read each reference once per valid context.
+Read the core as one batch with the exact detail files named by the retained `spec_lock.md`, then modules only on their triggers (each page's module line records them); never reopen the planning indexes, infer adjacent bases, glob a catalog, or blend unselected identities (an unreferenced custom follows its behavior alone). Conditional modules load on [`executor-base.md`](../references/executor-base.md)'s routing table, never by analogy; `video-design.md` is read before the first SVG when §I records recorded/self-running/video delivery or §X a literal script. `executor-structured.md` owns template specs and prototypes; `executor-visualization.md` resolves a selected reference to one SVG plus its family branch. Read each reference once per valid context.
 
 **Context**: follow `executor-base.md` §2.1 — reuse the retained Design Spec and lock; a fresh, resumed, compacted, or changed context rereads both once and reloads triggered inputs; the lock is reread after P05/P10/P15/…; the §IX roster renders one-for-one in order (repair within the confirmed range first, never during drawing); §IX is preferred wording and semantic authority, adapted only under the content-vs-expression contract, with sources read only for verification. When §X records a literal script, read the frozen `notes/total.md` once before P01 and design each visible state around its segment. Trust the latest `analysis/image_analysis.csv` (rerun `analyze_images.py` if `images/` changed; an empty folder means no inventory). `page-context` is a diagnostic only ([`artifact-ownership.md`](../references/artifact-ownership.md) §1).
 

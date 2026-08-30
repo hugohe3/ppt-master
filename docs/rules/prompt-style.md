@@ -121,8 +121,8 @@ against the v2.13.0 baseline, an Executor-phase core of roughly 1,300 lines
 across a role file plus a shared technical file produced richer pages than a
 4,000-line, 12-file mandatory bundle; the larger bundle flattened expression
 while passing every structural gate. Treat that as the working ceiling. When a
-core grows past it, shrink it by removing what is not authoring guidance —
-never by demoting an everyday capability to a trigger. What may stay in a
+core grows past it, shrink it by removing what is not authoring guidance or by
+moving a deeper module behind a trigger whose recall stays in the core. What may stay in a
 prompt file at all — craft, minimal contract, or tool documentation — and the
 procedure for moving content out are owned by
 [`prompt-layers.md`](prompt-layers.md).
