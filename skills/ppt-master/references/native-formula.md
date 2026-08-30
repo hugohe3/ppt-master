@@ -1,30 +1,25 @@
 # Native Formula Specification
 
-Shared authoring contract for editable PowerPoint math generated from exact
-LaTeX, either inline in Slide-local prose or as a standalone block.
+Authoring contract for editable PowerPoint math generated from exact LaTeX, inline in Slide-local prose or as a standalone block. Compiler profile, normalization, reverse import, and compatibility live in [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md#native-formula-compiler).
 
 ## 1. Trigger and Ownership
 
-**Trigger**: A page contains structural mathematical notation such as a
-fraction, radical, integral, n-ary expression, limit, matrix, delimiter
-construction, accent, or complex script.
+**Trigger**: a page contains structural mathematical notation — fraction, radical, integral, n-ary expression, limit, matrix, delimiter construction, accent, or complex script.
 
 | Layer | Ownership |
 |---|---|
 | Default Strategist | Record exact mathematical content as a canonical delimiter-free LaTeX expression body; do not classify its implementation |
-| Default Executor | Decide ordinary text versus inline native math versus block native math, then author the selected marker and SVG preview |
-| Active Quick context | Perform both content and authoring responsibilities directly |
+| Default Executor | Decide ordinary text versus inline versus block native math, then author the marker and SVG preview |
+| Active Quick context | Both responsibilities directly |
 | SVG-to-PPTX exporter | Compile marker LaTeX to editable Office Math and replace only the registered preview |
 
 | Content form | Authoring choice |
 |---|---|
-| Short variables, percentages, simple assignments, or notation such as `O(n log n)` | Ordinary editable SVG text |
-| One-line structural math embedded in prose whose native-height envelope fits the reserved row/module space | Inline native marker |
-| Matrix, `cases`, `aligned`, multiline derivation, standalone high-structure expression, or vertically expanding math that cannot fit its prose row | Block native marker |
+| Short variables, percentages, simple assignments, notation such as `O(n log n)` | Ordinary editable SVG text |
+| One-line structural math in prose whose native-height envelope fits the reserved row/module space | Inline marker |
+| Matrix, `cases`, `aligned`, multiline derivation, standalone high-structure expression, or vertically expanding math that cannot fit its prose row | Block marker |
 
-The Strategist's `Mathematical content` field does not pre-decide this choice.
-Formula handling is not a user-confirmed policy, image resource, manifest, or
-`spec_lock.md images` entry.
+Formula handling is not a user-confirmed policy, image resource, manifest, or `spec_lock.md images` entry.
 
 ---
 
@@ -38,32 +33,11 @@ Formula handling is not a user-confirmed policy, image resource, manifest, or
 </text>
 ```
 
-**Hard rule — one leaf run**: Put non-empty LaTeX directly in
-`data-pptx-inline-formula` on a leaf `<tspan>`. Canonical authoring omits outer
-`$...$`, `$$...$$`, `\(...\)`, and `\[...\]` delimiters, though the compiler
-accepts and removes one complete outer pair. Give that `<tspan>` one non-empty
-direct preview string with no leading/trailing whitespace, no child element,
-and no `x`, `y`, `dx`, `dy`, or paragraph-layout metadata; spacing belongs to
-the surrounding text. The marker inherits its computed size and visible solid
-fill; exported math uses the project text language and Cambria Math. Local
-`\color` / `\textcolor` scopes override the marker fill on both selectable
-formula runs and non-selectable structural controls. `\boldsymbol` / `\bm`
-also applies its bold-italic style to structural control glyphs. Neither form
-changes unrelated marker defaults.
+**Hard rule — one leaf run**: non-empty delimiter-free LaTeX in `data-pptx-inline-formula` on a leaf `<tspan>` (the compiler strips one complete outer `$…$` / `$$…$$` / `\(…\)` / `\[…\]` pair) with one non-empty direct preview string, no surrounding whitespace, no child element, and no `x`, `y`, `dx`, `dy`, or paragraph-layout metadata — spacing belongs to the surrounding text. The marker inherits its computed size and visible solid fill; local `\color` / `\textcolor` and `\boldsymbol` / `\bm` scopes apply to formula runs and structural control glyphs. Exported math uses the project text language and Cambria Math.
 
-**Hard rule — Slide-local ordinary text only**: Do not place an inline marker
-inside a structured Layout placeholder, a Master/Layout layer, imported
-preserved `txBody`, geometry transport subtree, another inline marker, or any
-`data-pptx-replace-with` subtree. Export keeps the surrounding text runs in the
-same `a:p` and replaces only the marker run with `a14:m > m:oMath`.
+**Hard rule — Slide-local ordinary text only**: never inside a structured Layout placeholder, Master/Layout layer, imported preserved `txBody`, geometry transport subtree, another inline marker, or a `data-pptx-replace-with` subtree. Export keeps the surrounding runs in the same `a:p` and replaces only the marker run with `a14:m > m:oMath`.
 
-**Hard rule — reserve native height**: Treat the parsed formula structure, not
-its flat SVG preview, as vertical layout truth. Keep adjacent content outside
-the native ascent/descent required by fractions, radicals, nested scripts,
-n-ary limits, accents, and other stacked structures. The exporter and SVG
-checker use the same structural envelope. If the prose row or root module
-cannot reserve that space without overlap, isolate the formula line or use the
-block marker.
+**Hard rule — reserve native height**: the parsed formula structure, not its flat preview, is vertical layout truth. Keep adjacent content outside the native ascent/descent of fractions, radicals, nested scripts, n-ary limits, and accents; exporter and checker use the same envelope. If the prose row or module cannot reserve that space, isolate the formula line or use the block marker.
 
 ### 2.2 Block formula
 
@@ -81,95 +55,16 @@ block marker.
 </g>
 ```
 
-**Hard rule — block metadata is truth**: Write one direct
-`<metadata type="application/json">` child with non-empty `latex`, `display:
-block`, `font_size` in `(0, 400]`, a visible `color`, and `align:
-left|center|right`. Use the same canonical delimiter-free form described above.
-Give the group finite `data-pptx-x/y`, positive `data-pptx-width/height`, and
-matching root-coordinate `data-pptx-bounds`. Export replaces the complete group
-with `a14:m > m:oMathPara > m:oMath`.
+**Hard rule — block metadata is truth**: one direct `<metadata type="application/json">` child with non-empty `latex`, `display: block`, `font_size` in `(0, 400]`, a visible `color`, and `align: left|center|right`; finite `data-pptx-x/y`, positive `data-pptx-width/height`, and matching root-coordinate `data-pptx-bounds`. Export replaces the whole group with `a14:m > m:oMathPara > m:oMath`.
 
-**Hard rule — preview is SVG, never fallback**: Make every marker preview
-semantically equivalent with ordinary SVG text/shapes/lines/paths. Do not use
-`<image>`, `<foreignObject>`, visible raw LaTeX, or another runtime renderer.
-The exporter discards the registered preview and emits no picture branch.
+**Hard rule — preview is SVG, never fallback**: every preview is semantically equivalent ordinary SVG text/shapes/lines/paths — no `<image>`, `<foreignObject>`, visible raw LaTeX, or runtime renderer. The exporter discards the preview and emits no picture branch.
 
 ---
 
 ## 3. Source, Failure, and Validation
 
-**Forward input profile**: The compiler implements every explicitly named
-LaTeX-to-OMML input and behavior in Microsoft's documented
-[Microsoft 365 LaTeX profile](https://learn.microsoft.com/en-us/office/math/latex)
-(Windows 2606 / Mac 16.110) and
-[mhchem profile](https://learn.microsoft.com/en-us/office/math/latex.mhchem)
-(Windows 2605 / Mac 16.109). This includes outer delimiters, all listed symbols
-and relations, fractions and binomials, roots, right and left scripts,
-delimiters and `\middle`, accents, bars and group characters, limits, all 21
-listed n-ary operators, standard/custom functions, matrices and equation-array
-environments, CD diagrams, fonts and local colors, boxes and phantoms, spacing,
-global 0–9 argument macros, and the documented `\ce` chemistry grammar. The
-closed command tables in `scripts/svg_to_pptx/native_objects/formula_profile.py`
-are the executable vocabulary; the public compiler facade and OMML structure
-gate live in `scripts/svg_to_pptx/native_objects/formula_compiler.py` and
-`scripts/svg_to_pptx/native_objects/formula_omml.py`. Microsoft's open-ended
-“etc.” wording for additional relation aliases does not define undisclosed
-names; only explicitly named commands and retained project aliases are
-contractual.
+**Accepted input**: every explicitly named command in Microsoft's documented [Microsoft 365 LaTeX profile](https://learn.microsoft.com/en-us/office/math/latex) and [mhchem profile](https://learn.microsoft.com/en-us/office/math/latex.mhchem) — symbols, fractions and binomials, roots, scripts, delimiters and `\middle`, accents, limits, n-ary operators, functions, matrix and equation-array environments, CD diagrams, fonts and local colors, boxes and phantoms, spacing, 0–9 argument macros, `\ce` chemistry. Unknown commands or environments, Microsoft's explicitly unsupported commands, unsupported mhchem arrows, unescaped `%` comments, invalid macros, and resource-limit overflow block conversion: PPT Master never leaks unresolved LaTeX into a released slide.
 
-Implementations:
-[`formula.py`](../scripts/svg_to_pptx/native_objects/formula.py),
-[`formula_ast.py`](../scripts/svg_to_pptx/native_objects/formula_ast.py),
-[`formula_parser.py`](../scripts/svg_to_pptx/native_objects/formula_parser.py),
-[`formula_run_properties.py`](../scripts/svg_to_pptx/native_objects/formula_run_properties.py),
-[`inline_formula.py`](../scripts/svg_to_pptx/native_objects/inline_formula.py).
+**Hard rule — repair LaTeX upstream**: unsupported source or an invalid marker blocks the page. Rewrite within the profile without changing the planned mathematics, or return it to the content owner. Never substitute a PNG, flatten structural math into ordinary text, hand-write OMML, or leave raw LaTeX visible.
 
-**Native normalization**: `\dfrac` / `\tfrac`, `\dbinom` / `\tbinom`, and
-continued-fraction alignment normalize to the corresponding OMML structure;
-explicit big-delimiter grades become auto-sizing delimiters; `\mathscr`
-normalizes to `\mathcal`; `smallmatrix` normalizes to `matrix`; PowerPoint array
-columns become centered; style/size commands and equation tags are accepted but
-not stored. Color is stored in generated formula runs and structural control
-properties.
-
-**Narrow reverse import**: `pptx_to_svg.py` rebuilds a block formula marker or
-same-paragraph inline marker only when one `a14:m` root passes this compiler's
-closed OMML validator and its normalized structure can be serialized back to
-LaTeX accepted by the same compiler. The reconstructed LaTeX is canonicalized;
-it is not the original spelling. A formula-only `m:oMathPara` text shape becomes
-one bounded block marker when its carrier also fits the unstyled rectangular
-native-formula contract; carrier grouping, paint, effects, rotation, hyperlink,
-or placeholder ownership force fallback instead of being silently discarded.
-Supported `m:oMath` zones remain inline among their surrounding text runs. Both
-forms receive a dependency-free linear SVG preview. This contract covers PPT
-Master-emitted vocabulary, not arbitrary third-party OMML. Tolerant import
-reports `formula-not-reconstructed`, renders readable formula text, and retains
-a relationship-free unchanged source `txBody` as opaque metadata; strict import
-stops instead.
-
-**Fail-closed boundary**: Input containing unknown commands or environments,
-Microsoft's explicitly unsupported commands, unsupported mhchem arrows,
-unescaped `%` comments, invalid macros, or any resource-limit overflow blocks
-conversion. This is stricter than Microsoft 365's literal-text passthrough and
-macro-limit behavior: PPT Master never leaks unresolved LaTeX into a released
-slide.
-
-**Hard rule — repair LaTeX upstream**: Unsupported source or an invalid marker
-blocks the page. Rewrite within the documented profile without changing the
-planned mathematics; otherwise return it to the content owner. Never substitute
-a PNG, flatten structural math into ordinary text, hand-write OMML, or leave raw
-LaTeX visible.
-
-**Compatibility boundary**: The generated package uses standard editable Office
-Math and retains the PowerPoint 2010+ package target. The executable profile is
-pinned to the Microsoft documentation versions above. Repository verification
-covers compilation, OMML structure, and PPTX packaging; it is not a complete
-Microsoft 365 UI rendering/editability certification. Earlier PowerPoint
-versions are not the source-profile baseline. WPS, Keynote, LibreOffice, and
-other clients receive no embedded formula fallback and are outside the
-rendering/editability contract.
-
-**Validation**: The first-page/final SVG checker validates every marker,
-compiles its LaTeX, and applies the shared native-height envelope to page/module
-text bounds before release; native export repeats validation and uses that
-envelope for the generated text frame.
+**Validation**: the first-page/final SVG checker validates every marker, compiles its LaTeX, and applies the shared native-height envelope to page/module text bounds; native export repeats validation and uses that envelope for the generated text frame. Output is standard editable Office Math for PowerPoint 2010+; WPS, Keynote, and LibreOffice receive no embedded fallback and are outside the rendering/editability contract.

@@ -20,9 +20,9 @@
     "skills/ppt-master/SKILL.md": 1750,
     "skills/ppt-master/references/executor-base.md": 8000,
     "skills/ppt-master/references/executor-structured.md": 5500,
-    "skills/ppt-master/references/executor-chart.md": 3500,
+    "skills/ppt-master/references/executor-chart.md": 1750,
     "skills/ppt-master/references/executor-visualization.md": 1250,
-    "skills/ppt-master/references/executor-structure.md": 2250,
+    "skills/ppt-master/references/executor-structure.md": 1750,
     "skills/ppt-master/references/topology-assembly.md": 3750,
     "skills/ppt-master/references/executor-table.md": 1250,
     "skills/ppt-master/references/executor-image.md": 2000,
@@ -45,7 +45,9 @@
     "skills/ppt-master/workflows/generate-pptx.md": 10000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500,
     "skills/ppt-master/references/confirm-surface.md": 3000,
-    "skills/ppt-master/references/video-design.md": 2500
+    "skills/ppt-master/references/video-design.md": 2500,
+    "skills/ppt-master/references/native-formula.md": 1500,
+    "skills/ppt-master/references/semantic-svg.md": 1500
   },
   "load_sets": {
     "bootstrap.routing": {
