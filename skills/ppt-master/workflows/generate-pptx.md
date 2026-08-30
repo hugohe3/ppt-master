@@ -163,7 +163,7 @@ If the user selects chat after launch, apply `confirm-surface.md`'s in-run switc
 
 **Output**: `design_spec.md`, `spec_lock.md`, and `notes/total.md` only on the narration branch.
 
-**✅ Internal checkpoint** — facts read; confirmation consumed once; production fields, mathematics, carrier mix, and §VIII resource jobs resolved; Gate 1 passed; refinement approved when enabled; lock derived; split handling resolved; every §IX `Audience move` present. Do not print; auto-proceed.
+**✅ Internal checkpoint** — facts read; confirmation consumed once; production fields, mathematics, per-page `Relationships`, and §VIII resource jobs resolved; Gate 1 passed; refinement approved when enabled; lock derived; split handling resolved; every §IX `Audience move` present. Do not print; auto-proceed.
 
 ---
 
