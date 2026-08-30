@@ -34,7 +34,7 @@
     "skills/ppt-master/references/native-data-interface.md": 5000,
     "skills/ppt-master/references/pptx-structure-interface.md": 3000,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
-    "skills/ppt-master/references/strategist.md": 14000,
+    "skills/ppt-master/references/strategist.md": 12000,
     "skills/ppt-master/references/strategist-image.md": 3250,
     "skills/ppt-master/references/strategist-template.md": 2500,
     "skills/ppt-master/templates/design_spec_reference.md": 3500,
@@ -198,8 +198,6 @@
         "skills/ppt-master/references/strategist.md",
         "skills/ppt-master/references/strategist-image.md",
         "skills/ppt-master/references/canvas-formats.md",
-        "skills/ppt-master/references/image-layout-spec.md",
-        "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/templates/design_spec_reference.md",
         "skills/ppt-master/templates/spec_lock_reference.md",
         "skills/ppt-master/references/modes/_index.md",
@@ -252,8 +250,6 @@
         "skills/ppt-master/references/preset-shape-vocabulary.md",
         "skills/ppt-master/references/semantic-svg.md",
         "skills/ppt-master/references/canvas-formats.md",
-        "skills/ppt-master/references/image-layout-spec.md",
-        "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/modes/_index.md",
         "skills/ppt-master/references/visual-styles/_index.md",
         "skills/ppt-master/references/image-renderings/_index.md",
@@ -443,7 +439,7 @@
       "max_tokens": 130000
     },
     "route.generate.planning-ai": {
-      "description": "Generate-PPTX planning after AI imagery is confirmed; the fixed context already carries image-layout and resource-planning decision authorities. Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
+      "description": "Generate-PPTX planning after AI imagery is confirmed; the fixed context already carries the resource-planning decision authorities (image-layout files are Executor's). Ceiling raised after BUDGET_LOAD_SET reported 116384 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning-image"

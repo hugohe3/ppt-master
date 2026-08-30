@@ -80,8 +80,6 @@ Read the planning-capability batch in one pass — a capability map, not a usage
 
 ```
 Read ${SKILL_DIR}/references/canvas-formats.md
-Read ${SKILL_DIR}/references/image-layout-spec.md
-Read ${SKILL_DIR}/references/image-layout-patterns.md
 Read ${SKILL_DIR}/references/modes/_index.md
 Read ${SKILL_DIR}/references/visual-styles/_index.md
 Read ${SKILL_DIR}/references/image-renderings/_index.md

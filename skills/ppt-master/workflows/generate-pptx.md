@@ -104,8 +104,6 @@ After Stage 1 and the template handoff, load the fixed planning-capability block
 
 ```
 Read ${SKILL_DIR}/references/strategist-image.md
-Read ${SKILL_DIR}/references/image-layout-spec.md
-Read ${SKILL_DIR}/references/image-layout-patterns.md
 Read ${SKILL_DIR}/references/modes/_index.md
 Read ${SKILL_DIR}/references/visual-styles/_index.md
 Read ${SKILL_DIR}/references/image-renderings/_index.md
