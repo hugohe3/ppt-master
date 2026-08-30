@@ -1976,7 +1976,7 @@
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
-              "fingerprint": "f77d8a752b85",
+              "fingerprint": "dcbb7a6baae7",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
@@ -2018,7 +2018,7 @@
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
-              "fingerprint": "70d500bb46dc",
+              "fingerprint": "7213f2c7ffe7",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
@@ -2114,7 +2114,7 @@
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
-              "fingerprint": "5174447ee0a8",
+              "fingerprint": "dc21169163b7",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
@@ -2150,7 +2150,7 @@
             {
               "path": "skills/ppt-master/references/executor-structured.md",
               "role": "consumer",
-              "fingerprint": "e5dcb49a9a61",
+              "fingerprint": "7568538df9f4",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
