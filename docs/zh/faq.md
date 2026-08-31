@@ -314,7 +314,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。
 
-Quick 省略独立规划阶段，但仓库没有文档化的测量或保证表明它会降低多少 token；逐页 SVG 创作仍然存在。Quick 保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约、首屏校准或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
+Quick 省略独立规划阶段，但仓库没有文档化的测量或保证表明它会降低多少 token；逐页 SVG 创作仍然存在。Quick 保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 

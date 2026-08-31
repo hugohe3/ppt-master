@@ -10,7 +10,7 @@ description: Quick-only Generate profile for reconstructing one or more source i
 
 **Support boundary — Codex required**: documented and validated for Codex only, because it depends on Codex's native reference-image generation/editing and direct inspection of every derived layer. Other hosts may happen to work; the repository makes no compatibility claim and defines no alternate host or generic image-backend fallback.
 
-**Hard rule — Quick only**: always load [`quick-generate.md`](./quick-generate.md), never `generate-pptx.md`, without the user saying "Quick"; skip Strategist, Confirm UI, template selection, Design Spec, lock, and the Default first-page gate. The main agent decides the reconstruction, prepares all resources, hand-authors SVG, runs the lockless final checker, and exports.
+**Hard rule — Quick only**: always load [`quick-generate.md`](./quick-generate.md), never `generate-pptx.md`, without the user saying "Quick"; skip Strategist, Confirm UI, template selection, Design Spec, lock, and the Default gate cadence. The main agent decides the reconstruction, prepares all resources, hand-authors SVG, runs Quick's checker gates, and exports.
 
 **Hard rule — source surface, not template application**: stay in Quick free design; never install or apply a Brand/Style/Layout/Deck workspace — it would compete with the canonical page geometry. A reusable-system request routes to Create Template.
 

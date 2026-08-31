@@ -62,9 +62,9 @@ base plus subject or foreground layers. Multiple non-overlapping objects with
 padded bounding boxes may share one generated plate, then be separated into
 independent objects through grid slicing or SVG bounding-box crops. A
 whole-slide screenshot skin remains forbidden. Quick bypasses separate
-planning/confirmation, the first-page gate, and preview finalization; source
-understanding and resource preparation still run as needed, and one lockless
-final quality gate remains. Exactly one runtime procedure is loaded.
+planning/confirmation and preview finalization; source understanding and
+resource preparation still run as needed, and the early gate on long rosters
+plus one lockless final quality gate remain. Exactly one runtime procedure is loaded.
 Create Template has its own workspace lifecycle, while Edit Native PPTX imports
 an existing deck into a source-preserving round-trip workspace; the route table
 later in this document covers all three top-level routes.
@@ -93,9 +93,9 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 [Executor]
     ├── Live preview starts and stays available during generation
-    ├── Generate P01 → svg_quality_checker.py --stage first-page --json
-    ├── Use P01 as a method sample to classify the complete issue set; fix every blocking error and selected advisory warnings
-    ├── Generate P02 through the final page continuously → svg_output/ (one page gate per first-exercised `not-exercised` item; no other checker calls in between)
+    ├── Generate P01 through P05 → svg_quality_checker.py --stage early --json (rosters of six or fewer pages skip this gate)
+    ├── Use the authored pages as a method sample to classify the complete issue set; fix every blocking error and selected advisory warnings
+    ├── Generate the remaining pages continuously → svg_output/ (no checker calls in between)
     ├── [Quality Check] svg_quality_checker.py --stage final --json (mandatory — 0 errors; warnings are non-blocking)
     └── [Speaker notes, conditional] effective Speaker Notes outcome enabled → complete notes/total.md
     ↓
@@ -220,7 +220,7 @@ Post-processing scripts convert supported SVG vector elements to DrawingML. Text
 
 `quick-generate` retains the source-understanding and resource-preparation work
 needed by the deck, but skips the separate Strategist planning/confirmation
-phase, first-page gate, and `finalize_svg.py`. The current agent follows every
+phase and `finalize_svg.py`. The current agent follows every
 explicit user requirement and makes the remaining content, page, visual, and
 resource decisions automatically in one active context. It resolves a mode and
 visual style, considers the complete carrier menu—images, transparent
@@ -561,7 +561,7 @@ Generate routing selects one runtime authority before loading its procedure: [`w
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
-Three boundaries are especially important to the architecture. First, page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, default-pipeline cadence is `P01 → first-page gate → remaining pages (one page gate per first-exercised not-exercised item) → final gate`. P01 is a method sample: execution emits a `gate-signal`, then carries resolved method rules into later pages; no page batch interrupts P02 through the final page, and the only mid-run checker call is the first-exercise page gate. `quick-generate` retains serial hand-authoring and uses P01 as its visual-system calibration baseline, skips the first-page gate, and runs one lockless final gate after the complete roster exists. Third, routing is deterministic: raw PPTX template requests, beautify-profile requests, Edit Native PPTX requests, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
+Three boundaries are especially important to the architecture. First, page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, pipeline cadence is `P01–P05 → early gate (skipped on rosters of six or fewer pages) → remaining pages → final gate`. The first five pages are a method sample: execution emits a `gate-signal`, then carries resolved method rules into later pages; no page batch or mid-run checker call interrupts the remaining pages, and every checker invocation follows a gate point or one consolidated repair pass. `quick-generate` retains serial hand-authoring, uses P01 as its visual-system calibration baseline, shares the same early gate on rosters of seven or more pages, and runs one lockless final gate after the complete roster exists. Third, routing is deterministic: raw PPTX template requests, beautify-profile requests, Edit Native PPTX requests, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
 In the default pipeline, the Role Switching Protocol (mandated read of `references/<role>.md` before mode change) serves two reinforcing purposes: forcing fresh role instructions into context overrides drift from the previous mode, and the visible marker in the conversation transcript creates an audit trail so the user can see when the agent moved between modes — critical when reviewing why a particular decision was made.
 
@@ -699,7 +699,7 @@ The architectural reasons worth knowing here:
 
 **Why placed before post-processing, not after.** Post-processing rewrites SVG (icon embedding, image inlining), which would mask source-level violations. Reading `svg_output/` directly catches the Executor's actual output, before any cleanup that might paper over a bug.
 
-**Why the default pipeline has first-page and final checks.** The P01 gate treats the first page as a method sample: it separates method-level, page-local, and not-yet-exercised capabilities, reviews the complete issue set, then fixes every blocking error and selected advisory warnings in one consolidated loop. After it passes, P02 through the final page are generated continuously; the first page that exercises a listed `not-exercised` item runs one page gate, and only the final gate inspects the complete authored set before release. The first calibrates method, while the second verifies the whole deck, so neither substitutes for the other.
+**Why the pipeline has early and final checks.** The early gate treats the first five pages as a method sample: it separates method-level, page-local, and not-yet-exercised capabilities, reviews the complete issue set, then fixes every blocking error and selected advisory warnings in one consolidated loop; rosters of six or fewer pages skip it and go straight to the final gate. After it passes, the remaining pages are generated continuously without checker calls, and only the final gate inspects the complete authored set before release. The first calibrates method, while the second verifies the whole deck, so neither substitutes for the other.
 
 **Severity model: errors block, warnings do not, and there is intentionally no auto-fix.** Severity is determined by whether the input maps deterministically and legally, not merely by whether it uses the recommended spelling:
 

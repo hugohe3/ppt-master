@@ -32,6 +32,15 @@ def _first_page_target(target: str) -> str:
     return str(svg_files[0]) if svg_files else target
 
 
+def _early_targets(target: str) -> list[Path]:
+    """Resolve a project/directory target to every authored SVG page so far."""
+    path = Path(target)
+    if path.is_file():
+        return [path]
+    svg_root = path / "svg_output" if (path / "svg_output").is_dir() else path
+    return discover_slide_svgs(svg_root) if svg_root.is_dir() else []
+
+
 def _page_target(target: str, page: str) -> str:
     """Resolve one requested page while keeping it inside ``svg_output/``."""
     target_path = Path(target).resolve()
@@ -86,6 +95,7 @@ def _default_json_report_path(
     report_name = {
         "final": "svg_quality_report.json",
         "first-page": "svg_quality_first_page_report.json",
+        "early": "svg_quality_early_report.json",
         "page": "svg_quality_page_report.json",
     }[stage]
     if (
@@ -114,9 +124,11 @@ def print_usage() -> None:
     print("  python3 scripts/svg_quality_checker.py templates/decks/中国电信/templates --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
-    print("  --stage <first-page|page|final>")
-    print("                                  first-page checks only the first authored SVG;")
-    print("                                  page checks only --page with the same partial")
+    print("  --stage <early|first-page|page|final>")
+    print("                                  early checks every authored SVG so far, each")
+    print("                                  under the partial structure rules (the mid-roster")
+    print("                                  gate); first-page checks only the first authored")
+    print("                                  SVG; page checks only --page with the same partial")
     print("                                  structure rules; final (default) requires the")
     print("                                  complete declared page roster.")
     print("  --page <basename|path>         Required with --stage page; must resolve under")
@@ -193,10 +205,10 @@ def main() -> None:
     if "--stage" in sys.argv:
         idx = sys.argv.index("--stage")
         if idx + 1 >= len(sys.argv) or sys.argv[idx + 1].startswith("--"):
-            print("[ERROR] --stage requires first-page, page, or final")
+            print("[ERROR] --stage requires early, first-page, page, or final")
             sys.exit(1)
         stage = sys.argv[idx + 1]
-        if stage not in {"first-page", "page", "final"}:
+        if stage not in {"early", "first-page", "page", "final"}:
             print(f"[ERROR] Unsupported quality-check stage: {stage}")
             sys.exit(1)
     if "--page" in sys.argv:
@@ -241,24 +253,31 @@ def main() -> None:
     else:
         if roundtrip:
             checker.check_roundtrip_workspace(target)
-        elif stage == "first-page":
-            check_target = _first_page_target(target)
-        elif stage == "page":
-            try:
-                check_target = _page_target(target, page or "")
-            except ValueError as exc:
-                print(f"[ERROR] {exc}")
+        elif stage == "early":
+            early_files = _early_targets(target)
+            if not early_files:
+                print("[ERROR] --stage early found no authored SVG pages")
                 sys.exit(1)
+            for svg_file in early_files:
+                checker.check_directory(str(svg_file), expected_format)
         else:
-            check_target = target
-        if not roundtrip:
+            if stage == "first-page":
+                check_target = _first_page_target(target)
+            elif stage == "page":
+                try:
+                    check_target = _page_target(target, page or "")
+                except ValueError as exc:
+                    print(f"[ERROR] {exc}")
+                    sys.exit(1)
+            else:
+                check_target = target
             checker.check_directory(check_target, expected_format)
 
     if not roundtrip and stage == "final" and Path(target).is_dir():
         if checker._has_incomplete_page_roster:
             print(
                 "[TIP] This final-stage run found an incomplete page roster. "
-                "During serial authoring, use --stage first-page for the first-page "
+                "During serial authoring, use --stage early for the mid-roster "
                 "gate; keep --stage final for the complete deck."
             )
 

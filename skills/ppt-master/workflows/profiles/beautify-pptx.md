@@ -136,7 +136,7 @@ Run Step 4's confirmation orchestration unchanged. In the UI branch read `confir
 
 ## 6. Author + Export
 
-**Quick**: follow [`quick-generate.md`](./quick-generate.md) §3–4 with the inventory as the exact roster and frozen-content contract; keep source order, hand-author every page, run the lockless final checker, export with `--quick-generate`; no Confirm UI, Design Spec, lock, first-page gate, or `finalize_svg.py`. **Long-deck review cadence (may adapt)**: after about five pages or at a section boundary, reread only the inventory summary/current-page views and cross-page anchors — no checker, no gate — and send one `authored/total` status per batch.
+**Quick**: follow [`quick-generate.md`](./quick-generate.md) §3–4 with the inventory as the exact roster and frozen-content contract; keep source order, hand-author every page, run Quick's checker gates (early on rosters of seven or more pages, lockless final), export with `--quick-generate`; no Confirm UI, Design Spec, lock, or `finalize_svg.py`. **Long-deck review cadence (may adapt)**: after about five pages or at a section boundary, reread only the inventory summary/current-page views and cross-page anchors — a reread, not an extra checker call — and send one `authored/total` status per batch.
 
 **Default**: run [`generate-pptx`](../generate-pptx.md) Steps 6–7. The Executor re-lays-out each page from the lock's semantic anchors plus page/source/template context (page-local colors, gradients, effects, and export-safe faces need no lock rows), regenerates charts/tables as native SVG from the extracted data, and re-lays-out the source pictures. Step 7 owns the serial post-processing commands, gates, and artifacts.
 

@@ -13,7 +13,7 @@ description: Default Generate PPTX authority for source intake, planning, SVG au
 **Generate-specific execution discipline**:
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a generator over `svg_output/`. `preset_shape_svg.py` and `shape_boolean_svg.py` provide only their stdout fragments after the agent chooses role, operands, paint, and z-order.
-- SVG cadence: P01 → first-page gate → remaining pages → final gate. No batches, no other mid-run checker calls.
+- SVG cadence: P01–P05 → early gate (a planned roster of six or fewer pages skips it) → remaining pages → final gate. No batches, no other mid-run checker calls; every checker invocation follows a gate point whose covered pages all exist or the end of one consolidated repair pass.
 - Gate checklists are internal: on success continue with at most one compact status line; on failure report only the blocking items and required recovery.
 
 **SVG page-design boundary**: `svg_output/` is the complete page-design source — every visible element of the exported slide is in the page SVG or referenced by it; templates, `design_spec.md`, and `spec_lock.md` never supply content at export ([`shared-standards-core.md`](../references/shared-standards-core.md) §4.0). Export compiles only the selected route's explicit structure contract (`flat` Slide-local; `structured` Master/Layout/Slide parts) and never infers structure. `svg_final/` is an optional preview release export never reads. Notes, animations, narration, and Edit Native PPTX stay outside this closure.
@@ -241,20 +241,20 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 Default first free port from `6060` (`--port N` binds strictly); read the URL from output or `<project_path>/live_preview/lock.json` and report it — or the launch failure — before the first SVG. It is a side process: never wait for it or for user confirmation, and keep it running until the user clicks **Exit preview** or asks in chat. Do not read or apply submitted annotations during generation; that window opens after Step 7 ([`live-preview.md`](stages/live-preview.md), which also describes staged direct edits).
 
-> ⚠️ **Main-agent only**: SVG generation stays in the current main agent — page design depends on full upstream context. Cadence: P01 → first-page gate → remaining pages → final gate, in one context, no batches or other mid-run checker calls; reload under Context validity above after context invalidation.
+> ⚠️ **Main-agent only**: SVG generation stays in the current main agent — page design depends on full upstream context. Cadence: P01–P05 → early gate (a planned roster of six or fewer pages skips it) → remaining pages → final gate, in one context, no batches or other mid-run checker calls; reload under Context validity above after context invalidation.
 
 **Visual Construction Phase**: generate pages sequentially into `<project_path>/svg_output/`. Each SVG carries the slide's complete visible design (a JSON-first Chart/Table is the sole exception: inline JSON authoritative, visible subtree an approximate preview). Native shapes follow [`native-shape-authoring.md`](../references/native-shape-authoring.md), loaded at the first contour beyond basic primitives while the preset vocabulary is read before page one: independent atoms first, Merge Shapes only when contour semantics require it, freeform last. `mirror|layout` pages start from the complete `page_layouts` SVG and preserve inherited visuals, root identity, atoms, and slots (strict keeps the contract; `layout` may reflow carrier text inside unchanged slot bounds; adaptive uses a Strategist-declared Layout; a required atom or slot change returns upstream, and Executor never edits `spec_lock.md`); `style`, free-design, and brand-only pages are flat per `executor-base.md` and [`semantic-svg.md`](../references/semantic-svg.md).
 
 **Motion-ready image composition**: only when an explicit user motion instruction, an enabled Custom Animations outcome in §I, or an existing `animations.json` activates custom motion, evaluate §IX `Motion suggestion` rows and author any in-slide image states or cross-slide continuity now under [`executor-image.md`](../references/executor-image.md), each revealable or continuing Slide-local unit in a descriptive direct-root `<g id>`. Effects, pairing, order, and timing stay in the custom stage after the final gate; a suggestion alone activates nothing; deterministic Morph needs the continuing object as a direct-root group on both pages.
 
-**First-page gate (Mandatory)** — after the first SVG, before page 2:
+**Early gate (Mandatory)** — after the fifth SVG, before page 6; a planned roster of six or fewer pages skips this gate and goes straight to the final gate:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
-  --canonical-authoring --stage first-page --json
+  --canonical-authoring --stage early --json
 ```
 
-Run unfiltered, review the complete P01 issue set, fix every blocking error plus selected warnings in one consolidated pass, verify once; a still-failing verification is the next batch. If terminal output is truncated, read only the issue arrays from `validation/svg_quality_first_page_report.json`. The gate validates the method, not just the page — emit one line before editing:
+The stage checks every authored page so far under the partial-roster rules. Run unfiltered, review the complete issue set, fix every blocking error plus selected warnings in one consolidated pass, verify once; a still-failing verification is the next batch. If terminal output is truncated, read only the issue arrays from `validation/svg_quality_early_report.json`. The gate validates the method, not just the pages — emit one line before editing:
 
 ```
 gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
@@ -262,11 +262,11 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 
 | Signal | Reading |
 |---|---|
-| Two or more issues share a category and direction | Method-level bias — resolve to the authoritative rule before P02 (for text extents: correct the per-role calibration table — rerun `python3 ${SKILL_DIR}/scripts/text_measure.py calibrate <project_path> --outline` or add the missing `--role` — then every later page estimates by that arithmetic and measures nothing); a correction fitted to the observed offset patches only this sample |
-| One isolated issue tied to this page's structure | Page-local — fix and continue |
-| A recurring element appears for the first time (furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
+| Two or more issues share a category and direction — on one page or across pages | Method-level bias — resolve to the authoritative rule before P06 (for text extents: correct the per-role calibration table — rerun `python3 ${SKILL_DIR}/scripts/text_measure.py calibrate <project_path> --outline` or add the missing `--role` — then every later page estimates by that arithmetic and measures nothing); a correction fitted to the observed offset patches only this sample |
+| One isolated issue tied to a single page's structure | Page-local — fix and continue |
+| A recurring element (furniture, caption format, section numbering, accent discipline) drifts between its occurrences or is still unsettled | It will be copied to every later page — settle its semantics now |
 
-`not-exercised` names what P01 could not test (a cover typically omits multi-line text, columns, charts, captions, data objects); carry each resolved rule forward as arithmetic. Every later page runs without checker calls; a listed item first exercised later is held to the carried-forward rule and caught by the final gate.
+`not-exercised` names what P01–P05 could not test (five pages usually exercise multi-line text, columns, and captions; charts, tables, or other data objects may still be pending); carry each resolved rule forward as arithmetic. Every later page runs without checker calls; a listed item first exercised later is held to the carried-forward rule and caught by the final gate.
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, before annotations and speaker notes:
 
@@ -332,6 +332,7 @@ Append `--native-charts-and-tables` only for an explicit editable Chart/Table de
 ## ✅ Generate PPTX Complete
 
 - [x] Image readiness gate passed
+- [x] Every checker invocation followed a gate point (early after P05 on a roster of seven or more pages, final after the complete roster) or one consolidated repair pass — never a page in progress or an individual fix
 - [x] Carrier receipt compared with the retained page decisions; contradictions repaired without treating counts as quotas
 - [x] Notes split when enabled; disabled exports used `--no-notes`
 - [x] `svg_final/` preview built

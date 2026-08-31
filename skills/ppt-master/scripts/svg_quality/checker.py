@@ -1167,6 +1167,7 @@ class SVGQualityChecker:
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._communication_trace_issues: List[Tuple[str, str]] = []
+        self._communication_traced_projects: set[Path] = set()
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._has_incomplete_page_roster = False
         self._active_slide_count: int | None = None
@@ -6897,10 +6898,12 @@ class SVGQualityChecker:
             and validate_communication_trace is not None
         ):
             project_path = self._resolve_project_path(dir_path)
-            self._communication_trace_issues.extend(
-                ('error', message)
-                for message in validate_communication_trace(project_path)
-            )
+            if project_path not in self._communication_traced_projects:
+                self._communication_traced_projects.add(project_path)
+                self._communication_trace_issues.extend(
+                    ('error', message)
+                    for message in validate_communication_trace(project_path)
+                )
         return self.results
 
     def _check_pptx_structure_contract(

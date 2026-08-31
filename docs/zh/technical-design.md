@@ -40,7 +40,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 ## Generate PPTX 路线架构
 
-下图描述 Generate PPTX 的默认生命周期。`beautify-pptx` fidelity profile 默认使用该生命周期；同一请求明确要求快速模式时，则改用 `quick-generate`。图片还原为 PPTX 是 Generate 内另一个 fidelity profile：它当前要求 Codex 并始终直接启用 `quick-generate`，因此不进入 Default 运行时，也不需要用户另行说明“快速模式”。其他 Agent host 尚未适配该 profile，不对其行为作支持或承诺。图片还原为 PPTX 把每个规范化页面画面映射为一张幻灯片，以可见像素为表面真值，并原生还原普通文字。低清 Logo、图标、徽标或其他身份图形可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。整页截图 skin 始终禁止。Quick 会绕过独立规划 / 确认、首屏 gate 与预览终稿化；来源理解和资源准备仍按需运行，一次无锁最终质量门始终保留。每次只加载一份运行时流程。Create Template 有独立的工作区生命周期；Edit Native PPTX 则把既有 deck 导入保留来源的 round-trip 工作区。本文后续路线表会覆盖全部三条顶层路线。
+下图描述 Generate PPTX 的默认生命周期。`beautify-pptx` fidelity profile 默认使用该生命周期；同一请求明确要求快速模式时，则改用 `quick-generate`。图片还原为 PPTX 是 Generate 内另一个 fidelity profile：它当前要求 Codex 并始终直接启用 `quick-generate`，因此不进入 Default 运行时，也不需要用户另行说明“快速模式”。其他 Agent host 尚未适配该 profile，不对其行为作支持或承诺。图片还原为 PPTX 把每个规范化页面画面映射为一张幻灯片，以可见像素为表面真值，并原生还原普通文字。低清 Logo、图标、徽标或其他身份图形可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。整页截图 skin 始终禁止。Quick 会绕过独立规划 / 确认与预览终稿化；来源理解和资源准备仍按需运行，长 roster 上的 early gate 与一次无锁最终质量门始终保留。每次只加载一份运行时流程。Create Template 有独立的工作区生命周期；Edit Native PPTX 则把既有 deck 导入保留来源的 round-trip 工作区。本文后续路线表会覆盖全部三条顶层路线。
 
 ```
 用户输入 (PDF/DOCX/XLSX/PPTX/URL/Markdown/主题文本)
@@ -66,9 +66,9 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     ↓
 [Executor] 执行师
     ├── 生成开始前启动 live preview，并在生成期间保持可用
-    ├── 先生成 P01 → svg_quality_checker.py --stage first-page --json
-    ├── 把 P01 作为方法样本分类完整 issue set；消除全部 blocking error，并处理选定的 advisory warning
-    ├── P02 至末页连续生成项目规范化 SVG 页面 → svg_output/（中途不再运行 checker）
+    ├── 先生成 P01 至 P05 → svg_quality_checker.py --stage early --json（计划 roster 不超过 6 页时跳过此门）
+    ├── 把已生成页面作为方法样本分类完整 issue set；消除全部 blocking error，并处理选定的 advisory warning
+    ├── 其余页面连续生成项目规范化 SVG 页面 → svg_output/（中途不再运行 checker）
     ├── [Quality Check] svg_quality_checker.py --stage final --json（强制通过，0 错误；warning 非阻塞）
     └── [讲稿，条件触发] Speaker Notes 有效结果为开启 → 完整讲稿 notes/total.md
     ↓
@@ -188,7 +188,7 @@ Executor 角色逐页生成演示文稿的视觉内容，输出为 SVG 文件。
 **第三阶段：工程化转换**
 后处理脚本将受支持的 SVG 向量元素转换为 DrawingML。文本和向量形状会保持为 PowerPoint 原生对象——可点击、可编辑、可改样式；位图资源则复制为 PPT picture media，而不是把整页压平成一张图片。
 
-`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在一次有效上下文中自动完成其余的内容、页结构、mode、visual style 与资源决策；图片、透明插图 / 艺术字资源、图标、定性 Structure、原生形状、图表 / 表格、公式和纯字体 / 几何都进入同一轮载体判断，每页可以组合其中任意合适的子集。随后仍按共享 SVG 规范创作，执行已选能力所需的准备，通过一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。它不写替代计划或可续接的设计历史；上下文丢失后重新运行 Quick。
+`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在一次有效上下文中自动完成其余的内容、页结构、mode、visual style 与资源决策；图片、透明插图 / 艺术字资源、图标、定性 Structure、原生形状、图表 / 表格、公式和纯字体 / 几何都进入同一轮载体判断，每页可以组合其中任意合适的子集。随后仍按共享 SVG 规范创作，执行已选能力所需的准备，通过一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。它不写替代计划或可续接的设计历史；上下文丢失后重新运行 Quick。
 
 ---
 
@@ -472,7 +472,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 
 全路由通用的停止 / 继续规则以 [`failure-recovery.md`](../../skills/ppt-master/workflows/governance/failure-recovery.md) 为准；其中具体故障矩阵与续跑入口目前覆盖 Generate PPTX。本节不复制这些规则。
 
-其中三条边界尤其关键。第一，页面 SVG 必须由当前主代理逐页手写；禁止写 Python / Node / shell 生成器批量吐 SVG，因为这种输出会丢失跨页判断和视觉连续性。第二，默认流程节奏是 `P01 → first-page gate → 不间断生成其余页面 → final gate`。P01 是方法样本：执行者先输出 `gate-signal`，再把已解决的方法规则带入后续页面；P02 到末页之间不分批，也不插入 checker。`quick-generate` 仍串行手写并以 P01 为视觉锚点，跳过首屏 gate，并在完整 roster 生成后运行一次无锁 final gate。第三，路由是确定性的：原生 PPTX 模板、beautify、Edit Native PPTX、自定义动画、live preview 等触发条件已经在仓库里定义清楚时，不再额外抛给用户一个开放式路线选择题。
+其中三条边界尤其关键。第一，页面 SVG 必须由当前主代理逐页手写；禁止写 Python / Node / shell 生成器批量吐 SVG，因为这种输出会丢失跨页判断和视觉连续性。第二，流程节奏是 `P01–P05 → early gate（roster 不超过 6 页时跳过）→ 不间断生成其余页面 → final gate`。前五页是方法样本：执行者先输出 `gate-signal`，再把已解决的方法规则带入后续页面；其余页面之间不分批，也不插入 checker，每次 checker 调用都必须紧跟一个 gate 点或一轮合并修复。`quick-generate` 仍串行手写并以 P01 为视觉锚点，在 7 页及以上 roster 上共用同一道 early gate，并在完整 roster 生成后运行一次无锁 final gate。第三，路由是确定性的：原生 PPTX 模板、beautify、Edit Native PPTX、自定义动画、live preview 等触发条件已经在仓库里定义清楚时，不再额外抛给用户一个开放式路线选择题。
 
 默认流程的角色切换协议（切换模式前必须 `read_file references/<role>.md`）有两个互相支撑的作用：把新鲜的角色指令载入上下文，覆盖前一模式的漂移；对话 transcript 中的可见标记构成审计轨迹，让用户能看到 agent 何时切换了模式——回看一个具体决策为什么这样做时，这条线索很关键。
 
@@ -596,7 +596,7 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 **为什么放在后处理之前，而不是之后。** 后处理会重写 SVG（图标嵌入、图片内联），会掩盖源级别违规。直接读 `svg_output/` 抓的是 Executor 的实际输出，先于任何可能掩盖 bug 的清理动作。
 
-**为什么默认流程有 first-page 与 final 两道检查。** P01 gate 把第一张页面当作方法样本：先区分 method-level、page-local 与未覆盖能力，完整审阅该轮 issue set，再在合并修复循环中消除全部 blocking error，并处理选定的 advisory warning。通过后，P02 到末页连续生成且不插入 checker；final gate 才对完整作者源做发布前检查。前者校准方法，后者验证全集，不能互相替代。
+**为什么流程有 early 与 final 两道检查。** early gate 把前五张页面当作方法样本：先区分 method-level、page-local 与未覆盖能力，完整审阅该轮 issue set，再在合并修复循环中消除全部 blocking error，并处理选定的 advisory warning；roster 不超过 6 页时跳过它、直接进 final gate。通过后，其余页面连续生成且不插入 checker；final gate 才对完整作者源做发布前检查。前者校准方法，后者验证全集，不能互相替代。
 
 **严重性模型：error 阻塞、warning 不阻塞，且有意没有 auto-fix。** 严重性不按“是否符合推荐写法”划分，而按“能否确定、合法地映射”划分：
 

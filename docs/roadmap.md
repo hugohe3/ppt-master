@@ -170,8 +170,9 @@ In the cost / speed / quality triangle this project picks **quality**. ~20 minut
 Will do: indirect improvements via prompt slimming / cache hit rate.
 
 Explicit `quick-generate` is a user-selected workflow shortcut: it skips
-Strategist, confirmation, and the first-page gate, then authors SVG, runs one
-lockless final quality gate, and exports the final PPTX. Because the whole
+Strategist and confirmation, then authors SVG, runs the shared mid-roster
+early gate on rosters of seven or more pages plus one lockless final quality
+gate, and exports the final PPTX. Because the whole
 planning phase no longer happens — the Strategist reference load, the
 `design_spec.md` / `spec_lock.md` artifacts, and the staged confirmation round
 trip — its token cost disappears with it, while per-page SVG authoring is
@@ -180,9 +181,9 @@ capabilities and the shared SVG/resource blocking standards. It does not run
 Spec Lock alignment checks or derive a current-project Theme from a lock. Flat
 Quick keeps converter-default Theme scaffolding; structured Quick retains
 installed per-Master source Themes when available and infers Master title/body
-size defaults from semantic slot carriers. Without a confirmed design contract, first-page
-calibration, or resumable decision history it does not promise the same design
-decisions or wall-clock time as Default.
+size defaults from semantic slot carriers. Without a confirmed design contract
+or resumable decision history it does not promise the same design decisions or
+wall-clock time as Default.
 
 The default Generate pipeline continues to prefer quality over speed.
 

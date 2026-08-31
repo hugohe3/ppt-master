@@ -169,7 +169,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 会做：通过 prompt 精简 / 缓存命中率提升带来的间接改善。
 
-显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist、确认和首屏 gate，随后创作 SVG、运行一次无锁最终质量门，再导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约、首屏校准或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
+显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist 和确认，随后创作 SVG，在 7 页及以上 roster 上运行共用的 early gate，再运行一次无锁最终质量门并导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 默认 Generate 流程仍坚持质量优先。
 

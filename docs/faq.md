@@ -367,7 +367,7 @@ scaffolding; structured Quick retains installed per-Master source Themes when
 available and infers Master title/body size defaults from semantic slot
 carriers. It does not promise the same
 design decisions or wall-clock time as Default because it has no confirmed
-design contract, first-page calibration, or resumable decision history.
+design contract or resumable decision history.
 
 ## Q: Will long decks blow out the context window in one shot?
 
