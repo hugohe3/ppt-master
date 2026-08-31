@@ -1005,9 +1005,17 @@ def _build_preset_geom_from_meta(elem: ET.Element) -> str | None:
         return None
     if not guides:
         return f'<a:prstGeom prst="{prst}"><a:avLst/></a:prstGeom>'
+    # PowerPoint repairs a preset whose avLst lists only some of the
+    # adjustments the preset defines, so emit the full set in the preset's own
+    # order with authored values overriding the normative defaults.
+    authored = dict(guides)
+    completed = [
+        (guide.name, authored.get(guide.name, guide.formula))
+        for guide in get_preset_registry().get(prst).adjustments
+    ]
     guide_xml = ''.join(
         f'<a:gd name="{_xml_escape(name)}" fmla="{_xml_escape(fmla)}"/>'
-        for name, fmla in guides
+        for name, fmla in completed
     )
     return f'<a:prstGeom prst="{prst}"><a:avLst>{guide_xml}</a:avLst></a:prstGeom>'
 
