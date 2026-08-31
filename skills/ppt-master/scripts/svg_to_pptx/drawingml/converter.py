@@ -19,6 +19,8 @@ from hyperlink_contract import (
     svg_hyperlink_href,
 )
 from pptx_shapes import (
+    DRAWINGML_NS,
+    UnknownPresetShapeError,
     has_relationship_attributes,
     resolve_preset_preview_hash,
     svg_preset_preview_fingerprint,
@@ -63,6 +65,7 @@ from .utils import (
     _extract_inheritable_styles,
     _get_attr,
     _is_unit_axis_reflection,
+    _xml_escape,
     is_picture_effect_carrier,
     parse_svg_length,
     parse_transform_operations,
@@ -89,6 +92,7 @@ from .styles import (
     get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .elements import (
+    complete_preset_adjustments,
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
     convert_polygon, convert_polyline,
@@ -887,9 +891,71 @@ def _restore_placeholder_sp_pr(
         raise SvgNativeConversionError(
             'placeholder spPr metadata can only attach to p:sp'
         )
+    decoded = _complete_placeholder_preset_adjustments(decoded, sp_pr)
     return ShapeResult(
         xml=pattern.sub(lambda _match: decoded, shape.xml, count=1),
         bounds_emu=shape.bounds_emu,
+    )
+
+
+def _complete_placeholder_preset_adjustments(
+    decoded: str,
+    sp_pr: ET.Element,
+) -> str:
+    """Rewrite only a partially authored preset avLst in validated spPr XML."""
+    prst_geom = sp_pr.find(f'{{{DRAWINGML_NS}}}prstGeom')
+    if prst_geom is None:
+        return decoded
+    av_lst = prst_geom.find(f'{{{DRAWINGML_NS}}}avLst')
+    prst = prst_geom.get('prst')
+    if av_lst is None or not prst:
+        return decoded
+
+    authored: list[tuple[str, str]] = []
+    for guide in av_lst:
+        name = guide.get('name')
+        formula = guide.get('fmla')
+        if (
+            guide.tag != f'{{{DRAWINGML_NS}}}gd'
+            or name is None
+            or formula is None
+        ):
+            return decoded
+        authored.append((name, formula))
+
+    try:
+        completed = complete_preset_adjustments(prst, authored)
+    except UnknownPresetShapeError:
+        return decoded
+    authored_names = [name for name, _formula in authored]
+    defined_names = {name for name, _formula in completed}
+    if (
+        not 0 < len(authored) < len(completed)
+        or len(set(authored_names)) != len(authored_names)
+        or not set(authored_names).issubset(defined_names)
+    ):
+        return decoded
+
+    av_lst_pattern = re.compile(
+        r'(?P<open><(?P<qname>(?:[A-Za-z_][\w.-]*:)?avLst)\s*>)'
+        r'.*?'
+        r'(?P<close></(?P=qname)\s*>)',
+        re.DOTALL,
+    )
+    matches = list(av_lst_pattern.finditer(decoded))
+    if len(matches) != 1:
+        return decoded
+    match = matches[0]
+    prefix = match.group('qname')[:-len('avLst')]
+    guide_xml = ''.join(
+        f'<{prefix}gd name="{_xml_escape(name)}" '
+        f'fmla="{_xml_escape(formula)}"/>'
+        for name, formula in completed
+    )
+    return (
+        decoded[:match.end('open')]
+        + guide_xml
+        + decoded[match.start('close'):]
     )
 
 

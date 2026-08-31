@@ -998,6 +998,21 @@ def validate_preset_geometry_metadata(elem: ET.Element) -> list[str]:
     return errors
 
 
+def complete_preset_adjustments(
+    prst: str,
+    guides: list[tuple[str, str]],
+) -> list[tuple[str, str]]:
+    """Fill missing preset adjustments in the definition's native order."""
+    # PowerPoint repairs a preset whose avLst lists only some of the
+    # adjustments the preset defines, so emit the full set in the preset's own
+    # order with authored values overriding the normative defaults.
+    authored = dict(guides)
+    return [
+        (guide.name, authored.get(guide.name, guide.formula))
+        for guide in get_preset_registry().get(prst).adjustments
+    ]
+
+
 def _build_preset_geom_from_meta(elem: ET.Element) -> str | None:
     """Build validated native DrawingML preset geometry from SVG metadata."""
     prst, guides, _frame = _parse_preset_geometry_metadata(elem)
@@ -1005,14 +1020,7 @@ def _build_preset_geom_from_meta(elem: ET.Element) -> str | None:
         return None
     if not guides:
         return f'<a:prstGeom prst="{prst}"><a:avLst/></a:prstGeom>'
-    # PowerPoint repairs a preset whose avLst lists only some of the
-    # adjustments the preset defines, so emit the full set in the preset's own
-    # order with authored values overriding the normative defaults.
-    authored = dict(guides)
-    completed = [
-        (guide.name, authored.get(guide.name, guide.formula))
-        for guide in get_preset_registry().get(prst).adjustments
-    ]
+    completed = complete_preset_adjustments(prst, guides)
     guide_xml = ''.join(
         f'<a:gd name="{_xml_escape(name)}" fmla="{_xml_escape(fmla)}"/>'
         for name, fmla in completed
