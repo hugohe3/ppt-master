@@ -840,6 +840,20 @@ def _validate_condition(
     return errors
 
 
+_PAGE_COUNT_ROW_RE = re.compile(
+    r"^\|[ \t]*Page Count[ \t]*\|[ \t]*([0-9]+)[ \t]*\|",
+    flags=re.IGNORECASE | re.MULTILINE,
+)
+
+
+def _declared_page_count(section: Mapping[str, object] | None) -> int | None:
+    """Return the exact integer §I Page Count, or None when absent or not exact."""
+    if section is None:
+        return None
+    match = _PAGE_COUNT_ROW_RE.search(str(section.get("body", "")))
+    return int(match.group(1)) if match else None
+
+
 def _validate_slides(
     *,
     markdown_name: str,
@@ -862,6 +876,13 @@ def _validate_slides(
         return [f"{markdown_name} schema: content outline has no Slide blocks"]
 
     errors: list[str] = []
+    declared = _declared_page_count(matched.get("project_information"))
+    if declared is not None and declared != len(heading_matches):
+        errors.append(
+            f"{markdown_name} schema: §I Page Count is {declared} but the "
+            f"content outline has {len(heading_matches)} Slide block(s); "
+            "the two must match"
+        )
     required_fields = slide_contract.get("required_fields", [])
     if not isinstance(required_fields, list):
         return errors

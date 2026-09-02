@@ -230,7 +230,7 @@ class ProjectManager:
     CANVAS_FORMATS = CANVAS_FORMATS
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
-        self.base_dir = Path(base_dir) if base_dir is not None else Path.cwd() / "projects"
+        self.base_dir = Path(base_dir) if base_dir is not None else PROJECTS_ROOT
 
     def scaffold_artifact(self, project_path: str, artifact: str) -> str:
         """Delegate deterministic Markdown scaffold rendering."""
