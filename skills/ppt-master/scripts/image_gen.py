@@ -371,6 +371,21 @@ def _print_backend_list() -> None:
     _print_backend_resolution()
 
 
+def _check_backend_aspect_ratio(backend_module, aspect_ratio: str) -> None:
+    """Fail before the request when the resolved backend rejects this ratio.
+
+    ``ALL_ASPECT_RATIOS`` is the union across backends; each backend module
+    may narrow it with ``VALID_ASPECT_RATIOS``.
+    """
+    valid = getattr(backend_module, "VALID_ASPECT_RATIOS", None)
+    if valid and aspect_ratio not in valid:
+        name = getattr(backend_module, "__name__", "backend").rsplit(".", 1)[-1]
+        raise ValueError(
+            f"aspect_ratio '{aspect_ratio}' is not supported by {name}. "
+            f"Valid for this backend: {list(valid)}"
+        )
+
+
 def _resolve_backend() -> tuple[object, str]:
     """
     Determine which backend to use from explicit configuration.
@@ -950,6 +965,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     def _one(idx: int):
         item = items[idx]
         try:
+            _check_backend_aspect_ratio(backend_module, item["aspect_ratio"])
             saved_path = backend_module.generate(
                 prompt=item["prompt"],
                 aspect_ratio=item["aspect_ratio"],

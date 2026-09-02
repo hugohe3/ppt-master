@@ -17,7 +17,7 @@ Dependencies:
     Pillow; project image-search dependencies when copying web provenance
 
 Treatments run in this fixed order: brightness, contrast, tone treatment
-(desaturate / grayscale / duotone), then Gaussian blur.
+(desaturate / grayscale / duotone), Gaussian blur, then --fit downscaling.
 """
 
 from __future__ import annotations
@@ -98,6 +98,19 @@ def _unit_float(value: str) -> float:
     return number
 
 
+_FIT_RE = re.compile(r"^(\d+)x(\d+)$")
+
+
+def _fit_box(value: str) -> tuple[int, int]:
+    match = _FIT_RE.fullmatch(value.strip().lower())
+    if match is None:
+        raise argparse.ArgumentTypeError("fit box must be WIDTHxHEIGHT in pixels, e.g. 920x228")
+    width, height = int(match.group(1)), int(match.group(2))
+    if width <= 0 or height <= 0:
+        raise argparse.ArgumentTypeError("fit box dimensions must be positive")
+    return width, height
+
+
 def _hex_color(value: str) -> str:
     match = _HEX_COLOR_RE.fullmatch(value)
     if match is None:
@@ -155,6 +168,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--blur",
         type=_nonnegative_float,
         help="Gaussian blur radius greater than or equal to 0; 0 is unchanged.",
+    )
+    parser.add_argument(
+        "--fit",
+        type=_fit_box,
+        default=None,
+        metavar="WxH",
+        help=(
+            "Downscale so the image fits inside WIDTHxHEIGHT pixels, preserving "
+            "aspect ratio and alpha; never upscales. Use it to bring an "
+            "oversized generated image down to its planned on-slide size."
+        ),
     )
     return parser
 
@@ -245,6 +269,8 @@ def _treatment_plan(args: argparse.Namespace) -> list[dict]:
         )
     if args.blur is not None and args.blur > 0:
         plan.append({"operation": "blur", "radius": args.blur})
+    if args.fit is not None:
+        plan.append({"operation": "fit", "width": args.fit[0], "height": args.fit[1]})
     if not plan:
         raise ValueError(
             "select at least one effective treatment; identity values such as "
@@ -344,6 +370,19 @@ def _apply_treatments(
                 result = rgb.convert("RGBA") if alpha is not None else rgb
                 if alpha is not None:
                     result.putalpha(alpha)
+                if args.fit is not None:
+                    fit_w, fit_h = args.fit
+                    scale = min(fit_w / width, fit_h / height, 1.0)
+                    if scale < 1.0:
+                        new_size = (
+                            max(1, round(width * scale)),
+                            max(1, round(height * scale)),
+                        )
+                        resized = result.resize(new_size, Image.Resampling.LANCZOS)
+                        if result is not rgb:
+                            result.close()
+                        result = resized
+                        width, height = new_size
                 save_options = {"format": "PNG"}
                 if isinstance(icc_profile, bytes) and icc_profile:
                     save_options["icc_profile"] = icc_profile

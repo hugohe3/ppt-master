@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -67,6 +68,15 @@ def _is_supported_directory_item(path: Path) -> bool:
     }
 
 
+def _output_is_directory(output_arg: str | None) -> bool:
+    """True when -o names an existing directory or ends with a path separator."""
+    if not output_arg:
+        return False
+    if output_arg.endswith(("/", os.sep)):
+        return True
+    return Path(output_arg).is_dir()
+
+
 def _dispatch_output_arg(
     input_arg: str,
     conversion_type: str,
@@ -74,6 +84,11 @@ def _dispatch_output_arg(
     batch_mode: bool,
     used_outputs: set[Path],
 ) -> str | None:
+    if output_arg and _output_is_directory(output_arg):
+        # A directory is a directory even for one input: the file keeps its
+        # default `<stem>.md` name inside it instead of becoming an
+        # extension-less file named after the directory.
+        batch_mode = True
     if output_arg and batch_mode and conversion_type == "web":
         return None
     if output_arg and batch_mode:
@@ -351,7 +366,7 @@ converter, so existing converter behavior remains the source of truth.
     parser.add_argument(
         "-o",
         "--output",
-        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+        help="Output Markdown file for one input, or output directory (an existing directory or a path ending in /) for one or more inputs",
     )
     parser.add_argument(
         "--images",
@@ -411,7 +426,7 @@ def dispatch_many(
     success_count = 0
     failed: list[str] = []
     skipped: list[str] = list(initial_failures or [])
-    batch_mode = batch_mode or len(inputs) > 1
+    batch_mode = batch_mode or len(inputs) > 1 or _output_is_directory(args.output)
     if args.output and batch_mode:
         output_dir = Path(args.output)
         if output_dir.exists() and not output_dir.is_dir():
