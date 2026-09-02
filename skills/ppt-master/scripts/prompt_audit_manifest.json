@@ -34,7 +34,8 @@
     "skills/ppt-master/references/native-data-interface.md": 3000,
     "skills/ppt-master/references/pptx-structure-interface.md": 3000,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
-    "skills/ppt-master/references/strategist.md": 13000,
+    "skills/ppt-master/references/strategist.md": 9000,
+    "skills/ppt-master/references/plan-core.md": 7000,
     "skills/ppt-master/references/strategist-image.md": 3250,
     "skills/ppt-master/references/strategist-template.md": 2500,
     "skills/ppt-master/templates/design_spec_reference.md": 3500,
@@ -196,6 +197,7 @@
       "files": [
         "skills/ppt-master/workflows/generate-pptx.md",
         "skills/ppt-master/references/strategist.md",
+        "skills/ppt-master/references/plan-core.md",
         "skills/ppt-master/references/strategist-image.md",
         "skills/ppt-master/references/canvas-formats.md",
         "skills/ppt-master/templates/design_spec_reference.md",
@@ -245,6 +247,7 @@
       ],
       "files": [
         "skills/ppt-master/workflows/profiles/quick-generate.md",
+        "skills/ppt-master/references/plan-core.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/executor-base.md",
         "skills/ppt-master/references/preset-shape-vocabulary.md",
@@ -2070,7 +2073,7 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "8121d65895a2",
+              "fingerprint": "02e40bc6ab91",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {
@@ -2078,6 +2081,12 @@
               "role": "reference",
               "fingerprint": "9e8775a83943",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/plan-core.md",
+              "role": "reference",
+              "fingerprint": "434d3e19c3bd",
+              "reason": "This shared planning core states the reading-mode lean of the tag as a bias, not a quota; the grammar stays with the schema."
             }
           ]
         },

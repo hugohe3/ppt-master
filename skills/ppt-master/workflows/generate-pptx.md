@@ -91,6 +91,7 @@ Load the planning core in one batch, plus the structured facts already in `<proj
 
 ```
 Read ${SKILL_DIR}/references/strategist.md
+Read ${SKILL_DIR}/references/plan-core.md
 Read ${SKILL_DIR}/references/canvas-formats.md
 ```
 
