@@ -69,6 +69,9 @@ _KEY_DRIFT_MAX_TOLERANCE = 48
 _KEY_DRIFT_MARGIN = 4
 # At most this many trim pixels on a touched edge count as isolated drift.
 _EDGE_DRIFT_MAX_PIXELS = 8
+# Corner sample inset (px) and minimum cell fill for the backing-panel notice.
+_PANEL_CORNER_INSET = 2
+_PANEL_MIN_FILL = 0.75
 
 
 def _log(msg: str) -> None:
@@ -254,6 +257,19 @@ def _pure_chroma_channel(bg: tuple[int, int, int]) -> Optional[int]:
     return bg.index(255)
 
 
+def _nearest_pure_key(
+    color: tuple[int, int, int],
+) -> Optional[tuple[tuple[int, int, int], int]]:
+    """Return the pure RGB key a drifted gutter color came from, with its distance."""
+    best: Optional[tuple[tuple[int, int, int], int]] = None
+    for index in range(3):
+        pure = tuple(255 if i == index else 0 for i in range(3))
+        distance = max(abs(color[i] - pure[i]) for i in range(3))
+        if distance <= _KEY_DRIFT_MAX_TOLERANCE and (best is None or distance < best[1]):
+            best = (pure, distance)  # type: ignore[assignment]
+    return best
+
+
 def _channel_alpha(channel: Image.Image, bg_value: int) -> Image.Image:
     """Return the minimum alpha that can explain one channel over a key."""
     lut = []
@@ -397,6 +413,7 @@ def _keying_findings(
     alpha: bool,
     trim_mask: Optional[Image.Image] = None,
     diff: Optional[Image.Image] = None,
+    notices: Optional[list[str]] = None,
 ) -> list[str]:
     """Report objective signs that the flat-background key did not take.
 
@@ -407,6 +424,11 @@ def _keying_findings(
     """
     findings: list[str] = []
     hex_bg = "#{:02X}{:02X}{:02X}".format(*cell_bg)
+
+    if alpha and trim and alpha_mask is not None and notices is not None:
+        notice = _backing_panel_notice(label, alpha_mask, bbox, cell_size)
+        if notice:
+            notices.append(notice)
 
     if alpha and alpha_mask is not None:
         px = alpha_mask.load()
@@ -461,6 +483,44 @@ def _keying_findings(
                 )
 
     return findings
+
+
+def _backing_panel_notice(
+    label: str,
+    alpha_mask: Image.Image,
+    bbox: tuple[int, int, int, int],
+    cell_size: tuple[int, int],
+) -> Optional[str]:
+    """Flag a trimmed element whose corners are opaque: a painted backing panel.
+
+    A cut-out silhouette almost never fills all four corners of its own
+    bounding box; a rectangle behind it does. The key cannot see the panel
+    (the gutters are clean), so this is advisory, never a strict failure.
+    """
+    left, top, right, bottom = bbox
+    if right - left < 2 * _PANEL_CORNER_INSET + 1 or bottom - top < 2 * _PANEL_CORNER_INSET + 1:
+        return None
+    cell_width, cell_height = cell_size
+    fill_w = (right - left) / cell_width if cell_width else 0.0
+    fill_h = (bottom - top) / cell_height if cell_height else 0.0
+    if min(fill_w, fill_h) < _PANEL_MIN_FILL:
+        return None
+    px = alpha_mask.load()
+    corners = (
+        (left + _PANEL_CORNER_INSET, top + _PANEL_CORNER_INSET),
+        (right - 1 - _PANEL_CORNER_INSET, top + _PANEL_CORNER_INSET),
+        (left + _PANEL_CORNER_INSET, bottom - 1 - _PANEL_CORNER_INSET),
+        (right - 1 - _PANEL_CORNER_INSET, bottom - 1 - _PANEL_CORNER_INSET),
+    )
+    opaque = sum(1 for x, y in corners if px[x, y] > _BOUNDARY_OPAQUE_ALPHA)
+    if opaque < 3:
+        return None
+    return (
+        f"{label}: the trimmed element fills {fill_w:.0%} x {fill_h:.0%} of its "
+        f"cell and is opaque in {opaque} of 4 corners; it "
+        "may sit on a painted backing panel the key could not remove — look at "
+        "the slice, and regenerate with the element alone on the key if so"
+    )
 
 
 def _edge_drift(
@@ -525,6 +585,14 @@ def _log_keying_findings(
                 "larger --tolerance would eat into the elements."
             )
         else:
+            pure = _nearest_pure_key(dominant)
+            if pure is not None:
+                # A pure key enables despill and soft-alpha recovery; keep it
+                # and widen the tolerance by the measured drift instead.
+                pure_rgb, pure_distance = pure
+                hex_bg = "#{:02X}{:02X}{:02X}".format(*pure_rgb)
+                drift += pure_distance
+                outlier += pure_distance
             suggested_tolerance = max(
                 tolerance, drift, outlier + _KEY_DRIFT_MARGIN
             )
@@ -590,6 +658,7 @@ def slice_sheet(
     prepared: list[tuple[int, int, Image.Image, Path]] = []
     written: list[Path] = []
     findings: list[str] = []
+    notices: list[str] = []
 
     idx = 0
     for r in range(rows):
@@ -618,6 +687,7 @@ def slice_sheet(
                 findings.extend(_keying_findings(
                     f"cell ({r},{c})", cell.size, bbox, alpha_mask, cell_bg,
                     trim=trim, alpha=alpha, trim_mask=trim_mask, diff=diff,
+                    notices=notices,
                 ))
 
             if trim and trim_mask is not None and alpha_mask is not None and bbox is not None:
@@ -653,6 +723,9 @@ def slice_sheet(
                 "strict alpha validation found incomplete background keying; "
                 "no output files were written"
             )
+
+    for notice in notices:
+        _log(f"[WARN] {notice}")
 
     for r, c, cell, out_path in prepared:
         cell.save(out_path)

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import re
+import statistics
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 from typing import Any
@@ -114,6 +115,83 @@ def is_chrome_id(elem_id: str | None) -> bool:
     return any(t in _CHROME_ID_TOKENS for t in tokens if t)
 
 
+_TITLE_BLOCK_TOKENS = frozenset({'header', 'footer'})
+_FONT_SIZE_RE = re.compile(r'font-size\s*:\s*([0-9.]+)')
+
+
+def _font_size_px(elem: ET.Element) -> float | None:
+    """Return an element's own font-size in px from its attribute or style."""
+    raw = elem.get('font-size')
+    if raw is None:
+        match = _FONT_SIZE_RE.search(elem.get('style') or '')
+        raw = match.group(1) if match else None
+    if raw is None:
+        return None
+    try:
+        return float(re.match(r'[0-9.]+', raw.strip()).group(0))
+    except (AttributeError, ValueError):
+        return None
+
+
+def _text_sizes(scope: ET.Element) -> list[float]:
+    """Return every declared font-size among text runs under ``scope``."""
+    return [
+        size
+        for elem in scope.iter()
+        if _tag_name(elem) in {'text', 'tspan'}
+        for size in (_font_size_px(elem),)
+        if size is not None
+    ]
+
+
+def _max_text_size(scope: ET.Element) -> float | None:
+    sizes = _text_sizes(scope)
+    return max(sizes) if sizes else None
+
+
+def _page_reference_size(root: ET.Element) -> float | None:
+    """Return the median of the page's distinct text sizes.
+
+    Running labels and page numbers sit below it; a title block sits at or
+    above it even when a hero numeral is the page's largest text.
+    """
+    distinct = sorted(set(_text_sizes(root)))
+    return statistics.median(distinct) if distinct else None
+
+
+def _holds_page_title(group: ET.Element, reference_size: float | None) -> bool:
+    """A header/footer-named group whose text reaches the page's median size
+    is the title block, not chrome."""
+    if reference_size is None:
+        return False
+    group_max = _max_text_size(group)
+    return group_max is not None and group_max >= reference_size - 1e-6
+
+
+def _names_title_block(group_id: str) -> bool:
+    tokens = re.split(r'[-_]', group_id.lower())
+    return any(t in _TITLE_BLOCK_TOKENS for t in tokens if t)
+
+
+def scan_root_primitives(svg_path: Path) -> dict[str, str]:
+    """Return id -> description for visible direct-root non-group elements."""
+    root = ET.parse(str(svg_path)).getroot()
+    primitives: dict[str, str] = {}
+    for child in root:
+        tag = _tag_name(child)
+        if tag in _NON_VISUAL_TAGS or tag == 'g':
+            continue
+        elem_id = usable_animation_group_id(child.get('id'))
+        if elem_id is None:
+            continue
+        role = child.get('data-pptx-role')
+        description = f'<{tag}>'
+        if role:
+            description += f' with data-pptx-role="{role}"'
+        primitives[elem_id] = description
+    return primitives
+
+
 def usable_animation_group_id(raw: str | None) -> str | None:
     """Return one nonblank SVG animation anchor verbatim, else ``None``."""
     return raw if raw and raw.strip() else None
@@ -125,6 +203,7 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
     targets: list[GroupTarget] = []
     anonymous_groups: list[str] = []
     visual_index = 0
+    page_reference_size = _page_reference_size(root)
 
     for child in root:
         tag = _tag_name(child)
@@ -152,6 +231,12 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
             chrome = semantic_static
         else:
             chrome = is_chrome_id(group_id)
+            if (
+                chrome
+                and _names_title_block(group_id)
+                and _holds_page_title(child, page_reference_size)
+            ):
+                chrome = False
         targets.append(
             GroupTarget(
                 slide=svg_path.stem,
@@ -1512,6 +1597,14 @@ def validate_animation_config(
         config,
     )
     warnings.extend(morph_errors)
+    root_primitives_by_slide: dict[str, dict[str, str]] = {}
+    if morph_pairs:
+        scan_files = svg_files
+        if scan_files is None:
+            svg_dir = project_path / 'svg_output'
+            scan_files = discover_slide_svgs(svg_dir) if svg_dir.is_dir() else []
+        for svg_path in scan_files:
+            root_primitives_by_slide[svg_path.stem] = scan_root_primitives(svg_path)
     for pair in morph_pairs:
         for slide_name, group_id in (
             (pair.source_slide, pair.source_group_id),
@@ -1519,10 +1612,19 @@ def validate_animation_config(
         ):
             target = known_groups_by_slide.get(slide_name, {}).get(group_id)
             if target is None:
-                warnings.append(
-                    'animations.json Morph references missing or ambiguous group: '
-                    f'{slide_name}/{group_id}'
-                )
+                primitive = root_primitives_by_slide.get(slide_name, {}).get(group_id)
+                if primitive is not None:
+                    warnings.append(
+                        f'animations.json Morph endpoint {slide_name}/{group_id} '
+                        f'is a root primitive ({primitive}), not a direct-root '
+                        '<g>; wrap it in a group (drop a static role marker) '
+                        'before pairing'
+                    )
+                else:
+                    warnings.append(
+                        'animations.json Morph references missing or ambiguous group: '
+                        f'{slide_name}/{group_id}'
+                    )
             elif target.structurally_static:
                 warnings.append(
                     'animations.json Morph references structural group: '
