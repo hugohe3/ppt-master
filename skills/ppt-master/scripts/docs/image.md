@@ -203,7 +203,9 @@ The tool does not resolve a canvas or recommend a left/right, top/bottom, or
 other slide layout. Its atomic CSV records EXIF-corrected native dimensions and
 `AspectRatio`, the objective aspect-ratio category, optional source
 `SourceDisplayRatio`, format, actual transparent-pixel presence, usage count,
-and bitmap/vector capability facts. An empty folder rewrites a header-only
+and bitmap/vector capability facts. The usage count (`Uses` in the table) is
+how many source occurrences the import manifest recorded for the asset; it is
+not a count of SVG references and does not find unused assets. An empty folder rewrites a header-only
 report; unreadable supported files still refresh the report and produce a
 non-zero exit.
 
