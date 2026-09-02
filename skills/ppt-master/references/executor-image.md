@@ -44,4 +44,4 @@ Conditional Executor authority for image status handling, placement, crop behavi
 | `panel` | Subdivide one coherent tilted, stepped, or polygonal parent panel |
 | `none/grid` | Calm plain placement or a regular grid |
 
-**Reference — motion-ready layering**: for an adopted §IX or explicit focus, comparison, evidence, reveal-order, or cross-page requirement, decide during authoring whether the composition needs separate visible units — stable framing stays static, each independently revealed or continuing Slide-local unit gets a descriptive direct-root `<g id>`, structured atoms and slots keep their boundaries; existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.
+**Reference — motion-ready layering**: when custom motion is active ([`executor-base.md`](./executor-base.md) §1), each independently revealed or continuing image unit is its own descriptive direct-root `<g id>` authored now; stable framing stays static, structured atoms and slots keep their boundaries, and existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.

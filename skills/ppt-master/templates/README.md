@@ -53,4 +53,4 @@ Page-local Shape-first catalog families, not kinds: Chart — value-driven geome
 
 ## Sound Library
 
-[`sounds/`](./sounds/) is a post-motion selection resource, not a template or Strategist resource: read its [cue vocabulary](./sounds/sound-vocabulary.md) only after a concrete auditory job exists and sync selected cues only ([usage](./sounds/README.md)).
+[`sounds/`](./sounds/) is selected only through the post-motion pass in [`animations.md`](../references/animations.md) §2.2 ([usage](./sounds/README.md)); it is never a template or planning resource.

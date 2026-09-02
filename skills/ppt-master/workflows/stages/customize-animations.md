@@ -88,7 +88,7 @@ The 203 canonical keys — 53 `entrance_*`, 33 `emphasis_*`, 64 `path_*`, 53 `ex
 
 ### 3.3 Optional Sound Pass
 
-Only after visual transition, lifecycle, effect, order, and timing are complete; sound is post-processing state never written to or recovered from the Design Spec or lock. No resolved cue → omit every `sound` field and create no `sounds/`. A bundled cue fits one resolved row → read the complete [`sound-vocabulary.md`](../../templates/sounds/sound-vocabulary.md), choose from the auditory job, then sync only the selected ids (`sound_sync.py list --query <term>` for optional filtering; `sound_sync.py <project_path> <namespace>/<sound_id> ...`) and reference `sounds/<namespace>/<file>.wav` in `transition.sound`, `animation.sound`, or the group/effect row. User-provided audio in the project uses its own path when the format is valid. Never reference `skills/ppt-master/templates/sounds/` from `animations.json`; the global library is a selection source, not an exporter fallback. Gain, limiting, and video mixing belong to [`generate-audio`](./generate-audio.md), never this sidecar.
+Only after visual transition, lifecycle, effect, order, and timing are complete, run the optional sound pass in [`animations.md`](../../references/animations.md) §2.2; the selected project-relative `.wav` goes in `transition.sound`, `animation.sound`, or the group/effect row, and user-provided audio in the project uses its own path when the format is valid. Gain, limiting, and video mixing belong to [`generate-audio`](./generate-audio.md), never this sidecar.
 
 ---
 

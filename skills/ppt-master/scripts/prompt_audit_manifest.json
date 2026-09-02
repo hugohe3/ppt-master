@@ -2097,7 +2097,7 @@
             {
               "path": "skills/ppt-master/templates/spec_lock_reference.md",
               "role": "reference",
-              "fingerprint": "6232ca5f6243",
+              "fingerprint": "3d39a6b6c858",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2181,7 +2181,7 @@
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "0efce3f9be37",
+              "fingerprint": "ec9c9c450119",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {

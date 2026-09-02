@@ -260,7 +260,7 @@ Materialize through [`native-shape-authoring.md`](./native-shape-authoring.md) �
 
 ## 4. Icon Usage
 
-Strategist chooses at most one primary bundled stylistic library and may select `simple-icons` alone or alongside it for real brand marks; Executor draws from the complete prepared project-local pool ([`../templates/icons/README.md`](../templates/icons/README.md)). Any SVG under `<project_path>/icons/<lib>/` is prepared material; authoring, preview, finalization, and export resolve only complete case-sensitive `library/name` references there (`tabler-outline/award`, never `Award`; custom files keep their exact case), with no global or template-source fallback.
+Executor draws from the complete prepared project-local pool; library rules are the [icon README](../templates/icons/README.md). Any SVG under `<project_path>/icons/<lib>/` is prepared material; authoring, preview, finalization, and export resolve only complete case-sensitive `library/name` references there (`tabler-outline/award`, never `Award`; custom files keep their exact case), with no global or template-source fallback.
 
 ```xml
 <use data-icon="chunk-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
@@ -281,7 +281,7 @@ Default reads typography from `spec_lock.md` (Quick: its transient §2 anchor): 
 
 **Default — locked-stack realization (may vary treatment)**: express the Design Spec Character Reference through scale, weight, spacing, color, and composition while keeping the locked family; put the common stack on root `<svg>`, omit matching descendants, and override at the nearest clear `<g>`, `<text>`, or `<tspan>`.
 
-**Hard rule — target faces**: every `font-family` stack resolves to target-installed/approved Latin and EA faces. PPTX writes one face per script: the first named Latin face fills `latin`, the first named CJK face fills `ea` (and `latin` when no Latin face is named), and a generic family fills `latin` only when it precedes every named face. Fonts are not embedded; missing-face substitution is viewer-selected. **Missing `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2; never infer a stack from `design_spec.md`.
+**Hard rule — target faces**: every `font-family` stack names faces installed or approved on the delivery target ([`shared-standards-core.md`](./shared-standards-core.md) §4.1); export takes the first named Latin face and the first named CJK face of a stack. **Missing `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2; never infer a stack from `design_spec.md`.
 
 ---
 

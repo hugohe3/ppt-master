@@ -856,7 +856,11 @@ Behavior:
   the converter resolves its Latin / East Asian role to a typeface that normally
   requires a custom installation. A recommended stack such as
   `"Microsoft YaHei", Arial, sans-serif` does not warn merely because it ends with a
-  generic fallback.
+  generic fallback. Face resolution writes one face per script: the first named
+  Latin face fills `latin`, the first named CJK face fills `ea` (and `latin` when
+  no Latin face is named), and a generic family fills `latin` only when it
+  precedes every named face. Fonts are never embedded; a missing face substitutes
+  on the viewer's machine.
 - Multiline text export modes:
   - Default: one editable frame retains authored breaks and disables PowerPoint wrapping. An ordinary generated frame uses PowerPoint's native resize-shape-to-fit-text behavior, so deleting a retained break expands the frame instead of leaving text outside it; imported exact frames and structured multiline placeholder carriers retain fixed-size behavior.
   - `--reflow-text`: eligible same-size lines become flowing prose that PowerPoint may rewrap; a font-size change, list marker, or accepted larger gap remains a paragraph boundary. Legacy `--merge-paragraphs` aliases this mode.

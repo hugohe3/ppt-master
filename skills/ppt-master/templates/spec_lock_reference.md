@@ -69,7 +69,7 @@ A `(user)` row is the user's sentence, not a paraphrase and never widened; a Str
 - P09: table/record_table
 ```
 
-Project each §VII row into at most one `page_visualizations` `<chart|table>/<key>` row per page, resolved to one live SVG; Usage, children, no-match, and qualitative relationships stay in §IX; the reference locks neither type, geometry, nor native output. **Legacy compatibility**: existing `page_charts` bare keys resolve uniquely across the two live registries; retired Structure keys are semantic-only with no SVG; dual page declarations conflict even when they resolve alike.
+Project each §VII row into at most one `page_visualizations` `<chart|table>/<key>` row per page, resolved to one live SVG; Usage, children, no-match, and qualitative relationships stay in §IX. **Legacy compatibility**: existing `page_charts` bare keys resolve uniquely across the two live registries; retired Structure keys are semantic-only with no SVG; dual page declarations conflict even when they resolve alike.
 
 Typography projection (excluding Character/upgrade References): Title font stack → `title_family`; Body font stack → `body_family` plus compatibility `font_family`; each additional recurring role `<role>` → `<role>_family`; each Font Size Hierarchy role → lowercase snake_case `<role>` with its numeric anchor. New locks always write `title_family` and `body_family` even when equal; omit only family roles that inherit without an override; old locks fall back to `font_family`.
 
