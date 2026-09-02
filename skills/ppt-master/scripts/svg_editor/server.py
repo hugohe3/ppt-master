@@ -1077,12 +1077,17 @@ def _wait_for_ready(
         try:
             with urllib.request.urlopen(health_url, timeout=1) as response:
                 data = json.load(response)
+                lock = _read_lock(_lock_file(project_path))
+                server_pid = _lock_pid(lock)
                 if (
                     response.status == 200
                     and isinstance(data, dict)
                     and data.get('service') == 'live_preview'
                     and data.get('project') == str(project_path)
-                    and data.get('pid') == proc.pid
+                    and lock is not None
+                    and lock.get('port') == port
+                    and data.get('pid') == server_pid
+                    and _process_alive(server_pid)
                 ):
                     return True
                 last_error = 'health response belongs to another service or project'
