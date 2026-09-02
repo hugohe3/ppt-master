@@ -269,7 +269,13 @@ class ProjectManager:
 
         date_str = datetime.now().strftime("%Y%m%d")
         if normalized_format is None:
-            project_dir_name = f"{project_name}_{date_str}"
+            # A name already carrying a `_<YYYYMMDD>` suffix (e.g. a full
+            # project dir name pasted back into init) is used as-is —
+            # re-appending would produce `name_20260101_20260102`.
+            if re.search(r"_\d{8}$", project_name):
+                project_dir_name = project_name
+            else:
+                project_dir_name = f"{project_name}_{date_str}"
         else:
             # A name already carrying a `_<format>_<YYYYMMDD>` suffix (e.g. a
             # full project dir name pasted back into init) is used as-is —
@@ -710,7 +716,7 @@ class ProjectManager:
         self._merge_image_manifest(rebased_items, images_dir / "image_manifest.json")
         print(
             f"Propagated {copied_count} image asset(s) + manifest "
-            f"from {asset_dir} → images/ (namespace: {namespace})"
+            f"from {asset_dir} → images/ (filenames unchanged; source_namespace {namespace!r} recorded in image_manifest.json)"
         )
 
     def _propagate_companion_image_assets(self, markdown_path: Path, project_dir: Path) -> None:
