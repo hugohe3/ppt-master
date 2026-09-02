@@ -147,16 +147,16 @@ Templates strictly follow the brief and `<design_spec_path>`: root `viewBox` equ
 
 Materialization validates document hashes, refs, and closure and classifies subtree hashes — a changed subtree is a legitimate edit, never permission to copy the old tree back; an object that cannot use supported non-visible metadata keeps its SVG fallback and is reported. `data-pptx-replace-with` stays reserved for Chart/Table replacement markers.
 
-| Authored/preserved fact | Template SVG declaration |
-|---|---|
-| Master/Layout identity | Root `data-pptx-master` / `-master-name` / `data-pptx-layout` / `-layout-name`; authored keys for `standard` / `fidelity`, source keys for `mirror` |
-| Authored Master/Layout visual | Direct atomic child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"`; ordinary `<g>` forbidden, one validated compact preset `<g>` the sole exception |
-| Preserved source visual | Direct atoms with the same ownership and comparable paint order; grouping and spelling may differ, regrouping and ownership changes may not |
-| Content slot | Direct `<g id>` with `data-pptx-placeholder` and explicit `data-pptx-bounds`; authored modes author the slot, mirror preserves source type/index/bounds and carrier identity |
-| Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
-| Structural hint | Optional `data-pptx-role` only when layer/placeholder metadata cannot express background/decoration/header/footer/logo/watermark/chrome/page-number behavior; stable unique `id` |
+Every template SVG satisfies the structured metadata contract of [`pptx-structure-interface.md`](./pptx-structure-interface.md) §2, and a legacy contract (its §3) never enters a package. Template-side additions:
 
-Repeat inherited visuals in every standalone SVG so preview stays complete; export validates their equality and infers no ownership. **Forbidden — legacy contract**: never carry `data-pptx-layout-kind`, `distilled`, `utility`, unmapped `baseline`, `preserve`, or direct atomic placeholders into a package; such Type B input is visual reference only, and native topology requires the Type A path. **Composite slot boundary**: a normal slot has exactly one compatible carrier (a validated preset `<g>` counts for `object`; an ordinary group does not); only a genuinely composite region uses `data-pptx-placeholder="object"` + `data-pptx-binding="proxy"`, never as the default form. Mirror preserves imported types, indices, bounds, and carriers exactly (never replacing `subTitle`, `obj`, `media`, or `dt` with generic body); authored modes assign `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, `slide-number` deliberately, with indices only to disambiguate repeated roles. **Hard rule — explicit design-zone bounds**: every slot carries `data-pptx-bounds="x y width height"` (≤ two decimals) from the source Layout frame (mirror) or the intended safe area, column, panel inset, or media frame (authored) — never from character count, glyph width, wrapping, or the sample-content box; zero-slot Layouts are valid.
+| Concern | Template rule |
+|---|---|
+| Fixed atoms | Authored Master/Layout atoms also carry `data-pptx-editable="false"`; preserved source atoms keep their ownership and comparable paint order (grouping and spelling may differ, regrouping may not) |
+| Keys | `standard` / `fidelity` write authored keys; `mirror` preserves the source keys, picker names, placeholder types/indices/bounds, and carrier identity exactly (never replacing `subTitle`, `obj`, `media`, or `dt` with generic body) |
+| Slot roles | Authored modes assign `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, `slide-number` deliberately, with indices only to disambiguate repeated roles |
+| Slot bounds | Authored slots derive `data-pptx-bounds` from the intended safe area, column, panel inset, or media frame — never from character count, glyph width, wrapping, or the sample-content box; mirror keeps the source Layout frame |
+| Inherited visuals | Repeated in every standalone SVG so preview stays complete; export validates their equality and infers no ownership |
+| Source refs | Final templates contain no `data-pptx-source-ref` |
 
 ### 3. Placeholder Markers
 
