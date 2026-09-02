@@ -44,7 +44,7 @@ The dispatcher writes standard Markdown plus a conversion profile beside each so
 
 **Sufficiency test**: after reading direct and converted content, run [`topic-research`](stages/topic-research.md) only for gaps where the requested outcome would otherwise require inventing, omitting, or leaving unsupported an externally verifiable claim. A closed corpus stays within the supplied material; file presence or length is irrelevant. Research records facts and adopted URLs in its pair; Step 2 fetches no adopted page, and Step 5 acquires only Strategist-selected assets after final confirmation.
 
-**EMF/WMF from DOCX/PPTX**: embedded Office vectors land in `images/` with `image_manifest.json` as first-class §VIII assets. Never convert them to PNG; export embeds them at full vector fidelity, and a blank browser preview is expected ([`project.md`](../scripts/docs/project.md)).
+**EMF/WMF from DOCX/PPTX**: embedded Office vectors land in `images/` with `image_manifest.json` as first-class §VIII assets. Never convert them to PNG; export embeds them at full vector fidelity, and a blank browser preview is expected ([`project.md`](../scripts/docs/project.md); export behavior in [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md)).
 
 **✅ Checkpoint** — source content and any research pair are ready; proceed to Step 2.
 

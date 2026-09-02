@@ -743,11 +743,13 @@ It aggregates:
 - `align_embed_images.py` (`crop-images` / `fix-aspect` / `embed-images` aliases route here)
 - `flatten_tspan.py`
 
+EMF/WMF images referenced by a page are preserved as external references, never embedded or rasterized.
+
 `svg_final/` is an optional Step 7.2 preview artifact; the native exporter reads `svg_output/` and never requires it. It is the self-contained visual reference and may be manually inserted as an SVG picture.
 
 ## `svg_to_pptx.py`
 
-Convert project SVGs into PPTX.
+Convert project SVGs into PPTX. EMF/WMF images referenced from `svg_output/` are embedded as native `image/x-emf` / `image/x-wmf` media at full vector fidelity.
 
 Native formulas use the two markers owned by
 [`native-formula.md`](../../references/native-formula.md). A standalone block

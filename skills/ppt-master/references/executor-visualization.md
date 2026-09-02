@@ -29,7 +29,7 @@ python3 ${SKILL_DIR}/scripts/visualization_recall.py validate --legacy-bare <leg
 
 **Hard rule — one primary reference per page**: one page resolves at most one catalog SVG, guiding one dominant reusable Chart/Table structure; secondary objects are authored from their content through the applicable branch without another catalog SVG, keeping their §IX or Quick object keys for native/verification contracts. New `page_visualizations` and Quick selections accept only canonical `chart/<key>` or `table/<key>`; a bare key is read-compatible only from legacy `page_charts` and must resolve unambiguously, otherwise stop for upstream correction. Canonical and legacy rows for one page stop on the duplicate contract even when both resolve to the same SVG.
 
-**Legacy Structure boundary**: a retired Structure bare key is semantic intent, not a reference — do not resolve it or load this branch; recover the relationship from §IX and apply [`executor-structure.md`](./executor-structure.md) when the per-page Structure decision is yes, or return upstream when §IX lacks meaning.
+**Legacy Structure boundary**: a retired Structure bare key is semantic intent, not a reference — do not resolve it or load this branch; recover the relationship from §IX and apply [`executor-structure.md`](./executor-structure.md) when the per-page topology decision is yes, or return upstream when §IX lacks meaning.
 
 Read the resolver-returned SVG once before first use and reuse that reading until a known file change; do not reopen indexes or scan family directories during realization — the planning owner already reviewed the live registries.
 

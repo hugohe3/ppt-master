@@ -2067,7 +2067,7 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "7155ac746959",
+              "fingerprint": "50e5134d9e58",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
@@ -2085,7 +2085,7 @@
             {
               "path": "skills/ppt-master/references/plan-core.md",
               "role": "reference",
-              "fingerprint": "434d3e19c3bd",
+              "fingerprint": "2fd03eac49a4",
               "reason": "This shared planning core states the reading-mode lean of the tag as a bias, not a quota; the grammar stays with the schema."
             }
           ]

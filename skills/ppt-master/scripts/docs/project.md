@@ -35,6 +35,11 @@ Notes:
 - `--move` applies only to sources under the repository's `projects/` tree
 - A directly supplied supported bitmap is also copied into `images/` with a
   collision-safe basename while its original remains archived in `sources/`
+- SVG/EMF/WMF inputs stay source assets unless a converter manifest supplies
+  display metadata. Embedded Office vectors extracted from DOCX/PPTX land in
+  `images/` with `image_manifest.json` as first-class image assets and are
+  never converted to PNG; a blank browser preview of an EMF/WMF is expected.
+  Export behavior for them: [`svg-pipeline.md`](svg-pipeline.md)
 - Directory inputs are expanded non-recursively. After Step 1 conversion,
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
