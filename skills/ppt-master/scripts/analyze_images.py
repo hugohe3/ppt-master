@@ -314,7 +314,7 @@ def print_results(results: list[ImageAnalysis]) -> None:
 
     print(
         f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} "
-        f"{'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Filename'}"
+        f"{'Source':<8} {'Uses':<5} {'Size':<10} {'Category':<20} {'Filename'}"
     )
     print("-" * REPORT_WIDTH)
 

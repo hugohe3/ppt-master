@@ -258,8 +258,14 @@ def main() -> None:
             if not early_files:
                 print("[ERROR] --stage early found no authored SVG pages")
                 sys.exit(1)
+            print(
+                f"\n[SCAN] Checking {len(early_files)} authored SVG page(s) "
+                "for the early gate...\n"
+            )
+            checker.scan_banner = False
             for svg_file in early_files:
                 checker.check_directory(str(svg_file), expected_format)
+            checker.scan_banner = True
         else:
             if stage == "first-page":
                 check_target = _first_page_target(target)

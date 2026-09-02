@@ -312,7 +312,8 @@ def _roles_from_spec_lock(lock_path: Path) -> dict[str, tuple[str, float]]:
             ) from exc
         family = rows.get(f'{role}_family', '')
         if not family:
-            fallback = 'title_family' if 'title' in role else 'body_family'
+            display_role = 'title' in role or 'numeral' in role
+            fallback = 'title_family' if display_role else 'body_family'
             family = rows.get(fallback, '') or rows.get('font_family', '')
         if not family:
             raise ValueError(
@@ -330,6 +331,20 @@ def _clean_planned_line(raw: str) -> str:
     text = re.sub(r'\[([^]]+)\]\([^)]*\)', r'\1', text)
     text = text.replace('**', '').replace('__', '').replace('`', '')
     return ' '.join(text.split())
+
+
+_JOINED_BLOCK_SEPARATOR_RE = re.compile(r'\s+[·•|/]\s+|；|;\s')
+
+
+def _split_joined_blocks(text: str) -> list[str]:
+    """Split one outline value joined by spaced separators into planned lines.
+
+    A brief-depth Content field lists a page's blocks as ``A · B · C`` or
+    ``A；B；C`` on one line; each block is a planned line, not the whole list.
+    Unspaced ``·`` inside a name (``让·努维尔``) is left alone.
+    """
+    parts = [part.strip() for part in _JOINED_BLOCK_SEPARATOR_RE.split(text)]
+    return [part for part in parts if part]
 
 
 def _slide_id(token: str) -> str:
@@ -392,7 +407,7 @@ def _outline_candidates(
                 line_index += 1
                 continue
 
-            content_lines = [value] if value else []
+            content_lines = _split_joined_blocks(value) if value else []
             next_index = line_index + 1
             while next_index < len(lines):
                 next_field = _OUTLINE_DATA_LINE_RE.match(lines[next_index])
@@ -403,7 +418,7 @@ def _outline_candidates(
                     break
                 planned_line = _clean_planned_line(lines[next_index])
                 if planned_line:
-                    content_lines.append(planned_line)
+                    content_lines.extend(_split_joined_blocks(planned_line))
                 next_index += 1
             if 'body' in candidates:
                 candidates['body'].extend((slide, text) for text in content_lines)
@@ -501,6 +516,10 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
                 else f'{planned["px"]:.1f}px, {planned["slide"]}, {planned["text"]}'
             )
         lines.append(' | '.join(row))
+    lines.append(
+        '[NOTE] mixed line width ≈ (CJK chars ÷ CJK rate + other chars ÷ Latin '
+        'rate) × 100; spaces, digits, and punctuation count as Latin.'
+    )
     return '\n'.join(lines) + '\n'
 
 
