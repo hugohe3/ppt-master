@@ -205,6 +205,8 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --quick-generate --canonical-authoring --stage final --json
 ```
 
+`--json` writes `validation/svg_quality_report.json`, the report `--quick-generate` export fingerprints against `svg_output/`; stdout stays the human-readable summary and is never parsed as JSON. Both flags above are required — omitting `--canonical-authoring` or `--json` makes the export refuse or skip the canonical check.
+
 **Mandatory — final carrier-receipt review**: run the review in [`executor-base.md`](../../references/executor-base.md) §3 Checkpoints against the retained page jobs, deck shape language, motif, resource roles, and geometry signatures; a repair reruns this checker once.
 
 **Notes** (when enabled): load [`executor-notes.md`](../../references/executor-notes.md) after the passing check, validate a frozen script or pre-SVG narration without regenerating it or otherwise generate `notes/total.md` from the final roster, then split:

@@ -279,7 +279,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --canonical-authoring --stage early --json
 ```
 
-The stage checks every authored page so far under the partial-roster rules. Repair under the consolidated-pass discipline in [`executor-base.md`](../references/executor-base.md) §3; a still-failing verification is the next batch. If terminal output is truncated, read only the issue arrays from `validation/svg_quality_early_report.json`. The gate validates the method, not just the pages — emit one line before editing:
+`--json` writes the report file (`validation/svg_quality_early_report.json`); stdout stays the human-readable summary and is never parsed as JSON. The stage checks every authored page so far under the partial-roster rules. Repair under the consolidated-pass discipline in [`executor-base.md`](../references/executor-base.md) §3; a still-failing verification is the next batch. If terminal output is truncated, read only the issue arrays from `validation/svg_quality_early_report.json`. The gate validates the method, not just the pages — emit one line before editing:
 
 ```
 gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
@@ -301,6 +301,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 ```
 
 - Before the gate, every §IX `Native-ready` `<object-key>=yes` has its draw-time marker group and JSON child; `=no` and incidental microvisuals stay ordinary SVG (a legacy bare `yes|no` is readable only when the page has exactly one eligible object). JSON-first Chart/Table validates inline schema/bounds; SVG-first markers need a current `data-pptx-fallback-sha256`, stamped after synchronization — missing or stale baselines block canonical/native export, not fallback export.
+- `--json` writes `validation/svg_quality_report.json`, the report the exporter fingerprints against `svg_output/`; stdout stays the human-readable summary and is never parsed as JSON. Without `--json` the export is refused.
 - One run against `svg_output/` reports every page; repair under the consolidated-pass discipline in [`executor-base.md`](../references/executor-base.md) §3. If output is truncated, extract only `categories.blocking.issues` (and `categories.introduced.issues` when needed) from that run's `validation/svg_quality_report.json`, where `inherited` and `source-import` are provenance and `introduced` holds changed/new warnings.
 - Structured-template warnings (empty/framing-only Layout, bare Master, duplicate layout keys) guide optional cleanup only; a condition that must be corrected before release is an `error`.
 - **Hard rule — token-safe report handling**: on success use the exit status and terminal summary; never `cat` the complete JSON into context. Read it only for failure investigation, an explicit audit, or a field absent from stdout.

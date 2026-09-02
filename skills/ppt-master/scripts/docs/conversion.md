@@ -627,7 +627,7 @@ block Python's default TLS fingerprint. No extra flags needed. If
 `curl_cffi` is not available, it falls back to plain `requests`.
 
 On success, the converter uses the shared best-effort sidecar contract for
-`<output>.conversion_profile.json` beside the Markdown output.
+`<stem>.conversion_profile.json` beside the Markdown output.
 `--emit-result` is for wrapper scripts that need the actual saved Markdown path
 when the converter derives a title-based filename.
 

@@ -24,7 +24,8 @@ python3 scripts/project_manager.py page-context-report <project_path>
 Notes:
 - `--format` is optional and accepts registered canvas keys only. Pass it only
   when the actual canvas exactly matches a registered format.
-- Without `--format`, `init` creates `<name>_<YYYYMMDD>`; authoring records the
+- Without `--format`, `init` creates `<name>_<YYYYMMDD>`; a name that already
+  ends in `_<YYYYMMDD>` is used as-is (no second date). Authoring records the
   canvas in `spec_lock.md` for Default Generate or the first SVG for Quick
   Generate.
 - With `--format`, `init` preserves the registered form
