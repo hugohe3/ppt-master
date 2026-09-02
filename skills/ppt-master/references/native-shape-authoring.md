@@ -89,7 +89,7 @@ python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
 
 At topology scale, independent pieces, one body with dividers, overlapping siblings, fitted joints, intentional gaps, and retained `fragment` regions are common strategies, not a set; never map a topology name to a shape list or infer equal size or spacing.
 
-**Default — running deck geometry check (may override for literal pages or isolated prototypes)**: after each page retain `page job → composition move → contour / edge language` (plus `relationship → topology` for `Structure=yes`) and compare before the next; repeat only for the same job / relationship or deliberate continuity — section, equal weight, style, and precedent are insufficient. No artifact, no second pass.
+**Default — running geometry signature (may override for literal pages or isolated prototypes)**: the *geometry signature* of a page is the retained line `page job → composition move → contour / edge language` (plus `relationship → topology` for `Structure=yes`). After each page retain its signature and compare it with the previous pages' before drawing the next; repeat a signature only for the same job / relationship or deliberate continuity — section, equal weight, style, and precedent are insufficient. The final carrier-receipt review reads these signatures back. No artifact, no second pass.
 
 **Boolean decision gate**:
 

@@ -1,8 +1,8 @@
 # Reference Document Style Guide
 
-> Style rules for files under `skills/ppt-master/references/`. Follow these when writing or reviewing role definitions and shared specs.
+> Style rules for every file the runtime loads: `skills/ppt-master/SKILL.md`, `references/**/*.md`, `workflows/**/*.md`, and `templates/*.md`. Follow these when writing or reviewing role definitions, route authorities, stages, and shared specs. [`prompt-layers.md`](prompt-layers.md) says what may go into such a file; [`ownership.md`](ownership.md) says which role decides it; this file says how it is written.
 
-The reference layer drives runtime LLM behavior. Style consistency across these files matters as much as correctness — divergent voice / structure forces the model to re-interpret each file from scratch and bloats the loaded context.
+These files drive runtime LLM behavior. Style consistency across them matters as much as correctness — divergent voice / structure forces the model to re-interpret each file from scratch and bloats the loaded context. The house pattern that has proved readable is the catalog format of `references/visual-styles/*.md`: one file per subject, a fixed section skeleton shared by every sibling, short labelled paragraphs written as positive vocabulary, and one example where a form is easier shown than told.
 
 ---
 
@@ -53,6 +53,21 @@ Role definition for the **web image acquisition path**: translate Strategist int
 
 **Hard rule — retain failure predicates**: Cut narrative teaching and background motivation. Keep one compact protected invariant or failure predicate when it determines the rule's strength, scope, or safe generalization; attach it to the rule or one `> Note` line. Runtime prompts need the behavior and its objective failure boundary, not the full rationale.
 
+### 3.1 One Rule per Sentence
+
+A sentence states one rule. An exception is its own sentence, or a row in a table; it is never a clause nested inside the rule it qualifies. A labelled paragraph states one decision in roughly sixty words or fewer; a second decision starts another labelled paragraph or a table row. When a rule needs three or more cases (`never X unless Y, and only when Z`), write the cases as a two-column table. Concision is measured in decisions per paragraph, not words per sentence: a compression pass that folds several rules into one long sentence has made the file harder to follow, not shorter.
+
+❌ Avoid: a 100-word sentence that names the rule, two exceptions, the owning file, and the fallback.
+✅ Prefer: the rule in one sentence; the exceptions as a table; the owning file as one pointer.
+
+### 3.2 Pointers Name the File to Open
+
+A pointer exists so the model knows which file to read next — `[`svg-effects.md`](./svg-effects.md) §6.4` — and appears where that reading is needed. Ownership bookkeeping written for the maintainer ("owned by", "belongs to", "lives in", "is not restated here") does not belong in a prompt file; the owner of every cross-file rule is recorded once in [`rule-owners.md`](rule-owners.md).
+
+### 3.3 One Meaning per Term
+
+Every term used in a rule has exactly one meaning across the loaded corpus, defined once in the vocabulary section of [`SKILL.md`](../../skills/ppt-master/SKILL.md) or in the section that owns it. Do not give an existing term a second meaning; when two concepts share a word, rename one (record the rename in [`rule-owners.md`](rule-owners.md) with every file it touches). A term used in a `Hard rule` or `Mandatory` that no loaded file defines is a defect: the obligation cannot be followed.
+
 ---
 
 ## 4. Bold Inline Labels
@@ -95,102 +110,9 @@ Boundary cases go by this test, not by how strong the verb feels: "never split a
 
 > Note: only a MUST with a concrete objective trigger may become a `svg_quality_checker.py` rule. SHOULD is at most a `warning`; MAY is never checked — encoding taste as a check turns the checker into a de-facto spec.
 
-### 4.1 Ownership Contract: Ingredients → Plan + Preparation → Realization
+### 4.1 Ownership Contract
 
-Constraint strength and decision ownership are independent. Preserve this chain whenever writing, compressing, or reviewing the default multi-role Generate prompts:
-
-| Layer | Owns |
-|---|---|
-| User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
-| Strategist / plan + preparation | Assess material sufficiency; trigger permitted topic research and retain its research/provenance pair without expanding adopted webpage URLs; decide the approved content, resources, keys, identity anchors, and exact page roster; record each page's semantic units and their source-stated relationships. While composing the roster, decide which pages need a prepared image, lettering, or illustrated-icon resource and derive the external-resource rows from that need. Sketch macro composition, visual focus, and continuity as Reference when useful, without selecting a carrier mix, a local authoring capability, or element geometry; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution. For icons, prepare a curated project pool with broad semantic fit rather than assigning files to pages |
-| Executor / realization | Use only prepared project-local assets; preserve approved content, relationships, resources, and identity anchors; realize each page by resolving the actual carrier combination, geometry, composition, hierarchy, and treatment together before coordinates — the carrier mix has no upstream owner. Discover and invoke local deterministic authoring capabilities without an upstream capability selection. Treat every Reference as a starting sketch to adjust freely for the page's purpose; follow a `(binding)` field literally. For icons, the complete `<project>/icons/` pool is prepared material; `icons.inventory` is a curated bundled-pool index, not a page-use plan or whitelist, and Executor chooses prepared icons per page without a coverage quota. Sparse local font/color garnish is allowed only while non-structural and non-recurring |
-
-**Hard rule — three ownership tiers**: classify a decision before writing any
-rule about it, and keep each tier's rules in its own role's files.
-
-| Tier | Test | Examples | Contract |
-|---|---|---|---|
-| Plan-only | Needs a prepared file before authoring; holds only across the whole roster; needs one user confirmation; or comes from source semantics | Contract, canvas, page count, roster ids/order, `page_rhythm`, identity anchors (color, type, spacing, icons, style, mode), resources, per-page content, facts, semantic units and their relationships | Execution never reopens or substitutes it; a misfit returns upstream |
-| Execution-only | Judged only with the objects on the canvas | Carrier mix, geometry and native contours, composition, coordinates, spacing, hierarchy treatment, effects, per-page icon and image treatment, wrapping | Plan writes no detail here, not even as advice |
-| Reference (grey zone) | Useful as a first sketch, decidable either way | Macro composition and focus, continuity and motif, cover/closing composition, Chart/Table `family/key`, image `Layout pattern`, motion suggestions | Plan writes a starting sketch; Executor adjusts or replaces it freely for the page's purpose, with no upstream repair and no stated reason. It carries no binding semantics — anything that must hold is written in a plan-only field. It binds only when labeled `(binding)` because the user, a template, or a resource contract requires that property (explicit *must* / *only* / *exactly* / *verbatim*); Executor then follows it literally |
-
-Depth test: one plan given to two competent Executors yields the same content
-with different looks — converging looks mean the plan wrote execution,
-diverging content means it left semantics open. `design_spec_depth` changes
-only wording completeness and Reference length, never which plan-only fields
-are written.
-
-**Hard rule — capability knowledge precedes selection**: a role must know that
-a capability exists before choosing among capabilities; otherwise a load trigger
-circularly depends on a choice made without that capability. The always-read
-core of the authoring role therefore carries the recall of every construction
-capability — the everyday device menu and effects, the complete preset
-vocabulary, the Structure decision, and one routing row per deeper module —
-while the deeper module itself (effects beyond the everyday block, native-shape
-authoring, relationship grammar and topology assembly, and the rarer formula,
-hyperlink, chart/table, structured-template, video, animation, and web-image
-files) is loaded when its observable trigger appears — evaluated once over the
-whole roster before P01, or at the page that first reaches an unforeseen
-capability — read completely, and kept for the run. The owning rule is
-[`prompt-layers.md`](prompt-layers.md) §2.
-
-**Hard rule — core volume ceiling**: the always-read core of an authoring role
-stays small enough that its own content is not diluted by what follows. Measured
-against the v2.13.0 baseline, an Executor-phase core of roughly 1,300 lines
-across a role file plus a shared technical file produced richer pages than a
-4,000-line, 12-file mandatory bundle; the larger bundle flattened expression
-while passing every structural gate. Treat that as the working ceiling. When a
-core grows past it, shrink it by removing what is not authoring guidance or by
-moving a deeper module behind a trigger whose recall stays in the core. What may stay in a
-prompt file at all — craft, minimal contract, or tool documentation — and the
-procedure for moving content out are owned by
-[`prompt-layers.md`](prompt-layers.md).
-
-Default Strategist's planning bundle covers resource/preparation and high-level
-expression options without local authoring parameters, because those choices are
-persisted into artifacts other roles consume. Only post-selection mechanics whose
-trigger is independently observable stay conditional: an actual `ai` / `slice`
-resource row triggers Image_Generator backend, prompt-assembly, and per-image
-type details after planning, and those mechanics are not a missing Strategist
-capability.
-
-**Hard rule — native shapes are authoring capabilities, not prepared
-resources**: a prepared resource needs a stable project-local file/path before
-realization because page authoring cannot acquire or generate it in place.
-Office presets, SVG primitives, Connectors, Boolean helpers, and necessary
-freeform geometry are locally callable construction capabilities. Strategist
-never inventories them or promotes a concrete preset, primitive, Connector,
-Boolean/freeform operation, or authoring parameter into a binding planning
-selection. A macro Reference may mention a technique as optional inspiration
-without prescribing or gating construction. The Design Spec / lock create no
-native-shape field; Executor reads the complete current preset vocabulary and
-chooses the page-fit construction during realization.
-
-**Preparation timing**: In the default pipeline, topic research and import of
-its two-artifact research pair may run before final confirmation. Facts JSON
-URLs are not auto-expanded. AI / web / slice acquisition runs only from the
-completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation
-and before Executor. Only after normal image search fails may one relevant
-adopted page become a Markdown + companion-image source package; review it and
-promote accepted files individually, never the whole package. Image_Generator,
-Image_Searcher, and icon-sync tooling execute Strategist-owned preparation;
-they are not independent decision owners.
-
-**Post-motion sound exception**: optional transition/object sound is not a
-page-authoring ingredient and never enters Strategist planning,
-`design_spec.md`, or `spec_lock.md`. After the SVG roster and visual motion
-solution are complete, the active animation/export stage may discover bundled
-sound ids and sync only a concretely selected cue into the project. With no
-selected cue, it creates no `<project>/sounds/` directory. This exception does
-not permit Executor to acquire visual resources.
-
-**Hard rule — default pipeline**: downstream freedom exists in every dimension the plan leaves open, and every Reference is open by definition. A named binding outcome retains identity; a broad semantic request or expression recommendation permits in-class choice. Once the plan resolves a plan-only choice or a `(binding)` Reference, execution cannot reopen or substitute it. For icons, library/stroke and the prepared-project boundary bind, while per-page choice within the prepared pool is realization. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
-
-**Explicit Quick Generate exception**: [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md) removes the separate Strategist/confirmation handoff. The current main agent therefore owns both its active-context decisions and the preparation of project-local sources, images, icons, and provenance before it begins SVG realization; native formulas are authored directly from exact mathematical content rather than acquired as resources. This exception does not move acquisition into a default-pipeline Executor and does not permit resource reselection while a page is being realized. Explicit user facts, choices, exclusions, and permissions remain upstream authority; unspecified routine choices are resolved automatically without a confirmation stop.
-
-> Mnemonic — restaurant contract: the customer supplies initial ingredients and the desired dish; Strategist plans the dish and prepares the complete mise en place; Executor cooks from that prepared inventory. “Mapo tofu” cannot become tomato-and-eggs or tofu soup, while “a tofu dish” leaves deliberate in-class freedom. Equally: the plan is the general contractor — materials, structure, and a first blueprint; Executor is the crew that builds the finished work on that structure, adapting to the site.
-
-**Review gate**: treat any prompt refactor that erases the selected profile's ownership chain, moves acquisition into the default-pipeline Executor, turns a permission into a quota, or turns flexible realization into silent resource/identity reselection as a semantic regression even when the compressed wording is shorter.
+Decision ownership across plan, execution, and the Reference grey zone — the ingredients → plan + preparation → realization chain, the three ownership tiers, the capability-before-selection rule, the core volume ceiling, preparation timing, and the review gate — is owned by [`ownership.md`](ownership.md). Classify a decision there before labeling its strength here.
 
 ### 4.2 Admission Criterion for Prohibitions
 
@@ -311,18 +233,19 @@ Items are evidence-driven (`file exists at path X`, `status N is Generated`), no
 
 ---
 
-## 12. When This Guide Conflicts With Existing Files
+## 12. Exemplars
 
-Existing files take precedence as ground truth. If a current `references/*.md` violates a rule here, decide whether to (a) update this guide to match the de facto convention, or (b) refactor that file. Don't silently apply a divergent style to one new file.
+This guide is prescriptive. A file that violates a rule here is refactored toward the rule; the rule changes only through an explicit decision recorded in the commit, never by treating the divergent file as the new convention.
 
-The canonical exemplars to model new files after:
+The canonical exemplars to model new or rewritten files after:
 
 | If you're writing... | Model after |
 |---|---|
-| A role reference (Image_X / Strategist-style) | [`image-searcher.md`](../../skills/ppt-master/references/image-searcher.md), [`strategist.md`](../../skills/ppt-master/references/strategist.md) |
-| A shared spec across roles | [`image-base.md`](../../skills/ppt-master/references/image-base.md), [`shared-standards-core.md`](../../skills/ppt-master/references/shared-standards-core.md) |
-| A technical / format spec | [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md), [`svg-image-embedding.md`](../../skills/ppt-master/references/svg-image-embedding.md), [`image-layout-spec.md`](../../skills/ppt-master/references/image-layout-spec.md) |
-| Stage runbook | [`workflows/stages/verify-charts.md`](../../skills/ppt-master/workflows/stages/verify-charts.md) |
+| A catalog entry (one style, mode, rendering, type) | [`visual-styles/swiss-minimal.md`](../../skills/ppt-master/references/visual-styles/swiss-minimal.md), [`modes/pyramid.md`](../../skills/ppt-master/references/modes/pyramid.md) |
+| A construction module loaded on a trigger | [`executor-structure.md`](../../skills/ppt-master/references/executor-structure.md), [`native-formula.md`](../../skills/ppt-master/references/native-formula.md) |
+| A technical / format spec | [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md), [`semantic-svg.md`](../../skills/ppt-master/references/semantic-svg.md) |
+| A route authority | [`workflows/edit-native-pptx.md`](../../skills/ppt-master/workflows/edit-native-pptx.md) |
+| Stage runbook | [`workflows/stages/verify-charts.md`](../../skills/ppt-master/workflows/stages/verify-charts.md), [`workflows/stages/web-image-review.md`](../../skills/ppt-master/workflows/stages/web-image-review.md) |
 
 ---
 
@@ -339,6 +262,7 @@ Prompt compression is complete only after reviewing token reduction and semantic
 | Preparation timing | Strategist-owned acquisition and materialization did not move into Executor or before final confirmation |
 | Capability discovery | Conditional deep specifications retain a short visible menu or an externally observable trigger before their load gate |
 | Token delta | Report route/file budget changes separately; a budget pass does not prove semantic equivalence |
-| Restriction census | Before each release, enumerate every `Hard rule` / `Mandatory` / `never` / quota in the Generate load sets (`route.generate.*`, `stage.generate.*` in `scripts/prompt_audit_manifest.json`) and classify each as EXPORT, SCRIPT-ENFORCED, PROCESS, or STYLE; Hard-rule counts are justified only by §4.2 mechanism citations; STYLE prohibitions are removed (capability entry, Reference, or example), and SCRIPT-ENFORCED prose keeps only the fix |
+| Owner registry | Every cross-file rule the edit touches has one owner entry in [`rule-owners.md`](rule-owners.md); the other files carry a pointer, not a paraphrase. A new paragraph that restates an owned rule is the regression this table exists to catch |
+| Restriction admission | Every `Hard rule` / `Mandatory` / `never` / quota the edit adds or keeps cites its §4.2 mechanism; a STYLE prohibition is removed (capability entry, Reference, or example), and SCRIPT-ENFORCED prose keeps only the fix |
 
 **Hard rule**: A shorter prompt that changes decision ownership, constraint strength, preparation timing, or capability discoverability is a semantic regression even when structural and token-budget audits pass.

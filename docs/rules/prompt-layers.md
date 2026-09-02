@@ -2,7 +2,7 @@
 
 > Which content belongs in a prompt file at all, and where each kind lives. Applies to every file the runtime loads: `skills/ppt-master/references/`, `skills/ppt-master/workflows/`, `skills/ppt-master/templates/*.md`, `SKILL.md`, and `AGENTS.md`. [`prompt-style.md`](prompt-style.md) governs how those files are written; this rule governs what goes into them.
 
-The prompt files are read by a model before it plans a deck and hand-writes SVG slides. Everything in them competes for the model's attention with the design decisions it is about to make. A paragraph earns its place only by being one of the first two kinds below.
+The prompt files are read by a model before it plans a deck and hand-writes SVG slides. Everything in them competes for the model's attention with the design decisions it is about to make. A paragraph earns its place only by being craft, minimal contract, or the owning statement of a procedure; the fourth kind never enters a prompt file.
 
 ---
 
@@ -12,7 +12,8 @@ The prompt files are read by a model before it plans a deck and hand-writes SVG 
 |---|---|---|---|
 | **Craft** — design judgment | Changing it changes what the page looks like or says | The prompt file of the phase that makes the decision, once | The Visual Job Router, the elevation table and one-light-source default, overlay recipes, the contour-before-encoding gate, the communication-contract table, the cover and closing rules |
 | **Contract** — minimal form | The one canonical form the model must write, plus a boundary the tools cannot enforce | Beside the craft that uses it, as one example and one line | One XML example per effect; "a gradient stroke needs a path with both width and height"; "never put `filter` and `clip-path` on the same `<image>`" |
-| **Tool documentation** — converter and importer behavior | The checker or exporter already enforces it, or it describes import/normalization/`--strict` behavior, or it restates a procedure another phase owns | `skills/ppt-master/scripts/docs/`, never a prompt file | Accepted-but-warned spellings, DrawingML numeric ranges, crop-transport quantization, closed transform/path grammars, server lifecycle, sidecar schemas |
+| **Procedure** — what to run, in what order, with which gate | It is a step, command, gate, or checkpoint of one route or stage, and the model executes it rather than judges it | The route authority or stage runbook that owns that step, once; every other file points to the step | `project_manager.py init` in Generate Step 2, the early/final gate commands and their cadence, the confirm-server launch/wait/shutdown sequence, `[TEMPLATE_BRIEF_CONFIRMED]` |
+| **Tool documentation** — converter and importer behavior | The checker or exporter already enforces it, or it describes import/normalization/`--strict` behavior, or it restates a procedure another file already owns | `skills/ppt-master/scripts/docs/`, never a prompt file | Accepted-but-warned spellings, DrawingML numeric ranges, crop-transport quantization, closed transform/path grammars, server lifecycle, sidecar schemas |
 
 **Hard rule — enforced grammar is not prose**: a rule that `svg_quality_checker.py` or `svg_to_pptx` preflight already rejects needs nothing in the prompt beyond its canonical form. The failing check teaches the boundary at the moment it matters, with the exact message; a paragraph read before authoring cannot compete with that.
 
@@ -24,16 +25,18 @@ The prompt files are read by a model before it plans a deck and hand-writes SVG 
 
 | Location | Holds | Loaded by |
 |---|---|---|
-| `references/<role>*.md`, `workflows/**.md` | Craft and contract, one owner per rule, organized by the phase that decides it (Plan: Strategist and the Generate Steps 1–5 / Quick §2; Do·Check·Act: Executor and Steps 6–7 / Quick §3–4 — see [`SKILL.md`](../../skills/ppt-master/SKILL.md) Phase Frame) | The runtime load sets in `scripts/prompt_audit_manifest.json` |
+| `references/<role>*.md` | Craft and contract, one owner per rule, organized by the phase that decides it (Plan: Strategist / Quick §2; Do·Check·Act: Executor / Quick §3–4 — see [`SKILL.md`](../../skills/ppt-master/SKILL.md) Phase Frame) | The runtime load sets in `scripts/prompt_audit_manifest.json` |
+| `workflows/**.md` | Procedure — the route's steps, commands, gates, and checkpoints — plus the craft that only that route decides; the owner of each cross-file rule is recorded in [`rule-owners.md`](rule-owners.md) | The runtime load sets |
 | `scripts/docs/<topic>.md` | Tool documentation. A contract reference that mirrors a prompt file keeps that file's section numbers (`svg-contract.md` §1.1–§2.2 mirror `shared-standards-core.md`, Part II §6.2–§6.10 mirror `svg-effects.md`) so a pointer resolves in either direction | Nobody during generation; `coverage.exempt` in the manifest with a reason |
 | `templates/*_reference.md`, `templates/schemas/*.json` | Artifact grammar the model authors against (`design_spec.md`, `spec_lock.md`) | Read at authoring time by the owning Step |
 
-**Hard rule — contract before craft, both short**: inside a file, and inside
-each section, state the contract first — the routing/menu rows and the one
-canonical form — then the craft that uses it. A recall index (a routing table,
-the Visual Job Router, the everyday device menu) counts as contract: it is the
-list of what exists, and it stays at the top because a capability the model
-has not seen is a capability it will not use. Anything that is plain SVG or
+**Hard rule — recall first, craft second, boundary last**: inside a file, and inside
+each section, open with the recall index — the routing/menu rows, the list of
+what exists, the one canonical form — then the craft that uses it, and close
+with the boundary the tools cannot enforce. A recall index (a routing table,
+the Visual Job Router, the everyday device menu) leads because a capability the
+model has not seen is a capability it will not use; a boundary trails because a
+prohibition read before the capability crowds it out. Anything that is plain SVG or
 XML behavior — what `<use>` does, what a path command means, that a transform
 composes — gets one line or nothing; the model knows SVG, and the prompt only
 records where this pipeline departs from it. Craft is written as the decision
@@ -65,6 +68,7 @@ Run this procedure paragraph by paragraph; do not classify by section heading.
 
 ## 4. What this rule does not permit
 
-- Deleting craft to hit a token target. The ceiling in [`prompt-style.md`](prompt-style.md) §4.1 is met by moving the other two kinds, never by thinning design judgment.
+- Deleting craft to hit a token target. The ceiling in [`ownership.md`](ownership.md) is met by moving the other kinds, never by thinning design judgment.
+- Compressing several rules into one sentence to save lines. Length is counted in decisions per paragraph ([`prompt-style.md`](prompt-style.md) §3.1); a long sentence with nested exceptions is bloat in a different shape.
 - Turning a `Hard rule` into a pointer to a tool document when no tool enforces it.
 - Restating a moved rule "briefly" in the file it left. Brief restatements are the mechanism that produced the bloat.

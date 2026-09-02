@@ -4,8 +4,10 @@ Conventions and style guides for contributors and AI agents working in this repo
 
 | Rule | Scope |
 |---|---|
-| [`prompt-style.md`](./prompt-style.md) | Style guide for files under `skills/ppt-master/references/` — voice, sectioning, table-first, forbidden patterns |
-| [`prompt-layers.md`](./prompt-layers.md) | What belongs in a prompt file — craft vs minimal contract vs tool documentation, where each lives, and how to move content out without losing a rule |
+| [`prompt-style.md`](./prompt-style.md) | Style guide for every runtime-loaded file (`SKILL.md`, `references/`, `workflows/`, `templates/*.md`) — voice, one rule per sentence, labels, tables, exemplars |
+| [`prompt-layers.md`](./prompt-layers.md) | What belongs in a prompt file — craft, minimal contract, procedure, or tool documentation — where each lives, and how to move content out without losing a rule |
+| [`ownership.md`](./ownership.md) | Which role decides what — the plan / execution / Reference tiers, capability before selection, the core volume ceiling, preparation timing |
+| [`rule-owners.md`](./rule-owners.md) | Registry of every cross-file rule: its one owner section and the files that may only point to it |
 | [`code-style.md`](./code-style.md) | Style guide for Python under `skills/ppt-master/scripts/` — file headers, imports, CLI entry points, error handling, no-tests rule |
 | [`language.md`](./language.md) | Language rule for agent-facing Markdown and `docs/` — one language per file, non-English as content but never as a rule, no hard-coded output language |
 
