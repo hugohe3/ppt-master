@@ -12,7 +12,7 @@ Compose the entire document in active context, then create `<project_path>/desig
 
 ## 2. Exact document contract
 
-Angle-bracketed text is authoring notation. Resolve every universal value before writing; omit only rows marked conditional; keep every required `##` heading (§VII omitted without a catalog reference; §VIII present even with no data rows); copy no examples, notation, or schema prose into the artifact.
+Angle-bracketed text is authoring notation. Resolve every universal value before writing; omit only rows marked conditional; keep every required `##` heading (§VII is conditional: drop the whole section, heading included, when no page carries a catalog reference; §VIII present even with no data rows); copy no examples, notation, or schema prose into the artifact.
 
 ### 2.1 Header and project contract
 

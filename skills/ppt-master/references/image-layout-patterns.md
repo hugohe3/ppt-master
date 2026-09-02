@@ -73,7 +73,7 @@ Compact composition vocabulary for prepared images and illustrations. Use the pa
 
 ### 3.2 P2 · Image as Canvas with Native Overlay
 
-**Reference — not a constraint**: use `P2` when native annotations, data, or process nodes bind to locations inside the prepared visual; an ordinary side image or inset remains `P1` / `P3`.
+**Reference — not a constraint**: use `P2` when native annotations, data, or process nodes bind to locations inside the prepared visual; an ordinary side image or inset remains `P1` / `P3`. The overlay lives inside the picture's root group ([`shared-standards-core.md`](./shared-standards-core.md) §4.3), so it costs no page area.
 
 - **#P2-01 · Annotated evidence** — place compact annotation cards with routed leaders over the visual.
 - **#P2-02 · Hotspots with sidebar legend** — pair numbered points on the visual with a matching native legend.

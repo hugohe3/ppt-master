@@ -1023,7 +1023,8 @@ the SVG quality checker.
   `validation/text_calibration.json`, and prints a compact table or JSON. The
   estimator is additive across scripts, so a line mixing CJK with Latin words
   or digits is estimated as (CJK chars ÷ CJK rate + other chars ÷ Latin rate)
-  × 100; spaces, digits, and punctuation count as Latin. The checker's overflow
+  × 100; spaces, digits, and punctuation count as Latin. Rates are rounded, so
+  the estimate carries a few percent of slack; leave that margin in the zone. The checker's overflow
   diagnostic prints that line's average px per character, which is not a
   reusable rate. A lock role without its own
   `<role>_family` resolves to `title_family` when the role name contains
