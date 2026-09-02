@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 3250,
     "skills/ppt-master/SKILL.md": 2500,
-    "skills/ppt-master/references/executor-base.md": 11000,
+    "skills/ppt-master/references/executor-base.md": 12000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 1750,
     "skills/ppt-master/references/executor-visualization.md": 1000,
@@ -1650,11 +1650,6 @@
       "to": "skills/ppt-master/references/shared-standards-core.md"
     },
     {
-      "concern": "quick-svg-effects-contract",
-      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
-      "to": "skills/ppt-master/references/svg-effects.md"
-    },
-    {
       "concern": "quick-native-shape-contract",
       "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
       "to": "skills/ppt-master/references/native-shape-authoring.md"
@@ -1668,16 +1663,6 @@
       "concern": "quick-semantic-svg-contract",
       "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
       "to": "skills/ppt-master/references/semantic-svg.md"
-    },
-    {
-      "concern": "quick-structure-routing",
-      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
-      "to": "skills/ppt-master/references/executor-structure.md"
-    },
-    {
-      "concern": "quick-topology-routing",
-      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
-      "to": "skills/ppt-master/references/topology-assembly.md"
     },
     {
       "concern": "quick-structured-contract",
@@ -1703,6 +1688,16 @@
       "concern": "structured-interface-routing",
       "from": "skills/ppt-master/references/shared-standards-core.md",
       "to": "skills/ppt-master/references/pptx-structure-interface.md"
+    },
+    {
+      "concern": "executor-effects-routing",
+      "from": "skills/ppt-master/references/executor-base.md",
+      "to": "skills/ppt-master/references/svg-effects.md"
+    },
+    {
+      "concern": "executor-topology-routing",
+      "from": "skills/ppt-master/references/executor-base.md",
+      "to": "skills/ppt-master/references/topology-assembly.md"
     }
   ],
   "registries": [

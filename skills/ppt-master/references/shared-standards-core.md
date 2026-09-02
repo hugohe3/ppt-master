@@ -2,13 +2,13 @@
 
 Mandatory reference for every route that authors or regenerates slide visuals through SVG. It owns XML validity, the closed generated-authoring surface, page closure, semantic grouping, shared visual-quality defaults, and fidelity vocabulary. The complete closed grammar that the checker and exporter enforce — mapping tables, accepted-but-warned spellings, rejection boundaries, import-side metadata — lives in [`svg-contract.md`](../scripts/docs/svg-contract.md); this file keeps the form the model writes.
 
-**Conditional module routing**:
+**Conditional module routing**: Default and Quick Generate load every module through [`executor-base.md`](./executor-base.md)'s routing table. Other SVG-authoring routes (Create Template, Edit Native PPTX) load:
 
 | Trigger | Load |
 |---|---|
-| Default or Quick Generate at the executor-base routing trigger (the first visual job beyond the everyday block); other routes when noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style is used | [`svg-effects.md`](./svg-effects.md) |
-| A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
-| Default structured lock, or Quick installed Layout/Deck structured authoring | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
+| Noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
+| A preset pattern fill, or native chart/table data is authored or edited | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
+| Structured Master/Layout/slot authoring | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
 
 Design defaults that apply when no higher authority speaks are collected in §6.
 
