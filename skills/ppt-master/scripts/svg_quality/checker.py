@@ -7534,6 +7534,11 @@ class SVGQualityChecker:
 
     @staticmethod
     def _row_layout(row: Dict[str, str]) -> str:
+        # ``Image pattern`` is the current §VIII column; ``Layout pattern`` is
+        # the pre-rename spelling still present in older Design Specs.
+        value = row.get('Image pattern', '').strip()
+        if value:
+            return value
         return row.get('Layout pattern', '').strip()
 
     @staticmethod
@@ -7806,7 +7811,7 @@ class SVGQualityChecker:
                     'error',
                     'planned_image_missing_pattern',
                     f"{filename or '(missing filename)'} has an empty Design "
-                    "Spec §VIII Layout pattern; preserve one non-empty "
+                    "Spec §VIII Image pattern; preserve one non-empty "
                     "Strategist recommendation without locking SVG geometry.",
                 ))
             if current_image_contract and crop not in {'adaptive', 'no-crop'}:
@@ -7964,7 +7969,7 @@ class SVGQualityChecker:
                         'locked_image_pattern_mismatch',
                         f"{filename} spec_lock pattern="
                         f"{entry.get('pattern')!r} does not preserve the "
-                        "Design Spec §VIII Layout pattern recommendation "
+                        "Design Spec §VIII Image pattern recommendation "
                         f"{layout_pattern!r}. This Design Spec-to-spec_lock "
                         "projection check compares ordered catalog ids when "
                         "present, otherwise normalized text; it does not "

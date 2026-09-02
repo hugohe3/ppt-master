@@ -87,7 +87,7 @@
         "Thin relationships whose meaning comes from endpoints, routing, or an optional marker."
       ],
       "avoid_for": [
-        "Do not substitute a line for a filled directional body or content carrier.",
+        "Do not substitute a line for a filled directional body or carrier-and-field contour.",
         "Do not imply endpoint attachment; newly authored connector presets remain unconnected."
       ],
       "presets": {
