@@ -567,7 +567,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 
 **为什么采用两级 id。** `#P2-01`、`#M1-01` 这类编号会同时暴露构图责任与局部家族，让组合一眼可读；末尾序号跟随当前浏览顺序，不承担历史编号兼容。它们只是提示词词汇，不是运行时 effect code：Executor 根据条目里的构图说明自由实现，导出器不会把某个 id 映射成固定 DrawingML。
 
-**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Layout pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的两级编号；图片主导的 `adaptive` 行还会写出该图要解决的页面职能，使到达 Executor 的构图自带选它的理由；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
+**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Image pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的两级编号；图片主导的 `adaptive` 行还会写出该图要解决的页面职能，使到达 Executor 的构图自带选它的理由；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
 
 **为什么真正的硬约束留在上游。** 跨切的 SVG 创作与 PPTX 兼容性例外属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由的权威集。版式词表只指向该路由，不再复述合同；每条规则仍只有一个所属模块，词表里也不会留下过期副本。
 

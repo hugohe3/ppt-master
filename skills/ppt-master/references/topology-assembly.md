@@ -2,7 +2,7 @@
 
 # Topology Assembly Reference
 
-Generative material for turning one resolved qualitative topology into editable native-shape components with coherent relative registration, before coordinates. Default and Quick read it once with `executor-structure.md` at the first `Structure=yes` page and reuse it for every later assembly.
+Generative material for turning one resolved qualitative topology into editable native-shape components with coherent relative registration, before coordinates. Default and Quick read it once with `executor-structure.md` at the first `topology=yes` page and reuse it for every later assembly.
 
 **Hard rule — relative constraints, never copyable geometry**: state exact preset or primitive identities, semantic counts, inter-component relations, and only the relative geometry that makes the assembly hold; never coordinates, points, sizes, ratios, adjustment values, path data, SVG fragments, full-page frames, copy, color, styling, or page composition. Materialize every adopted call through `native-shape-authoring.md`.
 

@@ -79,11 +79,13 @@ more than one sense, the sense is named here and the files say which one.
 |---|---|
 | **Reference** (label) | A starting sketch the executing role adjusts or replaces freely, with no upstream repair or stated reason; `(binding)` after a field label removes that freedom |
 | **Relationships** | The §IX line naming a page's semantic units and their source-stated `order` / `link` / `parent` / `membership` / `contrast` / `overlap`, or `none` |
-| **Structure decision** | The per-page yes/no on whether geometry must carry the page's `Relationships`; unrelated to `pptx_structure.mode` |
+| **Topology decision** | The per-page yes/no on whether geometry must carry the page's `Relationships` (`topology=yes` / `topology=no`); unrelated to `pptx_structure.mode` |
 | **`pptx_structure.mode`** | `flat` (every object Slide-local) or `structured` (declared Master/Layout/slot metadata); a packaging route, never information structure |
-| **Layout** | Three senses: the §IX `Layout` line (a Reference for macro composition); a PowerPoint Layout under a Master; the Layout template kind. `Layout pattern` is the §VIII image-composition suggestion |
+| **Composition** | The §IX `Composition` line: a Reference for a page's macro composition, hierarchy, and focus |
+| **Image pattern** | The §VIII column carrying one image-composition suggestion in ordinary words (optionally citing `#P`/`#M` ids) |
+| **Layout** | A PowerPoint Layout under a Master, or the Layout template kind; never a page-composition sketch |
 | **Device** | An everyday page carrier — card, band, icon-and-label, KPI tile, divider, quote block — recalled in the Executor's device menu |
-| **Carrier** | Two senses: the content carrier a page unit sits in (a device, an image, native geometry), and the `data-pptx-carrier` child of a structured slot. The **carrier receipt** is the checker's per-page inventory of what was actually drawn |
+| **Carrier** | What a page unit sits in: a device, an image, or native geometry; the family names are carrier and field, direction and sequence, grouping and ownership, emphasis and annotation. `data-pptx-carrier` is a structured-slot attribute, not this term. The **carrier receipt** is the checker's per-page inventory of what was actually drawn |
 | **Page job** | What one page must do for the reader; the input every carrier, contour, and effect decision is judged against |
 | **Page field** | One large surface, outline, aperture, or off-canvas contour that organizes zones instead of a card per unit |
 | **Contour / preset / atom** | A contour is a shape's silhouette; a preset is one of the 187 Office `prst` contours drawn through `preset_shape_svg.py`; an atom is one object that compiles to one DrawingML shape |

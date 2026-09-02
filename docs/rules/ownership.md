@@ -18,7 +18,7 @@ rule about it, and keep each tier's rules in its own role's files.
 |---|---|---|---|
 | Plan-only | Needs a prepared file before authoring; holds only across the whole roster; needs one user confirmation; or comes from source semantics | Contract, canvas, page count, roster ids/order, `page_rhythm`, identity anchors (color, type, spacing, icons, style, mode), resources, per-page content, facts, semantic units and their relationships | Execution never reopens or substitutes it; a misfit returns upstream |
 | Execution-only | Judged only with the objects on the canvas | Carrier mix, geometry and native contours, composition, coordinates, spacing, hierarchy treatment, effects, per-page icon and image treatment, wrapping | Plan writes no detail here, not even as advice |
-| Reference (grey zone) | Useful as a first sketch, decidable either way | Macro composition and focus, continuity and motif, cover/closing composition, Chart/Table `family/key`, image `Layout pattern`, motion suggestions | Plan writes a starting sketch; Executor adjusts or replaces it freely for the page's purpose, with no upstream repair and no stated reason. It carries no binding semantics — anything that must hold is written in a plan-only field. It binds only when labeled `(binding)` because the user, a template, or a resource contract requires that property (explicit *must* / *only* / *exactly* / *verbatim*); Executor then follows it literally |
+| Reference (grey zone) | Useful as a first sketch, decidable either way | Macro composition and focus, continuity and motif, cover/closing composition, Chart/Table `family/key`, image `Image pattern`, motion suggestions | Plan writes a starting sketch; Executor adjusts or replaces it freely for the page's purpose, with no upstream repair and no stated reason. It carries no binding semantics — anything that must hold is written in a plan-only field. It binds only when labeled `(binding)` because the user, a template, or a resource contract requires that property (explicit *must* / *only* / *exactly* / *verbatim*); Executor then follows it literally |
 
 Depth test: one plan given to two competent Executors yields the same content
 with different looks — converging looks mean the plan wrote execution,
@@ -31,7 +31,7 @@ a capability exists before choosing among capabilities; otherwise a load trigger
 circularly depends on a choice made without that capability. The always-read
 core of the authoring role therefore carries the recall of every construction
 capability — the everyday device menu and effects, the complete preset
-vocabulary, the Structure decision, and one routing row per deeper module —
+vocabulary, the topology decision, and one routing row per deeper module —
 while the deeper module itself (effects beyond the everyday block, native-shape
 authoring, relationship grammar and topology assembly, and the rarer formula,
 hyperlink, chart/table, structured-template, video, animation, and web-image

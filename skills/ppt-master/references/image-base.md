@@ -10,7 +10,7 @@ Shared baseline for both acquisition paths and for prepared derivatives.
 
 Status enum: [`svg-image-embedding.md`](svg-image-embedding.md). Per non-skipped row `Acquire Via` and `Status` are required; `Reference` is required for every `web` / `slice` row, every newly authored `ai` row, and every derivative (an existing `ai` row with a blank `Reference` continues only through [`image-generator.md`](./image-generator.md) §8's declared inference). Quick: explicit user assets, URLs, and path instructions win; otherwise the agent chooses `user` / `ai` / `web` / `slice` rows and AI path `auto` without interaction.
 
-| Filename | Dimensions | Purpose / Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
+| Filename | Dimensions | Purpose / Type | Image pattern | Crop Policy | Acquire Via | Status | Reference |
 |---|---|---|---|---|---|---|---|
 | `<planned file>` | `<planned size>` | `<planned role>` | `<owner-resolved recommendation>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
 

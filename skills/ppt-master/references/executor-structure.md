@@ -2,7 +2,7 @@
 
 # Executor Shape Composition Grammar
 
-Runtime grammar for Slide-local qualitative relationships built from editable shapes; not a diagram catalog. Default and Quick read it once at the first page whose Structure decision is `yes` and reuse it for every later page; loading it selects no `Structure=yes` and creates no geometry quota.
+Runtime grammar for Slide-local qualitative relationships built from editable shapes; not a diagram catalog. Default and Quick read it once at the first page whose topology decision is `yes` and reuse it for every later page; loading it selects no `topology=yes` and creates no geometry quota.
 
 **Hard rule — no Structure catalog**: never recall or resolve `structure/<key>`; compose from authoritative content, §IX relationships, the communication move, and the active visual system.
 
@@ -71,7 +71,7 @@ The last column names common transform axes, not an exhaustive set: combine, def
 
 **Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Containment, alignment, baselines, and proximity express relationships without edges; lines/Connectors express real edges.
 
-**Structural carriers**: a relationship-bearing field, spine, node carrier, or directional shape can be the page-scale move; Structure `yes` by itself adds no geometry. When drawn roles interact, resolve parent contour/direction → contact → joint or intentional void → z-order/occlusion → canvas-edge behavior before labels/garnish; skip inapplicable operations.
+**Structural carriers**: a relationship-bearing field, spine, node carrier, or directional shape can be the page-scale move; `topology=yes` by itself adds no geometry. When drawn roles interact, resolve parent contour/direction → contact → joint or intentional void → z-order/occlusion → canvas-edge behavior before labels/garnish; skip inapplicable operations.
 
 ---
 

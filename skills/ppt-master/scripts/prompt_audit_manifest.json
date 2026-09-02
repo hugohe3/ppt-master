@@ -1193,7 +1193,7 @@
       "max_tokens": 10000
     },
     "stage.generate.executor.structure": {
-      "description": "Qualitative relationship grammar and topology assembly; loaded at the first page whose Structure decision is yes.",
+      "description": "Qualitative relationship grammar and topology assembly; loaded at the first page whose topology decision is yes.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-structure.md",

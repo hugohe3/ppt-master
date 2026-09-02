@@ -69,7 +69,7 @@ Rendering decides how the image is drawn. Color begins from the deck roles — b
 
 | Field | Resolution |
 |---|---|
-| `Layout pattern` | Never copied into the prompt. When page use depends on stable composition, carry the row's `Reference` / §IX / active-context contract — subject and quiet zones, boundary or direction, overlap/seam, approximate share — without inventing layout |
+| `Image pattern` | Never copied into the prompt. When page use depends on stable composition, carry the row's `Reference` / §IX / active-context contract — subject and quiet zones, boundary or direction, overlap/seam, approximate share — without inventing layout |
 | `page_role` | The row's value, else `local` (`hero_page` is Strategist-explicit in Default; Quick may resolve it) |
 | `text_policy` | The row's value, else `none` or `embedded` from `Purpose`, `Reference`, and page intent |
 | Type | An Illustration Sheet omits `type` and follows §4.3; another local structural infographic takes one of the 11 types only on a real index match, otherwise §4.1 E prose; a local single-subject/portrait uses §4.1 A/B; a `hero_page` uses §4.1 A–E. Read `image-type-templates/<type>.md` only when selected |

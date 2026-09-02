@@ -11,7 +11,7 @@ Status names, resource lifecycle, and the embedding workflow for images in SVG p
 Each image carries an `Acquire Via` field plus a status. Default Generate's authority is `design_spec.md §VIII` plus its lock projection (run `analyze_images.py` after confirmation when user images are selected and complete the list before Executor); Quick's is the main agent's active-context decisions (explicit user paths first, unspecified acquisition resolved automatically, all preparation finished before SVG authoring without confirmation or a persisted roster).
 
 ```markdown
-| Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
+| Filename | Dimensions | Purpose | Type | Image pattern | Crop Policy | Acquire Via | Status | Reference |
 |----------|------------|---------|------|----------------|-------------|-------------|--------|-----------|
 | team.jpg | 800x600 | Team photo | Photography | `Put faces behind the hiring claim; #P1-02 + #M2-08 fading the photo edge into the page so copy meets it without a frame` | adaptive | web | Pending | Diverse engineering team in modern office |
 ```

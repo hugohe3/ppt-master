@@ -93,7 +93,7 @@
 
 ## VIII. Image Resource List
 
-| Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
+| Filename | Dimensions | Ratio | Purpose | Type | Image pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## IX. Content Outline
@@ -103,7 +103,7 @@
 #### Slide 01 - [fill]
 
 - **Audience move**: [fill]
-- **Layout**: [non-binding macro composition direction]
+- **Composition**: [non-binding macro composition direction]
 - **Title**: [fill]
 - **Core message**: [fill]
 - **Content**: [fill]

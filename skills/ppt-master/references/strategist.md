@@ -169,7 +169,7 @@ Resource need from the roster, the native-construction Hard rule, the capability
 
 | Capability | Design Spec handoff |
 |---|---|
-| Image composition | Propose a permitted source; when selected, apply [`strategist-image.md`](./strategist-image.md), record a concise §VIII `Layout pattern` in ordinary words, and state how several images relate in §IX `Images` |
+| Image composition | Propose a permitted source; when selected, apply [`strategist-image.md`](./strategist-image.md), record a concise §VIII `Image pattern` in ordinary words, and state how several images relate in §IX `Images` |
 | Composable illustration family | Plan transparent elements by compatible family under `strategist-image.md`, record fixed reuse or adaptive variation in §VIII `Reference`, and describe each page's carrier relationships in §IX |
 | AI decorative lettering asset | Under `strategist-image.md`: preserve every exact string, group compatible marks, keep chrome/body native; the asset may carry the complete title as its display layer while a native title/subtitle stays in a separate frame wherever a searchable, selectable, or outline-visible heading is needed; never shorten copy toward a wordmark |
 | Motion | Optional §IX `Motion suggestion`: the communication job, the units involved, and their meaningful order or initial → end state; effects, ids, options, and timing stay with Executor, and a suggestion never activates the custom stage |
@@ -215,9 +215,9 @@ Owned by [`plan-core.md`](./plan-core.md) §6.1: precedence, proportion, anchor 
 
 ---
 
-## 4. Layout Reference and Motif
+## 4. Composition Reference and Motif
 
-The §IX `Layout` line and the cross-page motif recommendation are [`plan-core.md`](./plan-core.md) §4: both are References Executor adjusts or declines; the motif's continuity job and reuse mode go in §III `Theme`.
+The §IX `Composition` line and the cross-page motif recommendation are [`plan-core.md`](./plan-core.md) §4: both are References Executor adjusts or declines; the motif's continuity job and reuse mode go in §III `Theme`.
 
 ---
 

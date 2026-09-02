@@ -133,7 +133,7 @@ preset = (
 
 ## VIII. Image Resource List
 
-| Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
+| Filename | Dimensions | Ratio | Purpose | Type | Image pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | scene.png | 1280x720 | 16:9 | Morph crop continuity | Photo | #M1-11 same-source independent crops with a shaped detail | adaptive | user | Existing | Synthetic three-band scene for crop and Morph verification | none | local |
 

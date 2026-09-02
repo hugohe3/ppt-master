@@ -82,7 +82,7 @@ Typography projection (excluding Character/upgrade References): Title font stack
 - `icons.library`: `chunk-filled`, `tabler-filled`, `tabler-outline`, `phosphor-duotone`, or `none`; `simple-icons/*` marks may appear alone or alongside in `inventory` without becoming a library or confirmation choice; every SVG under `<project_path>/icons/` remains valid material; illustrated-icon slices create no icon field — their paths belong under `images`, and the unplaced sheet stays out.
 - `objective`: one concise sentence preserving goal and audience success condition.
 - `image_rendering`: one catalog id, or `custom` with `image_rendering_behavior`.
-- `images`: `- <key>: <path> | source=<via> | crop=<adaptive|no-crop>` (e.g. `- p04: images/a.png | source=user | crop=no-crop`); canonical `images/<filename>` path; `source` and `crop` project §VIII exactly; `Layout pattern` is not projected (Executor reads it from §VIII as a recommendation); a legacy `pattern=<layout>` segment is accepted; omit unplaced sheets.
+- `images`: `- <key>: <path> | source=<via> | crop=<adaptive|no-crop>` (e.g. `- p04: images/a.png | source=user | crop=no-crop`); canonical `images/<filename>` path; `source` and `crop` project §VIII exactly; `Image pattern` is not projected (Executor reads it from §VIII as a recommendation); a legacy `pattern=<layout>` segment is accepted; omit unplaced sheets.
 - Custom reference fields: comma-separated exact catalog ids without duplicates, valid only for `custom`; omit for a genuinely novel direction.
 - `stroke_width`: `1.5`, `2`, or `3`, only for `tabler-outline`.
 - `page_rhythm`: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.

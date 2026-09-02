@@ -41,4 +41,13 @@
 
 ## 4. Term renames (recorded here when decided)
 
-No rename has been decided yet. Candidates and the files each would touch are listed in the maintainer notes for the 2026-09 readability pass; a rename enters this table only with its complete file list and the code it changes.
+Decided 2026-09-02 and applied in one sweep. Each row names the old term, the new term, and every file the rename touched; a later file that still uses the old term is a defect.
+
+| Old term | New term | Meaning kept | Files touched |
+|---|---|---|---|
+| §IX `Layout` line | `Composition` | The page's macro-composition Reference | `templates/design_spec_reference.md`, `templates/scaffolds/design_spec.md`, `references/plan-core.md` §4, `references/strategist.md` §4, `references/executor-base.md` §2.1, `SKILL.md` Vocabulary |
+| §VIII `Layout pattern` column | `Image pattern` | One image-composition suggestion per placed row | `templates/design_spec_reference.md`, `templates/scaffolds/design_spec.md`, `templates/spec_lock_reference.md`, `references/image-base.md`, `references/svg-image-embedding.md`, `references/strategist-image.md`, `references/strategist.md`, `references/image-generator.md`, `references/executor-image.md`, `scripts/svg_quality/checker.py` (reads the new column, falls back to the old spelling), `scripts/docs/advanced-image-motion-smoke.md`, `docs/technical-design.md`, `docs/zh/technical-design.md`, `ownership.md`, `SKILL.md` Vocabulary |
+| Structure decision (`Structure=yes|no`) | topology decision (`topology=yes|no`) | The per-page yes/no on whether geometry carries `Relationships` | `references/executor-base.md`, `references/executor-structure.md`, `references/topology-assembly.md`, `references/native-shape-authoring.md`, `references/plan-core.md` §5, `workflows/profiles/quick-generate.md`, `workflows/stages/resume-execute.md`, `scripts/prompt_audit_manifest.json`, `ownership.md`, `prompt-layers.md`, `SKILL.md` Vocabulary |
+| "content carrier" (second sense of carrier) | carrier (single sense); `data-pptx-carrier` is an attribute, not the term | What a page unit sits in | `SKILL.md` Vocabulary, `scripts/pptx_shapes/data/presetShapeSemantics.json` |
+
+`Layout` now means only a PowerPoint Layout under a Master or the Layout template kind. `pptx_structure.mode` and the retired §VII `Structure` catalog key are unchanged.
