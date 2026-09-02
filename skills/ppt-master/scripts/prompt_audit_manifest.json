@@ -31,7 +31,7 @@
     "skills/ppt-master/references/shared-standards.md": 500,
     "skills/ppt-master/references/shared-standards-core.md": 7000,
     "skills/ppt-master/references/svg-effects.md": 9500,
-    "skills/ppt-master/references/native-data-interface.md": 5000,
+    "skills/ppt-master/references/native-data-interface.md": 3000,
     "skills/ppt-master/references/pptx-structure-interface.md": 3000,
     "skills/ppt-master/references/preset-shape-vocabulary.md": 2750,
     "skills/ppt-master/references/strategist.md": 13000,
@@ -1435,6 +1435,15 @@
           "skills/ppt-master/templates/styles/workshop-teaching/templates/design_spec.md"
         ],
         "reason": "Style preset specs share the same method-only scope boundary by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "b720d5918a4f",
+        "paths": [
+          "skills/ppt-master/templates/decks/README.md",
+          "skills/ppt-master/templates/layouts/README.md"
+        ],
+        "reason": "Identical one-line pointer to routing.md §7 and apply-template-workspace in the kind READMEs; the rule owner is routing.md §7 (rule-owners R22)."
       }
     ]
   },
@@ -1949,12 +1958,6 @@
               "role": "consumer",
               "fingerprint": "b3ea6e828373",
               "reason": "This consumer needs the field contract for deterministic execution."
-            },
-            {
-              "path": "skills/ppt-master/references/native-data-interface.md",
-              "role": "consumer",
-              "fingerprint": "b52102689f16",
-              "reason": "Table run typography mirrors the deck font contract for native export."
             }
           ]
         },
@@ -2326,6 +2329,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/template-tools.md",
         "reason": "Template creation tool behavior reference; create-template.md and template-designer.md carry the procedure and contract."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/native-data.md",
+        "reason": "Closed Chart/Table payload grammar for checker/exporter behavior; native-data-interface.md carries the canonical forms, and generation roles open this file only when a payload check fails."
       }
     ]
   }
