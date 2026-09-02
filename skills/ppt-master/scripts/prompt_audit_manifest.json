@@ -2067,13 +2067,13 @@
             {
               "path": "skills/ppt-master/references/executor-base.md",
               "role": "consumer",
-              "fingerprint": "f8fd01fe2cd6",
+              "fingerprint": "7155ac746959",
               "reason": "This consumer needs the field contract for deterministic execution."
             },
             {
               "path": "skills/ppt-master/references/strategist.md",
               "role": "producer",
-              "fingerprint": "02e40bc6ab91",
+              "fingerprint": "c26288aa15ad",
               "reason": "This producer projects the owner field into the planning contract."
             },
             {

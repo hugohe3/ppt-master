@@ -173,7 +173,7 @@ Executor receives the plan and builds on it: Default reads the retained `design_
 
 ### 2.1 Execution context and binding
 
-> Quick has no Design Spec or lock: apply the binding, Reference, content-vs-expression, reading-mode, `page_rhythm`, and anchor rules here to its transient §2 anchors.
+> Quick has no Design Spec or lock: apply the binding, Reference, content-vs-expression, and anchor rules here, and the §2.2 chain, to its transient §2 anchors.
 
 **Hard rule — binding selection vs realization**:
 
@@ -195,22 +195,6 @@ Missing or unresolved material stops execution and returns upstream. Never searc
 
 The result stays information-equivalent: the `Core message`, `Audience move`, and every claim, fact, value, proper name, qualifier, relationship, evidence, and literal requirement survive. Quotation marks and first person only for wording the source itself gives as a quote; reported speech stays reported. Return an unfit or underspecified block for Design Spec repair.
 
-**Per-page communication trace**: read `communication.objective`, `communication.core_message`, and the page's §IX `Core message` + `Audience move` before composing. The page must advance the objective and make that move. A page that cannot state its move is an outline defect: surface `warning: P<NN> has no communication move` rather than decorating around it, and never invent a purpose at execution time. Structural pages advance the contract by establishing relevance, tension, or the decision frame, or by completing the final commitment.
-
-**Mandatory — per-page Structure decision**: before drawing, read the page's §IX `Relationships` (Quick: the transient relationship statement), then `Visualization` and `Content`, and decide whether geometry must carry that qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` relationship. Decide from the semantic relationship alone; a suggested carrier, topology, or composition does not decide it, and a Chart/Table reference never substitutes. `no` stays on this base path. `yes` applies the grammar of [`executor-structure.md`](./executor-structure.md) and [`topology-assembly.md`](./topology-assembly.md) (routing table) and keeps the relationship statement in active page context with no catalog reference, lock row, or artifact. A missing line is a Design Spec defect: repair that §IX block first (continuous run) or return upstream; never infer the relationship at execution.
-
-**Per-page reading-mode check**: apply `communication.consumption_mode` with the §IX block texture and `page_rhythm`:
-
-| Mode | The page carries |
-|---|---|
-| `text` | The visible page stands alone: complete prose, explicit labels / captions / sources, tables, necessary detail |
-| `balanced` | The primary claim and its evidence; enabled notes add interpretation and transitions |
-| `presentation` | One claim and one dominant visual legible at projection distance, concise copy; enabled notes carry the explanation |
-
-With notes disabled, never omit required content on the assumption that notes carry it. Never drop or invent facts to force a mode. When the authored texture materially conflicts with the lock, render the least-destructive faithful composition and surface `warning: P<NN> content texture conflicts with consumption_mode <value>` (a judgment, not a checker rule).
-
-**Default — authored texture (may override when information-equivalent)**: start from each §IX block's written texture (`complete`) or expand its block phrasing (`brief`) under the reading mode. Keep prose where continuity carries cause, argument, narrative, qualification, or emphasis. Use bullets or keywords only for genuinely parallel or ordered material or a clearer information-equivalent structure. A list that is merely easier to lay out, or a template slot that expects a list, is not a reason: widen, reflow, or drop the card before converting prose to fill it. The locked mode shapes voice and register, not §IX's authored titles or page order; a user-authored topic label stays a label even when the mode favors assertions. Block-level phrasing applies *within* the page's `page_rhythm` density, not against it.
-
 **Hard rule — one paragraph, one text frame**: one `<text>` per prose paragraph with positioned `<tspan>` line breaks, never sibling `<text>` elements ([`shared-standards-core.md`](./shared-standards-core.md) §4.2). Start from its leading ranges, then adjust for typeface, reading distance, explicit requirements, and locked style.
 
 **Execution anchors and contextual values**:
@@ -227,7 +211,29 @@ With notes disabled, never omit required content on the assumption that notes ca
 
 Return upstream before a derived or accent identity becomes recurring or structural. Garnish, `±2` px adjustments, and two sparse display occurrences need no lock row, and the lock is never expanded to silence a comparison.
 
-**Per-page layout rhythm — `page_rhythm`**: before drawing, apply the page's tag (key `P<NN>` matching §IX):
+### 2.2 Per-page decision chain
+
+Run these steps in order for every page, in active context, before the page's first coordinate. Each step is decided once; no artifact, no extra pass, no rereading a module while the context is valid.
+
+**Step 1 — module line (Mandatory)**: before drawing each page, write one line `P<NN> modules: core[, structure][, native-shape][, effects][, image][, native-data][, chart | table | formula | link | web-image]` naming the triggered modules the page uses. A module the pre-P01 sweep did not read is read completely before that page's first SVG line. A page whose carrier mix uses a module's capability without naming it is a defect the carrier receipt exposes.
+
+**Step 2 — communication trace**: read `communication.objective`, `communication.core_message`, and the page's §IX `Core message` + `Audience move` before composing. The page must advance the objective and make that move. A page that cannot state its move is an outline defect: surface `warning: P<NN> has no communication move` rather than decorating around it, and never invent a purpose at execution time. Structural pages advance the contract by establishing relevance, tension, or the decision frame, or by completing the final commitment.
+
+**Step 3 — reading-mode check**: apply `communication.consumption_mode` with the §IX block texture and `page_rhythm`:
+
+| Mode | The page carries |
+|---|---|
+| `text` | The visible page stands alone: complete prose, explicit labels / captions / sources, tables, necessary detail |
+| `balanced` | The primary claim and its evidence; enabled notes add interpretation and transitions |
+| `presentation` | One claim and one dominant visual legible at projection distance, concise copy; enabled notes carry the explanation |
+
+With notes disabled, never omit required content on the assumption that notes carry it. Never drop or invent facts to force a mode. When the authored texture materially conflicts with the lock, render the least-destructive faithful composition and surface `warning: P<NN> content texture conflicts with consumption_mode <value>` (a judgment, not a checker rule).
+
+**Default — authored texture (may override when information-equivalent)**: start from each §IX block's written texture (`complete`) or expand its block phrasing (`brief`) under the reading mode. Keep prose where continuity carries cause, argument, narrative, qualification, or emphasis. Use bullets or keywords only for genuinely parallel or ordered material or a clearer information-equivalent structure. A list that is merely easier to lay out, or a template slot that expects a list, is not a reason: widen, reflow, or drop the card before converting prose to fill it. The locked mode shapes voice and register, not §IX's authored titles or page order; a user-authored topic label stays a label even when the mode favors assertions. Block-level phrasing applies *within* the page's `page_rhythm` density, not against it.
+
+**Step 4 — Structure decision (Mandatory)**: before drawing, read the page's §IX `Relationships` (Quick: the transient relationship statement), then `Visualization` and `Content`, and decide whether geometry must carry that qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` relationship. Decide from the semantic relationship alone; a suggested carrier, topology, or composition does not decide it, and a Chart/Table reference never substitutes. `no` stays on this base path. `yes` applies the grammar of [`executor-structure.md`](./executor-structure.md) and [`topology-assembly.md`](./topology-assembly.md) (routing table) and keeps the relationship statement in active page context with no catalog reference, lock row, or artifact. A missing line is a Design Spec defect: repair that §IX block first (continuous run) or return upstream; never infer the relationship at execution.
+
+**Step 5 — layout rhythm (`page_rhythm`)**: before drawing, apply the page's tag (key `P<NN>` matching §IX):
 
 | Tag | Layout discipline |
 |-----|-------------------|
@@ -237,15 +243,24 @@ Return upstream before a derived or accent identity becomes recurring or structu
 
 Mechanical repetition comes from reusing one carrier and topology without a page job, not from cards themselves; vary rhythm when the content relationship changes. Missing or empty `page_rhythm` → `warning: spec_lock.md missing/empty page_rhythm — defaulting all pages to dense` once, all pages `dense`. Tag missing for a page → `warning: spec_lock.md page_rhythm tag not found for P<NN> — falling back to dense` once per deck, `dense`; never invent a tag.
 
+**Step 6 — carrier mix (Mandatory, before coordinates)**: in one page-level decision, choose the background field, editable text and optional lettering, native geometry/lines, prepared photos/scenes/illustration/icon assets, and applicable visualizations — their combination, visual weight, z-order, and local construction from the page message and hierarchy. Use only prepared resources and preserve every binding resource job. The resolved style controls treatment and emphasis, never carrier eligibility, image source, or the native vocabulary. Recall the vocabulary here: the style's §1 `Composition geometry`, the Page Expression Core above, and — once triggered — [`svg-effects.md`](./svg-effects.md) §6.1 and [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1.
+
+**Step 7 — composition geometry (Default; may override when another page-fit move is stronger)**: an SVG page is a canvas, not a DOM. A preset uses its style's §1 `Composition geometry`. A `custom` executes `visual_style_behavior` first and takes §1 geometry only from the exact `visual_style_references` the behavior assigns a shape or composition job; an unreferenced custom follows its behavior alone. Every listed move is generative vocabulary; a move beyond basic primitives passes [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's exact-fit gate.
+
+**Default — consider the planned motif (may override when another coherent expression serves the deck better)**: when §III `Theme` recommends a cross-page motif, decide whether it earns a continuity job; if adopted, vary scale, crop, density, position, and content interaction by page role. An explicit user/template motif binds.
+
+**Step 8 — image composition (image pages only)**: Apply the per-page image composition decision of [`executor-image.md`](./executor-image.md) §1 once, immediately before geometry; a deliberate plain placement is valid when it communicates better.
+
+**Step 9 — geometry move (Mandatory)**: after the Structure result and any topology, decide the page's geometry before writing coordinates. A move beyond basic primitives follows [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1 — exact-fit comparison, composition lenses, relationship and carrier fit, contour-family choice, the reader effect of a generic or undrawn result, the running geometry signature, and the materialization boundary for both Structure results. Keep the decision in active context; never change the Structure result. Materialize under §3.0.
+
+**Step 10 — coordinates and bounds**: Write the sentence first, then the zone; the grouping, bounds, and width-estimation contract is §3 Technical contract.
+
 ---
 
 ## 3. Execution Guidelines
 
-**Per-page composition (craft; the vocabulary is the Page Expression Core)**:
+**Per-page composition craft** (the decision order is §2.2; the vocabulary is the Page Expression Core):
 
-- **Mandatory — resolve the page carrier mix before coordinates**: in one page-level decision, choose the background field, editable text and optional lettering, native geometry/lines, prepared photos/scenes/illustration/icon assets, and applicable visualizations — their combination, visual weight, z-order, and local construction from the page message and hierarchy. Use only prepared resources and preserve every binding resource job. The resolved style controls treatment and emphasis, never carrier eligibility, image source, or the native vocabulary. Recall the vocabulary here: the style's §1 `Composition geometry`, the Page Expression Core above, and — once triggered — [`svg-effects.md`](./svg-effects.md) §6.1 and [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1.
-- **Default — stage each page with the style's composition geometry (may override when another page-fit move is stronger)**: an SVG page is a canvas, not a DOM. A preset uses its style's §1 `Composition geometry`. A `custom` executes `visual_style_behavior` first and takes §1 geometry only from the exact `visual_style_references` the behavior assigns a shape or composition job; an unreferenced custom follows its behavior alone. Every listed move is generative vocabulary; a move beyond basic primitives passes [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1's exact-fit gate.
-- **Default — consider the planned motif (may override when another coherent expression serves the deck better)**: when §III `Theme` recommends a cross-page motif, decide whether it earns a continuity job; if adopted, vary scale, crop, density, position, and content interaction by page role. An explicit user/template motif binds.
 - **Ordinary carriers stay ordinary**: cards, icon-and-label rows, color swatches, soft shadows, and gradient fields are everyday carriers. Use them whenever content groups, compares, enumerates, or names a color, material, or sample, with one shared treatment for peers; reach for a device by page job and let the locked style set its treatment. When the subject is a color or material, draw it: a swatch is content, its value comes from the source, and it needs no lock row.
 - **Reference — semantic geometry over preset stacks**: for ascending, converging, breaking-through, or stacking relationships, compose faithful primitives and exact presets as one geometry system; a Boolean only when the contour must merge, open, or fragment; one page-specific path only when neither works.
 - **Inherited containers**: keep meaningful template frames and restyle radius, fill, stroke, and depth from the Design Spec and lock. Chart/Table reference adaptation belongs to [`executor-visualization.md`](./executor-visualization.md); preview effects never override project styling.
@@ -263,7 +278,6 @@ Mechanical repetition comes from reusing one carrier and topology without a page
 
 **Checkpoints**:
 
-- **Mandatory — per-page module line**: before drawing each page, write one line `P<NN> modules: core[, structure][, native-shape][, effects][, image][, native-data][, chart | table | formula | link | web-image]` naming the triggered modules the page uses. A module the pre-P01 sweep did not read is read completely before that page's first SVG line. A page whose carrier mix uses a module's capability without naming it is a defect the carrier receipt exposes.
 - **Phased generation** (recommended):
   1. **Visual Construction Phase**: generate all pages sequentially, applying every triggered branch while drawing. **MUST embed one object-scoped plot-area marker** per §IX-named or Quick-promoted value-driven chart object ([`executor-chart.md`](./executor-chart.md) §2); calibration follows in [`verify-charts`](../workflows/stages/verify-charts.md). Write every `<object-key>=yes` native marker plus JSON metadata atomically ([`native-data-interface.md`](./native-data-interface.md) §2) and stamp its baseline before the page's gate — `python3 ${SKILL_DIR}/scripts/stamp_native_fallbacks.py <project_path>/svg_output/<page>.svg --write`, rerun after any visible edit inside the marker group. **Reach for native presets** per §3.0 as you draw, decided by the object's intent, never by scanning finished paths; several presets for one page go through one `preset_shape_svg.py render-batch --input -` round (gradient/pattern paint stays ordinary SVG; a justified §6.4 shadow/glow stays on the helper-authored shape).
   2. **Quality gates**: the gate points and their commands are the route's — [`generate-pptx.md`](../workflows/generate-pptx.md) Step 6 or [`quick-generate.md`](../workflows/profiles/quick-generate.md) §3–4. The repair discipline at every gate is the same: run the checker unfiltered, review the complete issue set, fix every error plus the selected warnings in one consolidated pass, verify once. Never check between individual fixes, never `cat` a passing report, never defer errors past `finalize_svg.py` (it rewrites SVG and masks violations). Every `warning` is advisory.
@@ -292,8 +306,6 @@ Mechanical repetition comes from reusing one carrier and topology without a page
 ### 3.0 Native Shape Selection
 
 **Hard rule — contour before encoding**: choose the page-fit contour from the full native vocabulary ([`preset-shape-vocabulary.md`](./preset-shape-vocabulary.md), resident with this core) before its authoring form. A contour beyond rectangle, rounded rectangle, circle, ellipse, and line is chosen with [`native-shape-authoring.md`](./native-shape-authoring.md) in context (routing table). Rectangle, rounded rectangle, circle, and ellipse are preset contours even in short SVG syntax; easier syntax never selects a contour. Every other vocabulary contour — an inflected carrier (snipped, one-sided rounded, plaque, bevel, polygon, pie, frame, folded corner) as much as a block arrow, chevron, banner, callout, flowchart node, or star — comes from `preset_shape_svg.py`, never plain paths or fake rectangles. No Design Spec selection, scorer, or inventory gates this choice.
-
-**Mandatory — independent per-page geometry move**: after the Structure result and any topology, decide the page's geometry before writing coordinates. A move beyond basic primitives follows [`native-shape-authoring.md`](./native-shape-authoring.md) §2.1 — exact-fit comparison, composition lenses, relationship and carrier fit, contour-family choice, the reader effect of a generic or undrawn result, the running geometry signature, and the materialization boundary for both Structure results. Keep the decision in active context; never change the Structure result.
 
 **Materialization tiers** ([`native-shape-authoring.md`](./native-shape-authoring.md) §1 table):
 
