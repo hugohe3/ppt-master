@@ -4,7 +4,7 @@
 
 ## How brands are consumed
 
-Selection follows the parent contract: Brand choices come only from `brands_index.json` (no directory scan or bare-name match); a supplied exact root joins the same selector, defaults Stage 1 to template mode, and is preselected only when it is the sole root; [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md) installs it before Stage 2; Quick applies a supplied exact root directly. This file owns only the Brand schema.
+Selection and installation follow [`routing.md`](../../workflows/routing.md) §7 and [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md). This file owns only the Brand schema.
 
 ## Creating a new brand
 

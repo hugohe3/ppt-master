@@ -8,7 +8,7 @@
 
 ## Selection, Precedence, and Installation
 
-Selection follows the parent contract: Style choices come only from `styles_index.json`; a supplied exact root joins the selector and is preselected only when sole; a consulting label or visual description is a brief and never activates a workspace; Quick applies a supplied exact root directly and reads the installed copy before authoring flat pages.
+Selection and installation follow [`routing.md`](../../workflows/routing.md) §7 and [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md); a consulting label or visual description is a brief and never activates a workspace.
 
 | Decision | Precedence |
 |---|---|

@@ -13,7 +13,7 @@
 
 ## Selection and identity boundary
 
-Selection follows the parent contract: Layout choices come only from the index (no directory scan or bare-ID/style-phrase match); a supplied exact root joins the selector and is preselected only when sole; [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md) installs it before Stage 2; Quick applies a supplied exact root directly and authors the installed Master/Layout/slot contract as lockless structured Slides unless the user explicitly requests visual-only flat use.
+Selection and installation follow [`routing.md`](../../workflows/routing.md) §7 and [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md).
 
 ## `design_spec.md` contract
 
@@ -46,7 +46,7 @@ page_types: [cover, toc, chapter, content, ending]
 
 ## Structured SVG and slot contract
 
-Every SVG is a complete preview declaring one root Master and Layout; fixed visuals are direct atoms; a slot is a top-level `<g id>` with positive design-zone bounds and exactly one compatible carrier; zero-slot Layouts are valid; a typed `picture` / `chart` / `table` slot promises no inserted picture or native object — the generated Slide supplies content and native replacement stays an explicit export choice. Use canonical `{{PLACEHOLDER}}` names ([`template-designer.md`](../../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template)) with a `placeholders:` frontmatter map for overrides. `standard` / `fidelity` author new SVGs and structure; `mirror` preserves source identities, parentage, assignments, placeholder facts, and supported visuals without synthesis; legacy contracts are never upgraded in place, and a flat directory shape alone is not a legacy signal.
+Every SVG is a complete Slide preview under the contract of [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md) §2; a typed `picture` / `chart` / `table` slot promises no inserted picture or native object — the generated Slide supplies content and native replacement stays an explicit export choice. Use canonical `{{PLACEHOLDER}}` names ([`template-designer.md`](../../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template)) with a `placeholders:` frontmatter map for overrides. `standard` / `fidelity` author new SVGs and structure; `mirror` preserves source identities, parentage, assignments, placeholder facts, and supported visuals without synthesis; legacy contracts are never upgraded in place, and a flat directory shape alone is not a legacy signal.
 
 ## Workspace and creation
 

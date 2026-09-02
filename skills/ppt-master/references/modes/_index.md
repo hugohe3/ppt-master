@@ -49,15 +49,10 @@ selecting one for the current deck:
 
 ## 3. How to use
 
-| Active profile | Use |
-|---|---|
-| Default Generate | Strategist reads only this index while mapping three whole solution intents, freezes each custom direction's exact bases, then reads only their deduplicated detail files. Executor reads the confirmed preset file or exact custom references. |
-| Quick Generate | The current main agent reads only this index while deciding, then reads the resolved preset or exact custom bases and keeps that one direction in active context without Design Spec/lock. |
-
-**Resolution scope**: deck-wide (one mode per deck). The five are the catalog you select from; if the structure is genuinely mixed, pick the mode of the body pages and let pages vary within it, or use a warranted `custom` blend (§4). Default recommends and confirms; Quick decides directly.
+**Resolution scope**: deck-wide (one mode per deck). The five are the catalog you select from; if the structure is genuinely mixed, pick the mode of the body pages and let pages vary within it, or use a warranted `custom` blend (§4). Default recommends and confirms under [`strategist.md`](../strategist.md) §d; Quick decides directly under [`quick-generate.md`](../../workflows/profiles/quick-generate.md) §2; Executor reads the confirmed preset file or exact custom references.
 
 ---
 
 ## 4. Editable projection and escape hatch — `custom`
 
-`custom` is the editable behavior carrier: one deck resolves a single `mode`, and a multi-mode blend is one custom behavior whose paragraph states the executable cadence, not several modes. A custom may use catalog material in any way or none — carrying one preset unchanged is valid — and names only the bases it actually uses; freeze those ids from this index, then read only their files before writing the behavior. Default authors it for each Stage-2 direction under [`strategist.md`](../strategist.md) §d; Quick uses it only when a project-specific specialization or fusion serves the deck better than one preset and keeps the behavior in active context.
+`custom` is the editable behavior carrier: one deck resolves a single `mode`, and a multi-mode blend is one custom behavior whose paragraph states the executable cadence, not several modes. A custom may use catalog material in any way or none — carrying one preset unchanged is valid — and names only the bases it actually uses. Default authors it for each Stage-2 direction under [`strategist.md`](../strategist.md) §d; Quick uses it only when a project-specific specialization or fusion serves the deck better than one preset and keeps the behavior in active context.

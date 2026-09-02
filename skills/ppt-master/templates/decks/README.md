@@ -13,7 +13,7 @@
 
 ## Selection and installation
 
-Selection follows the parent contract: Deck choices come only from the index (no directory scan or bare-ID/style-phrase match); a supplied exact root joins the selector and is preselected only when sole; [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md) installs it before Stage 2; Quick applies a supplied exact root directly and authors the installed Master/Layout/slot contract as lockless structured Slides unless the user explicitly requests visual-only flat use.
+Selection and installation follow [`routing.md`](../../workflows/routing.md) §7 and [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md).
 
 ## `design_spec.md` contract
 
@@ -50,7 +50,7 @@ page_count: <N>
 
 ## Structured SVG contract
 
-Every SVG is a complete preview declaring one root Master and Layout; fixed visuals are direct atoms; reusable regions are top-level slot groups with positive bounds and exactly one compatible carrier; zero-slot Layouts are valid; `{{...}}` is the authoring vocabulary and `data-pptx-placeholder*` the native contract. `standard` / `fidelity` author new SVGs and structure; `mirror` preserves source identities, parentage, assignments, placeholder facts, and supported visuals without synthesis; legacy contracts are never upgraded in place, and a flat directory shape alone is not a legacy signal.
+Every SVG is a complete Slide preview under the contract of [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md) §2; `{{...}}` is the authoring vocabulary and `data-pptx-placeholder*` the native contract. `standard` / `fidelity` author new SVGs and structure; `mirror` preserves source identities, parentage, assignments, placeholder facts, and supported visuals without synthesis; legacy contracts are never upgraded in place, and a flat directory shape alone is not a legacy signal.
 
 ## Workspace and creation
 

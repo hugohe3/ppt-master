@@ -10,9 +10,9 @@ Conditional extension for applying an installed Brand/Style/Layout/Deck workspac
 
 ## 1. AI-Authored Template Application Plan
 
-**Inputs**: every installed `<project_path>/templates/design_spec.<kind>.<id>.md` is a template-design source; read all of them. A `design_spec.style.*.md` file marks an active Direction / method segment. Bare names and style words stay interpretive input and never resolve to a local path. Library/explicit provenance never affects precedence. A legacy or incomplete Layout/Deck is not a Step 3 input — rebuild it through [`create-template`](../workflows/create-template.md), preferably from the original PPTX; never mutate the input.
+**Inputs**: every installed `<project_path>/templates/design_spec.<kind>.<id>.md` is a template-design source; read all of them. A `design_spec.style.*.md` file marks an active Direction / method segment. A legacy or incomplete Layout/Deck is rejected under [`pptx-structure-interface.md`](./pptx-structure-interface.md) §3; never mutate the input.
 
-**Hard rule — no Stage-1 influence**: Do not load this module, the template spec, prototypes, assets, or template canvas while authoring Stage 1, and never revise a confirmed Stage 1 to match the workspace.
+**Hard rule — no Stage-1 influence**: never revise a confirmed Stage 1 to match the workspace (Stage-1 evidence boundary: [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4).
 
 **Outputs**:
 

@@ -107,18 +107,13 @@ an exact authoring preset here.
 
 ## 3. Editable `custom` projection
 
-Each Default Stage-2 direction authors one visible, non-empty `custom` aesthetic under [`strategist.md`](../strategist.md) §d — its executable shape language, composition geometry, decoration density, whitespace, typography character, and texture — naming only the catalog bases it actually uses; freeze those ids from this index, then read only their files before writing the behavior. Quick resolves one preset or custom behavior the same way and persists nothing.
+Each Default Stage-2 direction authors one visible, non-empty `custom` aesthetic under [`strategist.md`](../strategist.md) §d — its executable shape language, composition geometry, decoration density, whitespace, typography character, and texture — naming only the catalog bases it actually uses. Quick resolves one preset or custom behavior under [`quick-generate.md`](../../workflows/profiles/quick-generate.md) §2 and persists nothing.
 
 ---
 
 ## 4. How to use
 
-| Active profile | Use |
-|---|---|
-| Default Generate | Strategist reads only this index while mapping three whole solution intents, freezes each custom direction's exact bases, then reads only their deduplicated detail files. Executor reads the confirmed preset file or exact custom references. |
-| Quick Generate | The current main agent reads only this index while deciding, then reads the resolved preset or exact custom bases and retains that one direction without Design Spec/lock. |
-
-**Resolution scope**: deck-wide (one style per deck). It anchors taste as a
+**Resolution scope**: deck-wide (one style per deck); Executor reads the confirmed preset file or exact custom references. It anchors taste as a
 **reference**, not a whitelist. Each §1 `Composition geometry` list is
 generative vocabulary, not a finite layout menu; pages may synthesize or
 deviate when their communication job calls for it.

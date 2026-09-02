@@ -22,13 +22,13 @@ Spec naming and kind declaration follow [`templates/README.md`](../../templates/
 | `library` | The normalized root exactly equals `templates/<kind_dir>/<id>/` derived from an entry in that kind's `*_index.json` |
 | `explicit` | The user or Create Template supplied an exact root not registered at that canonical index-derived root |
 
-Read library choices only from the four `*_index.json` files; never scan kind directories or promote an unregistered directory into the catalog. The label changes discovery provenance only, never validation, precedence, or installation.
+Library roots come from the four indexes ([`routing.md`](../routing.md) §7); the label changes discovery provenance only, never validation, precedence, or installation.
 
 **Selection cardinality**: at most one root per kind; all four kinds may coexist. A multi-kind explicit root contributes all its specs atomically and combines only with non-overlapping kinds; reject duplicate kinds before validation.
 
 **Hard rule — raw source boundary**: a raw PPTX is not a template workspace. Raw PPTX plus new content uses [`edit-native-pptx`](../edit-native-pptx.md); a reusable template request runs [`create-template`](../create-template.md) first, whose validated root becomes a Stage-1 candidate preselected only when it is the sole supplied root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
-**Current-contract gate**: reject flat-root, semantic-legacy, or incomplete structured packages (old baseline/distillation metadata, incomplete Master identity, legacy direct atomic placeholders); create a new workspace through Create Template, from the original PPTX when native topology must be preserved.
+**Current-contract gate**: reject a flat-root, semantic-legacy, or incomplete structured package under [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md) §3; a new workspace comes from Create Template.
 
 ## 2. Read the Matching Schema
 
@@ -49,7 +49,7 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templ
 
 ## 3. Structured Preflight
 
-Before copying a Deck or Layout workspace (Brand and Style skip this), inspect every SVG root and slot: every page declares root Master/Layout keys and picker names; Master/Layout visuals are direct atoms, not layer `<g>` wrappers; every non-composite slot is a top-level `<g>` with positive bounds and exactly one compatible carrier; a composite region uses an explicit `object` proxy; zero-slot Layouts are valid; the contract is current — reject a legacy contract instead of repairing it in the target project.
+Before copying a Deck or Layout workspace (Brand and Style skip this), inspect every SVG root and slot against [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md) §2, and reject a legacy contract (§3) instead of repairing it in the target project.
 
 ## 4. Install Each Distinct Root Once
 
