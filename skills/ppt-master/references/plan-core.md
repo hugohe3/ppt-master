@@ -180,7 +180,7 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
 | Annotation | 0.7–0.85× |
 | Footnote / page number | 0.5–0.65× |
 
-Scan the roster before fixing anchors and declare every recurring role (`lead` at least body size; `footnote`; chart annotations when used), one deck-wide anchor each, snapped to clean even px (body 24 → title 42, subtitle 32, lead 30, annotation 18, footnote 16). Executor's ±2 px band and its two-occurrence display exception are [`executor-base.md`](./executor-base.md) §2.1; declare every recurring role so no structural text depends on that exception.
+Scan the roster before fixing anchors and declare every recurring role (`lead` at least body size; `footnote`; chart annotations when used; and the display roles the `anchor` page count makes recurring — chapter numerals, hero numbers), one deck-wide anchor each, snapped to clean even px (body 24 → title 42, subtitle 32, lead 30, annotation 18, footnote 16). Executor's ±2 px band and its two-occurrence display exception are [`executor-base.md`](./executor-base.md) §2.1; declare every recurring role so no structural text depends on that exception.
 
 ### 6.3 Icons
 

@@ -238,7 +238,7 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate --no
 - [x] The frozen Template Application paragraph was applied, every installed Layout/Deck SVG was read, and structure matches the installed capability (flat vs explicit all-page structured)
 - [x] The early gate ran once after P05 on a roster of seven or more pages (or a shorter roster skipped it), and every checker invocation followed a gate point or one consolidated repair pass
 - [x] The carrier receipt was compared with the retained page jobs and contradictions repaired; the lockless final report passes and matches the current SVGs
-- [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
+- [x] The §1 motion gate was evaluated before P01 (the row hit, or none); enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path; no Strategist, confirmation, root Design Spec, or lock artifact was created
 - [ ] **Next**: report the base PPTX and any narrated PPTX, MP4, or capture-ready handoff, plus the resolved mode, visual style, and image sources actually used; for every no-AI replan, report the affected job, attempted path, concrete error, replacement carrier, and that retaining AI imagery requires repairing generation capability and a new Quick run
 ```

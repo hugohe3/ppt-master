@@ -195,7 +195,7 @@ Read ${SKILL_DIR}/references/image-base.md          # always
 
 | Row | Additional reference | Run |
 |---|---|---|
-| Prepared derivative | `image-generator.md` §4.4 only for registered layers | after its canonical source is terminal: `python3 ${SKILL_DIR}/scripts/image_treat.py ...` for blur, desaturation/grayscale, duotone, brightness, or contrast, or the §4.4 preparation path |
+| Prepared derivative | `image-generator.md` §4.4 only for registered layers | after its canonical source is terminal: `python3 ${SKILL_DIR}/scripts/image_treat.py ...` for blur, desaturation/grayscale, duotone, brightness, contrast, or `--fit WxH` downscaling to the planned size, or the §4.4 preparation path |
 | `ai` | `image-generator.md` | write `images/image_prompts.json`, render `image_prompts.md` with `image_gen.py --render-md`, then follow §7 Path Selection — `image_gen.py --manifest` is Path A only, `host-native` is Path B and skips `--manifest`, `manual` writes prompts and stops; the recorded `design_spec.md §I` path wins over `IMAGE_BACKEND` |
 | `web` | `image-searcher.md` | `python3 ${SKILL_DIR}/scripts/image_search.py ...`; with ≥2 rows write `images/image_queries.json` and run `--batch` once |
 | `slice` | `image-generator.md` §4.3 | after the parent sheet is `Generated`: `python3 ${SKILL_DIR}/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha` |

@@ -237,7 +237,7 @@ Match facial detail, anatomy, texture, and realism to the rendering and the row'
 
 **Hard rule — decide by editability, not model capability**: Layer 1 text can never be edited, corrected, searched, restyled, or reflowed. Text that is part of the artwork and stable — decorative lettering, a wordmark, a hand-lettered phrase, figure-internal identifiers — may be Layer 1. Anything that must stay exact, searchable, editable, or may be reworded is Layer 2, whatever `text_policy` says: authoritative titles, chrome, navigation, footer, bullets, captions, data values. Bake title-like wording only when the approved plan treats those exact characters as stable artwork. When the headline must stay editable, use Primitive D and overlay it.
 
-**Hard rule — never pre-judge by script or length**: never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a script or long string "won't render"; a multi-word phrase or two-line lockup qualifies exactly as one word does. Name the exact characters literally; do not re-read the generated image to verify them.
+**Hard rule — never pre-judge by script or length**: never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a script or long string "won't render"; a multi-word phrase or two-line lockup qualifies exactly as one word does. Name the exact characters literally; do not re-read the generated image to verify them. Exception — CJK lettering: when `text_policy: embedded` and the string contains CJK characters, one look at the generated file is allowed, answering only whether the characters match the approved string exactly; a mismatch regenerates that item, and the look never reopens selection or taste.
 
 **Reference — controlled, deck-aligned artistic authorship** (high expression on user request or a confirmed direction): give the model the exact string, communication role, placement/background relationship, deck identity, relative weight, and desired energy; the rendering, semantic colors, mood, and page hierarchy define the envelope. Glyph-native expression carries identity through silhouette, stroke construction, internal material/texture, contour-bound depth and light, and composition. Literal topic illustrations or detached decoration compete with the glyph; a lettering-plus-illustration lockup needs an explicit request or confirmed direction. Within the treatment let the model combine or omit gesture, material, dimensionality, texture, lighting, and hierarchy — possibility space, not a recipe. Never flatten the art to ease extraction (§4.3's gates protect delivery); when fit is uncertain use the lower density; keep a multi-line lockup as one element when its hierarchy is part of the art.
 
@@ -307,7 +307,7 @@ Write `project/images/image_prompts.json`:
 | `items[].type` | no | One of the 11 internal-composition types for a local structural infographic when a template genuinely fits; omitted for §4.1 E prose, `hero_page`, sheets, and single-subject/portrait |
 | `items[].page_role` | yes | `local` (default) or `hero_page` |
 | `items[].text_policy` | yes | `none` or `embedded`, judged per image (§5.3) |
-| `items[].aspect_ratio` | yes | Passed to `image_gen.py --aspect_ratio` |
+| `items[].aspect_ratio` | yes | Passed to `image_gen.py --aspect_ratio`; every backend accepts a subset of the CLI union (e.g. gemini has no `3:1`), and `--manifest` fails the item before any request when the resolved backend rejects its ratio |
 | `items[].prompt` | yes | The assembled paragraph |
 | `items[].image_size` | no | `512px` / `1K` / `2K` / `4K` |
 | `items[].model` | no | Per-item backend model override |
@@ -349,7 +349,7 @@ Prerequisite: §3 complete and `images/image_prompts.json` validates. The manife
 python3 scripts/image_gen.py --manifest project/images/image_prompts.json --output project/images
 ```
 
-Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded concurrency, and writes each status atomically. Interrupting is safe (completed items stay `Generated`), and `--render-md` refreshes the Markdown sidecar after an interruption. Backend selection, `.env` lookup order, provider keys, and the OpenAI-compatible knobs: [`image.md`](../scripts/docs/image.md). The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
+Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded concurrency, and writes each status atomically. Interrupting is safe (completed items stay `Generated`), and `--render-md` refreshes the Markdown sidecar after an interruption. Backend selection, `.env` lookup order, provider keys, and the OpenAI-compatible knobs: [`image.md`](../scripts/docs/image.md). The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls. Backends return their own native resolutions: backfill the actual pixels into `Dimensions`, and when a file is far larger than its planned on-slide size, downscale it to that size as a prepared derivative (`image_treat.py --fit WxH`); never upscale.
 
 ### Path B — host-native image tool
 

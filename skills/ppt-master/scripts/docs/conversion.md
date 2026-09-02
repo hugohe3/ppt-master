@@ -63,6 +63,9 @@ Useful options:
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.
+  A path that names an existing directory, or ends in `/`, is always treated as
+  a directory, even for a single input: the file keeps its default `<stem>.md`
+  name inside it.
 
 For multi-source project intake, use `project_manager.py import-sources` with
 all source paths / URLs. For local files, the default is to keep generated

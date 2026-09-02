@@ -170,11 +170,15 @@ python3 scripts/image_treat.py projects/demo hero.jpg \
 
 python3 scripts/image_treat.py projects/demo hero.jpg \
   --output hero_duotone.png --duotone "#14213D" "#FCA311"
+
+python3 scripts/image_treat.py projects/demo title_art.png \
+  --output title_art_fit.png --fit 920x228
 ```
 
 Supported operations are brightness, contrast, desaturation/grayscale,
-duotone, and Gaussian blur. They compose in a fixed order: brightness →
-contrast → tone treatment → blur. Desaturation, grayscale, and duotone are
+duotone, Gaussian blur, and `--fit WxH` (downscale to fit inside a pixel
+box, aspect ratio and alpha preserved; never upscales). They compose in a
+fixed order: brightness → contrast → tone treatment → blur → fit. Desaturation, grayscale, and duotone are
 mutually exclusive. At least one option must produce a real change; animated
 or multi-frame sources are rejected rather than reduced to one frame.
 
