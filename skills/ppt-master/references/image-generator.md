@@ -126,7 +126,7 @@ A sheet generates compatible transparent **illustration**, **illustrated-icon**,
 **Sheet prompt convention** — one `page_role: local` item with `image_size` from final placement; spot sheets `text_policy: none`, lettering sheets `embedded`:
 
 - **Grid**: derive `aspect_ratio` and `--grid` from the target shape, not a universal square grid. State an invisible logical **R×C grid** and the cell shape (compact square object, tall portrait, wide vignette, wide lettering mark); center and isolate each element with even clear gutters. Never draw cells, panels, dividers, borders, frames, or alternate gutter colors; never shrink every subject into a square sticker.
-- **Key**: one flat chroma key across the sheet — pure `#00FF00`, `#0000FF`, or `#FF0000`, chosen so its color dominates no element or effect — stated as exact HEX, unchanged in every gutter, free of reflections or spill; grain, halftone, and vignette stay inside elements. The key is technical, not deck palette.
+- **Key**: one flat chroma key across the sheet — pure `#00FF00`, `#0000FF`, or `#FF0000`, chosen so its color dominates no element or effect — stated as exact HEX before the palette and the subjects (deck colors appear only inside elements), unchanged in every gutter, free of reflections or spill; grain, halftone, and vignette stay inside elements. The key is technical, not deck palette.
 - **Identity**: shared `deck_rendering` + `color_scheme`.
 - **Illustration / illustrated-icon sheet**: name each element and its page or reuse job; for an icon, the compact cue that must survive at placement size; the §5.3 `none` cue.
 - **Lettering sheet**: exactly one named stable string per cell as the only text, quoted literally; the group's letterform character and treatment, then role, placement/background relationship, relative weight, and energy under §5.3's controlled-authorship default; artistry glyph-bound (silhouette, stroke structure, material, texture, depth, contour-bound light). No topic motifs, scene fragments, icons, detached ribbons, or particles unless the approved treatment is a lettering-plus-illustration lockup; key-only padding, no scene, unrelated copy, labels, watermark, or mockup surface.
@@ -312,7 +312,7 @@ Write `project/images/image_prompts.json`:
 | `items[].image_size` | no | `512px` / `1K` / `2K` / `4K` |
 | `items[].model` | no | Per-item backend model override |
 | `items[].alt_text` | no | Short caption |
-| `items[].slice_grid`, `items[].slice_names` | for a placeable-element sheet | Exact `RxC` and the comma-separated basenames (`rows*cols` unique outputs) for `slice_images.py` |
+| `items[].slice_grid`, `items[].slice_names` | for a placeable-element sheet | Exact `RxC` and the comma-separated basenames (`rows*cols` unique outputs) for `slice_images.py`; slice basenames are unique across the manifest, so re-cutting part of a sheet rewrites the parent's `slice_names` (and grid) rather than adding a second item with the same names |
 | `items[].status` | yes | `Pending` initially; the CLI writes `Generated` / `Failed` / `Needs-Manual` |
 
 Legacy manifest spellings and their current readings: [`image.md`](../scripts/docs/image.md).

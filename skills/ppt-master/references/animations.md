@@ -107,7 +107,7 @@ When one semantic object continues across adjacent slides, the destination slide
 |---|---|
 | Owner | `morph` belongs to the destination; `morph.from` is the immediately preceding stem in export order |
 | Source of pairs | `scaffold` never guesses identity — add pairs from the motion plan after inspecting final direct-root ids |
-| Pair key | A stable identity whose `from`/`to` are unique direct-root ids on the two slides, written without `!!` (export writes the Selection Pane name `!!<key>` on both) |
+| Pair key | A stable identity whose `from`/`to` are unique direct-root `<g>` ids on the two slides, written without `!!` (export writes the Selection Pane name `!!<key>` on both); a root primitive with a static role marker is not pairable |
 | Destination effect | A destination with pairs sets `effect: morph` explicitly (`morph_by` omitted or `object`; `word`/`character` rejected; a CLI override that changes the effect fails) |
 | Chains | A middle slide may continue an object into another Morph under the same key |
 | Uniqueness | One key never names two objects on a slide; one object never carries two keys; every `!!` key shared by adjacent Morph pages must be declared |

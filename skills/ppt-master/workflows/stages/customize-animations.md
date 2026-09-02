@@ -60,7 +60,8 @@ Unless an all-motion disable bypasses it, validate an existing sidecar first: `p
 | One unit is scattered across groups or root primitives | Merge or wrap its background, icon, label, value, and text into one direct-root group |
 | A connector or arrow explains entry into a node or stage | Keep it with the relationship or target that makes it intelligible |
 | A hero visual, overview graphic, takeaway, or warning has its own role | Its own group |
-| The same object continues across adjacent Morph pages | Isolate each endpoint as one direct-root group of compatible kinds |
+| The same object continues across adjacent Morph pages | Isolate each endpoint as one direct-root `<g>` of compatible kinds; a root primitive carrying a static role (`decoration`, `background`) cannot be paired — wrap it as a group first |
+| Two narrated stages interlock geometrically (a fitted preset joint, a deliberate overlap) | Keep them one group — sibling groups cannot hold disjoint bounds — and let one directional effect travel the reading path |
 | Several atoms express one inseparable idea | Keep them together |
 | Page chrome, structural layers, static framing | Preserve and exclude from ordinary targets |
 
@@ -68,7 +69,7 @@ Unless an all-motion disable bypasses it, validate an existing sidecar first: `p
 
 **Forbidden — group-list-first choreography**: choosing effects or order from `list-groups` before the audit; keeping a coarse wrapper because it has an `id`; splitting one idea into shapes or lines to raise the count; merging unrelated ideas to lower it; adding animation `data-*` attributes to SVG. There is no target group count.
 
-After any regrouping, rerun the final gate (`svg_quality_checker.py <project_path> --canonical-authoring --stage final --json`; Quick inserts `--quick-generate` before `--stage`), then list the post-regroup anchors with `animation_config.py list-groups <project_path>` (one line per slide, chrome groups `bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` / `logo` / `pagenumber` excluded). That list is the only source of slide and group keys for §3–§4. An explicit sidecar entry overrides only the marker-free legacy id-name heuristic; a group carrying `data-pptx-layer` or a static role/placeholder marker never animates. If a starting file is useful, `animation_config.py scaffold <project_path>` after regrouping creates a neutral scaffold (default object effect `none`, groups as empty `{}` placeholders) — creating it selects nothing, and it need not be read in full.
+After any regrouping, rerun the final gate (`svg_quality_checker.py <project_path> --canonical-authoring --stage final --json`; Quick inserts `--quick-generate` before `--stage`), then list the post-regroup anchors with `animation_config.py list-groups <project_path>` (one line per slide, chrome groups `bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` / `logo` / `pagenumber` excluded; a `*-header` or `*-footer` group that holds the page's largest text is the title block, not chrome, and stays listed). That list is the only source of slide and group keys for §3–§4. An explicit sidecar entry overrides only the marker-free legacy id-name heuristic; a group carrying `data-pptx-layer` or a static role/placeholder marker never animates. If a starting file is useful, `animation_config.py scaffold <project_path>` after regrouping creates a neutral scaffold (default object effect `none`, groups as empty `{}` placeholders) — creating it selects nothing, and it need not be read in full.
 
 ---
 
