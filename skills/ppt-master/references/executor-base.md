@@ -269,7 +269,7 @@ Executor draws from the complete prepared project-local pool; library rules are 
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="2"/>
 ```
 
-**Hard rule — color and stroke**: always `fill="#HEX"` on `<use data-icon>`, never `stroke` or `fill="none"`, even for stroke libraries. `stroke-width` (`tabler-outline` only) is `1.5`, `2`, or `3`; a declared `spec_lock.md icons.stroke_width` applies deck-wide, and new authoring declares it, and a legacy stroke-library lock without it uses `2` with one warning. `finalize_svg.py` embeds placeholders automatically.
+**Hard rule — color and stroke**: always `fill="#HEX"` on `<use data-icon>`, never `stroke` or `fill="none"`, even for stroke libraries. `stroke-width` (`tabler-outline` only) is `1.5`, `2`, or `3`; a declared `spec_lock.md icons.stroke_width` applies deck-wide, and new authoring declares it, and a legacy stroke-library lock without it uses `2` with one warning.
 
 **Missing project-local icon** (`test -f "<project_path>/icons/<lib>/<name>.svg"`) → return to Strategist's preparation / `icon_sync.py` gate; Executor never searches the global library, picks an alternative, or copies a candidate. Executor may combine project-local icons freely across namespaces and styles but may not acquire a new one or treat a globally resolvable file as prepared.
 

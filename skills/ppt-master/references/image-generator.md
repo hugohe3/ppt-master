@@ -247,7 +247,7 @@ Write `project/images/image_prompts.json`:
 | `items[].slice_grid`, `items[].slice_names` | for a placeable-element sheet | Exact `RxC` and the comma-separated basenames (`rows*cols` unique outputs) for `slice_images.py` |
 | `items[].status` | yes | `Pending` initially; the CLI writes `Generated` / `Failed` / `Needs-Manual` |
 
-**Compatibility**: legacy `type` values read as `background` → `hero_page` + no type, `hero` → `hero_page` + Primitive A, `portrait` → `local` + Primitive B, `typography` → `hero_page` + `embedded` + Primitive C; a missing `page_role` is `local`, a missing `text_policy` is `none` (one aggregate warning per manifest); an existing manifest lacking `deck_rendering` or an item lacking `type` replays its assembled `prompt` verbatim without reconstruction; a legacy `deck_style_anchor` or `deck_palette` never overrides `deck_rendering` / `color_scheme`; legacy `page_role: full_page` reads as `hero_page`.
+Legacy manifest spellings and their current readings: [`image.md`](../scripts/docs/image.md).
 
 ---
 
@@ -269,7 +269,7 @@ Prerequisite: §3 complete and `images/image_prompts.json` validates. The manife
 python3 scripts/image_gen.py --manifest project/images/image_prompts.json --output project/images
 ```
 
-Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded adaptive concurrency, and writes each status atomically; a missing or corrupt file returns to `Failed`, and persistent rate limits end the run as retryable `Failed`. Options: `--concurrency` (default `IMAGE_CONCURRENCY` or 3; halves on rate limit, min 1), `--image_size`, `--output`/`-o`, `--backend`/`-b`, `--model`/`-m`, `--list-backends`. Interrupting is safe (completed items stay `Generated`); the Markdown sidecar re-renders on completion, or run `--render-md` after an interruption. Configuration: process environment first, then the first `.env` in cwd, the skill directory, the clone root, `~/.ppt-master/.env` — `IMAGE_BACKEND` (required; `--list-backends` shows the set and support tiers), `IMAGE_CONCURRENCY`, provider-specific `{PROVIDER}_API_KEY` / `_BASE_URL` / `_MODEL` (never `IMAGE_API_KEY` / `IMAGE_MODEL` / `IMAGE_BASE_URL`), and for OpenAI-compatible platforms `OPENAI_SIZE_PRESET` (`auto|legacy|gpt-image|gpt-image-2|dall-e-2`), `OPENAI_RESPONSE_FORMAT` (`auto|b64_json|url|omit`), `OPENAI_QUALITY` (`auto|omit|low|medium|high|standard|hd`) under `IMAGE_BACKEND=openai`; see `.env.example`. The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
+Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded concurrency, and writes each status atomically; interrupting is safe (completed items stay `Generated`), and `--render-md` refreshes the Markdown sidecar after an interruption. Backend selection, `.env` lookup order, provider keys, and the OpenAI-compatible knobs: [`image.md`](../scripts/docs/image.md). The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
 
 ### Path B — host-native image tool
 

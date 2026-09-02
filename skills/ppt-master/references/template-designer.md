@@ -9,7 +9,7 @@ Generate reusable structured page templates inside the workspace selected by Cre
 ## Usage
 
 - **Workspace root**: `library` → `skills/ppt-master/templates/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/`; template source is `<template_workspace>/templates/` in both; the Design Spec is the parent-resolved `<design_spec_path>` (library `templates/design_spec.md`, project `templates/design_spec.<kind>.<id>.md`).
-- **Input**: the finalized brief (scope, target project, template ID, display name, kind, structural use cases or Deck application context, tone, theme mode, canvas, optional reference assets, accepted norms) plus, for a PPTX reference, the import workspace described in [`template-tools.md`](../scripts/docs/template-tools.md) — `analysis/manifest.json`, `analysis/native_structure.json`, `sources/source.pptx` (never a template asset), `validation/conversion-report.json`, exported resources, immutable `svg/` layered backing and `svg/inheritance.json`, optional `svg-flat/`, and the editable `authoring-svg/` bundle with model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`.
+- **Input**: the finalized brief (scope, target project, template ID, display name, kind, structural use cases or Deck application context, tone, theme mode, canvas, optional reference assets, accepted norms) plus, for a PPTX reference, the import workspace described in [`template-tools.md`](../scripts/docs/template-tools.md).
 
 **Hard rule — scope is execution metadata**: route files by `output_scope` / `target_project` but never write them into frontmatter. Deck/layout output always declares `native_structure_mode: structured`; never invent another structure mode.
 

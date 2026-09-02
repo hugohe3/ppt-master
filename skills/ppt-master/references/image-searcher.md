@@ -75,23 +75,7 @@ python3 scripts/image_search.py "<query>" --filename <name>.jpg --slide <slide_i
   --orientation landscape --purpose background -o <project_path>/images
 ```
 
-| Parameter | Default | Description |
-|---|---|---|
-| `query` (positional, required) | — | Simplified internally |
-| `--query-variant` | — | Repeatable alias/translation; batch rows use `query_variants` |
-| `--filename` (required) | — | Output filename matching the resource list |
-| `-o / --output` | `.` | Output directory; manifest defaults to `<output>/image_sources.json` |
-| `--slide`, `--purpose`, `--orientation` | `""`, `""`, `any` | Recorded slide id; `background` / `hero` / `side` / `accent`; `landscape` / `portrait` / `square` |
-| `--min-width / --min-height` | `1200 / 800` | Downloaded-pixel floors; `--from-url` honors explicit lower overrides |
-| `--provider` | chain | Pin one provider |
-| `--strict-no-attribution` | off | Refuse CC BY / CC BY-SA |
-| `--require-terms` | — | Repeatable identity gate; comma separates groups, `A|B` aliases |
-| `--save-candidates` | off | Thumbnail mode: one ranked page of previews plus `review_sheet.jpg`, no original |
-| `--max-candidates` | `8` | Page size; `0` = complete pool, debugging only |
-| `--candidate-page` | `1` | Ranked page; page 2 starts at rank 9 |
-| `--promote <candidate>` | — | Download exactly one selected original, enforce gates, write provenance |
-| `--from-url <url>` | — | Manual replacement recorded as `license_tier: manual`; works without vision |
-| `--manifest <path>` | `images/image_queries.json` | Override the manifest path |
+Every flag, its default, and its exact behavior: [`image.md`](../scripts/docs/image.md) § `image_search.py`.
 
 **Batch mode (≥2 web rows) — preferred**: write every row into `image_queries.json` and run one concurrent batch (the web sister of `image_gen.py --manifest`); add `--save-candidates` whenever the agent can inspect images:
 
@@ -110,9 +94,7 @@ python3 scripts/image_search.py --batch <project_path>/images/image_queries.json
 } ] }
 ```
 
-Required per item: `filename`, `query`, `status`; optional: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`. The runner revalidates every `Sourced` row against its file, dimensions, and manifest entry (drift → `Failed`), then searches all `Pending` / `Failed` rows concurrently (default concurrency 3, `--concurrency N` or `IMAGE_SEARCH_CONCURRENCY`; `1` for strict pacing on rate-sensitive free providers). Thumbnail mode writes `Needs-Selection` with `candidate_page`, `candidate_count`, `candidate_total`, `has_more_candidates`, `next_candidate_page`, and the `review_sheet` path, creating no image or provenance; to see the next page for one row set its `candidate_page` to `next_candidate_page`, reset only that row to `Pending`, and rerun. Promoting with the same `--batch` manifest moves the row to `Sourced`. Provider failures stay retryable `Failed`; clean exhaustion becomes `Needs-Manual`; status is saved after each completion.
-
-**Ranking** orders provider metadata, never pixels, and must not be tuned into a taste engine: hard-reject invalid licenses and zero relevance; in best-only mode reject any candidate missing a `required_terms` group; in thumbnail mode keep strict matches first and admit a near match only when exactly one group is missing and the finding query still has strong relevance (marked `identity_evidence: visual-verification-required`, never auto-promoted); then metadata-verified identity in the title outranks a URL-only match; concrete query tokens match whole ASCII tokens (`office` ≠ `officer`) and dominate generic words; orientation is a small penalty, no-attribution a small bonus, pixel count capped so a huge weak match cannot beat a smaller accurate one.
+Required per item: `filename`, `query`, `status`; optional: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`. The runner revalidates `Sourced` rows, searches every `Pending` / `Failed` row concurrently, writes `Needs-Selection` with paging fields in thumbnail mode, and saves status after each completion; ranking orders provider metadata, never pixels, and is not a taste engine — exact runner and ranking behavior: [`image.md`](../scripts/docs/image.md).
 
 **Suitability review** — a top hit is downloadable and token-relevant, not visually suitable (the reviewer receives only the locked row intent plus candidate sidecars/sheets, never the full planning or acquisition context):
 
@@ -134,32 +116,9 @@ Previews land in `images/candidates/<stem>/review/` with a thumbnail-only `candi
 
 ---
 
-## 6. Manifest Format (`image_sources.json`)
+## 6. Manifest (`image_sources.json`)
 
-Each successful download appends or replaces one entry keyed on `filename`; the file is written atomically and is idempotent, and an unreadable existing manifest blocks the write.
-
-```json
-{
-  "license_verification": "provider metadata used; manual review recommended for external delivery",
-  "generated_at": "2026-05-01T12:17:59.856275Z",
-  "items": [ {
-    "filename": "team.jpg", "slide": "03_team", "purpose": "Leadership photo",
-    "search_query": "executive boardroom meeting", "matched_query": "leadership team boardroom",
-    "selection_method": "metadata-ranked", "orientation": "landscape",
-    "provider": "openverse", "stage": "all",
-    "title": "Untitled", "author": "",
-    "source_page_url": "https://www.rawpixel.com/...", "download_url": "https://...",
-    "license_name": "CC0", "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "license_tier": "no-attribution", "attribution_required": false,
-    "width": 1024, "height": 683,
-    "metadata_dimensions": { "width": 4800, "height": 3200, "note": "upstream-reported size; actual downloaded file is smaller (likely a preview)" },
-    "attribution_text": "team.jpg — \"Untitled\" via Openverse — license: CC0 (...)",
-    "status": "sourced"
-  } ]
-}
-```
-
-`matched_query` is the query or variant that found the asset; `selection_method` is `visual-thumbnail` after a reviewed promotion or `metadata-ranked` for the strict path; `width` / `height` are measured from the saved file (use them for layout) while `metadata_dimensions` appears only when the upstream claim differs; `license_tier` drives Executor's attribution; `attribution_text` is the canonical credit source, compressed only through §7's grammar; `stage` is `all` or `no-attribution-only`.
+Each successful download appends or replaces one entry keyed on `filename` (written atomically; an unreadable existing manifest blocks the write). `license_tier` drives Executor's attribution, `attribution_text` is the canonical credit source, `width` / `height` are measured from the saved file, and `selection_method` records `visual-thumbnail` or `metadata-ranked`. Complete field list and example: [`image.md`](../scripts/docs/image.md).
 
 ---
 
@@ -171,7 +130,7 @@ For `license_tier: attribution-required`, every slide using the asset carries a 
 
 ## 8. Failure Handling (web-specific)
 
-Extends [`image-base.md`](./image-base.md) §3. No candidates from any provider or stage → `Needs-Manual` (suggest a more precise query or another provider; rerun without `--strict-no-attribution` only when the page may carry credit). No acceptable image on the current page with `has_more_candidates` → fetch `next_candidate_page` without changing the query or downloading. A page past `candidate_total` → pool exhausted, add a variant or move to the manual boundary. Some previews fail while another qualifies → keep the set. Every preview fails, or a provider/network failure remains → `Failed`, retried by a later batch. A promoted original fails its download/readability/dimension gate → stay `Needs-Selection` and select another or change the query. A best-only download 403/404 → the dispatcher falls to the next ranked candidate. A keyed provider without a key → skipped. CLI exit: a prepared `Needs-Selection` set returns `0`; `Failed` or `Needs-Manual` returns `1`.
+Extends [`image-base.md`](./image-base.md) §3 through the replacement ladder in §5: exhausted candidates and variants end in `Needs-Manual` with a reason, provider or network failures stay retryable `Failed`, and a promoted original that fails its gate stays `Needs-Selection`. Exit codes and per-case runner behavior: [`image.md`](../scripts/docs/image.md).
 
 ---
 

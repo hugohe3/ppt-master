@@ -146,6 +146,12 @@ MINIMAX_API_KEY=your-api-key
 # MINIMAX_MODEL=image-01
 ```
 
+## `image_gen.py --manifest` runner and legacy manifest spellings
+
+Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded adaptive concurrency, and writes each status atomically; a missing or corrupt file returns to `Failed`, and persistent rate limits end the run as retryable `Failed`. Options: `--concurrency` (default `IMAGE_CONCURRENCY` or 3; halves on rate limit, min 1), `--image_size`, `--output`/`-o`, `--backend`/`-b`, `--model`/`-m`, `--list-backends`. Interrupting is safe (completed items stay `Generated`); the Markdown sidecar re-renders on completion, or run `--render-md` after an interruption. Configuration: process environment first, then the first `.env` in cwd, the skill directory, the clone root, `~/.ppt-master/.env` — `IMAGE_BACKEND` (required; `--list-backends` shows the set and support tiers), `IMAGE_CONCURRENCY`, provider-specific `{PROVIDER}_API_KEY` / `_BASE_URL` / `_MODEL` (never `IMAGE_API_KEY` / `IMAGE_MODEL` / `IMAGE_BASE_URL`), and for OpenAI-compatible platforms `OPENAI_SIZE_PRESET` (`auto|legacy|gpt-image|gpt-image-2|dall-e-2`), `OPENAI_RESPONSE_FORMAT` (`auto|b64_json|url|omit`), `OPENAI_QUALITY` (`auto|omit|low|medium|high|standard|hd`) under `IMAGE_BACKEND=openai`; see `.env.example`. The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
+
+**Compatibility**: legacy `type` values read as `background` → `hero_page` + no type, `hero` → `hero_page` + Primitive A, `portrait` → `local` + Primitive B, `typography` → `hero_page` + `embedded` + Primitive C; a missing `page_role` is `local`, a missing `text_policy` is `none` (one aggregate warning per manifest); an existing manifest lacking `deck_rendering` or an item lacking `type` replays its assembled `prompt` verbatim without reconstruction; a legacy `deck_style_anchor` or `deck_palette` never overrides `deck_rendering` / `color_scheme`; legacy `page_role: full_page` reads as `hero_page`.
+
 ## `image_treat.py`
 
 Create a non-destructive PNG derivative from one bitmap already prepared under
@@ -287,6 +293,67 @@ Output:
 Allowed licenses (default): CC0, Public Domain, Pexels License, Pixabay Content License, CC BY, CC BY-SA. Auto-rejected: CC BY-NC, CC BY-ND, CC BY-NC-SA, CC BY-NC-ND, all rights reserved, unknown.
 
 The full role-level reference (intent → query translation, on-slide attribution contract) is in [`references/image-searcher.md`](../../references/image-searcher.md).
+
+### `image_search.py` parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `query` (positional, required) | — | Simplified internally |
+| `--query-variant` | — | Repeatable alias/translation; batch rows use `query_variants` |
+| `--filename` (required) | — | Output filename matching the resource list |
+| `-o / --output` | `.` | Output directory; manifest defaults to `<output>/image_sources.json` |
+| `--slide`, `--purpose`, `--orientation` | `""`, `""`, `any` | Recorded slide id; `background` / `hero` / `side` / `accent`; `landscape` / `portrait` / `square` |
+| `--min-width / --min-height` | `1200 / 800` | Downloaded-pixel floors; `--from-url` honors explicit lower overrides |
+| `--provider` | chain | Pin one provider |
+| `--strict-no-attribution` | off | Refuse CC BY / CC BY-SA |
+| `--require-terms` | — | Repeatable identity gate; comma separates groups, `A|B` aliases |
+| `--save-candidates` | off | Thumbnail mode: one ranked page of previews plus `review_sheet.jpg`, no original |
+| `--max-candidates` | `8` | Page size; `0` = complete pool, debugging only |
+| `--candidate-page` | `1` | Ranked page; page 2 starts at rank 9 |
+| `--promote <candidate>` | — | Download exactly one selected original, enforce gates, write provenance |
+| `--from-url <url>` | — | Manual replacement recorded as `license_tier: manual`; works without vision |
+| `--manifest <path>` | `images/image_queries.json` | Override the manifest path |
+
+### Batch runner and ranking
+
+Required per item: `filename`, `query`, `status`; optional: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`. The runner revalidates every `Sourced` row against its file, dimensions, and manifest entry (drift → `Failed`), then searches all `Pending` / `Failed` rows concurrently (default concurrency 3, `--concurrency N` or `IMAGE_SEARCH_CONCURRENCY`; `1` for strict pacing on rate-sensitive free providers). Thumbnail mode writes `Needs-Selection` with `candidate_page`, `candidate_count`, `candidate_total`, `has_more_candidates`, `next_candidate_page`, and the `review_sheet` path, creating no image or provenance; to see the next page for one row set its `candidate_page` to `next_candidate_page`, reset only that row to `Pending`, and rerun. Promoting with the same `--batch` manifest moves the row to `Sourced`. Provider failures stay retryable `Failed`; clean exhaustion becomes `Needs-Manual`; status is saved after each completion.
+
+**Ranking** orders provider metadata, never pixels, and must not be tuned into a taste engine: hard-reject invalid licenses and zero relevance; in best-only mode reject any candidate missing a `required_terms` group; in thumbnail mode keep strict matches first and admit a near match only when exactly one group is missing and the finding query still has strong relevance (marked `identity_evidence: visual-verification-required`, never auto-promoted); then metadata-verified identity in the title outranks a URL-only match; concrete query tokens match whole ASCII tokens (`office` ≠ `officer`) and dominate generic words; orientation is a small penalty, no-attribution a small bonus, pixel count capped so a huge weak match cannot beat a smaller accurate one.
+
+### `image_sources.json` format
+
+Each successful download appends or replaces one entry keyed on `filename`; the file is written atomically and is idempotent, and an unreadable existing manifest blocks the write.
+
+```json
+{
+  "license_verification": "provider metadata used; manual review recommended for external delivery",
+  "generated_at": "2026-05-01T12:17:59.856275Z",
+  "items": [ {
+    "filename": "team.jpg", "slide": "03_team", "purpose": "Leadership photo",
+    "search_query": "executive boardroom meeting", "matched_query": "leadership team boardroom",
+    "selection_method": "metadata-ranked", "orientation": "landscape",
+    "provider": "openverse", "stage": "all",
+    "title": "Untitled", "author": "",
+    "source_page_url": "https://www.rawpixel.com/...", "download_url": "https://...",
+    "license_name": "CC0", "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license_tier": "no-attribution", "attribution_required": false,
+    "width": 1024, "height": 683,
+    "metadata_dimensions": { "width": 4800, "height": 3200, "note": "upstream-reported size; actual downloaded file is smaller (likely a preview)" },
+    "attribution_text": "team.jpg — \"Untitled\" via Openverse — license: CC0 (...)",
+    "status": "sourced"
+  } ]
+}
+```
+
+`matched_query` is the query or variant that found the asset; `selection_method` is `visual-thumbnail` after a reviewed promotion or `metadata-ranked` for the strict path; `width` / `height` are measured from the saved file (use them for layout) while `metadata_dimensions` appears only when the upstream claim differs; `license_tier` drives Executor's attribution; `attribution_text` is the canonical credit source, compressed only through §7's grammar; `stage` is `all` or `no-attribution-only`.
+
+---
+
+### Failure handling
+
+Extends [`image-base.md`](../../references/image-base.md) §3. No candidates from any provider or stage → `Needs-Manual` (suggest a more precise query or another provider; rerun without `--strict-no-attribution` only when the page may carry credit). No acceptable image on the current page with `has_more_candidates` → fetch `next_candidate_page` without changing the query or downloading. A page past `candidate_total` → pool exhausted, add a variant or move to the manual boundary. Some previews fail while another qualifies → keep the set. Every preview fails, or a provider/network failure remains → `Failed`, retried by a later batch. A promoted original fails its download/readability/dimension gate → stay `Needs-Selection` and select another or change the query. A best-only download 403/404 → the dispatcher falls to the next ranked candidate. A keyed provider without a key → skipped. CLI exit: a prepared `Needs-Selection` set returns `0`; `Failed` or `Needs-Manual` returns `1`.
+
+---
 
 ## `gemini_watermark_remover.py`
 
