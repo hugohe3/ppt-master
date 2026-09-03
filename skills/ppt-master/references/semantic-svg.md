@@ -66,7 +66,7 @@ Use `data-pptx-role` only when no specialized marker owns the behavior:
 | `header`, `footer`, `logo`, `watermark`, `chrome` | Slide-local static framing without Master/Layout ownership |
 | `page-number` | Slide-local number when no `slide-number` placeholder exists |
 
-On flat pages a direct root background image, a full-canvas scrim/decoration rectangle, or a free-floating decorative image layer that crosses text zones (a cut-paper piece, a texture fragment) may carry the role and remain a primitive with a stable unique `id`; do not add a `<g>` solely to avoid an ungrouped-element advisory. Never add structural roles to ordinary titles, body copy, cards, KPIs, diagrams, charts, icons, or images.
+On flat pages a direct root background image, a full-canvas scrim/decoration rectangle, or a free-floating decorative image layer that crosses text zones (a cut-paper piece, a texture fragment) may carry the role and remain a primitive with a stable unique `id`; do not add a `<g>` solely to avoid an ungrouped-element advisory — a `<g>` carrying the role is still a root group and declares `data-pptx-bounds`. Never add structural roles to ordinary titles, body copy, cards, KPIs, diagrams, charts, icons, or images.
 
 ---
 

@@ -117,7 +117,7 @@ Operand count, preset choice, geometry, paint, rotation, and grouping come from 
 
 ## 3. Fragment Generation
 
-`render` emits one object; `render-batch --input -` emits several already-selected objects for one page or template construction from a JSON array with the `render` fields (required `preset`, `id`, `frame` `[x, y, w, h]`; optional `object_kind`, `name`, `fill`, `fill_opacity`, `stroke`, `stroke_width`, `stroke_opacity`, `stroke_linecap`, `stroke_linejoin`, `filter_id`, `adjustments` such as `{"adj": "val 42000"}`). Paint comes from the page context with `spec_lock.md` roles as anchors (create-template: from the confirmed brief and template Design Spec); mirror/preserve input keeps source paint. The batch is transient input, never a project resource or multi-page plan, and never chooses layout.
+`render` emits one object; `render-batch --input -` emits several already-selected objects for one page or template construction from a JSON array with the `render` fields (required `preset`, `id`, `frame` `[x, y, w, h]`; optional `object_kind`, `name`, `fill`, `fill_opacity`, `stroke`, `stroke_width`, `stroke_opacity`, `stroke_linecap`, `stroke_linejoin`, `filter_id`, `adjustments` such as `{"adj": "val 42000"}` — the object form of `render --adjust NAME=FORMULA`, keyed by guide name). Paint comes from the page context with `spec_lock.md` roles as anchors (create-template: from the confirmed brief and template Design Spec); mirror/preserve input keeps source paint. The batch is transient input, never a project resource or multi-page plan, and never chooses layout.
 
 ---
 

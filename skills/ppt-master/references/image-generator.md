@@ -162,7 +162,7 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 
 | Constraint | Rule |
 |---|---|
-| **Strict key recovery** | Raise `--tolerance` only enough to absorb measured flat-field drift, `--inset` only for an isolated outer gutter, and regenerate or enlarge when an effect reaches an edge |
+| **Strict key recovery** | Measure the smallest channel distance from any element pixel to the key first; raise `--tolerance` only enough to absorb measured flat-field drift and keep it below that distance, `--inset` only for an isolated outer gutter, and regenerate or enlarge when an effect reaches an edge. A `1x1` lettering sheet whose glyph touches the outer key border fails the same gate: pad the sheet with a key-colored border (about 10%) before slicing, or regenerate with more margin |
 | **Clean isolated cells** | Fused cells, scene backgrounds, or flourishes crossing a cell make the sheet unusable; re-rolls follow only a strict keying failure or user/preview evidence, never taste |
 | **Enough source pixels** | Each cell at least 1.5–2× its display size (`1K` small accents, `2K` medium, `4K` large or enlarged) |
 
