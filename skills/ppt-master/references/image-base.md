@@ -48,6 +48,6 @@ An all-`web` deck never reads `image-generator.md`, and vice versa.
 
 ## 4. Credits and Handoff
 
-License and attribution data live only in `project/images/image_sources.json` — never in `notes/*.md` (TTS would speak them), `total.md`, SVG `<title>` / `<desc>` (stripped on export), or a credits appendix slide. Executor renders inline credits per slide under [`executor-web-image.md`](./executor-web-image.md) and [`image-searcher.md`](./image-searcher.md) §7.
+License and attribution data live only in `project/images/image_sources.json` — never in `notes/*.md` (TTS would speak them), `total.md`, or SVG `<title>` / `<desc>` (stripped on export). A closing sources page may summarize them, but it never replaces the per-slide credit: Executor renders inline credits per slide under [`executor-web-image.md`](./executor-web-image.md) and [`image-searcher.md`](./image-searcher.md) §7.
 
 SVG authoring consumes `project/images/*.{jpg,png,webp}` and `image_sources.json`. Default Executor never invokes `image_gen.py` / `image_search.py` / `slice_images.py` / `image_treat.py` — missing material returns to Strategist-owned preparation; Quick finishes acquisition and derivation before authoring and neither acquires, derives, nor reselects while drawing. Completion: every row, file, manifest, and provenance record verified; Default proceeds to Executor, Quick exports only with validated evidence and usable statuses; report only blocking recovery.

@@ -34,7 +34,7 @@ For specialized or regulated paper-figure subjects keep the prompt depth of [`im
 
 ## 3. Image Resource List
 
-**Prepared derivatives**: keep the canonical row and add a deterministic child with a distinct `.png`, `Reference: Derived from <bare filename>; treatment=<operation>;`, inheriting acquisition (§4.4 follows `user` / `ai` above); lock placed children; [`image-base.md`](./image-base.md) §1–2 owns preparation.
+**Prepared derivatives**: keep the canonical row and add a deterministic child with a distinct `.png`, `Reference: Derived from <bare filename>; treatment=<operation>;`, inheriting acquisition (§4.4 follows `user` / `ai` above); lock placed children; when the canonical original itself never appears on a page, give its row `Type: Source` — like an Illustration Sheet it stays out of the lock and off every page, and the checker requires at least one row derived from it; [`image-base.md`](./image-base.md) §1–2 owns preparation.
 
 **References describe visual intent**: AI rows carry subject + intent + composition without repeating rendering or HEX; web rows carry the exact subject, view/mood, focal/quiet region, crop safety, and positive quality cues, from which Image_Searcher derives a separate short provider query (complete entity names or disambiguation may use more words). When page use depends on stable composition, put subject/quiet zones, boundary or direction, intended overlap/seam, and approximate share in `Reference` or the §IX block, not only in `Image pattern`.
 
