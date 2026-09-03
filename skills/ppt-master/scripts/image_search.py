@@ -434,6 +434,59 @@ def _validate_downloaded_quality(
         return False
 
 
+def _normalize_multi_frame_jpeg(path: Path) -> bool:
+    """Rewrite a camera MPO (multi-picture JPEG) as its primary frame in place.
+
+    Photo hosts serve stereo/multi-frame camera originals under a ``.jpg``
+    extension. ``image_treat.py``, the quality checker, and the PPTX exporter
+    all expect a single-frame JPEG, so the primary frame is re-encoded at high
+    quality with its EXIF and ICC data and the sibling frames are dropped.
+    Returns ``True`` when the file was rewritten.
+    """
+    if path.suffix.lower() not in {".jpg", ".jpeg"}:
+        return False
+    try:
+        from PIL import Image  # type: ignore
+    except ImportError:
+        return False
+    try:
+        with Image.open(path) as source:
+            multi_frame = (
+                (source.format or "").upper() == "MPO"
+                or int(getattr(source, "n_frames", 1)) != 1
+            )
+            if not multi_frame:
+                return False
+            source.seek(0)
+            frame = source.convert("RGB")
+            save_kwargs: dict[str, object] = {"quality": 95}
+            for key in ("exif", "icc_profile"):
+                value = source.info.get(key)
+                if value:
+                    save_kwargs[key] = value
+    except (OSError, ValueError, SyntaxError):
+        return False
+    fd, temp_name = tempfile.mkstemp(
+        prefix=f".{path.stem}.frame0.",
+        suffix=path.suffix,
+        dir=str(path.parent),
+    )
+    os.close(fd)
+    temp_path = Path(temp_name)
+    try:
+        frame.save(temp_path, "JPEG", **save_kwargs)
+        os.replace(temp_path, path)
+    except (OSError, ValueError):
+        try:
+            temp_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return False
+    finally:
+        frame.close()
+    return True
+
+
 def _stage_and_validate_image(
     output_path: Path,
     materialize: Callable[[Path], object],
@@ -455,6 +508,11 @@ def _stage_and_validate_image(
     keep_temp = False
     try:
         materialize(temp_path)
+        if _normalize_multi_frame_jpeg(temp_path):
+            print(
+                "    normalized a multi-frame camera JPEG (MPO) to its primary frame",
+                file=sys.stderr,
+            )
         if not _validate_downloaded_quality(
             temp_path,
             min_width=min_width,

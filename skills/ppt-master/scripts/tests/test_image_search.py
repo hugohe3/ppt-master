@@ -91,3 +91,22 @@ class ImageSearchPromotionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CandidatePoolContinuationTests(unittest.TestCase):
+    def test_multi_frame_camera_jpeg_keeps_its_primary_frame(self) -> None:
+        try:
+            from PIL import Image
+        except ImportError:  # pragma: no cover - Pillow is a runtime dependency
+            self.skipTest("Pillow unavailable")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "camera.jpg"
+            first = Image.new("RGB", (64, 48), (200, 20, 20))
+            second = Image.new("RGB", (64, 48), (20, 20, 200))
+            first.save(path, format="MPO", save_all=True, append_images=[second])
+            self.assertTrue(image_search._normalize_multi_frame_jpeg(path))
+            with Image.open(path) as image:
+                self.assertEqual(image.format, "JPEG")
+                self.assertEqual(getattr(image, "n_frames", 1), 1)
+                self.assertGreater(image.getpixel((3, 3))[0], 150)
+            self.assertFalse(image_search._normalize_multi_frame_jpeg(path))

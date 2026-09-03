@@ -306,6 +306,10 @@ def _valid_project_image_payload(img_format: str, img_data: bytes) -> bool:
             image.verify()
     except (UnidentifiedImageError, OSError, ValueError, SyntaxError):
         return False
+    if expected == 'JPEG' and actual == 'MPO':
+        # A camera multi-picture JPEG is a JPEG stream followed by sibling
+        # frames; every JPEG decoder renders its primary frame.
+        return True
     return actual == expected
 
 

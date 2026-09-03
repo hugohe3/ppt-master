@@ -332,9 +332,14 @@ def _apply_treatments(
     try:
         with Image.open(source_path) as source:
             if int(getattr(source, "n_frames", 1)) != 1:
-                raise RuntimeError(
-                    f"animated or multi-frame images are unsupported: {source_path}"
-                )
+                if (source.format or "").upper() == "MPO":
+                    # A camera multi-picture JPEG: the primary frame is the
+                    # photograph; the sibling frames are stereo/preview data.
+                    source.seek(0)
+                else:
+                    raise RuntimeError(
+                        f"animated images are unsupported: {source_path}"
+                    )
             oriented = ImageOps.exif_transpose(source)
             try:
                 oriented.load()
