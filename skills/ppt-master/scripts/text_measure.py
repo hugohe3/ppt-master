@@ -643,7 +643,15 @@ def build_parser() -> argparse.ArgumentParser:
     calibrate = subparsers.add_parser('calibrate', help='Calibrate project typography roles.')
     calibrate.add_argument('project_path', type=Path)
     calibrate.add_argument('--outline', action='store_true')
-    calibrate.add_argument('--role', action='append', type=_role_argument, default=[])
+    calibrate.add_argument(
+        '--role',
+        action='append',
+        type=_role_argument,
+        default=[],
+        metavar='NAME:FAMILY:SIZE',
+        help='Typography role to calibrate when spec_lock.md is absent, e.g. '
+             'body:"Microsoft YaHei":20; repeatable.',
+    )
     calibrate.add_argument('--json', action='store_true')
     for command in (measure, wrap, box):
         command.add_argument('--json', action='store_true')

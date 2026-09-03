@@ -177,13 +177,15 @@ def get_project_info(project_path: str) -> Dict:
         Project information dictionary
     """
     project_path = Path(project_path)
+    # ``.`` or ``..`` carry no name of their own; parse the real directory name.
+    dir_name = project_path.resolve().name
 
     # Parse directory name
-    parsed = parse_project_name(project_path.name)
+    parsed = parse_project_name(dir_name)
 
     info = {
         'path': str(project_path),
-        'dir_name': project_path.name,
+        'dir_name': dir_name,
         'name': parsed['name'],
         'format': parsed['format'],
         'format_name': parsed['format_name'],
@@ -465,13 +467,13 @@ def validate_project_structure(
                                                                        {'file_name': svg_file.name})
                     warnings.append(msg)
 
-    # Check directory naming format
-    dir_name = project_path.name
+    # Check directory naming format (``.`` has no name of its own)
+    dir_name = project_path.resolve().name
     if not re.search(r'_\d{8}$', dir_name):
         msg = f"Directory name missing date suffix (_YYYYMMDD): {dir_name}"
         if use_helper and verbose:
             msg += "\n" + \
-                ErrorHelper.format_error_message('missing_date_suffix')
+                ErrorHelper.format_error_message('missing_project_date')
         warnings.append(msg)
 
     is_valid = len(errors) == 0
