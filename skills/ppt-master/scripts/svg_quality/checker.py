@@ -1133,6 +1133,7 @@ class SVGQualityChecker:
         canonical_authoring: bool = False,
     ):
         self.template_mode = template_mode
+        self._image_pixel_sizes: Dict[Path, Tuple[int, int]] = {}
         self.scan_banner = True
         self.quick_generate = quick_generate
         self.canonical_authoring = canonical_authoring
@@ -2191,8 +2192,9 @@ class SVGQualityChecker:
         result['warnings'].extend(
             f"Noncanonical compact authoring: {error} "
             "(advisory; normalize with "
-            "`python3 scripts/compact_svg_styles.py <svg_output> --inplace` "
-            "and rerun the final gate, or leave the explicit form)"
+            "`python3 scripts/compact_svg_styles.py <svg_output> --inplace`, "
+            "re-stamp pages that carry Chart/Table fallbacks, and rerun the "
+            "final gate, or leave the explicit form)"
             for error in errors
         )
 
@@ -7433,6 +7435,47 @@ class SVGQualityChecker:
                     f"images/{filename} does not exist.",
                 ))
 
+        # ``Type: Source`` marks a web/user/ai original that only feeds
+        # prepared derivatives; like a sheet it never enters the lock or a page.
+        derived_parents = set()
+        for row in rows:
+            match = re.search(
+                r'derived\s+from\s+`?([^;|`]+?)`?\s*(?:;|$)',
+                row.get('Reference', ''),
+                re.IGNORECASE,
+            )
+            if match:
+                derived_parents.add(Path(match.group(1).strip()).name)
+        for row in rows:
+            if self._row_type(row).lower() != 'source':
+                continue
+            filename = self._row_filename(row)
+            if not filename:
+                continue
+            if filename in lock_images:
+                self._illustration_issues.append((
+                    'error',
+                    'source_in_lock',
+                    f"{filename} is a Source row (unplaced derivation parent) "
+                    "but is listed in spec_lock.md images; lock only its "
+                    "placed derivatives.",
+                ))
+            if filename in all_svg_references:
+                self._illustration_issues.append((
+                    'error',
+                    'source_referenced',
+                    f"{filename} is a Source row but is referenced by an SVG; "
+                    "give the row a placed Type or place a derivative instead.",
+                ))
+            if filename not in derived_parents:
+                self._illustration_issues.append((
+                    'error',
+                    'source_without_derivative',
+                    f"{filename} is a Source row but no row is `Derived from "
+                    f"{filename}`; a Source row exists only to feed prepared "
+                    "derivatives.",
+                ))
+
         if current_contract:
             self._check_planned_image_closure(
                 rows,
@@ -7648,7 +7691,12 @@ class SVGQualityChecker:
         inline_counts: Dict[Path, int] = {}
         placements: Dict[
             str,
-            List[Tuple[Path, str, Tuple[str, ...]]],
+            List[Tuple[
+                Path,
+                str,
+                Tuple[str, ...],
+                Tuple[float, float, float, float] | None,
+            ]],
         ] = defaultdict(list)
         for svg_path in discover_slide_svgs(svg_dir):
             try:
@@ -7679,6 +7727,11 @@ class SVGQualityChecker:
                         working_root,
                         parent_by_id,
                     ),
+                    cls._image_frame_geometry(
+                        element,
+                        working_root,
+                        parent_by_id,
+                    ),
                 ))
                 if _resolve_external_image_reference is not None:
                     resolved = _resolve_external_image_reference(
@@ -7691,6 +7744,88 @@ class SVGQualityChecker:
             if inline_count:
                 inline_counts[svg_path] = inline_count
         return out, inline_counts, dict(placements)
+
+    @staticmethod
+    def _image_frame_geometry(
+        image: ET.Element,
+        root: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[float, float, float, float] | None:
+        """Return (frame width, frame height, source fraction w, h) of one instance.
+
+        Inside the nested-``<svg>`` crop transport the frame is the wrapper and
+        the ``viewBox`` selects a unit-coordinate fraction of the source; a
+        plain ``<image>`` shows the whole source in its own box.
+        """
+        def _number(raw: str | None) -> float | None:
+            if raw is None:
+                return None
+            try:
+                value = float(raw.strip().removesuffix('px'))
+            except (TypeError, ValueError):
+                return None
+            return value if math.isfinite(value) and value > 0 else None
+
+        parent = parent_by_id.get(id(image))
+        if (
+            parent is not None
+            and parent is not root
+            and _local_name(parent) == 'svg'
+            and parent.get('viewBox')
+        ):
+            parts = [
+                part for part in re.split(r'[\s,]+', parent.get('viewBox', '').strip())
+                if part
+            ]
+            if len(parts) != 4:
+                return None
+            width = _number(parent.get('width'))
+            height = _number(parent.get('height'))
+            fraction_width = _number(parts[2])
+            fraction_height = _number(parts[3])
+            if None in (width, height, fraction_width, fraction_height):
+                return None
+            return (width, height, fraction_width, fraction_height)
+        width = _number(image.get('width'))
+        height = _number(image.get('height'))
+        if width is None or height is None:
+            return None
+        return (width, height, 1.0, 1.0)
+
+    def _measure_image_pixels(
+        self,
+        paths: set[Path] | None,
+    ) -> Tuple[int, int] | None:
+        """Return the EXIF-oriented pixel size of the first readable file."""
+        for path in sorted(paths or ()):
+            cached = self._image_pixel_sizes.get(path)
+            if cached is not None:
+                return cached
+            try:
+                from PIL import Image, ImageOps  # type: ignore
+                with Image.open(path) as image:
+                    oriented = ImageOps.exif_transpose(image)
+                    size = (int(oriented.width), int(oriented.height))
+            except Exception:  # noqa: BLE001 - unreadable files are reported elsewhere
+                continue
+            if size[0] > 0 and size[1] > 0:
+                self._image_pixel_sizes[path] = size
+                return size
+        return None
+
+    @staticmethod
+    def _stretch_deviation(
+        geometry: Tuple[float, float, float, float] | None,
+        source_size: Tuple[int, int] | None,
+    ) -> float | None:
+        """Return how far a ``none`` placement departs from the source aspect."""
+        if geometry is None or source_size is None:
+            return None
+        frame_width, frame_height, fraction_width, fraction_height = geometry
+        expected = (fraction_width * source_size[0]) / (fraction_height * source_size[1])
+        if expected <= 0:
+            return None
+        return abs((frame_width / frame_height) / expected - 1.0)
 
     @staticmethod
     def _image_crop_mechanisms(
@@ -7885,7 +8020,7 @@ class SVGQualityChecker:
 
         placed_rows = [
             row for row in rows
-            if self._row_type(row).lower() != 'illustration sheet'
+            if self._row_type(row).lower() not in {'illustration sheet', 'source'}
             and self._row_acquire(row)
             in {'ai', 'web', 'user', 'formula', 'placeholder', 'slice'}
         ]
@@ -8104,20 +8239,27 @@ class SVGQualityChecker:
             if effective_no_crop:
                 placements_by_svg: Dict[
                     Path,
-                    List[Tuple[str, Tuple[str, ...]]],
+                    List[Tuple[
+                        str,
+                        Tuple[str, ...],
+                        Tuple[float, float, float, float] | None,
+                    ]],
                 ] = defaultdict(list)
-                for svg_path, raw_aspect, mechanisms in image_placements.get(
-                    filename,
-                    [],
+                for svg_path, raw_aspect, mechanisms, geometry in (
+                    image_placements.get(filename, [])
                 ):
                     placements_by_svg[svg_path].append((
                         raw_aspect,
                         mechanisms,
+                        geometry,
                     ))
+                source_size = self._measure_image_pixels(
+                    referenced_paths.get(filename),
+                )
 
                 for svg_path, placements in placements_by_svg.items():
                     parsed_placements = []
-                    for raw_aspect, mechanisms in placements:
+                    for raw_aspect, mechanisms, geometry in placements:
                         try:
                             align, mode = (
                                 _parse_project_image_aspect_ratio(raw_aspect or None)
@@ -8132,33 +8274,55 @@ class SVGQualityChecker:
                             mechanisms,
                             align,
                             mode,
+                            geometry,
                         ))
 
                     has_complete_placement = any(
                         align != 'none'
                         and mode == 'meet'
                         and not mechanisms
-                        for _raw_aspect, mechanisms, align, mode
+                        for _raw_aspect, mechanisms, align, mode, _geometry
                         in parsed_placements
                     )
 
-                    for raw_aspect, _mechanisms, align, _mode in parsed_placements:
+                    for raw_aspect, _mechanisms, align, _mode, geometry in (
+                        parsed_placements
+                    ):
                         if align != 'none':
                             continue
+                        # ``none`` is the mandated form inside the nested crop
+                        # transport and is harmless on a frame that keeps the
+                        # source aspect; only measured distortion is a stretch.
+                        deviation = self._stretch_deviation(geometry, source_size)
+                        if deviation is not None and deviation <= 0.02:
+                            continue
                         actual = raw_aspect or '(implicit xMidYMid meet)'
+                        if deviation is None:
+                            detail = (
+                                "its frame cannot be checked against the source "
+                                "pixel aspect"
+                            )
+                        else:
+                            detail = (
+                                f"its frame distorts the source aspect by "
+                                f"{deviation * 100:.1f}%"
+                            )
                         self._illustration_issues.append((
                             'error',
                             'no_crop_image_fit_mismatch',
                             f"{svg_path.name}: {filename} is no-crop but its "
                             f"rendered placement uses "
-                            f"preserveAspectRatio={actual!r}; stretching is not "
-                            "a detail crop and remains forbidden.",
+                            f"preserveAspectRatio={actual!r} and {detail}; "
+                            "stretching is not a detail crop and remains "
+                            "forbidden.",
                         ))
 
                     if has_complete_placement:
                         continue
 
-                    for raw_aspect, mechanisms, align, mode in parsed_placements:
+                    for raw_aspect, mechanisms, align, mode, _geometry in (
+                        parsed_placements
+                    ):
                         if align != 'none' and mode != 'meet':
                             actual = raw_aspect or '(implicit xMidYMid meet)'
                             self._illustration_issues.append((

@@ -288,3 +288,35 @@ class SVGQualityCheckerBoundsTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class NoCropStretchMeasurementTests(unittest.TestCase):
+    def test_nested_crop_frame_geometry_and_measured_deviation(self) -> None:
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+            '<svg x="140" y="60" width="180" height="180" '
+            'viewBox="0.6 0.3 0.24 0.16" preserveAspectRatio="none" '
+            'overflow="hidden">'
+            '<image href="../images/tree.jpg" x="0" y="0" width="1" height="1" '
+            'preserveAspectRatio="none"/></svg>'
+            '<image href="../images/tree.jpg" x="0" y="0" width="405" '
+            'height="720" preserveAspectRatio="none"/>'
+            '</svg>'
+        )
+        parent_by_id = {
+            id(child): parent for parent in root.iter() for child in list(parent)
+        }
+        images = list(root.iter('{http://www.w3.org/2000/svg}image'))
+        nested = SVGQualityChecker._image_frame_geometry(images[0], root, parent_by_id)
+        plain = SVGQualityChecker._image_frame_geometry(images[1], root, parent_by_id)
+        self.assertEqual(nested, (180.0, 180.0, 0.24, 0.16))
+        self.assertEqual(plain, (405.0, 720.0, 1.0, 1.0))
+        # A 900x1600 source: the 0.24x0.16 crop is 216x256 px, so a square
+        # frame distorts it, while the plain 405x720 frame keeps 9:16 exactly.
+        self.assertGreater(
+            SVGQualityChecker._stretch_deviation(nested, (900, 1600)), 0.1
+        )
+        self.assertAlmostEqual(
+            SVGQualityChecker._stretch_deviation(plain, (900, 1600)), 0.0
+        )
+        self.assertIsNone(SVGQualityChecker._stretch_deviation(nested, None))

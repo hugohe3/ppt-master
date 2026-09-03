@@ -51,7 +51,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("key background #00FF00", result.stderr)
             self.assertIn("dominant #57B265", result.stderr)
-            self.assertIn("max channel spread 3", result.stderr)
+            self.assertIn("key spread 3", result.stderr)
             self.assertIn("--bg #57B265 --tolerance 12", result.stderr)
             self.assertFalse((output_dir / "element.png").exists())
 

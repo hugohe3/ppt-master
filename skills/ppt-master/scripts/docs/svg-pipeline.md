@@ -507,7 +507,9 @@ implementation before publishing their authoring SVG. Standard workflows do
 not rewrite completed SVG: they pass `--canonical-authoring` to
 `svg_quality_checker.py`, which reports any remaining deterministic change as an
 advisory warning (run `compact_svg_styles.py <svg_output> --inplace` on
-authored project pages and rerun the final gate to normalize, or keep the
+authored project pages, re-run `stamp_native_fallbacks.py --write` on pages
+that carry Chart/Table fallbacks because the rewrite changes their
+fingerprinted subtree, then rerun the final gate to normalize, or keep the
 explicit form). Structured template rosters keep their explicit form: per-slide
 compaction would make shared Master/Layout atoms diverge and shift native
 fallback hashes, so the normalizer is not applied to them; mirror
