@@ -94,6 +94,78 @@ if __name__ == "__main__":
 
 
 class CandidatePoolContinuationTests(unittest.TestCase):
+    def test_later_pages_keep_earlier_saved_thumbnails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            cand_dir = Path(temp_dir) / "candidates" / "hero"
+            review_dir = cand_dir / "review"
+            review_dir.mkdir(parents=True)
+            (review_dir / "candidate_02.jpg").write_bytes(b"x")
+            meta_path = cand_dir / "candidates.json"
+            meta_path.write_text(json.dumps({
+                "target_filename": "hero.jpg",
+                "candidate_page": 1,
+                "request": {"query": "bronze mask"},
+                "candidates": [
+                    {"rank": 1, "filename": "candidate_01.jpg", "review": "review/candidate_01.jpg"},
+                    {"rank": 2, "filename": "candidate_02.jpg", "review": "review/candidate_02.jpg"},
+                ],
+            }), encoding="utf-8")
+            request = image_search.ImageSearchRequest(
+                query="bronze mask",
+                purpose="",
+                orientation="",
+                filename="hero.jpg",
+                slide="",
+                min_width=1,
+                min_height=1,
+            )
+            retained, pages = image_search._retained_pool_candidates(
+                meta_path,
+                review_dir,
+                request,
+                current_ranks={9, 10},
+            )
+            self.assertEqual([entry["rank"] for entry in retained], [2])
+            self.assertEqual(pages, [1])
+
+            changed = image_search.ImageSearchRequest(
+                query="jade cong",
+                purpose="",
+                orientation="",
+                filename="hero.jpg",
+                slide="",
+                min_width=1,
+                min_height=1,
+            )
+            self.assertEqual(
+                image_search._retained_pool_candidates(
+                    meta_path, review_dir, changed, current_ranks=set()
+                ),
+                ([], []),
+            )
+
+    def test_batch_mode_rejects_a_positional_query(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manifest = Path(temp_dir) / "image_queries.json"
+            manifest.write_text('{"items": []}', encoding="utf-8")
+            with redirect_stderr(io.StringIO()) as stderr:
+                with self.assertRaises(SystemExit):
+                    image_search.main(["--batch", str(manifest), "bronze mask"])
+            self.assertIn("positional query", stderr.getvalue())
+
+    def test_page_continuation_requires_a_saved_pool(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with redirect_stderr(io.StringIO()) as stderr:
+                with self.assertRaises(SystemExit):
+                    image_search.main([
+                        "bronze mask",
+                        "--filename", "hero.jpg",
+                        "-o", temp_dir,
+                        "--save-candidates",
+                        "--candidate-page", "2",
+                    ])
+            self.assertIn("none was saved", stderr.getvalue())
+
     def test_multi_frame_camera_jpeg_keeps_its_primary_frame(self) -> None:
         try:
             from PIL import Image

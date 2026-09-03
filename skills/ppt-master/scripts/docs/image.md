@@ -292,7 +292,7 @@ Full review / escalation flow: [`image-searcher.md`](../../references/image-sear
 
 Output:
 
-- `--save-candidates`: thumbnail-only `candidates/<stem>/candidates.json`, at most 8 provider previews by default, and `review_sheet.jpg`; no target image or provenance entry. `--candidate-page N` advances through the ranked pool; `--max-candidates 0` explicitly dumps all candidates for exceptional debugging
+- `--save-candidates`: thumbnail-only `candidates/<stem>/candidates.json`, at most 8 provider previews by default, and `review_sheet.jpg`; no target image or provenance entry. `--candidate-page N` advances through the ranked pool while keeping earlier pages' entries in `candidates.json`; `--max-candidates 0` explicitly dumps all candidates for exceptional debugging
 - Best-only / `--promote`: one original saved to the specified output directory (auto-converts webp → jpg via Pillow when the filename extension demands)
 - Best-only / `--promote`: `image_sources.json` manifest with full provenance (provider, license, license_tier, author, source URL, dimensions, attribution_text)
 - Manifest is idempotent on `filename` and written atomically; damaged existing provenance blocks replacement
@@ -316,14 +316,14 @@ The full role-level reference (intent → query translation, on-slide attributio
 | `--require-terms` | — | Repeatable identity gate; comma separates groups, `A|B` aliases |
 | `--save-candidates` | off | Thumbnail mode: one ranked page of previews plus `review_sheet.jpg`, no original |
 | `--max-candidates` | `8` | Page size; `0` = complete pool, debugging only |
-| `--candidate-page` | `1` | Ranked page; page 2 starts at rank 9 |
+| `--candidate-page` | `1` | Ranked page; page 2 starts at rank 9. Single-query continuation inherits the saved pool request; batch reruns every `Needs-Selection` row at that page |
 | `--promote <candidate>` | — | Download exactly one selected original, enforce gates, write provenance |
 | `--from-url <url>` | — | Manual replacement recorded as `license_tier: manual`; works without vision |
 | `--manifest <path>` | `images/image_queries.json` | Override the manifest path |
 
 ### Batch runner and ranking
 
-Required per item: `filename`, `query`, `status`; optional: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`. The runner revalidates every `Sourced` row against its file, dimensions, and manifest entry (drift → `Failed`), then searches all `Pending` / `Failed` rows concurrently (default concurrency 3, `--concurrency N` or `IMAGE_SEARCH_CONCURRENCY`; `1` for strict pacing on rate-sensitive free providers). Thumbnail mode writes `Needs-Selection` with `candidate_page`, `candidate_count`, `candidate_total`, `has_more_candidates`, `next_candidate_page`, and the `review_sheet` path, creating no image or provenance; to see the next page for one row set its `candidate_page` to `next_candidate_page`, reset only that row to `Pending`, and rerun. Promoting with the same `--batch` manifest moves the row to `Sourced`. Provider failures stay retryable `Failed`; clean exhaustion becomes `Needs-Manual`; status is saved after each completion.
+Required per item: `filename`, `query`, `status`; optional: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`. The runner revalidates every `Sourced` row against its file, dimensions, and manifest entry (drift → `Failed`), then searches all `Pending` / `Failed` rows concurrently (default concurrency 3, `--concurrency N` or `IMAGE_SEARCH_CONCURRENCY`; `1` for strict pacing on rate-sensitive free providers). Thumbnail mode writes `Needs-Selection` with `candidate_page`, `candidate_count`, `candidate_total`, `has_more_candidates`, `next_candidate_page`, and the `review_sheet` path, creating no image or provenance; to see the next page for one row set its `candidate_page` to `next_candidate_page`, reset only that row to `Pending`, and rerun; `--candidate-page N` on the batch run advances every `Needs-Selection` row at once. A positional query is rejected in batch mode rather than ignored. Promoting with the same `--batch` manifest moves the row to `Sourced`. Provider failures stay retryable `Failed`; clean exhaustion becomes `Needs-Manual`; status is saved after each completion.
 
 **Ranking** orders provider metadata, never pixels, and must not be tuned into a taste engine: hard-reject invalid licenses and zero relevance; in best-only mode reject any candidate missing a `required_terms` group; in thumbnail mode keep strict matches first and admit a near match only when exactly one group is missing and the finding query still has strong relevance (marked `identity_evidence: visual-verification-required`, never auto-promoted); then metadata-verified identity in the title outranks a URL-only match; concrete query tokens match whole ASCII tokens (`office` ≠ `officer`) and dominate generic words; orientation is a small penalty, no-attribution a small bonus, pixel count capped so a huge weak match cannot beat a smaller accurate one.
 

@@ -768,6 +768,56 @@ def _dedupe_ranked_candidates(
     return deduped
 
 
+def _retained_pool_candidates(
+    meta_path: Path,
+    review_dir: Path,
+    request: ImageSearchRequest,
+    *,
+    current_ranks: set[int],
+) -> tuple[list[dict], list[int]]:
+    """Keep earlier pages of the same pool so any saved thumbnail stays promotable.
+
+    A pool belongs together while the target filename and query are unchanged;
+    a new query replaces it. Entries whose review file disappeared are dropped.
+    """
+    if not meta_path.is_file():
+        return [], []
+    try:
+        existing = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return [], []
+    if not isinstance(existing, dict):
+        return [], []
+    prior_request = existing.get("request")
+    if (
+        existing.get("target_filename") != request.filename
+        or not isinstance(prior_request, dict)
+        or str(prior_request.get("query") or "") != request.query
+    ):
+        return [], []
+    retained: list[dict] = []
+    for entry in existing.get("candidates") or []:
+        if not isinstance(entry, dict):
+            continue
+        rank = entry.get("rank")
+        review = entry.get("review")
+        if (
+            not isinstance(rank, int)
+            or isinstance(rank, bool)
+            or rank in current_ranks
+            or not isinstance(review, str)
+            or not (review_dir / Path(review).name).is_file()
+        ):
+            continue
+        retained.append(entry)
+    saved_pages = [
+        page
+        for page in existing.get("saved_pages") or [existing.get("candidate_page")]
+        if isinstance(page, int) and not isinstance(page, bool) and page > 0
+    ]
+    return retained, saved_pages
+
+
 def _save_candidate_thumbnails(
     ranked: list[tuple[float, str, AssetCandidate]],
     output_dir: Path,
@@ -888,6 +938,14 @@ def _save_candidate_thumbnails(
                 except OSError:
                     pass
 
+    meta_path = cand_dir / "candidates.json"
+    retained, saved_pages = _retained_pool_candidates(
+        meta_path,
+        review_dir,
+        request,
+        current_ranks={entry["rank"] for entry in pool},
+    )
+    saved_pages = sorted(set(saved_pages) | {candidate_page})
     meta = {
         "schema_version": 3,
         "candidate_storage": "thumbnail-only",
@@ -896,6 +954,7 @@ def _save_candidate_thumbnails(
         "searched_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "license_stage": license_stage,
         "candidate_page": candidate_page,
+        "saved_pages": saved_pages,
         "page_size": max_candidates,
         "candidate_total": candidate_total,
         "has_more_candidates": has_more_candidates,
@@ -909,9 +968,8 @@ def _save_candidate_thumbnails(
             "min_width": request.min_width,
             "min_height": request.min_height,
         },
-        "candidates": pool,
+        "candidates": sorted(retained + pool, key=lambda entry: entry["rank"]),
     }
-    meta_path = cand_dir / "candidates.json"
     _write_json_atomic(meta_path, meta)
 
     review_sheet: Optional[Path] = None
@@ -1370,6 +1428,27 @@ def write_sources_manifest(path: Path, item: dict) -> Path:
 # ---------------------------------------------------------------------------
 # Promote: replace primary image with a candidate
 # ---------------------------------------------------------------------------
+
+
+def _load_saved_candidate_request(
+    output_dir: Path,
+    target_filename: str,
+) -> Optional[dict]:
+    """Return the ``request`` block of an existing candidate pool, if any."""
+    stem = Path(target_filename).stem
+    meta_path = output_dir / "candidates" / stem / "candidates.json"
+    if not meta_path.is_file():
+        return None
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(meta, dict):
+        return None
+    if meta.get("target_filename") != target_filename:
+        return None
+    request = meta.get("request")
+    return request if isinstance(request, dict) else None
 
 
 def promote_candidate(
@@ -2081,6 +2160,25 @@ def run_search_manifest(
     if repaired_sourced:
         save_search_manifest(manifest_path, manifest)
 
+    if candidate_page > 1:
+        # An explicit page on the command line continues every shortlisted
+        # row; Needs-Selection is otherwise terminal, so without this the
+        # flag would silently do nothing.
+        advanced = 0
+        for item in items:
+            if item["status"] != SEARCH_STATUS_NEEDS_SELECTION:
+                continue
+            item["candidate_page"] = candidate_page
+            item["status"] = SEARCH_STATUS_PENDING
+            advanced += 1
+        if advanced:
+            print(
+                f"[Batch] --candidate-page {candidate_page}: {advanced} "
+                "Needs-Selection row(s) rerun at that page; set one row's "
+                "candidate_page in the manifest instead to advance only it."
+            )
+            save_search_manifest(manifest_path, manifest)
+
     pending_idx = [
         i for i, it in enumerate(items)
         if it["status"] in SEARCH_RETRYABLE_STATUSES
@@ -2473,6 +2571,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         parser.error("--candidate-page must be a positive integer")
     if args.max_candidates == 0 and args.candidate_page != 1:
         parser.error("--candidate-page must be 1 when --max-candidates is 0")
+    if args.batch and args.query and not args.promote and not args.from_url:
+        parser.error(
+            "a positional query is not used in --batch mode; put the query in "
+            "the manifest row, or drop --batch for a single-query search"
+        )
 
     output_dir = Path(args.output)
 
@@ -2559,16 +2662,68 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not args.filename:
         parser.error("--filename is required in single-query mode")
 
+    saved_request = _load_saved_candidate_request(output_dir, args.filename)
+    if args.candidate_page > 1 and saved_request is None:
+        parser.error(
+            f"--candidate-page {args.candidate_page} continues an existing "
+            f"candidate pool, but none was saved for {args.filename!r}; run "
+            "page 1 with --save-candidates first"
+        )
+    if saved_request is not None and args.candidate_page > 1:
+        saved_query = str(saved_request.get("query") or "")
+        if saved_query and saved_query != args.query:
+            parser.error(
+                f"--candidate-page {args.candidate_page} must keep the pool's "
+                f"query {saved_query!r}; a changed query starts a new page-1 "
+                "pool instead"
+            )
+    required_terms = _parse_required_terms(args.require_terms)
+    query_variants = _parse_query_variants(args.query_variant)
+    orientation = "" if args.orientation == "any" else args.orientation
+    min_width = args.min_width
+    min_height = args.min_height
+    if saved_request is not None and args.candidate_page > 1:
+        inherited: list[str] = []
+        if not required_terms and saved_request.get("required_terms"):
+            required_terms = _parse_required_terms(saved_request["required_terms"])
+            inherited.append(f"required_terms={list(required_terms)}")
+        if not query_variants and saved_request.get("query_variants"):
+            query_variants = _parse_query_variants(saved_request["query_variants"])
+            inherited.append(f"query_variants={list(query_variants)}")
+        saved_orientation = str(saved_request.get("orientation") or "any")
+        if not orientation and saved_orientation != "any":
+            orientation = saved_orientation
+            inherited.append(f"orientation={orientation}")
+        for field in ("min_width", "min_height"):
+            saved_value = saved_request.get(field)
+            if (
+                isinstance(saved_value, int)
+                and not isinstance(saved_value, bool)
+                and saved_value > 0
+                and getattr(args, field) == parser.get_default(field)
+                and saved_value != getattr(args, field)
+            ):
+                if field == "min_width":
+                    min_width = saved_value
+                else:
+                    min_height = saved_value
+                inherited.append(f"{field}={saved_value}")
+        if inherited:
+            print(
+                "  continuing the saved candidate pool; inherited "
+                + ", ".join(inherited),
+                file=sys.stderr,
+            )
     request = ImageSearchRequest(
         query=args.query,
         purpose=args.purpose,
-        orientation="" if args.orientation == "any" else args.orientation,
+        orientation=orientation,
         filename=args.filename,
         slide=args.slide,
-        min_width=args.min_width,
-        min_height=args.min_height,
-        required_terms=_parse_required_terms(args.require_terms),
-        query_variants=_parse_query_variants(args.query_variant),
+        min_width=min_width,
+        min_height=min_height,
+        required_terms=required_terms,
+        query_variants=query_variants,
     )
     _warn_weak_required_terms(request.required_terms)
 
