@@ -2126,6 +2126,28 @@ def _is_serif_run(run: dict[str, Any]) -> bool:
     return False
 
 
+# Faces whose glyphs run wider than the generic advance table at the same
+# weight. Measured against the installed fonts on 2026-09-04: Arial Black
+# renders 24% wider than the caps estimate, Verdana 6%. Only factors ≥ 1 are
+# listed — a narrower face wastes space, a wider one overflows the bounds.
+# (mixed-case factor, all-caps factor): the generic table is already
+# pessimistic on lowercase and optimistic on capitals, so the correction
+# scales with the run's uppercase fraction like the headroom does.
+_WIDE_FAMILY_WIDTH_FACTORS = {
+    'arial black': (1.06, 1.25),
+    'verdana': (1.02, 1.08),
+}
+
+
+def _family_width_factor(run: dict[str, Any]) -> float:
+    family = str(run.get('font_family') or '').split(',')[0].strip().strip('\'"').lower()
+    factors = _WIDE_FAMILY_WIDTH_FACTORS.get(family)
+    if factors is None:
+        return 1.0
+    base, caps = factors
+    return base + (caps - base) * _uppercase_fraction([run])
+
+
 def _estimate_run_text_width(run: dict[str, Any]) -> float:
     """Estimate one run using the metrics actually emitted to DrawingML."""
     text = str(run.get('text', ''))
@@ -2144,7 +2166,7 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
         )
         / FONT_PX_TO_HUNDREDTHS_PT
     )
-    return sum(cluster_widths) + letter_spacing_px * max(
+    return sum(cluster_widths) * _family_width_factor(run) + letter_spacing_px * max(
         len(cluster_widths) - 1,
         0,
     )
