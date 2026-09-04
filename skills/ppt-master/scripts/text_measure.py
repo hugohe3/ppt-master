@@ -43,6 +43,7 @@ _LATIN_TOKEN_CONNECTORS = frozenset("'’._:/+%@#-")
 _WEIGHTS = ('normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900')
 _CALIBRATION_CJK_SAMPLE = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往'
 _CALIBRATION_LATIN_SAMPLE = 'Clear Slides Make Big Ideas Easy to See.'
+_CALIBRATION_CAPS_SAMPLE = 'CLEAR SLIDES MAKE BIG IDEAS EASY TO SEE.'
 _CORE_CALIBRATION_ROLES = ('body', 'title', 'subtitle', 'annotation')
 _SLIDE_HEADING_RE = re.compile(
     r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+|NN)\b.*$',
@@ -477,11 +478,13 @@ def _calibration_payload(
     for name, family, size in roles:
         cjk_width = measure_text(_CALIBRATION_CJK_SAMPLE, size=size, family=family)
         latin_width = measure_text(_CALIBRATION_LATIN_SAMPLE, size=size, family=family)
+        caps_width = measure_text(_CALIBRATION_CAPS_SAMPLE, size=size, family=family)
         role_rows[name] = {
             'family': family,
             'size': size,
             'cjk_chars_per_100px': round(100.0 * cjk_length / cjk_width, 1),
             'latin_chars_per_100px': round(100.0 * latin_length / latin_width, 1),
+            'caps_chars_per_100px': round(100.0 * latin_length / caps_width, 1),
             'longest_planned_line': longest[name],
         }
     return {
@@ -516,7 +519,7 @@ def _fallback_notes(
 def _render_calibration_table(payload: dict[str, object], *, include_outline: bool) -> str:
     role_rows = payload['roles']
     assert isinstance(role_rows, dict)
-    headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px']
+    headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px', 'CAPS ≈chars/100px']
     if include_outline:
         headers.append('longest planned line (px, slide, text)')
     lines = [
@@ -532,6 +535,7 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             _format_number(float(raw_row['size'])),
             f'{raw_row["cjk_chars_per_100px"]:.1f}',
             f'{raw_row["latin_chars_per_100px"]:.1f}',
+            f'{raw_row["caps_chars_per_100px"]:.1f}',
         ]
         if include_outline:
             planned = raw_row['longest_planned_line']
@@ -546,6 +550,13 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
     lines.append(
         '[NOTE] mixed line width ≈ (CJK chars ÷ CJK rate + other chars ÷ Latin '
         'rate) × 100; spaces, digits, and punctuation count as Latin.'
+    )
+    lines.append(
+        '[NOTE] rates are sample averages measured with the checker\'s '
+        'estimator (headroom included); the checker measures each real line '
+        'glyph by glyph, so capital-heavy words (WebGPU, GDP) and wide letters '
+        'run wider than the Latin rate — use the CAPS rate for acronyms and '
+        'uppercase, and keep about 5% below any bounds width.'
     )
     return '\n'.join(lines) + '\n'
 

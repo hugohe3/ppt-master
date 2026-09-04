@@ -52,7 +52,7 @@ configure_utf8_stdio()
 
 try:
     import requests
-    from bs4 import BeautifulSoup, NavigableString, Tag
+    from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 except ImportError:
     print("Error: This script requires 'requests' and 'beautifulsoup4'.")
     print("Please run: pip install requests beautifulsoup4")
@@ -719,6 +719,11 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
     lines = []
 
     def traverse(node: Tag | NavigableString) -> str:
+        if isinstance(node, Comment):
+            # ``Comment`` is a ``NavigableString`` subclass: without this
+            # branch SSR markers such as ``<!--lit-node 1-->`` would be
+            # emitted as body text and even land inside headings.
+            return ""
         if isinstance(node, NavigableString):
             text = str(node)
             # Normalize whitespace but keep single spaces
