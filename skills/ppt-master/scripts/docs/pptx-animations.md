@@ -41,7 +41,7 @@ One resolved row contains these fields:
 | Trigger shape | Optional different top-level group; maps to PowerPoint `On Click of` |
 | Duration | Finite positive schedule duration; scalable native behavior trees preserve their internal timing ratios |
 | Delay | Finite non-negative row offset; shape-trigger rows use it as `TriggerDelayTime` |
-| Order | Positive integer sidecar order; ties retain stable SVG group order, then `effects[]` index |
+| Order | Positive integer sidecar order; ties retain stable SVG group order, then `effects[]` index; a group with no sidecar `order` follows the nearest listed group before it in SVG order (and precedes every listed group when none precedes it), so a headline above the numbered body enters first |
 | Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters` |
 | Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
 | Completion / cue | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
@@ -301,7 +301,7 @@ animation-to-video contract.
 | `groups.<id>.effects[]` | Non-empty ordered array for a multi-duty lifecycle; every row names `effect`; cannot coexist with legacy single-effect fields in the same group |
 | `groups.<id>.effect` | Backward-compatible single-row form; old short names are read-only compatibility inputs |
 | `effects[].trigger` / legacy `trigger` | Row-specific Start mode; omitted values inherit `animation.trigger` |
-| `order` | Page-wide order for ordinary rows; ties keep SVG group order, then `effects[]` index; `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
+| `order` | Page-wide order for ordinary rows; ties keep SVG group order, then `effects[]` index; an unlisted animated group inherits the order of the nearest listed group above it in SVG order (0 before the first); `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
 | `delay` | Row-specific seconds added to the resolved Start or shape trigger |
 | `duration` | Per-row schedule duration; scalable native trees keep internal ratios, while `entrance_appear` and instantaneous presets keep their authored duration and use the value for `after-previous` spacing |
 | `effect_options` | Effect-specific parameters (`direction`, `amount`, `color`, `font_name`, `relative`, `size`) limited to what the selected effect supports (`pptx_animations.py --describe <effect>`); requires an explicit canonical `effect` in the same block or row; `font_name` is one target-installed face |

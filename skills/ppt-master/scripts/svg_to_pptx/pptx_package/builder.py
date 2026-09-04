@@ -5547,6 +5547,26 @@ def _build_sequence_targets(
         svg_id: sid for sid, svg_id in anim_targets
     }
     ordered: list[tuple[int, int, int, str, str, dict[str, Any]]] = []
+    # A group without a sidecar ``order`` follows the nearest listed group
+    # before it in SVG order (0 before the first one). Numbering unlisted
+    # groups by raw SVG index collided with explicit orders: a headline at
+    # index 2 landed behind the body block the author had numbered 1 and 2.
+    inherited_orders: list[int] = []
+    current_order = 0
+    for _sid, svg_id in anim_targets:
+        group_value = groups_cfg.get(svg_id, {})
+        explicit = [
+            cfg.get('order')
+            for _path, cfg in (
+                animation_group_effect_entries(group_value, path='')
+                if isinstance(group_value, dict) else []
+            )
+            if isinstance(cfg.get('order'), int)
+            and not isinstance(cfg.get('order'), bool)
+        ]
+        if explicit:
+            current_order = max(current_order, max(explicit))
+        inherited_orders.append(current_order)
     for idx, (sid, svg_id) in enumerate(anim_targets):
         group_value = groups_cfg.get(svg_id, {})
         if not isinstance(group_value, dict):
@@ -5576,8 +5596,8 @@ def _build_sequence_targets(
             if animation is None and normalized_effect is None:
                 continue
             order_value = effect_cfg.get('order')
-            order = order_value if order_value is not None else idx + 1
-            if (
+            order = order_value if order_value is not None else inherited_orders[idx]
+            if order_value is not None and (
                 isinstance(order, bool)
                 or not isinstance(order, int)
                 or order <= 0
