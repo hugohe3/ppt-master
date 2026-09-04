@@ -179,6 +179,8 @@ Morph tweens matched objects across consecutive slides, so any continuous action
 | A dropping scrim or growing cut | Progressive reveal |
 | The same wide image at two `x` offsets | Camera pan (`#C2-01`) |
 
+**Reference — continuity carriers**: the Morph most decks need is not an action but a carrier — one object that persists across pages and re-seats: a progress axis or station marker that travels to the current stop, a hero figure that shrinks into the next page's header, a title band that hands one page's identity to the next. Carriers orient the reader, their endpoints are the same kind by construction, and one key chains them through a whole section (§2.1 Chains).
+
 **Hard rule — matching needs compatible identity, not identical geometry**: prefer §2.1 pairs; ids and visible state may differ, but both endpoints must resolve to one compatible top-level PowerPoint object kind — a shape and a picture cross-fade instead of tweening. Automatic Morph is heuristic.
 
 **Give text somewhere to come from**: text present only on the second page can only fade in — place the next page's copy just below the canvas and the previous page's just above, so blocks slide through the frame. A wholly off-canvas endpoint is one direct-root `<g id>` with valid `data-pptx-bounds` and `data-pptx-morph-staging="true"`, explicitly paired when Morph stays enabled; the marker never excuses a partially clipped group. Declare identity through the destination's `morph` block, never `data-pptx-shape-name` (importer metadata, [`svg-effects.md`](./svg-effects.md) §6.6).

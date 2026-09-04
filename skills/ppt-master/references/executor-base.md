@@ -164,6 +164,7 @@ Repeating symmetric card grids without a page job is the failure mode these stru
 | Activation | Only an explicit user motion instruction, an enabled Custom Animations outcome, or an existing `animations.json`; a §IX Motion suggestion alone does not activate it |
 | Missing state | A deck exported without both states cannot gain the motion by a flag |
 | Extra page | Adding a page is a §IX roster change and returns to Strategist |
+| Endpoint id | Fix the first endpoint's direct-root `<g id>` when that page is drawn and record the intended partner id in `notes/total.md`; the next page reuses it, so no endpoint is renamed after both pages exist (a rename reruns the gate) |
 
 ---
 
