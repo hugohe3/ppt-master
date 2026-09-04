@@ -2816,7 +2816,10 @@ class SVGQualityChecker:
             if element.text:
                 append_run(element, element.text, xml_space)
             for child in list(element):
-                if not cls._is_tspan(child):
+                # An inline hyperlink (``<a>`` wrapping ``<tspan>`` runs, the
+                # form native-hyperlinks.md requires) is a transparent style
+                # container: its runs are measured like any other inline run.
+                if not (cls._is_tspan(child) or _local_name(child) == 'a'):
                     return False
                 if any(child.get(name) is not None for name in ('x', 'y', 'dx', 'dy')):
                     return False
