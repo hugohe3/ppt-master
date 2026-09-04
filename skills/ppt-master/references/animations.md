@@ -234,7 +234,7 @@ Animations anchor on unique top-level `<g id>` content groups (`cover-title`, `c
 
 **Hard rule — existing groups are not custom-animation intent**: during the custom stage derive one group per logical motion unit from claims, comparisons, sequence, causality, and narration — splitting coarse wrappers and merging fragments without changing appearance, never to hit a count — and run `list-groups` only after that rewrite.
 
-**Chrome stays static**: `data-pptx-layer` and explicit static role/placeholder markers are absolute. The legacy chrome-name heuristic (background, header/footer, decor, watermark, page number, nav, logo, rule) applies only to unmarked top-level groups, and only it may be overridden by a sidecar entry. Wrap logical sections in `<g id>` ([`shared-standards-core.md`](./shared-standards-core.md) §4.3); a root with no top-level group falls back to a bounded primitive set ([`svg-pipeline.md`](../scripts/docs/svg-pipeline.md)).
+**Chrome stays static by default**: a `data-pptx-layer` group is structural and never animates, and a full-canvas background rect becomes the slide background, which cannot animate either. A static role/placeholder marker or a chrome-name id (background, header/footer, decor, watermark, page number, nav, logo, rule) keeps a group out of automatic animation and the scaffold; a sidecar entry that names it animates it — a background field panning (§4.1), a cover band sliding in — judged per page, never by category. Wrap logical sections in `<g id>` ([`shared-standards-core.md`](./shared-standards-core.md) §4.3); a root with no top-level group falls back to a bounded primitive set ([`svg-pipeline.md`](../scripts/docs/svg-pipeline.md)).
 
 ---
 
