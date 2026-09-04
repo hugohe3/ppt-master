@@ -585,10 +585,13 @@ def _log_keying_findings(
                 "larger --tolerance would eat into the elements."
             )
         elif (
-            any("content reaches the" in finding for finding in findings)
+            outlier <= tolerance
+            and any("content reaches the" in finding for finding in findings)
             and not any("boundary pixels stayed opaque" in finding for finding in findings)
         ):
-            # Cells keyed cleanly; only element tips crossed a gutter.
+            # The key itself passed at this tolerance; only element tips
+            # crossed a gutter. When the farthest gutter pixel exceeds the
+            # tolerance the branch below still offers the rerun instead.
             _log(
                 "       Content crosses a cell edge: no --bg/--tolerance rerun "
                 "can separate it. Regenerate with a wider key-only gutter "
