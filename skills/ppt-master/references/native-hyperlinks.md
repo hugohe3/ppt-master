@@ -28,7 +28,7 @@ Authoring contract for PowerPoint-native click hyperlinks on complete objects an
 
 **Hard rule — one target syntax**: author SVG 2 `href` (import may read legacy `xlink:href`; generated SVG never writes both). Same-deck destinations use the exact `#slide-N` form inside the final roster. External destinations are absolute URIs with an explicit scheme and percent-encoded spaces; relative paths, arbitrary fragments, filesystem paths, and `data:` / `file:` / `javascript:` / `vbscript:` fail closed.
 
-**Hard rule — inline run**: visible text sits in one or more `<tspan>` children inside the anchor; the anchor and its descendants own no `x`, `y`, `dx`, or `dy` — line positioning belongs to the enclosing line `<tspan>`. A linked inline formula is one leaf formula `<tspan>` inside the anchor and keeps its native math contract.
+**Hard rule — inline run**: visible text sits in one or more `<tspan>` children inside the anchor; the anchor and its descendants own no `x`, `y`, `dx`, or `dy` — line positioning belongs to the enclosing line `<tspan>` — in a multi-line paragraph the first line is no exception: its anchor also sits inside a line `<tspan>`, never in direct `<text>` content. A linked inline formula is one leaf formula `<tspan>` inside the anchor and keeps its native math contract.
 
 **Hard rule — whole-object hit area**: wrap at least one visible SVG element; no direct text or bare `<tspan>` in a shape anchor. A multi-object anchor links each exported leaf object; include an explicit background shape when gaps inside a button or card must also be clickable. Ordinary animation may target an outer top-level `<g>`, but a hyperlink-bearing group cannot also be an interactive `trigger_shape` — one click has one owner.
 

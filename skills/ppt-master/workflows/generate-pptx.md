@@ -287,7 +287,7 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 
 | Signal | Reading |
 |---|---|
-| Two or more issues share a category and direction — on one page or across pages | Method-level bias — resolve to the authoritative rule before P06 (for text extents: correct the per-role calibration table — rerun `python3 ${SKILL_DIR}/scripts/text_measure.py calibrate <project_path> --outline` or add the missing `--role` — then every later page estimates by that arithmetic and measures nothing); a correction fitted to the observed offset patches only this sample |
+| Two or more issues share a category and direction — on one page or across pages — or one issue sits in a writing form the deck repeats on every page (a paragraph construction, a header line, a card frame), which a long deck copies before the final gate | Method-level bias — resolve to the authoritative rule before P06 (for text extents: correct the per-role calibration table — rerun `python3 ${SKILL_DIR}/scripts/text_measure.py calibrate <project_path> --outline` or add the missing `--role` — then every later page estimates by that arithmetic and measures nothing); a correction fitted to the observed offset patches only this sample |
 | One isolated issue tied to a single page's structure | Page-local — fix and continue |
 | A recurring element (furniture, caption format, section numbering, accent discipline) drifts between its occurrences or is still unsettled | It will be copied to every later page — settle its semantics now |
 
