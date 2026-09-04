@@ -1693,10 +1693,16 @@ def build_group_listing(project_path: Path) -> tuple[list[str], list[str]]:
     for slide_name, targets in targets_by_slide.items():
         _require_unique_target_ids(slide_name, targets)
         ids = [t.group_id for t in targets if not t.chrome]
+        chrome_ids = [t.group_id for t in targets if t.chrome]
         if not ids:
-            lines.append(f'{slide_name}: (no animatable groups)')
+            line = f'{slide_name}: (no animatable groups)'
         else:
-            lines.append(f'{slide_name}: {", ".join(ids)}')
+            line = f'{slide_name}: {", ".join(ids)}'
+        if chrome_ids:
+            # Name what was dropped so an id like ``takeaway-rule`` is seen
+            # as chrome-by-token rather than silently missing.
+            line += f'  [chrome, not animatable: {", ".join(chrome_ids)}]'
+        lines.append(line)
     return lines, anonymous
 
 

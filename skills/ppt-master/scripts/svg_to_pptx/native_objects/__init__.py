@@ -566,8 +566,12 @@ def validate_native_object_marker_with_warnings(
         )
         if kind in {"chart", "table"} else []
     )
+    # The final checker reports these as warnings because activation is an
+    # export-time choice; ``--native-charts-and-tables`` refuses the same
+    # findings as errors, so say so where the author reads them.
     warnings.extend(
-        _projection_warnings_for_validated_marker(
+        f"{warning} (blocks --native-charts-and-tables export)"
+        for warning in _projection_warnings_for_validated_marker(
             elem,
             kind,
             payload,

@@ -584,6 +584,17 @@ def _log_keying_findings(
                 "effect crosses it. Regenerate with a clear key-only gutter; a "
                 "larger --tolerance would eat into the elements."
             )
+        elif (
+            any("content reaches the" in finding for finding in findings)
+            and not any("boundary pixels stayed opaque" in finding for finding in findings)
+        ):
+            # Cells keyed cleanly; only element tips crossed a gutter.
+            _log(
+                "       Content crosses a cell edge: no --bg/--tolerance rerun "
+                "can separate it. Regenerate with a wider key-only gutter "
+                "(each element about 65% of its cell, at least 10% key on "
+                "every side, tips and effects included)."
+            )
         else:
             pure = _nearest_pure_key(dominant)
             if pure is not None:
