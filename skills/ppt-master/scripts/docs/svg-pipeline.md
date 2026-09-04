@@ -1025,12 +1025,14 @@ the SVG quality checker.
   `validation/text_calibration.json`, and prints a compact table or JSON. The
   estimator is additive across scripts, so a line mixing CJK with Latin words
   or digits is estimated as (CJK chars ÷ CJK rate + other chars ÷ Latin rate)
-  × 100; spaces, digits, and punctuation count as Latin. The rates are sample
-  averages taken with the checker's own estimator (headroom included), while
-  the checker measures each real line glyph by glyph: capital-heavy words and
-  wide letters run wider than the Latin rate, so the table also prints a CAPS
-  rate for acronyms and uppercase, and a zone should stay about 5% below its
-  bounds width. The checker's overflow
+  × 100; spaces and punctuation count as Latin, digits use the DIGITS rate.
+  The rates are sample averages taken with the checker's own estimator
+  (headroom included), while the checker measures each real line glyph by
+  glyph: capital-heavy words, digits, and wide letters run wider than the Latin
+  rate, so the table also prints CAPS and DIGITS rates, and a zone should stay
+  about 5% below its bounds width. `--outline` adds the longest §IX planned
+  line per role — the planned wording only; a line rewritten while authoring
+  is re-estimated with the rates. The checker's overflow
   diagnostic prints that line's average px per character, which is not a
   reusable rate. A lock role without its own
   `<role>_family` resolves to `title_family` when the role name contains
