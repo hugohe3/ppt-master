@@ -858,8 +858,23 @@ class ProjectManager:
                 continue
 
             inside_projects = is_within_path(source_path, PROJECTS_ROOT)
+            # A file inside another project's tree (projects/<other>/...) is
+            # that project's material: taking it by default emptied a finished
+            # project's images/ once. Copy unless --move is explicit.
+            inside_other_project = (
+                inside_projects
+                and not is_within_path(source_path, project_dir.resolve())
+                and source_path.resolve().parent != PROJECTS_ROOT.resolve()
+            )
             if copy:
                 effective_move = False
+            elif inside_other_project and not move:
+                effective_move = False
+                print(
+                    f"note: {source_path} belongs to another project; copied "
+                    f"(not moved). Pass --move to take it out of that project.",
+                    file=sys.stderr,
+                )
             elif inside_projects:
                 effective_move = True
             else:
@@ -870,7 +885,7 @@ class ProjectManager:
                     f"(not moved). Only sources under projects/ may be moved.",
                     file=sys.stderr,
                 )
-            elif inside_projects and not move and not copy:
+            elif inside_projects and not inside_other_project and not move and not copy:
                 print(
                     f"note: {source_path} is under projects/; moved into the target "
                     f"project. Pass --copy to preserve it.",

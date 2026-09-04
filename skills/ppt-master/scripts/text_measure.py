@@ -612,6 +612,19 @@ def _run_calibrate(args: argparse.Namespace) -> int:
         payload['notes'] = _fallback_notes(roles, fallbacks)
         output_path = project_path / 'validation' / 'text_calibration.json'
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        if args.role and output_path.is_file():
+            # A --role run recalibrates only the named roles; keep the roles
+            # an earlier run already wrote, so "calibrate again only for a
+            # role never calibrated" is incremental, not a table overwrite.
+            try:
+                previous = json.loads(output_path.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                previous = {}
+            previous_roles = previous.get('roles') if isinstance(previous, dict) else None
+            if isinstance(previous_roles, dict):
+                merged = dict(previous_roles)
+                merged.update(payload['roles'])
+                payload['roles'] = merged
         rendered_json = json.dumps(payload, ensure_ascii=False, indent=2)
         output_path.write_text(rendered_json + '\n', encoding='utf-8')
     except (OSError, ValueError) as exc:
