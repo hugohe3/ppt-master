@@ -79,6 +79,7 @@ _PARAGRAPH_DEFAULT_FIELDS = (
     "line_spacing_percent",
 )
 _PARAGRAPH_FIELDS = set(_PARAGRAPH_DEFAULT_FIELDS) | {"text", "runs"}
+_PLAIN_TEXT_RUN_FIELDS = ("bold", "color", "font_size")
 _RUN_DEFAULT_FIELDS = (
     "bold",
     "italic",
@@ -234,6 +235,12 @@ def _expand_cell(
         style = cell_styles[style_name]
 
     expanded = _format_layers(defaults["cell"], style, cell)
+    if "paragraphs" not in expanded:
+        # A plain-text cell is one run: run defaults reach it unless the
+        # cell (or its cell_style / cell defaults) already set the field.
+        for field in _PLAIN_TEXT_RUN_FIELDS:
+            if field not in expanded and field in defaults["run"]:
+                expanded[field] = copy.deepcopy(defaults["run"][field])
     if "paragraphs" in expanded:
         paragraphs = expanded["paragraphs"]
         if not isinstance(paragraphs, list):

@@ -25,6 +25,7 @@ from svg_to_pptx.native_objects.table import (  # noqa: E402
     _table_border_xml,
     _validate_table_payload,
 )
+from semantic_table import expand_semantic_table_payload  # noqa: E402
 from svg_to_pptx.pptx_package.cli import (  # noqa: E402
     _native_object_projection_findings,
 )
@@ -421,6 +422,79 @@ class NativeTablePayloadRoundTripTest(unittest.TestCase):
         self.assertEqual(kind, "table")
         self.assertEqual(payload.get("schema"), "ppt-master.semantic-table.v2")
         expand_semantic_table_payload(payload)  # must still expand cleanly
+
+
+class NativeTableFillAndTextDefaultsTests(unittest.TestCase):
+    def test_plain_text_cell_inherits_run_defaults(self) -> None:
+        expanded = expand_semantic_table_payload({
+            "schema": "ppt-master.semantic-table.v2",
+            "x": 0, "y": 0, "width": 200, "height": 80,
+            "column_widths": [100, 100],
+            "row_heights": [40, 40],
+            "defaults": {
+                "cell": {"font_size": 20},
+                "run": {"color": "#DAD5CA", "bold": True, "font_size": 16},
+            },
+            "columns": ["A", {"text": "B", "color": "#FFFFFF"}],
+            "rows": [["a", {"text": "b", "bold": False}]],
+        })
+        header_a, header_b = expanded["columns"]
+        body_a, body_b = expanded["rows"][0]
+        self.assertEqual(header_a["color"], "#DAD5CA")
+        self.assertEqual(header_b["color"], "#FFFFFF")
+        self.assertEqual(body_a["color"], "#DAD5CA")
+        self.assertTrue(body_a["bold"])
+        self.assertFalse(body_b["bold"])
+        # defaults.cell wins over defaults.run for a shared field
+        self.assertEqual(body_a["font_size"], 20)
+
+    def test_body_text_color_parity_warns_when_no_layer_carries_it(self) -> None:
+        def marker(rows_json: str, style_json: str = "") -> ET.Element:
+            return ET.fromstring(f"""
+                <g data-pptx-replace-with="table" data-pptx-bounds="0 0 200 80">
+                  <metadata type="application/json">
+                    {{
+                      "schema": "ppt-master.semantic-table.v2",
+                      "x": 0, "y": 0, "width": 200, "height": 80,
+                      "header_rows": 1,
+                      "column_widths": [100, 100],
+                      "row_heights": [40, 40],
+                      {style_json}
+                      "columns": [
+                        {{"text": "Level", "color": "#98A0A9"}},
+                        {{"text": "Meaning", "color": "#98A0A9"}}
+                      ],
+                      "rows": [{rows_json}]
+                    }}
+                  </metadata>
+                  <line x1="0" y1="0" x2="200" y2="0" stroke="#999999"/>
+                  <line x1="0" y1="40" x2="200" y2="40" stroke="#999999"/>
+                  <line x1="0" y1="80" x2="200" y2="80" stroke="#999999"/>
+                  <g fill="#98A0A9">
+                    <text x="10" y="25">Level</text>
+                    <text x="110" y="25">Meaning</text>
+                  </g>
+                  <g fill="#DAD5CA">
+                    <text x="10" y="65">Altar</text>
+                    <text x="110" y="65">Cosmos</text>
+                  </g>
+                </g>
+            """)
+
+        bare = "\n".join(native_object_projection_warnings(
+            marker('["Altar", "Cosmos"]')
+        ))
+        self.assertIn("body text color #DAD5CA is not projected", bare)
+
+        via_style = "\n".join(native_object_projection_warnings(
+            marker('["Altar", "Cosmos"]', '"style": {"body_text": "#DAD5CA"},')
+        ))
+        self.assertNotIn("body text color", via_style)
+
+        via_run_defaults = "\n".join(native_object_projection_warnings(
+            marker('["Altar", "Cosmos"]', '"defaults": {"run": {"color": "#DAD5CA"}},')
+        ))
+        self.assertNotIn("body text color", via_run_defaults)
 
 
 if __name__ == "__main__":
