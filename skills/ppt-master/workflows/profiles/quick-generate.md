@@ -80,6 +80,8 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
 
 **Project state**: `init` creates `svg_output/` and the cold `validation/workflow.log` (auto-recorded by later tools; one manual note only for a material handoff, rework reason, approved exception, or manual recovery; never read during a run and never a resume source). Use a new path or one whose `svg_output/` is empty. Quick ignores any existing Design Spec or lock and never scaffolds one.
 
+A file taken from another project's tree is copied unless `--move` is explicit; a loose file under `projects/` is moved unless `--copy` is passed.
+
 **✅ Checkpoint — every named input landed**: `import-sources` exits 0 when one input succeeds; read the printed `skipped` reasons. "equivalent content exists" is benign; `path not found`, failed conversion, or no usable Markdown means the source is absent: re-import, supply a converted equivalent, or state why the deck proceeds without it. Pass a source once when Markdown sits beside it, both locations when `-o` wrote elsewhere. Copy/move semantics, bitmap archiving, EMF/WMF handling (never PNG), and the PPTX intake bundle under `analysis/` are [`project.md`](../../scripts/docs/project.md) — source facts, not replica constraints.
 
 **URL authority**: the facts JSON is the sole URL authority; only after web-image search is exhausted may a webpage package be fetched under [`topic-research`](../stages/topic-research.md) § Hand-off and its accepted images copied in. Under Image to PPTX, the normalized frame roster is canonical input and the agent writes `analysis/reconstruction_inventory.json` before deciding layers.

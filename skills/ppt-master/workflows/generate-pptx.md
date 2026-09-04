@@ -56,7 +56,7 @@ The dispatcher writes standard Markdown plus a conversion profile beside each so
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name>
-python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>   # skip when content is only in conversation
+python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>   # skip when content is only in conversation; another project's files are copied unless --move
 ```
 
 **Hard rule — truthful canvas token**: append `--format <registered_format>` only when an explicit user/source fact already establishes an exact registered canvas ([`canvas-formats.md`](../references/canvas-formats.md)). Otherwise Stage 1 confirms the canvas, starting from the project-initialization canvas unless the user/source context changes it, and `spec_lock.md` records its viewBox.

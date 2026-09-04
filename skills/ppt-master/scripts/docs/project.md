@@ -22,6 +22,9 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
+- Local sources under `projects/` are moved into the target project unless
+  `--copy` is passed; a file inside another project's tree is copied unless
+  `--move` is explicit, so borrowing a finished project's slices never empties it.
 - `--format` is optional and accepts registered canvas keys only. Pass it only
   when the actual canvas exactly matches a registered format.
 - Without `--format`, `init` creates `<name>_<YYYYMMDD>`; a name that already
