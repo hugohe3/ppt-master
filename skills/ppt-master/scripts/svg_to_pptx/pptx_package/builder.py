@@ -524,6 +524,9 @@ def _trace_chrome_shape_ids(
     for event in trace.get("events", []):
         if event.get("decision") != "native":
             continue
+        if event.get("animation_override"):
+            # Explicitly animated chrome stays slide-local.
+            continue
         semantic_role = event.get("data-pptx-role")
         placeholder = event.get("data-pptx-placeholder")
         has_explicit_semantics = (

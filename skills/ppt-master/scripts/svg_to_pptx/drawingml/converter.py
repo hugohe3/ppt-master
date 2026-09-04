@@ -1173,16 +1173,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         if has_explicit_semantics
         else is_chrome_id(elem_id)
     )
+    # Chrome — by name or by static role/placeholder marker — stays out of
+    # automatic animation, but an explicit sidecar entry animates it: a
+    # background field can pan, a cover band can slide. Only a structural
+    # layer (master/layout) is beyond reach, because it is not on the slide.
     should_animate_group = (
         ctx.depth == 0
         and elem_id
-        and (
-            not is_chrome
-            or (
-                not has_explicit_semantics
-                and elem_id in ctx.animation_group_overrides
-            )
-        )
+        and (not is_chrome or elem_id in ctx.animation_group_overrides)
         and elem.get('data-pptx-layer') is None
     )
     visual_children = [
@@ -1784,6 +1782,14 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         if adjustments:
             event['adjustments'] = dict(sorted(adjustments.items()))
         event.update(metadata)
+        if (
+            ctx.depth == 0
+            and elem_id
+            and elem_id in ctx.animation_group_overrides
+        ):
+            # Chrome promotion into layouts/masters must leave an explicitly
+            # animated group on its slide.
+            event['animation_override'] = True
         ctx.trace_events.append(event)
 
     if elem.get('data-pptx-part') == 'geometry-detail':
@@ -2345,16 +2351,11 @@ def convert_svg_to_slide_shapes(
             role = child.get('data-pptx-role')
             placeholder = child.get('data-pptx-placeholder')
             has_explicit_semantics = role is not None or placeholder is not None
-            structurally_static = (
-                child.get('data-pptx-layer') is not None
-                or (
-                    has_explicit_semantics
-                    and is_static_page_frame(role, placeholder)
-                )
-            )
+            structurally_static = child.get('data-pptx-layer') is not None
             legacy_chrome = (
-                not has_explicit_semantics
-                and is_chrome_id(elem_id)
+                is_static_page_frame(role, placeholder)
+                if has_explicit_semantics
+                else is_chrome_id(elem_id)
             )
             explicit_legacy_override = (
                 elem_id is not None
