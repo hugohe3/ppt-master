@@ -157,6 +157,10 @@ def _fallback_chart_colors(
         "text_color": text_color,
         "axis_color": _most_common_color(axis_colors) or dominant_stroke,
         "grid_color": _most_common_color(grid_colors) or dominant_stroke,
+        # Which roles were read from labeled strokes; an unlabeled role fell
+        # back to the marker's dominant stroke and the warning says so.
+        "axis_labeled": bool(axis_colors),
+        "grid_labeled": bool(grid_colors),
     }
 
 
@@ -708,12 +712,20 @@ def _native_chart_style_color_warnings(
             or payload_color == fallback_color
         ):
             continue
-        warnings.append(
+        message = (
             f"Native PPTX chart style.{field_name} #{payload_color} differs "
             f"from fallback dominant {field_name} #{fallback_color}; set "
             f"style.{field_name} to #{fallback_color} or repaint the fallback "
             f"so #{payload_color} is its dominant {field_name}"
         )
+        label_needle = {"axis_color": "axis", "grid_color": "grid"}.get(field_name)
+        if label_needle and not inferred.get(f"{label_needle}_labeled"):
+            message += (
+                f" (no stroke carries an id or class naming '{label_needle}', so "
+                f"the marker's dominant stroke was read instead — label the "
+                f"{label_needle} lines to read their own color)"
+            )
+        warnings.append(message)
     return warnings
 
 
@@ -984,10 +996,24 @@ def _native_chart_reverse_text_warnings(
         return []
     sample = ", ".join(repr(text) for text in missing[:8])
     suffix = "" if len(missing) <= 8 else f", and {len(missing) - 8} more"
-    return [
+    message = (
         "Native PPTX chart visible text not projected: "
         f"{sample}{suffix}. Use categories/data labels/axis labels/legend or companion text."
-    ]
+    )
+    # ``73.0`` in the fallback while the payload value is 73: General format
+    # renders ``73``, so the decimals need an explicit number_format.
+    if any(
+        re.fullmatch(r"-?\d+\.\d+", text)
+        and str(int(float(text))) in projected
+        and float(text).is_integer()
+        for text in missing
+    ):
+        message += (
+            " A value that ends in .0 renders without the decimals under the "
+            "General format; set data_labels.number_format (for example "
+            '"0.0") when the fallback shows them.'
+        )
+    return [message]
 
 
 def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> list[str]:

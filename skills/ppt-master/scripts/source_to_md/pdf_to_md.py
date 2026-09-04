@@ -190,7 +190,9 @@ def detect_list_item(text: str) -> tuple:
         if match:
             return (True, 'ul', marker + ' ' + text[match.end():])
 
-    ol_pattern = r'^(\d+)[.、)]\s*'
+    # ``83.2%`` at the start of a line is a decimal, not item 83: after a
+    # dot the marker must not be followed by another digit.
+    ol_pattern = r'^(\d+)(?:[、)]|\.(?!\d))\s*'
     match = re.match(ol_pattern, text)
     if match:
         num = match.group(1)
