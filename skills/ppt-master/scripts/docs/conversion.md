@@ -58,14 +58,15 @@ Useful options:
   output path is known. With multiple inputs, each successful conversion prints
   its own JSON line after that source finishes.
 - At the unified `source_to_md.py` entry, `--images all|filtered|none`,
-  `--no-images`, and `--filter-images` map to the PDF image mode. The web
-  backend exposes its own direct `--no-images` option described below.
+  `--no-images`, and `--filter-images` map to the PDF image mode.
+  `--no-images` (or `--images none`) also applies to web pages: images stay
+  remote links instead of downloading into `<stem>_files/`.
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.
   A path that names an existing directory, or ends in `/`, is always treated as
   a directory, even for a single input: the file keeps its default `<stem>.md`
-  name inside it.
+  name inside it. An extension-less `-o` for one input gains `.md`.
 
 For multi-source project intake, use `project_manager.py import-sources` with
 all source paths / URLs. For local files, the default is to keep generated

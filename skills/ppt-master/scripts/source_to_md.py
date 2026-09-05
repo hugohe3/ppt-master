@@ -100,6 +100,11 @@ def _dispatch_output_arg(
             )
         )
     if output_arg:
+        # One input with an extension-less -o names the Markdown file, not a
+        # directory: `-o sources_cf` writes `sources_cf.md` (a directory is
+        # spelled with a trailing separator or already exists).
+        if not Path(output_arg).suffix:
+            return f"{output_arg}.md"
         return output_arg
     if batch_mode and conversion_type != "web":
         return str(default_markdown_path(input_arg))
@@ -255,6 +260,10 @@ def dispatch_single(
         output = Path(output_arg) if output_arg else None
         emit_result: Path | None = None
         extra_args = list(unknown_args)
+        if _skips_images(args) and "--no-images" not in extra_args:
+            # web_to_md keeps remote image links instead of downloading the
+            # page's images into `<stem>_files/`.
+            extra_args.append("--no-images")
         if output is None:
             emit_file = tempfile.NamedTemporaryFile(
                 prefix="ppt-master-web-result-",
@@ -406,11 +415,26 @@ def _conversion_type_for_input(input_arg: str, requested_type: str) -> str:
     return requested_type
 
 
+def _skips_images(args: argparse.Namespace) -> bool:
+    return bool(args.no_images or args.images == "none")
+
+
 def _validate_pdf_image_flags(args: argparse.Namespace, conversion_types: list[str]) -> bool:
     if not _has_pdf_image_flags(args):
         return True
-    if any(conversion_type != "pdf" for conversion_type in conversion_types):
-        print("[ERROR] Image extraction flags are currently supported only for PDFs", file=sys.stderr)
+    web_only_skip = _skips_images(args) and not (
+        args.filter_images or args.render_vector_figures
+    )
+    for conversion_type in conversion_types:
+        if conversion_type == "pdf":
+            continue
+        if conversion_type == "web" and web_only_skip:
+            continue
+        print(
+            "[ERROR] Image extraction flags are supported only for PDFs; "
+            "--no-images (or --images none) also applies to web pages",
+            file=sys.stderr,
+        )
         return False
     return True
 
