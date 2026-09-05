@@ -10,13 +10,15 @@ import sys
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_shapes import validate_ooxml_xfrm
+
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import _xml_escape
 from .chart_data import _chart_data, _chart_plot_area_layout
 from .chart_style import (
     _axis_titles,
     _chart_companion_entries,
-    _chart_companion_text_xml,
+    _chart_companion_shapes,
     _chart_text_sizes,
     _chart_title_is_bounded,
     _classic_chart_style,
@@ -389,27 +391,53 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 </a:graphic>
 </p:graphicFrame>'''
     )
+    chart_bounds = (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
     if source_package is not None:
-        companion_xml = ""
-    else:
-        assert chart_data is not None
-        text_sizes = _chart_text_sizes(payload, elem, ctx.inherited_styles)
-        chart_style = _classic_chart_style(payload, elem, ctx.inherited_styles)
-        companion_xml = _chart_companion_text_xml(
-            ctx,
-            payload,
-            chart_bounds=(off_x, off_y, ext_cx, ext_cy),
-            chart_style=chart_style,
-            note_font_size=text_sizes["note"],
-            title_font_size=text_sizes["title"],
-            include_title=(
-                chart_data["kind"] == "chartex"
-                or _chart_title_is_bounded(payload)
-            ),
-            include_subtitle_as_caption=chart_data["kind"] == "chartex",
-        )
-    xml = chart_frame_xml + companion_xml
-    return ShapeResult(xml=xml, bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+        return ShapeResult(xml=chart_frame_xml, bounds_emu=chart_bounds)
+
+    assert chart_data is not None
+    text_sizes = _chart_text_sizes(payload, elem, ctx.inherited_styles)
+    chart_style = _classic_chart_style(payload, elem, ctx.inherited_styles)
+    companions = _chart_companion_shapes(
+        ctx,
+        payload,
+        chart_bounds=(off_x, off_y, ext_cx, ext_cy),
+        chart_style=chart_style,
+        note_font_size=text_sizes["note"],
+        title_font_size=text_sizes["title"],
+        include_title=(
+            chart_data["kind"] == "chartex"
+            or _chart_title_is_bounded(payload)
+        ),
+        include_subtitle_as_caption=chart_data["kind"] == "chartex",
+    )
+    if not companions:
+        return ShapeResult(xml=chart_frame_xml, bounds_emu=chart_bounds)
+
+    min_x, min_y, max_x, max_y = chart_bounds
+    for companion in companions:
+        assert companion.bounds_emu is not None
+        x0, y0, x1, y1 = companion.bounds_emu
+        min_x, min_y = min(min_x, x0), min(min_y, y0)
+        max_x, max_y = max(max_x, x1), max(max_y, y1)
+    group_w, group_h = max_x - min_x, max_y - min_y
+    validate_ooxml_xfrm(min_x, min_y, group_w, group_h)
+    group_id = ctx.next_id()
+    companion_xml = "".join(companion.xml for companion in companions)
+    # The marker owns one selectable/animatable unit. Identity mapping keeps
+    # the chart and labels at their already resolved slide coordinates.
+    xml = f'''<p:grpSp>
+<p:nvGrpSpPr>
+<p:cNvPr id="{group_id}" name="{name}"/>
+<p:cNvGrpSpPr/><p:nvPr/>
+</p:nvGrpSpPr>
+<p:grpSpPr><a:xfrm>
+<a:off x="{min_x}" y="{min_y}"/><a:ext cx="{group_w}" cy="{group_h}"/>
+<a:chOff x="{min_x}" y="{min_y}"/><a:chExt cx="{group_w}" cy="{group_h}"/>
+</a:xfrm></p:grpSpPr>
+{chart_frame_xml}{companion_xml}
+</p:grpSp>'''
+    return ShapeResult(xml=xml, bounds_emu=(min_x, min_y, max_x, max_y))
 
 
 def _validate_native_object_marker_payload(

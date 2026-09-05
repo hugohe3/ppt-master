@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 
 from .marker_attributes import native_import_source, native_json_is_authoritative
 
-from ..drawingml.context import ConvertContext
+from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import (
     _xml_escape,
     detect_text_lang,
@@ -1532,7 +1532,7 @@ def _validate_chart_companion_boxes(
             below_index += 1
 
 
-def _chart_companion_text_xml(
+def _chart_companion_shapes(
     ctx: ConvertContext,
     payload: dict[str, Any],
     *,
@@ -1542,7 +1542,8 @@ def _chart_companion_text_xml(
     title_font_size: int,
     include_title: bool,
     include_subtitle_as_caption: bool,
-) -> str:
+) -> list[ShapeResult]:
+    """Build editable companion text with its resolved slide-space bounds."""
     if _chart_title_is_bounded(payload):
         include_title = True
     entries = _chart_companion_entries(
@@ -1551,10 +1552,10 @@ def _chart_companion_text_xml(
         include_subtitle_as_caption=include_subtitle_as_caption,
     )
     if not entries:
-        return ""
+        return []
 
     chart_off_x, chart_off_y, chart_ext_cx, chart_ext_cy = chart_bounds
-    parts: list[str] = []
+    shapes: list[ShapeResult] = []
     below_index = 0
     for item in entries:
         role = str(item.get("role") or "note")
@@ -1588,7 +1589,7 @@ def _chart_companion_text_xml(
             ext_cx = chart_ext_cx
             ext_cy = px_to_emu(16)
             below_index += 1
-        parts.append(_text_box_xml(
+        text_xml = _text_box_xml(
             ctx,
             text=text,
             role=role,
@@ -1601,5 +1602,9 @@ def _chart_companion_text_xml(
             align=align,
             bold=bold,
             font_face=font_face,
+        )
+        shapes.append(ShapeResult(
+            xml=text_xml,
+            bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
         ))
-    return "".join(parts)
+    return shapes

@@ -1666,6 +1666,8 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
     """Describe the native geometry decision for conversion diagnostics."""
     xml = result.xml.lstrip()
     if xml.startswith('<p:grpSp>'):
+        if native_replacement_kind(elem) == 'chart' and '<p:graphicFrame>' in xml:
+            return {'output_geometry': 'native-object', 'fidelity': 'native-normalized'}
         return {'output_geometry': 'group', 'fidelity': 'visual-only'}
     if xml.startswith('<p:pic>'):
         return {'output_geometry': 'picture', 'fidelity': 'native-normalized'}
