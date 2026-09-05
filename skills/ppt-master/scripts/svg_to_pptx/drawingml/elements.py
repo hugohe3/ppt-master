@@ -2099,7 +2099,21 @@ def _normalize_text_run_whitespace(
         (str(run.get('_xml_space', 'default')), str(run.get('text', '')))
         for run in runs
     ]
-    for index, text in normalize_project_text_segments(segments):
+    text_by_index = dict(normalize_project_text_segments(segments))
+    for index, source_run in enumerate(runs):
+        if '_inline_dx' in source_run:
+            # Insert after whitespace normalization so dx neither preserves
+            # indentation nor disappears with an empty/whitespace-only tspan.
+            run = {**source_run, 'text': ' ', 'letter_spacing': 0.0, 'text_decoration': 'none'}
+            dx = run.pop('_inline_dx')
+            run['letter_spacing'] = dx - _estimate_run_text_width(run)
+            run.update(text='\u00a0', _inline_dx=dx)
+            run.pop('_xml_space', None)
+            normalized.append(run)
+            continue
+        text = text_by_index.get(index)
+        if text is None:
+            continue
         run = {**runs[index], 'text': text}
         run.pop('_xml_space', None)
         normalized.append(run)
@@ -2208,6 +2222,8 @@ def _family_width_factor(run: dict[str, Any]) -> float:
 
 def _estimate_run_text_width(run: dict[str, Any]) -> float:
     """Estimate one run using the metrics actually emitted to DrawingML."""
+    if '_inline_dx' in run:
+        return float(run['_inline_dx'])
     text = str(run.get('text', ''))
     font_size_px = (
         font_px_to_hpt(float(run.get('font_size', 16)))
@@ -2293,6 +2309,17 @@ def _estimate_text_runs_width(
     so adding headroom there stretches the merged text frame beyond the
     author's source line width.
     """
+    if any('_inline_dx' in run for run in runs):
+        # A negative dx moves the cursor back; it must not subtract space
+        # already occupied by earlier glyphs or make the frame extent negative.
+        advance = right = 0.0
+        for run in runs:
+            if '_inline_dx' in run:
+                advance += float(run['_inline_dx'])
+                continue
+            advance += _estimate_text_runs_width([run], include_headroom=include_headroom)
+            right = max(right, advance)
+        return right
     if not include_headroom:
         return sum(_estimate_run_text_width(run) for run in runs)
 
@@ -2394,6 +2421,10 @@ def _extract_text_bullet(
     runs: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     """Convert a leading text bullet marker into paragraph metadata."""
+    if any('_inline_dx' in run for run in runs):
+        # Keep positioned markers literal so bullet normalization cannot
+        # discard or relocate an authored displacement.
+        return runs, None
     first_nonspace = _first_nonspace_run(runs)
     if first_nonspace and (
         first_nonspace.get(_INLINE_FORMULA_KEY) is not None
@@ -2645,6 +2676,15 @@ def _collect_inline_runs(
             ctx,
             svg_hyperlink_href(container),
         )
+
+    if container_tag == 'tspan' and container.get('dx') is not None:
+        dx = parse_svg_length(
+            container.get('dx'),
+            percent_base=ctx.viewport_width,
+            font_size=float(own_attrs.get('font_size', 16)) / (ctx.scale_y or 1.0),
+        ) * ctx.scale_x
+        if dx:
+            runs.append({**own_attrs, 'text': '', '_inline_dx': dx})
 
     if container.text:
         run = {
@@ -2910,7 +2950,7 @@ def _coalesce_text_runs(
         text = str(run.get('text', ''))
         if not text:
             continue
-        if run.get(_INLINE_FORMULA_KEY) is not None:
+        if run.get(_INLINE_FORMULA_KEY) is not None or '_inline_dx' in run:
             merged.append({**run, 'text': text})
             previous_properties = None
             continue

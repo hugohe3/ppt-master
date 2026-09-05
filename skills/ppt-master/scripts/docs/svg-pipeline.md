@@ -1180,6 +1180,23 @@ python3 scripts/svg_position_calculator.py calc line --data "68:0.5,71:1.5,49:2.
 
 ### `flatten_tspan.py`
 
+Positioned `x`/`y`/nonzero `dy` rows keep the existing split/preserve/reflow
+behavior. A row starter's `dx` is consumed by its resolved line position;
+later inline scalar `dx` stays with its run through flattening.
+
+Native export represents inline `dx` with a separate NBSP run before the
+affected text. Its `a:rPr@spc`, in hundredths of a point, is
+`round(75 * (dx_px - estimated_space_width_px))`. The space estimate uses the
+current run's font and size. This keeps both positive and negative movement
+local to the boundary, including the first run, without changing tracking
+inside a label. Font substitution and estimated space metrics can introduce
+a small width difference. Spacing runs stay separate; positioned bullet
+markers remain literal text so bullet extraction cannot remove the offset.
+
+A small nonzero `dy` still starts a positioned row; it is not an inline
+superscript/subscript displacement. Use the supported `baseline-shift` form
+for inline vertical shifts.
+
 ```bash
 python3 scripts/svg_finalize/flatten_tspan.py projects/<project>/svg_output
 python3 scripts/svg_finalize/flatten_tspan.py path/to/input.svg path/to/output.svg

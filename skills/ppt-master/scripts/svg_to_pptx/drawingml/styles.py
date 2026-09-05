@@ -50,7 +50,19 @@ def build_gradient_fill(
     """Build <a:gradFill> from SVG linearGradient or radialGradient element."""
     native = preserved_native_gradient_xml(grad_elem)
     if native is not None:
-        return native
+        if opacity is None or opacity == 1.0:
+            return native
+        # Parse a fresh copy; other shapes may reuse the same gradient payload.
+        gradient = ET.fromstring(native)
+        namespace = '{http://schemas.openxmlformats.org/drawingml/2006/main}'
+        for stop in gradient.findall(f'{namespace}gsLst/{namespace}gs'):
+            for color in stop:
+                alpha = color.find(f'{namespace}alpha')
+                existing = 1.0 if alpha is None else int(alpha.get('val')) / 100000
+                if alpha is None:
+                    alpha = ET.SubElement(color, f'{namespace}alpha')
+                alpha.set('val', str(quantize_ooxml_alpha(existing * opacity)))
+        return ET.tostring(gradient, encoding='unicode')
     tag = grad_elem.tag.replace(f'{{{SVG_NS}}}', '')
 
     stops_xml = []

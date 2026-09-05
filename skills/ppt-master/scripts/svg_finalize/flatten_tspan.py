@@ -663,7 +663,7 @@ def flatten_text_with_tspans(
             # Keep raw XML whitespace and tails until the shared downstream
             # text normalizer sees the whole line. A whitespace-only run can
             # still be the visible boundary between two formatted runs.
-            if content or child.tail:
+            if content or child.tail or child.get("dx") is not None:
                 current_line_tspans.append(child)
         
         # Process the last line
@@ -790,6 +790,7 @@ def _create_text_element_from_line(
         and not tspans[0].tail
         and tspans[0].get(INLINE_FORMULA_ATTR) is None
         and not _declares_baseline_shift(tspans[0])
+        and (tspans[0].get("dx") is None or _is_new_line_tspan(tspans[0]))
     ):
         tspan = tspans[0]
         content = collect_text_content(tspan)

@@ -1347,6 +1347,9 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     explicit_native_group = elem.get('data-pptx-object') == 'group'
     if (
         len(child_results) == 1
+        # A fallback rotation still belongs to this group. Keep its container
+        # so the pivot compensation below runs even for a single text child.
+        and (matrix_supported or not angle_deg)
         and not explicit_native_group
         and (
             not should_animate_group
@@ -2324,6 +2327,7 @@ def convert_svg_to_slide_shapes(
 
     defs = collect_defs(root)
     source_shape_id_map = _build_source_shape_id_map(root)
+    root_opacity = get_element_opacity(root)
     ctx = ConvertContext(
         defs=defs,
         reserved_shape_ids=frozenset(source_shape_id_map.values()),
@@ -2347,6 +2351,7 @@ def convert_svg_to_slide_shapes(
         theme_color_spec=theme_color_spec,
         primary_language=primary_language,
         inherited_styles=_extract_inheritable_styles(root),
+        opacity_multiplier=1.0 if root_opacity is None else root_opacity,
         parent_by_id={id(child): parent for parent in root.iter() for child in parent},
         text_font_sizes=text_font_sizes,
         text_letter_spacings=text_letter_spacings,
