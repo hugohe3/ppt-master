@@ -286,5 +286,53 @@ class SpacingTests(unittest.TestCase):
         self.assertIn('<c:majorTickMark val="out"/>', val_ax)
 
 
+class CompanionPlacementTests(unittest.TestCase):
+    def test_svg_first_companion_sits_on_the_fallback_baseline(self) -> None:
+        import json
+        import re
+        import tempfile
+
+        from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes
+
+        payload = {
+            "x": 100, "y": 100, "width": 600, "height": 300,
+            "name": "chart-note",
+            "type": "column",
+            "categories": ["A", "B"],
+            "series": [{"name": "S", "values": [1, 2]}],
+            "plot_area": {"x": 140, "y": 130, "width": 540, "height": 250},
+            "style": {"colors": ["#111111"], "text_color": "#111111"},
+            # y copied from the SVG baseline: without fallback anchoring the
+            # box would start at the baseline and cover the plot top.
+            "notes": [{"text": "Unit note", "x": 140, "y": 120, "width": 200, "height": 24, "font_size": 18}],
+        }
+        svg = (
+            f'<svg xmlns="{SVG_NS}" viewBox="0 0 1280 720">'
+            '<g id="chart-note" data-pptx-replace-with="chart">'
+            f'<metadata type="application/json">{json.dumps(payload)}</metadata>'
+            '<rect x="140" y="130" width="540" height="250" fill="#FFFFFF"/>'
+            '<text x="140" y="120" font-size="18" fill="#111111">Unit note</text>'
+            '<text x="410" y="400" font-size="18" fill="#111111">A</text>'
+            '<text x="410" y="400" font-size="18" fill="#111111">B</text>'
+            "</g></svg>"
+        )
+        from svg_to_pptx.native_objects.fallback_hash import stamp_native_fallback_baseline
+
+        root = ET.fromstring(svg)
+        stamp_native_fallback_baseline(root.find(f"{{{SVG_NS}}}g"), document_root=root)
+        svg = ET.tostring(root, encoding="unicode")
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "01.svg"
+            path.write_text(svg, encoding="utf-8")
+            slide_xml, *_ = convert_svg_to_slide_shapes(
+                path,
+                resource_root=Path(tmp),
+                native_objects=True,
+            )
+        note = slide_xml[slide_xml.index("Chart Note"):]
+        off_y = int(re.search(r'<a:off x="\d+" y="(\d+)"/>', note).group(1))
+        self.assertEqual(off_y, 102 * 9525)  # baseline 120px minus one 18px em
+
+
 if __name__ == "__main__":
     unittest.main()

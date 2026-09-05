@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
@@ -16,6 +17,7 @@ from ..drawingml.utils import (
     _xml_escape,
     detect_text_lang,
     font_px_to_hpt,
+    px_to_emu,
     text_has_rtl_characters,
     text_uses_rtl,
 )
@@ -1412,7 +1414,44 @@ def _table_padding_value(
     return _powerpoint_emu(pixels, f"table {side} padding")
 
 
-def _table_padding_attrs(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
+_TEXT_LINE_FACTOR = 1.4  # PowerPoint line box per em, covering CJK faces' tall metrics
+
+
+def _table_text_height_emu(paragraphs_xml: str) -> int:
+    """Estimate the vertical space the cell's paragraphs need in PowerPoint."""
+    sizes = [int(value) for value in re.findall(r' sz="(\d+)"', paragraphs_xml)]
+    paragraph_count = max(1, paragraphs_xml.count("<a:p>"))
+    if not sizes:
+        return 0
+    line_px = max(sizes) / 100 / 0.75 * _TEXT_LINE_FACTOR
+    return px_to_emu(line_px * paragraph_count)
+
+
+def _table_padding_attrs(
+    cell_data: dict[str, Any],
+    style: dict[str, Any],
+    *,
+    row_height: int | None = None,
+    paragraphs_xml: str | None = None,
+) -> str:
+    values = {
+        side: _table_padding_value(cell_data, style, side)
+        for side in ("left", "right", "top", "bottom")
+    }
+    # An authored row height is geometry; vertical padding is style. When the
+    # text line plus both margins would exceed the row, PowerPoint grows the
+    # row instead, so shrink the margins to what the row can hold.
+    if row_height is not None and paragraphs_xml is not None:
+        top = values["top"] or 0
+        bottom = values["bottom"] or 0
+        room = row_height - _table_text_height_emu(paragraphs_xml)
+        if top + bottom > room > 0:
+            scale = room / (top + bottom)
+            values["top"] = int(top * scale) if values["top"] is not None else None
+            values["bottom"] = int(bottom * scale) if values["bottom"] is not None else None
+        elif top + bottom > room:
+            values["top"] = 0 if values["top"] is not None else None
+            values["bottom"] = 0 if values["bottom"] is not None else None
     attrs = []
     for attr, side in (
         ("marL", "left"),
@@ -1420,7 +1459,7 @@ def _table_padding_attrs(cell_data: dict[str, Any], style: dict[str, Any]) -> st
         ("marT", "top"),
         ("marB", "bottom"),
     ):
-        value = _table_padding_value(cell_data, style, side)
+        value = values[side]
         if value is not None:
             attrs.append(f'{attr}="{value}"')
     return (" " + " ".join(attrs)) if attrs else ""
@@ -1893,7 +1932,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
             tc_pr_attrs = (
                 f'{anchor_attr}'
-                f'{_table_padding_attrs(cell_data, style)}'
+                f'{_table_padding_attrs(cell_data, style, row_height=row_heights[row_idx], paragraphs_xml=paragraphs_xml)}'
                 f'{_table_cell_extra_attrs(cell_data)}'
             )
             border_xml = _table_border_xml(

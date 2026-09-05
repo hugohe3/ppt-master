@@ -499,3 +499,18 @@ class NativeTableFillAndTextDefaultsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TableRowHeightTests(unittest.TestCase):
+    def test_vertical_padding_shrinks_to_the_authored_row_height(self) -> None:
+        from svg_to_pptx.native_objects.table import _table_padding_attrs
+
+        cell = {"padding": 16}
+        paragraphs = '<a:p><a:r><a:rPr lang="en-US" sz="1500"/><a:t>x</a:t></a:r></a:p>'
+        loose = _table_padding_attrs(cell, {}, row_height=914400, paragraphs_xml=paragraphs)
+        self.assertIn('marT="152400" marB="152400"', loose)
+        tight = _table_padding_attrs(cell, {}, row_height=457200, paragraphs_xml=paragraphs)
+        top = int(tight.split('marT="')[1].split('"')[0])
+        self.assertLess(top, 152400)
+        self.assertGreater(top, 0)
+        self.assertIn('marL="152400" marR="152400"', tight)

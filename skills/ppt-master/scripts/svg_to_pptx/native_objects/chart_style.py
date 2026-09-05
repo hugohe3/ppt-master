@@ -12,6 +12,8 @@ from .marker_attributes import native_import_source, native_json_is_authoritativ
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import (
     _xml_escape,
+    ctx_x,
+    ctx_y,
     detect_text_lang,
     parse_font_family,
     px_to_emu,
@@ -1542,10 +1544,27 @@ def _chart_companion_shapes(
     title_font_size: int,
     include_title: bool,
     include_subtitle_as_caption: bool,
+    fallback: ET.Element | None = None,
 ) -> list[ShapeResult]:
-    """Build editable companion text with its resolved slide-space bounds."""
+    """Build editable companion text with its resolved slide-space bounds.
+
+    With an SVG-first ``fallback``, a companion whose text appears exactly
+    once in the fallback takes that text's position: the box top sits one
+    em above the baseline and the anchor decides which edge ``x`` names,
+    so a payload ``y`` copied from the SVG baseline cannot land the box on
+    the plot.
+    """
     if _chart_title_is_bounded(payload):
         include_title = True
+    fallback_texts = (
+        [
+            record
+            for record in _fallback_text_records(fallback)
+            if record.x is not None and record.y is not None
+        ]
+        if fallback is not None
+        else []
+    )
     entries = _chart_companion_entries(
         payload,
         include_title=include_title,
@@ -1589,6 +1608,24 @@ def _chart_companion_shapes(
             ext_cx = chart_ext_cx
             ext_cy = px_to_emu(16)
             below_index += 1
+        matches = [
+            record for record in fallback_texts
+            if record.text == _normalized_fallback_text(text)
+        ]
+        if len(matches) == 1 and ctx is not None:
+            record = matches[0]
+            font_px = font_size / 100 / 0.75
+            anchor_x = ctx_x(record.x, ctx)
+            baseline_y = ctx_y(record.y, ctx)
+            width_px = ext_cx / px_to_emu(1)
+            left_px = {
+                "middle": anchor_x - width_px / 2,
+                "end": anchor_x - width_px,
+            }.get(record.anchor, anchor_x)
+            off_x = _powerpoint_emu_value(px_to_emu(left_px), "companion text x")
+            off_y = _powerpoint_emu_value(px_to_emu(baseline_y - font_px), "companion text y")
+            ext_cy = px_to_emu(font_px * 1.5)
+            align = {"middle": "ctr", "end": "r"}.get(record.anchor, "l")
         text_xml = _text_box_xml(
             ctx,
             text=text,

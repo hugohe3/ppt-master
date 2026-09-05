@@ -410,6 +410,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             or _chart_title_is_bounded(payload)
         ),
         include_subtitle_as_caption=chart_data["kind"] == "chartex",
+        fallback=None if native_json_is_authoritative(elem) else elem,
     )
     if not companions:
         return ShapeResult(xml=chart_frame_xml, bounds_emu=chart_bounds)
