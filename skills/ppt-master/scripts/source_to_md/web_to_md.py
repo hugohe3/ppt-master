@@ -828,6 +828,56 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
     return md or ""
 
 
+PLAIN_TEXT_SUFFIXES = (".md", ".markdown", ".txt")
+
+
+def is_plain_text_document(url: str, body: str) -> bool:
+    """Return whether a fetched URL is raw Markdown / plain text, not HTML.
+
+    A raw file such as ``.../CHANGELOG.md`` on raw.githubusercontent.com is
+    already Markdown; running it through the HTML extractor loses the file or
+    fails on a missing body. The URL suffix decides, guarded by the absence of
+    an HTML document tag near the top of the body.
+    """
+    path = urlparse(url).path.lower()
+    if not path.endswith(PLAIN_TEXT_SUFFIXES):
+        return False
+    head = body[:4096].lower()
+    return "<html" not in head and "<body" not in head and "<!doctype html" not in head
+
+
+def _save_plain_text_document(
+    url: str, body: str, output_file: str | None,
+) -> tuple[bool, str, str | None, str | None]:
+    stem = os.path.splitext(os.path.basename(urlparse(url).path))[0]
+    output_path = output_file or os.path.join(
+        CONFIG["output_dir"], f"{derive_base_name(stem, url)}.md",
+    )
+    output_dirname = os.path.dirname(output_path) or "."
+    os.makedirs(output_dirname, exist_ok=True)
+    header = (
+        "<!--\n"
+        f"  Source: {url}\n"
+        f"  Crawled: {datetime.datetime.now().isoformat()}\n"
+        "  Format: raw Markdown / plain text saved verbatim\n"
+        "-->\n\n"
+    )
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(header + body)
+    profile_path = write_conversion_profile_best_effort(
+        input_path=url,
+        markdown_path=output_path,
+        converter="web_to_md.py",
+        conversion_type="web",
+        asset_dir=None,
+    )
+    print(f"   [OK] Raw Markdown / plain text: {len(body)} chars saved verbatim")
+    print(f"   [OK] Saved: {output_path}")
+    if profile_path:
+        print(f"   [OK] Conversion profile: {profile_path}")
+    return True, url, None, output_path
+
+
 def process_url(
     url: str,
     output_file: str | None = None,
@@ -843,6 +893,8 @@ def process_url(
     print(f"\n[Fetching] {url}")
     try:
         html = fetch_url(url)
+        if is_plain_text_document(url, html):
+            return _save_plain_text_document(url, html, output_file)
         soup = BeautifulSoup(html, 'html.parser')
 
         # Extract Metadata

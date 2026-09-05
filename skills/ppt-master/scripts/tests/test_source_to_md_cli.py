@@ -16,6 +16,11 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 import source_to_md  # noqa: E402
 
+WEB_BACKEND_DIR = SCRIPTS_DIR / "source_to_md"
+if str(WEB_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(WEB_BACKEND_DIR))
+from web_to_md import is_plain_text_document  # noqa: E402
+
 
 def _args(**overrides: object) -> argparse.Namespace:
     values = dict(
@@ -75,6 +80,30 @@ class ImageFlagRoutingTests(unittest.TestCase):
                 _args(no_images=True), ["doc"],
             )
         )
+
+    def test_no_images_is_a_no_op_for_markdown_and_text(self) -> None:
+        self.assertTrue(
+            source_to_md._validate_pdf_image_flags(
+                _args(no_images=True), ["markdown", "text", "web"],
+            )
+        )
+
+
+class RawTextUrlTests(unittest.TestCase):
+    def test_markdown_url_with_markdown_body_is_plain_text(self) -> None:
+        self.assertTrue(is_plain_text_document(
+            "https://raw.githubusercontent.com/astral-sh/uv/main/CHANGELOG.md",
+            "# Changelog\n\n## 0.12.10\n\nReleased on 2026-09-04.\n",
+        ))
+
+    def test_html_bodies_and_html_urls_still_go_through_the_extractor(self) -> None:
+        self.assertFalse(is_plain_text_document(
+            "https://example.com/notes.md",
+            "<!DOCTYPE html><html><body><p>rendered</p></body></html>",
+        ))
+        self.assertFalse(is_plain_text_document(
+            "https://docs.astral.sh/uv/", "# looks like markdown but is a page",
+        ))
 
     def test_skips_images_reads_both_spellings(self) -> None:
         self.assertTrue(source_to_md._skips_images(_args(no_images=True)))

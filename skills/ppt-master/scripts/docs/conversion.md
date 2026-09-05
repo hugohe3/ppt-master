@@ -60,7 +60,11 @@ Useful options:
 - At the unified `source_to_md.py` entry, `--images all|filtered|none`,
   `--no-images`, and `--filter-images` map to the PDF image mode.
   `--no-images` (or `--images none`) also applies to web pages: images stay
-  remote links instead of downloading into `<stem>_files/`.
+  remote links instead of downloading into `<stem>_files/`; on Markdown/text
+  passthrough it is a no-op.
+- A URL ending in `.md`, `.markdown`, or `.txt` whose body is not HTML (a raw
+  `CHANGELOG.md` on raw.githubusercontent.com) is saved verbatim under a
+  `Source:` comment header, named after the URL's filename stem.
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.

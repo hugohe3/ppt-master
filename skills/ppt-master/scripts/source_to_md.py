@@ -385,7 +385,10 @@ converter, so existing converter behavior remains the source of truth.
     parser.add_argument(
         "--no-images",
         action="store_true",
-        help="Alias for --images none on PDF inputs",
+        help=(
+            "Skip images: PDF image mode none; web pages keep remote image "
+            "links instead of downloading; no-op for Markdown/text"
+        ),
     )
     parser.add_argument(
         "--filter-images",
@@ -422,17 +425,20 @@ def _skips_images(args: argparse.Namespace) -> bool:
 def _validate_pdf_image_flags(args: argparse.Namespace, conversion_types: list[str]) -> bool:
     if not _has_pdf_image_flags(args):
         return True
-    web_only_skip = _skips_images(args) and not (
+    skip_only = _skips_images(args) and not (
         args.filter_images or args.render_vector_figures
     )
     for conversion_type in conversion_types:
         if conversion_type == "pdf":
             continue
-        if conversion_type == "web" and web_only_skip:
+        # Web pages keep remote links; Markdown/text passthrough has no
+        # images to skip, so the flag is accepted as a no-op there.
+        if conversion_type in {"web", "markdown", "text"} and skip_only:
             continue
         print(
             "[ERROR] Image extraction flags are supported only for PDFs; "
-            "--no-images (or --images none) also applies to web pages",
+            "--no-images (or --images none) also applies to web pages and "
+            "Markdown/text passthrough",
             file=sys.stderr,
         )
         return False
