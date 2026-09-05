@@ -12,6 +12,7 @@ from xml.etree import ElementTree as ET
 
 from pptx_shapes import validate_ooxml_xfrm
 
+from ..drawingml.utils import px_to_emu
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import _xml_escape
 from .chart_data import _chart_data, _chart_plot_area_layout
@@ -19,7 +20,6 @@ from .chart_style import (
     _axis_titles,
     _chart_companion_entries,
     _chart_companion_shapes,
-    _chart_text_entry,
     _chart_text_sizes,
     _chart_title_is_bounded,
     _classic_chart_style,
@@ -57,7 +57,6 @@ from .marker_common import (
     CHARTEX_CONTENT_TYPE,
     CHARTEX_REL_TYPE,
     CHARTEX_URI,
-    _compact_key,
     _load_payload,
     _local_tag,
     _NATIVE_KINDS,
@@ -274,73 +273,78 @@ def _source_chart_frame_xml(
     return ET.tostring(frame, encoding="unicode")
 
 
-def _chart_top_strip_is_free(payload: dict[str, Any], chart_data: dict[str, Any]) -> bool:
-    """Whether nothing chart-owned sits above the plot area of a bar/column chart.
+_AXIS_LABEL_MARGIN_EM = 2.0  # PowerPoint's own auto layout reserves about this much for tick labels
 
-    Native title or subtitle, a top legend, an axis on top, tick labels at
-    the high end, and column data labels (which may rise past the axis
-    maximum) all claim that strip; then the frame keeps it.
-    """
+
+def _vertical_label_sides(chart_data: dict[str, Any]) -> set[str]:
+    """Frame sides (top/bottom) where a classic chart draws tick labels."""
+    kind = chart_data.get("kind")
     chart_type = chart_data.get("type")
-    if chart_data.get("kind") != "category" or chart_type not in {"bar", "column"}:
-        return False
-    native_title = (
-        _chart_text_entry(payload.get("title")) is not None
-        and not _chart_title_is_bounded(payload)
-    ) or _chart_text_entry(payload.get("subtitle")) is not None
-    if native_title:
-        return False
-    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
-    if payload.get("show_legend", style.get("show_legend", False)):
-        legend_position = _compact_key(
-            payload.get("legend_position") or style.get("legend_position") or "bottom"
-        )
-        if legend_position in {"t", "top"}:
-            return False
-    if chart_type == "column" and (
-        chart_data.get("data_labels") is not None
-        or any(item.get("data_labels") is not None for item in chart_data.get("series") or [])
-    ):
-        return False
+    if kind == "combo":
+        horizontal_roles = ["category"]
+    elif kind == "category" and chart_type in {"area", "column", "line"}:
+        horizontal_roles = ["category"]
+    elif kind == "category" and chart_type == "bar":
+        horizontal_roles = ["value"]
+    else:
+        return set()
     axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
-    return all(
-        config.get("position") != "top" and config.get("label_position") != "high"
-        for config in axes.values()
-        if isinstance(config, dict)
-    )
+    sides: set[str] = set()
+    for role in horizontal_roles:
+        config = axes.get(role) if isinstance(axes.get(role), dict) else {}
+        if config.get("visible") is False or config.get("label_position") == "none":
+            continue
+        if role == "value" and not chart_data.get("show_value_axis_labels", True):
+            continue
+        sides.add(str(config.get("position") or "bottom"))
+    return sides
 
 
-def _trim_chart_frame_top(
-    payload: dict[str, Any],
+def _grow_chart_frame_for_axis_labels(
     chart_data: dict[str, Any] | None,
     bounds: tuple[int, int, int, int],
+    *,
+    axis_font_px: float,
 ) -> tuple[int, int, int, int]:
-    """Start the chart frame at the plot area when the strip above it holds no chart chrome.
+    """Extend the chart frame past the plot so PowerPoint keeps the manual layout.
 
-    PowerPoint does not reliably honour the plot area's manual vertical
-    layout and auto-fits the plot to the frame top instead, which would
-    drag the first bar over any companion caption drawn in that strip.
-    With the frame edge on the plot edge, both layouts agree.
+    PowerPoint reads the plot area's manual y/h but discards them when the
+    strip between the plot edge and the frame edge cannot hold the tick
+    labels it lays out (about two em); it then auto-fits the plot to the
+    frame top and covers whatever was drawn above the plot. The frame is
+    invisible, so growing it outward on the label side costs nothing and
+    keeps the plot where the fallback drew it.
     """
     off_x, off_y, ext_cx, ext_cy = bounds
     if chart_data is None:
         return bounds
     plot_area = chart_data.get("plot_area")
-    if not isinstance(plot_area, dict) or not _chart_top_strip_is_free(payload, chart_data):
+    if not isinstance(plot_area, dict):
         return bounds
+    required = px_to_emu(axis_font_px * _AXIS_LABEL_MARGIN_EM)
     plot_top = _powerpoint_emu(plot_area["y"], "chart plot_area.y")
-    if plot_top <= off_y or plot_top >= off_y + ext_cy:
-        return bounds
-    return off_x, plot_top, ext_cx, ext_cy - (plot_top - off_y)
+    plot_bottom = plot_top + _powerpoint_emu(plot_area["height"], "chart plot_area.height", positive=True)
+    for side in _vertical_label_sides(chart_data):
+        if side == "bottom":
+            deficit = required - ((off_y + ext_cy) - plot_bottom)
+            if deficit > 0:
+                ext_cy += deficit
+        elif side == "top":
+            deficit = required - (plot_top - off_y)
+            if deficit > 0:
+                off_y -= deficit
+                ext_cy += deficit
+    return off_x, off_y, ext_cx, ext_cy
 
 
 def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     source_package = _decode_source_chart_package(payload)
     chart_data = None if source_package is not None else _chart_data(payload)
-    off_x, off_y, ext_cx, ext_cy = _trim_chart_frame_top(
-        payload,
+    text_sizes = _chart_text_sizes(payload, elem, ctx.inherited_styles)
+    off_x, off_y, ext_cx, ext_cy = _grow_chart_frame_for_axis_labels(
         chart_data,
         _bounds(elem, payload, ctx),
+        axis_font_px=text_sizes["axis"] / 75,
     )
 
     shape_id = (

@@ -340,40 +340,32 @@ class CompanionPlacementTests(unittest.TestCase):
         self.assertIn('anchor="b"', note[:note.index("</a:bodyPr>") + 1] if "</a:bodyPr>" in note else note[:900])
 
 
-class FrameTrimTests(unittest.TestCase):
-    def test_frame_top_moves_to_the_plot_when_nothing_sits_above_it(self) -> None:
-        from svg_to_pptx.native_objects import _trim_chart_frame_top
+class FrameGrowthTests(unittest.TestCase):
+    def test_frame_grows_below_the_plot_to_hold_value_axis_labels(self) -> None:
+        from svg_to_pptx.native_objects import _grow_chart_frame_for_axis_labels
 
-        payload = {"type": "bar", "categories": ["A"], "series": [{"name": "S", "values": [1]}]}
-        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)
-        chart_data = _chart_data({**payload, "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}})
-        trimmed = _trim_chart_frame_top(payload, chart_data, bounds)
-        self.assertEqual(trimmed, (0, 120 * 9525, 500 * 9525, 280 * 9525))
-        titled = _trim_chart_frame_top({**payload, "title": "T"}, chart_data, bounds)
-        self.assertEqual(titled, bounds)
-        top_axis = _chart_data({**payload, "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250},
-                                "axes": {"value": {"position": "top"}}})
-        self.assertEqual(_trim_chart_frame_top(payload, top_axis, bounds), bounds)
+        payload = {"type": "bar", "categories": ["A"], "series": [{"name": "S", "values": [1]}],
+                   "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}}
+        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)  # frame bottom 400, plot bottom 370
+        grown = _grow_chart_frame_for_axis_labels(_chart_data(payload), bounds, axis_font_px=20)
+        self.assertEqual(grown, (0, 100 * 9525, 500 * 9525, 310 * 9525))  # bottom 370 + 40
+        roomy = (0, 100 * 9525, 500 * 9525, 320 * 9525)
+        self.assertEqual(_grow_chart_frame_for_axis_labels(_chart_data(payload), roomy, axis_font_px=20), roomy)
 
-    def test_frame_keeps_the_strip_for_subtitle_top_legend_high_labels_and_column_labels(self) -> None:
-        from svg_to_pptx.native_objects import _trim_chart_frame_top
+    def test_frame_grows_above_for_a_top_axis_and_not_for_hidden_labels(self) -> None:
+        from svg_to_pptx.native_objects import _grow_chart_frame_for_axis_labels
 
-        base = {"type": "bar", "categories": ["A"], "series": [{"name": "S", "values": [1]}],
+        base = {"type": "column", "categories": ["A"], "series": [{"name": "S", "values": [1]}],
                 "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}}
-        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)
-        self.assertNotEqual(_trim_chart_frame_top(base, _chart_data(base), bounds), bounds)
-        for extra in (
-            {"subtitle": "Native subtitle"},
-            {"show_legend": True, "legend_position": "t"},
-            {"axes": {"value": {"label_position": "high"}}},
-            {"type": "column", "data_labels": True},
-            {"type": "pie"},
-        ):
-            payload = {**base, **extra}
-            if extra.get("type") == "pie":
-                payload.pop("axes", None)
-            with self.subTest(extra=extra):
-                self.assertEqual(_trim_chart_frame_top(payload, _chart_data(payload), bounds), bounds)
+        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)  # plot top 120, frame top 100
+        top = _chart_data({**base, "axes": {"category": {"position": "top"}}})
+        self.assertEqual(_grow_chart_frame_for_axis_labels(top, bounds, axis_font_px=20),
+                         (0, 80 * 9525, 500 * 9525, 320 * 9525))
+        hidden = _chart_data({**base, "axes": {"category": {"label_position": "none"}}})
+        self.assertEqual(_grow_chart_frame_for_axis_labels(hidden, bounds, axis_font_px=20), bounds)
+        pie = _chart_data({"type": "pie", "categories": ["A"], "series": [{"name": "S", "values": [1]}],
+                           "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}})
+        self.assertEqual(_grow_chart_frame_for_axis_labels(pie, bounds, axis_font_px=20), bounds)
 
 
 if __name__ == "__main__":
