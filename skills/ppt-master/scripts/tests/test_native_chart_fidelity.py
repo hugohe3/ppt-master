@@ -355,6 +355,26 @@ class FrameTrimTests(unittest.TestCase):
                                 "axes": {"value": {"position": "top"}}})
         self.assertEqual(_trim_chart_frame_top(payload, top_axis, bounds), bounds)
 
+    def test_frame_keeps_the_strip_for_subtitle_top_legend_high_labels_and_column_labels(self) -> None:
+        from svg_to_pptx.native_objects import _trim_chart_frame_top
+
+        base = {"type": "bar", "categories": ["A"], "series": [{"name": "S", "values": [1]}],
+                "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}}
+        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)
+        self.assertNotEqual(_trim_chart_frame_top(base, _chart_data(base), bounds), bounds)
+        for extra in (
+            {"subtitle": "Native subtitle"},
+            {"show_legend": True, "legend_position": "t"},
+            {"axes": {"value": {"label_position": "high"}}},
+            {"type": "column", "data_labels": True},
+            {"type": "pie"},
+        ):
+            payload = {**base, **extra}
+            if extra.get("type") == "pie":
+                payload.pop("axes", None)
+            with self.subTest(extra=extra):
+                self.assertEqual(_trim_chart_frame_top(payload, _chart_data(payload), bounds), bounds)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -19,6 +19,7 @@ from .chart_style import (
     _axis_titles,
     _chart_companion_entries,
     _chart_companion_shapes,
+    _chart_text_entry,
     _chart_text_sizes,
     _chart_title_is_bounded,
     _classic_chart_style,
@@ -56,6 +57,7 @@ from .marker_common import (
     CHARTEX_CONTENT_TYPE,
     CHARTEX_REL_TYPE,
     CHARTEX_URI,
+    _compact_key,
     _load_payload,
     _local_tag,
     _NATIVE_KINDS,
@@ -273,21 +275,36 @@ def _source_chart_frame_xml(
 
 
 def _chart_top_strip_is_free(payload: dict[str, Any], chart_data: dict[str, Any]) -> bool:
-    """Whether nothing chart-owned (axis, title, legend) sits above the plot area."""
-    if chart_data.get("kind") not in {"category", "combo"}:
+    """Whether nothing chart-owned sits above the plot area of a bar/column chart.
+
+    Native title or subtitle, a top legend, an axis on top, tick labels at
+    the high end, and column data labels (which may rise past the axis
+    maximum) all claim that strip; then the frame keeps it.
+    """
+    chart_type = chart_data.get("type")
+    if chart_data.get("kind") != "category" or chart_type not in {"bar", "column"}:
         return False
-    if payload.get("title") is not None and not _chart_title_is_bounded(payload):
+    native_title = (
+        _chart_text_entry(payload.get("title")) is not None
+        and not _chart_title_is_bounded(payload)
+    ) or _chart_text_entry(payload.get("subtitle")) is not None
+    if native_title:
         return False
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     if payload.get("show_legend", style.get("show_legend", False)):
-        legend_position = str(
-            payload.get("legend_position", style.get("legend_position", "bottom"))
-        ).strip().lower()
-        if legend_position == "top":
+        legend_position = _compact_key(
+            payload.get("legend_position") or style.get("legend_position") or "bottom"
+        )
+        if legend_position in {"t", "top"}:
             return False
+    if chart_type == "column" and (
+        chart_data.get("data_labels") is not None
+        or any(item.get("data_labels") is not None for item in chart_data.get("series") or [])
+    ):
+        return False
     axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
     return all(
-        config.get("position") != "top"
+        config.get("position") != "top" and config.get("label_position") != "high"
         for config in axes.values()
         if isinstance(config, dict)
     )
