@@ -108,7 +108,7 @@ _SLIDE_CACHE_LOCK = threading.Lock()
 _SLIDE_CACHE: dict = {}  # path -> (mtime, (content, warnings))
 
 _LIST_CACHE_LOCK = threading.Lock()
-_LIST_CACHE: dict = {}  # path -> (mtime, annotation_count_on_disk)
+_LIST_CACHE: dict = {}  # path -> (mtime, (annotation_count_on_disk, ok, error))
 
 # Keep live preview on a separate range from Confirm UI so a stale preview tab
 # cannot send ``/api/shutdown`` to a later Confirm UI process.
@@ -558,8 +558,8 @@ def create_app(
 
             ok = True
             error_msg: Optional[str] = None
-            disk_count = _cache_get(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime)
-            if disk_count is None:
+            cached = _cache_get(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime)
+            if cached is None:
                 try:
                     tree = ET.parse(path_str)
                     disk_count = len(parse_annotations(tree.getroot()))
@@ -568,7 +568,9 @@ def create_app(
                     error_msg = f'XML parse error: {exc}'
                     disk_count = 0
                     logger.warning('slide parse failed: %s: %s', svg_file.name, exc)
-                _cache_put(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime, disk_count)
+                _cache_put(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime, (disk_count, ok, error_msg))
+            else:
+                disk_count, ok, error_msg = cached
 
             if svg_file.name in annotations:
                 annotation_count = len(annotations[svg_file.name])

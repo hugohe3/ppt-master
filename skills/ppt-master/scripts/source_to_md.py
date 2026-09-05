@@ -91,14 +91,17 @@ def _dispatch_output_arg(
         batch_mode = True
     if output_arg and batch_mode and conversion_type == "web":
         return None
-    if output_arg and batch_mode:
-        return str(
-            unique_output_path(
-                Path(output_arg),
-                default_markdown_path(input_arg).stem,
-                used_outputs,
+    if batch_mode and conversion_type != "web":
+        default_output = default_markdown_path(input_arg)
+        if output_arg:
+            default_output = Path(output_arg) / default_output.name
+        output = unique_output_path(default_output.parent, default_output.stem, used_outputs)
+        if output != default_output:
+            _print_status(
+                f"[INFO] Renamed output for {input_arg}: {default_output} -> {output} "
+                "(input/output collision)"
             )
-        )
+        return str(output)
     if output_arg:
         # One input with an extension-less -o names the Markdown file, not a
         # directory: `-o sources_cf` writes `sources_cf.md` (a directory is
@@ -106,8 +109,6 @@ def _dispatch_output_arg(
         if not Path(output_arg).suffix:
             return f"{output_arg}.md"
         return output_arg
-    if batch_mode and conversion_type != "web":
-        return str(default_markdown_path(input_arg))
     return None
 
 
@@ -462,17 +463,35 @@ def dispatch_many(
         if output_dir.exists() and not output_dir.is_dir():
             print(f"[ERROR] Batch output path is not a directory: {args.output}", file=sys.stderr)
             return 1
-        output_dir.mkdir(parents=True, exist_ok=True)
 
-    used_outputs: set[Path] = set()
-    for input_arg, conversion_type in zip(inputs, conversion_types):
-        output_arg = _dispatch_output_arg(
+    input_paths = {Path(item).resolve() for item in inputs if not is_url(item)}
+    used_outputs = set(input_paths)
+    output_args = [
+        _dispatch_output_arg(
             input_arg,
             conversion_type,
             args.output,
             batch_mode,
             used_outputs,
         )
+        for input_arg, conversion_type in zip(inputs, conversion_types)
+    ]
+    if args.output and not batch_mode and output_args:
+        output = Path(output_args[0])
+        own_passthrough = (
+            output.resolve() in input_paths and conversion_types[0] in {"markdown", "text"}
+        )
+        if output.exists() and not own_passthrough:
+            print(
+                f"[ERROR] Refusing to overwrite existing file: {output}. Choose a different -o path.",
+                file=sys.stderr,
+            )
+            return 1
+
+    if args.output and batch_mode:
+        Path(args.output).mkdir(parents=True, exist_ok=True)
+
+    for input_arg, conversion_type, output_arg in zip(inputs, conversion_types, output_args):
         web_output_dir = (
             args.output
             if args.output and batch_mode and conversion_type == "web"

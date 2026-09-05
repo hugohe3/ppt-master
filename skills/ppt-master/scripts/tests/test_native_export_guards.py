@@ -3,10 +3,13 @@
 
 from __future__ import annotations
 
+import io
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
+from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 
@@ -23,6 +26,7 @@ from svg_to_pptx.drawingml.converter import (  # noqa: E402
     convert_svg_to_slide_shapes,
 )
 from svg_to_pptx.drawingml.styles import build_gradient_fill  # noqa: E402
+from svg_to_pptx.pptx_package.discovery import find_notes_files  # noqa: E402
 
 
 NS = {
@@ -422,6 +426,45 @@ class NativeExportGuardTests(unittest.TestCase):
         ))
         self.assertTrue(flatten_text_with_tspans(tree))
         self.assertEqual([n.get('y') for n in tree.getroot()], ['120', '116'])
+
+
+class NotesDiscoveryTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.notes_dir = self.root / 'notes'
+        self.notes_dir.mkdir()
+
+    def test_filename_notes_win_in_both_glob_orders(self) -> None:
+        exact = self.notes_dir / '01_intro.md'
+        legacy = self.notes_dir / 'slide01.md'
+        exact.write_text('EXACT FILENAME NOTE\n', encoding='utf-8')
+        legacy.write_text('LEGACY INDEX NOTE\n', encoding='utf-8')
+        for order in ([exact, legacy], [legacy, exact]):
+            with self.subTest(order=[path.name for path in order]):
+                stderr = io.StringIO()
+                with patch.object(Path, 'glob', return_value=iter(order)), redirect_stderr(stderr):
+                    notes = find_notes_files(self.root, [self.root / '01_intro.svg'])
+                self.assertEqual(notes, {'01_intro': 'EXACT FILENAME NOTE'})
+                self.assertEqual(len(stderr.getvalue().splitlines()), 1)
+                self.assertIn('01_intro.svg', stderr.getvalue())
+                self.assertIn(str(exact), stderr.getvalue())
+
+    def test_legacy_notes_still_match_by_slide_index(self) -> None:
+        (self.notes_dir / 'slide01.md').write_text('LEGACY INDEX NOTE\n', encoding='utf-8')
+        self.assertEqual(
+            find_notes_files(self.root, [self.root / '01_intro.svg']),
+            {'01_intro': 'LEGACY INDEX NOTE'},
+        )
+
+    def test_one_file_matching_both_modes_does_not_warn(self) -> None:
+        (self.notes_dir / 'slide01.md').write_text('SLIDE NOTE\n', encoding='utf-8')
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            notes = find_notes_files(self.root, [self.root / 'slide01.svg'])
+        self.assertEqual(notes, {'slide01': 'SLIDE NOTE'})
+        self.assertEqual(stderr.getvalue(), '')
 
 
 if __name__ == '__main__':

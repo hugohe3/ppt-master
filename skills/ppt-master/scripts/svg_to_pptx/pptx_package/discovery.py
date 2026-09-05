@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
 from slide_roster import discover_slide_svgs
@@ -75,10 +76,11 @@ def find_notes_files(
         Dict mapping SVG filename stem to notes content.
     """
     notes_dir = project_path / 'notes'
-    notes: dict[str, str] = {}
+    index_notes: dict[str, tuple[Path, str]] = {}
+    filename_notes: dict[str, tuple[Path, str]] = {}
 
     if not notes_dir.exists():
-        return notes
+        return {}
 
     svg_stems_mapping: dict[str, int] = {}
     svg_index_mapping: dict[int, str] = {}
@@ -111,10 +113,19 @@ def find_notes_files(
             continue
 
         if mapped_stem:
-            notes[mapped_stem] = content
+            index_notes[mapped_stem] = (notes_file, content)
 
-        # Filename-based matching overrides index-based matching.
         if filename_match:
-            notes[stem] = content
+            filename_notes[stem] = (notes_file, content)
 
-    return notes
+    # Apply filename priority after collecting both modes, regardless of glob order.
+    for stem, (notes_file, _content) in filename_notes.items():
+        indexed = index_notes.get(stem)
+        if indexed is not None and indexed[0] != notes_file:
+            print(
+                f"  Note: {stem}.svg uses filename-matched notes {notes_file} "
+                f"instead of index-matched {indexed[0]}",
+                file=sys.stderr,
+            )
+    index_notes.update(filename_notes)
+    return {stem: content for stem, (_path, content) in index_notes.items()}

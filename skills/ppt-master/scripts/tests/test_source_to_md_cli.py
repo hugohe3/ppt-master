@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -109,6 +111,104 @@ class RawTextUrlTests(unittest.TestCase):
         self.assertTrue(source_to_md._skips_images(_args(no_images=True)))
         self.assertTrue(source_to_md._skips_images(_args(images="none")))
         self.assertFalse(source_to_md._skips_images(_args(images="all")))
+
+
+class SourceCollisionTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+
+    def _run_cli(self, *arguments: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [sys.executable, str(SCRIPTS_DIR / "source_to_md.py"), *arguments, "--json"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+        )
+
+    def _outputs(self, result: subprocess.CompletedProcess) -> list[Path]:
+        return [
+            Path(json.loads(line)["markdown"])
+            for line in result.stdout.splitlines() if line.startswith("{")
+        ]
+
+    def test_same_stem_batch_preserves_markdown_in_both_orders(self) -> None:
+        for reverse in (False, True):
+            for output_directory in (False, True):
+                with self.subTest(reverse=reverse, output_directory=output_directory):
+                    root = self.root / f"{reverse}_{output_directory}"
+                    root.mkdir()
+                    text_source = root / "same.txt"
+                    markdown_source = root / "same.md"
+                    text_source.write_text("TEXT-SOURCE\n", encoding="utf-8")
+                    markdown_source.write_text("ORIGINAL-MARKDOWN\n", encoding="utf-8")
+                    inputs = [text_source, markdown_source]
+                    if reverse:
+                        inputs.reverse()
+                    arguments = [str(path) for path in inputs]
+                    if output_directory:
+                        arguments.extend(["-o", str(root)])
+                    result = self._run_cli(*arguments)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(markdown_source.read_text(encoding="utf-8"), "ORIGINAL-MARKDOWN\n")
+                    self.assertEqual(text_source.read_text(encoding="utf-8"), "TEXT-SOURCE\n")
+                    outputs = self._outputs(result)
+                    self.assertEqual(outputs, [root / "same_2.md", root / "same_3.md"])
+                    for source, output in zip(inputs, outputs):
+                        self.assertEqual(output.read_text(encoding="utf-8"), source.read_text(encoding="utf-8"))
+                    self.assertIn("Renamed output", result.stderr)
+                    self.assertIn("Success: 2/2", result.stderr)
+
+    def test_batch_outputs_with_the_same_stem_are_distinct(self) -> None:
+        text_source = self.root / "same.txt"
+        markdown_source = self.root / "same.markdown"
+        text_source.write_text("TEXT-SOURCE\n", encoding="utf-8")
+        markdown_source.write_text("ORIGINAL-MARKDOWN\n", encoding="utf-8")
+        result = self._run_cli(str(text_source), str(markdown_source))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        outputs = self._outputs(result)
+        self.assertEqual(outputs, [self.root / "same.md", self.root / "same_2.md"])
+        self.assertEqual([path.read_text(encoding="utf-8") for path in outputs],
+                         ["TEXT-SOURCE\n", "ORIGINAL-MARKDOWN\n"])
+
+    def test_batch_suffixes_also_avoid_input_paths(self) -> None:
+        inputs = [self.root / name for name in ("same.txt", "same.md", "same_2.md")]
+        for index, source in enumerate(inputs):
+            source.write_text(f"SOURCE-{index}\n", encoding="utf-8")
+        result = self._run_cli(*(str(path) for path in inputs))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        outputs = self._outputs(result)
+        self.assertEqual(len(set(outputs)), 3)
+        self.assertFalse(set(inputs) & set(outputs))
+        for index, (source, output) in enumerate(zip(inputs, outputs)):
+            self.assertEqual(source.read_text(encoding="utf-8"), f"SOURCE-{index}\n")
+            self.assertEqual(output.read_text(encoding="utf-8"), f"SOURCE-{index}\n")
+
+    def test_explicit_output_refuses_another_existing_file(self) -> None:
+        source = self.root / "same.txt"
+        destination = self.root / "same.md"
+        source.write_text("TEXT-SOURCE\n", encoding="utf-8")
+        destination.write_text("ORIGINAL-MARKDOWN\n", encoding="utf-8")
+        result = self._run_cli(str(source), "-o", str(destination))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("[ERROR]", result.stderr)
+        self.assertIn(str(destination), result.stderr)
+        self.assertEqual(destination.read_text(encoding="utf-8"), "ORIGINAL-MARKDOWN\n")
+        self.assertEqual(source.read_text(encoding="utf-8"), "TEXT-SOURCE\n")
+        self.assertEqual(self._outputs(result), [])
+        self.assertFalse(destination.with_suffix(".conversion_profile.json").exists())
+
+    def test_single_markdown_passthrough_keeps_its_own_source(self) -> None:
+        source = self.root / "same.md"
+        source.write_text("ORIGINAL-MARKDOWN\n", encoding="utf-8")
+        for options in ([], ["-o", str(source)]):
+            with self.subTest(options=options):
+                result = self._run_cli(str(source), *options)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(self._outputs(result), [source])
+                self.assertEqual(source.read_text(encoding="utf-8"), "ORIGINAL-MARKDOWN\n")
 
 
 if __name__ == "__main__":

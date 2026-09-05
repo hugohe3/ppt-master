@@ -69,6 +69,9 @@ Useful options:
   A path that names an existing directory, or ends in `/`, is always treated as
   a directory, even for a single input: the file keeps its default `<stem>.md`
   name inside it; an extension-less `-o` for one input gains `.md`.
+  Local batch outputs are planned together; input/output collisions gain `_2`,
+  `_3`, etc. suffixes and are reported on stderr. A single-input file `-o`
+  refuses an existing file except its own Markdown/text passthrough.
 
 For multi-source project intake, use `project_manager.py import-sources` with
 all source paths / URLs. For local files, the default is to keep generated
