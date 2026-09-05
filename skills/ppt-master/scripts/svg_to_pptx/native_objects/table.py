@@ -1038,8 +1038,14 @@ def _native_table_fill_warnings(
         human_start = start + 1
         human_end = end
         span = str(human_start) if human_start == human_end else f"{human_start}-{human_end}"
+        hint = (
+            f" (one fallback rect spanning several {axis}s reads as one whole-{axis} fill;"
+            " draw one rect per column or row when their payload fills differ)"
+            if human_start != human_end
+            else ""
+        )
         warnings.append(
-            f"Native PPTX table whole {axis} {span} fill #{color} is not projected to cell fill"
+            f"Native PPTX table whole {axis} {span} fill #{color} is not projected to cell fill{hint}"
         )
     return warnings
 
