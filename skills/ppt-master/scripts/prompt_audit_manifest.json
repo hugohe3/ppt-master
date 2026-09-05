@@ -1035,7 +1035,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/conversion.md"
       ],
-      "max_tokens": 7500
+      "max_tokens": 7600
     },
     "stage.shared.troubleshooting": {
       "description": "Conditional troubleshooting reference for generation failures.",

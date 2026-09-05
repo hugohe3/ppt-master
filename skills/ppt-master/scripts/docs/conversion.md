@@ -59,18 +59,16 @@ Useful options:
   its own JSON line after that source finishes.
 - At the unified `source_to_md.py` entry, `--images all|filtered|none`,
   `--no-images`, and `--filter-images` map to the PDF image mode.
-  `--no-images` (or `--images none`) also applies to web pages: images stay
-  remote links instead of downloading into `<stem>_files/`; on Markdown/text
-  passthrough it is a no-op.
-- A URL ending in `.md`, `.markdown`, or `.txt` whose body is not HTML (a raw
-  `CHANGELOG.md` on raw.githubusercontent.com) is saved verbatim under a
-  `Source:` comment header, named after the URL's filename stem.
+  `--no-images` (or `--images none`) also applies to web pages (images stay
+  remote links, no `<stem>_files/`) and is a no-op on Markdown/text.
+- A `.md` / `.markdown` / `.txt` URL whose body is not HTML is saved verbatim
+  under a `Source:` header, named by the URL's filename stem.
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.
   A path that names an existing directory, or ends in `/`, is always treated as
   a directory, even for a single input: the file keeps its default `<stem>.md`
-  name inside it. An extension-less `-o` for one input gains `.md`.
+  name inside it; an extension-less `-o` for one input gains `.md`.
 
 For multi-source project intake, use `project_manager.py import-sources` with
 all source paths / URLs. For local files, the default is to keep generated
