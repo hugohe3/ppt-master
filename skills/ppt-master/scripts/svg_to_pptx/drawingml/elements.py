@@ -765,6 +765,7 @@ def _shape_xfrm_from_svg_rect(
     off_y = px_to_emu(resolved_y)
     ext_cx = px_to_emu(resolved_w)
     ext_cy = px_to_emu(resolved_h)
+    validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
     return '', off_x, off_y, ext_cx, ext_cy, (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
 
 

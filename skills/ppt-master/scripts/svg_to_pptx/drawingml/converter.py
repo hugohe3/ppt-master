@@ -84,6 +84,7 @@ from .utils import (
     project_stroke_style_errors,
     project_transform_errors,
     resolve_url_id,
+    svg_hidden_reason,
     supports_full_project_transform,
     validate_dml_shape_matrix,
 )
@@ -1144,7 +1145,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     Uses identity coordinate mapping (chOff/chExt == off/ext) so child shapes
     keep their absolute slide coordinates unchanged.
     """
-    exact_graphic_frame = _roundtrip_graphic_frame(elem, ctx)
+    ctx.parent_by_id.update({id(child): elem for child in elem})
+    hidden_reason = svg_hidden_reason(elem, ctx.parent_by_id, preserve_native_carriers=True)
+    if hidden_reason == 'display:none':
+        return None
+    exact_graphic_frame = _roundtrip_graphic_frame(elem, ctx) if hidden_reason is None else None
     if exact_graphic_frame is not None:
         return exact_graphic_frame
 
@@ -1244,7 +1249,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             "the subtree as ordinary SVG"
         )
 
-    if _native_replacement_enabled(elem, child_ctx):
+    if hidden_reason is None and _native_replacement_enabled(elem, child_ctx):
         native_result = convert_native_object(elem, child_ctx)
         if native_result:
             ctx.sync_from_child(child_ctx)
@@ -1254,7 +1259,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                     ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
             return native_result
 
-    if elem.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND:
+    if hidden_reason is None and elem.get(SEMANTIC_OBJECT_ATTRIBUTE) == SEMANTIC_SHAPE_KIND:
         geometry_ctx = child_ctx
         if transform and not native_subtree_active:
             geometry_ctx = ctx.child(
@@ -1277,12 +1282,13 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         return semantic_result
 
     if (
-        elem.get('data-pptx-object') in {'shape', 'connector'}
+        hidden_reason is None
+        and elem.get('data-pptx-object') in {'shape', 'connector'}
         and elem.get('data-pptx-prst') is not None
     ):
         _require_unchanged_preset_preview(elem)
 
-    preserved_text = preserved_native_text_body(elem)
+    preserved_text = preserved_native_text_body(elem) if hidden_reason is None else None
     if preserved_text is not None:
         geometry_carrier, native_text = preserved_text
         geometry_ctx = child_ctx
@@ -1573,6 +1579,9 @@ def _extract_background_candidate(
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if tag in _NON_VISUAL_TAGS:
             continue
+        hidden_reason = svg_hidden_reason(child, ctx.parent_by_id, preserve_native_carriers=True)
+        if hidden_reason and (tag != 'g' or hidden_reason == 'display:none'):
+            continue
 
         if tag == 'rect' and _is_full_canvas_rect(child, ctx, canvas):
             bg_xml = _background_xml_from_rect(child, ctx)
@@ -1597,6 +1606,8 @@ def _extract_background_candidate(
         if len(visual_children) != 1:
             return '', None
         only_child = visual_children[0]
+        if svg_hidden_reason(only_child, ctx.parent_by_id, preserve_native_carriers=True):
+            return '', None
         only_tag = only_child.tag.replace(f'{{{SVG_NS}}}', '')
         if only_tag == 'rect' and _is_full_canvas_rect(only_child, child_ctx, canvas):
             bg_xml = _background_xml_from_rect(only_child, child_ctx)
@@ -1744,6 +1755,25 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
     return {'output_geometry': 'unknown', 'fidelity': 'visual-only'}
 
 
+def collect_hidden_visuals(root: ET.Element) -> list[tuple[ET.Element, str]]:
+    """List suppressed visual objects while preserving native transport carriers."""
+    parents = {id(child): parent for parent in root.iter() for child in parent}
+    hidden: list[tuple[ET.Element, str]] = []
+
+    def visit(element: ET.Element) -> None:
+        tag = _local_tag(element)
+        if tag in _NON_VISUAL_TAGS:
+            return
+        reason = svg_hidden_reason(element, parents, preserve_native_carriers=True)
+        if reason and (tag not in {'g', 'a', 'svg'} or reason == 'display:none'):
+            hidden.append((element, reason))
+        for child in element:
+            visit(child)
+
+    visit(root)
+    return hidden
+
+
 def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Dispatch an SVG element to the appropriate converter."""
     tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
@@ -1798,6 +1828,11 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         trace('skip', reason='render-only-preset-geometry-detail')
         return None
 
+    hidden_reason = svg_hidden_reason(elem, ctx.parent_by_id, preserve_native_carriers=True)
+    if hidden_reason and (tag not in {'g', 'a'} or hidden_reason == 'display:none'):
+        trace('skip', reason=hidden_reason)
+        return None
+
     converter = _CONVERTERS.get(tag)
     if converter:
         try:
@@ -1807,7 +1842,8 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
                 result = apply_shape_hyperlink(result, ctx, shape_hyperlink)
         except Exception as e:
             trace('error', error=str(e))
-            raise SvgNativeConversionError(f'Failed to convert <{tag}>: {e}') from e
+            label = f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
+            raise SvgNativeConversionError(f'Failed to convert {label}: {e}') from e
         if result:
             shape_match = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
             metadata: dict[str, Any] = {}
@@ -2311,6 +2347,7 @@ def convert_svg_to_slide_shapes(
         theme_color_spec=theme_color_spec,
         primary_language=primary_language,
         inherited_styles=_extract_inheritable_styles(root),
+        parent_by_id={id(child): parent for parent in root.iter() for child in parent},
         text_font_sizes=text_font_sizes,
         text_letter_spacings=text_letter_spacings,
     )
@@ -2344,7 +2381,10 @@ def convert_svg_to_slide_shapes(
             continue
         if id(child) == background_skip_id:
             continue
-        result = convert_element(child, ctx)
+        try:
+            result = convert_element(child, ctx)
+        except SvgNativeConversionError as exc:
+            raise SvgNativeConversionError(f'{svg_path.name}: {exc}') from exc
         if result:
             shapes.append(result.xml)
             converted += 1

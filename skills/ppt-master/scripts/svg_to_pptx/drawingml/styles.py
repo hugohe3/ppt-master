@@ -196,20 +196,11 @@ def build_fill_xml(
     return '<a:noFill/>'
 
 
-def build_pattern_fill(
+def parse_pattern_colors(
     pattern_elem: ET.Element,
     opacity: float | None = None,
-    theme_color_spec: ThemeColorSpec | None = None,
-    usage: str = "fill",
-) -> str:
-    """Build <a:pattFill> from an SVG <pattern> emitted by pptx_to_svg.
-
-    Reads the round-trip annotations (data-pptx-pattern / data-pptx-fg /
-    data-pptx-bg) when present. Falls back to inspecting the inner stroke /
-    rect colors when annotations are absent (hand-authored SVG).
-    """
-    prst = pattern_elem.get('data-pptx-pattern') or 'ltUpDiag'
-
+) -> tuple[str | None, str | None, float | None, float | None]:
+    """Resolve native pattern colors and alpha from metadata or child paints."""
     paint_entries = []
     for child in pattern_elem:
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -262,7 +253,14 @@ def build_pattern_fill(
     fg_hex, fg_alpha = parse_svg_color(fg_color) if fg_color else (None, 1.0)
     bg_hex, bg_alpha = parse_svg_color(bg_color) if bg_color else (None, 1.0)
     if not fg_hex:
-        return ''
+        if pattern_elem.get('data-pptx-pattern') is not None:
+            pattern_id = pattern_elem.get('id') or '<unnamed>'
+            raise ValueError(
+                f'<pattern id="{pattern_id}"> is missing a valid foreground color; '
+                'set data-pptx-fg or add a child stroke/fill after the first '
+                'background rect fill'
+            )
+        return None, bg_hex, None, None
 
     bg_source = next((
         entry
@@ -298,6 +296,20 @@ def build_pattern_fill(
 
     fg_opacity = combine_opacity(opacity, fg_alpha, fg_child_opacity)
     bg_opacity = combine_opacity(opacity, bg_alpha, bg_child_opacity)
+    return fg_hex, bg_hex, fg_opacity, bg_opacity
+
+
+def build_pattern_fill(
+    pattern_elem: ET.Element,
+    opacity: float | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
+    usage: str = "fill",
+) -> str:
+    """Build native pattFill, retaining the unmarked-pattern compatibility fallback."""
+    prst = pattern_elem.get('data-pptx-pattern') or 'ltUpDiag'
+    fg_hex, bg_hex, fg_opacity, bg_opacity = parse_pattern_colors(pattern_elem, opacity)
+    if not fg_hex:
+        return ''
     fg_alpha_xml = (
         f'<a:alpha val="{quantize_ooxml_alpha(fg_opacity)}"/>'
         if fg_opacity is not None else ''

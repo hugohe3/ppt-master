@@ -90,6 +90,8 @@ class ConvertContext:
     # conversion entry points require it; recursive child contexts retain it.
     resource_root: Path | None = None
     inherited_styles: dict[str, str] = field(default_factory=dict)
+    # Shared ancestry for visibility overrides and native geometry carriers.
+    parent_by_id: dict[int, ET.Element] = field(default_factory=dict)
     # Effective SVG font sizes keyed by element identity. Shared resolution
     # keeps relative sizes and em tracking identical across checker/exporter.
     text_font_sizes: dict[int, float] = field(default_factory=dict)
@@ -268,6 +270,7 @@ class ConvertContext:
             svg_dir=self.svg_dir,
             resource_root=self.resource_root,
             inherited_styles=merged,
+            parent_by_id=self.parent_by_id,
             text_font_sizes=self.text_font_sizes,
             text_letter_spacings=self.text_letter_spacings,
             opacity_multiplier=self.opacity_multiplier * local_opacity,

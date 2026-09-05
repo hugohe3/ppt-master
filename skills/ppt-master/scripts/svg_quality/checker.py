@@ -104,6 +104,7 @@ try:
         project_mask_errors as _project_mask_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         split_project_text_clusters as _split_project_text_clusters,
+        svg_hidden_reason as _svg_hidden_reason,
         transform_point as _transform_point,
         unsafe_exported_font_faces as _unsafe_exported_font_faces,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
@@ -124,6 +125,7 @@ except ImportError:
     _project_mask_errors = None
     _rect_to_dml_xfrm = None
     _split_project_text_clusters = None
+    _svg_hidden_reason = None
     _transform_point = None
     _unsafe_exported_font_faces = None
     _validate_dml_shape_matrix = None
@@ -140,13 +142,20 @@ except ImportError:
 try:
     from svg_to_pptx.drawingml.converter import (
         SvgNativeConversionError as _SvgNativeConversionError,
+        collect_hidden_visuals as _collect_hidden_visuals,
         collect_unsupported_visuals as _collect_unsupported_visuals,
         preserved_native_text_body as _preserved_native_text_body,
     )
 except ImportError:
     _SvgNativeConversionError = None
+    _collect_hidden_visuals = None
     _collect_unsupported_visuals = None
     _preserved_native_text_body = None
+
+try:
+    from svg_to_pptx.drawingml.styles import parse_pattern_colors as _parse_pattern_colors
+except ImportError:
+    _parse_pattern_colors = None
 
 try:
     from svg_to_pptx.drawingml.elements import (
@@ -1295,6 +1304,7 @@ class SVGQualityChecker:
 
                 # 2a. Validate direct geometry lengths and stroke widths.
                 svg_contracts.check_geometry_length_values(root, result)
+                self._check_shape_coordinate_ranges(root, result)
 
                 # 2b. Validate line-presentation grammar and mappings.
                 svg_contracts.check_stroke_style_values(root, result)
@@ -1351,6 +1361,7 @@ class SVGQualityChecker:
 
                 # 7b. Reject visual elements the native converter cannot dispatch.
                 self._check_unsupported_visual_elements(root, result)
+                self._check_hidden_elements(root, result)
 
                 # 7c. Fail closed on invalid PPTX preset/adjustment metadata.
                 self._check_preset_geometry_metadata(root, result)
@@ -3935,28 +3946,59 @@ class SVGQualityChecker:
         parent_by_id: Dict[int, ET.Element],
     ) -> bool:
         """Return whether inherited display or visibility hides an element."""
-        current: ET.Element | None = element
-        while current is not None:
-            style_values = (
-                _parse_inline_style(current.get('style'))
-                if _parse_inline_style is not None
-                else {}
+        return _svg_hidden_reason is not None and _svg_hidden_reason(element, parent_by_id) is not None
+
+    def _check_hidden_elements(self, root: ET.Element, result: Dict) -> None:
+        """Advise which hidden SVG objects will be omitted during native export."""
+        if _collect_hidden_visuals is None:
+            return
+        for element, reason in _collect_hidden_visuals(root):
+            result['warnings'].append(
+                f'Hidden element {_element_label(element)} will not be exported '
+                f'({reason}, including inherited state); advisory only'
             )
-            display = style_values.get('display')
-            if display is None:
-                display = current.get('display')
-            if display and display.strip().lower() == 'none':
-                return True
-            current = parent_by_id.get(id(current))
-        visibility = (
-            _effective_presentation_value(
-                element,
-                'visibility',
-                parent_by_id,
-            )
-            or ''
-        ).strip().lower()
-        return visibility in {'hidden', 'collapse'}
+
+    def _check_shape_coordinate_ranges(self, root: ET.Element, result: Dict) -> None:
+        """Check ordinary shape frames with the exporter's OOXML range validator."""
+        if _rect_to_dml_xfrm is None or _parse_project_geometry_length is None:
+            return
+        parents = {id(child): parent for parent in root.iter() for child in parent}
+
+        def visit(element: ET.Element) -> None:
+            tag = _local_name(element)
+            if tag in {'defs', 'metadata', 'title', 'desc', 'style'}:
+                return
+            if (
+                tag in {'rect', 'image', 'circle', 'ellipse'}
+                and element.get('data-pptx-frame') is None
+                and not self._is_hidden_element(element, parents)
+            ):
+                styles = _parse_inline_style(element.get('style')) if _parse_inline_style else {}
+
+                def length(name: str) -> float:
+                    return _parse_project_geometry_length(styles.get(name, element.get(name, '0')), name)
+
+                try:
+                    if tag in {'rect', 'image'}:
+                        frame = (length('x'), length('y'), length('width'), length('height'))
+                    else:
+                        rx = length('r' if tag == 'circle' else 'rx')
+                        ry = rx if tag == 'circle' else length('ry')
+                        frame = (length('cx') - rx, length('cy') - ry, rx * 2, ry * 2)
+                    matrix = self._accumulated_transform_matrix(element, parents)
+                    if matrix is not None and frame[2] > 0 and frame[3] > 0:
+                        _rect_to_dml_xfrm(*frame, matrix)
+                except ValueError as exc:
+                    # Other geometry/transform grammar errors have their own checks.
+                    if 'OOXML' in str(exc):
+                        result['errors'].append(
+                            f'{_element_label(element)}: {exc}; reduce the shape '
+                            'coordinates or dimensions before export'
+                        )
+            for child in element:
+                visit(child)
+
+        visit(root)
 
     @staticmethod
     def _has_zero_opacity(
@@ -5410,6 +5452,11 @@ class SVGQualityChecker:
                     "horzBrick (others); see references/native-data-interface.md §1 "
                     "for the full authoring enum."
                 )
+            elif prst and _parse_pattern_colors is not None:
+                try:
+                    _parse_pattern_colors(pattern)
+                except ValueError as exc:
+                    result['errors'].append(str(exc))
 
     def _check_native_object_markers(self, root: ET.Element, result: Dict) -> None:
         """Validate explicit native replacement markers before PPTX export."""

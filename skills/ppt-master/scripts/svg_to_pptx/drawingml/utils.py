@@ -1470,6 +1470,36 @@ def parse_inline_style(style_str: str | None) -> dict[str, str]:
     return styles
 
 
+def svg_hidden_reason(
+    element: ET.Element,
+    parent_by_id: dict[int, ET.Element],
+    *,
+    preserve_native_carriers: bool = False,
+) -> str | None:
+    """Resolve display suppression and inherited visibility, including overrides."""
+    visibility = None
+    current: ET.Element | None = element
+    while current is not None:
+        styles = parse_inline_style(current.get('style'))
+        display = styles.get('display', current.get('display', '')).strip().lower()
+        if display == 'none':
+            return 'display:none'
+        native_carrier = (
+            preserve_native_carriers
+            and current is element
+            and current.get('data-pptx-part') == 'geometry'
+            and current.get('data-pptx-object') in {'shape', 'connector'}
+        )
+        if visibility is None and not native_carrier:
+            value = styles.get('visibility', current.get('visibility', '')).strip().lower()
+            if value and value not in {'inherit', 'unset'}:
+                visibility = value
+        current = parent_by_id.get(id(current))
+    if visibility in {'hidden', 'collapse'}:
+        return f'visibility:{visibility}'
+    return None
+
+
 def iter_project_geometry_lengths(
     root: ET.Element,
 ) -> Iterator[tuple[ET.Element, str, str, str]]:
