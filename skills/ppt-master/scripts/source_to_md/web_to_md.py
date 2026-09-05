@@ -26,6 +26,8 @@ TLS fingerprint handling:
     (scripts/source_to_md/web_to_md.cjs) remains available as a fallback.
 """
 
+from __future__ import annotations
+
 import argparse
 import codecs
 import datetime
@@ -50,13 +52,19 @@ from _conversion_profile import (  # noqa: E402
 
 configure_utf8_stdio()
 
-try:
-    import requests
-    from bs4 import BeautifulSoup, Comment, NavigableString, Tag
-except ImportError:
-    print("Error: This script requires 'requests' and 'beautifulsoup4'.")
-    print("Please run: pip install requests beautifulsoup4")
-    sys.exit(1)
+# Help must not depend on the optional conversion packages: a stdlib-only
+# interpreter still gets the argparse usage (docs/rules/code-style.md §4).
+_HELP_REQUESTED = __name__ == "__main__" and any(
+    arg in {"-h", "--help"} for arg in sys.argv[1:]
+)
+if not _HELP_REQUESTED:
+    try:
+        import requests
+        from bs4 import BeautifulSoup, Comment, NavigableString, Tag
+    except ImportError:
+        print("Error: This script requires 'requests' and 'beautifulsoup4'.", file=sys.stderr)
+        print("Please run: pip install requests beautifulsoup4", file=sys.stderr)
+        sys.exit(1)
 
 # Prefer curl_cffi for TLS-fingerprint impersonation (bypasses JA3 blocking on
 # sites like WeChat). Fall back to plain requests when it's not installed.
@@ -178,8 +186,9 @@ try:
     PILLOW_AVAILABLE = True
 except ImportError:
     PILLOW_AVAILABLE = False
-    print("[WARN] Pillow not installed. WebP images will not be converted to PNG.")
-    print("       Run: pip install Pillow")
+    if not _HELP_REQUESTED:
+        print("[WARN] Pillow not installed. WebP images will not be converted to PNG.", file=sys.stderr)
+        print("       Run: pip install Pillow", file=sys.stderr)
 
 # ============ Config ============
 CONFIG = {
@@ -1090,7 +1099,8 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    # Disable warnings for verify=False if needed, though often useful to see
-    import urllib3
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    if not _HELP_REQUESTED:
+        # Disable warnings for verify=False if needed, though often useful to see
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     raise SystemExit(main())

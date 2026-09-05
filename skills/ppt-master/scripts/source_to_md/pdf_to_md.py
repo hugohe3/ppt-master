@@ -5,6 +5,8 @@ Uses PyMuPDF to extract PDF text content and convert to Markdown format.
 Supports heading levels, bold, italic, and list detection.
 """
 
+from __future__ import annotations
+
 import argparse
 import hashlib
 import json
@@ -24,11 +26,17 @@ from _conversion_profile import write_conversion_profile_best_effort  # noqa: E4
 
 configure_utf8_stdio()
 
-try:
-    import fitz  # PyMuPDF
-except ImportError:
-    print("[ERROR] PyMuPDF not installed. Run: pip install PyMuPDF", file=sys.stderr)
-    sys.exit(1)
+# Help must not depend on the optional conversion packages: a stdlib-only
+# interpreter still gets the argparse usage (docs/rules/code-style.md §4).
+_HELP_REQUESTED = __name__ == "__main__" and any(
+    arg in {"-h", "--help"} for arg in sys.argv[1:]
+)
+if not _HELP_REQUESTED:
+    try:
+        import fitz  # PyMuPDF
+    except ImportError:
+        print("[ERROR] PyMuPDF not installed. Run: pip install PyMuPDF", file=sys.stderr)
+        sys.exit(1)
 
 FONT_BODY_SIZE = 12
 FONT_H1_SIZE = 24
@@ -1746,7 +1754,7 @@ def extract_pdf_to_markdown(
     return markdown_content
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PDF to Markdown converter (with structure detection and LLM optimization)',
@@ -1793,7 +1801,7 @@ Structure detection features:
         help=f'DPI for --render-vector-figures output (default: {VECTOR_FIGURE_DPI})',
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     return run_path_batch(
         args.inputs,
