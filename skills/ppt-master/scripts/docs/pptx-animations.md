@@ -148,14 +148,7 @@ top-level group that itself lacks `data-pptx-layer`, `data-pptx-role`, and
 | Target state | Behavior |
 |---|---|
 | Ordinary content group | Animatable; a legacy block resolves one row and `effects[]` may resolve several rows against the same final shape |
-| Legacy chrome-like id | Skipped unless explicitly named in `animations.json` |
-| Explicit sidecar group override | May override only the legacy chrome-name heuristic |
-| `data-pptx-layer` or explicit static role/placeholder | Structural and never animatable |
-
-An explicit sidecar entry cannot turn a Master/Layout/Slide structural layer or
-an explicitly marked static page-frame role/placeholder into an animation
-target. This boundary preserves PPTX structure even when a legacy id resembles
-content.
+| Chrome-like ids, static roles/placeholders, and structural exclusions | See [`animations.md`](../../references/animations.md) §5 for defaults and explicit sidecar overrides |
 
 ---
 
@@ -313,4 +306,4 @@ animation-to-video contract.
 | `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
 | `sound` | Object-animation cue: project-relative or absolute `.m4a` / `.mp3` / `.wav` on low-level inputs; bundled selections use the synced project-relative `.wav` path |
 
-An unlisted SVG inherits the resolved deck-wide settings; a listed slide may contain only the `transition`, `animation`, `groups`, or `morph` fields it overrides; chrome groups (an id equal to, or holding a `-`/`_`-separated token from, `bg`, `background`, `header`, `footer`, `decor`, `decoration`, `decorations`, `chrome`, `nav`, `watermark`, `logo`, `pagenumber`, `pagenum`, `slidenumber`, `slidenum`, `rule`; `list-groups` names the excluded ids at the end of each slide line) and static role/placeholder groups are pinned to `none` unless explicitly named; a `data-pptx-layer` group never animates, and a full-canvas background rect becomes the slide background rather than a shape — except a `*-header` / `*-footer` group whose text reaches the page's median font size, which is read as the title block and stays an ordinary target; a group carrying `data-pptx-layer` or a static role/placeholder marker never animates.
+An unlisted SVG inherits the resolved deck-wide settings; a listed slide may contain only the `transition`, `animation`, `groups`, or `morph` fields it overrides. The chrome-name heuristic matches an id equal to, or holding a `-`/`_`-separated token from, `bg`, `background`, `header`, `footer`, `decor`, `decoration`, `decorations`, `chrome`, `nav`, `watermark`, `logo`, `pagenumber`, `pagenum`, `slidenumber`, `slidenum`, `rule`; `list-groups` names the excluded ids at the end of each slide line. A marker-free `*-header` / `*-footer` group whose text reaches the page's median font size is read as the title block and stays an ordinary target. For chrome defaults, explicit sidecar overrides, and structural exclusions, see [`animations.md`](../../references/animations.md) §5.
