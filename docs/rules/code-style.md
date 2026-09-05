@@ -261,22 +261,22 @@ def classify_license(
 
 ## 11. Testing
 
-**Hard rule**: this repository does **not** ship automated tests.
+**Default — tests are allowed only under `skills/ppt-master/scripts/tests/` (may override only by editing this rule)**. The repository stays a workflow/skill package: no CI, no pytest, no coverage tooling, no merge gate. Tests exist so that a checker/exporter fix can be re-run in seconds after the next fix lands; they are a regression net, not a substitute for running the real thing.
+
+**Allowed**:
+
+- `skills/ppt-master/scripts/tests/test_<topic>.py` modules on the standard library `unittest`, run one module at a time: `cd skills/ppt-master/scripts && python3 -m unittest tests.test_<topic>` (`discover` is not supported here)
+- Cases that exercise `scripts/` Python through its public entry points (CLI `main(argv)`, the converter, the checker) on minimal fixtures built inside the test — a short SVG or JSON string, a temporary directory
+- Mocked network calls; never a live provider request or an installed-package assumption beyond `requirements.txt`
 
 **Forbidden**:
 
-- `tests/` directories
-- `test_*.py` files
-- `unittest` / `pytest` imports
-- `if __name__ == "__main__":` blocks that run a self-test suite
+- `tests/` directories anywhere else, `test_*.py` next to the code, `pytest` / third-party test frameworks, `if __name__ == "__main__":` self-test blocks
+- Tests for prompt text, workflow documents, or templates — those are governed by `prompt_audit.py` and review
+- Fixtures that depend on files outside the test module (except the bundled template library under `templates/`)
+- Treating a green suite as verification: a change to conversion behaviour is still smoke-run against a real project (`python3 -c "..."`, `svg_quality_checker.py`, `svg_to_pptx.py` on a `/tmp` copy) and the output is shown in the conversation / PR description
 
-**Use instead**:
-
-- Inline smoke commands via `python3 -c "..."` against real project samples; show the output in the conversation / PR description
-- Manual verification steps in the runbook
-- Live-API smoke runs against `projects/_smoke_*` directories (gitignored)
-
-This is a deliberate project convention. When external contributors include tests, ask them to remove tests in PR review (see [`docs/rules/prompt-style.md`](./prompt-style.md) §11 for the parallel rule on reference docs).
+Contributors may include tests for the scripts they change; reviewers never require them, and a PR that claims "tests pass" without a real-project smoke run is reviewed as untested (see [`CONTRIBUTING.md`](../../CONTRIBUTING.md)).
 
 ---
 
