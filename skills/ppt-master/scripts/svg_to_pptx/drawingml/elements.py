@@ -2138,10 +2138,67 @@ _WIDE_FAMILY_WIDTH_FACTORS = {
     'verdana': (1.02, 1.08),
 }
 
+# Monospaced faces advance every Latin glyph by one fixed em fraction, so the
+# per-glyph table (tuned for proportional sans faces) undershoots them by
+# 14–22%: measured 2026-09-05 at 20px, Courier New, DejaVu Sans Mono and Noto
+# Sans Mono all render 0.600 em per character where the generic estimate gives
+# 0.46–0.50. A monospaced run is therefore measured as characters × advance
+# instead of scaled by a factor; CJK glyphs in these faces stay full-width and
+# keep the generic estimate. Advances are the faces' published hmtx values.
+_MONOSPACE_ADVANCE_EM = {
+    'andale mono': 0.60,
+    'cascadia code': 0.586,
+    'cascadia mono': 0.586,
+    'consolas': 0.55,
+    'courier': 0.60,
+    'courier new': 0.60,
+    'dejavu sans mono': 0.602,
+    'fira code': 0.60,
+    'fira mono': 0.60,
+    'hack': 0.602,
+    'ibm plex mono': 0.60,
+    'inconsolata': 0.50,
+    'jetbrains mono': 0.60,
+    'liberation mono': 0.60,
+    'lucida console': 0.60,
+    'menlo': 0.602,
+    'monaco': 0.60,
+    'monospace': 0.60,
+    'noto sans mono': 0.60,
+    'pt mono': 0.60,
+    'roboto mono': 0.60,
+    'sf mono': 0.602,
+    'source code pro': 0.60,
+    'ubuntu mono': 0.50,
+}
+
+
+def _run_primary_family(run: dict[str, Any]) -> str:
+    return str(run.get('font_family') or '').split(',')[0].strip().strip('\'"').lower()
+
+
+# Fixed-pitch faces outside the table almost always say so in their name
+# (Cascadia Mono, Fira Code, Victor Mono, Noto Sans Mono CJK); 0.60 em is the
+# common advance of the Courier-derived and modern coding families alike.
+_MONOSPACE_NAME_HINTS = ('mono', 'code', 'courier', 'consol', 'typewriter')
+_MONOSPACE_DEFAULT_ADVANCE_EM = 0.60
+
+
+def _monospace_advance_em(run: dict[str, Any]) -> float | None:
+    """Return the fixed per-character advance of a monospaced run, if any."""
+    family = _run_primary_family(run)
+    if not family:
+        return None
+    advance = _MONOSPACE_ADVANCE_EM.get(family)
+    if advance is not None:
+        return advance
+    if any(hint in family for hint in _MONOSPACE_NAME_HINTS):
+        return _MONOSPACE_DEFAULT_ADVANCE_EM
+    return None
+
 
 def _family_width_factor(run: dict[str, Any]) -> float:
-    family = str(run.get('font_family') or '').split(',')[0].strip().strip('\'"').lower()
-    factors = _WIDE_FAMILY_WIDTH_FACTORS.get(family)
+    factors = _WIDE_FAMILY_WIDTH_FACTORS.get(_run_primary_family(run))
     if factors is None:
         return 1.0
     base, caps = factors
@@ -2160,6 +2217,18 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
         font_size_px,
         str(run.get('font_weight', '400')),
     )
+    monospace_advance = _monospace_advance_em(run)
+    if monospace_advance is not None:
+        # Fixed-pitch faces ignore weight and glyph shape for Latin text.
+        cluster_widths = [
+            width
+            if any(is_cjk_char(ch) for ch in cluster)
+            else monospace_advance * font_size_px
+            for cluster, width in zip(
+                split_project_text_clusters(text),
+                cluster_widths,
+            )
+        ]
     letter_spacing_px = (
         drawingml_letter_spacing(
             float(run.get('letter_spacing', 0.0) or 0.0)

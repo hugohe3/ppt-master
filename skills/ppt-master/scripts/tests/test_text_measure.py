@@ -64,6 +64,34 @@ class TextMeasureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, f'880.4\t{SAMPLE}\n')
 
+    def test_monospace_families_measure_fixed_pitch(self) -> None:
+        text = "WHERE table = 'x'"
+        consolas = measure_text(
+            text, size=20, family='Consolas', include_headroom=False,
+        )
+        courier = measure_text(
+            text, size=20, family='Courier New', include_headroom=False,
+        )
+        unlisted = measure_text(
+            text, size=20, family='Victor Mono', include_headroom=False,
+        )
+        arial = measure_text(
+            text, size=20, family='Arial', include_headroom=False,
+        )
+        self.assertAlmostEqual(consolas, len(text) * 0.55 * 20, delta=1.0)
+        self.assertAlmostEqual(courier, len(text) * 0.60 * 20, delta=1.0)
+        self.assertAlmostEqual(unlisted, courier, delta=0.01)
+        self.assertGreater(consolas, arial)
+        # Weight never changes a fixed-pitch advance.
+        self.assertAlmostEqual(
+            measure_text(
+                text, size=20, family='Consolas', weight='bold',
+                include_headroom=False,
+            ),
+            consolas,
+            delta=0.01,
+        )
+
     def test_wrap_lines_never_exceed_max_width(self) -> None:
         max_width = 180.0
         lines, widths, oversized = wrap_text(
