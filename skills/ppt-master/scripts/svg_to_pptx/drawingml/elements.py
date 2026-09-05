@@ -73,6 +73,7 @@ from .utils import (
     resolve_project_text_image_fill, resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char,
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
+    get_font_advances, primary_font_family,
     resolve_text_run_fonts, split_project_text_clusters,
     text_has_rtl_characters, text_uses_rtl,
     is_thick_circle_shorthand, parse_project_geometry_length,
@@ -2190,7 +2191,7 @@ _MONOSPACE_ADVANCE_EM = {
 
 
 def _run_primary_family(run: dict[str, Any]) -> str:
-    return str(run.get('font_family') or '').split(',')[0].strip().strip('\'"').lower()
+    return primary_font_family(run.get('font_family'))
 
 
 # Fixed-pitch faces outside the table almost always say so in their name
@@ -2214,6 +2215,12 @@ def _monospace_advance_em(run: dict[str, Any]) -> float | None:
 
 
 def _family_width_factor(run: dict[str, Any]) -> float:
+    if get_font_advances(
+        run.get('font_family'),
+        str(run.get('font_weight', '400')),
+        str(run.get('font_style', 'normal')),
+    ) is not None:
+        return 1.0
     factors = _WIDE_FAMILY_WIDTH_FACTORS.get(_run_primary_family(run))
     if factors is None:
         return 1.0
@@ -2234,6 +2241,8 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
         text,
         font_size_px,
         str(run.get('font_weight', '400')),
+        font_family=run.get('font_family'),
+        font_style=str(run.get('font_style', 'normal')),
     )
     monospace_advance = _monospace_advance_em(run)
     if monospace_advance is not None:

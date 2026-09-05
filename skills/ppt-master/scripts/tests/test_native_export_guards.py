@@ -415,7 +415,13 @@ class NativeExportGuardTests(unittest.TestCase):
                 rotated = grouped.find('.//a:xfrm[@rot]', NS)
                 self.assertIsNotNone(rotated)
                 self.assertEqual(rotated.get('rot'), direct.get('rot'))
-                self.assertEqual(rotated.find('a:off', NS).attrib, direct.find('a:off', NS).attrib)
+                # Group and direct transforms round fractional glyph widths separately.
+                for axis in ('x', 'y'):
+                    self.assertAlmostEqual(
+                        int(rotated.find('a:off', NS).get(axis)),
+                        int(direct.find('a:off', NS).get(axis)),
+                        delta=1,
+                    )
                 self.assertEqual(rotated.find('a:ext', NS).attrib, direct.find('a:ext', NS).attrib)
 
     def test_multiple_child_rotation_keeps_group_frame(self) -> None:
@@ -555,7 +561,8 @@ class NativeExportGuardTests(unittest.TestCase):
         shifted = self._export()
         runs = shifted.findall('.//a:r', NS)
         self.assertEqual([r.find('a:t', NS).text for r in runs], ['\u00a0', 'A', '\u00a0', 'B'])
-        self.assertEqual([r.find('a:rPr', NS).get('spc') for r in runs], ['300', None, '1050', None])
+        # Arial's 0.2778 em NBSP leaves 4.444 / 14.444 px of tracking at 20 px.
+        self.assertEqual([r.find('a:rPr', NS).get('spc') for r in runs], ['333', None, '1083', None])
         self._svg('<text x="100" y="120"><tspan>A</tspan><tspan>B</tspan></text>',
                   'font-family="Arial" font-size="20"')
         self.assertEqual([t.text for t in self._export().findall('.//a:t', NS)], ['AB'])

@@ -94,7 +94,7 @@ def measure_text(
     """Measure one line with the checker-owned DrawingML estimator."""
     run = dict(
         text=text, font_size=size, font_family=family,
-        font_weight=weight, letter_spacing=letter_spacing,
+        font_weight=weight, font_style='normal', letter_spacing=letter_spacing,
     )
     return estimate_single_line_text_frame_width(
         [run],

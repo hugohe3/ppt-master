@@ -1013,6 +1013,10 @@ Requirements:
 
 `text_measure.py` imports the same single-line DrawingML width estimator used by
 the SVG quality checker.
+Use Arial, Times New Roman, Georgia, Verdana, or Calibri for bundled per-glyph
+advance measurements from `svg_to_pptx/drawingml/font_advances.json` in regular,
+bold, italic, and bold-italic styles. Expect other families to keep the
+class-average estimate, with the existing fixed advances for monospaced faces.
 
 - `measure` prints one `width<TAB>text` line per input, or a JSON array with
   `--json`.
