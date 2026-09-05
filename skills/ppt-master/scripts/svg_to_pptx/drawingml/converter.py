@@ -94,6 +94,7 @@ from .styles import (
 )
 from .elements import (
     complete_preset_adjustments,
+    empty_clip_path_reason,
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
     convert_polygon, convert_polyline,
@@ -1761,17 +1762,27 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
 def collect_hidden_visuals(root: ET.Element) -> list[tuple[ET.Element, str]]:
     """List suppressed visual objects while preserving native transport carriers."""
     parents = {id(child): parent for parent in root.iter() for child in parent}
+    definitions, _duplicates = project_definition_index(root)
     hidden: list[tuple[ET.Element, str]] = []
 
-    def visit(element: ET.Element) -> None:
+    def visit(element: ET.Element) -> bool:
         tag = _local_tag(element)
         if tag in _NON_VISUAL_TAGS:
-            return
+            return False
         reason = svg_hidden_reason(element, parents, preserve_native_carriers=True)
-        if reason and (tag not in {'g', 'a', 'svg'} or reason == 'display:none'):
+        clip_reason = empty_clip_path_reason(element, definitions, parents)
+        reason = reason or clip_reason
+        hidden_before_children = len(hidden)
+        children_visible = [visit(child) for child in element]
+        container = tag in {'g', 'a', 'svg'}
+        if container and reason != 'display:none' and clip_reason is None:
+            if any(children_visible):
+                return True
+            if reason is None and tag != 'svg' and len(hidden) > hidden_before_children:
+                reason = 'hidden descendants'
+        if reason:
             hidden.append((element, reason))
-        for child in element:
-            visit(child)
+        return reason is None and (not container or any(children_visible))
 
     visit(root)
     return hidden
@@ -1832,6 +1843,10 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         return None
 
     hidden_reason = svg_hidden_reason(elem, ctx.parent_by_id, preserve_native_carriers=True)
+    clip_reason = empty_clip_path_reason(elem, ctx.defs, ctx.parent_by_id)
+    if clip_reason:
+        trace('skip', reason=clip_reason)
+        return None
     if hidden_reason and (tag not in {'g', 'a'} or hidden_reason == 'display:none'):
         trace('skip', reason=hidden_reason)
         return None

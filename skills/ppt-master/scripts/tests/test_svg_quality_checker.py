@@ -37,6 +37,126 @@ def _empty_result() -> dict:
 
 
 class SVGQualityCheckerBoundsTests(unittest.TestCase):
+    @staticmethod
+    def _text_bounds(root: ET.Element, *, include_headroom: bool = False) -> tuple:
+        text = root.find(f'.//{{{SVG_NS}}}text')
+        parents = {id(child): parent for parent in root.iter() for child in parent}
+        sizes = checker_module._resolve_project_font_sizes(root)
+        spacings = checker_module._resolve_project_letter_spacings(root, sizes)
+        return SVGQualityChecker._estimated_text_bounds(
+            text, parents, sizes, spacings, include_headroom=include_headroom,
+        )
+
+    def test_inline_dx_triggers_module_and_canvas_overflow_for_each_anchor(self) -> None:
+        for anchor, x in (('start', 1200), ('middle', 1200), ('end', 100)):
+            with self.subTest(anchor=anchor):
+                root = _parse_svg(
+                    '<g id="title" data-pptx-bounds="80 70 1190 80">'
+                    f'<text x="{x}" y="110" text-anchor="{anchor}" font-size="24">'
+                    'A<tspan dx="400">B</tspan></text></g>',
+                    'font-family="Arial"', view_box='0 0 1280 720',
+                )
+                result = _empty_result()
+                SVGQualityChecker()._check_text_bounds(root, result)
+                self.assertTrue(any('root viewBox on the horizontal axis' in error
+                                    for error in result['errors']), result)
+                self.assertFalse(any('Cannot verify' in warning for warning in result['warnings']), result)
+                root.find(f'.//{{{SVG_NS}}}text').set('x', '600')
+                root.find(f'{{{SVG_NS}}}g').set('data-pptx-bounds', '580 70 90 80')
+                module_result = _empty_result()
+                SVGQualityChecker()._check_text_bounds(root, module_result)
+                self.assertTrue(any('data-pptx-bounds on the horizontal axis' in error
+                                    for error in module_result['errors']), module_result)
+
+    def test_inline_dx_uses_signed_advances_and_preserves_anchor(self) -> None:
+        for anchor in ('start', 'middle', 'end'):
+            for headroom in (False, True):
+                with self.subTest(anchor=anchor, headroom=headroom):
+                    template = (
+                        f'<text x="600" y="110" text-anchor="{anchor}" font-size="24">'
+                        'A<tspan dx="{dx}">B</tspan></text>'
+                    )
+                    bounds = {}
+                    for dx in (0, 400, -400):
+                        root = _parse_svg(template.format(dx=dx), 'font-family="Arial"')
+                        bounds[dx] = self._text_bounds(root, include_headroom=headroom)
+                        self.assertIsNotNone(bounds[dx])
+                    left0, _top, right0, _bottom = bounds[0]
+                    left, _top, right, _bottom = bounds[400]
+                    self.assertAlmostEqual((right - left) - (right0 - left0), 400)
+                    if anchor == 'start':
+                        self.assertAlmostEqual(left, 600)
+                    elif anchor == 'middle':
+                        self.assertAlmostEqual((left + right) / 2, 600)
+                    else:
+                        self.assertAlmostEqual(right, 600)
+                    single = _parse_svg(
+                        f'<text x="600" y="110" text-anchor="{anchor}" font-size="24">A</text>',
+                        'font-family="Arial"',
+                    )
+                    self.assertEqual(bounds[-400], self._text_bounds(single, include_headroom=headroom))
+
+    def test_end_anchor_negative_dx_has_no_false_overflow(self) -> None:
+        root = _parse_svg(
+            '<g id="title" data-pptx-bounds="1100 70 180 80">'
+            '<text x="1270" y="110" text-anchor="end" font-size="24">'
+            'ABCD<tspan dx="-20">EFGH</tspan></text></g>',
+            'font-family="Arial"', view_box='0 0 1280 720',
+        )
+        result = _empty_result()
+        SVGQualityChecker()._check_text_bounds(root, result)
+        self.assertEqual(result, _empty_result())
+
+    def test_inline_dx_measures_cjk_links_empty_spans_and_line_start(self) -> None:
+        for content in (
+            '中<tspan dx="400">文</tspan>',
+            'A<a href="https://example.com"><tspan dx="400">B</tspan></a>',
+            '<tspan dx="400">B</tspan>',
+            '<tspan dx="400"/><tspan>B</tspan>',
+            '<tspan dx="250">A<tspan dx="150">B</tspan>C</tspan>D',
+        ):
+            with self.subTest(content=content):
+                root = _parse_svg(
+                    f'<text x="1200" y="110" font-size="24">{content}</text>',
+                    'font-family="Arial"', view_box='0 0 1280 720',
+                )
+                bounds = self._text_bounds(root)
+                self.assertIsNotNone(bounds)
+                self.assertGreater(bounds[2], 1600)
+                result = _empty_result()
+                SVGQualityChecker()._check_text_bounds(root, result)
+                self.assertTrue(any('root viewBox' in error for error in result['errors']), result)
+
+    def test_non_scalar_and_percentage_dx_remain_unmeasurable(self) -> None:
+        for dx in ('20%', '10 20', '10,20', 'calc(20 + 30)'):
+            with self.subTest(dx=dx):
+                root = _parse_svg(
+                    f'<text x="1200" y="110" font-size="24">A<tspan dx="{dx}">B</tspan></text>',
+                    'font-family="Arial"', view_box='0 0 1280 720',
+                )
+                self.assertIsNone(self._text_bounds(root))
+                result = _empty_result()
+                SVGQualityChecker()._check_text_bounds(root, result)
+                self.assertTrue(any('Cannot verify root viewBox bounds' in warning
+                                    for warning in result['warnings']), result)
+
+    def test_positioned_lines_count_starter_and_inline_dx_once(self) -> None:
+        root = _parse_svg(
+            '<text x="100" y="110" font-size="24">'
+            '<tspan x="100" dx="10">A</tspan><tspan dx="400">B</tspan>'
+            '<tspan x="100" dx="-5" dy="30">C</tspan><tspan dx="-20">D</tspan></text>',
+            'font-family="Arial"',
+        )
+        parents = {id(child): parent for parent in root.iter() for child in parent}
+        sizes = checker_module._resolve_project_font_sizes(root)
+        spacings = checker_module._resolve_project_letter_spacings(root, sizes)
+        lines = SVGQualityChecker._resolved_text_lines(root[0], parents, sizes, spacings)
+        self.assertIsNotNone(lines)
+        self.assertEqual([(line[1], line[2]) for line in lines], [(110, 110), (95, 140)])
+        self.assertEqual([
+            [run['_inline_dx'] for run in line[3] if '_inline_dx' in run] for line in lines
+        ], [[400], [-20]])
+
     def test_leading_direct_text_and_positioned_tspans_are_estimable(self) -> None:
         root = _parse_svg(
             '<g id="module" data-pptx-bounds="0 0 1000 1000">'

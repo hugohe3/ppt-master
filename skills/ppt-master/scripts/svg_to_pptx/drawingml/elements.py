@@ -82,6 +82,7 @@ from .utils import (
     parse_project_stroke_dasharray,
     quantize_ooxml_alpha,
     project_definition_index,
+    svg_hidden_reason,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
 )
@@ -3894,6 +3895,35 @@ def _nested_crop_clip_preset_geometry_error(
     )
 
 
+def _visible_clip_shapes(
+    clip: ET.Element,
+    parent_by_id: dict[int, ET.Element],
+) -> list[ET.Element]:
+    """Resolve clip children with the same inherited visibility as visuals."""
+    return [
+        child for child in clip
+        if child.tag not in _CLIP_NON_VISUAL_ELEMENTS
+        and svg_hidden_reason(child, parent_by_id) is None
+    ]
+
+
+def empty_clip_path_reason(
+    element: ET.Element,
+    definitions: dict[str, ET.Element],
+    parent_by_id: dict[int, ET.Element],
+) -> str | None:
+    """Identify a valid clip reference whose children are all hidden."""
+    clip_id = resolve_url_id(element.get('clip-path', ''))
+    clip = definitions.get(clip_id)
+    if clip is not None and clip.tag == f'{{{SVG_NS}}}clipPath':
+        if (
+            any(child.tag not in _CLIP_NON_VISUAL_ELEMENTS for child in clip)
+            and not _visible_clip_shapes(clip, parent_by_id)
+        ):
+            return f'empty clip: url(#{clip_id})'
+    return None
+
+
 def project_clip_path_errors(root: ET.Element) -> list[str]:
     """Return clip-path errors that would otherwise degrade picture geometry."""
     definitions, duplicates = project_definition_index(root)
@@ -3961,10 +3991,9 @@ def project_clip_path_errors(root: ET.Element) -> list[str]:
                 f'{clip_label} cannot use {", ".join(clip_rules)}; native '
                 'picture geometry has no equivalent winding-rule control'
             )
-        visual_children = [
-            child for child in list(clip)
-            if child.tag not in _CLIP_NON_VISUAL_ELEMENTS
-        ]
+        visual_children = _visible_clip_shapes(clip, parent_by_id)
+        if not visual_children and empty_clip_path_reason(elem, definitions, parent_by_id):
+            continue
         if len(visual_children) != 1:
             errors.add(
                 f'{clip_label} must contain exactly one direct supported shape'
@@ -4047,16 +4076,12 @@ def _resolve_clip_geometry(
     if clip_tag != 'clipPath':
         return DEFAULT
 
-    # Find the first shape child of the clipPath
-    shape = None
-    for child in clip_elem:
-        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if child_tag in ('circle', 'ellipse', 'rect', 'path', 'polygon'):
-            shape = child
-            break
-
-    if shape is None:
+    shapes = _visible_clip_shapes(clip_elem, ctx.parent_by_id)
+    if not shapes:
         return DEFAULT
+    if len(shapes) != 1:
+        raise ValueError('clipPath must contain exactly one direct supported shape')
+    shape = shapes[0]
 
     shape_tag = shape.tag.replace(f'{{{SVG_NS}}}', '')
     is_obb = clip_elem.get('clipPathUnits') == 'objectBoundingBox'
@@ -5301,17 +5326,12 @@ def _resolve_nested_svg_clip_geometry(
     if not clip_id or clip_id not in ctx.defs:
         return default
     clip_elem = ctx.defs[clip_id]
-    shape = next(
-        (
-            child
-            for child in clip_elem
-            if child.tag.rsplit('}', 1)[-1]
-            in {'circle', 'ellipse', 'rect', 'path', 'polygon'}
-        ),
-        None,
-    )
-    if shape is None:
+    shapes = _visible_clip_shapes(clip_elem, ctx.parent_by_id)
+    if not shapes:
         return default
+    if len(shapes) != 1:
+        raise ValueError('clipPath must contain exactly one direct supported shape')
+    shape = shapes[0]
     if (
         clip_elem.get('clipPathUnits', 'userSpaceOnUse')
         != 'userSpaceOnUse'
@@ -5369,7 +5389,7 @@ def _resolve_nested_svg_clip_geometry(
     )
 
 
-def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
+def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert a nested <svg> sprite-crop wrapper to a DrawingML picture.
 
     Pattern produced by pptx_to_svg::
@@ -5383,6 +5403,8 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
     """
     crop = parse_project_nested_svg_crop(elem)
     image_elem = crop.image
+    if empty_clip_path_reason(image_elem, ctx.defs, ctx.parent_by_id):
+        return None
     source = load_project_image_source(
         image_elem,
         ctx.svg_dir,

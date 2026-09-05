@@ -100,7 +100,9 @@ try:
         parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
         parse_project_opacity as _parse_project_opacity,
         parse_svg_color as _parse_export_color,
+        parse_svg_length as _parse_svg_length,
         parse_transform_matrix as _parse_transform_matrix,
+        project_definition_index as _project_definition_index,
         project_mask_errors as _project_mask_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         split_project_text_clusters as _split_project_text_clusters,
@@ -121,7 +123,9 @@ except ImportError:
     _parse_project_image_aspect_ratio = None
     _parse_project_opacity = None
     _parse_export_color = None
+    _parse_svg_length = None
     _parse_transform_matrix = None
+    _project_definition_index = None
     _project_mask_errors = None
     _rect_to_dml_xfrm = None
     _split_project_text_clusters = None
@@ -160,6 +164,7 @@ except ImportError:
 try:
     from svg_to_pptx.drawingml.elements import (
         drawingml_text_frame_width_emu as _drawingml_text_frame_width_emu,
+        empty_clip_path_reason as _empty_clip_path_reason,
         estimate_single_line_text_frame_width as _estimate_single_line_text_frame_width,
         project_image_errors as _project_image_errors,
         validate_single_line_text_run_advances as _validate_single_line_text_run_advances,
@@ -167,6 +172,7 @@ try:
     )
 except ImportError:
     _drawingml_text_frame_width_emu = None
+    _empty_clip_path_reason = None
     _estimate_single_line_text_frame_width = None
     _project_image_errors = None
     _validate_single_line_text_run_advances = None
@@ -2803,11 +2809,14 @@ class SVGQualityChecker:
         cls,
         container: ET.Element,
         inherited_xml_space: str,
+        *,
+        include_container_dx: bool = False,
     ) -> List[Tuple[ET.Element, str, str]] | None:
-        """Collect inline text while rejecting descendant positioning."""
+        """Collect inline text and empty dx markers, rejecting baseline jumps."""
         if (
             _normalize_project_text_segments is None
             or _resolve_project_xml_space is None
+            or _parse_svg_length is None
         ):
             return None
         raw_runs: List[Tuple[ET.Element, str, str]] = []
@@ -2824,6 +2833,17 @@ class SVGQualityChecker:
                 )
             except ValueError:
                 return False
+            if (
+                cls._is_tspan(element)
+                and element.get('dx') is not None
+                and (element is not container or include_container_dx)
+            ):
+                try:
+                    dx = _parse_svg_length(element.get('dx'))
+                except ValueError:
+                    return False
+                if dx:
+                    raw_runs.append((element, xml_space, ''))
             if element.text:
                 append_run(element, element.text, xml_space)
             for child in list(element):
@@ -2832,7 +2852,9 @@ class SVGQualityChecker:
                 # container: its runs are measured like any other inline run.
                 if not (cls._is_tspan(child) or _local_name(child) == 'a'):
                     return False
-                if any(child.get(name) is not None for name in ('x', 'y', 'dx', 'dy')):
+                if any(child.get(name) is not None for name in ('x', 'y', 'dy')):
+                    return False
+                if child.get('dx') is not None and not cls._is_tspan(child):
                     return False
                 if any(
                     name.startswith('data-paragraph-')
@@ -2854,13 +2876,14 @@ class SVGQualityChecker:
         raw_runs: List[Tuple[ET.Element, str, str]],
     ) -> List[Tuple[ET.Element, str]]:
         """Normalize collected segments while retaining their style owner."""
-        normalized = _normalize_project_text_segments([
+        normalized = dict(_normalize_project_text_segments([
             (xml_space, raw)
             for _owner, xml_space, raw in raw_runs
-        ])
+        ]))
         return [
-            (raw_runs[index][0], text)
-            for index, text in normalized
+            (owner, normalized.get(index, ''))
+            for index, (owner, _xml_space, raw) in enumerate(raw_runs)
+            if not raw or index in normalized
         ]
 
     @classmethod
@@ -2887,7 +2910,11 @@ class SVGQualityChecker:
                 if member.text:
                     raw_runs.append((text_el, parent_xml_space, member.text))
                 continue
-            member_runs = cls._inline_text_segments(member, parent_xml_space)
+            member_runs = cls._inline_text_segments(
+                member,
+                parent_xml_space,
+                include_container_dx=member is not line_group[0],
+            )
             if member_runs is None:
                 return None
             raw_runs.extend(member_runs)
@@ -3055,6 +3082,12 @@ class SVGQualityChecker:
                 'opacity_chain': tuple(reversed(opacity_chain)),
                 'inline_formula': owner.get(_INLINE_FORMULA_ATTR),
             })
+            if not text:
+                resolved[-1]['_inline_dx'] = _parse_svg_length(
+                    owner.get('dx'),
+                    font_size=font_sizes[id(owner)],
+                )
+                resolved[-1]['inline_formula'] = None
         return cls._coalesce_checker_text_runs(resolved)
 
     @staticmethod
@@ -3086,7 +3119,7 @@ class SVGQualityChecker:
         merged: List[Dict] = []
         previous_signature: Tuple | None = None
         for run in runs:
-            if run.get('inline_formula') is not None:
+            if run.get('inline_formula') is not None or '_inline_dx' in run:
                 merged.append(run)
                 previous_signature = None
                 continue
@@ -3225,6 +3258,8 @@ class SVGQualityChecker:
         children = list(text_el)
         if not children:
             return None
+        line_groups = None
+        synthetic_first = None
         if (text_el.text or '').strip():
             if _classify_paragraph_block is None:
                 return None
@@ -3235,6 +3270,23 @@ class SVGQualityChecker:
             if paragraph is None:
                 return None
             _base, _extras, _breaks, line_groups, synthetic_first = paragraph
+        elif any(
+            descendant.get('dx') is not None
+            for child in children
+            if not cls._is_line_tspan(child)
+            for descendant in child.iter()
+        ):
+            line_groups = []
+            for child in children:
+                if not (cls._is_tspan(child) or _local_name(child) == 'a'):
+                    return None
+                if cls._is_line_tspan(child):
+                    line_groups.append([child])
+                elif line_groups:
+                    line_groups[-1].append(child)
+                else:
+                    return None
+        if line_groups is not None:
             try:
                 current_y = _parse_project_geometry_length(
                     text_el.get('y') or '0',
@@ -3945,8 +3997,23 @@ class SVGQualityChecker:
         element: ET.Element,
         parent_by_id: Dict[int, ET.Element],
     ) -> bool:
-        """Return whether inherited display or visibility hides an element."""
-        return _svg_hidden_reason is not None and _svg_hidden_reason(element, parent_by_id) is not None
+        """Resolve ordinary suppression and empty clips before measuring visuals."""
+        if _svg_hidden_reason is not None and _svg_hidden_reason(element, parent_by_id) is not None:
+            return True
+        if _empty_clip_path_reason is None or _project_definition_index is None:
+            return False
+        clipped = []
+        root = element
+        current = element
+        while current is not None:
+            if current.get('clip-path') is not None:
+                clipped.append(current)
+            root = current
+            current = parent_by_id.get(id(current))
+        if not clipped:
+            return False
+        definitions, _duplicates = _project_definition_index(root)
+        return any(_empty_clip_path_reason(item, definitions, parent_by_id) for item in clipped)
 
     def _check_hidden_elements(self, root: ET.Element, result: Dict) -> None:
         """Advise which hidden SVG objects will be omitted during native export."""

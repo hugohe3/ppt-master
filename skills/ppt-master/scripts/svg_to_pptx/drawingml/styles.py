@@ -502,6 +502,8 @@ def build_stroke_xml(
         return '<a:ln><a:noFill/></a:ln>'
 
     source_width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    if source_width <= 0:
+        return '<a:ln><a:noFill/></a:ln>'
     width_emu = px_to_emu(source_width * _effective_stroke_scale(elem, ctx))
     validate_ooxml_line_width(width_emu)
 

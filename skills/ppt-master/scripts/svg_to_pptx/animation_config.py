@@ -81,6 +81,7 @@ class GroupTarget:
     chrome: bool = False
     structurally_static: bool = False
     has_hyperlink: bool = False
+    hidden_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -197,9 +198,17 @@ def usable_animation_group_id(raw: str | None) -> str | None:
     return raw if raw and raw.strip() else None
 
 
-def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
+def scan_svg_targets(
+    svg_path: Path,
+    *,
+    include_hidden: bool = False,
+) -> tuple[list[GroupTarget], list[str]]:
     """Scan one SVG for top-level visible group ids and anonymous groups."""
+    # The converter imports animation policy; defer this shared visibility scan.
+    from .drawingml.converter import collect_hidden_visuals
+
     root = ET.parse(str(svg_path)).getroot()
+    hidden_by_id = {id(element): reason for element, reason in collect_hidden_visuals(root)}
     targets: list[GroupTarget] = []
     anonymous_groups: list[str] = []
     visual_index = 0
@@ -212,9 +221,13 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
         visual_index += 1
         if tag != 'g':
             continue
+        hidden_reason = hidden_by_id.get(id(child))
+        if hidden_reason and not include_hidden:
+            continue
         group_id = usable_animation_group_id(child.get('id'))
         if group_id is None:
-            anonymous_groups.append(f'{svg_path.stem}: top-level group #{visual_index}')
+            if hidden_reason is None:
+                anonymous_groups.append(f'{svg_path.stem}: top-level group #{visual_index}')
             continue
         role = child.get('data-pptx-role')
         placeholder = child.get('data-pptx-placeholder')
@@ -248,6 +261,7 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
                 order=visual_index,
                 chrome=chrome,
                 structurally_static=structurally_static,
+                hidden_reason=hidden_reason,
                 has_hyperlink=any(
                     _tag_name(descendant) == 'a'
                     or descendant.get(SHAPE_HYPERLINK_ATTR) is not None
@@ -288,6 +302,7 @@ def scan_project_targets(
     project_path: Path,
     *,
     svg_files: list[Path] | None = None,
+    include_hidden: bool = False,
 ) -> tuple[dict[str, list[GroupTarget]], list[str]]:
     """Scan selected SVG files, defaulting to ``svg_output/*.svg``."""
     targets_by_slide: dict[str, list[GroupTarget]] = {}
@@ -299,7 +314,7 @@ def scan_project_targets(
         svg_files = discover_slide_svgs(svg_dir)
 
     for svg_path in svg_files:
-        targets, anonymous = scan_svg_targets(svg_path)
+        targets, anonymous = scan_svg_targets(svg_path, include_hidden=include_hidden)
         targets_by_slide[svg_path.stem] = targets
         anonymous_groups.extend(anonymous)
 
@@ -1469,6 +1484,7 @@ def validate_animation_config(
     targets_by_slide, anonymous_groups = scan_project_targets(
         project_path,
         svg_files=svg_files,
+        include_hidden=True,
     )
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')
@@ -1536,6 +1552,12 @@ def validate_animation_config(
                 )
                 continue
             target = known_groups[group_id]
+            if target.hidden_reason:
+                warnings.append(
+                    f'animations.json {path} references a group that is '
+                    f'hidden, not exported ({target.hidden_reason})'
+                )
+                continue
             if not isinstance(group_cfg, dict):
                 continue
             try:
@@ -1583,6 +1605,12 @@ def validate_animation_config(
                         f'animations.json {effect_path}.trigger_shape '
                         f'references missing group {trigger_shape!r}'
                     )
+                elif trigger_target.hidden_reason:
+                    warnings.append(
+                        f'animations.json {effect_path}.trigger_shape '
+                        f'references group {trigger_shape!r} that is hidden, '
+                        f'not exported ({trigger_target.hidden_reason})'
+                    )
                 elif trigger_target.structurally_static:
                     warnings.append(
                         f'animations.json {effect_path}.trigger_shape '
@@ -1629,6 +1657,11 @@ def validate_animation_config(
                         'animations.json Morph references missing or ambiguous group: '
                         f'{slide_name}/{group_id}'
                     )
+            elif target.hidden_reason:
+                warnings.append(
+                    f'animations.json Morph endpoint {slide_name}/{group_id} '
+                    f'is hidden, not exported ({target.hidden_reason})'
+                )
             elif target.structurally_static:
                 warnings.append(
                     'animations.json Morph references structural group: '
@@ -1692,12 +1725,13 @@ def build_group_listing(project_path: Path) -> tuple[list[str], list[str]]:
     listing reflects exactly what an editor can override. Returns
     ``(lines, anonymous_warnings)``.
     """
-    targets_by_slide, anonymous = scan_project_targets(project_path)
+    targets_by_slide, anonymous = scan_project_targets(project_path, include_hidden=True)
     lines: list[str] = []
     for slide_name, targets in targets_by_slide.items():
         _require_unique_target_ids(slide_name, targets)
-        ids = [t.group_id for t in targets if not t.chrome]
-        chrome_ids = [t.group_id for t in targets if t.chrome]
+        ids = [t.group_id for t in targets if not t.chrome and not t.hidden_reason]
+        chrome_ids = [t.group_id for t in targets if t.chrome and not t.hidden_reason]
+        hidden_ids = [t.group_id for t in targets if t.hidden_reason]
         if not ids:
             line = f'{slide_name}: (no animatable groups)'
         else:
@@ -1706,6 +1740,8 @@ def build_group_listing(project_path: Path) -> tuple[list[str], list[str]]:
             # Name what was dropped so an id like ``takeaway-rule`` is seen
             # as chrome-by-token rather than silently missing.
             line += f'  [chrome, animates only when named: {", ".join(chrome_ids)}]'
+        if hidden_ids:
+            line += f'  [hidden, not exported: {", ".join(hidden_ids)}]'
         lines.append(line)
     return lines, anonymous
 

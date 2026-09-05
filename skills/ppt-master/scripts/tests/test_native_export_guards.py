@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import io
+import json
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree as ET
@@ -18,9 +19,16 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from pptx_shapes.formula import OOXML_COORDINATE_MAX  # noqa: E402
+from animation_config import main as animation_config_main  # noqa: E402
 from pptx_gradients import native_gradient_metadata, preserved_native_gradient_xml  # noqa: E402
 from svg_finalize.flatten_tspan import flatten_text_with_tspans  # noqa: E402
 from svg_quality.checker import SVGQualityChecker  # noqa: E402
+from svg_to_pptx.animation_config import (  # noqa: E402
+    build_group_listing,
+    build_scaffold,
+    scan_svg_targets,
+    validate_animation_config,
+)
 from svg_to_pptx.drawingml.converter import (  # noqa: E402
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
@@ -33,6 +41,10 @@ NS = {
     'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
     'p': 'http://schemas.openxmlformats.org/presentationml/2006/main',
 }
+PNG_DATA = (
+    'data:image/png;base64,'
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
+)
 
 
 class NativeExportGuardTests(unittest.TestCase):
@@ -108,6 +120,171 @@ class NativeExportGuardTests(unittest.TestCase):
                 self.assertFalse(report['errors'])
                 self.assertTrue(any('hidden' in warning and 'not be exported' in warning
                                     for warning in report['warnings']), report['warnings'])
+
+    def _clipped_image(self, shapes: str, clip_attributes: str = '') -> None:
+        self._svg(
+            f'<defs><clipPath id="clip" {clip_attributes}>{shapes}</clipPath></defs>'
+            '<image id="picture" x="100" y="100" width="200" height="100" '
+            f'preserveAspectRatio="xMidYMid slice" href="{PNG_DATA}" clip-path="url(#clip)"/>'
+        )
+
+    def test_hidden_clip_shapes_omit_picture_and_report_empty_clip(self) -> None:
+        for hiding in ('visibility="hidden"', 'style="visibility:hidden"',
+                       'display="none"', 'style="display:none"'):
+            for inherited in (False, True):
+                with self.subTest(hiding=hiding, inherited=inherited):
+                    self._clipped_image(
+                        '<rect x="100" y="100" width="200" height="100" '
+                        f'{"" if inherited else hiding}/>',
+                        hiding if inherited else '',
+                    )
+                    self.assertFalse(self._export().findall('.//p:pic', NS))
+                    report = self._check()
+                    self.assertFalse(report['errors'], report['errors'])
+                    self.assertTrue(any(
+                        'Hidden element <image id="picture"> will not be exported' in warning
+                        and 'empty clip: url(#clip)' in warning and 'advisory only' in warning
+                        for warning in report['warnings']
+                    ), report['warnings'])
+
+    def test_visible_clip_keeps_picture_crop_and_ignores_hidden_siblings(self) -> None:
+        visible = '<rect x="100" y="100" width="200" height="100" rx="10"/>'
+        self._clipped_image(visible)
+        picture = self._export().find('.//p:pic', NS)
+        crop = picture.find('.//a:srcRect', NS).attrib
+        self.assertEqual(crop, {'l': '0', 't': '25000', 'r': '0', 'b': '25000'})
+        for shapes, clip_attributes in (
+            ('<circle cx="200" cy="150" r="50" visibility="hidden"/>' + visible, ''),
+            (visible + '<rect display="none" width="1" height="1"/>', ''),
+            (visible.replace('rx="10"', 'rx="10" visibility="visible"'), 'visibility="hidden"'),
+        ):
+            with self.subTest(shapes=shapes, clip_attributes=clip_attributes):
+                self._clipped_image(shapes, clip_attributes)
+                self.assertFalse(self._check()['errors'])
+                actual = self._export().find('.//p:pic', NS)
+                self.assertEqual(actual.find('.//a:srcRect', NS).attrib, crop)
+                self.assertEqual(actual.find('.//a:prstGeom', NS).get('prst'), 'roundRect')
+
+    def test_empty_clip_is_omitted_from_checker_coordinate_measurement(self) -> None:
+        self._clipped_image('<rect visibility="hidden"/>')
+        tree = ET.parse(self.svg_path)
+        tree.getroot().find('{http://www.w3.org/2000/svg}image').set('x', '100000000000000000000')
+        tree.write(self.svg_path, encoding='utf-8')
+        self.assertFalse(self._check()['errors'])
+        self.assertFalse(self._export().findall('.//p:pic', NS))
+
+    def test_clip_still_rejects_multiple_visible_shapes(self) -> None:
+        self._clipped_image('<rect x="100" y="100" width="200" height="100"/>' * 2)
+        self.assertTrue(any('exactly one' in error for error in self._check()['errors']))
+        with self.assertRaisesRegex(SvgNativeConversionError, 'exactly one'):
+            self._export()
+        self._clipped_image('<rect visibility="hidden"/><circle display="none"/>')
+        self.assertFalse(self._export().findall('.//p:pic', NS))
+
+    def test_nested_crop_uses_visible_clip_shape_and_omits_empty_clip(self) -> None:
+        for hidden in (False, True):
+            with self.subTest(hidden=hidden):
+                self._svg(
+                    '<defs><clipPath id="clip"><circle display="none"/>'
+                    '<rect x="0.25" y="0.25" width="0.5" height="0.5" rx="0.1" '
+                    f'visibility="{"hidden" if hidden else "visible"}"/></clipPath></defs>'
+                    '<svg x="100" y="100" width="200" height="200" viewBox="0.25 0.25 0.5 0.5" '
+                    'data-pptx-crop="1" overflow="hidden" preserveAspectRatio="none">'
+                    '<image x="0" y="0" width="1" height="1" preserveAspectRatio="none" '
+                    f'href="{PNG_DATA}" clip-path="url(#clip)"/></svg>'
+                )
+                self.assertFalse(self._check()['errors'])
+                pictures = self._export().findall('.//p:pic', NS)
+                self.assertEqual(len(pictures), 0 if hidden else 1)
+                if not hidden:
+                    self.assertEqual(pictures[0].find('.//a:prstGeom', NS).get('prst'), 'roundRect')
+                    self.assertEqual(pictures[0].find('.//a:srcRect', NS).attrib,
+                                     {'l': '25000', 't': '25000', 'r': '25000', 'b': '25000'})
+
+    def test_zero_width_strokes_export_no_fill_including_style_and_inheritance(self) -> None:
+        for width in ('0', '0.5'):
+            for placement in ('attribute', 'style', 'inherited_attribute', 'inherited_style'):
+                with self.subTest(width=width, placement=placement):
+                    attribute = (f'style="stroke-width:{width}"' if placement.endswith('style')
+                                 else f'stroke-width="{width}"')
+                    direct = '' if placement.startswith('inherited') else attribute
+                    parent = attribute if placement.startswith('inherited') else ''
+                    self._svg(
+                        f'<g stroke="#123456" data-pptx-bounds="80 80 340 100" {parent}>'
+                        f'<line x1="100" y1="100" x2="200" y2="150" {direct}/>'
+                        f'<rect x="300" y="100" width="100" height="50" {direct}/></g>'
+                    )
+                    self.assertFalse(self._check()['errors'])
+                    strokes = self._export().findall('.//p:sp/p:spPr/a:ln', NS)
+                    self.assertEqual(len(strokes), 2)
+                    for stroke in strokes:
+                        if width == '0':
+                            self.assertEqual(stroke.attrib, {})
+                            self.assertIsNotNone(stroke.find('a:noFill', NS))
+                            self.assertIsNone(stroke.find('a:solidFill', NS))
+                        else:
+                            self.assertEqual(stroke.get('w'), '4762')
+                            self.assertIsNotNone(stroke.find('a:solidFill', NS))
+
+    def _motion_project(self, hiding: str, child_attributes: str = '') -> None:
+        self._svg(
+            f'<g id="shape" {hiding} data-pptx-bounds="80 70 300 150">'
+            f'<rect x="100" y="100" width="100" height="50" {child_attributes}/></g>'
+            '<g id="shown"><rect x="400" y="100" width="100" height="50"/></g>'
+        )
+        output = self.root / 'svg_output'
+        output.mkdir(exist_ok=True)
+        for name in ('01', '02'):
+            (output / f'{name}.svg').write_text(self.svg_path.read_text(encoding='utf-8'), encoding='utf-8')
+
+    def test_hidden_animation_groups_are_excluded_from_scan_listing_and_scaffold(self) -> None:
+        for hiding in ('display="none"', 'style="display:none"',
+                       'visibility="hidden"', 'style="visibility:hidden"'):
+            with self.subTest(hiding=hiding):
+                self._motion_project(hiding)
+                targets, anonymous = scan_svg_targets(self.root / 'svg_output/01.svg')
+                self.assertEqual([target.group_id for target in targets], ['shown'])
+                self.assertFalse(anonymous)
+                self.assertEqual(build_group_listing(self.root)[0], [
+                    f'{name}: shown  [hidden, not exported: shape]' for name in ('01', '02')
+                ])
+                for slide in build_scaffold(self.root)['slides'].values():
+                    self.assertEqual(slide['groups'], {'shown': {}})
+
+    def test_hidden_animation_references_fail_validation_before_morph_export(self) -> None:
+        self._motion_project('display="none"')
+        config = {
+            'version': 1,
+            'defaults': {'animation': {'effect': 'none'}},
+            'slides': {
+                '01': {'groups': {
+                    'shape': {'effect': 'fade', 'order': 1},
+                    'shown': {'effect': 'fade', 'trigger': 'on-click', 'trigger_shape': 'shape'},
+                }},
+                '02': {'transition': {'effect': 'morph', 'duration': 1},
+                       'morph': {'from': '01', 'pairs': {'key': {'from': 'shape', 'to': 'shape'}}}},
+            },
+        }
+        messages = validate_animation_config(self.root, config)
+        self.assertEqual(len(messages), 4, messages)
+        self.assertTrue(all('hidden, not exported' in message for message in messages), messages)
+        self.assertTrue(any('trigger_shape' in message for message in messages))
+        self.assertTrue(any('groups["shape"]' in message for message in messages))
+        for name in ('01', '02'):
+            self.assertTrue(any(f'Morph endpoint {name}/shape' in message for message in messages))
+        (self.root / 'animations.json').write_text(json.dumps(config), encoding='utf-8')
+        with redirect_stderr(io.StringIO()) as stderr, redirect_stdout(io.StringIO()):
+            self.assertEqual(animation_config_main(['validate', str(self.root)]), 1)
+        self.assertIn('hidden, not exported', stderr.getvalue())
+
+    def test_visibility_override_remains_an_exported_animation_target(self) -> None:
+        self._motion_project('visibility="hidden"', 'visibility="visible"')
+        targets, _anonymous = scan_svg_targets(self.root / 'svg_output/01.svg')
+        self.assertEqual([target.group_id for target in targets], ['shape', 'shown'])
+        self.assertIn('shape', build_scaffold(self.root)['slides']['01']['groups'])
+        self.assertEqual(len(self._export().findall('.//p:sp', NS)), 2)
+        config = {'slides': {'01': {'groups': {'shape': {'effect': 'fade'}}}}}
+        self.assertEqual(validate_animation_config(self.root, config), [])
 
     def test_display_none_group_cannot_be_overridden_by_descendants(self) -> None:
         for hiding in ('display="none"', 'style="display:none"'):
