@@ -215,14 +215,14 @@ CONFIG = {
 }
 
 
-def fetch_url(url: str) -> str:
+def fetch_url(url: str) -> tuple[str, str]:
     """Fetch a web page with explicit headers and encoding detection.
 
     Args:
         url: Target URL.
 
     Returns:
-        The response body as text.
+        The response body as text and the final URL after redirects.
     """
     headers = {
         "User-Agent": CONFIG["user_agent"],
@@ -235,7 +235,7 @@ def fetch_url(url: str) -> str:
                              timeout=CONFIG["timeout"], verify=False)
         response.raise_for_status()
 
-        return _decode_response_text(response)
+        return _decode_response_text(response), response.url
     except Exception as e:
         raise Exception(f"Failed to fetch {url}: {str(e)}")
 
@@ -714,7 +714,9 @@ def element_to_markdown(element: Tag | NavigableString | None) -> str:
     return f"{content} "
 
 
-def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
+def simple_html_to_markdown_traversal(
+    soup: Tag | BeautifulSoup | None, page_url: str = "",
+) -> str:
     """Convert HTML content to Markdown using BeautifulSoup traversal."""
     lines = []
 
@@ -727,17 +729,17 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
         if isinstance(node, NavigableString):
             text = str(node)
             # Normalize whitespace but keep single spaces
-            text = re.sub(r'\s+', ' ', text)
-            if text.strip():
-                return text
-            return ""
+            return re.sub(r'\s+', ' ', text)
 
         if node.name in ['script', 'style', 'comment', 'meta', 'link']:
             return ""
 
         # Handle Block Elements
         is_block = node.name in ['p', 'div', 'h1', 'h2', 'h3', 'h4',
-                                 'h5', 'h6', 'li', 'blockquote', 'pre', 'hr', 'table', 'tr']
+                                 'h5', 'h6', 'li', 'blockquote', 'pre', 'hr', 'table', 'tr',
+                                 'section', 'article', 'main', 'header', 'footer', 'nav',
+                                 'aside', 'ul', 'ol', 'dl', 'dt', 'dd', 'figure',
+                                 'figcaption', 'address', 'details', 'summary']
 
         # Pre-processing
         prefix = ""
@@ -762,6 +764,8 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
         elif node.name == 'pre':
             # Extract raw text from pre to preserve formatting
             return f"\n\n```\n{node.get_text()}\n```\n\n"
+        elif is_block:
+            prefix, suffix = "\n\n", "\n\n"
 
         # Inline formatting
         if node.name in ['strong', 'b']:
@@ -772,7 +776,9 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
             prefix, suffix = "`", "`"
         elif node.name == 'a':
             href = node.get('href')
-            if href and not href.startswith('javascript:'):
+            if href and not href.lower().startswith('javascript:'):
+                if not href.startswith('#') and urlparse(href).scheme.lower() not in {'mailto', 'tel'}:
+                    href = urljoin(page_url, href)
                 prefix = "["
                 suffix = f"]({href})"
             else:
@@ -789,7 +795,18 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
         for child in node.children:
             res = traverse(child)
             if res:
-                inner_text += res
+                if isinstance(child, NavigableString) and not res.strip():
+                    if inner_text and not inner_text.endswith((' ', '\n')):
+                        inner_text += ' '
+                else:
+                    if res.startswith('\n'):
+                        inner_text = inner_text.rstrip(' ')
+                    elif inner_text.endswith((' ', '\n')) and child.name != 'br':
+                        res = res.lstrip(' ')
+                    inner_text += res
+
+        if is_block:
+            inner_text = inner_text.strip()
 
         # Post-processing for tables (simplified)
         if node.name == 'tr':
@@ -892,10 +909,12 @@ def process_url(
     """
     print(f"\n[Fetching] {url}")
     try:
-        html = fetch_url(url)
+        html, page_url = fetch_url(url)
         if is_plain_text_document(url, html):
             return _save_plain_text_document(url, html, output_file)
         soup = BeautifulSoup(html, 'html.parser')
+        base = soup.find('base', href=True)
+        base_url = urljoin(page_url, base['href']) if base else page_url
 
         # Extract Metadata
         metadata = extract_metadata(soup, url)
@@ -924,15 +943,15 @@ def process_url(
         image_count = 0
         if download_images:
             image_count = download_and_rewrite_images(
-                content_div, url, image_dir, rel_image_prefix)
+                content_div, base_url, image_dir, rel_image_prefix)
         else:
-            rewrite_images_to_remote_urls(content_div, url)
+            rewrite_images_to_remote_urls(content_div, base_url)
         if image_count:
             print(f"   [OK] Images: {image_count} saved to {image_dir}")
 
         # Convert to MD
         # Note: We pass the element to our traversal function
-        markdown_text = simple_html_to_markdown_traversal(content_div)
+        markdown_text = simple_html_to_markdown_traversal(content_div, base_url)
         print(f"   [OK] Content: {len(markdown_text)} chars")
 
         # Construct content

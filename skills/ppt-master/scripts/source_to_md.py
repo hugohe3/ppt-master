@@ -21,6 +21,7 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
+import codecs
 import json
 import os
 import subprocess
@@ -145,20 +146,54 @@ def write_passthrough(
     """Copy text-like input to Markdown and write the profile sidecar."""
     source = Path(input_arg)
     try:
-        text = source.read_text(encoding="utf-8", errors="replace")
+        raw = source.read_bytes()
     except OSError as exc:
         print(f"[ERROR] Cannot read {source}: {exc}", file=sys.stderr)
         return 1
 
+    encodings = ("utf-8", "gb18030")
+    if raw.startswith(codecs.BOM_UTF8):
+        encodings = ("utf-8-sig",)
+    elif raw.startswith((codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
+        encodings = ("utf-16",)
+    for encoding in encodings:
+        try:
+            text = raw.decode(encoding)
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        print(
+            f"[ERROR] Cannot decode {source} as {' or '.join(encodings)}. "
+            "Save the source as UTF-8 text and retry.",
+            file=sys.stderr,
+        )
+        return 1
+    if any(ord(char) < 32 and char not in "\t\n\r\f" for char in text):
+        print(f"[ERROR] Binary control characters in {source}; provide a text file.", file=sys.stderr)
+        return 1
+    if encoding != "utf-8" and output.resolve() == source.resolve():
+        print(
+            f"[ERROR] {source} uses {encoding}; choose a different -o path for UTF-8 output.",
+            file=sys.stderr,
+        )
+        return 1
+
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.resolve() != source.resolve():
-        output.write_text(text, encoding="utf-8")
+        output.write_bytes(text.encode("utf-8"))
+    warnings = []
+    if encoding != "utf-8":
+        warnings.append(f"Detected source encoding: {encoding}; converted to UTF-8.")
     profile = write_conversion_profile(
         input_path=input_arg,
         markdown_path=output,
         converter="source_to_md.py",
         conversion_type=conversion_type,
+        warnings=warnings,
     )
+    for warning in warnings:
+        print(f"[INFO] {warning}")
     _print_status(f"[OK] Saved Markdown to: {output}")
     _print_status(f"   Wrote conversion profile -> {profile}")
     print_output(output)

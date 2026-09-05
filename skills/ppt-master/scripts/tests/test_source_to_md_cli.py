@@ -4,12 +4,16 @@
 from __future__ import annotations
 
 import argparse
+import codecs
+import io
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -22,6 +26,8 @@ WEB_BACKEND_DIR = SCRIPTS_DIR / "source_to_md"
 if str(WEB_BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(WEB_BACKEND_DIR))
 from web_to_md import is_plain_text_document  # noqa: E402
+import web_to_md  # noqa: E402
+from excel_to_md import _format_cell_value  # noqa: E402
 
 
 def _args(**overrides: object) -> argparse.Namespace:
@@ -111,6 +117,119 @@ class RawTextUrlTests(unittest.TestCase):
         self.assertTrue(source_to_md._skips_images(_args(no_images=True)))
         self.assertTrue(source_to_md._skips_images(_args(images="none")))
         self.assertFalse(source_to_md._skips_images(_args(images="all")))
+
+
+class ExcelCellValueTests(unittest.TestCase):
+    def test_float_values_keep_excel_display_precision(self) -> None:
+        # 15 significant digits, the precision Excel itself displays.
+        cases = [
+            (1234567.89, "1234567.89"),
+            (0.1 + 0.2, "0.3"),
+            (100.0, "100"),
+            (1e-7, "1e-07"),
+            (-0.5, "-0.5"),
+            (1.2345678901234567, "1.23456789012346"),
+            (-0.0, "-0"),
+            (1e20, "1e+20"),
+        ]
+        for value, expected in cases:
+            with self.subTest(value=value):
+                result = _format_cell_value(value)
+                self.assertEqual(result, expected)
+                self.assertAlmostEqual(float(result), value, delta=abs(value) * 1e-14)
+
+
+class WebTraversalTests(unittest.TestCase):
+    def test_inline_whitespace_is_preserved_once(self) -> None:
+        cases = [
+            ("<strong>Hello</strong> <em>World</em>", "**Hello** *World*"),
+            ('See <a href="x">here</a> now', "See [here](x) now"),
+            ("<code>a</code> <code>b</code>", "`a` `b`"),
+            ("<strong>Hello</strong> \n\t <em>World</em>", "**Hello** *World*"),
+            ("<strong>Hello</strong> <!-- comment --> <em>World</em>", "**Hello** *World*"),
+            ("<strong>Hello</strong><em>World</em>", "**Hello***World*"),
+        ]
+        for html, expected in cases:
+            with self.subTest(html=html):
+                soup = web_to_md.BeautifulSoup(f"<p>{html}</p>", "html.parser")
+                self.assertEqual(web_to_md.simple_html_to_markdown_traversal(soup), expected)
+
+    def test_block_whitespace_does_not_leak_into_paragraphs(self) -> None:
+        cases = [
+            ("<p>one</p> \n <p>two</p>", "one\n\ntwo"),
+            ("<div>one</div> \n <div>two</div>", "one\n\ntwo"),
+            ("<section>one</section> \n <section>two</section>", "one\n\ntwo"),
+            ("<ul> <li>one</li> <li>two</li> </ul>", "- one\n- two"),
+            ("<p>  lead</p>", "lead"),
+            ("<p>  lead</p><p>trail  </p>", "lead\n\ntrail"),
+            ("<p> <strong>Hello</strong> <em>World</em> </p>", "**Hello** *World*"),
+        ]
+        for html, expected in cases:
+            with self.subTest(html=html):
+                soup = web_to_md.BeautifulSoup(html, "html.parser")
+                self.assertEqual(web_to_md.simple_html_to_markdown_traversal(soup), expected)
+
+    def test_preformatted_text_and_explicit_line_breaks_keep_spacing(self) -> None:
+        cases = [
+            ("<pre> a\n  b </pre>", "```\n a\n  b \n```"),
+            ("<p>one<br>two</p>", "one  \ntwo"),
+        ]
+        for html, expected in cases:
+            with self.subTest(html=html):
+                soup = web_to_md.BeautifulSoup(html, "html.parser")
+                self.assertEqual(web_to_md.simple_html_to_markdown_traversal(soup), expected)
+
+    def test_links_resolve_relative_targets_and_keep_special_targets(self) -> None:
+        cases = [
+            ("../target", "[label](https://example.com/target)"),
+            ("/abs", "[label](https://example.com/abs)"),
+            ("//cdn.x/y", "[label](https://cdn.x/y)"),
+            ("#frag", "[label](#frag)"),
+            ("mailto:reader@example.com", "[label](mailto:reader@example.com)"),
+            ("tel:+123456789", "[label](tel:+123456789)"),
+            ("javascript:void(0)", "label"),
+            ("JavaScript:void(0)", "label"),
+        ]
+        for href, expected in cases:
+            with self.subTest(href=href):
+                soup = web_to_md.BeautifulSoup(f'<p><a href="{href}">label</a></p>', "html.parser")
+                self.assertEqual(
+                    web_to_md.simple_html_to_markdown_traversal(soup, "https://example.com/a/page"),
+                    expected,
+                )
+
+    def test_process_url_resolves_against_redirect_and_first_base_href(self) -> None:
+        cases = [
+            ("", "https://redirect.example/docs/"),
+            ('<base href="https://base.example/root/">', "https://base.example/root/"),
+            ('<base href="../assets/">', "https://redirect.example/assets/"),
+            ('<base target="_blank"><base href="/first/"><base href="/ignored/">',
+             "https://redirect.example/first/"),
+        ]
+        for base, expected_base in cases:
+            with self.subTest(base=base), tempfile.TemporaryDirectory() as tmp:
+                html = (
+                    f"<html><head><title>Links</title>{base}</head><body>"
+                    '<p><a href="target">target</a> <img src="pic.png" alt="pic"></p>'
+                    "</body></html>"
+                )
+                response = Mock(
+                    content=html.encode("utf-8"),
+                    headers={"Content-Type": "text/html; charset=utf-8"},
+                    encoding="utf-8",
+                    apparent_encoding="utf-8",
+                    url="https://redirect.example/docs/page",
+                )
+                response.raise_for_status.return_value = None
+                output = Path(tmp) / "page.md"
+                with patch.object(web_to_md, "_http_get", return_value=response), redirect_stdout(io.StringIO()):
+                    result = web_to_md.process_url(
+                        "https://original.example/start", str(output), download_images=False,
+                    )
+                self.assertTrue(result[0], result[2])
+                markdown = output.read_text(encoding="utf-8")
+                self.assertIn(f"[target]({expected_base}target)", markdown)
+                self.assertIn(f"![pic]({expected_base}pic.png)", markdown)
 
 
 class SourceCollisionTests(unittest.TestCase):
@@ -209,6 +328,67 @@ class SourceCollisionTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(self._outputs(result), [source])
                 self.assertEqual(source.read_text(encoding="utf-8"), "ORIGINAL-MARKDOWN\n")
+
+    def test_passthrough_decodes_supported_encodings_without_changing_text(self) -> None:
+        text = "# 中文金额 123.45\r\n\r\nKeep  spaces\tand tabs.\r\n"
+        utf8 = text.encode("utf-8")
+        cases = [
+            ("utf8", utf8, "utf-8"),
+            ("utf8_bom", codecs.BOM_UTF8 + utf8, "utf-8-sig"),
+            ("utf16_le", codecs.BOM_UTF16_LE + text.encode("utf-16-le"), "utf-16"),
+            ("utf16_be", codecs.BOM_UTF16_BE + text.encode("utf-16-be"), "utf-16"),
+            ("gb18030", text.encode("gb18030"), "gb18030"),
+        ]
+        for name, raw, encoding in cases:
+            for suffix in (".txt", ".md"):
+                with self.subTest(encoding=name, suffix=suffix):
+                    source = self.root / f"{name}{suffix}"
+                    output = self.root / f"{name}_{suffix[1:]}_output.md"
+                    source.write_bytes(raw)
+                    result = self._run_cli(str(source), "-o", str(output))
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(self._outputs(result), [output])
+                    self.assertEqual(output.read_bytes(), utf8)
+                    self.assertEqual(source.read_bytes(), raw)
+                    profile = json.loads(output.with_suffix(".conversion_profile.json").read_text(encoding="utf-8"))
+                    if encoding == "utf-8":
+                        self.assertEqual(profile["warnings"], [])
+                    else:
+                        self.assertIn(encoding, result.stdout)
+                        self.assertIn(encoding, " ".join(profile["warnings"]))
+
+    def test_invalid_passthrough_fails_before_writing_outputs(self) -> None:
+        cases = [
+            bytes(range(256)),
+            b"\x00\x01binary",
+            codecs.BOM_UTF8 + b"\xff",
+            codecs.BOM_UTF16_LE + b"A\x00B",
+            codecs.BOM_UTF16_BE + b"\x00AB",
+        ]
+        for index, raw in enumerate(cases):
+            with self.subTest(raw=raw):
+                source = self.root / f"invalid_{index}.txt"
+                output = self.root / f"output_{index}" / "result.md"
+                source.write_bytes(raw)
+                result = self._run_cli(str(source), "-o", str(output))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("[ERROR]", result.stderr)
+                self.assertEqual(self._outputs(result), [])
+                self.assertFalse(output.parent.exists())
+                self.assertEqual(source.read_bytes(), raw)
+
+    def test_non_utf8_passthrough_requires_a_distinct_output_path(self) -> None:
+        for encoding in ("utf-8-sig", "utf-16", "gb18030"):
+            with self.subTest(encoding=encoding):
+                source = self.root / f"{encoding}.md"
+                raw = "中文原稿\n".encode(encoding)
+                source.write_bytes(raw)
+                result = self._run_cli(str(source))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("-o", result.stderr)
+                self.assertEqual(self._outputs(result), [])
+                self.assertEqual(source.read_bytes(), raw)
+                self.assertFalse(source.with_suffix(".conversion_profile.json").exists())
 
 
 if __name__ == "__main__":

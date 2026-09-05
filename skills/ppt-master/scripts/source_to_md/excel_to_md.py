@@ -79,7 +79,9 @@ def _format_cell_value(value: Any) -> str:
     if isinstance(value, time):
         return value.isoformat(timespec="seconds")
     if isinstance(value, float):
-        return _markdown_escape(f"{value:g}")
+        # Excel shows 15 significant digits; that keeps 1234567.89 exact while
+        # 0.1 + 0.2 reads as 0.3 rather than its binary expansion.
+        return _markdown_escape(repr(float(f"{value:.15g}")).removesuffix(".0"))
     return _markdown_escape(str(value))
 
 
