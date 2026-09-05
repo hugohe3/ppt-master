@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -260,6 +261,40 @@ class NativeProjectionCheckerTests(unittest.TestCase):
                 joined = "\n".join(warnings)
                 for text in expected:
                     self.assertIn(text, joined)
+
+    def test_formatted_chart_labels_warning_names_data_label_number_format(self) -> None:
+        for value, number_format, label in (
+            (1000, "#,##0", "1,000"),
+            (0.5, "0%", "50%"),
+        ):
+            with self.subTest(label=label):
+                marker = ET.fromstring(f"""
+                    <g data-pptx-replace-with="chart">
+                      <metadata type="application/json">
+                        {{
+                          "x": 0, "y": 0, "width": 400, "height": 240,
+                          "type": "column", "categories": ["A"],
+                          "series": [{{"name": "Series", "values": [{value}]}}],
+                          "number_format": "{number_format}",
+                          "data_labels": {{"show_value": true}}
+                        }}
+                      </metadata>
+                      <text x="100" y="100">{label}</text>
+                    </g>
+                """)
+                warnings = native_object_projection_warnings(marker)
+                joined = "\n".join(warnings)
+                self.assertIn(f"visible text not projected: {label!r}", joined)
+                self.assertIn("data_labels.number_format", joined)
+
+                metadata = marker.find("metadata")
+                payload = json.loads(metadata.text)
+                payload["data_labels"]["number_format"] = payload.pop("number_format")
+                metadata.text = json.dumps(payload)
+                self.assertNotIn(
+                    "visible text not projected",
+                    "\n".join(native_object_projection_warnings(marker)),
+                )
 
     def test_explicit_chart_text_axis_and_grid_colors_use_role_inference(self) -> None:
         marker = ET.fromstring("""

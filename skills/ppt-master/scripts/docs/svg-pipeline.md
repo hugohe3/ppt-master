@@ -1241,6 +1241,10 @@ rely on — mapping tables, accepted-but-warned spellings, rejection boundaries,
 and imported native-shape metadata — is documented in
 [`svg-contract.md`](svg-contract.md). This tool guide does not repeat it.
 
+For the first-pair approximation of odd-length or multi-segment custom
+`stroke-dasharray` lists and stroke-width normalization, see
+[`svg-contract.md`](svg-contract.md) §6.6.
+
 `svg_quality_checker.py` validates source SVG before finalization.
 `finalize_svg.py` and native export apply the preprocessing required by that
 contract, while native conversion fails on unsupported visual elements rather

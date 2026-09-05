@@ -1317,6 +1317,7 @@ def _native_chart_reverse_text_warnings(
     message = (
         "Native PPTX chart visible text not projected: "
         f"{sample}{suffix}. Use categories/data labels/axis labels/legend or companion text."
+        " For formatted value labels, set data_labels.number_format to match the fallback."
     )
     # ``73.0`` in the fallback while the payload value is 73: General format
     # renders ``73``, so the decimals need an explicit number_format.
