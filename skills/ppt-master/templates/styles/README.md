@@ -17,6 +17,7 @@ Selection and installation follow [`routing.md`](../../workflows/routing.md) §7
 | Reusable method and evidence discipline | Style, where compatible with the current contract |
 | Reusable structure | Layout, otherwise Deck; Style never supplies structure |
 | Recurring application context | Deck, subordinate to the Stage-1 contract |
+| Page titling: a Style's page-message discipline against a mode's title tendency | The authored §IX titles and any explicit user or Style titling rule; the locked mode shapes voice and register only ([`executor-base.md`](../../references/executor-base.md) §2.2 Step 2) |
 
 Style fallbacks seed the Stage-2 solution when a decision is open; they are not identity truth and never bypass confirmation. Surface a material Style/Deck conflict rather than weakening either.
 
