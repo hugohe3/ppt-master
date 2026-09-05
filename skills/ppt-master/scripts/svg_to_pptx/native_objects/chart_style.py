@@ -1395,6 +1395,7 @@ def _text_box_xml(
     align: str = "l",
     bold: bool = False,
     font_face: str | None = None,
+    anchor: str = "t",
 ) -> str:
     shape_id = ctx.next_id()
     align_key = _compact_key(align)
@@ -1437,7 +1438,7 @@ def _text_box_xml(
 <a:ln><a:noFill/></a:ln>
 </p:spPr>
 <p:txBody>
-<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0"/>
+<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="{anchor}" anchorCtr="0"/>
 <a:lstStyle/>
 <a:p><a:pPr algn="{algn}"{rtl_attr}/>
 <a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{run_properties_xml}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
@@ -1549,10 +1550,11 @@ def _chart_companion_shapes(
     """Build editable companion text with its resolved slide-space bounds.
 
     With an SVG-first ``fallback``, a companion whose text appears exactly
-    once in the fallback takes that text's position: the box top sits one
-    em above the baseline and the anchor decides which edge ``x`` names,
-    so a payload ``y`` copied from the SVG baseline cannot land the box on
-    the plot.
+    once in the fallback takes that text's position. The box is bottom
+    anchored with its bottom edge a quarter em under the SVG baseline, so
+    the glyph bottom lands where the SVG drew it whatever ascent the
+    renderer's font has (a taller face moves the text up, never down onto
+    the plot); ``text-anchor`` decides which edge ``x`` names.
     """
     if _chart_title_is_bounded(payload):
         include_title = True
@@ -1608,6 +1610,7 @@ def _chart_companion_shapes(
             ext_cx = chart_ext_cx
             ext_cy = px_to_emu(16)
             below_index += 1
+        anchor = "t"
         matches = [
             record for record in fallback_texts
             if record.text == _normalized_fallback_text(text)
@@ -1622,9 +1625,11 @@ def _chart_companion_shapes(
                 "middle": anchor_x - width_px / 2,
                 "end": anchor_x - width_px,
             }.get(record.anchor, anchor_x)
+            bottom_px = baseline_y + font_px * 0.25
             off_x = _powerpoint_emu_value(px_to_emu(left_px), "companion text x")
-            off_y = _powerpoint_emu_value(px_to_emu(baseline_y - font_px), "companion text y")
-            ext_cy = px_to_emu(font_px * 1.5)
+            off_y = _powerpoint_emu_value(px_to_emu(bottom_px - font_px * 1.6), "companion text y")
+            ext_cy = px_to_emu(font_px * 1.6)
+            anchor = "b"
             align = {"middle": "ctr", "end": "r"}.get(record.anchor, "l")
         text_xml = _text_box_xml(
             ctx,
@@ -1639,6 +1644,7 @@ def _chart_companion_shapes(
             align=align,
             bold=bold,
             font_face=font_face,
+            anchor=anchor,
         )
         shapes.append(ShapeResult(
             xml=text_xml,

@@ -329,9 +329,15 @@ class CompanionPlacementTests(unittest.TestCase):
                 resource_root=Path(tmp),
                 native_objects=True,
             )
+        from svg_to_pptx.drawingml.utils import px_to_emu
+
         note = slide_xml[slide_xml.index("Chart Note"):]
         off_y = int(re.search(r'<a:off x="\d+" y="(\d+)"/>', note).group(1))
-        self.assertEqual(off_y, 102 * 9525)  # baseline 120px minus one 18px em
+        ext_cy = int(re.search(r'<a:ext cx="\d+" cy="(\d+)"/>', note).group(1))
+        # bottom edge = baseline 120px + 0.25em; box 1.6em tall, bottom anchored
+        self.assertEqual(off_y + ext_cy, px_to_emu(120 + 18 * 0.25))
+        self.assertEqual(ext_cy, px_to_emu(18 * 1.6))
+        self.assertIn('anchor="b"', note[:note.index("</a:bodyPr>") + 1] if "</a:bodyPr>" in note else note[:900])
 
 
 if __name__ == "__main__":
