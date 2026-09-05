@@ -949,12 +949,20 @@ def _native_table_header_warnings(
         for record, row_idx, col_idx in header_text_cells
     ):
         missing.append("columns[].bold")
-    if any(
-        _cell_payload(table_rows[row_idx][col_idx]).get("align")
-        != _fallback_table_alignment(record.anchor)
+    # Header cells export centred unless the payload sets align, so a missing
+    # align only matches a fallback whose header text is centred.
+    unmatched_anchors = sorted({
+        _fallback_table_alignment(record.anchor)
         for record, row_idx, col_idx in header_text_cells
-    ):
-        missing.append("columns[].align")
+        if (_cell_payload(table_rows[row_idx][col_idx]).get("align") or "ctr")
+        != _fallback_table_alignment(record.anchor)
+    })
+    if unmatched_anchors:
+        missing.append(
+            "columns[].align "
+            + "/".join(f'"{value}"' for value in unmatched_anchors)
+            + " (header cells export centred unless align is set)"
+        )
     if not missing:
         return []
     return [

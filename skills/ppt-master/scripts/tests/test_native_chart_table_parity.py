@@ -448,6 +448,25 @@ class NativeTableFillAndTextDefaultsTests(unittest.TestCase):
         # defaults.cell wins over defaults.run for a shared field
         self.assertEqual(body_a["font_size"], 20)
 
+    def test_paragraph_cells_inherit_run_defaults_like_plain_text(self) -> None:
+        expanded = expand_semantic_table_payload({
+            "schema": "ppt-master.semantic-table.v2",
+            "x": 0, "y": 0, "width": 200, "height": 80,
+            "column_widths": [100, 100],
+            "row_heights": [40, 40],
+            "defaults": {"run": {"color": "#1F2933", "bold": False}},
+            "columns": ["A", "B"],
+            "rows": [[
+                {"paragraphs": ["line one", "line two"]},
+                {"paragraphs": [{"runs": [{"text": "run"}]}], "color": "#B4342C"},
+            ]],
+        })
+        strings, runs = expanded["rows"][0]
+        self.assertEqual(strings["color"], "#1F2933")
+        self.assertFalse(strings["bold"])
+        self.assertEqual(runs["color"], "#B4342C")
+        self.assertEqual(runs["paragraphs"][0]["runs"][0]["color"], "#1F2933")
+
     def test_body_text_color_parity_warns_when_no_layer_carries_it(self) -> None:
         def marker(rows_json: str, style_json: str = "") -> ET.Element:
             return ET.fromstring(f"""
@@ -495,6 +514,61 @@ class NativeTableFillAndTextDefaultsTests(unittest.TestCase):
             marker('["Altar", "Cosmos"]', '"defaults": {"run": {"color": "#DAD5CA"}},')
         ))
         self.assertNotIn("body text color", via_run_defaults)
+
+        paragraph_strings = "\n".join(native_object_projection_warnings(
+            marker(
+                '[{"paragraphs": ["Altar"]}, {"paragraphs": ["Cosmos"]}]',
+                '"defaults": {"run": {"color": "#DAD5CA"}},',
+            )
+        ))
+        self.assertNotIn("body text color", paragraph_strings)
+
+    def test_header_align_parity_reads_the_centred_export_default(self) -> None:
+        def marker(header_anchor: str, columns_json: str) -> ET.Element:
+            x = {"start": 10, "middle": 50, "end": 90}[header_anchor]
+            return ET.fromstring(f"""
+                <g data-pptx-replace-with="table" data-pptx-bounds="0 0 200 80">
+                  <metadata type="application/json">
+                    {{
+                      "schema": "ppt-master.semantic-table.v2",
+                      "x": 0, "y": 0, "width": 200, "height": 80,
+                      "header_rows": 1,
+                      "column_widths": [100, 100],
+                      "row_heights": [40, 40],
+                      "defaults": {{"run": {{"color": "#DAD5CA"}}}},
+                      "columns": [{columns_json}],
+                      "rows": [["Altar", "Cosmos"]]
+                    }}
+                  </metadata>
+                  <line x1="0" y1="0" x2="200" y2="0" stroke="#999999"/>
+                  <line x1="0" y1="40" x2="200" y2="40" stroke="#999999"/>
+                  <line x1="0" y1="80" x2="200" y2="80" stroke="#999999"/>
+                  <g fill="#DAD5CA" text-anchor="{header_anchor}">
+                    <text x="{x}" y="25">Level</text>
+                    <text x="{x + 100}" y="25">Meaning</text>
+                  </g>
+                  <g fill="#DAD5CA">
+                    <text x="10" y="65">Altar</text>
+                    <text x="110" y="65">Cosmos</text>
+                  </g>
+                </g>
+            """)
+
+        left_without_align = "\n".join(native_object_projection_warnings(
+            marker("start", '"Level", "Meaning"')
+        ))
+        self.assertIn('columns[].align "l"', left_without_align)
+        self.assertIn("export centred unless align is set", left_without_align)
+
+        left_with_align = "\n".join(native_object_projection_warnings(
+            marker("start", '{"text": "Level", "align": "l"}, {"text": "Meaning", "align": "l"}')
+        ))
+        self.assertNotIn("columns[].align", left_with_align)
+
+        centred_without_align = "\n".join(native_object_projection_warnings(
+            marker("middle", '"Level", "Meaning"')
+        ))
+        self.assertNotIn("columns[].align", centred_without_align)
 
 
 if __name__ == "__main__":

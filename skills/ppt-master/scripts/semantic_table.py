@@ -235,12 +235,13 @@ def _expand_cell(
         style = cell_styles[style_name]
 
     expanded = _format_layers(defaults["cell"], style, cell)
-    if "paragraphs" not in expanded:
-        # A plain-text cell is one run: run defaults reach it unless the
-        # cell (or its cell_style / cell defaults) already set the field.
-        for field in _PLAIN_TEXT_RUN_FIELDS:
-            if field not in expanded and field in defaults["run"]:
-                expanded[field] = copy.deepcopy(defaults["run"][field])
+    # A plain-text cell is one run, and a text-only paragraph is one run in
+    # the cell's colour: run defaults reach both through the cell unless the
+    # cell (or its cell_style / cell defaults) already set the field. Runs
+    # spelled out under paragraphs[].runs take the same defaults directly.
+    for field in _PLAIN_TEXT_RUN_FIELDS:
+        if field not in expanded and field in defaults["run"]:
+            expanded[field] = copy.deepcopy(defaults["run"][field])
     if "paragraphs" in expanded:
         paragraphs = expanded["paragraphs"]
         if not isinstance(paragraphs, list):
