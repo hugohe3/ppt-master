@@ -8,7 +8,7 @@
   },
   "metadata": {
     "description": "PPT Master skill — AI generates natively editable PPTX from any document",
-    "version": "6.2.0"
+    "version": "6.3.0"
   },
   "plugins": [
     {
