@@ -57,6 +57,7 @@ python3 scripts/image_gen.py "A cinematic portrait" --backend minimax
 python3 scripts/image_gen.py "A product launch hero image" --backend qwen
 python3 scripts/image_gen.py "科技感背景图" --backend zhipu
 python3 scripts/image_gen.py "A product KV in cinematic style" --backend volcengine
+python3 scripts/image_gen.py "A mountain landscape" --backend tencent
 ```
 
 Configuration sources:

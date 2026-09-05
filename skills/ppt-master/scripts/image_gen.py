@@ -14,6 +14,7 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=qwen        -> Alibaba Qwen image backend
   IMAGE_BACKEND=zhipu       -> Zhipu GLM-Image backend
   IMAGE_BACKEND=volcengine  -> Volcengine Seedream backend
+  IMAGE_BACKEND=tencent     -> Tencent Cloud TokenHub backend
   IMAGE_BACKEND=modelscope  -> ModelScope backend
   IMAGE_BACKEND=siliconflow -> SiliconFlow backend
   IMAGE_BACKEND=fal         -> fal.ai backend
@@ -76,6 +77,8 @@ IMAGE_ENV_PREFIXES = (
     "VOLCENGINE_",
     "LAS_",
     "ARK_",
+    "TENCENT_",
+    "TOKENHUB_",
     "MODELSCOPE_",
     "SILICONFLOW_",
     "FAL_",
@@ -153,6 +156,15 @@ BACKEND_REGISTRY = {
         "default_image_size": "2K",
         "key_hint": "LAS_API_KEY / VOLCENGINE_API_KEY / ARK_API_KEY",
         "aliases": ["ark", "doubao", "seedream"],
+    },
+    "tencent": {
+        "module": "backend_tencent",
+        "tier": "extended",
+        "label": "Tencent Cloud TokenHub",
+        "default_model": "hy-image-v3",
+        "default_image_size": "1K",
+        "key_hint": "TENCENT_API_KEY / TOKENHUB_API_KEY",
+        "aliases": ["tokenhub", "hunyuan", "tencentmaas"],
     },
     "modelscope": {
         "module": "backend_modelscope",
