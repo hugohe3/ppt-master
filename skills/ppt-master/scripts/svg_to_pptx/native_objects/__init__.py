@@ -47,21 +47,22 @@ from .inline_formula import (
     inline_formula_marker_errors,
 )
 from .marker_common import (
-    CHART_CONTENT_TYPE,
-    CHARTEX_CONTENT_TYPE,
-    CHARTEX_REL_TYPE,
-    CHARTEX_URI,
+    _bounds,
     CHART_COLOR_STYLE_CONTENT_TYPE,
+    CHART_CONTENT_TYPE,
     CHART_REL_TYPE,
     CHART_STYLE_CONTENT_TYPE,
     CHART_URI,
-    _NATIVE_KINDS,
-    _bounds,
+    CHARTEX_CONTENT_TYPE,
+    CHARTEX_REL_TYPE,
+    CHARTEX_URI,
     _load_payload,
     _local_tag,
-    _native_marker_validation_context,
-    _validate_bounds_inputs,
+    _NATIVE_KINDS,
     native_marker_transform,
+    _native_marker_validation_context,
+    _powerpoint_emu,
+    _validate_bounds_inputs,
 )
 from .marker_attributes import (
     JSON_NATIVE_AUTHORITY,
@@ -271,10 +272,59 @@ def _source_chart_frame_xml(
     return ET.tostring(frame, encoding="unicode")
 
 
+def _chart_top_strip_is_free(payload: dict[str, Any], chart_data: dict[str, Any]) -> bool:
+    """Whether nothing chart-owned (axis, title, legend) sits above the plot area."""
+    if chart_data.get("kind") not in {"category", "combo"}:
+        return False
+    if payload.get("title") is not None and not _chart_title_is_bounded(payload):
+        return False
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    if payload.get("show_legend", style.get("show_legend", False)):
+        legend_position = str(
+            payload.get("legend_position", style.get("legend_position", "bottom"))
+        ).strip().lower()
+        if legend_position == "top":
+            return False
+    axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
+    return all(
+        config.get("position") != "top"
+        for config in axes.values()
+        if isinstance(config, dict)
+    )
+
+
+def _trim_chart_frame_top(
+    payload: dict[str, Any],
+    chart_data: dict[str, Any] | None,
+    bounds: tuple[int, int, int, int],
+) -> tuple[int, int, int, int]:
+    """Start the chart frame at the plot area when the strip above it holds no chart chrome.
+
+    PowerPoint does not reliably honour the plot area's manual vertical
+    layout and auto-fits the plot to the frame top instead, which would
+    drag the first bar over any companion caption drawn in that strip.
+    With the frame edge on the plot edge, both layouts agree.
+    """
+    off_x, off_y, ext_cx, ext_cy = bounds
+    if chart_data is None:
+        return bounds
+    plot_area = chart_data.get("plot_area")
+    if not isinstance(plot_area, dict) or not _chart_top_strip_is_free(payload, chart_data):
+        return bounds
+    plot_top = _powerpoint_emu(plot_area["y"], "chart plot_area.y")
+    if plot_top <= off_y or plot_top >= off_y + ext_cy:
+        return bounds
+    return off_x, plot_top, ext_cx, ext_cy - (plot_top - off_y)
+
+
 def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     source_package = _decode_source_chart_package(payload)
     chart_data = None if source_package is not None else _chart_data(payload)
-    off_x, off_y, ext_cx, ext_cy = _bounds(elem, payload, ctx)
+    off_x, off_y, ext_cx, ext_cy = _trim_chart_frame_top(
+        payload,
+        chart_data,
+        _bounds(elem, payload, ctx),
+    )
 
     shape_id = (
         ctx.claim_shape_id(

@@ -340,5 +340,21 @@ class CompanionPlacementTests(unittest.TestCase):
         self.assertIn('anchor="b"', note[:note.index("</a:bodyPr>") + 1] if "</a:bodyPr>" in note else note[:900])
 
 
+class FrameTrimTests(unittest.TestCase):
+    def test_frame_top_moves_to_the_plot_when_nothing_sits_above_it(self) -> None:
+        from svg_to_pptx.native_objects import _trim_chart_frame_top
+
+        payload = {"type": "bar", "categories": ["A"], "series": [{"name": "S", "values": [1]}]}
+        bounds = (0, 100 * 9525, 500 * 9525, 300 * 9525)
+        chart_data = _chart_data({**payload, "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250}})
+        trimmed = _trim_chart_frame_top(payload, chart_data, bounds)
+        self.assertEqual(trimmed, (0, 120 * 9525, 500 * 9525, 280 * 9525))
+        titled = _trim_chart_frame_top({**payload, "title": "T"}, chart_data, bounds)
+        self.assertEqual(titled, bounds)
+        top_axis = _chart_data({**payload, "plot_area": {"x": 50, "y": 120, "width": 400, "height": 250},
+                                "axes": {"value": {"position": "top"}}})
+        self.assertEqual(_trim_chart_frame_top(payload, top_axis, bounds), bounds)
+
+
 if __name__ == "__main__":
     unittest.main()
