@@ -68,6 +68,12 @@ Validate each normalized root once. The effective structural owner is Layout whe
 | `layout` | Reusable structure, precedence over Deck; Default plans against its prototypes, Quick reads the roster and authors its Master/Layout/slot contract directly |
 | `deck` | Descriptive application context and identity; structure and prototype roster only when no Layout is selected |
 
+**Command**: the mapping, provenance line, asset copy, collision and duplicate-kind refusal, and completion receipt below are one run of the install tool (add `--dry-run` to review the mapping first; `--skip-validation` only when the §2 checker already ran on that root in this turn); [`template-tools.md`](../../scripts/docs/template-tools.md#apply_templatepy) owns its behavior:
+
+```bash
+python3 skills/ppt-master/scripts/apply_template.py <project_path> --root <workspace_root> [--root <workspace_root> ...]
+```
+
 **Atomic install preflight**: resolve every source and destination path; enumerate the union mapping across all roots and across `templates/`, `images/`, `icons/`, mapping each source file at most once; resolve Layout-over-Deck precedence before building the map so the shadowed roster never enters it; reject every destination collision and duplicate kind before writing; write the accepted mapping once — never recursive copy as an implicit conflict policy. An input equal to the target project is consumed in place; if a selected Layout supersedes its in-place Deck roster, stage the mapping and replace the roster atomically.
 
 **Hard rule — project-local consumer boundary**: after installation, Default final Stage 2, Quick's agent before authoring, and every later role read only `<project_path>/templates/` and the project-local `images/` / `icons/` pools; the library or external root is installation input only.
