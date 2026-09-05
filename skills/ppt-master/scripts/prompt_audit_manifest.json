@@ -1344,13 +1344,14 @@
       },
       {
         "kind": "exact",
-        "fingerprint": "286b55cb84d7",
+        "fingerprint": "b8f9b97d03fc",
         "paths": [
           "skills/ppt-master/templates/styles/academic-research/templates/design_spec.md",
           "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
           "skills/ppt-master/templates/styles/creative-pitch/templates/design_spec.md",
           "skills/ppt-master/templates/styles/incident-postmortem/templates/design_spec.md",
           "skills/ppt-master/templates/styles/investor-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md",
           "skills/ppt-master/templates/styles/narrative-keynote/templates/design_spec.md",
           "skills/ppt-master/templates/styles/operating-review/templates/design_spec.md",
           "skills/ppt-master/templates/styles/product-launch/templates/design_spec.md",
@@ -1422,13 +1423,14 @@
       },
       {
         "kind": "exact",
-        "fingerprint": "1136fd17656e",
+        "fingerprint": "7e6ac64f0c0c",
         "paths": [
           "skills/ppt-master/templates/styles/academic-research/templates/design_spec.md",
           "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
           "skills/ppt-master/templates/styles/creative-pitch/templates/design_spec.md",
           "skills/ppt-master/templates/styles/incident-postmortem/templates/design_spec.md",
           "skills/ppt-master/templates/styles/investor-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md",
           "skills/ppt-master/templates/styles/narrative-keynote/templates/design_spec.md",
           "skills/ppt-master/templates/styles/operating-review/templates/design_spec.md",
           "skills/ppt-master/templates/styles/product-launch/templates/design_spec.md",
@@ -1447,6 +1449,24 @@
           "skills/ppt-master/templates/layouts/README.md"
         ],
         "reason": "Identical one-line pointer to routing.md §7 and apply-template-workspace in the kind READMEs; the rule owner is routing.md §7 (rule-owners R22)."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "602f1c4f5ee3",
+        "paths": [
+          "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md"
+        ],
+        "reason": "mbb-consulting inherits the consulting-decision method and image direction by design; only its visual system differs."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "9e4ef33145e2",
+        "paths": [
+          "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md"
+        ],
+        "reason": "mbb-consulting inherits the consulting-decision method and image direction by design; only its visual system differs."
       }
     ]
   },
