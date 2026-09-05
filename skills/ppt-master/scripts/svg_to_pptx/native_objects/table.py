@@ -1086,7 +1086,15 @@ def _native_table_first_column_warnings(
     table_rows: list[list[Any]],
     header_rows: int,
     text_cells: list[tuple[Any, int, int]],
+    *,
+    style_body_text: str | None = None,
 ) -> list[str]:
+    """Report first-column emphasis the payload would not carry.
+
+    A first column drawn in the table's own body text colour is carried by
+    ``style.body_text`` even when the other columns are coloured per cell, so
+    only a colour no layer resolves to is reported.
+    """
     body_records = [item for item in text_cells if item[1] >= header_rows]
     first_column = [item for item in body_records if item[2] == 0]
     if not first_column:
@@ -1112,9 +1120,10 @@ def _native_table_first_column_warnings(
         if (
             record.fill is not None
             and record.fill != body_color
-            and _table_cell_parity_text_style(
-                table_rows[row_idx][col_idx]
-            )[1] != record.fill
+            and (
+                _table_cell_parity_text_style(table_rows[row_idx][col_idx])[1]
+                or style_body_text
+            ) != record.fill
         )
     })
     if missing_colors:
@@ -1309,11 +1318,13 @@ def _native_table_warnings(
             shape_records,
         )
     )
+    table_style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     warnings.extend(
         _native_table_first_column_warnings(
             table_rows,
             header_rows,
             text_cells,
+            style_body_text=_hex_or_none(table_style.get("body_text")),
         )
     )
     warnings.extend(

@@ -523,6 +523,53 @@ class NativeTableFillAndTextDefaultsTests(unittest.TestCase):
         ))
         self.assertNotIn("body text color", paragraph_strings)
 
+    def test_first_column_in_body_text_colour_is_carried_by_style(self) -> None:
+        def marker(style_json: str) -> ET.Element:
+            return ET.fromstring(f"""
+                <g data-pptx-replace-with="table" data-pptx-bounds="0 0 300 80">
+                  <metadata type="application/json">
+                    {{
+                      "schema": "ppt-master.semantic-table.v2",
+                      "x": 0, "y": 0, "width": 300, "height": 80,
+                      "header_rows": 1,
+                      "column_widths": [100, 100, 100],
+                      "row_heights": [40, 40],
+                      {style_json}
+                      "columns": [
+                        {{"text": "Task", "color": "#F5F7F2", "align": "l"}},
+                        {{"text": "Old", "color": "#F5F7F2", "align": "l"}},
+                        {{"text": "uv", "color": "#F5F7F2", "align": "l"}}
+                      ],
+                      "rows": [[
+                        "Create env",
+                        {{"text": "venv", "color": "#9EACB8"}},
+                        {{"text": "uv venv", "color": "#D7FF64"}}
+                      ]]
+                    }}
+                  </metadata>
+                  <line x1="0" y1="0" x2="300" y2="0" stroke="#3A4651"/>
+                  <line x1="0" y1="40" x2="300" y2="40" stroke="#3A4651"/>
+                  <line x1="0" y1="80" x2="300" y2="80" stroke="#3A4651"/>
+                  <g fill="#F5F7F2">
+                    <text x="10" y="25">Task</text>
+                    <text x="110" y="25">Old</text>
+                    <text x="210" y="25">uv</text>
+                  </g>
+                  <text x="10" y="65" fill="#E7ECEF">Create env</text>
+                  <text x="110" y="65" fill="#9EACB8">venv</text>
+                  <text x="210" y="65" fill="#D7FF64">uv venv</text>
+                </g>
+            """)
+
+        carried = "\n".join(native_object_projection_warnings(
+            marker('"style": {"body_text": "#E7ECEF"},')
+        ))
+        self.assertNotIn("first-column", carried)
+
+        uncarried = "\n".join(native_object_projection_warnings(marker("")))
+        self.assertIn("first-column text style not projected", uncarried)
+        self.assertIn("#E7ECEF", uncarried)
+
     def test_header_align_parity_reads_the_centred_export_default(self) -> None:
         def marker(header_anchor: str, columns_json: str) -> ET.Element:
             x = {"start": 10, "middle": 50, "end": 90}[header_anchor]
