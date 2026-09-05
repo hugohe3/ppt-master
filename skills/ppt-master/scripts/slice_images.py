@@ -53,6 +53,7 @@ from PIL import (
     ImageChops,
     ImageFilter,
     ImageMath,
+    ImageOps,
 )
 
 _GRID_RE = re.compile(r"^\s*(\d+)\s*[xX×]\s*(\d+)\s*$")
@@ -663,7 +664,8 @@ def slice_sheet(
             if suffix and suffix != ".png":
                 raise ValueError(f"--alpha requires .png output names, got {name!r}")
 
-    sheet = Image.open(sheet_path).convert("RGBA")
+    with Image.open(sheet_path) as source:
+        sheet = ImageOps.exif_transpose(source).convert("RGBA")
     sw, sh = sheet.size
     output_dir.mkdir(parents=True, exist_ok=True)
 

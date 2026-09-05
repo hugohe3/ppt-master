@@ -446,7 +446,7 @@ def _normalize_multi_frame_jpeg(path: Path) -> bool:
     if path.suffix.lower() not in {".jpg", ".jpeg"}:
         return False
     try:
-        from PIL import Image  # type: ignore
+        from PIL import Image, ImageOps  # type: ignore
     except ImportError:
         return False
     try:
@@ -458,10 +458,10 @@ def _normalize_multi_frame_jpeg(path: Path) -> bool:
             if not multi_frame:
                 return False
             source.seek(0)
-            frame = source.convert("RGB")
+            frame = ImageOps.exif_transpose(source).convert("RGB")
             save_kwargs: dict[str, object] = {"quality": 95}
             for key in ("exif", "icc_profile"):
-                value = source.info.get(key)
+                value = frame.info.get(key)
                 if value:
                     save_kwargs[key] = value
     except (OSError, ValueError, SyntaxError):

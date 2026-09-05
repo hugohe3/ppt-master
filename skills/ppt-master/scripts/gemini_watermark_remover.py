@@ -34,7 +34,7 @@ from console_encoding import configure_utf8_stdio
 configure_utf8_stdio()
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 
 # Algorithm parameters
 ALPHA_THRESHOLD = 0.002  # Alpha threshold; values below this are not processed
@@ -156,7 +156,8 @@ def process_image(input_path: Path, output_path: Path | None = None, verbose: bo
     Returns:
         Output file path
     """
-    image = Image.open(input_path)
+    with Image.open(input_path) as source:
+        image = ImageOps.exif_transpose(source)
     width, height = image.size
 
     config = detect_watermark_config(width, height)

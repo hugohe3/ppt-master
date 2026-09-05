@@ -109,25 +109,32 @@ class ImageRotator:
             Number of images fixed
         """
         target_path = Path(target_dir)
-        if not target_path.exists():
-            return 0
+        if not target_path.is_dir():
+            raise FileNotFoundError(f"Directory not found: {target_path}")
 
         print(f"[AUTO] Checking EXIF orientation information...")
         fixed_count = 0
+        failed_count = 0
         valid_exts = {'.jpg', '.jpeg', '.webp'} # PNG typically does not carry rotation EXIF
 
         # Pre-collect file list to avoid issues caused by modifying during iteration
         files = [f for f in target_path.iterdir() if f.is_file() and f.suffix.lower() in valid_exts]
 
         for f in files:
-            if self._fix_single_exif(f):
-                fixed_count += 1
+            try:
+                if self._fix_single_exif(f):
+                    fixed_count += 1
+            except RuntimeError as e:
+                print(f"  [WARN] {e}")
+                failed_count += 1
 
         if fixed_count > 0:
             print(f"[OK] Auto-fixed EXIF orientation for {fixed_count} image(s)")
-        else:
+        elif not failed_count:
             print(f"[INFO] No images requiring EXIF correction found")
 
+        if failed_count:
+            raise RuntimeError(f"EXIF correction failed for {failed_count} of {len(files)} image(s)")
         return fixed_count
 
     def generate_contact_sheet(
@@ -356,10 +363,15 @@ class ImageRotator:
                     raise ValueError("Invalid input: not a file path nor a valid JSON string")
         elif isinstance(json_source, list):
             tasks = json_source
+        else:
+            raise ValueError("Rotation tasks must be a JSON array")
+
+        if not isinstance(tasks, list):
+            raise ValueError("Rotation tasks must be a JSON array")
 
         gif_paths = []
         for task in tasks:
-            if not isinstance(task, dict):
+            if not isinstance(task, dict) or not isinstance(task.get('path'), str):
                 continue
             task_path = self._normalize_task_path(task.get('path', ''))
             if Path(task_path).suffix.lower() == '.gif':
@@ -375,13 +387,19 @@ class ImageRotator:
 
         cwd = Path(os.getcwd())
         repo_root = self._repo_root()
-        stats = {'total': len(tasks), 'success': 0}
+        stats = {'total': len(tasks), 'success': 0, 'failed': 0}
 
         for task in tasks:
+            if not isinstance(task, dict) or not isinstance(task.get('path'), str):
+                print(f"[ERROR] Invalid rotation task: {task!r}")
+                stats['failed'] += 1
+                continue
             rel_path = self._normalize_task_path(task.get('path', ''))
             rotation = task.get('rotation')
 
             if not rel_path or rotation is None:
+                print(f"[ERROR] Rotation task requires path and rotation: {task!r}")
+                stats['failed'] += 1
                 continue
 
             # Absolute paths should stay absolute; repo-relative paths should resolve from repo root.
@@ -405,6 +423,7 @@ class ImageRotator:
 
             if not target_file.exists():
                 print(f"[SKIP] File not found: {rel_path}")
+                stats['failed'] += 1
                 continue
 
             try:
@@ -413,6 +432,7 @@ class ImageRotator:
                 stats['success'] += 1
             except Exception as e:
                 print(f"[ERROR] {target_file.name}: {e}")
+                stats['failed'] += 1
 
         return stats
 
@@ -458,8 +478,7 @@ class ImageRotator:
             )
             return True
         except Exception as e:
-            print(f"  [WARN] Failed to read EXIF for {file_path.name}: {e}")
-            return False
+            raise RuntimeError(f"Failed to fix EXIF for {file_path.name}: {e}") from e
 
     def _get_exif_orientation(self, img: Image.Image) -> Optional[int]:
         """Get the Orientation value"""
@@ -500,14 +519,15 @@ class ImageRotator:
             if ccw_angle == 0:
                 return
 
+            prepared = ImageOps.exif_transpose(img)
             if ccw_angle == 90:
-                rotated = img.transpose(T.ROTATE_90)
+                rotated = prepared.transpose(T.ROTATE_90)
             elif ccw_angle == 180:
-                rotated = img.transpose(T.ROTATE_180)
+                rotated = prepared.transpose(T.ROTATE_180)
             elif ccw_angle == 270:
-                rotated = img.transpose(T.ROTATE_270)
+                rotated = prepared.transpose(T.ROTATE_270)
             else:
-                rotated = img.rotate(ccw_angle, expand=True)
+                rotated = prepared.rotate(ccw_angle, expand=True)
 
             rotated.load()
 
@@ -766,7 +786,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as e:
             print(f"[ERROR] Execution failed: {e}")
             return 1
-        return 0
+        return 1 if stats['failed'] else 0
 
     if args.command == 'auto':
         target_dir = args.images_directory

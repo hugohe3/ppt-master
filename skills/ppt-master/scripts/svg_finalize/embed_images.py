@@ -87,6 +87,7 @@ def _optimize_image_bytes(img_bytes: bytes, mime_type: str,
 
     try:
         from PIL import Image as PILImage
+        from PIL import ImageOps
         import io
     except ImportError:
         return img_bytes
@@ -109,6 +110,8 @@ def _optimize_image_bytes(img_bytes: bytes, mime_type: str,
                       f"exempt from size limits")
         return img_bytes
 
+    source_format = img.format
+    img = ImageOps.exif_transpose(img)
     changed = False
 
     # Downscale if exceeding max_dimension
@@ -131,7 +134,7 @@ def _optimize_image_bytes(img_bytes: bytes, mime_type: str,
             img.save(buf, format='PNG', optimize=True)
         else:
             # For other formats, just re-save
-            fmt = img.format or 'PNG'
+            fmt = source_format or 'PNG'
             img.save(buf, format=fmt)
 
         optimized = buf.getvalue()

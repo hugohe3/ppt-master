@@ -174,7 +174,7 @@ def _decode_response_text(response) -> str:
     return raw.decode("utf-8", errors="replace")
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
     PILLOW_AVAILABLE = True
 except ImportError:
     PILLOW_AVAILABLE = False
@@ -383,7 +383,8 @@ def download_and_rewrite_images(
                     # Convert webp to png (optimized)
                     try:
                         img_data = io.BytesIO(resp.content)
-                        pil_image = Image.open(img_data)
+                        with Image.open(img_data) as source:
+                            pil_image = ImageOps.exif_transpose(source)
 
                         # Update filename to .png
                         converted_from = filename

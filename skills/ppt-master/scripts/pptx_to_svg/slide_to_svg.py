@@ -1876,7 +1876,7 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f'fill="none" stroke="#999999" stroke-dasharray="4 4"/>'
         f'<text x="{fmt_num(node.xfrm.x + node.xfrm.w / 2)}" '
         f'y="{fmt_num(node.xfrm.y + node.xfrm.h / 2)}" '
-        f'text-anchor="middle" font-size="14" fill="#999999">'
+        f'text-anchor="middle" font-family="Arial" font-size="14" fill="#999999">'
         f"[{_xml_escape(label)}]</text>"
     )
     if chart_payload_metadata:
@@ -1896,7 +1896,7 @@ def _graphic_preview_label(node: ShapeNode, label: str) -> str:
         f'width="{fmt_num(node.xfrm.w)}" height="22" '
         f'fill="#FFFFFF" fill-opacity="0.82" stroke="#999999" stroke-width="0.5"/>'
         f'<text x="{fmt_num(node.xfrm.x + 6)}" y="{fmt_num(node.xfrm.y + 15)}" '
-        f'font-size="11" fill="#666666">[{_xml_escape(label)}]</text>'
+        f'font-family="Arial" font-size="11" fill="#666666">[{_xml_escape(label)}]</text>'
     )
 
 

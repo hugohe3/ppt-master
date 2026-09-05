@@ -33,7 +33,7 @@ from console_encoding import configure_utf8_stdio  # noqa: E402
 configure_utf8_stdio()
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
 except ImportError:
     print("Error: PIL (Pillow) is required. Run: pip install Pillow")
     exit(1)
@@ -243,7 +243,8 @@ def process_svg_images(
         
         try:
             # Open and process image
-            img = Image.open(img_path)
+            with Image.open(img_path) as source:
+                img = ImageOps.exif_transpose(source)
             output_is_png = img_path.suffix.lower() == '.png'
 
             # Preserve alpha for PNG assets such as translucent overlays.

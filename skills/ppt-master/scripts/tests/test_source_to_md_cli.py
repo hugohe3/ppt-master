@@ -65,6 +65,24 @@ class OutputNamingTests(unittest.TestCase):
 
 
 class ImageFlagRoutingTests(unittest.TestCase):
+    def test_downloaded_webp_is_oriented_before_png_conversion(self) -> None:
+        from PIL import Image
+
+        image = Image.new("RGB", (80, 40), "red")
+        exif = image.getexif()
+        exif[274] = 6
+        encoded = io.BytesIO()
+        image.save(encoded, format="WEBP", exif=exif)
+        response = Mock(content=encoded.getvalue(), headers={"Content-Type": "image/webp"})
+        content = web_to_md.BeautifulSoup('<p><img src="photo.webp"/></p>', "html.parser")
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(web_to_md, "_http_get", return_value=response), redirect_stdout(io.StringIO()):
+                count = web_to_md.download_and_rewrite_images(content, "https://example.com/", tmp, "images")
+            self.assertEqual(count, 1)
+            with Image.open(next(Path(tmp).glob("*.png"))) as converted:
+                self.assertEqual(converted.size, (40, 80))
+                self.assertNotIn(274, converted.getexif())
+
     def test_no_images_is_accepted_for_web_and_pdf(self) -> None:
         self.assertTrue(
             source_to_md._validate_pdf_image_flags(

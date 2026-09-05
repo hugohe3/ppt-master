@@ -2740,7 +2740,7 @@ def _line_style(chart: ET.Element, series_nodes: list[ET.Element]) -> str:
 def _category_values(cat: ET.Element | None) -> list[str]:
     cache = _first_cache(cat, ("strCache", "strLit"))
     if cache is not None:
-        return [str(value) for value in _cache_point_values(cache)]
+        return [str(value) if value is not None else "" for value in _cache_point_values(cache)]
     cache = _first_cache(cat, ("numCache", "numLit"))
     if cache is None:
         return []
@@ -2748,7 +2748,7 @@ def _category_values(cat: ET.Element | None) -> list[str]:
     if format_code and format_code.lower() != "general":
         raise _UnsupportedChart("unsupported-formatted-category-cache")
     numbers = _numeric_cache_values(cache)
-    return [str(value) for value in numbers]
+    return [str(value) if value is not None else "" for value in numbers]
 
 
 def _category_cache_is_numeric(chart: ET.Element) -> bool:
@@ -2804,21 +2804,24 @@ def _series_name(ser: ET.Element, index: int) -> str:
 def _text_cache_values(parent: ET.Element | None) -> list[str]:
     cache = _first_cache(parent, ("strCache", "strLit"))
     if cache is not None:
-        return [str(value) for value in _cache_point_values(cache)]
+        return [str(value) if value is not None else "" for value in _cache_point_values(cache)]
     cache = _first_cache(parent, ("numCache", "numLit"))
-    return [str(value) for value in _cache_point_values(cache)]
+    return [str(value) if value is not None else "" for value in _cache_point_values(cache)]
 
 
-def _numeric_values(parent: ET.Element | None) -> list[int | float]:
+def _numeric_values(parent: ET.Element | None) -> list[int | float | None]:
     cache = _first_cache(parent, ("numCache", "numLit"))
     if cache is None:
         return []
     return _numeric_cache_values(cache)
 
 
-def _numeric_cache_values(cache: ET.Element) -> list[int | float]:
-    values: list[int | float] = []
+def _numeric_cache_values(cache: ET.Element) -> list[int | float | None]:
+    values: list[int | float | None] = []
     for value in _cache_point_values(cache):
+        if value is None:
+            values.append(None)
+            continue
         number = float(value)
         if not math.isfinite(number):
             raise _UnsupportedChart("unsupported-chart-cache")
@@ -2836,7 +2839,7 @@ def _first_cache(parent: ET.Element | None, names: tuple[str, ...]) -> ET.Elemen
     return None
 
 
-def _cache_point_values(cache: ET.Element | None) -> list[str]:
+def _cache_point_values(cache: ET.Element | None) -> list[str | None]:
     if cache is None:
         return []
     points: dict[int, str] = {}
@@ -2861,11 +2864,10 @@ def _cache_point_values(cache: ET.Element | None) -> list[str]:
         point_count = len(points)
     if (
         point_count < 0
-        or point_count != len(points)
-        or any(idx not in points for idx in range(point_count))
+        or any(idx >= point_count for idx in points)
     ):
         raise _UnsupportedChart("unsupported-chart-cache")
-    return [points[idx] for idx in range(point_count)]
+    return [points.get(idx) for idx in range(point_count)]
 
 
 def _element_val(elem: ET.Element | None) -> str | None:

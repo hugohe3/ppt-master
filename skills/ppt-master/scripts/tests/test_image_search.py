@@ -182,3 +182,19 @@ class CandidatePoolContinuationTests(unittest.TestCase):
                 self.assertEqual(getattr(image, "n_frames", 1), 1)
                 self.assertGreater(image.getpixel((3, 3))[0], 150)
             self.assertFalse(image_search._normalize_multi_frame_jpeg(path))
+
+    def test_multi_frame_camera_jpeg_bakes_exif_orientation(self) -> None:
+        from PIL import Image
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "camera.jpg"
+            first = Image.new("RGB", (64, 48), "red")
+            exif = first.getexif()
+            exif[274] = 6
+            first.save(path, format="MPO", save_all=True, exif=exif,
+                       append_images=[Image.new("RGB", (64, 48), "blue")])
+            self.assertTrue(image_search._normalize_multi_frame_jpeg(path))
+            with Image.open(path) as image:
+                self.assertEqual(image.format, "JPEG")
+                self.assertEqual(image.size, (48, 64))
+                self.assertNotIn(274, image.getexif())

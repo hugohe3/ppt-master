@@ -323,6 +323,7 @@ def _render_combo(
         float(value)
         for series in all_series
         for value in series.get("values") or []
+        if value is not None
     ]
     if not all_series or not values:
         return []
@@ -482,7 +483,7 @@ def _category_segments(
     grouping: str,
 ) -> tuple[list[list[tuple[float, float]]], bool]:
     raw = [
-        [float(value) for value in item.get("values", [])[:count]]
+        [float(value) if value is not None else 0.0 for value in item.get("values", [])[:count]]
         for item in series
     ]
     percent = grouping == "percentStacked"
@@ -539,6 +540,8 @@ def _render_bars(
         fill = style.fill or "none"
         stroke = style.stroke or "none"
         for category_index, (start, end) in enumerate(row):
+            if item["values"][category_index] is None:
+                continue
             offset = 0.0 if stacked else series_index * bar_span
             display_index = (
                 len(categories) - 1 - category_index
@@ -625,28 +628,41 @@ def _render_lines_or_areas(
             (x_positions[idx], _map(end, lo, hi, plot.y + plot.h, plot.y))
             for idx, (_start, end) in enumerate(row)
         ]
-        if chart_type == "area":
-            bottom = [
-                (x_positions[idx], _map(start, lo, hi, plot.y + plot.h, plot.y))
-                for idx, (start, _end) in enumerate(row)
-            ]
-            points = top + list(reversed(bottom))
-            parts.append(
-                f'<polygon points="{_points(points)}" fill="{fill_color}" '
-                f'fill-opacity="{_fmt(min(style.fill_opacity, 0.58))}" '
-                f'stroke="{line_color or "none"}" stroke-opacity="{_fmt(style.stroke_opacity)}" '
-                f'stroke-width="{_fmt(max(0.7, style.stroke_width))}" '
-                'stroke-linejoin="round"/>'
-            )
-        elif line_color is not None:
-            parts.append(
-                f'<polyline points="{_points(top)}" fill="none" stroke="{line_color}" '
-                f'stroke-opacity="{_fmt(style.stroke_opacity)}" '
-                f'stroke-width="{_fmt(max(1.0, style.stroke_width))}" '
-                f'stroke-linecap="{style.line_cap}" stroke-linejoin="round"/>'
-            )
+        runs: list[list[int]] = [[]]
+        for idx, value in enumerate(item["values"][:count]):
+            if value is None:
+                if runs[-1]:
+                    runs.append([])
+            else:
+                runs[-1].append(idx)
+        for indices in runs:
+            if not indices:
+                continue
+            points = [top[idx] for idx in indices]
+            if chart_type == "area":
+                bottom = [
+                    (x_positions[idx], _map(row[idx][0], lo, hi, plot.y + plot.h, plot.y))
+                    for idx in indices
+                ]
+                points += list(reversed(bottom))
+                parts.append(
+                    f'<polygon points="{_points(points)}" fill="{fill_color}" '
+                    f'fill-opacity="{_fmt(min(style.fill_opacity, 0.58))}" '
+                    f'stroke="{line_color or "none"}" stroke-opacity="{_fmt(style.stroke_opacity)}" '
+                    f'stroke-width="{_fmt(max(0.7, style.stroke_width))}" '
+                    'stroke-linejoin="round"/>'
+                )
+            elif line_color is not None:
+                parts.append(
+                    f'<polyline points="{_points(points)}" fill="none" stroke="{line_color}" '
+                    f'stroke-opacity="{_fmt(style.stroke_opacity)}" '
+                    f'stroke-width="{_fmt(max(1.0, style.stroke_width))}" '
+                    f'stroke-linecap="{style.line_cap}" stroke-linejoin="round"/>'
+                )
         if show_markers:
-            for x, y in top:
+            for idx, (x, y) in enumerate(top):
+                if item["values"][idx] is None:
+                    continue
                 radius = max(2.0, style.marker_size / 2)
                 parts.append(
                     f'<circle cx="{_fmt(x)}" cy="{_fmt(y)}" r="{_fmt(radius)}" '
@@ -657,6 +673,8 @@ def _render_lines_or_areas(
                     f'stroke-width="{_fmt(max(0.6, style.marker_stroke_width))}"/>'
                 )
         for idx, (x, y) in enumerate(top):
+            if item["values"][idx] is None:
+                continue
             labels = _point_data_labels(payload, item, idx)
             if labels:
                 value = float(item["values"][idx])

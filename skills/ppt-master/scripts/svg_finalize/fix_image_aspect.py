@@ -42,7 +42,7 @@ configure_utf8_stdio()
 
 # Try to import PIL for getting image dimensions
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
     HAS_PIL = True
 except ImportError:
     HAS_PIL = False
@@ -54,7 +54,7 @@ def get_image_dimensions_pil(image_path: str) -> tuple[int | None, int | None]:
     """Get image dimensions using PIL."""
     try:
         with Image.open(image_path) as img:
-            return img.width, img.height
+            return ImageOps.exif_transpose(img).size
     except Exception as e:
         print(f"  [WARN] Cannot read image with PIL: {e}")
         return None, None
@@ -121,7 +121,7 @@ def get_image_dimensions_from_base64(data_uri: str) -> tuple[int | None, int | N
         
         if HAS_PIL:
             with Image.open(io.BytesIO(img_bytes)) as img:
-                return img.width, img.height
+                return ImageOps.exif_transpose(img).size
         else:
             # Use basic method
             if img_bytes[:8] == b'\x89PNG\r\n\x1a\n':
