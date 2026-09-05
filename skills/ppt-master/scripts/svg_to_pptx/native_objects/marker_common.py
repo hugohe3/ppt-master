@@ -86,6 +86,7 @@ class _FallbackShapeRecord:
     fill: str | None
     stroke: str | None
     labels: tuple[str, ...]
+    fill_opacity: float | None = None
 
 
 @dataclass(frozen=True)
@@ -156,6 +157,22 @@ def _style_attr(elem: ET.Element, name: str) -> str | None:
         if key.strip() == name:
             return value.strip()
     return None
+
+
+def _own_fill_opacity(elem: ET.Element) -> float | None:
+    """The element's own ``opacity`` × ``fill-opacity``, or None when neither is set."""
+    result: float | None = None
+    for name in ("opacity", "fill-opacity"):
+        raw = _style_attr(elem, name)
+        if raw is None:
+            continue
+        try:
+            value = float(str(raw).strip().rstrip("%")) / (100.0 if str(raw).strip().endswith("%") else 1.0)
+        except ValueError:
+            continue
+        value = max(0.0, min(1.0, value))
+        result = value if result is None else result * value
+    return result
 
 
 def _paint_visible(elem: ET.Element, paint: str) -> bool:
@@ -579,6 +596,7 @@ def _fallback_shape_records(
                         fill=fill_color,
                         stroke=stroke_color,
                         labels=labels,
+                        fill_opacity=_own_fill_opacity(elem) if fill_color else None,
                     )
                 )
 

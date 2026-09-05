@@ -19,7 +19,7 @@ from ..drawingml.utils import (
     text_has_rtl_characters,
     text_uses_rtl,
 )
-from .chart_data import _DEFAULT_CHART_COLORS, _chart_data
+from .chart_data import _DEFAULT_CHART_COLORS, _category_axis_reversed, _chart_data
 from .marker_common import (
     _bool_attr,
     _bounds,
@@ -777,6 +777,322 @@ def _native_chart_point_color_warnings(
     ]
 
 
+def _fallback_data_shapes(elem: ET.Element) -> list[Any]:
+    """Painted fallback geometry that is not axis, grid, or legend chrome."""
+    return [
+        record
+        for record in _fallback_shape_records(elem)
+        if not _record_has_label(record, "axis", "grid", "legend")
+    ]
+
+
+def _series_palette(payload: dict[str, Any], series_count: int) -> set[str]:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    raw_colors = _first_present(style.get("colors"), payload.get("colors"))
+    palette = (
+        [_clean_hex(color, "#4472C4") for color in raw_colors]
+        if isinstance(raw_colors, list) and raw_colors
+        else list(_DEFAULT_CHART_COLORS)
+    )
+    return {palette[idx % len(palette)] for idx in range(series_count)}
+
+
+def _typed_series(chart_data: dict[str, Any], chart_type: str) -> list[dict[str, Any]]:
+    """Series of one plot type from a category chart or the matching combo plots."""
+    if chart_data.get("kind") == "category" and chart_data.get("type") == chart_type:
+        return list(chart_data.get("series") or [])
+    if chart_data.get("kind") == "combo":
+        return [
+            item
+            for plot in chart_data.get("plots") or []
+            if plot.get("type") == chart_type
+            for item in plot.get("series") or []
+        ]
+    return []
+
+
+def _native_chart_line_marker_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    line_series = _typed_series(chart_data, "line")
+    if not line_series:
+        return []
+    dots = [
+        record
+        for record in _fallback_data_shapes(elem)
+        if record.tag in {"circle", "ellipse"} and record.fill is not None
+    ]
+    if not dots:
+        return []
+    if chart_data.get("kind") == "category":
+        marker_styles = [chart_data.get("line_style")]
+    else:
+        marker_styles = [
+            plot.get("line_style")
+            for plot in chart_data.get("plots") or []
+            if plot.get("type") == "line"
+        ]
+    has_markers = "lineMarker" in marker_styles or any(
+        item.get("point_colors") for item in line_series
+    )
+    warnings: list[str] = []
+    if not has_markers:
+        warnings.append(
+            f"Native PPTX line chart fallback draws {len(dots)} point marker(s) "
+            "but the payload has none; set line_style \"lineMarker\" (marker_size in px) "
+            "for every point, or series point_colors with a colour per marked point "
+            "and null elsewhere"
+        )
+    series_count = (
+        len(chart_data.get("series") or [])
+        if chart_data.get("kind") == "category"
+        else sum(len(plot.get("series") or []) for plot in chart_data.get("plots") or [])
+    )
+    known = _series_palette(payload, series_count) | {
+        color
+        for item in line_series
+        for color in item.get("point_colors", [])
+        if color is not None
+    }
+    deviations = sorted({
+        record.fill for record in dots if record.fill not in known
+    })
+    warnings.extend(
+        f"Native PPTX line marker fill #{color} deviates from its series color, "
+        "but series point_colors is absent"
+        for color in deviations
+    )
+    return warnings
+
+
+def _native_chart_area_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    area_series = _typed_series(chart_data, "area")
+    if not area_series:
+        return []
+    shapes = _fallback_data_shapes(elem)
+    regions = [
+        record
+        for record in shapes
+        if record.tag in {"path", "polygon"} and record.fill is not None
+    ]
+    warnings: list[str] = []
+    translucent = sorted({
+        record.fill_opacity
+        for record in regions
+        if record.fill_opacity is not None and record.fill_opacity < 1
+    })
+    if translucent and not any(item.get("fill_opacity") is not None for item in area_series):
+        sample = ", ".join(f"{value:g}" for value in translucent[:3])
+        warnings.append(
+            f"Native PPTX area chart fallback fills are translucent (fill-opacity {sample}) "
+            "but no area series sets fill_opacity; native areas export opaque"
+        )
+    if chart_data.get("kind") != "category":
+        return warnings
+    strokes = [
+        record
+        for record in shapes
+        if record.tag in {"path", "polyline"} and record.fill is None and record.stroke is not None
+    ]
+    dots = [
+        record
+        for record in shapes
+        if record.tag in {"circle", "ellipse"} and record.fill is not None
+    ]
+    outlined = any(item.get("line_width") is not None for item in area_series)
+    if (strokes and not outlined) or dots:
+        warnings.append(
+            "Native PPTX area chart fallback draws a line"
+            + (" and point markers" if dots else "")
+            + " over the filled region, but an area series exports as a fill without "
+            "either; give the series line_width for a same-colour outline, or use type "
+            "\"combo\" with an area plot (fill_opacity) under a line plot (line_width, "
+            "line_style \"lineMarker\")"
+        )
+    return warnings
+
+
+def _native_chart_category_order_warnings(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+) -> list[str]:
+    chart_type = chart_data.get("type")
+    if chart_data.get("kind") != "category" or chart_type not in {"bar", "column"}:
+        return []
+    categories = [str(item) for item in chart_data.get("categories") or []]
+    if len(categories) < 2:
+        return []
+    first_text = _normalized_fallback_text(categories[0])
+    last_text = _normalized_fallback_text(categories[-1])
+    records = [
+        record
+        for record in _fallback_text_records(elem)
+        if not _record_has_label(record, "legend")
+        and record.x is not None
+        and record.y is not None
+    ]
+    firsts = [record for record in records if record.text == first_text]
+    lasts = [record for record in records if record.text == last_text]
+    if len(firsts) != 1 or len(lasts) != 1 or first_text == last_text:
+        return []
+    first, last = firsts[0], lasts[0]
+    axes = chart_data.get("axes") if isinstance(chart_data.get("axes"), dict) else {}
+    category = axes.get("category") if isinstance(axes.get("category"), dict) else {}
+    resolved = _category_axis_reversed(category, chart_type)
+    if chart_type == "bar":
+        expected = first.y < last.y
+        drawn = "top-down" if expected else "bottom-up"
+    else:
+        expected = first.x > last.x
+        drawn = "right-to-left" if expected else "left-to-right"
+    if expected == resolved:
+        return []
+    return [
+        f"Native PPTX {chart_type} chart fallback lists categories {drawn} "
+        f"({categories[0]!r} before {categories[-1]!r}) but the payload resolves "
+        f"axes.category.reverse to {str(resolved).lower()}; set axes.category.reverse: "
+        f"{str(expected).lower()}"
+    ]
+
+
+def _fallback_bar_clusters(
+    elem: ET.Element,
+    chart_data: dict[str, Any],
+) -> tuple[float, dict[int, list[tuple[float, float]]]] | None:
+    """Fallback bars grouped by category slot: slot size plus (low, high) edges per slot."""
+    chart_type = chart_data.get("type")
+    plot_area = chart_data.get("plot_area")
+    if chart_data.get("kind") != "category" or chart_type not in {"bar", "column"}:
+        return None
+    if not isinstance(plot_area, dict):
+        return None
+    categories = chart_data.get("categories") or []
+    if not categories or not chart_data.get("series"):
+        return None
+    px, py = float(plot_area["x"]), float(plot_area["y"])
+    pw, ph = float(plot_area["width"]), float(plot_area["height"])
+    along = 0 if chart_type == "column" else 1  # axis index that carries the categories
+    origin = px if along == 0 else py
+    extent = pw if along == 0 else ph
+    slot = extent / len(categories)
+    clusters: dict[int, list[tuple[float, float]]] = {}
+    for record in _fallback_data_shapes(elem):
+        if record.tag != "rect" or record.fill is None:
+            continue
+        x0, y0, x1, y1 = record.bounds
+        if (x1 - x0) * (y1 - y0) >= 0.9 * pw * ph:
+            continue
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        if not (px <= cx <= px + pw and py <= cy <= py + ph):
+            continue
+        low, high = (x0, x1) if along == 0 else (y0, y1)
+        index = min(len(categories) - 1, max(0, int((((low + high) / 2) - origin) // slot)))
+        clusters.setdefault(index, []).append((low, high))
+    if not clusters:
+        return None
+    return slot, clusters
+
+
+def _median(values: list[float]) -> float:
+    ordered = sorted(values)
+    return ordered[len(ordered) // 2]
+
+
+def _inferred_bar_gap_width(
+    elem: ET.Element,
+    chart_data: dict[str, Any],
+) -> int | None:
+    """Read the bar/column gap width from fallback bars inside a known plot area.
+
+    PowerPoint's gapWidth is the empty slot share as a percentage of one bar
+    width; the fallback slot is the plot extent divided by the category count.
+    """
+    grouped = _fallback_bar_clusters(elem, chart_data)
+    if grouped is None:
+        return None
+    slot, clusters = grouped
+    cluster = _median([
+        max(high for _, high in edges) - min(low for low, _ in edges)
+        for edges in clusters.values()
+    ])
+    if cluster <= 0:
+        return None
+    if cluster >= slot:
+        return 0
+    clustered = chart_data.get("grouping") == "clustered"
+    bars_per_cluster = len(chart_data.get("series") or []) if clustered else 1
+    bar_width = cluster / bars_per_cluster
+    return max(0, min(500, int(round((slot - cluster) / bar_width * 100))))
+
+
+def _inferred_bar_overlap(
+    elem: ET.Element,
+    chart_data: dict[str, Any],
+) -> int | None:
+    """Read clustered bar overlap: the share of one bar that the next bar covers (negative = gap)."""
+    if chart_data.get("grouping") != "clustered" or len(chart_data.get("series") or []) < 2:
+        return None
+    grouped = _fallback_bar_clusters(elem, chart_data)
+    if grouped is None:
+        return None
+    _, clusters = grouped
+    pitches: list[float] = []
+    widths: list[float] = []
+    for edges in clusters.values():
+        ordered = sorted(edges)
+        if len(ordered) < 2:
+            continue
+        widths.extend(high - low for low, high in ordered)
+        pitches.extend(
+            ordered[idx + 1][0] - ordered[idx][0] for idx in range(len(ordered) - 1)
+        )
+    if not pitches or not widths:
+        return None
+    bar_width = _median(widths)
+    if bar_width <= 0:
+        return None
+    return max(-100, min(100, int(round((bar_width - _median(pitches)) / bar_width * 100))))
+
+
+def _inferred_cross_between(
+    elem: ET.Element,
+    chart_data: dict[str, Any],
+) -> str | None:
+    """Read whether fallback line/area points sit between ticks or on the axis edge.
+
+    The first data point of a category line/area starts either half a slot
+    inside the plot (``between``) or on the plot edge (``midCat``).
+    """
+    chart_type = chart_data.get("type")
+    plot_area = chart_data.get("plot_area")
+    if chart_data.get("kind") != "category" or chart_type not in {"area", "line"}:
+        return None
+    if not isinstance(plot_area, dict):
+        return None
+    categories = chart_data.get("categories") or []
+    if len(categories) < 2:
+        return None
+    px, pw = float(plot_area["x"]), float(plot_area["width"])
+    slot = pw / len(categories)
+    starts = [
+        record.bounds[0]
+        for record in _fallback_data_shapes(elem)
+        if record.tag in {"path", "polygon", "polyline"}
+        and (record.bounds[2] - record.bounds[0]) >= slot
+    ]
+    if not starts:
+        return None
+    start = min(starts)
+    return "midCat" if abs(start - px) < abs(start - (px + slot / 2)) else "between"
+
+
 def _native_chart_radial_warnings(
     elem: ET.Element,
     payload: dict[str, Any],
@@ -1057,6 +1373,9 @@ def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> 
     warnings.extend(_native_chart_radial_warnings(elem, payload, chart_data))
     warnings.extend(_native_chart_tile_color_warnings(elem, payload, chart_data))
     warnings.extend(_native_chart_reverse_text_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_line_marker_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_area_warnings(elem, payload, chart_data))
+    warnings.extend(_native_chart_category_order_warnings(elem, payload, chart_data))
     return warnings
 
 
