@@ -15,7 +15,8 @@ from xml.etree import ElementTree as ET
 
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
-if str(SCRIPTS_DIR) not in sys.path:
+# Discovery may put svg_to_pptx/ ahead of the same-named animation_config CLI.
+if not sys.path or sys.path[0] != str(SCRIPTS_DIR):
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from pptx_shapes.formula import OOXML_COORDINATE_MAX  # noqa: E402

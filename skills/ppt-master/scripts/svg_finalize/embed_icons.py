@@ -42,10 +42,11 @@ Options:
 
 from __future__ import annotations
 
+import argparse
+import html
 import os
 import re
 import sys
-import argparse
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
@@ -72,8 +73,35 @@ ICON_BASE_SIZES = {
 _ICON_IDENTIFIER_RE = re.compile(
     r'(?P<library>[a-z0-9][a-z0-9-]*)/(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)'
 )
+_ICON_COLOR_RE = re.compile(
+    r'#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})'
+    r'|[a-z]+|(?:rgba?|hsla?)\([0-9\s.,%]+\)',
+    re.IGNORECASE | re.ASCII,
+)
+_NUMBER_PATTERN = r'[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?'
+_TRANSFORM_FUNCTION_PATTERN = (
+    rf'(?:matrix|translate|scale|rotate|skewX|skewY)\(\s*{_NUMBER_PATTERN}'
+    rf'(?:(?:\s*,\s*|\s+){_NUMBER_PATTERN})*\s*\)'
+)
+_ICON_TRANSFORM_RE = re.compile(
+    rf'{_TRANSFORM_FUNCTION_PATTERN}(?:\s*,?\s*{_TRANSFORM_FUNCTION_PATTERN})*',
+    re.ASCII,
+)
+_ICON_STROKE_WIDTH_RE = re.compile(rf'{_NUMBER_PATTERN}(?:px|em|%)?')
 DEFAULT_ICON_BASE_SIZE = 24
 BaseGeometry = float | tuple[float, float, float, float]
+
+
+def _xml_attr(value: object) -> str:
+    """Escape a value for insertion into a quoted SVG attribute."""
+    return html.escape(str(value), quote=True)
+
+
+def _validate_icon_attr(value: str, attr: str, pattern: re.Pattern[str]) -> str:
+    """Reject unsafe icon attributes while preserving legal source spelling."""
+    if pattern.fullmatch(value.strip()) is None:
+        raise ValueError(f'Invalid icon {attr}: {value!r}; use a plain SVG {attr} value')
+    return value
 
 
 def _get_viewbox_size(content: str) -> float:
@@ -305,7 +333,7 @@ def extract_paths_from_icon(
 def _attr_value(tag_text: str, attr: str) -> str | None:
     """Return an attribute value from a raw tag, accepting either quote style."""
     match = re.search(
-        rf'\b{re.escape(attr)}\s*=\s*(["\'])(.*?)\1',
+        rf'(?<!\S){re.escape(attr)}\s*=\s*(["\'])(.*?)\1',
         tag_text,
         re.DOTALL,
     )
@@ -338,27 +366,27 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     # Extract fill color
     fill_value = _attr_value(use_match, 'fill')
     if fill_value is not None:
-        attrs['fill'] = fill_value
+        attrs['fill'] = _validate_icon_attr(fill_value, 'fill', _ICON_COLOR_RE)
 
     # Stroke-style icons may be authored with natural SVG semantics:
     # fill="none" stroke="#HEX". Keep accepting fill as the canonical color
     # carrier, but preserve stroke so outline icons do not collapse to none.
     stroke_value = _attr_value(use_match, 'stroke')
     if stroke_value is not None:
-        attrs['stroke'] = stroke_value
+        attrs['stroke'] = _validate_icon_attr(stroke_value, 'stroke', _ICON_COLOR_RE)
 
     # Live preview direct edits may write an absolute transform matrix back to
     # the placeholder. Preserve it so the expanded icon matches the edited
     # browser geometry instead of falling back to the original x/y placement.
     transform_value = _attr_value(use_match, 'transform')
     if transform_value is not None:
-        attrs['transform'] = transform_value
+        attrs['transform'] = _validate_icon_attr(transform_value, 'transform', _ICON_TRANSFORM_RE)
 
     # Extract optional stroke-width override (stroke-style icons only).
     # Tabler-outline ships at stroke-width=2; passing 1.5 reads thin, 3 reads bold.
     stroke_width_value = _attr_value(use_match, 'stroke-width')
     if stroke_width_value is not None:
-        attrs['stroke-width'] = stroke_width_value
+        attrs['stroke-width'] = _validate_icon_attr(stroke_width_value, 'stroke-width', _ICON_STROKE_WIDTH_RE)
 
     return attrs
 
@@ -370,6 +398,10 @@ def resolve_icon_color(attrs: dict[str, str | float], style: str) -> str:
 
     fill = str(attrs.get('fill', '')).strip()
     stroke = str(attrs.get('stroke', '')).strip()
+    if fill:
+        _validate_icon_attr(fill, 'fill', _ICON_COLOR_RE)
+    if stroke:
+        _validate_icon_attr(stroke, 'stroke', _ICON_COLOR_RE)
 
     if style == 'stroke':
         if fill and fill != 'none':
@@ -428,9 +460,9 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
     if style == 'preserve':
         if min_x or min_y:
             inner_transform = f'translate({_format_number(-min_x)}, {_format_number(-min_y)})'
-            elements_str = f'<g transform="{inner_transform}">\n    {elements_str}\n    </g>'
-        return f'''<!-- icon: {icon_name} -->
-  <g transform="{transform}">
+            elements_str = f'<g transform="{_xml_attr(inner_transform)}">\n    {elements_str}\n    </g>'
+        return f'''<!-- icon: {_xml_attr(icon_name)} -->
+  <g transform="{_xml_attr(transform)}">
     {elements_str}
   </g>'''
 
@@ -439,12 +471,12 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
         # (and any other stroke library) so omitting the attribute reproduces
         # pre-change visual output.
         stroke_width = attrs.get('stroke-width', '2')
-        color_attrs = f'fill="none" stroke="{color}" stroke-width="{stroke_width}"'
+        color_attrs = f'fill="none" stroke="{_xml_attr(color)}" stroke-width="{_xml_attr(stroke_width)}"'
     else:
-        color_attrs = f'fill="{color}"'
+        color_attrs = f'fill="{_xml_attr(color)}"'
 
-    return f'''<!-- icon: {icon_name} -->
-  <g transform="{transform}" {color_attrs}>
+    return f'''<!-- icon: {_xml_attr(icon_name)} -->
+  <g transform="{_xml_attr(transform)}" {color_attrs}>
     {elements_str}
   </g>'''
 
