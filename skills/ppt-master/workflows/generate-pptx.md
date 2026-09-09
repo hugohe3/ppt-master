@@ -310,7 +310,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 
 **Logic Construction Phase (conditional)**: when the effective Speaker Notes outcome in §I is enabled, load [`executor-notes.md`](../references/executor-notes.md): validate a frozen `notes/total.md` against every information-bearing final SVG group (repair the page or the plan, never the script), or otherwise ground each page's narration in its final SVG and write `notes/total.md`. When disabled, load nothing and create no notes.
 
-**✅ Internal checkpoint** — preview launched in time, P01 method gate, uninterrupted remaining pages, consolidated repair, exact §IX coverage, one-frame prose, final checker 0 errors, `notes/total.md` only when enabled. Do not print. Then run the applicable conditional gates and proceed to Step 7.
+**✅ Internal checkpoint** — preview launched in time, early gate after P05 (skipped on a roster of six or fewer pages), uninterrupted remaining pages, consolidated repair, exact §IX coverage, one-frame prose, final checker 0 errors, `notes/total.md` only when enabled. Do not print. Then run the applicable conditional gates and proceed to Step 7.
 
 > **Chart pages?** Run [`verify-charts`](stages/verify-charts.md) before Step 7 to calibrate coordinates; skip without chart pages.
 >
