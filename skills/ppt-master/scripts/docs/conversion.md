@@ -112,6 +112,8 @@ Dependency:
 pip install PyMuPDF
 ```
 
+PyMuPDF is licensed under AGPL-3.0, with a commercial license available from Artifex. It is the only AGPL dependency in this repository and is imported only by this converter, so it can be left uninstalled when no PDF sources are involved. Anyone redistributing PPT Master together with its installed dependencies should review the AGPL terms first.
+
 ## `source_to_md/doc_to_md.py`
 
 Hybrid converter: pure-Python for the common formats, pandoc fallback for the rest.

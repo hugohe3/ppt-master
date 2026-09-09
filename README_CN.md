@@ -378,6 +378,8 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 
 固定版本、许可证、署名、兼容层与商标边界详见[第三方图标说明](./skills/ppt-master/templates/icons/THIRD_PARTY_NOTICES.md)。
 
+可选的 PDF 转换器依赖 [PyMuPDF](https://pymupdf.readthedocs.io/)，其许可证为 AGPL-3.0 而非 MIT，仅处理 PDF 源时才需要安装。若要连同依赖一起再分发，请先阅读 [conversion.md](./skills/ppt-master/scripts/docs/conversion.md) 中的说明。
+
 ## 相关工具
 
 [cc-switch](https://github.com/farion1231/cc-switch) —— 一键切换 Claude Code / Codex / Gemini CLI 等工具的 API 供应商。

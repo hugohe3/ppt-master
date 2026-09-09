@@ -373,6 +373,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 
 See [third-party icon notices](./skills/ppt-master/templates/icons/THIRD_PARTY_NOTICES.md) for pinned versions, licenses, attribution, compatibility overlays, and trademark boundaries.
 
+The optional PDF converter depends on [PyMuPDF](https://pymupdf.readthedocs.io/), which is licensed under AGPL-3.0 rather than MIT; it is only needed for PDF sources. See [conversion.md](./skills/ppt-master/scripts/docs/conversion.md) before redistributing a bundle that includes it.
+
 ## Related Tools
 
 [cc-switch](https://github.com/farion1231/cc-switch) — one-click switching of API providers across Claude Code / Codex / Gemini CLI and more.

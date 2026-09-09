@@ -83,5 +83,5 @@ Important optional packages:
 - `edge-tts` for `notes_to_audio.py` recorded narration audio
 - `Pillow` for image utilities
 - `numpy` for watermark removal
-- `PyMuPDF` for PDF conversion
+- `PyMuPDF` for PDF conversion (AGPL-3.0; only needed for PDF sources, see conversion.md)
 - `google-genai` for Gemini image generation
