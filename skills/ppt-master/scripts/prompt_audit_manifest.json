@@ -1423,11 +1423,12 @@
       },
       {
         "kind": "exact",
-        "fingerprint": "7e6ac64f0c0c",
+        "fingerprint": "efdf8b23a710",
         "paths": [
           "skills/ppt-master/templates/styles/academic-research/templates/design_spec.md",
           "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
           "skills/ppt-master/templates/styles/creative-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/duty-manual/templates/design_spec.md",
           "skills/ppt-master/templates/styles/incident-postmortem/templates/design_spec.md",
           "skills/ppt-master/templates/styles/investor-pitch/templates/design_spec.md",
           "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md",
