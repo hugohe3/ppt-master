@@ -1468,6 +1468,69 @@
           "skills/ppt-master/templates/styles/mbb-consulting/templates/design_spec.md"
         ],
         "reason": "mbb-consulting inherits the consulting-decision method and image direction by design; only its visual system differs."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "da38ec6c641e",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "Sponsor badge markup is identical across the English and Chinese sponsor pages by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "7bc60afc63e2",
+        "paths": [
+          "skills/ppt-master/references/visual-styles/blueprint.md",
+          "skills/ppt-master/references/visual-styles/dark-tech.md"
+        ],
+        "reason": "blueprint and dark-tech intentionally state the same sans + monospace font requirement."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "2b12c90b8142",
+        "paths": [
+          "skills/ppt-master/workflows/create-template/create-deck.md",
+          "skills/ppt-master/workflows/create-template/create-layout.md"
+        ],
+        "reason": "create-deck and create-layout share the same child-workflow entry contract under Create Template by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "fcc902f6644a",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "Sponsor badge markup is identical across the English and Chinese sponsor pages by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "092a8a1f88e9",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "Sponsor badge markup is identical across the English and Chinese sponsor pages by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "71cbe13a4813",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "Sponsor badge markup is identical across the English and Chinese sponsor pages by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "8fa66eadd0ba",
+        "paths": [
+          "skills/ppt-master/workflows/create-template/create-deck.md",
+          "skills/ppt-master/workflows/create-template/create-layout.md"
+        ],
+        "reason": "create-deck and create-layout share the same child-workflow entry contract under Create Template by design."
       }
     ]
   },
