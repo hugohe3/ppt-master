@@ -258,6 +258,71 @@ class TextMeasureTests(unittest.TestCase):
         self.assertEqual(result.stdout, f'{token}\n')
         self.assertIn('Warning: token exceeds max width', result.stderr)
 
+    def test_mixed_cjk_line_keeps_cjk_headroom_beside_an_acronym(self) -> None:
+        family = 'Microsoft YaHei, Times New Roman'
+        chinese = '本报告整理了当前生成式技术在企业中的应用现状与趋势'
+        with_acronym = '本报告整理了当前AI技术在企业中的应用现状与趋势'
+
+        # Two capitals replace three ideographs: the raw advance shrinks and
+        # the headroom estimate follows it instead of lifting the whole line
+        # to the all-caps serif tier.
+        self.assertLess(
+            measure_text(with_acronym, size=20, family=family),
+            measure_text(chinese, size=20, family=family),
+        )
+        # CJK glyphs draw with the resolved ``ea`` face (Microsoft YaHei), so
+        # the Times New Roman tier of the same stack never applies to them.
+        self.assertAlmostEqual(
+            measure_text(chinese, size=20, family=family),
+            measure_text(chinese, size=20, family='Microsoft YaHei'),
+        )
+        # The Latin segment alone still takes the serif all-caps ceiling.
+        raw = measure_text('AI', size=20, family=family, include_headroom=False)
+        self.assertAlmostEqual(measure_text('AI', size=20, family=family), raw * 1.36)
+
+    def test_headroom_never_drops_below_the_raw_advance(self) -> None:
+        # A negative tracking gap between the CJK and Latin segments must not
+        # be amplified by the Latin segment's larger headroom.
+        run = {
+            'text': '中I',
+            'font_size': 20.0,
+            'font_family': 'Microsoft YaHei, Times New Roman',
+            'font_weight': '400',
+            'letter_spacing': -25.0,
+        }
+        raw = estimate_single_line_text_frame_width([run], include_headroom=False)
+
+        self.assertGreater(raw, 0)
+        self.assertGreaterEqual(estimate_single_line_text_frame_width([run]), raw)
+
+    def test_wide_family_factor_applies_to_latin_clusters_in_both_paths(self) -> None:
+        text = '中' * 10 + 'AI'
+        raw = measure_text(text, size=20, family='Arial Black', include_headroom=False)
+        cjk_raw = measure_text('中' * 10, size=20, family='Arial Black', include_headroom=False)
+        latin_raw = measure_text('AI', size=20, family='Arial Black', include_headroom=False)
+
+        # CJK clusters draw with the ``ea`` face, so only ``AI`` widens.
+        self.assertAlmostEqual(raw, cjk_raw + latin_raw)
+        self.assertAlmostEqual(cjk_raw, measure_text('中' * 10, size=20, family='Arial',
+                                                     include_headroom=False))
+        self.assertGreaterEqual(measure_text(text, size=20, family='Arial Black'), raw)
+
+    def test_cjk_wrap_skips_a_clause_break_that_leaves_the_line_short(self) -> None:
+        # 20px CJK clusters measure 21.2px with headroom, so 16 fit in 340px.
+        lines, widths, oversized = wrap_text('甲乙，' + '丙' * 30, size=20, max_width=340)
+
+        self.assertEqual(oversized, [])
+        self.assertEqual(lines[0], '甲乙，' + '丙' * 13)
+        self.assertGreaterEqual(widths[0], 340 * 0.75)
+
+        # A clause break that keeps most of the greedy line is still preferred,
+        # including one that lands exactly on the three-quarter mark.
+        for clause in ('丙' * 12 + '，', '甲' * 11 + '，'):
+            lines, widths, oversized = wrap_text(clause + '丁' * 20, size=20, max_width=340)
+
+            self.assertEqual(oversized, [])
+            self.assertEqual(lines[0], clause)
+
     def test_cjk_wrap_keeps_closing_punctuation_with_previous_cluster(self) -> None:
         lines, widths, oversized = wrap_text('甲乙，丙丁', size=20, max_width=45)
 

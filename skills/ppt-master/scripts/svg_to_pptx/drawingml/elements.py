@@ -2029,14 +2029,17 @@ _TEXTBOX_PADDING_MIN_PX = 0.5
 _TEXTBOX_PADDING_MAX_PX = 2.0
 _TEXTBOX_PADDING_RATIO = 0.04
 # Single-line auto-fit headroom interpolates between a low-caps base and an
-# all-caps ceiling for each run. The crude per-char width estimate undercounts
-# capitals most, so all-caps runs need the ceiling to keep wrap-ignoring
-# renderers (LibreOffice) from folding. Applying headroom per run also prevents
-# a short serif label from forcing a conservative serif multiplier onto an
-# otherwise sans-serif line. Values are calibrated against LibreOffice renders
-# of all-caps bold lines, with bases left above mixed-case and CJK render
-# ratios; exact ratios shift with font substitution, so these carry deliberate
-# margin rather than tracking one environment's numbers.
+# all-caps ceiling for each script segment of a run. The crude per-char width
+# estimate undercounts capitals most, so all-caps Latin segments need the
+# ceiling to keep wrap-ignoring renderers (LibreOffice) from folding. The
+# serif tier follows the typeface that draws the segment (``latin`` or ``ea``
+# as resolved by parse_font_family), so a CJK segment drawn by Microsoft YaHei
+# never takes the Times New Roman tier of the same stack, and a short serif
+# label cannot force its multiplier onto an otherwise sans-serif line. Values
+# are calibrated against LibreOffice renders of all-caps bold lines, with bases
+# left above mixed-case and CJK render ratios; exact ratios shift with font
+# substitution, so these carry deliberate margin rather than tracking one
+# environment's numbers.
 _TEXT_WIDTH_HEADROOM_BASE = 1.06
 _TEXT_WIDTH_HEADROOM_CAPS = 1.12
 _SERIF_TEXT_WIDTH_HEADROOM_BASE = 1.12
@@ -2130,17 +2133,76 @@ def _letter_spacing_to_drawingml_spc(letter_spacing_px: float) -> str:
     return f' spc="{spacing}"'
 
 
-def _is_serif_run(run: dict[str, Any]) -> bool:
-    """Return whether a text run uses a serif-like family."""
-    for family in str(run.get('font_family', '')).split(','):
-        name = family.strip().strip("'\"").lower()
-        if not name or name in {'sans-serif', 'sans serif'}:
-            continue
-        if name in _SERIF_WIDTH_FAMILIES:
-            return True
-        if 'serif' in name and 'sans' not in name:
-            return True
-    return False
+def _is_serif_face(typeface: str) -> bool:
+    """Return whether one resolved DrawingML typeface is serif-like."""
+    name = typeface.strip().strip("'\"").lower()
+    if not name or name in {'sans-serif', 'sans serif'}:
+        return False
+    if name in _SERIF_WIDTH_FAMILIES:
+        return True
+    return 'serif' in name and 'sans' not in name
+
+
+def _run_script_segments(run: dict[str, Any]) -> list[tuple[str, bool]]:
+    """Split one run's text into ``(text, is_cjk)`` segments.
+
+    PowerPoint draws CJK clusters (fullwidth punctuation included) with the
+    run's ``ea`` typeface and every other cluster with ``latin``, the same
+    split :func:`parse_font_family` resolves. Width headroom is a property of
+    the face that actually draws a glyph, so it is applied per segment.
+    """
+    segments: list[list[Any]] = []
+    for cluster in split_project_text_clusters(str(run.get('text', ''))):
+        cjk = any(is_cjk_char(ch) for ch in cluster)
+        if segments and segments[-1][1] == cjk:
+            segments[-1][0] += cluster
+        else:
+            segments.append([cluster, cjk])
+    return [(text, cjk) for text, cjk in segments]
+
+
+def _estimate_run_width_with_headroom(run: dict[str, Any]) -> float:
+    """Estimate one run with headroom chosen per script segment.
+
+    The serif/sans tier follows the typeface that draws each segment (``ea``
+    for CJK, ``latin`` otherwise), and the uppercase interpolation only ever
+    applies to the Latin segments: CJK advances are fixed-width, so a Chinese
+    sentence that mentions ``AI`` keeps its own base headroom instead of
+    inheriting the all-caps ceiling for the whole line.
+    """
+    segments = _run_script_segments(run)
+    if not segments:
+        return 0.0
+    faces = parse_font_family(str(run.get('font_family', '')))
+    serif_by_script = {
+        False: _is_serif_face(faces['latin']),
+        True: _is_serif_face(faces['ea']),
+    }
+    letter_spacing_px = (
+        drawingml_letter_spacing(
+            float(run.get('letter_spacing', 0.0) or 0.0)
+        )
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    width = 0.0
+    for text, cjk in segments:
+        segment = dict(run, text=text)
+        if serif_by_script[cjk]:
+            base = _SERIF_TEXT_WIDTH_HEADROOM_BASE
+            ceiling = _SERIF_TEXT_WIDTH_HEADROOM_CAPS
+        else:
+            base = _TEXT_WIDTH_HEADROOM_BASE
+            ceiling = _TEXT_WIDTH_HEADROOM_CAPS
+        caps = 0.0 if cjk else _uppercase_fraction([segment])
+        width += _estimate_run_text_width(segment) * (
+            base + (ceiling - base) * caps
+        )
+    # Splitting the run drops the tracking gap at each segment boundary; add
+    # it back unscaled so a negative gap is not amplified by the headroom of
+    # the segment that follows it. Headroom is a safety margin, so the result
+    # never falls below the run's raw advance either.
+    width += letter_spacing_px * (len(segments) - 1)
+    return max(width, _estimate_run_text_width(run))
 
 
 # Faces whose glyphs run wider than the generic advance table at the same
@@ -2244,28 +2306,35 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
         font_family=run.get('font_family'),
         font_style=str(run.get('font_style', 'normal')),
     )
+    clusters = split_project_text_clusters(text)
+    cjk_flags = [any(is_cjk_char(ch) for ch in cluster) for cluster in clusters]
     monospace_advance = _monospace_advance_em(run)
     if monospace_advance is not None:
         # Fixed-pitch faces ignore weight and glyph shape for Latin text.
         cluster_widths = [
-            width
-            if any(is_cjk_char(ch) for ch in cluster)
-            else monospace_advance * font_size_px
-            for cluster, width in zip(
-                split_project_text_clusters(text),
-                cluster_widths,
-            )
+            width if cjk else monospace_advance * font_size_px
+            for cjk, width in zip(cjk_flags, cluster_widths)
         ]
+    # The wide-face correction belongs to the Latin typeface only: CJK
+    # clusters draw with the ``ea`` face, so they neither widen with the
+    # family nor count toward its uppercase fraction.
+    latin_factor = _family_width_factor(dict(
+        run,
+        text=''.join(
+            cluster for cluster, cjk in zip(clusters, cjk_flags) if not cjk
+        ),
+    ))
+    cluster_widths = [
+        width if cjk else width * latin_factor
+        for cjk, width in zip(cjk_flags, cluster_widths)
+    ]
     letter_spacing_px = (
         drawingml_letter_spacing(
             float(run.get('letter_spacing', 0.0) or 0.0)
         )
         / FONT_PX_TO_HUNDREDTHS_PT
     )
-    return sum(cluster_widths) * _family_width_factor(run) + letter_spacing_px * max(
-        len(cluster_widths) - 1,
-        0,
-    )
+    return sum(cluster_widths) + letter_spacing_px * max(len(cluster_widths) - 1, 0)
 
 
 def validate_text_run_advances(runs: list[dict[str, Any]]) -> None:
@@ -2313,11 +2382,12 @@ def _estimate_text_runs_width(
 
     ``include_headroom`` is useful for single-line auto-fit boxes where a
     renderer that measures text slightly wider would otherwise wrap. The
-    headroom scales independently with each run's family and uppercase
-    fraction. This keeps mixed-font lines from inheriting the most conservative
-    run's multiplier. Paragraph boxes use this value as a wrapping constraint,
-    so adding headroom there stretches the merged text frame beyond the
-    author's source line width.
+    headroom scales independently with each script segment's typeface and,
+    for Latin segments, its uppercase fraction. This keeps mixed-font and
+    mixed-script lines from inheriting the most conservative segment's
+    multiplier. Paragraph boxes use this value as a wrapping constraint, so
+    adding headroom there stretches the merged text frame beyond the author's
+    source line width.
     """
     if any('_inline_dx' in run for run in runs):
         # A negative dx moves the cursor back; it must not subtract space
@@ -2333,19 +2403,7 @@ def _estimate_text_runs_width(
     if not include_headroom:
         return sum(_estimate_run_text_width(run) for run in runs)
 
-    width = 0.0
-    for run in runs:
-        if _is_serif_run(run):
-            base = _SERIF_TEXT_WIDTH_HEADROOM_BASE
-            ceiling = _SERIF_TEXT_WIDTH_HEADROOM_CAPS
-        else:
-            base = _TEXT_WIDTH_HEADROOM_BASE
-            ceiling = _TEXT_WIDTH_HEADROOM_CAPS
-        caps = _uppercase_fraction([run])
-        width += _estimate_run_text_width(run) * (
-            base + (ceiling - base) * caps
-        )
-    return width
+    return sum(_estimate_run_width_with_headroom(run) for run in runs)
 
 
 def estimate_single_line_text_frame_width(

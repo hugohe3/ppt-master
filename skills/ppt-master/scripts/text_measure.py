@@ -39,6 +39,10 @@ from svg_to_pptx.drawingml.utils import split_project_text_clusters  # noqa: E40
 _CLOSING_PUNCTUATION = frozenset(',.;:!?)]}、，。；：！？）》」』】”’')
 _OPENING_PUNCTUATION = frozenset('([{（《「『【“‘')
 _PREFERRED_BREAK_PUNCTUATION = frozenset('，。；：')
+# A CJK clause break is preferred over the greedy break only while it keeps
+# this share of the greedy line; below it the punctuation break would leave a
+# visibly short line, so the greedy fill wins.
+_PREFERRED_BREAK_MIN_FILL = 0.75
 _LATIN_TOKEN_CONNECTORS = frozenset("'’._:/+%@#-")
 _WEIGHTS = ('normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900')
 _CALIBRATION_CJK_SAMPLE = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往'
@@ -239,7 +243,13 @@ def wrap_text(
             start += 1
             continue
 
-        line_end = preferred_end or end
+        line_end = end
+        if (
+            preferred_end
+            and fit_widths[preferred_end]
+            >= fit_widths[end] * _PREFERRED_BREAK_MIN_FILL - 1e-6
+        ):
+            line_end = preferred_end
         lines.append(_joined_units(units, start, line_end))
         widths.append(fit_widths[line_end])
         start = line_end

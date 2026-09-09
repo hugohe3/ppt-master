@@ -1020,7 +1020,9 @@ class-average estimate, with the existing fixed advances for monospaced faces.
 
 - `measure` prints one `width<TAB>text` line per input, or a JSON array with
   `--json`.
-- `wrap` prints greedy word- or CJK-cluster-wrapped SVG text content; `--y`
+- `wrap` prints greedy word- or CJK-cluster-wrapped SVG text content; a CJK
+  line breaks after clause punctuation (`，。；：`) when that keeps at least
+  three quarters of the greedy line, otherwise at the greedy limit. `--y`
   includes the outer `<text>` element, and `--json` prints line metrics.
 - `box` prints a `data-pptx-bounds` attribute plus numeric `top` and `bottom`, or
   a JSON bounds object with `--json`.
@@ -1029,7 +1031,8 @@ class-average estimate, with the existing fixed advances for monospaced faces.
   `validation/text_calibration.json`, and prints a compact table or JSON. The
   estimator is additive across scripts, so a line mixing CJK with Latin words
   or digits is estimated as (CJK chars ÷ CJK rate + other chars ÷ Latin rate)
-  × 100; spaces and punctuation count as Latin, digits use the DIGITS rate.
+  × 100; spaces and ASCII punctuation count as Latin, fullwidth punctuation as
+  CJK, digits use the DIGITS rate.
   The rates are sample averages taken with the checker's own estimator
   (headroom included), while the checker measures each real line glyph by
   glyph: capital-heavy words, digits, and wide letters run wider than the Latin
