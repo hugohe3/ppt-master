@@ -504,14 +504,24 @@ def _keying_findings(
         if touched_edges:
             drift = _edge_drift(trim_mask, diff, touched_edges)
             if drift is not None:
-                count, distance = drift
-                findings.append(
-                    f"{label}: {count} isolated pixel(s) on the "
-                    f"{'/'.join(touched_edges)} cell edge(s) exceed the key "
-                    f"tolerance (farthest {distance} from key {hex_bg}); this is "
-                    f"key drift, not content — rerun with --tolerance "
-                    f"{distance + _KEY_DRIFT_MARGIN} or higher"
-                )
+                count, distance, isolated = drift
+                if isolated:
+                    findings.append(
+                        f"{label}: {count} isolated pixel(s) on the "
+                        f"{'/'.join(touched_edges)} cell edge(s) exceed the key "
+                        f"tolerance (farthest {distance} from key {hex_bg}); this is "
+                        f"key drift, not content — rerun with --tolerance "
+                        f"{distance + _KEY_DRIFT_MARGIN} or higher"
+                    )
+                else:
+                    findings.append(
+                        f"{label}: {count} pixel(s) on the "
+                        f"{'/'.join(touched_edges)} cell edge(s) exceed the key "
+                        f"tolerance but all stay within {distance} of key {hex_bg}; "
+                        f"this is key noise (JPEG compression or a slightly off "
+                        f"key), not content — rerun with --tolerance "
+                        f"{distance + _KEY_DRIFT_MARGIN} or higher"
+                    )
             else:
                 findings.append(
                     f"{label}: content reaches the {'/'.join(touched_edges)} "
@@ -563,9 +573,12 @@ def _edge_drift(
     trim_mask: Optional[Image.Image],
     diff: Optional[Image.Image],
     touched_edges: list[str],
-) -> Optional[tuple[int, int]]:
-    """Return (pixel count, max key distance) when the touched edges hold only
-    a few near-key pixels, or None when real content reaches an edge."""
+) -> Optional[tuple[int, int, bool]]:
+    """Return (pixel count, max key distance, isolated) when every pixel on
+    the touched edges stays near the key, or None when real content reaches
+    an edge. ``isolated`` is True for a handful of stray pixels; False means
+    the whole edge is near-key noise (JPEG ringing, a slightly off key), which
+    is still keying drift rather than content."""
     if trim_mask is None or diff is None:
         return None
     width, height = trim_mask.size
@@ -581,12 +594,12 @@ def _edge_drift(
     if "bottom" in touched_edges:
         coords.update((x, height - 1) for x in range(width))
     hits = [diff_px[x, y] for x, y in coords if mask_px[x, y]]
-    if not hits or len(hits) > _EDGE_DRIFT_MAX_PIXELS:
+    if not hits:
         return None
     distance = max(hits)
     if distance > _KEY_DRIFT_MAX_TOLERANCE:
         return None
-    return len(hits), distance
+    return len(hits), distance, len(hits) <= _EDGE_DRIFT_MAX_PIXELS
 
 
 def _log_keying_findings(

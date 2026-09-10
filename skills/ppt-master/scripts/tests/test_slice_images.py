@@ -130,6 +130,48 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertIn("--bg #57B265 --tolerance 12", result.stderr)
             self.assertFalse((output_dir / "element.png").exists())
 
+    def test_strict_alpha_names_edge_wide_near_key_noise_as_key_noise(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            output_dir = root / "output"
+            # A slightly off, noisy key (as a JPEG round-trip leaves it) with
+            # one element well clear of every cell edge.
+            image = Image.new("RGB", (120, 120), (2, 253, 2))
+            px = image.load()
+            for y in range(120):
+                for x in range(120):
+                    if (x * 7 + y * 13) % 5 == 0:
+                        px[x, y] = (6, 240, 8)
+            draw = ImageDraw.Draw(image)
+            draw.rectangle((40, 40, 80, 80), fill=(170, 40, 55))
+            image.save(sheet_path)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    str(sheet_path),
+                    "--grid", "1x1",
+                    "--names", "element",
+                    "--trim",
+                    "--alpha",
+                    "--strict-alpha",
+                    "--bg", "#00FF00",
+                    "--tolerance", "12",
+                    "--output", str(output_dir),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("this is key noise", result.stderr)
+            self.assertNotIn("content reaches the", result.stderr)
+            self.assertIn("Suggested rerun:", result.stderr)
+            self.assertFalse((output_dir / "element.png").exists())
+
 
 class ImageOrientationProcessingTests(unittest.TestCase):
     def test_compression_applies_orientation_and_preserves_image_format(self) -> None:

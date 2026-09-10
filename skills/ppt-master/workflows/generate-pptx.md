@@ -196,7 +196,7 @@ Read ${SKILL_DIR}/references/image-base.md          # always
 | Row | Additional reference | Run |
 |---|---|---|
 | Prepared derivative | `image-generator.md` §4.4 only for registered layers | after its canonical source is terminal: `python3 ${SKILL_DIR}/scripts/image_treat.py ...` for blur, desaturation/grayscale, duotone, brightness, contrast, or `--fit WxH` downscaling to the planned size, or the §4.4 preparation path |
-| `ai` | `image-generator.md` | write `images/image_prompts.json`, render `image_prompts.md` with `image_gen.py --render-md`, then follow §7 Path Selection — `image_gen.py --manifest` is Path A only, `host-native` is Path B and skips `--manifest`, `manual` writes prompts and stops; the recorded `design_spec.md §I` path wins over `IMAGE_BACKEND` |
+| `ai` | `image-generator.md` | write `images/image_prompts.json`, render `image_prompts.md` with `image_gen.py --render-md images/image_prompts.json`, then follow §7 Path Selection — `image_gen.py --manifest` is Path A only, `host-native` is Path B and skips `--manifest`, `manual` writes prompts and stops; the recorded `design_spec.md §I` path wins over `IMAGE_BACKEND` |
 | `web` | `image-searcher.md` | `python3 ${SKILL_DIR}/scripts/image_search.py ...`; with ≥2 rows write `images/image_queries.json` and run `--batch` once |
 | `slice` | `image-generator.md` §4.3 | after the parent sheet is `Generated`: `python3 ${SKILL_DIR}/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha` |
 | `user` / `placeholder` | — | skip |
@@ -279,7 +279,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
   --canonical-authoring --stage early --json
 ```
 
-`--json` writes the report file (`validation/svg_quality_early_report.json`); stdout stays the human-readable summary and is never parsed as JSON. The stage checks every authored page so far under the partial-roster rules. Repair under the consolidated-pass discipline in [`executor-base.md`](../references/executor-base.md) §3; a still-failing verification is the next batch. If terminal output is truncated, read only the issue arrays from `validation/svg_quality_early_report.json`. The gate validates the method, not just the pages — emit one line before editing:
+`--json` writes the report file (`validation/svg_quality_early_report.json`); stdout stays the human-readable summary and is never parsed as JSON. The stage checks every authored page so far under the partial-roster rules. Repair under the consolidated-pass discipline in [`executor-base.md`](../references/executor-base.md) §3; a still-failing verification is the next batch. If terminal output is truncated, extract only `categories.blocking.issues` (and `categories.introduced.issues` when needed) from `validation/svg_quality_early_report.json`. The gate validates the method, not just the pages — emit one line before editing:
 
 ```
 gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>

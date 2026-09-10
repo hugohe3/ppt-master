@@ -30,13 +30,13 @@
     ]
   },
   "duty-manual": {
-    "summary": "把散落规则收敛到一条判断主轴上的技术手册方法，暗场栅格、机制先行、每条规则可追回其机制页",
+    "summary": "Technical-manual method that gathers scattered rules onto one judgment axis — dark-field grid, mechanism before rule, every rule traceable to its mechanism page.",
     "keywords": [
-      "技术手册",
-      "暗场栅格",
-      "机制先行",
-      "判断主轴",
-      "线稿图解"
+      "technical-manual",
+      "dark-field-grid",
+      "mechanism-first",
+      "judgment-axis",
+      "line-drawing"
     ]
   },
   "incident-postmortem": {

@@ -1,11 +1,11 @@
 ---
 style_id: duty-manual
 kind: style
-summary: 把散落规则收敛到一条判断主轴上的技术手册方法，暗场栅格、机制先行、每条规则可追回其机制页
-keywords: [技术手册, 暗场栅格, 机制先行, 判断主轴, 线稿图解]
+summary: Technical-manual method that gathers scattered rules onto one judgment axis — dark-field grid, mechanism before rule, every rule traceable to its mechanism page.
+keywords: [technical-manual, dark-field-grid, mechanism-first, judgment-axis, line-drawing]
 ---
 
-# 勤务手册 — Style Specification
+# Duty Manual — Style Specification
 
 > Method and design defaults only. No project communication contract, brand identity, page structure, or SVG prototypes.
 
@@ -13,97 +13,97 @@ keywords: [技术手册, 暗场栅格, 机制先行, 判断主轴, 线稿图解]
 
 | Property | Value |
 |---|---|
-| Style Name | 勤务手册 |
-| Best Fit | 需要把散落在多份材料里的规则、规范、操作条目收敛到一条可推导主轴上的技术材料、训练课件、作业规范讲解与内部技术分享；受众要能据此在现场自行判断，而不是背条文 |
-| Reusable Intent | 标题写成可判断的句子；机制先于规则；每一条规则都能追回它所依据的机制页；读者随时知道自己在主轴的哪个位置 |
-| Sources | 从一份已完成的技术分享材料提炼的方法与视觉默认；基底参考 instructional / pyramid（方法）、swiss-minimal / blueprint / dark-tech（视觉）、blueprint / vector-illustration / digital-dashboard（图像） |
+| Style Name | Duty Manual (勤务手册) |
+| Best Fit | Technical material, training courseware, operating-standard walkthroughs, and internal technical sharing that must gather rules, standards, and procedure items scattered across many documents onto one derivable axis; the audience must be able to judge on site from it rather than recite clauses |
+| Reusable Intent | Titles written as judgeable sentences; mechanism before rule; every rule traceable to the mechanism page it rests on; the reader always knows where on the axis they stand |
+| Sources | Method and visual defaults distilled from one finished technical-sharing deck; base references instructional / pyramid (method), swiss-minimal / blueprint / dark-tech (visual), blueprint / vector-illustration / digital-dashboard (image) |
 
 ## II. Communication Method
 
 - **Preferred Mode**: custom
 - **Mode References**: instructional, pyramid
-- **Mode Behavior**: 每一段开头先给判断句结论，再以「分解—展开—应用」三拍讲透机制：先给这一条的定义与代价，再给触发变化的条件，最后落到它所需的配置、器材与动作。全篇维持一条纵轴，任何一页都能回答「现在在哪一级、哪一步」。
-- **Argument Flow**: 先用可外部核验的规模事实确立「为什么值得重讲一次」，再分两段建立认知（对象的客观性质、对象的时间性），第三段给出贯穿全篇的判断主轴，其后各段是这条主轴的展开与保障，末段把规则收回到已讲过的机制。段落之间以「这条机制决定了下一段的顺序」这类因果句衔接，不用「接下来我们看」这类过场语。
-- **Page Message Discipline**: 一页一个可判断的主张，写在标题里；副标题承担该主张的一句话理由；正文只提供支撑这一主张的证据与限制。标题写成判断句而非名词短语——「入水是最后的手段」而不是「入水救援」。
-- **Claim Discipline**: 规则不以条文形式独立出现，必须先有承载它的机制页；引用规则时标出它追回的机制页码。凡是外部事实都写明来源与口径年份；本材料自建的框架、分级或归类要标明是整理而非来源原文。相互冲突的表述并列呈现并说明取舍依据，不静默择一。
+- **Mode Behavior**: Open every section with a judgment-sentence conclusion, then explain the mechanism in three beats — break down, expand, apply: first the item's definition and cost, then the conditions that trigger change, finally the configuration, equipment, and actions it requires. Keep one vertical axis through the whole deck so any page can answer "which level, which step are we at now".
+- **Argument Flow**: First establish "why this deserves retelling" with externally verifiable scale facts, then build understanding in two sections (the object's objective nature, the object's behavior over time), then give the judgment axis that runs through the whole deck in the third section; later sections expand and safeguard that axis, and the closing section folds the rules back onto the mechanisms already taught. Link sections with causal sentences such as "this mechanism decides the order of the next section", never with filler transitions like "next let us look at".
+- **Page Message Discipline**: One judgeable claim per page, written in the title; the subtitle carries that claim's one-sentence reason; the body supplies only the evidence and limits that support the claim. Write titles as judgment sentences rather than noun phrases — "Entering the water is the last resort", not "In-water rescue".
+- **Claim Discipline**: A rule never appears as a free-standing clause; the mechanism page that carries it must come first, and any citation of a rule marks the mechanism page it traces to. Every external fact names its source and reference year; frameworks, gradings, or classifications built for this material are marked as compiled rather than quoted from a source. Conflicting statements are presented side by side with the basis for the choice, never silently resolved.
 
 ## III. Page Role Vocabulary
 
 | Role | Communication Job | Evidence Obligation | Composition Tendency |
 |---|---|---|---|
-| 冲击开篇 | 用规模事实确立议题值得重讲 | 每个数字带来源与口径年份；不采用无出处的流传数字 | 少量大字号数字占据主区，其余大面积留白，底部一句翻转认知的结论 |
-| 段落章节页 | 标出进入哪一段、本段要回答什么 | 列出本段条目但不承诺顺序与页数 | 满版影像压深色蒙版，超大段落编号与判断句并置 |
-| 机制页 | 讲透一条机制，使后续规则可被推导 | 因果链完整；给出行动含义而不只是现象 | 图解与文字左右或上下分置，图解占近半幅，文字给判断句与含义 |
-| 主轴总览 | 一次性给出贯穿全篇的判断顺序 | 每一级的定义，以及随级递增的两条代价 | 主视觉占半幅，另半幅为分级索引与国际对应框架 |
-| 轴上分级页 | 讲清这一级的定义、代价与升级触发 | 适用条件、禁忌、升级触发三者齐全 | 标题旁与页面左缘同时标出当前位置 |
-| 技术展开页 | 展开一项具体做法并标明它属于主轴哪一级 | 注意要点与适用范围成对出现 | 图解与要点分置，页面右上以标牌标出所属级别 |
-| 清单表页 | 让读者逐项对照 | 每项写出它挡住的风险或支撑的级别，而非只有名称 | 表格占主区，前提项以底色区分，整体形象图置于侧栏 |
-| 岗位配置表页 | 说明岗位、人数与职责 | 人数门槛与岗位职责成对出现，门槛写明是成立条件 | 表格加人数徽记，关键岗位以文字色强调 |
-| 程序序列页 | 给出不可调换的步骤顺序 | 每步的核心动作与它为何不能后置 | 序列纵向排列，实景影像锚定其中一步 |
-| 反例页 | 指认一个越出主轴的常见做法并拆解其失败机制 | 至少两条机制加一次对前文数据的回指，并给出替代做法 | 单一主视觉压禁止标记，左缘指示条整体转为警示色 |
-| 收束规范页 | 把规则收回到已讲过的机制 | 每条规则可追回其机制页；标出反复回到的那几条 | 多列密排，回指项以强调色标出 |
+| Impact opener | Establish with scale facts that the topic deserves retelling | Every number carries a source and reference year; no unsourced folklore figures | A few large-size numbers occupy the main zone with generous white space elsewhere; one perception-flipping conclusion at the bottom |
+| Section divider | Mark which section begins and what it answers | List the section's items without promising order or page count | Full-bleed image under a dark scrim; an oversized section number beside the judgment sentence |
+| Mechanism page | Explain one mechanism fully so later rules can be derived | Complete causal chain; state the implication for action, not only the phenomenon | Diagram and text split left/right or top/bottom, the diagram near half the page, the text giving the judgment sentence and its implication |
+| Axis overview | Give the judgment order that runs through the deck in one view | Each level's definition plus the two costs that rise with level | Main visual on one half; on the other half the level index and the corresponding international framework |
+| Level page | Explain one level's definition, cost, and escalation trigger | Applicability, contraindications, and escalation trigger all present | Current position marked both beside the title and on the page's left edge |
+| Technique page | Expand one concrete practice and mark which axis level it belongs to | Cautions and scope of application appear as a pair | Diagram and key points split; a plate at the top right names the level |
+| Checklist table page | Let the reader verify item by item | Each item states the risk it blocks or the level it supports, not only its name | Table in the main zone, prerequisite rows tinted, an overall image in the side column |
+| Staffing table page | State posts, headcount, and responsibilities | Headcount thresholds and post duties appear as pairs; thresholds are stated as conditions of validity | Table with headcount badges; key posts emphasized through text color |
+| Procedure sequence page | Give a step order that cannot be reshuffled | Each step's core action and why it cannot come later | Steps stacked vertically, a real photograph anchoring one of them |
+| Counterexample page | Name one common practice that leaves the axis and dissect why it fails | At least two mechanisms plus one callback to earlier data, with the replacement practice | A single main visual under a prohibition mark; the left-edge indicator bar turns wholly to the warning color |
+| Closing standards page | Fold the rules back onto the mechanisms already taught | Every rule traces to its mechanism page; the few mechanisms returned to repeatedly are marked | Dense multi-column layout, callback items in the emphasis color |
 
 ## IV. Evidence & Data Expression
 
-- **Argument Trace**: 规范条目页与机制页之间保持双向可追：机制页在页脚写出它支撑哪条规则，规范页在条目旁标出它追回的机制页码。读者可以从任一端走到另一端。
-- **Charts**: 量级差异悬殊的序列不要压进同一坐标轴——把可比的序列画进图，把量级远大的那一项拆成独立数值块并注明倍数关系，信息不丢而图仍可读。数据点按刻度精确计算，不目测。非线性关系在标题里直接说出结论（「翻一倍，翻四倍」）。
-- **Tables**: 用横向行线而非满格线；表头以底色与字重区分，关键行用文字色而非底色强调，避免与表头混淆。数值右对齐、单位一致。深色底材料的原生表格必须显式声明单元格底色，否则导出后会变成白底浅字。
-- **Sources**: 数据页页脚写来源名与口径年份；同一指标存在多个口径时并列写出并说明采用哪一个。流传广但查无出处的数字宁可不用，并在备注里说明为何不用。
-- **Native Editability**: 清单、岗位配置、对照矩阵这类会被下游修改的表格优先做成原生可编辑对象；纯装饰性的微型图示不必如此。数据对象的可见回退与元数据同时书写，保持一致。
+- **Argument Trace**: Keep standards pages and mechanism pages traceable both ways: a mechanism page's footer names the rule it supports, and a standards page marks the mechanism page each item traces to. The reader can walk from either end to the other.
+- **Charts**: Never force series of wildly different magnitude onto one axis — chart the comparable series, pull the far larger item into a separate numeric block with its multiple stated, so nothing is lost and the chart stays readable. Compute data points exactly from the scale, never by eye. State the conclusion of a non-linear relationship directly in the title ("double it, and it quadruples").
+- **Tables**: Horizontal row rules rather than full grids; distinguish the header by fill and weight, emphasize key rows through text color rather than fill so they are not confused with the header. Right-align numbers and keep units consistent. A native table on a dark deck must declare its cell fills explicitly, or it exports as light text on a white ground.
+- **Sources**: Data pages carry the source name and reference year in the footer; when one indicator has several definitions, list them together and say which is used. A widely circulated figure with no traceable source is left out, with a note explaining why.
+- **Native Editability**: Tables that downstream readers will edit — checklists, staffing tables, comparison matrices — are native editable objects first; purely decorative micro-diagrams need not be. Write a data object's visible fallback and its metadata together and keep them consistent.
 
 ## V. Visual System Defaults
 
 - **Preferred Visual Style**: custom
 - **Visual Style References**: swiss-minimal, blueprint, dark-tech
-- **Visual Style Behavior**: 暗场上的严格栅格手册。swiss-minimal 负责基准栏、左对齐硬边与大留白；blueprint 负责发丝网格、引出线标注与技术剖面式的图解排版；dark-tech 负责暗场上的荧光强调与几何精度。容器一律细描边直角方框，圆角为零，不用投影与柔光。页面左缘固定一条分段进度指示条，当前段以强调色点亮，越界内容整条转为警示色。
-- **Composition**: 内容区以左上起手：左缘指示条先回答「现在在哪」，标题横贯上部给出判断句，证据与图解向右下展开，页面底部收一句可执行结论。图文分置在相邻页之间左右交替，形成阅读节奏。
-- **Density**: 机制页与表格页密排，段落章节页与反例页留白；每一段之内至少有一页明显低密度，作为呼吸。密度服从信息重量，不为填满版面而增加条目。
-- **Decoration**: 装饰即标注——发丝网格、引出线、刻度、指示条本身就是信息载体。不使用与信息无关的图形点缀、渐变色块与柔光。
-- **Color Behavior**: 大面积暗场底，结构线与次级标题用一个冷色，两个强调色分工固定——一个承担关键量与正确做法，另一个承担危险、禁止与最高风险级，两者不互换、不并用于同一语义。强调色只出现在关键数字与结论词上，不铺面。
-- **Typography Character**: 中性无衬线承担全部结构文本，让判断句本身产生力度；数字与级别标记用一款极重的无衬线取得重量对比；表格与图表数值用等线字保证数字对齐。标题不使用装饰字体与文字特效。
+- **Visual Style Behavior**: A strict-grid manual on a dark field. swiss-minimal owns the baseline columns, hard left-aligned edges, and generous space; blueprint owns the hairline grid, leader-line callouts, and cross-section-style diagram layout; dark-tech owns the fluorescent emphasis and geometric precision on the dark ground. Containers are hairline-stroked square boxes with zero corner radius and no drop shadow or glow. A section progress indicator bar sits fixed on the page's left edge, the current section lit in the emphasis color; on off-axis content the whole bar turns to the warning color.
+- **Composition**: The content zone starts at the top left: the left-edge indicator answers "where are we" first, the title runs across the top with the judgment sentence, evidence and diagrams unfold toward the bottom right, and the page closes with one actionable conclusion at the bottom. Image and text swap sides between adjacent pages to give the reading a rhythm.
+- **Density**: Mechanism and table pages are dense; section dividers and counterexample pages breathe; every section holds at least one visibly low-density page as a rest. Density follows information weight; never add items to fill a page.
+- **Decoration**: Decoration is annotation — the hairline grid, leader lines, tick marks, and the indicator bar are themselves information carriers. No ornament unrelated to the information, no gradient blocks, no soft glow.
+- **Color Behavior**: A large dark-field ground; structure lines and secondary headings in one cool color; two accents with a fixed division of labor — one carries key quantities and correct practice, the other carries danger, prohibition, and the highest risk level — never swapped and never used together for one meaning. Accents appear only on key numbers and conclusion words, never as fills across areas.
+- **Typography Character**: A neutral sans-serif carries all structural text so the judgment sentences supply the force themselves; numbers and level marks use one very heavy sans-serif for weight contrast; table and chart values use a monospaced-figure face so digits align. Titles use no display faces and no text effects.
 
 ### Fallback Color Scheme
 
 | Role | HEX | Purpose |
 |---|---|---|
-| background | #0E1B2E | 全篇暗场底 |
-| secondary_bg | #1A2C46 | 面板、表头、图解衬底 |
-| primary | #4A9FD8 | 结构线、次级标题、图表主序列 |
-| accent | #D8F04A | 关键量、当前级别、正确做法 |
-| secondary_accent | #E85D2B | 危险、禁止、最高风险级 |
-| body_text | #DCE6F0 | 正文与主要标签 |
-| secondary_text | #8FA3BC | 图注、脚注、来源行 |
-| divider | #2A3F5C | 分隔线与容器描边 |
+| background | #0E1B2E | Dark field across the deck |
+| secondary_bg | #1A2C46 | Panels, table headers, diagram backing |
+| primary | #4A9FD8 | Structure lines, secondary headings, main chart series |
+| accent | #D8F04A | Key quantities, current level, correct practice |
+| secondary_accent | #E85D2B | Danger, prohibition, highest risk level |
+| body_text | #DCE6F0 | Body text and main labels |
+| secondary_text | #8FA3BC | Captions, footnotes, source lines |
+| divider | #2A3F5C | Rules and container strokes |
 
 ### Fallback Typography
 
 | Role | Primary | Fallback Tail | Character |
 |---|---|---|---|
-| title | Microsoft YaHei | Arial, sans-serif | 中性无衬线，方正精确，由判断句本身承担力度 |
-| body | Microsoft YaHei | Arial, sans-serif | 与标题同族，长段机制说明不疲劳 |
-| display | Arial Black | sans-serif | 极重无衬线，承担段落编号、级别标记与冲击数字 |
-| data | Arial | Microsoft YaHei, sans-serif | 等线数字，表格与图表内数值等宽等高 |
+| title | Microsoft YaHei | Arial, sans-serif | Neutral sans-serif, square and precise; the judgment sentence carries the force |
+| body | Microsoft YaHei | Arial, sans-serif | Same family as the title; long mechanism passages read without fatigue |
+| display | Arial Black | sans-serif | Very heavy sans-serif for section numbers, level marks, and impact numbers |
+| data | Arial | Microsoft YaHei, sans-serif | Lining figures; table and chart values align in width and height |
 
-供给的 Brand 或 Deck 身份会整体替换以上兜底配色与字体，方法与版面规则不受影响。
+A supplied Brand or Deck identity replaces this fallback palette and typography wholesale; the method and layout rules are unaffected.
 
 ## VI. Image & Icon Direction
 
 - **Preferred Image Rendering**: custom
 - **Image Rendering References**: blueprint, vector-illustration, digital-dashboard
-- **Image Rendering Behavior**: 实底上的等宽白线技术线稿。blueprint 负责单线、引出线与剖面式取景；vector-illustration 负责干净的平面主体与无渐变填色；digital-dashboard 负责荧光标注色与刻度式数值呈现。主体以均匀细线勾勒不作填色，流动以平行流线与箭头表示，只用两个强调色分别承担关键量与危险，无渐变、无阴影、无景深、图内无文字。
-- **Image Usage**: 机制类页面由线稿图解承担机制本身，实景影像承担证据与场景锚定，两者不互相替代——讲清原理用图解，证明确有其事用实拍。段落章节页用满版实景压蒙版建立段落边界。
-- **Image Treatment**: 实景一律硬边直角嵌入，不做羽化、圆形裁切与倾斜；需要文字压在影像上时用方向性蒙版而非整幅均匀压暗。同一批线稿图解保持同一渲染，新增图必须能与既有图并排而看不出批次差异——这条优先于单张图的表现力。
-- **Icon Treatment**: 细线描边图标，与线稿图解同族；只用于分类与状态提示，不承担机制解释；投影与打印场景线宽不低于 2。
+- **Image Rendering Behavior**: Uniform-weight white technical line drawings on a solid ground. blueprint owns the single line, leader lines, and cross-section framing; vector-illustration owns clean flat subjects and gradient-free fills; digital-dashboard owns the fluorescent annotation colors and scale-style numeric display. Subjects are outlined in even thin lines without fill, flow is shown with parallel streamlines and arrows, only the two accents are used — one for key quantities, one for danger — with no gradient, no shadow, no depth of field, and no text inside the image.
+- **Image Usage**: Mechanism pages carry the mechanism through line diagrams; real photographs carry evidence and scene anchoring; neither replaces the other — explain a principle with a diagram, prove it happened with a photograph. Section dividers use a full-bleed photograph under a scrim to set the section boundary.
+- **Image Treatment**: Photographs are always inset hard-edged and square-cornered, never feathered, circle-cropped, or tilted; where text must sit over an image use a directional scrim rather than dimming the whole frame evenly. One batch of line diagrams keeps one rendering; a new diagram must sit beside the existing ones without a visible batch difference — this outranks the expressiveness of any single image.
+- **Icon Treatment**: Thin-stroke icons of the same family as the line diagrams; used only for category and status cues, never to explain a mechanism; stroke width no thinner than 2 for projection and print.
 
 ## VII. Review Focus
 
 <!-- visual-review-trigger: explicit-user-only -->
 > Apply only after the user explicitly activates visual review. It never triggers that stage.
 
-- 标题是否为可判断的句子，而不是名词短语
-- 每条规则条目是否能追回它所依据的机制页
-- 左缘进度指示条的当前位置是否与页面内容一致，越界内容是否已转为警示色
-- 两个强调色的语义分工是否被守住，是否出现互换或同页混用
-- 深色底的原生表格是否显式声明了单元格底色
-- 量级悬殊的数据是否被压进同一坐标轴而导致小量级序列不可读
-- 新增线稿图解与既有图解并排时是否存在批次差异
+- Titles are judgeable sentences rather than noun phrases
+- Every rule item traces back to the mechanism page it rests on
+- The left-edge progress indicator's current position matches the page content, and off-axis content has turned it to the warning color
+- The two accents keep their semantic division, with no swap and no mixing on one page
+- Native tables on the dark ground declare their cell fills explicitly
+- Data of very different magnitude is not forced onto one axis so that the small series becomes unreadable
+- A new line diagram placed beside the existing ones shows no batch difference

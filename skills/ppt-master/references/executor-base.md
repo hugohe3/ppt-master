@@ -71,7 +71,7 @@ Read this before §1: the expression vocabulary every page draws from — what e
 | Elevated primary object | The one card, image, or CTA that sits above the page | `softShadow` at resting opacity on that object; peers stay flat |
 | Duotone or brand-wash image | A photo that must join the deck palette instead of fighting it | Wash gradient over the picture, or a prepared duotone derivative ([`svg-effects.md`](./svg-effects.md) §6.5 / §6.12) |
 
-**Reference — layout structures (starting points; proportion follows information weight)**: 16:9 values for 1280×720 — safe area 1200×640 with 40 px margins; title band ≈ 100 px, content field ≈ 500 px, footer ≈ 40 px.
+**Reference — layout structures (starting points; proportion follows information weight)**: 16:9 values for 1280×720 — safe area 1200×640 with 40 px margins; title band ≈ 100 px, content field ≈ 500 px, footer ≈ 40 px. 4:3 values for 1024×768 — safe area 944×688 with 40 px margins; title band ≈ 90 px, content field ≈ 540 px, footer ≈ 40 px; the field is 256 px narrower than 16:9, so a text column beside an image needs ≥ 520 px or the page stacks top/bottom.
 
 | Content relationship | Useful starting structure | Starting geometry |
 |---|---|---|
@@ -164,7 +164,7 @@ Repeating symmetric card grids without a page job is the failure mode these stru
 | Activation | Only an explicit user motion instruction, an enabled Custom Animations outcome, or an existing `animations.json`; a §IX Motion suggestion alone does not activate it |
 | Missing state | A deck exported without both states cannot gain the motion by a flag |
 | Extra page | Adding a page is a §IX roster change and returns to Strategist |
-| Endpoint id | Fix the first endpoint's direct-root `<g id>` when that page is drawn and record the intended partner id in `notes/total.md`; the next page reuses it, so no endpoint is renamed after both pages exist (a rename reruns the gate) |
+| Endpoint id | Fix the first endpoint's direct-root `<g id>` when that page is drawn and record the intended partner id with `workflow_log.py` (never in `notes/total.md`, which is read verbatim by TTS); the next page reuses it, so no endpoint is renamed after both pages exist (a rename reruns the gate) |
 
 ---
 
