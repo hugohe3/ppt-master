@@ -963,21 +963,34 @@ def parse_data_string(data_str: str) -> Dict[str, float]:
 
 
 def parse_xy_data_string(data_str: str) -> List[Tuple[float, float]]:
-    """Parse XY data string in 'x1:y1,x2:y2' format"""
-    result = []
+    """Parse XY data string in 'x1:y1,x2:y2' format.
+
+    A categorical series (`K:45.6,1:38.7,…`, `2018-19:26.4,…`) maps its labels
+    to the ordinals 1..n, the same slot model `calc bar` uses, so a line or
+    area chart over school years or grades verifies as drawn. A value that
+    cannot be read is an error rather than a silently dropped point: a
+    verifier that changes the point count verifies a different chart.
+    """
+    pairs: List[Tuple[str, float]] = []
     for item in data_str.split(','):
         item = item.strip()
         if not item:
             continue
-        if ':' in item:
-            x, y = item.split(':', 1)
-            try:
-                result.append((float(x.strip()), float(y.strip())))
-            except ValueError:
-                print(f"[Warning] Unable to parse coordinates: '{item}', skipped")
-        else:
-            print(f"[Warning] Invalid format (expected 'x:y'): '{item}'")
-    return result
+        if ':' not in item:
+            raise ValueError(f"Invalid format (expected 'x:y'): '{item}'")
+        x, y = item.rsplit(':', 1)
+        try:
+            pairs.append((x.strip(), float(y.strip())))
+        except ValueError as exc:
+            raise ValueError(f"Unable to parse value: '{item}'") from exc
+    try:
+        return [(float(x), y) for x, y in pairs]
+    except ValueError:
+        print(
+            f"[Note] Category axis: {len(pairs)} labels mapped to ordinals 1..{len(pairs)} "
+            "(pass --x-range=0.5,N+0.5 to centre them in equal slots)"
+        )
+        return [(float(index), y) for index, (_label, y) in enumerate(pairs, start=1)]
 
 
 def parse_tuple(s: str) -> Tuple[float, ...]:
@@ -1168,7 +1181,11 @@ def interactive_mode() -> None:
                 canvas = input("Canvas format [ppt169]: ").strip() or 'ppt169'
                 coord = CoordinateSystem(canvas)
                 calc = LineChartCalculator(coord)
-                data = parse_xy_data_string(data_str)
+                try:
+                    data = parse_xy_data_string(data_str)
+                except ValueError as exc:
+                    print(f"[Error] {exc}")
+                    continue
                 points = calc.calculate(data)
                 print()
                 print(calc.format_table(points))
@@ -1458,7 +1475,10 @@ Common commands:
             canvas = args.canvas if hasattr(args, 'canvas') else 'ppt169'
             coord = CoordinateSystem(canvas, chart_area)
             calc = LineChartCalculator(coord)
-            data = parse_xy_data_string(args.data)
+            try:
+                data = parse_xy_data_string(args.data)
+            except ValueError as exc:
+                parser.error(f'calc line --data: {exc}')
 
             x_range = parse_tuple(args.x_range) if args.x_range else None
             y_range = parse_tuple(args.y_range) if args.y_range else None

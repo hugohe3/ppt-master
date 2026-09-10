@@ -51,6 +51,8 @@ _CALIBRATION_CJK_SAMPLE = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒�
 _CALIBRATION_LATIN_SAMPLE = 'Clear Slides Make Big Ideas Easy to See.'
 _CALIBRATION_CAPS_SAMPLE = 'CLEAR SLIDES MAKE BIG IDEAS EASY TO SEE.'
 _CALIBRATION_DIGITS_SAMPLE = '0123456789'
+# A source line: dataset ids, years, brackets and caps mixed into prose.
+_CALIBRATION_CITATION_SAMPLE = 'NYC DOE, dataset sgsi-66kk (2018-19 to 2022-23), v2.1'
 _CORE_CALIBRATION_ROLES = ('body', 'title', 'subtitle', 'annotation')
 _SLIDE_HEADING_RE = re.compile(
     r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+|NN)\b.*$',
@@ -506,6 +508,7 @@ def _calibration_payload(
     cjk_length = len(split_project_text_clusters(_CALIBRATION_CJK_SAMPLE))
     latin_length = len(split_project_text_clusters(_CALIBRATION_LATIN_SAMPLE))
     digits_length = len(split_project_text_clusters(_CALIBRATION_DIGITS_SAMPLE))
+    citation_length = len(split_project_text_clusters(_CALIBRATION_CITATION_SAMPLE))
     role_rows = {}
     for name, family, size in roles:
         weight = weights.get(name, 'normal')
@@ -514,6 +517,7 @@ def _calibration_payload(
         latin_width = measure_text(_CALIBRATION_LATIN_SAMPLE, **style)
         caps_width = measure_text(_CALIBRATION_CAPS_SAMPLE, **style)
         digits_width = measure_text(_CALIBRATION_DIGITS_SAMPLE, **style)
+        citation_width = measure_text(_CALIBRATION_CITATION_SAMPLE, **style)
         role_rows[name] = {
             'family': family,
             'size': size,
@@ -522,6 +526,7 @@ def _calibration_payload(
             'latin_chars_per_100px': round(100.0 * latin_length / latin_width, 1),
             'caps_chars_per_100px': round(100.0 * latin_length / caps_width, 1),
             'digits_chars_per_100px': round(100.0 * digits_length / digits_width, 1),
+            'citation_chars_per_100px': round(100.0 * citation_length / citation_width, 1),
             'longest_planned_line': longest[name],
         }
     return {
@@ -556,7 +561,7 @@ def _fallback_notes(
 def _render_calibration_table(payload: dict[str, object], *, include_outline: bool) -> str:
     role_rows = payload['roles']
     assert isinstance(role_rows, dict)
-    headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px', 'CAPS ≈chars/100px', 'DIGITS ≈chars/100px']
+    headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px', 'CAPS ≈chars/100px', 'DIGITS ≈chars/100px', 'CITE ≈chars/100px']
     if include_outline:
         headers.append('longest planned line (px, slide, text)')
     lines = [
@@ -574,6 +579,7 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             f'{raw_row["latin_chars_per_100px"]:.1f}',
             f'{raw_row["caps_chars_per_100px"]:.1f}',
             f'{raw_row["digits_chars_per_100px"]:.1f}',
+            f'{raw_row.get("citation_chars_per_100px", 0.0):.1f}',
         ]
         if include_outline:
             planned = raw_row['longest_planned_line']
@@ -606,7 +612,8 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
         'estimator (headroom included); the checker measures each real line '
         'glyph by glyph, so capital-heavy words (WebGPU, GDP), digits (1935, '
         '83.2%) and wide letters run wider than the Latin rate — use the CAPS '
-        'rate for acronyms and uppercase, the DIGITS rate for numbers, and keep '
+        'rate for acronyms and uppercase, the DIGITS rate for numbers, the CITE '
+        'rate for source lines (dataset ids, years, brackets), and keep '
         'about 5% below any bounds width.'
     )
     return '\n'.join(lines) + '\n'

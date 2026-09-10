@@ -38,7 +38,7 @@ Before editing `animations.json`, read every semantic file that exists — `desi
 | Sidecar with no new instruction | Validate and preserve unchanged; repair an invalid sidecar/group reference before export |
 | Ambiguous request | Default asks regenerate-or-modify; Quick decides from the request, SVG, and sidecar |
 
-Unless an all-motion disable bypasses it, validate an existing sidecar first: `python3 skills/ppt-master/scripts/animation_config.py validate <project_path>`.
+Unless an all-motion disable bypasses it, validate an existing sidecar first: `python3 ${SKILL_DIR}/scripts/animation_config.py validate <project_path>`.
 
 **Hard rule**: semantic files determine motion intent and unit boundaries; the current `svg_output/*.svg` supplies visible content and implementation structure, and its existing `<g>` hierarchy is never accepted as the plan merely because it exists.
 
@@ -103,13 +103,13 @@ Only after visual transition, lifecycle, effect, order, and timing are complete,
 
 ## 5. Validate and Return to Generate Export
 
-When `animations.json` was created or changed after §1, run `python3 skills/ppt-master/scripts/animation_config.py validate <project_path>`, then return to the owning export path — Default [`generate-pptx.md`](../generate-pptx.md) Step 7.1; Quick [`quick-generate.md`](../profiles/quick-generate.md) §4 — both of which read the sidecar automatically. If §2 changed `svg_output/`, complete the owning route's final SVG rerun before returning; never finalize or export from this stage.
+When `animations.json` was created or changed after §1, run `python3 ${SKILL_DIR}/scripts/animation_config.py validate <project_path>`, then return to the owning export path — Default [`generate-pptx.md`](../generate-pptx.md) Step 7.1; Quick [`quick-generate.md`](../profiles/quick-generate.md) §4 — both of which read the sidecar automatically. If §2 changed `svg_output/`, complete the owning route's final SVG rerun before returning; never finalize or export from this stage.
 
 **Validation**: every invalid field, target, or Morph pair fails rather than falling back ([`pptx-animations.md`](../../scripts/docs/pptx-animations.md) §6). A passing sidecar and read-back prove the PPTX configuration, not an exported MP4 audio track.
 
 ### 5.1 Optional Video Motion Handoff
 
-When a downstream renderer will enhance the deck, have Step 7.3 append `--conversion-trace`, then derive the plan from the final resolved trace (the `--recorded-narration` trace for narrated output): `python3 skills/ppt-master/scripts/video_motion_plan.py <project_path>/validation/<output_stem>.trace.json -o <project_path>/validation/video_motion_plan.json --style adaptive --force`. The plan locks identity, effect, direction, order, bounds, and timing and may refine renderer parameters only ([`video-motion-plan.md`](../../scripts/docs/video-motion-plan.md)). With resolved sound cues on the native-export branch, the same final trace and narrated PPTX feed `video_sound_mix.py`; an explicit slideshow capture records native cue playback and uses no trace for mixing.
+When a downstream renderer will enhance the deck, have Step 7.3 append `--conversion-trace`, then derive the plan from the final resolved trace (the `--recorded-narration` trace for narrated output): `python3 ${SKILL_DIR}/scripts/video_motion_plan.py <project_path>/validation/<output_stem>.trace.json -o <project_path>/validation/video_motion_plan.json --style adaptive --force`. The plan locks identity, effect, direction, order, bounds, and timing and may refine renderer parameters only ([`video-motion-plan.md`](../../scripts/docs/video-motion-plan.md)). With resolved sound cues on the native-export branch, the same final trace and narrated PPTX feed `video_sound_mix.py`; an explicit slideshow capture records native cue playback and uses no trace for mixing.
 
 ---
 

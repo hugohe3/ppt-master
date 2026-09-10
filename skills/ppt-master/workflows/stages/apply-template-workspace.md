@@ -44,7 +44,7 @@ Read [`templates/README.md`](../../templates/README.md), then only the README fo
 A Layout created with `mirror` stays eligible only when its source is brand-neutral and application-neutral; keep a branded or application-bearing source as a Deck or re-author it through `standard` / `fidelity`. Before mapping any workspace, run the shared package validator from its root — Brand/Style are roster-free, the active structure validates its roster, a shadowed Deck still validates its contract; any error blocks installation:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode --canonical-authoring
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode --canonical-authoring
 ```
 
 ## 3. Structured Preflight
@@ -71,7 +71,7 @@ Validate each normalized root once. The effective structural owner is Layout whe
 **Command**: the mapping, provenance line, asset copy, collision and duplicate-kind refusal, and completion receipt below are one run of the install tool (add `--dry-run` to review the mapping first; `--skip-validation` only when the §2 checker already ran on that root in this turn); [`template-tools.md`](../../scripts/docs/template-tools.md#apply_templatepy) owns its behavior:
 
 ```bash
-python3 skills/ppt-master/scripts/apply_template.py <project_path> --root <workspace_root> [--root <workspace_root> ...]
+python3 ${SKILL_DIR}/scripts/apply_template.py <project_path> --root <workspace_root> [--root <workspace_root> ...]
 ```
 
 **Atomic install preflight**: resolve every source and destination path; enumerate the union mapping across all roots and across `templates/`, `images/`, `icons/`, mapping each source file at most once; resolve Layout-over-Deck precedence before building the map so the shadowed roster never enters it; reject every destination collision and duplicate kind before writing; write the accepted mapping once — never recursive copy as an implicit conflict policy. An input equal to the target project is consumed in place; if a selected Layout supersedes its in-place Deck roster, stage the mapping and replace the roster atomically.

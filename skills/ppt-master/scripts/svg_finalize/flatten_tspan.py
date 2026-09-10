@@ -264,7 +264,10 @@ def _build_paragraph_child_view(
 
     raw_lead = text_el.text or ""
     synthetic_first: ET.Element | None = None
-    if raw_lead.strip():
+    # A first visual line may also open with an inline run (a bold lead word)
+    # and no direct text; it is the same leading line with an empty prefix.
+    leads_with_inline_run = bool(direct_tspans) and not _is_new_line_tspan(direct_tspans[0])
+    if raw_lead.strip() or leads_with_inline_run:
         base_x_raw = get_attr(text_el, "x")
         if base_x_raw is None:
             return None

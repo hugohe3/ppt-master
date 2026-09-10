@@ -29,7 +29,7 @@ Both keep the JSON inside the SVG; `native_payloads.json.gz` is for opaque shape
 **Hard rule — selected-object authoring**: write the marker and JSON for every supported chart and pure text-grid table in the same edit — both are native-ready by default, and an unactivated marker changes no export, so never skip an eligible object. Default reads the key from §IX `Native-ready: <object-key>=yes|no; …`; Quick assigns the same page-local `kebab-case` key before drawing; the key is the marker group `id` and metadata `name`. A catalog `family/key`, §VII row, numeric content, or another ready object never implies eligibility; `=no` entries and incidental microvisuals stay on the fallback route; a legacy bare `Native-ready: yes|no` maps only to the page's sole eligible object. **MUST — atomic authoring**: one object's visible fallback, `data-pptx-replace-with` marker, and single JSON `<metadata>` child are one authoring unit written while the data is in context, never deferred to `verify-charts`, the final gate, or export. Then stamp SVG-first objects:
 
 ```bash
-python3 skills/ppt-master/scripts/stamp_native_fallbacks.py "<svg-file-or-directory>" --write   # read-only without --write; skips JSON-first
+python3 ${SKILL_DIR}/scripts/stamp_native_fallbacks.py "<svg-file-or-directory>" --write   # read-only without --write; skips JSON-first
 ```
 
 The hash is a synchronization receipt, not proof of semantic equivalence; never stamp stale JSON to satisfy validation.

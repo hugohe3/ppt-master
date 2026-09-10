@@ -3260,7 +3260,10 @@ class SVGQualityChecker:
             return None
         line_groups = None
         synthetic_first = None
-        if (text_el.text or '').strip():
+        leads_with_inline_run = (
+            cls._is_tspan(children[0]) and not cls._is_line_tspan(children[0])
+        )
+        if (text_el.text or '').strip() or leads_with_inline_run:
             if _classify_paragraph_block is None:
                 return None
             paragraph = _classify_paragraph_block(

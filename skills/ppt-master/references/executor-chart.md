@@ -69,7 +69,7 @@ After each page containing verified charts: `rg -n "chart-plot-area" <project_pa
 
 ---
 
-**ChartEx** (`waterfall`, `funnel`, `histogram`, `pareto`, `treemap`, `sunburst`, `box_whisker`) takes no `axes`, `plot_area`, or `data_labels`; values travel only as companion text, so draw no tick/value labels the payload cannot carry, or pick a classic type.
+**ChartEx** (`waterfall`, `funnel`, `histogram`, `pareto`, `treemap`, `sunburst`, `box_whisker`) takes no `axes`, `plot_area`, or `data_labels`; values travel only as companion text — one `notes[]` entry per drawn value label, no tick labels — or pick a classic type.
 
 ## 3. Verification Handoff
 
