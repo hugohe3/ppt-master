@@ -152,6 +152,23 @@ class ChartImportTests(unittest.TestCase):
             self.assertIn("[chart]", "".join(root.itertext()))
 
 
+class ChartExPayloadGuardTests(unittest.TestCase):
+    def test_chartex_refuses_a_classic_axes_block(self) -> None:
+        from svg_to_pptx.native_objects.chart_data import _chart_data
+
+        payload = {
+            "type": "waterfall",
+            "categories": ["Start", "Step", "End"],
+            "values": [10, 5, 15],
+            "axes": {"value": {"kind": "value", "minimum": 0, "maximum": 24}},
+        }
+        with self.assertRaises(RuntimeError) as caught:
+            _chart_data(payload)
+        self.assertIn("classic charts only", str(caught.exception))
+        payload.pop("axes")
+        self.assertEqual(_chart_data(payload)["kind"], "chartex")
+
+
 class CategoryOrderTests(unittest.TestCase):
     def test_bar_categories_read_top_down_with_value_axis_at_bottom(self) -> None:
         xml = _render(_bar_payload())

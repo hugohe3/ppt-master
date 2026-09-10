@@ -1597,6 +1597,12 @@ def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(
             "Native PPTX chart plot_area is supported for classic charts only"
         )
+    if payload.get("axes") is not None and chart_type in _CHARTEX_CHART_TYPES:
+        raise RuntimeError(
+            "Native PPTX chart axes are supported for classic charts only; "
+            f"a ChartEx {chart_type} chart draws its own axes and shows values "
+            "through companion text"
+        )
     if (
         chart_type not in _CATEGORY_CHART_TYPES | {"combo", "stock"} | _XY_CHART_TYPES
         and _data_labels_config(payload) is not None

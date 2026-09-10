@@ -69,6 +69,8 @@ After each page containing verified charts: `rg -n "chart-plot-area" <project_pa
 
 ---
 
+**ChartEx** (`waterfall`, `funnel`, `histogram`, `pareto`, `treemap`, `sunburst`, `box_whisker`) takes no `axes`, `plot_area`, or `data_labels`; values travel only as companion text, so draw no tick/value labels the payload cannot carry, or pick a classic type.
+
 ## 3. Verification Handoff
 
 Coordinate calibration is a conditional post-generation stage. After all SVG pages exist, run [`verify-charts`](../workflows/stages/verify-charts.md) whenever the active profile declares at least one page with value-driven chart geometry: Default enumerates Design Spec §IX (with the stage's legacy §VII fallback); Quick cross-checks still-active page decisions one-for-one against plot-area markers. Do not run `svg_position_calculator.py` during the initial draft; the stage calibrates completed geometry against the declared plot area, repairs genuine mismatches, and returns to the profile's checker order.
