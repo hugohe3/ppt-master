@@ -147,7 +147,11 @@ material, or texture inside editable glyphs, fill the `<text>` (or a
 non-positional `<tspan>`) with a registered single-image `<pattern>` marked
 `data-pptx-text-image-fill="stretch"` or `"tile"`. It exports as a PowerPoint
 run picture fill (`stretch` `Native-normalized`; `tile` needs visual review),
-not as a general SVG pattern; the text stays editable.
+not as a general SVG pattern; the text stays editable. The glyphs are the
+only thing showing the image, so the fill must read as one value against the
+ground — a near-uniform texture or material, not a scene, gradient, or
+anything with its own light and dark regions, which breaks the letterforms
+into unreadable patches (a 2026-09-10 cover title was lost this way).
 
 ```xml
 <defs>
