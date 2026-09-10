@@ -32,9 +32,11 @@ import argparse
 import codecs
 import datetime
 import io
+import ipaddress
 import json
 import os
 import re
+import socket
 import sys
 import time
 from pathlib import Path
@@ -76,21 +78,65 @@ except ImportError:
     _CURL_IMPERSONATE = None
 
 
+class _UnsafeUrlError(ValueError):
+    """Reject a URL that cannot be verified as a public HTTP(S) target."""
+
+
+def _validate_public_url(url: str) -> None:
+    """Reject non-HTTP(S) URLs and hosts resolving to non-public addresses."""
+    try:
+        parsed = urlparse(url)
+        hostname = parsed.hostname
+    except ValueError as exc:
+        raise _UnsafeUrlError(f"Invalid URL: {exc}") from exc
+    if parsed.scheme not in {"http", "https"} or not hostname:
+        raise _UnsafeUrlError("Only HTTP(S) URLs with a hostname are allowed")
+    try:
+        addresses = [ipaddress.ip_address(hostname)]
+    except ValueError:
+        try:
+            addresses = [
+                ipaddress.ip_address(info[4][0])
+                for info in socket.getaddrinfo(hostname, None, type=socket.SOCK_STREAM)
+            ]
+        except (OSError, ValueError) as exc:
+            raise _UnsafeUrlError(f"Cannot validate URL hostname {hostname}: {exc}") from exc
+    if not addresses:
+        raise _UnsafeUrlError(f"Cannot resolve URL hostname {hostname}")
+    if CONFIG["allow_private_hosts"]:
+        return
+    for address in addresses:
+        if (address.is_loopback or address.is_link_local
+                or address.is_private or address.is_unspecified):
+            raise _UnsafeUrlError(
+                f"Refusing non-public URL target: {hostname} resolves to {address} "
+                "(pass --allow-private-hosts for intranet or localhost pages)"
+            )
+
+
 def _http_get(url: str, *, headers: dict | None = None, timeout: int | None = None,
-              verify: bool = False, stream: bool = False):
+              verify: bool = True, stream: bool = False):
     """HTTP GET with curl_cffi preferred, requests fallback.
 
     Using curl_cffi lets this script fetch sites that reject Python's default
     TLS fingerprint (notably mp.weixin.qq.com). Signature mirrors the subset of
     requests.get() this script actually uses.
     """
+    _validate_public_url(url)
     if curl_requests is not None:
-        return curl_requests.get(
+        response = curl_requests.get(
             url, headers=headers, timeout=timeout,
             verify=verify, impersonate=_CURL_IMPERSONATE, stream=stream,
         )
-    return requests.get(url, headers=headers, timeout=timeout,
-                        verify=verify, stream=stream)
+    else:
+        response = requests.get(url, headers=headers, timeout=timeout,
+                                verify=verify, stream=stream)
+    try:
+        _validate_public_url(response.url)
+    except _UnsafeUrlError:
+        response.close()
+        raise
+    return response
 
 
 def _normalize_charset(charset: str | None) -> str:
@@ -194,6 +240,8 @@ except ImportError:
 CONFIG = {
     "output_dir": "./projects",
     "timeout": 30,
+    "insecure": False,
+    "allow_private_hosts": False,
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     # Specific content identifiers often found in Chinese CMS (Gov/News)
     "content_selectors": [
@@ -241,7 +289,7 @@ def fetch_url(url: str) -> tuple[str, str]:
 
     try:
         response = _http_get(url, headers=headers,
-                             timeout=CONFIG["timeout"], verify=False)
+                             timeout=CONFIG["timeout"], verify=not CONFIG["insecure"])
         response.raise_for_status()
 
         return _decode_response_text(response), response.url
@@ -377,7 +425,7 @@ def download_and_rewrite_images(
                     abs_url,
                     headers={"User-Agent": CONFIG["user_agent"]},
                     timeout=CONFIG["timeout"],
-                    verify=False,
+                    verify=not CONFIG["insecure"],
                 )
                 resp.raise_for_status()
                 filename = build_image_filename(
@@ -455,6 +503,8 @@ def download_and_rewrite_images(
                     "occurrences": [],
                 }
                 saved += 1
+            except _UnsafeUrlError:
+                raise
             except Exception as e:
                 print(f"   [WARN] Skip image {abs_url}: {e}")
                 continue
@@ -1040,8 +1090,23 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Keep remote image links without downloading image files",
     )
+    parser.add_argument(
+        "--insecure",
+        action="store_true",
+        help="Disable TLS certificate verification (only for self-signed development targets)",
+    )
+    parser.add_argument(
+        "--allow-private-hosts",
+        action="store_true",
+        help="Allow pages, images, and redirect targets on loopback, link-local, "
+             "and private networks (intranet or localhost pages you trust)",
+    )
 
     args = parser.parse_args(argv)
+    CONFIG["insecure"] = args.insecure
+    CONFIG["allow_private_hosts"] = args.allow_private_hosts
+    if args.insecure:
+        print("[WARN] TLS certificate verification disabled (--insecure)", file=sys.stderr)
 
     if args.dir:
         CONFIG["output_dir"] = args.dir
@@ -1099,8 +1164,4 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    if not _HELP_REQUESTED:
-        # Disable warnings for verify=False if needed, though often useful to see
-        import urllib3
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     raise SystemExit(main())
