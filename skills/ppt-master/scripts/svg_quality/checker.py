@@ -7857,10 +7857,68 @@ class SVGQualityChecker:
                     )
                     if resolved is not None:
                         references[filename].add(resolved.resolve())
+            # A text picture fill keeps its <image> inside <defs><pattern
+            # data-pptx-text-image-fill>; the glyphs that reference the
+            # pattern render that file, so it counts as a placement.
+            for element in cls._text_image_fill_images(working_root):
+                href = (
+                    element.get('href')
+                    or element.get(f'{{{XLINK_NS}}}href')
+                    or ''
+                )
+                if href.lstrip().lower().startswith('data:'):
+                    inline_count += 1
+                    continue
+                filename = cls._external_image_reference_basename(href)
+                if not filename:
+                    continue
+                references.setdefault(filename, set())
+                placements[filename].append((
+                    svg_path,
+                    element.get('preserveAspectRatio') or '',
+                    ('text picture fill',),
+                    None,
+                ))
+                if _resolve_external_image_reference is not None:
+                    resolved = _resolve_external_image_reference(
+                        svg_path.parent,
+                        href,
+                    )
+                    if resolved is not None:
+                        references[filename].add(resolved.resolve())
             out[svg_path] = dict(references)
             if inline_count:
                 inline_counts[svg_path] = inline_count
         return out, inline_counts, dict(placements)
+
+    @classmethod
+    def _text_image_fill_images(cls, root: ET.Element) -> List[ET.Element]:
+        """Return <image> children of text picture-fill patterns in use."""
+        patterns = {
+            pattern.get('id'): pattern
+            for pattern in root.iter(f'{{{SVG_NS}}}pattern')
+            if pattern.get('data-pptx-text-image-fill') and pattern.get('id')
+        }
+        if not patterns:
+            return []
+        used: set[str] = set()
+        for element in root.iter():
+            if _local_name(element) not in {'text', 'tspan'}:
+                continue
+            style_values = (
+                _parse_inline_style(element.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            fill = style_values.get('fill') or element.get('fill') or ''
+            match = re.match(r'\s*url\(\s*[\'"]?#([^)\'"\s]+)', fill)
+            if match and match.group(1) in patterns:
+                used.add(match.group(1))
+        return [
+            image
+            for pattern_id in used
+            for image in patterns[pattern_id].iter(f'{{{SVG_NS}}}image')
+        ]
 
     @staticmethod
     def _image_frame_geometry(

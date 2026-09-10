@@ -660,12 +660,25 @@ def _log_keying_findings(
     *,
     sheet_border: tuple[tuple[int, int, int], int, int] | None = None,
     tolerance: int,
+    notices: list[str] | None = None,
 ) -> None:
     """Report incomplete flat-background keying."""
     _log("\n[WARN] Alpha extraction is incomplete — the key field or cell")
     _log("       isolation failed:")
     for finding in findings:
         _log(f"       - {finding}")
+    # A field recovered as haze is an off-key ground, not a panel: keep the
+    # measured-border rerun advice for it instead of the panel verdict.
+    hazy = any("semi-transparent" in finding for finding in findings)
+    panel_notices = [] if hazy else [n for n in (notices or []) if "backing panel" in n]
+    for notice in panel_notices:
+        _log(f"       - {notice}")
+    if panel_notices:
+        _log("       Cells painted as panels or cards keep their own ground "
+             "inside the key gutters: no --bg/--tolerance rerun on the outer "
+             "key can remove them. Regenerate with each element alone on the "
+             "key, or key each cell on its measured inner ground.")
+        return
     _log("       Fix: regenerate with one genuinely flat ground and keep every "
          "element/effect")
     _log("       inside its cell with a clear key-only gutter, or rerun with an "
@@ -839,6 +852,7 @@ def slice_sheet(
             findings,
             sheet_border=sheet_border,
             tolerance=tolerance,
+            notices=notices,
         )
         if strict_alpha:
             raise ValueError(

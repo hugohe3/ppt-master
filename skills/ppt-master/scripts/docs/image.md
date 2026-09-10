@@ -49,6 +49,8 @@ python3 scripts/image_gen.py --list-backends
 
 Backends are grouped into Core / Extended / Experimental tiers. Run `python3 scripts/image_gen.py --list-backends` for the current list.
 
+Each backend accepts its own subset of `--aspect_ratio` values; the authority is the `VALID_ASPECT_RATIOS` constant in its `scripts/image_backends/backend_<name>.py`, and `--manifest` rejects an unsupported ratio before any request. Gemini 3.1 image models take `1:1 1:4 1:8 2:3 3:2 3:4 4:1 4:3 4:5 5:4 8:1 9:16 16:9 21:9` (no `3:1`); the `gemini-2.5-flash-image` models take only `1:1 2:3 3:2 3:4 4:3 4:5 5:4 9:16 16:9 21:9` at `1K`.
+
 Backend selection:
 
 ```bash
