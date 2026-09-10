@@ -63,12 +63,14 @@ def _word_boundaries(raw: object) -> list[dict]:
         raise RuntimeError("MiniMax subtitle response contains no sentence blocks")
 
     boundaries: list[dict] = []
+    previous_start = -1
     for sentence in raw:
         if not isinstance(sentence, dict):
             raise RuntimeError("MiniMax subtitle sentence block is not an object")
         words = sentence.get("timestamped_words")
         if not isinstance(words, list) or not words:
             raise RuntimeError("MiniMax subtitle sentence block contains no word timings")
+        previous_span = None
         for item in words:
             if not isinstance(item, dict):
                 raise RuntimeError("MiniMax subtitle word timing is not an object")
@@ -81,8 +83,29 @@ def _word_boundaries(raw: object) -> list[dict]:
                 raise RuntimeError(
                     "MiniMax subtitle response contains an invalid word interval"
                 )
-            if boundaries and start < boundaries[-1]["offset"]:
+            if start < previous_start:
                 raise RuntimeError("MiniMax subtitle words are not in chronological order")
+            previous_start = start
+            word_begin, word_end = item.get("word_begin"), item.get("word_end")
+            span = (
+                (word_begin, word_end)
+                if type(word_begin) is int
+                and type(word_end) is int
+                and 0 <= word_begin < word_end
+                else None
+            )
+            # Normalized numbers can emit one row per spoken syllable, all
+            # pointing at the same original-text span (e.g. "42" three times).
+            # The span is the merge key; the text match is a guard — a same-span
+            # row with a different word falls through and the shared alignment
+            # check reports it instead of merging it silently.
+            if span is not None and span == previous_span and boundaries[-1]["text"] == word:
+                previous = boundaries[-1]
+                previous["duration"] = max(
+                    previous["duration"], end - previous["offset"]
+                )
+                continue
+            previous_span = span
             boundaries.append(
                 {
                     "text": word,
