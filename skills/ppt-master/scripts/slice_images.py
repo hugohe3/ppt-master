@@ -684,7 +684,8 @@ def _log_keying_findings(
     _log("       inside its cell with a clear key-only gutter, or rerun with an "
          "explicit")
     _log("       --bg <hex> and a larger --tolerance; use --inset when a drawn "
-         "outer gutter is isolated from every element.")
+         "outer gutter is isolated from every element, or when the model drew "
+         "grid lines between cells (--inset 0.02, or H,V for wide cells).")
     if sheet_border is not None:
         dominant, drift, outlier = sheet_border
         hex_bg = "#{:02X}{:02X}{:02X}".format(*dominant)

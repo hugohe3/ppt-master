@@ -255,7 +255,11 @@ alone. A clip disables `meet` frame-fit, so match the box to the source ratio
 or use `slice`; put a §6.4 filter directly on an unclipped image, and for a
 clipped one on an exact outer `<g>` whose sole visual child is that image —
 never both on the same `<image>`. A nested `<svg>` is only the exact
-single-image crop wrapper the crop parser accepts, not a general viewport.
+single-image crop wrapper the crop parser accepts, not a general viewport;
+its required form (outer `preserveAspectRatio="none"` + `overflow="hidden"`
++ unit-space `viewBox`, child `<image>` at `0 0 1 1`) is in
+[`svg-contract.md`](../scripts/docs/svg-contract.md) under "Nested SVG is
+picture-crop transport".
 
 | Overlay | Construction | Typical stops / alpha |
 |---|---|---|

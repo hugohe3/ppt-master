@@ -281,12 +281,16 @@ def text_box(
     return dict(x=left, y=top, width=width, height=bottom - top, top=top, bottom=bottom)
 
 
-def _role_argument(value: str) -> tuple[str, str, float]:
+def _role_argument(value: str) -> tuple[str, str, float, str]:
+    weight = 'normal'
+    parts = value.rsplit(':', 1)
+    if len(parts) == 2 and parts[1].strip().casefold() in _ROLE_WEIGHTS:
+        value, weight = parts[0], parts[1].strip().casefold()
     try:
         name_and_family, raw_size = value.rsplit(':', 1)
         name, family = name_and_family.split(':', 1)
     except ValueError as exc:
-        raise argparse.ArgumentTypeError('expected NAME:FAMILY:SIZE') from exc
+        raise argparse.ArgumentTypeError('expected NAME:FAMILY:SIZE[:bold]') from exc
     name, family = name.strip().casefold(), family.strip()
     if not name or not family:
         raise argparse.ArgumentTypeError('expected non-empty NAME and FAMILY')
@@ -294,7 +298,10 @@ def _role_argument(value: str) -> tuple[str, str, float]:
         size = _positive_float(raw_size)
     except (argparse.ArgumentTypeError, ValueError) as exc:
         raise argparse.ArgumentTypeError('SIZE must be a positive finite number') from exc
-    return name, family, size
+    return name, family, size, weight
+
+
+_ROLE_WEIGHTS = frozenset({'normal', 'bold'})
 
 
 def _ordered_roles(roles: dict[str, tuple[str, float]]) -> list[tuple[str, str, float]]:
@@ -306,6 +313,7 @@ def _ordered_roles(roles: dict[str, tuple[str, float]]) -> list[tuple[str, str, 
 def _roles_from_spec_lock(
     lock_path: Path,
     fallbacks: dict[str, str] | None = None,
+    weights: dict[str, str] | None = None,
 ) -> dict[str, tuple[str, float]]:
     lock = parse_spec_lock(lock_path, report_duplicate_fields=True)
     typography = next(
@@ -456,7 +464,9 @@ def _truncate_planned_line(text: str, limit: int = 40) -> str:
 def _longest_planned_lines(
     project_path: Path,
     roles: list[tuple[str, str, float]],
+    weights: dict[str, str] | None = None,
 ) -> dict[str, dict[str, object] | None]:
+    weights = weights or {}
     candidates = _outline_candidates(
         project_path / 'design_spec.md',
         {name for name, _family, _size in roles},
@@ -465,7 +475,10 @@ def _longest_planned_lines(
     for name, family, size in roles:
         best: tuple[float, str, str] | None = None
         for slide, planned_line in candidates[name]:
-            width = measure_text(planned_line, size=size, family=family)
+            width = measure_text(
+                planned_line, size=size, family=family,
+                weight=weights.get(name, 'normal'),
+            )
             if best is None or width > best[0]:
                 best = (width, slide, planned_line)
         longest[name] = None if best is None else {
@@ -482,9 +495,11 @@ def _calibration_payload(
     project_path: Path,
     source: str,
     include_outline: bool,
+    weights: dict[str, str] | None = None,
 ) -> dict[str, object]:
+    weights = weights or {}
     longest = (
-        _longest_planned_lines(project_path, roles)
+        _longest_planned_lines(project_path, roles, weights)
         if include_outline
         else {name: None for name, _family, _size in roles}
     )
@@ -493,13 +508,16 @@ def _calibration_payload(
     digits_length = len(split_project_text_clusters(_CALIBRATION_DIGITS_SAMPLE))
     role_rows = {}
     for name, family, size in roles:
-        cjk_width = measure_text(_CALIBRATION_CJK_SAMPLE, size=size, family=family)
-        latin_width = measure_text(_CALIBRATION_LATIN_SAMPLE, size=size, family=family)
-        caps_width = measure_text(_CALIBRATION_CAPS_SAMPLE, size=size, family=family)
-        digits_width = measure_text(_CALIBRATION_DIGITS_SAMPLE, size=size, family=family)
+        weight = weights.get(name, 'normal')
+        style = dict(size=size, family=family, weight=weight)
+        cjk_width = measure_text(_CALIBRATION_CJK_SAMPLE, **style)
+        latin_width = measure_text(_CALIBRATION_LATIN_SAMPLE, **style)
+        caps_width = measure_text(_CALIBRATION_CAPS_SAMPLE, **style)
+        digits_width = measure_text(_CALIBRATION_DIGITS_SAMPLE, **style)
         role_rows[name] = {
             'family': family,
             'size': size,
+            'weight': weight,
             'cjk_chars_per_100px': round(100.0 * cjk_length / cjk_width, 1),
             'latin_chars_per_100px': round(100.0 * latin_length / latin_width, 1),
             'caps_chars_per_100px': round(100.0 * latin_length / caps_width, 1),
@@ -605,19 +623,21 @@ def _run_calibrate(args: argparse.Namespace) -> int:
     lock_path = project_path / 'spec_lock.md'
     if not lock_path.is_file() and not args.role:
         print(
-            'Calibration requires spec_lock.md or at least one --role NAME:FAMILY:SIZE entry.',
+            'Calibration requires spec_lock.md or at least one --role NAME:FAMILY:SIZE[:bold] entry.',
             file=sys.stderr,
         )
         return 2
     try:
         fallbacks: dict[str, str] = {}
+        weights: dict[str, str] = {}
         roles = (
-            _roles_from_spec_lock(lock_path, fallbacks)
+            _roles_from_spec_lock(lock_path, fallbacks, weights)
             if lock_path.is_file()
             else {}
         )
-        for name, family, size in args.role:
+        for name, family, size, weight in args.role:
             roles[name] = (family, size)
+            weights[name] = weight
             fallbacks.pop(name, None)
         ordered_roles = _ordered_roles(roles)
         if not ordered_roles:
@@ -628,8 +648,17 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             project_path=project_path,
             source=source,
             include_outline=args.outline,
+            weights=weights,
         )
         payload['notes'] = _fallback_notes(roles, fallbacks)
+        bold_roles = sorted(name for name, weight in weights.items() if weight == 'bold')
+        payload['notes'].append(
+            'rates for ' + ', '.join(bold_roles) + ' are measured at bold weight'
+            if bold_roles else
+            'every role is measured at normal weight; recalibrate a role '
+            'realized as bold deck-wide with --role NAME:FAMILY:SIZE:bold, '
+            'since bold runs about 7% wider'
+        )
         output_path = project_path / 'validation' / 'text_calibration.json'
         output_path.parent.mkdir(parents=True, exist_ok=True)
         if args.role and output_path.is_file():
@@ -705,7 +734,7 @@ def build_parser() -> argparse.ArgumentParser:
         action='append',
         type=_role_argument,
         default=[],
-        metavar='NAME:FAMILY:SIZE',
+        metavar='NAME:FAMILY:SIZE[:bold]',
         help='Typography role to calibrate when spec_lock.md is absent, e.g. '
              'body:"Microsoft YaHei":20; repeatable.',
     )

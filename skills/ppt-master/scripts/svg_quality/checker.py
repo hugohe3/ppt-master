@@ -4905,7 +4905,9 @@ class SVGQualityChecker:
                         f"{int(display_w)}x{int(display_h)} {fit_label} frame; "
                         f"the source is {source_mib:.1f} MiB — file-size "
                         "advisory only, not an aspect-ratio warning; consider "
-                        "a smaller source asset"
+                        "a smaller source asset, or export with "
+                        "svg_to_pptx.py --image-sizing display to downsize "
+                        "at export time"
                     )
             except ImportError:
                 pass  # PIL not available, skip resolution check

@@ -1027,7 +1027,7 @@ class-average estimate, with the existing fixed advances for monospaced faces.
 - `box` prints a `data-pptx-bounds` attribute plus numeric `top` and `bottom`, or
   a JSON bounds object with `--json`.
 - `calibrate` measures fixed CJK and Latin samples for every typography role
-  from `spec_lock.md` or repeatable `--role NAME:FAMILY:SIZE` overrides, writes
+  from `spec_lock.md` or repeatable `--role NAME:FAMILY:SIZE[:bold]` overrides, writes
   `validation/text_calibration.json`, and prints a compact table or JSON. The
   estimator is additive across scripts, so a line mixing CJK with Latin words
   or digits is estimated as (CJK chars ÷ CJK rate + other chars ÷ Latin rate)

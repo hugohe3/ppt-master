@@ -49,6 +49,31 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+class CalibrateRoleWeightTests(unittest.TestCase):
+    def test_role_argument_accepts_a_bold_suffix(self) -> None:
+        from text_measure import _role_argument
+
+        self.assertEqual(_role_argument('title:Arial:36'), ('title', 'Arial', 36.0, 'normal'))
+        self.assertEqual(_role_argument('title:Arial:36:bold'), ('title', 'Arial', 36.0, 'bold'))
+
+    def test_bold_role_calibrates_wider(self) -> None:
+        import tempfile
+        from pathlib import Path
+        from text_measure import _calibration_payload
+
+        with tempfile.TemporaryDirectory() as tmp:
+            normal = _calibration_payload(
+                [('title', 'Arial', 36.0)], project_path=Path(tmp),
+                source='--role', include_outline=False,
+            )['roles']['title']
+            bold = _calibration_payload(
+                [('title', 'Arial', 36.0)], project_path=Path(tmp),
+                source='--role', include_outline=False, weights={'title': 'bold'},
+            )['roles']['title']
+        self.assertEqual(bold['weight'], 'bold')
+        self.assertLess(bold['latin_chars_per_100px'], normal['latin_chars_per_100px'])
+
+
 class WrapUnitTests(unittest.TestCase):
     def test_percent_sign_stays_with_its_number(self) -> None:
         from text_measure import wrap_text
