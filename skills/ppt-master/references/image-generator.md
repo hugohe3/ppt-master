@@ -152,10 +152,13 @@ Shape families that cannot share a roomy grid take separate sheets; coherence co
 | **Element rows** | One per used element, `Acquire Via: slice`, filename matching `--names`, `Reference` naming the parent and cell, listed in the placeable authority normally with `crop=no-crop` (tight slices use fit, not cover-crop), `Type: Illustrated icon` for a compact cue (never an SVG library entry), reusable across pages, each carrying an owner-resolved layout recommendation, dimensions filled after slicing by `analyze_images.py` |
 
 ```bash
-SHEET_KEY_HEX="#00FF00"  # example only; choose a key absent from every element/effect
+SHEET_KEY_HEX="#00FF00"  # the key stated in the prompt; example only, choose a hue absent from every element/effect
 python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
     --names team,product,customer,growth,risk,vision --trim --alpha \
     --bg "${SHEET_KEY_HEX}" --strict-alpha
+# Generated sheets arrive through JPEG, so the ground is never exactly the pure
+# key: the first run usually fails with a measured border line — rerun with the
+# --bg / --tolerance it names (the measured ground, which skips despill).
 ```
 
 `--names` count equals `rows*cols`; `--strict-alpha` writes nothing on an incomplete cut. Three quality constraints:

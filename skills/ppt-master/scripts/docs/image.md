@@ -189,7 +189,9 @@ sources are rejected rather than reduced to one frame, while a camera
 multi-picture JPEG (MPO) contributes its primary frame.
 
 Both input and output are bare filenames directly under `images/`; output must
-be a new `.png` file. The tool keeps the EXIF-corrected display dimensions,
+be a new `.png` file, or a new `.jpg` file when the source is opaque (a
+photograph downscaled with `--fit` keeps its weight in check that way; a
+source with transparency is refused for `.jpg`). The tool keeps the EXIF-corrected display dimensions,
 leaves any alpha mask unchanged, and never overwrites the source or an existing
 derivative. If `images/image_sources.json` contains the source filename, the
 new record inherits that legal provenance and records `derived_from` plus the

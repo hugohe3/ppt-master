@@ -134,7 +134,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output",
         required=True,
-        help="New bare .png filename under <project_path>/images; existing files are never replaced.",
+        help="New bare .png filename under <project_path>/images (or .jpg for an opaque photographic derivative such as a --fit downscale); existing files are never replaced.",
     )
     parser.add_argument(
         "--brightness",
@@ -207,8 +207,8 @@ def _assert_output_absent(output_path: Path) -> None:
 def _resolve_paths(project_value: str, source_name: str, output_name: str) -> tuple[Path, Path, Path]:
     source_name = _validate_bare_filename(source_name, field_name="source")
     output_name = _validate_bare_filename(output_name, field_name="output")
-    if Path(output_name).suffix.casefold() != ".png":
-        raise ValueError("output must use the .png extension")
+    if Path(output_name).suffix.casefold() not in {".png", ".jpg", ".jpeg"}:
+        raise ValueError("output must use the .png extension, or .jpg for an opaque photographic derivative")
     if source_name.casefold() == output_name.casefold():
         raise ValueError("output must differ from source, including filename casing")
 
@@ -388,7 +388,20 @@ def _apply_treatments(
                             result.close()
                         result = resized
                         width, height = new_size
-                save_options = {"format": "PNG"}
+                if getattr(args, "output_format", "PNG") == "JPEG":
+                    if alpha is not None:
+                        raise ValueError(
+                            "JPEG output cannot hold the source's transparency; "
+                            "use a .png output for this source"
+                        )
+                    save_options = {"format": "JPEG", "quality": 90, "optimize": True}
+                    if result.mode != "RGB":
+                        converted = result.convert("RGB")
+                        if result is not rgb:
+                            result.close()
+                        result = converted
+                else:
+                    save_options = {"format": "PNG"}
                 if isinstance(icc_profile, bytes) and icc_profile:
                     save_options["icc_profile"] = icc_profile
                 result.save(temporary_path, **save_options)
@@ -542,6 +555,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             args.project_path,
             args.source,
             args.output,
+        )
+        args.output_format = (
+            "JPEG" if output_path.suffix.casefold() in {".jpg", ".jpeg"} else "PNG"
         )
         treatments = _treatment_plan(args)
         manifest_path = images_path / "image_sources.json"
