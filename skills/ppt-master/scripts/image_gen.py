@@ -548,6 +548,7 @@ STRUCTURAL_IMAGE_TYPES = {
 }
 LEGACY_IMAGE_TYPES = {"background", "hero", "portrait", "typography"}
 EARLY_LEGACY_IMAGE_TYPES = {"illustration", "photography"}
+SHEET_TYPE_SPELLINGS = {"illustration sheet", "sheet"}
 VALID_IMAGE_TYPES = (
     STRUCTURAL_IMAGE_TYPES
     | LEGACY_IMAGE_TYPES
@@ -710,6 +711,11 @@ def load_manifest(path: str) -> dict:
             )
 
         image_type = item.get("type")
+        if isinstance(image_type, str) and image_type.strip().lower() in SHEET_TYPE_SPELLINGS:
+            # The resource-row column reads "Illustration Sheet"; the manifest
+            # item omits type. Accept the row spelling as that omission.
+            item.pop("type")
+            image_type = None
         if image_type is not None:
             normalized_type = (
                 image_type.strip().lower()

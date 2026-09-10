@@ -38,7 +38,7 @@ python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
 |---|---|
 | Mirror/preserve input already owns native-shape metadata | Keep the object and metadata; never reselect its preset |
 | One exact non-Connector stock contour | Ordinary SVG primitive only when the exporter maps it to that same contour; otherwise `render` and insert the fragment |
-| A stock `bentConnector*` / `curvedConnector*` contour expresses a bend or curve with no endpoint attachment | `render --object-kind connector`; an unconnected native Connector |
+| A stock `bentConnector*` / `curvedConnector*` contour expresses a bend or curve with no endpoint attachment | `render --object-kind connector`; an unconnected native Connector with no line-end markers (the fragment accepts none), so an arrowed edge stays a `<line>` with a §1.1 marker |
 | A straight relationship, divider, or leader | `<line>`, with a §1.1 marker only when direction is meaningful |
 | A boundary that needs no filled surface | The exact form with `fill="none"` and a visible stroke; content stays an independent sibling |
 | Two or more native contours form the construction without needing one contour | Independent siblings in one semantic group, composed under §2.1 |

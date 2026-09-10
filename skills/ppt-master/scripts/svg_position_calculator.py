@@ -1328,6 +1328,9 @@ Common commands:
     bar_parser.add_argument('--canvas', default='ppt169', help='Canvas format')
     bar_parser.add_argument('--area', help='Chart area "x_min,y_min,x_max,y_max"')
     bar_parser.add_argument('--bar-width', type=float, default=50, help='Bar width')
+    bar_parser.add_argument('--gap-width', type=float, default=None,
+                            help='PowerPoint category gap width in percent of the bar (native payload gap_width, default 150): '
+                                 'lays categories out in equal slots across the area and derives the bar width, overriding --bar-width')
     bar_parser.add_argument('--horizontal', action='store_true', help='Horizontal bar chart')
     bar_parser.add_argument('--value-range', help='Value axis range "min,max" (from axis tick labels; omit to auto-normalize)')
 
@@ -1411,11 +1414,21 @@ Common commands:
                     parser.error('calc bar --value-range max must be greater than min')
                 scale_source = f'axis ticks ({v_min}-{v_max})'
 
-            positions = calc.calculate(data, bar_width=args.bar_width,
-                                      horizontal=args.horizontal,
-                                      y_min=v_min, y_max=v_max)
+            if args.gap_width is not None:
+                if args.gap_width < 0:
+                    parser.error('calc bar --gap-width must be zero or positive')
+                positions = calc.calculate(data, bar_width=None,
+                                          gap_ratio=args.gap_width / 100.0,
+                                          horizontal=args.horizontal,
+                                          y_min=v_min, y_max=v_max)
+            else:
+                positions = calc.calculate(data, bar_width=args.bar_width,
+                                          horizontal=args.horizontal,
+                                          y_min=v_min, y_max=v_max)
 
             print(f"\n=== Bar Chart Coordinate Calculation ===")
+            if args.gap_width is not None:
+                print(f"Category layout: PowerPoint slots, gap_width {args.gap_width:g}% (bar width derived)")
             print(f"Canvas: {CANVAS_FORMATS.get(canvas, {}).get('dimensions', canvas)}")
             print(f"Chart area: ({coord.chart_area.x_min}, {coord.chart_area.y_min}) - "
                   f"({coord.chart_area.x_max}, {coord.chart_area.y_max})")

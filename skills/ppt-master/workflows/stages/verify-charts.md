@@ -55,7 +55,7 @@ If the list is empty, output `verify-charts: active profile declares no data-dri
 5. Run the matching command (see the [calculator documentation](../../scripts/docs/svg-pipeline.md#svg_position_calculatorpy) and recipes for decomposable, partial, formula, and manual modes):
 
    ```bash
-   python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar --data "L1:V1,L2:V2" --area "x_min,y_min,x_max,y_max" --bar-width 120 --value-range=0,axis_max
+   python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar --data "L1:V1,L2:V2" --area "x_min,y_min,x_max,y_max" --bar-width 120 --value-range=0,axis_max   # a Native-ready bar/column passes --gap-width <payload gap_width, default 150> instead of --bar-width so the category axis follows the PowerPoint slot model the parity gate checks
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc line --data "x1:y1,x2:y2" --area "x_min,y_min,x_max,y_max" --y-range=0,max
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc pie --data "S1:V1,S2:V2" --center "cx,cy" --radius 200 [--inner-radius 120] --start-angle -90
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc radar --data "D1:V1,D2:V2,D3:V3" --center "cx,cy" --radius 200 --max-value 100

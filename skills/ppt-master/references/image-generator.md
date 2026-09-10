@@ -148,7 +148,7 @@ Shape families that cannot share a roomy grid take separate sheets; coherence co
 
 | Row | Content |
 |---|---|
-| **Sheet row** | `Acquire Via: ai`, `Type: Illustration Sheet`, named as the slice source with intent, cell shape, and purpose (`Reference: reusable title/corner illustration family`, `illustrated-icon set: cues = ...`, or `decorative lettering set: exact strings = ...`). Step 5 generates it; it is never placed; Image_Generator resolves its aspect ratio, grid, and slice command. Its manifest item carries `slice_grid` and `slice_names` — the comma-separated basenames are the complete required output set |
+| **Sheet row** | `Acquire Via: ai`, `Type: Illustration Sheet` (the §VIII column; the manifest item omits `type`), named as the slice source with intent, cell shape, and purpose (`Reference: reusable title/corner illustration family`, `illustrated-icon set: cues = ...`, or `decorative lettering set: exact strings = ...`). Step 5 generates it; it is never placed; Image_Generator resolves its aspect ratio, grid, and slice command. Its manifest item carries `slice_grid` and `slice_names` — the comma-separated basenames are the complete required output set |
 | **Element rows** | One per used element, `Acquire Via: slice`, filename matching `--names`, `Reference` naming the parent and cell, listed in the placeable authority normally with `crop=no-crop` (tight slices use fit, not cover-crop), `Type: Illustrated icon` for a compact cue (never an SVG library entry), reusable across pages, each carrying an owner-resolved layout recommendation, dimensions filled after slicing by `analyze_images.py` |
 
 ```bash

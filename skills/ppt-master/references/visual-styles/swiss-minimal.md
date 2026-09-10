@@ -32,7 +32,7 @@ Strict Swiss-grid discipline. Modular grid, sharp geometry, aggressive whitespac
 
 ## 5. Paired image-rendering
 
-`minimalist-swiss` — lock it for AI images so illustrations share the grid-austere aesthetic.
+`minimalist-swiss` — one coherence candidate for AI images that shares the grid-austere aesthetic; the resolved rendering decision owns the choice.
 
 ## 6. Illustration propensity
 

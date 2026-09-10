@@ -67,7 +67,15 @@ _CHROME_ID_TOKENS = frozenset({
     'header', 'footer',
     'chrome', 'watermark',
     'pagenumber', 'pagenum', 'slidenumber', 'slidenum',
-    'logo', 'nav', 'rule',
+    'logo', 'nav',
+})
+# `rule` is chrome only as a bare id or a decorative line name (`rule`,
+# `rule-2`, `hairline-rule`); a content group such as `commit-rule` is not.
+_RULE_TOKENS = frozenset({'rule', 'rules'})
+_RULE_QUALIFIERS = frozenset({
+    'hairline', 'thin', 'horizontal', 'vertical', 'h', 'v',
+    'top', 'bottom', 'left', 'right', 'mid', 'middle',
+    'section', 'page', 'title', 'header', 'footer', 'divider',
 })
 
 
@@ -112,8 +120,20 @@ def is_chrome_id(elem_id: str | None) -> bool:
     compact = lower.replace('-', '').replace('_', '')
     if compact in _CHROME_ID_TOKENS:
         return True
-    tokens = re.split(r'[-_]', lower)
-    return any(t in _CHROME_ID_TOKENS for t in tokens if t)
+    tokens = [t for t in re.split(r'[-_]', lower) if t]
+    if any(t in _CHROME_ID_TOKENS for t in tokens):
+        return True
+    if compact in _RULE_TOKENS:
+        return True
+    if tokens and tokens[0] in _RULE_TOKENS and all(
+        t.isdigit() or t in _RULE_QUALIFIERS for t in tokens[1:]
+    ):
+        return True
+    if tokens and tokens[-1] in _RULE_TOKENS and all(
+        t in _RULE_QUALIFIERS or t.isdigit() for t in tokens[:-1]
+    ):
+        return True
+    return False
 
 
 _TITLE_BLOCK_TOKENS = frozenset({'header', 'footer'})

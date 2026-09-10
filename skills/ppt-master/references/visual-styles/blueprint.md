@@ -31,7 +31,7 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 
 ## 5. Paired image-rendering
 
-`blueprint` — lock it so AI imagery shares the schematic line-drawing aesthetic.
+`blueprint` — one coherence candidate for AI imagery that shares the schematic line-drawing aesthetic; the resolved rendering decision owns the choice.
 
 ## 6. Illustration propensity
 
