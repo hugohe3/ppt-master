@@ -43,3 +43,9 @@ Out of scope:
 ## Disclosure Policy
 
 We follow responsible disclosure. Once a fix is available, we will publish a GitHub Security Advisory crediting the reporter (unless they prefer to remain anonymous).
+
+## Acknowledgments
+
+Thanks to the researchers who reported issues privately:
+
+- **Zick Sun** — case-sensitivity bypasses in the live preview SVG sanitizer and attribute injection in `embed_icons.py` (fixed in v6.3.1), plus the follow-up hardening shipped in v6.3.2.
