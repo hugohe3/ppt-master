@@ -139,7 +139,7 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
   <family>/<key> [<family>/<key> ...]
 ```
 
-**Native-ready boundary**: give every independent data chart and pure text-grid table a unique page-local `kebab-case` key and a `<key>=yes|no` native-ready decision — `yes` by default, `no` only when [`native-data-interface.md`](./native-data-interface.md) §2 cannot express the object; qualitative compositions and incidental microvisuals stay unlisted. Default writes §VII and the `Native-ready` map; Quick keeps the key and decision in context.
+**Native-ready boundary**: give every independent data chart and pure text-grid table a unique page-local `kebab-case` key and a `<key>=yes|no` native-ready decision — `yes` by default, `no` when [`native-data-interface.md`](./native-data-interface.md) §2 cannot express the object — `yes` presumes the family has a native `type` there (dumbbell, bullet, gantt, heatmap, sankey, and word clouds have none and stay `no`); qualitative compositions and incidental microvisuals stay unlisted. Default writes §VII and the `Native-ready` map; Quick keeps the key and decision in context.
 
 ---
 

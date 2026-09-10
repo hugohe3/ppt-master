@@ -61,7 +61,7 @@ If the list is empty, output `verify-charts: active profile declares no data-dri
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc radar --data "D1:V1,D2:V2,D3:V3" --center "cx,cy" --radius 200 --max-value 100
    ```
 
-6. **Scale-aware comparison**: before declaring a mismatch, confirm every invocation used the axis range, plot area, center/radius, start angle, or size scale the SVG visually declares — for `calc bar` the header must show `Value scale: axis ticks (...)` when the SVG has ticks; `auto (max*1.1)` means go back to step 3. Never update the SVG with mismatched-scale output. When the scale matches and coordinates genuinely differ, update by hand — no regex or bulk replacement.
+6. **Scale-aware comparison**: before declaring a mismatch, confirm every invocation used the axis range, plot area, center/radius, start angle, or size scale the SVG visually declares — for `calc bar` the header must show `Value scale: axis ticks (...)` when the SVG has ticks; `auto (max*1.1)` means go back to step 3. Never update the SVG with mismatched-scale output. When the scale matches and coordinates genuinely differ, update by hand — no regex or bulk replacement. On a signed bar chart the calculator starts every bar at the axis minimum, so compare `x_min + width` against the drawn far edge from the zero baseline rather than its `X`.
 
 After updating any page, follow the profile's checker order. Default reruns `svg_quality_checker.py <project_path> --canonical-authoring --stage final --json`, which writes the current `final` report Step 7.3 requires. Quick completes every chart comparison/repair first, then returns to `quick-generate.md` §4 for its one lockless final checker — no checker call between chart pages.
 

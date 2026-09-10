@@ -1174,24 +1174,30 @@ def _chart_projection_text_variants(value: Any) -> set[str]:
     return variants
 
 
-_NUMBER_FORMAT_RE = re.compile(r"^(#,##|#|0)?(0*)(?:\.(0+))?(%?)$")
+_NUMBER_FORMAT_RE = re.compile(
+    r'^(?:"(?P<prefix>[^"]*)")?(#,##|#|0)?(0*)(?:\.(0+))?(%?)(?:"(?P<suffix>[^"]*)")?$'
+)
 
 
 def _format_number_like_excel(number: float, number_format: str) -> str | None:
     """Render ``number`` the way PowerPoint shows a plain Excel format code.
 
     Covers the codes a chart payload realistically writes — ``0``, ``0.0``,
-    ``0.00``, ``#,##0``, ``#,##0.0``, and their ``%`` forms. Anything else
-    returns ``None`` so the caller keeps only the literal variants.
+    ``0.00``, ``#,##0``, ``#,##0.0``, their ``%`` forms, and a quoted literal
+    prefix or suffix such as ``"$"#,##0`` or ``0.0"%"`` (a literal percent
+    sign does not scale the value). Anything else returns ``None`` so the
+    caller keeps only the literal variants.
     """
     match = _NUMBER_FORMAT_RE.match(number_format.strip())
     if match is None:
         return None
-    grouping, _integers, decimals, percent = match.groups()
+    prefix = match.group("prefix") or ""
+    suffix = match.group("suffix") or ""
+    grouping, _integers, decimals, percent = match.groups()[1:5]
     value = number * 100 if percent else number
     digits = len(decimals or "")
     text = f"{value:,.{digits}f}" if grouping == "#,##" else f"{value:.{digits}f}"
-    return f"{text}%" if percent else text
+    return f"{prefix}{text}{'%' if percent else ''}{suffix}"
 
 
 def _chart_number_formats(payload: dict[str, Any]) -> list[str]:

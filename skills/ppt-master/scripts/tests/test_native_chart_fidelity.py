@@ -152,6 +152,16 @@ class ChartImportTests(unittest.TestCase):
             self.assertIn("[chart]", "".join(root.itertext()))
 
 
+class NumberFormatTests(unittest.TestCase):
+    def test_quoted_literal_prefix_and_suffix_render_without_scaling(self) -> None:
+        from svg_to_pptx.native_objects.chart_style import _format_number_like_excel
+
+        self.assertEqual(_format_number_like_excel(34.5, '0.0"%"'), '34.5%')
+        self.assertEqual(_format_number_like_excel(0.345, '0.0%'), '34.5%')
+        self.assertEqual(_format_number_like_excel(12345, '"$"#,##0'), '$12,345')
+        self.assertIsNone(_format_number_like_excel(3, 'yyyy'))
+
+
 class ChartExPayloadGuardTests(unittest.TestCase):
     def test_chartex_refuses_a_classic_axes_block(self) -> None:
         from svg_to_pptx.native_objects.chart_data import _chart_data

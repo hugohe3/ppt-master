@@ -64,18 +64,22 @@ def _candidate_directory(value: str) -> Path | None:
         return None
     try:
         raw_path = Path(value)
+        # A long positional string (a paragraph handed to text_measure.py)
+        # is not a path; stat-ing it raises ENAMETOOLONG on most filesystems.
+        if any(len(part.encode("utf-8", "surrogateescape")) > 255 for part in raw_path.parts):
+            return None
+        if not raw_path.exists() and raw_path.parent == Path("."):
+            return None
+        path = raw_path
+        if not path.is_absolute():
+            path = Path.cwd() / path
+        while not path.exists() and path != path.parent:
+            path = path.parent
+        if path.is_file():
+            path = path.parent
+        return path.resolve()
     except (OSError, ValueError):
         return None
-    if not raw_path.exists() and raw_path.parent == Path("."):
-        return None
-    path = raw_path
-    if not path.is_absolute():
-        path = Path.cwd() / path
-    while not path.exists() and path != path.parent:
-        path = path.parent
-    if path.is_file():
-        path = path.parent
-    return path.resolve()
 
 
 def _find_project_root(argv: list[str]) -> Path | None:

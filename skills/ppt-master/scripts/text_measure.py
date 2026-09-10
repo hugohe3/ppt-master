@@ -44,6 +44,8 @@ _PREFERRED_BREAK_PUNCTUATION = frozenset('，。；：')
 # visibly short line, so the greedy fill wins.
 _PREFERRED_BREAK_MIN_FILL = 0.75
 _LATIN_TOKEN_CONNECTORS = frozenset("'’._:/+%@#-")
+# A unit-like sign glued to a number stays with it: never break "71" | "%".
+_NUMBER_SUFFIXES = frozenset("%‰°")
 _WEIGHTS = ('normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900')
 _CALIBRATION_CJK_SAMPLE = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往'
 _CALIBRATION_LATIN_SAMPLE = 'Clear Slides Make Big Ideas Easy to See.'
@@ -152,6 +154,9 @@ def _lexical_units(text: str) -> list[str]:
                     and _is_latin_or_number_cluster(clusters[end + 1])
                 ):
                     end += 2
+                    continue
+                if next_cluster in _NUMBER_SUFFIXES and clusters[end - 1].isdigit():
+                    end += 1
                     continue
                 break
 
@@ -573,6 +578,11 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             'while authoring (an expanded title, a longer label) is re-estimated '
             'with the rates — the outline column does not cover it.'
         )
+    lines.append(
+        '[NOTE] measure and wrap take one --weight for the whole string: a line '
+        'with a bold run (an inline emphasis lead) is measured piecewise per '
+        'weight and summed, or the bold clause takes its own line.'
+    )
     lines.append(
         '[NOTE] rates are sample averages measured with the checker\'s '
         'estimator (headroom included); the checker measures each real line '

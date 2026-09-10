@@ -49,6 +49,16 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+class WrapUnitTests(unittest.TestCase):
+    def test_percent_sign_stays_with_its_number(self) -> None:
+        from text_measure import wrap_text
+
+        lines, _widths, _oversized = wrap_text(
+            'xxxx yyyy 71% of the cohort', size=26, max_width=175, family='Arial',
+        )
+        self.assertEqual(lines, ['xxxx yyyy', '71% of the', 'cohort'])
+
+
 class TextMeasureTests(unittest.TestCase):
     def test_measure_matches_checker_estimator(self) -> None:
         run = {
