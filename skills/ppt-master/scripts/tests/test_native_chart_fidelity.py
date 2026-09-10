@@ -385,6 +385,54 @@ class SpacingTests(unittest.TestCase):
 
 
 class CompanionPlacementTests(unittest.TestCase):
+    def test_svg_first_companion_may_carry_only_its_width(self) -> None:
+        import json
+        import re
+        import tempfile
+
+        from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes
+        from svg_to_pptx.drawingml.utils import px_to_emu
+        from svg_to_pptx.native_objects.fallback_hash import stamp_native_fallback_baseline
+
+        payload = {
+            "x": 100, "y": 100, "width": 600, "height": 300,
+            "name": "chart-note",
+            "type": "column",
+            "categories": ["A", "B"],
+            "series": [{"name": "S", "values": [1, 2]}],
+            "plot_area": {"x": 140, "y": 130, "width": 540, "height": 250},
+            "style": {"colors": ["#111111"], "text_color": "#111111"},
+            # Only the width is authored; x/y/height come from the fallback text.
+            "notes": [{"text": "Unit note", "width": 200, "font_size": 18}],
+        }
+        svg = (
+            f'<svg xmlns="{SVG_NS}" viewBox="0 0 1280 720">'
+            '<g id="chart-note" data-pptx-replace-with="chart">'
+            f'<metadata type="application/json">{json.dumps(payload)}</metadata>'
+            '<rect x="140" y="130" width="540" height="250" fill="#FFFFFF"/>'
+            '<text x="140" y="120" font-size="18" fill="#111111">Unit note</text>'
+            '<text x="410" y="400" font-size="18" fill="#111111">A</text>'
+            '<text x="410" y="400" font-size="18" fill="#111111">B</text>'
+            "</g></svg>"
+        )
+        root = ET.fromstring(svg)
+        stamp_native_fallback_baseline(root.find(f"{{{SVG_NS}}}g"), document_root=root)
+        svg = ET.tostring(root, encoding="unicode")
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "01.svg"
+            path.write_text(svg, encoding="utf-8")
+            slide_xml, *_ = convert_svg_to_slide_shapes(
+                path, resource_root=Path(tmp), native_objects=True,
+            )
+        note = slide_xml[slide_xml.index("Chart Note"):]
+        off_x = int(re.search(r'<a:off x="(\d+)" y="\d+"/>', note).group(1))
+        off_y = int(re.search(r'<a:off x="\d+" y="(\d+)"/>', note).group(1))
+        ext_cx = int(re.search(r'<a:ext cx="(\d+)" cy="\d+"/>', note).group(1))
+        ext_cy = int(re.search(r'<a:ext cx="\d+" cy="(\d+)"/>', note).group(1))
+        self.assertEqual(ext_cx, px_to_emu(200))
+        self.assertEqual(off_x, px_to_emu(140))
+        self.assertEqual(off_y + ext_cy, px_to_emu(120 + 18 * 0.25))
+
     def test_svg_first_companion_sits_on_the_fallback_baseline(self) -> None:
         import json
         import re

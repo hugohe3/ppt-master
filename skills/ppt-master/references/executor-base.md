@@ -293,7 +293,7 @@ Mechanical repetition comes from reusing one carrier and topology without a page
   | A primary image reduced to a minor frame | Restore its planned share |
   | Unrelated page jobs collapsing into one neutral construction | Vary the construction by job |
 
-  **Absence needs a reason.** Each of these receipt facts needs one written line — what carries that job instead, and why that serves the reader better: a deck-wide `Presets: (none)`; `inline emphasis 0`, `gradients 0`, or `filters 0` on the `Effects:` line; fewer pages carrying a preset or connector than pages whose relationship line (Default: §IX `Relationships`; Quick: the transient relationship statement) names `order` / `link` / `parent` / `membership`; a `Presets:` line naming no carrier-and-field contour. Answer per family the presets serve, not for arrows alone:
+  **Absence needs a reason.** Each of these receipt facts needs one written line — what carries that job instead, and why that serves the reader better: a deck-wide `Presets: (none)`; `inline emphasis 0`, `gradients 0`, or `filters 0` on the `Effects:` line; fewer pages carrying a preset or connector than pages whose relationship line (Default: §IX `Relationships`; Quick: the transient relationship statement) names `order` / `link` / `parent` / `membership`; a `Presets:` line naming no carrier-and-field contour; `icons: 0` while §VI (Quick: the prepared pool) registered an icon pool. Answer per family the presets serve, not for arrows alone:
 
   | Family | Members |
   |---|---|

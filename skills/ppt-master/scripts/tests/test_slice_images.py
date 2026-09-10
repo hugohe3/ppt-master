@@ -172,6 +172,78 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertIn("Suggested rerun:", result.stderr)
             self.assertFalse((output_dir / "element.png").exists())
 
+    def test_inset_accepts_horizontal_and_vertical_fractions(self) -> None:
+        from slice_images import parse_inset
+
+        self.assertEqual(parse_inset("0.03"), (0.03, 0.03))
+        self.assertEqual(parse_inset("0.01,0.03"), (0.01, 0.03))
+        with self.assertRaises(ValueError):
+            parse_inset("0.5")
+        with self.assertRaises(ValueError):
+            parse_inset("0.1,0.2,0.3")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            output_dir = root / "output"
+            # Two wide bands with a white grid line between them: an
+            # isotropic inset wide enough for the line would cut the glyphs.
+            image = Image.new("RGB", (400, 100), (0, 0, 255))
+            draw = ImageDraw.Draw(image)
+            draw.rectangle((0, 48, 399, 51), fill=(255, 255, 255))
+            draw.rectangle((10, 8, 390, 40), fill=(240, 240, 240))
+            draw.rectangle((10, 58, 390, 92), fill=(240, 240, 240))
+            image.save(sheet_path)
+
+            result = subprocess.run(
+                [
+                    sys.executable, str(SCRIPT), str(sheet_path),
+                    "--grid", "2x1", "--names", "a,b",
+                    "--trim", "--alpha", "--strict-alpha",
+                    "--bg", "#0000FF", "--inset", "0,0.06",
+                    "--output", str(output_dir),
+                ],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(Image.open(output_dir / "a.png").size, (381, 33))
+            self.assertEqual(Image.open(output_dir / "b.png").size, (381, 35))
+
+    def test_strict_alpha_rejects_a_sheet_whose_ground_recovers_as_haze(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            output_dir = root / "output"
+            # The real ground (#034AF4) sits farther from pure blue than the
+            # tolerance, so soft-alpha recovery turns the whole field into a
+            # faint half-foreground; the outer gutter alone does not catch it.
+            image = Image.new("RGB", (160, 120), (3, 74, 244))
+            draw = ImageDraw.Draw(image)
+            draw.rectangle((60, 40, 100, 80), fill=(250, 250, 250))
+            image.save(sheet_path)
+
+            args = [
+                sys.executable, str(SCRIPT), str(sheet_path),
+                "--grid", "1x1", "--names", "mark",
+                "--trim", "--alpha", "--strict-alpha",
+                "--output", str(output_dir),
+            ]
+            result = subprocess.run(
+                args + ["--bg", "#0000FF", "--tolerance", "62"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("semi-transparent", result.stderr)
+            self.assertIn("measured ground colour", result.stderr)
+            self.assertFalse((output_dir / "mark.png").exists())
+
+            result = subprocess.run(
+                args + ["--bg", "#034AF4", "--tolerance", "62"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(Image.open(output_dir / "mark.png").size, (41, 41))
+
 
 class ImageOrientationProcessingTests(unittest.TestCase):
     def test_compression_applies_orientation_and_preserves_image_format(self) -> None:

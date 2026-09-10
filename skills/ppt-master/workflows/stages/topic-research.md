@@ -49,7 +49,7 @@ Default bundles only genuinely missing scope or research-boundary decisions into
 
 ## Step 2: Gather factual sources
 
-Use the search and fetch tools available in the research context; an isolated worker without them returns `blocked: web-tools-unavailable`. With no usable search/fetch context, pause and ask the user for authoritative URLs covering the gaps, then fetch each with `web_to_md.py <URL> -o projects/<research_slug>_web_sources/<source_slug>.md --no-images` (remote image links stay in the Markdown; nothing is downloaded).
+Use the search and fetch tools available in the research context; an isolated worker without them returns `blocked: web-tools-unavailable`. With no usable search/fetch context, pause and ask the user for authoritative URLs covering the gaps, then fetch each with `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL> -o projects/<research_slug>_web_sources/<source_slug>.md --no-images` (remote image links stay in the Markdown; nothing is downloaded).
 
 Orient (map authoritative sources to the gaps) → deep fetch (read the highest-signal primary pages in full) → targeted fill (search only for gaps still unsupported). Prefer primary sources, official sites, institutional releases, standards, and original research; then authoritative reference works and academic sources; then reputable reporting; avoid unsourced reposts, unverifiable summaries, and stock-aggregator pages.
 
@@ -92,7 +92,7 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources projects/<project
 
 If planning later exposes a required gap, return here and repair the pair before continuing; Strategist or Quick never consumes a newly fetched claim without updating it. The imported pair is the compact evidence-facing content authority, not a locked contract: Default's Strategist reads both files completely before confirmation; Quick's agent does the same before its content, design, and resource decisions.
 
-**Single-page image fallback**: only after normal web-image providers, ranked thumbnail pages, and materially different queries fail may an image owner with visual capability select one relevant `source_url` from the facts JSON and fetch that one page package with `web_to_md.py "<source_url>" -o <project_path>/sources/<source_slug>.md`, review the companion `<source_slug>_files/` package, and copy only accepted images into `<project_path>/images/` — never pass the URL to `import-sources`, which would promote every companion image into the pool. Fetch another page only after the current package has no usable image; without vision, retain `Needs-Manual`.
+**Single-page image fallback**: only after normal web-image providers, ranked thumbnail pages, and materially different queries fail may an image owner with visual capability select one relevant `source_url` from the facts JSON and fetch that one page package with `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py "<source_url>" -o <project_path>/sources/<source_slug>.md`, review the companion `<source_slug>_files/` package, and copy only accepted images into `<project_path>/images/` — never pass the URL to `import-sources`, which would promote every companion image into the pool. Fetch another page only after the current package has no usable image; without vision, retain `Needs-Manual`.
 
 ```markdown
 ## ✅ Topic Research Complete
