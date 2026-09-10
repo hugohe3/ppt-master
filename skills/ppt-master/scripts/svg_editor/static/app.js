@@ -1848,18 +1848,32 @@
     // ================================================================
     //  Utility
     // ================================================================
+    var SVG_NS = "http://www.w3.org/2000/svg";
+    var SVG_ALLOWED_ELEMENTS = new Set([
+        "svg", "g", "defs", "symbol", "use", "path", "rect", "circle", "ellipse",
+        "line", "polyline", "polygon", "text", "tspan", "textpath", "image",
+        "clippath", "mask", "pattern", "marker", "lineargradient", "radialgradient",
+        "stop", "filter", "feblend", "fecolormatrix", "fecomponenttransfer",
+        "fecomposite", "feconvolvematrix", "fediffuselighting", "fedisplacementmap",
+        "fedistantlight", "fedropshadow", "feflood", "fefunca", "fefuncb", "fefuncg",
+        "fefuncr", "fegaussianblur", "feimage", "femerge", "femergenode",
+        "femorphology", "feoffset", "fepointlight", "fespecularlighting",
+        "fespotlight", "fetile", "feturbulence", "style", "title", "desc", "metadata",
+        "a", "switch", "view", "animate", "animatecolor", "animatetransform",
+        "animatemotion", "set", "mpath"
+    ]);
+
     function sanitizeSvg(svgString) {
         var doc = new DOMParser().parseFromString(svgString, "image/svg+xml");
         if (doc.getElementsByTagName("parsererror").length ||
-            !doc.documentElement || doc.documentElement.localName.toLowerCase() !== "svg") {
+            !doc.documentElement || doc.documentElement.localName.toLowerCase() !== "svg" ||
+            doc.documentElement.namespaceURI !== SVG_NS) {
             throw new Error(t("err_empty_svg"));
         }
         doc.querySelectorAll("*").forEach(function (el) {
             // XML preserves case; the innerHTML sink normalizes HTML/SVG names.
             var tag = el.localName.toLowerCase();
-            if (tag === "script" || tag === "foreignobject" ||
-                (el.namespaceURI && el.namespaceURI !== "http://www.w3.org/2000/svg" &&
-                 el.namespaceURI !== "http://www.w3.org/1999/xlink")) {
+            if (!SVG_ALLOWED_ELEMENTS.has(tag) || el.namespaceURI !== SVG_NS) {
                 el.remove();
                 return;
             }
@@ -1871,10 +1885,11 @@
                     return;
                 }
                 // Strip dangerous URI protocols from href/xlink:href
+                var value = attr.value.replace(/[\t\r\n]/g, "").replace(/^[\x00-\x20]+/, "");
                 if (local === "href" &&
-                    (/^\s*javascript\s*:/i.test(attr.value) ||
-                     /^\s*vbscript\s*:/i.test(attr.value) ||
-                     /^\s*data\s*:/i.test(attr.value))) {
+                    (/^\s*javascript\s*:/i.test(value) ||
+                     /^\s*vbscript\s*:/i.test(value) ||
+                     /^\s*data\s*:/i.test(value))) {
                     el.removeAttributeNode(attr);
                 }
             });

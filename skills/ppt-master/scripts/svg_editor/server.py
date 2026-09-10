@@ -30,6 +30,7 @@ import sys
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import webbrowser
 import xml.etree.ElementTree as ET
@@ -455,6 +456,20 @@ def create_app(
 
     @app.before_request
     def _update_activity():
+        allowed_hosts = {PUBLIC_HOST, 'localhost', '::1', '[::1]'}
+        host = request.headers.get('Host', '').lower()
+        if host.startswith('[') or host.count(':') == 1:
+            host = re.sub(r':\d+$', '', host)
+        if host not in allowed_hosts:
+            return jsonify({'error': 'Forbidden Host header'}), 403
+        origin = request.headers.get('Origin')
+        if origin is not None:
+            try:
+                origin_host = urllib.parse.urlsplit(origin).hostname
+            except ValueError:
+                origin_host = None
+            if origin_host not in allowed_hosts:
+                return jsonify({'error': 'Forbidden Origin header'}), 403
         app.config['LAST_REQUEST_TIME'] = time.time()
 
     def _exit_with_lock_release(code: int = 0) -> None:
