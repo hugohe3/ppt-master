@@ -148,40 +148,64 @@ def _layout_text_sizes(pkg: "OoxmlPackage") -> list[dict]:
     return _rank(sizes, 10)
 
 
-def _sample_observed(pkg: "OoxmlPackage") -> dict:
+def _theme_font_refs(fonts: dict) -> dict[str, str]:
+    """Map `+mj-lt` / `+mn-ea` style theme references to their declared faces."""
+    refs: dict[str, str] = {}
+    for prefix, role in (("+mj", "title"), ("+mn", "body")):
+        pair = fonts.get(role) or {}
+        for suffix, slot in (("lt", "latin"), ("ea", "ea"), ("cs", "cs")):
+            face = pair.get(slot)
+            if face:
+                refs[f"{prefix}-{suffix}"] = face
+    return refs
+
+
+def _sample_observed(pkg: "OoxmlPackage", font_refs: dict[str, str]) -> dict:
     """Aggregate run-level fonts, explicit point sizes, and explicit fill colors.
 
     Theme extraction reports the *declared* identity; a hand-edited deck often
     overrides it per shape / run. This is a frequency sample of run-level usage
     (not a full style resolution — it misses schemeClr + master/layout
     inheritance, and counts chart/gradient fills), enough for the workflow to
-    recommend theme vs observed. `sizes_pt` only counts runs that set an explicit
-    `sz`; runs inheriting the placeholder size are not seen here (use
-    `theme.sizes` for those), so a small sample is a hint, not the full picture.
+    recommend theme vs observed. Theme font references (`+mn-ea`) count as the
+    face they resolve to. `sizes_pt` only counts runs that set an explicit `sz`
+    and ranks by the characters those runs carry, so a size split across many
+    short runs does not outrank the size that sets most of the text; runs
+    inheriting the placeholder size are not seen here (use `theme.sizes` for
+    those), so a small sample is a hint, not the full picture.
     """
     latin: dict[str, int] = {}
     ea: dict[str, int] = {}
-    sizes: dict[float, int] = {}
+    size_runs: dict[float, int] = {}
+    size_chars: dict[float, int] = {}
     colors: dict[str, int] = {}
     for slide in pkg.iter_slides():
         root = slide.part.xml
         for tag, bucket in (("a:latin", latin), ("a:ea", ea)):
             for elem in root.iterfind(f".//{tag}", NS):
                 face = (elem.attrib.get("typeface") or "").strip()
-                if face and not face.startswith("+"):  # skip +mj-*/+mn-* theme refs
+                if face.startswith("+"):
+                    face = font_refs.get(face, "")
+                if face:
                     bucket[face] = bucket.get(face, 0) + 1
-        for elem in root.iterfind(".//a:rPr", NS):
-            sz = (elem.attrib.get("sz") or "").strip()
+        for run in root.iterfind(".//a:r", NS):
+            rpr = run.find("a:rPr", NS)
+            sz = (rpr.attrib.get("sz") or "").strip() if rpr is not None else ""
             if sz.isdigit():
                 pt = int(sz) / 100
-                sizes[pt] = sizes.get(pt, 0) + 1
+                size_runs[pt] = size_runs.get(pt, 0) + 1
+                size_chars[pt] = size_chars.get(pt, 0) + len(run.findtext("a:t", "", NS))
         for elem in root.iterfind(".//a:srgbClr", NS):
             val = (elem.attrib.get("val") or "").strip().upper()
             if val:
                 colors[f"#{val}"] = colors.get(f"#{val}", 0) + 1
+    ranked_sizes = sorted(size_chars, key=lambda pt: (-size_chars[pt], -size_runs[pt], pt))
     return {
         "fonts": {"latin": _rank(latin, 5), "ea": _rank(ea, 5)},
-        "sizes_pt": _rank(sizes, 8),
+        "sizes_pt": [
+            {"value": pt, "count": size_runs[pt], "chars": size_chars[pt]}
+            for pt in ranked_sizes[:8]
+        ],
         "colors": _rank(colors, 8),
     }
 
@@ -233,7 +257,7 @@ def extract_identity(pptx_path: Path) -> dict:
             "slide_count": pkg.slide_count,
             "canvas": canvas,
             "theme": {"palette": palette, "fonts": fonts, "sizes": sizes},
-            "observed": _sample_observed(pkg),
+            "observed": _sample_observed(pkg, _theme_font_refs(fonts)),
             "layout_sizes_pt": _layout_text_sizes(pkg),
         }
 

@@ -30,6 +30,10 @@ from svg_to_pptx.pptx_package.builder import _slide_size_type  # noqa: E402
 from project_management.cli import _is_project_tree, PROJECTS_ROOT  # noqa: E402
 from narration_sync import _project_input_path  # noqa: E402
 from tts_backends import backend_edge  # noqa: E402
+from compact_svg_styles import compact_svg_style_tree  # noqa: E402
+from pptx_to_svg.preset_authoring import validate_authored_preset_tree  # noqa: E402
+from pptx_ooxml.analyzer import _classify_page_type  # noqa: E402
+from beautify_identity import _theme_font_refs  # noqa: E402
 
 PDF_URL = "https://www.example.gov/content/pkg/report/pdf/report.pdf"
 
@@ -191,6 +195,54 @@ class PolygonFilterTests(unittest.TestCase):
             xml, *_rest = convert_svg_to_slide_shapes(svg_path, resource_root=root)
         self.assertIn("<a:outerShdw", xml)
         self.assertIn("Polygon", xml)
+
+
+class PresetPaintCompactionTests(unittest.TestCase):
+    SVG = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+        '<g id="rail-field" data-pptx-role="decoration" data-pptx-bounds="0 0 380 720">'
+        '<rect x="0" y="0" width="300" height="720" fill="#004B20"/>'
+        '<g id="p08-rail-edge" data-pptx-authoring="preset" data-pptx-object="shape" '
+        'data-pptx-prst="rtTriangle" data-pptx-frame="300 0 80 720" fill="#004B20" '
+        'stroke="none" transform="matrix(1 0 0 -1 0 720)">'
+        '<path d="M 300 720 L 300 0 L 380 720 Z"/></g>'
+        '</g></svg>'
+    )
+
+    def test_preset_keeps_local_paint(self) -> None:
+        root = ET.fromstring(self.SVG)
+        stats = compact_svg_style_tree(root)
+        self.assertEqual(stats.changed_declarations, 0)
+        self.assertEqual(validate_authored_preset_tree(root), [])
+
+    def test_parent_paint_is_not_stripped_from_preset(self) -> None:
+        root = ET.fromstring(self.SVG.replace(
+            'data-pptx-bounds="0 0 380 720">',
+            'data-pptx-bounds="0 0 380 720" fill="#004B20">',
+        ))
+        compact_svg_style_tree(root)
+        preset = root.find('.//*[@id="p08-rail-edge"]')
+        self.assertEqual(preset.get("fill"), "#004B20")
+        self.assertEqual(validate_authored_preset_tree(root), [])
+
+
+class BeautifyIntakeTests(unittest.TestCase):
+    def test_prose_mentioning_part_stays_content(self) -> None:
+        text = "涉及的主要扶持措施" + "对新增部分的场地按实际租金给予补贴。" * 10
+        slots = [{}, {}]
+        self.assertEqual(_classify_page_type(8, 16, text, slots), "content_candidate")
+        self.assertEqual(
+            _classify_page_type(3, 16, "第一部分 政府采购基本概念 PART ONE", slots),
+            "chapter_candidate",
+        )
+
+    def test_theme_font_refs_resolve(self) -> None:
+        refs = _theme_font_refs({
+            "title": {"latin": "Verdana", "ea": "微软雅黑"},
+            "body": {"latin": "Verdana", "ea": "微软雅黑"},
+        })
+        self.assertEqual(refs["+mn-ea"], "微软雅黑")
+        self.assertEqual(refs["+mj-lt"], "Verdana")
 
 
 class SlideSizeTypeTests(unittest.TestCase):

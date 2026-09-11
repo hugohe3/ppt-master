@@ -183,7 +183,8 @@ def _classify_page_type(index: int, total: int, text: str, slots: list[dict[str,
         return "ending_candidate"
     if any(keyword in normalized for keyword in TOC_KEYWORDS):
         return "toc_candidate"
-    if any(keyword in normalized for keyword in CHAPTER_KEYWORDS):
+    # Body prose mentions "部分"/"part" too; only a short page reads as a divider.
+    if len(text) <= 120 and any(keyword in normalized for keyword in CHAPTER_KEYWORDS):
         return "chapter_candidate"
     if len(slots) <= 2 and len(text) <= 80:
         return "chapter_candidate"
