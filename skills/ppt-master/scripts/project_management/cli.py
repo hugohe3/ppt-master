@@ -934,6 +934,7 @@ class ProjectManager:
                     )
                     continue
 
+                web_sources = source_path.with_name(f"{source_path.stem}_web_sources")
                 archived_markdown, asset_dir, note = self._import_markdown_with_assets(
                     source_path,
                     sources_dir,
@@ -941,6 +942,23 @@ class ProjectManager:
                 )
                 summary["archived"].append(str(archived_markdown))
                 summary["markdown"].append(str(archived_markdown))
+                if (
+                    effective_move
+                    and web_sources.is_dir()
+                    and web_sources.resolve().parent == PROJECTS_ROOT.resolve()
+                ):
+                    # topic-research fetches pages beside its pair under
+                    # projects/; they travel with the pair as provenance
+                    # rather than staying behind in the shared directory.
+                    target = project_dir / "analysis" / "research_web_sources" / web_sources.name
+                    if target.exists():
+                        summary["notes"].append(
+                            f"{web_sources}: left in place; {target} already exists"
+                        )
+                    else:
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.move(str(web_sources), str(target))
+                        summary["analysis"].append(str(target))
                 if asset_dir is not None:
                     summary["assets"].append(str(asset_dir))
                     self._propagate_image_assets(asset_dir, project_dir)

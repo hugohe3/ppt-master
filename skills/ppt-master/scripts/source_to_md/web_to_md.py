@@ -587,11 +587,13 @@ def extract_metadata(soup: BeautifulSoup, url: str) -> dict[str, str]:
 
     if not date:
         # Try URL matching
-        match = re.search(r"(\d{4})(\d{2})[\/_](?:t\d+_)?", url)
+        # Only a plausible year and month: a handle or record number such as
+        # ".../10665/379812/..." is not May 3798.
+        match = re.search(r"(?<!\d)((?:19|20)\d{2})(0[1-9]|1[0-2])[\/_](?:t\d+_)?", url)
         if match:
             date = f"{match.group(1)}-{match.group(2)}"
         else:
-            match = re.search(r"(\d{4})[-\/](\d{2})[-\/](\d{2})", url)
+            match = re.search(r"(?<!\d)((?:19|20)\d{2})[-\/](0[1-9]|1[0-2])[-\/](\d{2})", url)
             if match:
                 date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
 

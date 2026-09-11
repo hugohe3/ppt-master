@@ -22,6 +22,8 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
+- A moved topic-research pair `projects/<slug>.md` takes its sibling
+  `projects/<slug>_web_sources/` along to `analysis/research_web_sources/`.
 - Local sources under `projects/` are moved into the target project unless
   `--copy` is passed; a file inside another project's tree is copied unless
   `--move` is explicit, so borrowing a finished project's slices never empties it.

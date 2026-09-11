@@ -521,6 +521,15 @@ class RtlAndTemplateExportTests(unittest.TestCase):
         self.assertEqual(_rtl_theme_scripts("zh-CN"), ())
 
 
+class IntakeHousekeepingTests(unittest.TestCase):
+    def test_record_numbers_in_urls_are_not_dates(self) -> None:
+        from bs4 import BeautifulSoup
+        empty = BeautifulSoup("<html><title>x</title></html>", "html.parser")
+        date = lambda url: web_to_md.extract_metadata(empty, url)["date"]
+        self.assertEqual(date("https://iris.who.int/bitstream/handle/10665/379812/x.pdf"), "")
+        self.assertEqual(date("https://www.mem.gov.cn/kp/shaq/202205/t20220519_413952.shtml"), "2022-05")
+
+
 class SlideSizeTypeTests(unittest.TestCase):
     def test_standard_ratios_keep_their_token(self) -> None:
         self.assertEqual(_slide_size_type(12192000, 6858000), "screen16x9")
