@@ -38,6 +38,12 @@ from svg_to_pptx.drawingml.utils import split_project_text_clusters  # noqa: E40
 
 _CLOSING_PUNCTUATION = frozenset(',.;:!?)]}、，。；：！？）》」』】”’')
 _OPENING_PUNCTUATION = frozenset('([{（《「『【“‘')
+# Japanese line-start prohibitions beyond punctuation: small kana, the long
+# vowel mark, iteration marks, and the middle dot never open a line.
+_NO_LINE_START = _CLOSING_PUNCTUATION | frozenset(
+    'ぁぃぅぇぉっゃゅょゎゕゖァィゥェォッャュョヮヵヶㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇺㇻㇼㇽㇾㇿ'
+    'ー々ゝゞヽヾ・'
+)
 _PREFERRED_BREAK_PUNCTUATION = frozenset('，。；：')
 # A CJK clause break is preferred over the greedy break only while it keeps
 # this share of the greedy line; below it the punctuation break would leave a
@@ -175,7 +181,7 @@ def _protected_units(text: str) -> list[str]:
     for unit in units:
         content = unit.lstrip()
         if protected and (
-            content[0] in _CLOSING_PUNCTUATION
+            content[0] in _NO_LINE_START
             or protected[-1].rstrip()[-1] in _OPENING_PUNCTUATION
         ):
             protected[-1] += unit

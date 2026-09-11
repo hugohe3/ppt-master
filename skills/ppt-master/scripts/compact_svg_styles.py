@@ -142,6 +142,11 @@ def _local_name(name: object) -> str:
     return name.rsplit("}", 1)[-1] if isinstance(name, str) else ""
 
 
+def _is_preset_atom(element: ET.Element) -> bool:
+    """Return whether an element is a helper-owned authored preset group."""
+    return isinstance(element.tag, str) and authored_preset_encoding(element) is not None
+
+
 def is_canonical_presentation_value(
     value: str,
     *,
@@ -342,7 +347,7 @@ def _promote_common_group_defaults(
     """Factor proven direct-child repetition into an existing SVG group."""
     if (
         _local_name(element.tag) in _DEFINITION_SUBTREES
-        or authored_preset_encoding(element)
+        or _is_preset_atom(element)
     ):
         return
     for child in element:
@@ -363,7 +368,7 @@ def _promote_common_group_defaults(
         return
     # Helper-owned preset atoms keep their paint local; the preset contract
     # rejects paint that only arrives from an ancestor group.
-    if any(authored_preset_encoding(child) for child in children):
+    if any(_is_preset_atom(child) for child in children):
         return
 
     element_styles = _style_declarations(element.get("style"))
@@ -414,7 +419,7 @@ def _remove_redundant_inherited_styles(
 ) -> None:
     if (
         _local_name(element.tag) in _DEFINITION_SUBTREES
-        or authored_preset_encoding(element)
+        or _is_preset_atom(element)
     ):
         return
     declarations = _style_declarations(element.get("style"))

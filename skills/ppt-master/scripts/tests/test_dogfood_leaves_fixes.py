@@ -34,6 +34,10 @@ from compact_svg_styles import compact_svg_style_tree  # noqa: E402
 from pptx_to_svg.preset_authoring import validate_authored_preset_tree  # noqa: E402
 from pptx_ooxml.analyzer import _classify_page_type  # noqa: E402
 from beautify_identity import _theme_font_refs  # noqa: E402
+from svg_to_pptx.native_objects.chart_data import _chart_data_labels  # noqa: E402
+from svg_to_pptx.native_objects.chart_xml import _data_labels_xml  # noqa: E402
+from svg_to_pptx.drawingml.utils import parse_font_family  # noqa: E402
+import text_measure  # noqa: E402
 
 PDF_URL = "https://www.example.gov/content/pkg/report/pdf/report.pdf"
 
@@ -225,6 +229,15 @@ class PresetPaintCompactionTests(unittest.TestCase):
         self.assertEqual(preset.get("fill"), "#004B20")
         self.assertEqual(validate_authored_preset_tree(root), [])
 
+    def test_comment_nodes_do_not_crash(self) -> None:
+        parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+        root = ET.fromstring(
+            self.SVG.replace('<rect ', '<!-- chart-plot-area --><rect ', 1),
+            parser=parser,
+        )
+        compact_svg_style_tree(root)
+        self.assertEqual(validate_authored_preset_tree(root), [])
+
 
 class BeautifyIntakeTests(unittest.TestCase):
     def test_prose_mentioning_part_stays_content(self) -> None:
@@ -243,6 +256,49 @@ class BeautifyIntakeTests(unittest.TestCase):
         })
         self.assertEqual(refs["+mn-ea"], "微软雅黑")
         self.assertEqual(refs["+mj-lt"], "Verdana")
+
+
+class DataLabelPointTests(unittest.TestCase):
+    @staticmethod
+    def _xml(config: dict) -> str:
+        return _data_labels_xml(
+            config, chart_type="column", grouping="clustered", point_count=4,
+            font_size=1400, default_color="#000000", default_font_face=None,
+        )
+
+    def test_show_flag_makes_points_overrides(self) -> None:
+        xml = self._xml({"show_value": True, "points": [{"idx": 2, "delete": True}]})
+        self.assertEqual(xml.count('<c:delete val="1"/>'), 1)
+        self.assertIn('<c:showVal val="1"/><c:showCatName', xml.split("</c:dLbl>")[-1])
+
+    def test_points_without_flag_list_the_only_labels(self) -> None:
+        xml = self._xml({"points": [{"idx": 3}]})
+        self.assertEqual(xml.count('<c:delete val="1"/>'), 3)
+
+    def test_all_deleted_points_are_refused(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "no label remains"):
+            _chart_data_labels(
+                {"data_labels": {"points": [{"idx": 1, "delete": True}]}},
+                "column", "clustered", 4,
+            )
+
+
+class JapaneseTypographyTests(unittest.TestCase):
+    def test_small_kana_and_long_vowel_never_open_a_line(self) -> None:
+        units = text_measure._protected_units("スーパーっゃ・")
+        self.assertTrue(all(unit[0] not in "ーっゃ・" for unit in units))
+
+    def test_wrapped_pdf_lines_join_without_space_between_cjk(self) -> None:
+        self.assertEqual(pdf_to_md.join_wrapped_text("約６８億", "人ものお客様"), "約６８億人ものお客様")
+        self.assertEqual(pdf_to_md.join_wrapped_text("新幹", "線"), "新幹線")
+        self.assertEqual(pdf_to_md.join_wrapped_text("the high", "speed"), "the high speed")
+
+    def test_ea_fallback_follows_deck_language(self) -> None:
+        self.assertEqual(parse_font_family("'Georgia', serif", "ja-JP")["ea"], "Yu Mincho")
+        self.assertEqual(parse_font_family("Arial", "ja")["ea"], "Yu Gothic")
+        self.assertEqual(parse_font_family("'Hiragino Sans'", "ja-JP")["latin"], "Yu Gothic")
+        self.assertEqual(parse_font_family("Arial", "zh-CN")["ea"], "Microsoft YaHei")
+        self.assertEqual(parse_font_family("Arial")["ea"], "Microsoft YaHei")
 
 
 class SlideSizeTypeTests(unittest.TestCase):

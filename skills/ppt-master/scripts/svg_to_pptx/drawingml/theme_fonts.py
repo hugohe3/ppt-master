@@ -147,8 +147,8 @@ def infer_master_text_style_spec(
     )
 
 
-def _font_face(font_family: str) -> ThemeFontFace:
-    fonts = parse_font_family(font_family)
+def _font_face(font_family: str, language: str | None = None) -> ThemeFontFace:
+    fonts = parse_font_family(font_family, language)
     return ThemeFontFace(
         latin=fonts["latin"],
         ea=fonts["ea"],
@@ -177,7 +177,10 @@ def _typography_rows(lock_path: Path) -> dict[str, str]:
     return rows
 
 
-def load_theme_font_spec(project_path: Path) -> ThemeFontSpec | None:
+def load_theme_font_spec(
+    project_path: Path,
+    language: str | None = None,
+) -> ThemeFontSpec | None:
     """Load major/minor theme fonts from ``spec_lock.md`` typography rows."""
     lock_path = project_path / "spec_lock.md"
     if not lock_path.is_file():
@@ -189,8 +192,8 @@ def load_theme_font_spec(project_path: Path) -> ThemeFontSpec | None:
     if not major_family or not minor_family:
         return None
     return ThemeFontSpec(
-        major=_font_face(major_family),
-        minor=_font_face(minor_family),
+        major=_font_face(major_family, language),
+        minor=_font_face(minor_family, language),
         major_family=major_family,
         minor_family=minor_family,
     )

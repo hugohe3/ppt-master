@@ -23,6 +23,7 @@ from .chart_data import (
     _data_label_position,
     _data_label_point_items,
     _data_labels_config,
+    data_labels_show_unlisted,
 )
 from .chart_style import (
     _alpha_xml,
@@ -231,7 +232,7 @@ def _data_label_custom_text_xml(
         run_rtl = '<a:rtl val="1"/>' if text_has_rtl_characters(line) else ""
         paragraphs.append(
             f'<a:p><a:pPr{rtl_attr}/><a:r><a:rPr lang="{lang}" '
-            f'sz="{font_size}"{bold_attr}>{fill_xml}{_font_face_xml(font_face)}'
+            f'sz="{font_size}"{bold_attr}>{fill_xml}{_font_face_xml(font_face, language)}'
             f'{run_rtl}</a:rPr><a:t>{_xml_escape(line)}</a:t></a:r></a:p>'
         )
     return (
@@ -296,11 +297,13 @@ def _data_labels_xml(
     )
     if point_items:
         selected_items = {int(item["idx"]): item for item in point_items}
+        show_unlisted = data_labels_show_unlisted(config)
         point_label_xml = ""
         for idx in range(point_count):
             item = selected_items.get(idx)
             if item is None:
-                point_label_xml += f'<c:dLbl><c:idx val="{idx}"/><c:delete val="1"/></c:dLbl>'
+                if not show_unlisted:
+                    point_label_xml += f'<c:dLbl><c:idx val="{idx}"/><c:delete val="1"/></c:dLbl>'
                 continue
             if item.get("delete") is True:
                 point_label_xml += f'<c:dLbl><c:idx val="{idx}"/><c:delete val="1"/></c:dLbl>'
@@ -355,7 +358,11 @@ def _data_labels_xml(
                 f"{_data_label_flags_xml({**config, **item})}"
                 "</c:dLbl>"
             )
-        return f"<c:dLbls>{point_label_xml}{leader_lines_xml}</c:dLbls>"
+        series_label_xml = ""
+        if show_unlisted:
+            position_xml = f'<c:dLblPos val="{position}"/>' if position else ""
+            series_label_xml = f"{num_fmt_xml}{tx_pr_xml}{position_xml}{flags_xml}"
+        return f"<c:dLbls>{point_label_xml}{series_label_xml}{leader_lines_xml}</c:dLbls>"
 
     label_colors = [
         _clean_hex(item, "#404040")
@@ -620,7 +627,7 @@ def _chart_title_paragraph_xml(
     run_rtl = '<a:rtl val="1"/>' if text_has_rtl_characters(text) else ''
     return (
         f'<a:p><a:pPr{rtl_attr}/><a:r><a:rPr lang="{lang}" '
-        f'sz="{font_size}">{fill_xml}{_font_face_xml(font_face)}'
+        f'sz="{font_size}">{fill_xml}{_font_face_xml(font_face, primary_language)}'
         f'{run_rtl}</a:rPr>'
         f"<a:t>{_xml_escape(text)}</a:t></a:r></a:p>"
     )

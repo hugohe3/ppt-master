@@ -2490,7 +2490,7 @@ Recorded narration:
         and not lockless_export
     ):
         try:
-            theme_font_spec = load_theme_font_spec(project_path)
+            theme_font_spec = load_theme_font_spec(project_path, primary_language)
             master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:

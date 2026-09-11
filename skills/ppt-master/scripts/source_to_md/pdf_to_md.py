@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from collections import Counter
 
@@ -333,6 +334,17 @@ def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> 
     return noise_texts
 
 
+def join_wrapped_text(head: str, tail: str) -> str:
+    """Join two wrapped PDF lines; a break between wide CJK characters is no space."""
+    if (
+        head and tail
+        and unicodedata.east_asian_width(head[-1]) in {"W", "F"}
+        and unicodedata.east_asian_width(tail[0]) in {"W", "F"}
+    ):
+        return head + tail
+    return f"{head} {tail}"
+
+
 def merge_adjacent_headings(elements: list) -> list:
     """
     Merge adjacent same-level short headings.
@@ -381,7 +393,7 @@ def merge_adjacent_headings(elements: list) -> list:
                 break
 
             # Merge
-            title_text += " " + next_text
+            title_text = join_wrapped_text(title_text, next_text)
             j += 1
 
         # Create merged element
@@ -1610,7 +1622,7 @@ def extract_pdf_to_markdown(
                         break
                     if not should_merge_lines({"content": merged_content, "is_heading": False, "is_list": False}, next_el):
                         break
-                    merged_content += " " + next_el["content"]
+                    merged_content = join_wrapped_text(merged_content, next_el["content"])
                     j += 1
                 merged_elements.append({
                     "type": 0,

@@ -2962,7 +2962,10 @@ def _build_run_properties_xml(
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
     baseline_attr = f' baseline="{baseline_shift}"' if baseline_shift else ''
 
-    fonts = parse_font_family(ff) if ff else default_fonts
+    fonts = (
+        parse_font_family(ff, ctx.primary_language if ctx is not None else None)
+        if ff else default_fonts
+    )
     run_fonts = (
         {
             'latin': fixed_font_family,
@@ -3182,7 +3185,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         letter_spacing_px = 0.0
 
-    fonts = parse_font_family(font_family_str)
+    fonts = parse_font_family(font_family_str, ctx.primary_language)
 
     parent_attrs: dict[str, Any] = {
         'fill': fill_color,

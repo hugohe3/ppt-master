@@ -50,6 +50,7 @@ import concurrent.futures
 import json
 import os
 import re
+import stat
 import sys
 import tempfile
 import threading
@@ -848,6 +849,12 @@ def load_manifest(path: str) -> dict:
 def save_manifest(path: str, data: dict) -> None:
     """Atomically write manifest back to disk (tmp file + rename)."""
     target = Path(path)
+    try:
+        mode = stat.S_IMODE(target.stat().st_mode)
+    except FileNotFoundError:
+        umask = os.umask(0)
+        os.umask(umask)
+        mode = 0o666 & ~umask
     fd, tmp_path = tempfile.mkstemp(
         prefix=target.stem + ".",
         suffix=".tmp",
@@ -857,6 +864,8 @@ def save_manifest(path: str, data: dict) -> None:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             f.write("\n")
+        # mkstemp creates 0600; keep the manifest's own permissions.
+        os.chmod(tmp_path, mode)
         os.replace(tmp_path, target)
     except Exception:
         try:

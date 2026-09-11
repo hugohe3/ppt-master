@@ -88,7 +88,7 @@ def _table_text_run(
             f'<a:cs typeface="{escaped_face}"/>'
         )
     else:
-        font_xml = _font_face_xml(font_face)
+        font_xml = _font_face_xml(font_face, default_language)
     outline_xml = ""
     if outline is not None and outline.style == "solid":
         assert outline.color is not None and outline.width is not None

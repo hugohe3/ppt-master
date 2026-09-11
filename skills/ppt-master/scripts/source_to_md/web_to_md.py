@@ -998,6 +998,7 @@ def remote_document_suffix(url: str, content_type: str, head: bytes) -> str | No
 
 def _convert_remote_document(
     url: str, body: bytes, suffix: str, output_file: str | None,
+    download_images: bool = True,
 ) -> tuple[bool, str, str | None, str | None]:
     """Save a downloaded document beside its Markdown and run its own converter."""
     stem = os.path.splitext(os.path.basename(urlparse(url).path))[0]
@@ -1012,7 +1013,10 @@ def _convert_remote_document(
         f.write(body)
     print(f"   [OK] Document: {len(body)} bytes saved to {local_path}")
 
-    route = build_conversion_command(local_path, output_path)
+    route = build_conversion_command(
+        local_path, output_path,
+        pdf_image_mode=None if download_images else "none",
+    )
     print(f"   [>>] {route.script_name} {local_path}")
     sys.stdout.flush()
     rc = subprocess.run(route.command).returncode
@@ -1021,11 +1025,26 @@ def _convert_remote_document(
     return True, url, None, output_path
 
 
+_META_REFRESH_RE = re.compile(
+    r"^\s*(\d+(?:\.\d+)?)\s*[;,]\s*url\s*=\s*['\"]?([^'\"]+)", re.IGNORECASE)
+
+
+def _meta_refresh_target(soup: BeautifulSoup, base_url: str) -> str | None:
+    """Return the http(s) target of an immediate `<meta http-equiv="refresh">`."""
+    meta = soup.find("meta", attrs={"http-equiv": re.compile(r"^refresh$", re.IGNORECASE)})
+    match = _META_REFRESH_RE.match(meta.get("content", "")) if meta else None
+    if not match or float(match.group(1)) > 5:
+        return None
+    target = urljoin(base_url, match.group(2).strip())
+    return target if urlparse(target).scheme in {"http", "https"} else None
+
+
 def process_url(
     url: str,
     output_file: str | None = None,
     *,
     download_images: bool = True,
+    _refresh_hops: int = 0,
 ) -> tuple[bool, str, str | None, str | None]:
     """Fetch, convert, and save one web page as Markdown.
 
@@ -1039,13 +1058,23 @@ def process_url(
         suffix = remote_document_suffix(
             url, response.headers.get("Content-Type", ""), response.content[:8])
         if suffix:
-            return _convert_remote_document(url, response.content, suffix, output_file)
+            return _convert_remote_document(
+                url, response.content, suffix, output_file, download_images,
+            )
         html, page_url = _decode_response_text(response), response.url
         if is_plain_text_document(url, html):
             return _save_plain_text_document(url, html, output_file)
         soup = BeautifulSoup(html, 'html.parser')
         base = soup.find('base', href=True)
         base_url = urljoin(page_url, base['href']) if base else page_url
+        refresh_url = _meta_refresh_target(soup, base_url)
+        if refresh_url and refresh_url != page_url and _refresh_hops < 3:
+            print(f"   [>>] Meta refresh: {refresh_url}")
+            ok, _, error, saved = process_url(
+                refresh_url, output_file,
+                download_images=download_images, _refresh_hops=_refresh_hops + 1,
+            )
+            return ok, url, error, saved
 
         # Extract Metadata
         metadata = extract_metadata(soup, url)
@@ -1084,6 +1113,12 @@ def process_url(
         # Note: We pass the element to our traversal function
         markdown_text = simple_html_to_markdown_traversal(content_div, base_url)
         print(f"   [OK] Content: {len(markdown_text)} chars")
+        warnings = []
+        if not markdown_text.strip():
+            warnings.append(
+                "no readable body text extracted; the page may render its "
+                "content with scripts or link to it elsewhere")
+            print(f"   [WARN] {warnings[0]}")
 
         # Construct content
         final_output = []
@@ -1115,6 +1150,7 @@ def process_url(
             converter="web_to_md.py",
             conversion_type="web",
             asset_dir=image_dir if image_count else None,
+            warnings=warnings,
         )
 
         print(f"   [OK] Saved: {output_path}")
