@@ -2206,10 +2206,17 @@ class SVGQualityChecker:
                 for error in errors
             )
             return
+        def normalizer(error: str) -> str:
+            if "page-space metadata" in error:
+                return (
+                    "`python3 scripts/compact_svg_coordinates.py <svg_output> "
+                    "--inplace --keep-native-frames`"
+                )
+            return "`python3 scripts/compact_svg_styles.py <svg_output> --inplace`"
+
         result['warnings'].extend(
             f"Noncanonical compact authoring: {error} "
-            "(advisory; normalize with "
-            "`python3 scripts/compact_svg_styles.py <svg_output> --inplace`, "
+            f"(advisory; normalize with {normalizer(error)}, "
             "re-stamp pages that carry Chart/Table fallbacks, and rerun the "
             "final gate, or leave the explicit form)"
             for error in errors
@@ -9127,7 +9134,7 @@ class SVGQualityChecker:
                 "remain non-blocking"
             )
             print(f"  4. foreignObject: Use <text> + <tspan> for manual line breaks")
-            print(f"  5. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
+            print(f"  5. Font issues: use PPT-safe exported typefaces (e.g. Arial / Consolas, with the CJK face of the deck language)")
 
     def _carrier_receipt_summary(self) -> Dict:
         """Aggregate factual per-page carrier receipts for compact review."""

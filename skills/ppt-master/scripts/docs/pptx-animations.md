@@ -42,7 +42,7 @@ One resolved row contains these fields:
 | Duration | Finite positive schedule duration; scalable native behavior trees preserve their internal timing ratios |
 | Delay | Finite non-negative row offset; shape-trigger rows use it as `TriggerDelayTime` |
 | Order | Positive integer sidecar order; ties retain stable SVG group order, then `effects[]` index; a group with no sidecar `order` follows the nearest listed group before it in SVG order (and precedes every listed group when none precedes it), so a headline above the numbered body enters first |
-| Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters` |
+| Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters`; an edge `direction` (`up` / `right` / `down` / `left`) names the side the effect starts from, PowerPoint's From Top / From Right / From Bottom / From Left |
 | Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
 | Completion / cue | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
 

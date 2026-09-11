@@ -58,6 +58,7 @@ from _dispatcher import (  # noqa: E402
 )
 from _conversion_profile import (  # noqa: E402
     profile_path_for,
+    record_source_url,
     write_conversion_profile_best_effort,
 )
 
@@ -877,9 +878,12 @@ def simple_html_to_markdown_traversal(
 
         # Post-processing for tables (simplified)
         if node.name == 'tr':
-            # count tds
-            cells = [c.get_text(strip=True) for c in node.find_all(
-                ['td', 'th'], recursive=False)]
+            # Convert each cell like body text so links survive, then fold it
+            # onto one table line.
+            cells = []
+            for cell in node.find_all(['td', 'th'], recursive=False):
+                text = ''.join(traverse(child) for child in cell.children)
+                cells.append(re.sub(r'\s+', ' ', text).strip().replace('|', '\\|'))
             return f"| {' | '.join(cells)} |\n"
         if node.name == 'table':
             # Try to add a separator line after first row if it looks like a header
@@ -1022,6 +1026,7 @@ def _convert_remote_document(
     rc = subprocess.run(route.command).returncode
     if rc != 0 or not os.path.isfile(output_path):
         return False, url, f"{route.script_name} exited with {rc}", None
+    record_source_url(output_path, url)
     return True, url, None, output_path
 
 

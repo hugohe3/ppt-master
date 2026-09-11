@@ -9,6 +9,7 @@ carries a filter, the exported slide size type token follows the canvas, and
 
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -38,6 +39,8 @@ from svg_to_pptx.native_objects.chart_data import _chart_data_labels  # noqa: E4
 from svg_to_pptx.native_objects.chart_xml import _data_labels_xml  # noqa: E402
 from svg_to_pptx.drawingml.utils import parse_font_family  # noqa: E402
 import text_measure  # noqa: E402
+from language_tags import office_language_tag  # noqa: E402
+from _conversion_profile import profile_path_for, record_source_url, write_conversion_profile  # noqa: E402
 
 PDF_URL = "https://www.example.gov/content/pkg/report/pdf/report.pdf"
 
@@ -299,6 +302,37 @@ class JapaneseTypographyTests(unittest.TestCase):
         self.assertEqual(parse_font_family("'Hiragino Sans'", "ja-JP")["latin"], "Yu Gothic")
         self.assertEqual(parse_font_family("Arial", "zh-CN")["ea"], "Microsoft YaHei")
         self.assertEqual(parse_font_family("Arial")["ea"], "Microsoft YaHei")
+
+
+class TraditionalChineseIntakeTests(unittest.TestCase):
+    def test_office_language_tag_uses_region_form_for_chinese(self) -> None:
+        self.assertEqual(office_language_tag("zh-Hant-TW"), "zh-TW")
+        self.assertEqual(office_language_tag("zh-Hant-HK"), "zh-HK")
+        self.assertEqual(office_language_tag("zh-Hans"), "zh-CN")
+        self.assertEqual(office_language_tag("ja-JP"), "ja-JP")
+
+    def test_table_cells_keep_links(self) -> None:
+        html = (
+            '<table><tr><td>報告</td><td><ul><li><a href="/a.pdf">pdf</a></li>'
+            '<li><a href="/a.docx">docx</a></li></ul></td></tr></table>'
+        )
+        markdown = web_to_md.simple_html_to_markdown_traversal(
+            web_to_md.BeautifulSoup(html, "html.parser"), "https://example.gov.tw/x",
+        )
+        self.assertIn("[pdf](https://example.gov.tw/a.pdf)", markdown)
+        self.assertIn("[docx](https://example.gov.tw/a.docx)", markdown)
+
+    def test_downloaded_document_profile_records_url(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            markdown = Path(tmp) / "report.md"
+            markdown.write_text("# r\n", encoding="utf-8")
+            write_conversion_profile(
+                input_path=str(Path(tmp) / "report.pdf"), markdown_path=markdown,
+                converter="pdf_to_md.py", conversion_type="pdf",
+            )
+            record_source_url(markdown, "https://example.gov.tw/report.pdf")
+            profile = json.loads(profile_path_for(markdown).read_text(encoding="utf-8"))
+        self.assertEqual(profile["source"]["url"], "https://example.gov.tw/report.pdf")
 
 
 class SlideSizeTypeTests(unittest.TestCase):

@@ -182,6 +182,19 @@ def write_conversion_profile(
     return profile_path
 
 
+def record_source_url(markdown_path: str | Path, url: str) -> None:
+    """Add the fetched URL to a profile written for a downloaded document."""
+    profile_path = profile_path_for(Path(markdown_path))
+    profile = _read_json(profile_path)
+    if not isinstance(profile, dict) or not isinstance(profile.get("source"), dict):
+        return
+    profile["source"]["url"] = url
+    profile_path.write_text(
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def write_conversion_profile_best_effort(
     *,
     input_path: str,
