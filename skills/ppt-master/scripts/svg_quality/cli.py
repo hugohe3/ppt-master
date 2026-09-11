@@ -251,6 +251,7 @@ def main() -> None:
             print("=" * 80)
             checker.check_directory(str(project))
     else:
+        checker.partial_roster = stage in {"early", "page", "first-page"}
         if roundtrip:
             checker.check_roundtrip_workspace(target)
         elif stage == "early":

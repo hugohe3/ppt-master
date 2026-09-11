@@ -417,6 +417,33 @@ class BeautifyReadbackTests(unittest.TestCase):
         self.assertIn("Section one\nOverall duties", markdown)
 
 
+class KoreanIntakeTests(unittest.TestCase):
+    def test_wrap_breaks_korean_between_words(self) -> None:
+        lines, _widths, _oversized = text_measure.wrap_text(
+            "제주 해녀는 어촌계와 해녀회라는 공동체 규칙 아래서 바다밭을 가꾼다",
+            size=24, max_width=250, family="Malgun Gothic",
+        )
+        words = set("제주 해녀는 어촌계와 해녀회라는 공동체 규칙 아래서 바다밭을 가꾼다".split())
+        for line in lines:
+            self.assertTrue(set(line.split()) <= words, lines)
+
+    def test_pdf_join_keeps_korean_word_space(self) -> None:
+        self.assertEqual(pdf_to_md.join_wrapped_text("감소하였으며", "이중"), "감소하였으며 이중")
+        self.assertEqual(pdf_to_md.join_wrapped_text("新幹", "線"), "新幹線")
+
+    def test_web_table_is_gfm_on_its_grid(self) -> None:
+        html = (
+            "<table><caption>해녀 현황</caption>"
+            '<tr><th rowspan="2">구분</th><th colspan="2">계</th></tr>'
+            "<tr><th>2025</th><th>2024</th></tr>"
+            "<tr><td>계</td><td>7,482</td><td>7,561</td></tr></table>"
+        )
+        markdown = web_to_md.simple_html_to_markdown_traversal(
+            web_to_md.BeautifulSoup(html, "html.parser"), "https://example.kr/")
+        self.assertIn("해녀 현황\n\n| 구분 | 계 |  |\n| --- | --- | --- |", markdown)
+        self.assertIn("|  | 2025 | 2024 |\n| 계 | 7,482 | 7,561 |", markdown)
+
+
 class SlideSizeTypeTests(unittest.TestCase):
     def test_standard_ratios_keep_their_token(self) -> None:
         self.assertEqual(_slide_size_type(12192000, 6858000), "screen16x9")

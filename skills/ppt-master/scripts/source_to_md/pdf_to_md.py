@@ -334,12 +334,22 @@ def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> 
     return noise_texts
 
 
+def _is_hangul(char: str) -> bool:
+    return "\uac00" <= char <= "\ud7a3" or "\u1100" <= char <= "\u11ff" or "\u3130" <= char <= "\u318f"
+
+
 def join_wrapped_text(head: str, tail: str) -> str:
-    """Join two wrapped PDF lines; a break between wide CJK characters is no space."""
+    """Join two wrapped PDF lines.
+
+    Chinese and Japanese wrap between characters, so a break between wide
+    characters takes no space; Korean spaces its words and wraps at them, so
+    a break touching Hangul keeps one.
+    """
     if (
         head and tail
         and unicodedata.east_asian_width(head[-1]) in {"W", "F"}
         and unicodedata.east_asian_width(tail[0]) in {"W", "F"}
+        and not (_is_hangul(head[-1]) or _is_hangul(tail[0]))
     ):
         return head + tail
     return f"{head} {tail}"

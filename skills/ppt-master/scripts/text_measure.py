@@ -129,8 +129,16 @@ def _is_latin_or_number_cluster(cluster: str) -> bool:
     )
 
 
+def _is_hangul_cluster(cluster: str) -> bool:
+    """Return whether a rendered cluster is a Hangul syllable or jamo."""
+    return any(
+        '\uac00' <= ch <= '\ud7a3' or '\u1100' <= ch <= '\u11ff' or '\u3130' <= ch <= '\u318f'
+        for ch in cluster
+    )
+
+
 def _lexical_units(text: str) -> list[str]:
-    """Split a paragraph while keeping Latin words and numbers atomic."""
+    """Split a paragraph while keeping Latin words, numbers, and Korean words atomic."""
     clusters = split_project_text_clusters(' '.join(text.split()))
     units: list[str] = []
     pending_space = False
@@ -143,7 +151,14 @@ def _lexical_units(text: str) -> list[str]:
             continue
 
         end = index + 1
-        if _is_latin_or_number_cluster(cluster):
+        word_end = index
+        while word_end < len(clusters) and not clusters[word_end].isspace():
+            word_end += 1
+        if any(_is_hangul_cluster(item) for item in clusters[index:word_end]):
+            # Korean breaks between space-separated words (eojeol), never
+            # inside one; an eojeol wider than the line is reported oversized.
+            end = word_end
+        elif _is_latin_or_number_cluster(cluster):
             while end < len(clusters):
                 next_cluster = clusters[end]
                 if _is_latin_or_number_cluster(next_cluster):

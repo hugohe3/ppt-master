@@ -1188,6 +1188,9 @@ class SVGQualityChecker:
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._has_incomplete_page_roster = False
         self._active_slide_count: int | None = None
+        # Early/page stages see part of the roster, so a slide jump's upper
+        # bound waits for the final gate.
+        self.partial_roster = False
         self._prototype_by_output: Dict[Path, Path] = {}
         self._active_prototype_path: Path | None = None
         self._active_template_reuse_scope: str | None = None
@@ -2786,7 +2789,7 @@ class SVGQualityChecker:
             f'Invalid SVG hyperlink: {error}'
             for error in _project_hyperlink_errors(
                 root,
-                slide_count=self._active_slide_count,
+                slide_count=None if self.partial_roster else self._active_slide_count,
             )
         )
 
