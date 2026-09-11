@@ -132,6 +132,10 @@ def get_heading_level(size: float, size_map: dict, text: str = "",
     if len(text) > 80:
         return 0
 
+    # Exclusion: a bullet-led line is a list item, whatever its glyph size
+    if text[:1] in _BULLET_GLYPHS:
+        return 0
+
     # Exclusion: complete sentences ending with punctuation
     sentence_endings = '.。!！?？'
     if text and text[-1] in sentence_endings:
@@ -184,12 +188,23 @@ def format_span_text(text: str, flags: int) -> str:
     return text
 
 
+# Bullet glyphs a PDF sets as their own span; ``·`` (U+00B7) is common in
+# fact sheets, and a stray control character often follows the glyph.
+_BULLET_GLYPHS = '•●○◦▪▸►·‧∙・'
+
+
+def is_bullet_glyph_span(text: str) -> bool:
+    """Return whether a span holds only a bullet glyph (plus spaces / control characters)."""
+    stripped = re.sub(r'[\s\x00-\x1f]+', '', text)
+    return len(stripped) == 1 and stripped in _BULLET_GLYPHS
+
+
 def detect_list_item(text: str) -> tuple:
     """Detect if the text is a list item. Returns (is_list, list_type, content)."""
     text = text.strip()
 
     ul_patterns = [
-        (r'^[•●○◦▪▸►]\s*', '-'),
+        (rf'^[{_BULLET_GLYPHS}][\s\x00-\x1f]*', '-'),
         (r'^[-–—]\s+', '-'),
         (r'^\*\s+', '-'),
     ]
@@ -1474,6 +1489,12 @@ def extract_pdf_to_markdown(
                         span_size = span["size"]
                         span_flags = span["flags"]
 
+                        # A bullet glyph set in its own larger span must not
+                        # promote the line to a heading; it is a list marker.
+                        if is_bullet_glyph_span(span_text):
+                            formatted_spans.append(span_text)
+                            continue
+
                         line_size = max(line_size, span_size)
                         line_flags |= span_flags
                         span_count += 1
@@ -1503,6 +1524,8 @@ def extract_pdf_to_markdown(
                     heading_level = get_heading_level(line_size, size_map, line_text, line_flags)
 
                     is_list, list_type, list_content = detect_list_item(line_text)
+                    if is_list and not list_content.split(' ', 1)[-1].strip():
+                        continue
 
                     if heading_level > 0:
                         prefix = '#' * heading_level + ' '

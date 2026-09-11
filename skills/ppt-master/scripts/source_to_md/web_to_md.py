@@ -37,6 +37,7 @@ import json
 import os
 import re
 import socket
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -47,6 +48,14 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _dispatcher import (  # noqa: E402
+    DOC_SUFFIXES,
+    EXCEL_SUFFIXES,
+    LEGACY_EXCEL_SUFFIXES,
+    PDF_SUFFIXES,
+    PRESENTATION_SUFFIXES,
+    build_conversion_command,
+)
 from _conversion_profile import (  # noqa: E402
     profile_path_for,
     write_conversion_profile_best_effort,
@@ -272,15 +281,8 @@ CONFIG = {
 }
 
 
-def fetch_url(url: str) -> tuple[str, str]:
-    """Fetch a web page with explicit headers and encoding detection.
-
-    Args:
-        url: Target URL.
-
-    Returns:
-        The response body as text and the final URL after redirects.
-    """
+def fetch_response(url: str):
+    """Fetch a URL with explicit headers and return the raw HTTP response."""
     headers = {
         "User-Agent": CONFIG["user_agent"],
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -291,10 +293,15 @@ def fetch_url(url: str) -> tuple[str, str]:
         response = _http_get(url, headers=headers,
                              timeout=CONFIG["timeout"], verify=not CONFIG["insecure"])
         response.raise_for_status()
-
-        return _decode_response_text(response), response.url
+        return response
     except Exception as e:
         raise Exception(f"Failed to fetch {url}: {str(e)}")
+
+
+def fetch_url(url: str) -> tuple[str, str]:
+    """Fetch a web page as decoded text plus the final URL after redirects."""
+    response = fetch_response(url)
+    return _decode_response_text(response), response.url
 
 
 def clean_title(title: str) -> str:
@@ -955,6 +962,64 @@ def _save_plain_text_document(
     return True, url, None, output_path
 
 
+_DOCUMENT_CONTENT_TYPES = {
+    "application/pdf": ".pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": ".pptx",
+    "application/msword": ".doc",
+    "application/vnd.ms-excel": ".xls",
+    "application/epub+zip": ".epub",
+}
+_DOCUMENT_URL_SUFFIXES = frozenset(
+    PDF_SUFFIXES | EXCEL_SUFFIXES | LEGACY_EXCEL_SUFFIXES | PRESENTATION_SUFFIXES
+    | (DOC_SUFFIXES - {".html", ".htm"})
+)
+
+
+def remote_document_suffix(url: str, content_type: str, head: bytes) -> str | None:
+    """Return the file suffix when a fetched URL is a document, not an HTML page.
+
+    A ``.pdf`` URL (or a suffix-less download that answers ``application/pdf``)
+    has no HTML body; the HTML extractor would fail on it. The body magic and
+    the Content-Type decide first, then the URL suffix, unless the server
+    explicitly answered with HTML (a viewer page at a document-looking URL).
+    """
+    if head.startswith(b"%PDF-"):
+        return ".pdf"
+    ctype = content_type.split(";")[0].strip().lower()
+    if ctype in _DOCUMENT_CONTENT_TYPES:
+        return _DOCUMENT_CONTENT_TYPES[ctype]
+    if ctype.startswith("text/html") or ctype == "application/xhtml+xml":
+        return None
+    suffix = os.path.splitext(urlparse(url).path)[1].lower()
+    return suffix if suffix in _DOCUMENT_URL_SUFFIXES else None
+
+
+def _convert_remote_document(
+    url: str, body: bytes, suffix: str, output_file: str | None,
+) -> tuple[bool, str, str | None, str | None]:
+    """Save a downloaded document beside its Markdown and run its own converter."""
+    stem = os.path.splitext(os.path.basename(urlparse(url).path))[0]
+    output_path = output_file or os.path.join(
+        CONFIG["output_dir"], f"{derive_base_name(stem, url)}.md",
+    )
+    output_dirname = os.path.dirname(output_path) or "."
+    os.makedirs(output_dirname, exist_ok=True)
+    base_name = os.path.splitext(os.path.basename(output_path))[0]
+    local_path = os.path.join(output_dirname, f"{base_name}{suffix}")
+    with open(local_path, "wb") as f:
+        f.write(body)
+    print(f"   [OK] Document: {len(body)} bytes saved to {local_path}")
+
+    route = build_conversion_command(local_path, output_path)
+    print(f"   [>>] {route.script_name} {local_path}")
+    rc = subprocess.run(route.command).returncode
+    if rc != 0 or not os.path.isfile(output_path):
+        return False, url, f"{route.script_name} exited with {rc}", None
+    return True, url, None, output_path
+
+
 def process_url(
     url: str,
     output_file: str | None = None,
@@ -969,7 +1034,12 @@ def process_url(
     """
     print(f"\n[Fetching] {url}")
     try:
-        html, page_url = fetch_url(url)
+        response = fetch_response(url)
+        suffix = remote_document_suffix(
+            url, response.headers.get("Content-Type", ""), response.content[:8])
+        if suffix:
+            return _convert_remote_document(url, response.content, suffix, output_file)
+        html, page_url = _decode_response_text(response), response.url
         if is_plain_text_document(url, html):
             return _save_plain_text_document(url, html, output_file)
         soup = BeautifulSoup(html, 'html.parser')

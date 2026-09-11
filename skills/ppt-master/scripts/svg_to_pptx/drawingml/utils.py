@@ -263,6 +263,7 @@ PROJECT_FILTER_PUBLIC_TARGETS = frozenset({
     'circle',
     'image',
     'path',
+    'polygon',
     'text',
 })
 _PROJECT_MARKER_NUMBER_TOKEN = (
@@ -2821,7 +2822,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
-                'rect, circle, image, path, text, a validated compact authored-'
+                'rect, circle, image, path, polygon, text, a validated compact authored-'
                 'preset shape, and an exact registered carrier group'
             )
         if tag == 'image' and elem.get('clip-path') is not None:

@@ -166,6 +166,26 @@ THEME_REL_TYPE = (
 )
 THEME_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.theme+xml"
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
+
+# ST_SlideSizeType tokens for the standard screen ratios; every other canvas
+# (portrait story, banner, print) is ``custom``. python-pptx's default
+# template says ``screen4x3`` whatever cx/cy are set to afterwards.
+_SLIDE_SIZE_TYPES = ((4, 3, "screen4x3"), (16, 9, "screen16x9"), (16, 10, "screen16x10"))
+
+
+def _slide_size_type(width_emu: int, height_emu: int) -> str:
+    """Return the ``p:sldSz type`` token matching a slide size."""
+    for ratio_w, ratio_h, token in _SLIDE_SIZE_TYPES:
+        if abs(width_emu * ratio_h - height_emu * ratio_w) <= max(width_emu, height_emu) // 200:
+            return token
+    return "custom"
+
+
+def _set_slide_size_type(presentation, width_emu: int, height_emu: int) -> None:
+    """Make the ``type`` token agree with the cx/cy the exporter just set."""
+    slide_size = presentation.element.find(f"{{{PML_NS}}}sldSz")
+    if slide_size is not None:
+        slide_size.set("type", _slide_size_type(width_emu, height_emu))
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
@@ -6852,6 +6872,7 @@ def create_pptx_with_native_svg(
             prs = Presentation()
             prs.slide_width = width_emu
             prs.slide_height = height_emu
+            _set_slide_size_type(prs, width_emu, height_emu)
 
             blank_layout = prs.slide_layouts[6]
             for _ in svg_files:

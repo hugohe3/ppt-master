@@ -603,6 +603,12 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             'with the rates — the outline column does not cover it.'
         )
     lines.append(
+        '[NOTE] rates ignore letter-spacing and average a mixed-case sample: '
+        'a tracked role (a kicker with letter-spacing) or a display-size line '
+        '(a cover title) is sized per string with measure --letter-spacing, '
+        'not from the table.'
+    )
+    lines.append(
         '[NOTE] measure and wrap take one --weight for the whole string: a line '
         'with a bold run (an inline emphasis lead) is measured piecewise per '
         'weight and summed, or the bold clause takes its own line.'
@@ -658,6 +664,11 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             weights=weights,
         )
         payload['notes'] = _fallback_notes(roles, fallbacks)
+        if args.outline and not (project_path / 'design_spec.md').is_file():
+            payload['notes'].append(
+                'no design_spec.md in this project (Quick writes none), so the '
+                '--outline column has no §IX source and stays empty'
+            )
         bold_roles = sorted(name for name, weight in weights.items() if weight == 'bold')
         payload['notes'].append(
             'rates for ' + ', '.join(bold_roles) + ' are measured at bold weight'

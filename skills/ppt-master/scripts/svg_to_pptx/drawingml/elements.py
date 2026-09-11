@@ -1909,6 +1909,14 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
     fill = build_fill_xml(elem, ctx, fill_op)
     stroke = build_stroke_xml(elem, ctx, stroke_op)
 
+    effect = ''
+    filt_id = get_effective_filter_id(elem, ctx)
+    if filt_id and filt_id in ctx.defs:
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
+
     shape_id = _claim_element_shape_id(elem, ctx)
     xfrm_attr = ''
     off_x = px_to_emu(min_x)
@@ -1931,7 +1939,7 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             ctx,
             shape_id, f'Polygon {shape_id}',
             off_x, off_y, w_emu, h_emu,
-            geom, fill, stroke, xfrm_attr=xfrm_attr,
+            geom, fill, stroke, effect, xfrm_attr=xfrm_attr,
         ),
         bounds_emu=bounds_emu,
     )
