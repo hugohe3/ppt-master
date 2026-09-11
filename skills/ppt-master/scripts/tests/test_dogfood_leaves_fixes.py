@@ -427,6 +427,15 @@ class KoreanIntakeTests(unittest.TestCase):
         for line in lines:
             self.assertTrue(set(line.split()) <= words, lines)
 
+    def test_wrap_keeps_arabic_and_cyrillic_words_whole(self) -> None:
+        for text in (
+            "القهوة العربية رمز للكرم والضيافة في شبه الجزيرة العربية",
+            "Кофе по-арабски является символом гостеприимства на Аравийском полуострове",
+        ):
+            lines, _widths, _oversized = text_measure.wrap_text(
+                text, size=24, max_width=260, family="Arial", include_headroom=False)
+            self.assertEqual(" ".join(lines).split(), text.split(), lines)
+
     def test_pdf_join_keeps_korean_word_space(self) -> None:
         self.assertEqual(pdf_to_md.join_wrapped_text("감소하였으며", "이중"), "감소하였으며 이중")
         self.assertEqual(pdf_to_md.join_wrapped_text("新幹", "線"), "新幹線")

@@ -36,7 +36,7 @@ from svg_to_pptx.drawingml.elements import estimate_single_line_text_frame_width
 from svg_to_pptx.drawingml.utils import split_project_text_clusters  # noqa: E402
 
 
-_CLOSING_PUNCTUATION = frozenset(',.;:!?)]}、，。；：！？）》」』】”’')
+_CLOSING_PUNCTUATION = frozenset(',.;:!?)]}、，。；：！？）》」』】”’،؛؟')
 _OPENING_PUNCTUATION = frozenset('([{（《「『【“‘')
 # Japanese line-start prohibitions beyond punctuation: small kana, the long
 # vowel mark, iteration marks, and the middle dot never open a line.
@@ -116,15 +116,26 @@ def measure_text(
     )
 
 
-def _is_latin_or_number_cluster(cluster: str) -> bool:
-    """Return whether a rendered cluster belongs to a Latin/number token."""
+# Scripts written without spaces between words; everything else that is a
+# letter or digit (Latin, Cyrillic, Greek, Arabic, Hebrew, Devanagari, ...)
+# forms words that only break at spaces.
+_UNSPACED_SCRIPT_PREFIXES = ('THAI ', 'LAO ', 'KHMER ', 'MYANMAR ', 'TIBETAN ')
+
+
+def _is_word_cluster(cluster: str) -> bool:
+    """Return whether a rendered cluster belongs to a space-delimited word."""
     bases = [
         ch
         for ch in cluster
         if unicodedata.category(ch) not in {'Mn', 'Mc', 'Me'}
     ]
     return bool(bases) and all(
-        ch.isdigit() or 'LATIN' in unicodedata.name(ch, '')
+        ch.isdigit()
+        or (
+            ch.isalpha()
+            and unicodedata.east_asian_width(ch) not in {'W', 'F'}
+            and not unicodedata.name(ch, '').startswith(_UNSPACED_SCRIPT_PREFIXES)
+        )
         for ch in bases
     )
 
@@ -138,7 +149,7 @@ def _is_hangul_cluster(cluster: str) -> bool:
 
 
 def _lexical_units(text: str) -> list[str]:
-    """Split a paragraph while keeping Latin words, numbers, and Korean words atomic."""
+    """Split a paragraph while keeping space-delimited words, numbers, and Korean words atomic."""
     clusters = split_project_text_clusters(' '.join(text.split()))
     units: list[str] = []
     pending_space = False
@@ -158,10 +169,10 @@ def _lexical_units(text: str) -> list[str]:
             # Korean breaks between space-separated words (eojeol), never
             # inside one; an eojeol wider than the line is reported oversized.
             end = word_end
-        elif _is_latin_or_number_cluster(cluster):
+        elif _is_word_cluster(cluster):
             while end < len(clusters):
                 next_cluster = clusters[end]
-                if _is_latin_or_number_cluster(next_cluster):
+                if _is_word_cluster(next_cluster):
                     end += 1
                     continue
                 connector = (
@@ -174,7 +185,7 @@ def _lexical_units(text: str) -> list[str]:
                 if (
                     connector
                     and end + 1 < len(clusters)
-                    and _is_latin_or_number_cluster(clusters[end + 1])
+                    and _is_word_cluster(clusters[end + 1])
                 ):
                     end += 2
                     continue
