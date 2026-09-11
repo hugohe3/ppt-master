@@ -483,6 +483,44 @@ class ArabicPdfTests(unittest.TestCase):
         self.assertEqual(pdf_to_md.arabic_text_layer_warnings(clean), [])
 
 
+class RtlAndTemplateExportTests(unittest.TestCase):
+    SVG_NS = "http://www.w3.org/2000/svg"
+
+    def test_fallback_text_starts_from_inherited_anchor(self) -> None:
+        from svg_to_pptx.native_objects.marker_common import (
+            _fallback_text_records, fallback_text_inheritance, inherited_text_attrs)
+        root = ET.fromstring(
+            f'<svg xmlns="{self.SVG_NS}" text-anchor="end" fill="#2B1D15">'
+            '<g id="m"><text x="10" y="10">كلمة</text></g></svg>')
+        marker = root[0]
+        with fallback_text_inheritance(inherited_text_attrs([root])):
+            [record] = _fallback_text_records(marker)
+        self.assertEqual((record.anchor, record.fill), ("end", "2B1D15"))
+
+    def test_text_in_one_emphasis_tspan_reads_in_its_colour(self) -> None:
+        from svg_to_pptx.native_objects.marker_common import _fallback_text_records
+        marker = ET.fromstring(
+            f'<g xmlns="{self.SVG_NS}" fill="#2B1D15">'
+            '<text x="1" y="1"><tspan fill="#5E7D4F" font-weight="bold">الهيل</tspan></text>'
+            '<text x="1" y="9"><tspan fill="#5E7D4F">الهيل</tspan> والزعفران والقرفة</text></g>')
+        whole, mixed = _fallback_text_records(marker)
+        self.assertEqual((whole.fill, whole.bold), ("5E7D4F", True))
+        self.assertEqual(mixed.fill, "2B1D15")
+
+    def test_rtl_template_levels_flip(self) -> None:
+        from svg_to_pptx.pptx_package.builder import _rtl_text_levels
+        xml = '<a:lvl1pPr marL="0" algn="l" rtl="0"/><a:lvl1pPr algn="ctr" rtl="0"/>'
+        self.assertEqual(
+            _rtl_text_levels(xml),
+            '<a:lvl1pPr marL="0" algn="r" rtl="1"/><a:lvl1pPr algn="ctr" rtl="1"/>')
+
+    def test_rtl_theme_script_slot(self) -> None:
+        from svg_to_pptx.drawingml.theme_fonts import _rtl_theme_scripts
+        self.assertEqual(_rtl_theme_scripts("ar-SA"), ("Arab",))
+        self.assertEqual(_rtl_theme_scripts("he-IL"), ("Hebr",))
+        self.assertEqual(_rtl_theme_scripts("zh-CN"), ())
+
+
 class SlideSizeTypeTests(unittest.TestCase):
     def test_standard_ratios_keep_their_token(self) -> None:
         self.assertEqual(_slide_size_type(12192000, 6858000), "screen16x9")

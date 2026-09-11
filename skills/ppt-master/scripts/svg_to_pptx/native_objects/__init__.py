@@ -49,6 +49,8 @@ from .inline_formula import (
 )
 from .marker_common import (
     _bounds,
+    fallback_text_inheritance,
+    inherited_text_attrs,
     CHART_COLOR_STYLE_CONTENT_TYPE,
     CHART_CONTENT_TYPE,
     CHART_REL_TYPE,
@@ -634,18 +636,21 @@ def native_object_projection_warnings(
     elem: ET.Element,
     *,
     ancestors: tuple[ET.Element, ...] = (),
+    document_root: ET.Element | None = None,
 ) -> list[str]:
     """Return SVG-first fallback details that marker metadata does not project."""
     kind, payload, validated_data = _validate_native_object_marker_payload(
         elem,
         ancestors=ancestors,
     )
-    return _projection_warnings_for_validated_marker(
-        elem,
-        kind,
-        payload,
-        validated_data,
-    )
+    chain = (document_root, *ancestors) if document_root is not None else ancestors
+    with fallback_text_inheritance(inherited_text_attrs(chain)):
+        return _projection_warnings_for_validated_marker(
+            elem,
+            kind,
+            payload,
+            validated_data,
+        )
 
 
 def validate_native_object_marker_with_warnings(
@@ -669,14 +674,17 @@ def validate_native_object_marker_with_warnings(
     # The final checker reports these as warnings because activation is an
     # export-time choice; ``--native-charts-and-tables`` refuses the same
     # findings as errors, so say so where the author reads them.
-    warnings.extend(
-        f"{warning} (blocks --native-charts-and-tables export)"
-        for warning in _projection_warnings_for_validated_marker(
+    chain = (document_root, *ancestors) if document_root is not None else ancestors
+    with fallback_text_inheritance(inherited_text_attrs(chain)):
+        projection = _projection_warnings_for_validated_marker(
             elem,
             kind,
             payload,
             validated_data,
         )
+    warnings.extend(
+        f"{warning} (blocks --native-charts-and-tables export)"
+        for warning in projection
     )
     return warnings
 
@@ -725,13 +733,16 @@ def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult 
             f"  Warning: data-pptx-replace-with marker {marker_id}: {warning}",
             file=sys.stderr,
         )
-    if kind == "table":
-        return _build_native_table(elem, ctx, payload)
-    if payload.get("source_package") is None:
-        payload, warnings = _native_chart_export_payload(elem, payload)
-        for warning in warnings:
-            print(
-                f"  Warning: data-pptx-replace-with marker {marker_id}: {warning}",
-                file=sys.stderr,
-            )
-    return _build_native_chart(elem, ctx, payload)
+    # Fallback text read below starts from what the marker inherits (for
+    # example a root-level text-anchor on a right-to-left page).
+    with fallback_text_inheritance(ctx.inherited_styles):
+        if kind == "table":
+            return _build_native_table(elem, ctx, payload)
+        if payload.get("source_package") is None:
+            payload, warnings = _native_chart_export_payload(elem, payload)
+            for warning in warnings:
+                print(
+                    f"  Warning: data-pptx-replace-with marker {marker_id}: {warning}",
+                    file=sys.stderr,
+                )
+        return _build_native_chart(elem, ctx, payload)

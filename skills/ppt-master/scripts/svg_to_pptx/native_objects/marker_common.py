@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import contextvars
 import json
 import math
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
@@ -613,15 +615,76 @@ def _fallback_shape_records(
     return records
 
 
+_INHERITED_TEXT_ATTRS = ("fill", "font-weight", "text-anchor")
+# fill / font-weight / text-anchor a marker inherits from outside its own
+# subtree (root <svg> and ancestor groups); the record walk starts from them.
+_FALLBACK_TEXT_INHERITANCE: contextvars.ContextVar[dict[str, str]] = (
+    contextvars.ContextVar("_FALLBACK_TEXT_INHERITANCE", default={})
+)
+_UNSET: Any = object()
+
+
+def inherited_text_attrs(chain: Iterable[ET.Element]) -> dict[str, str]:
+    """Resolve inherited text attributes along an outermost-first element chain."""
+    values: dict[str, str] = {}
+    for element in chain:
+        for name in _INHERITED_TEXT_ATTRS:
+            value = _style_attr(element, name)
+            if value is not None:
+                values[name] = value
+    return values
+
+
+@contextmanager
+def fallback_text_inheritance(values: dict[str, str]) -> Iterator[None]:
+    """Let fallback text records start from a marker's inherited attributes."""
+    token = _FALLBACK_TEXT_INHERITANCE.set(
+        {name: value for name, value in values.items() if name in _INHERITED_TEXT_ATTRS}
+    )
+    try:
+        yield
+    finally:
+        _FALLBACK_TEXT_INHERITANCE.reset(token)
+
+
+def _dominant_text_style(
+    elem: ET.Element,
+    fill: str | None,
+    weight: str | None,
+) -> tuple[str | None, str | None]:
+    """Return the fill and weight carried by most visible characters."""
+    counts: dict[tuple[str | None, str | None], int] = {}
+
+    def visit(node: ET.Element, node_fill: str | None, node_weight: str | None) -> None:
+        node_fill = _style_attr(node, "fill") or node_fill
+        node_weight = _style_attr(node, "font-weight") or node_weight
+        key = (node_fill, node_weight)
+        counts[key] = counts.get(key, 0) + len("".join((node.text or "").split()))
+        for child in node:
+            visit(child, node_fill, node_weight)
+            tail = len("".join((child.tail or "").split()))
+            counts[key] = counts.get(key, 0) + tail
+
+    visit(elem, fill, weight)
+    return max(counts, key=counts.get) if any(counts.values()) else (fill, weight)
+
+
 def _fallback_text_records(
     elem: ET.Element,
     matrix: tuple[float, float, float, float, float, float] = IDENTITY_MATRIX,
-    inherited_fill: str | None = "000000",
-    inherited_weight: str | None = None,
-    inherited_anchor: str | None = None,
+    inherited_fill: str | None = _UNSET,
+    inherited_weight: str | None = _UNSET,
+    inherited_anchor: str | None = _UNSET,
     inherited_labels: tuple[str, ...] = (),
 ) -> list[_FallbackTextRecord]:
     """Collect visible fallback text with resolved paint, emphasis, and anchor."""
+    outer = _FALLBACK_TEXT_INHERITANCE.get()
+    if inherited_fill is _UNSET:
+        inherited_fill = outer.get("fill", "000000")
+    if inherited_weight is _UNSET:
+        inherited_weight = outer.get("font-weight")
+    if inherited_anchor is _UNSET:
+        inherited_anchor = outer.get("text-anchor")
     tag = _local_tag(elem)
     if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
         return []
@@ -648,6 +711,10 @@ def _fallback_text_records(
         text = _normalized_fallback_text("".join(elem.itertext()))
         if not text:
             return []
+        # A <text> whose visible characters mostly sit in styled <tspan>s
+        # reads in their paint and weight (a whole cell set in an emphasis
+        # tspan is that colour, not the <text> default).
+        fill, weight = _dominant_text_style(elem, fill, weight)
         x = _project_geometry_number(elem, "x") if elem.get("x") is not None else None
         y = _project_geometry_number(elem, "y") if elem.get("y") is not None else None
         if x is not None and y is not None:

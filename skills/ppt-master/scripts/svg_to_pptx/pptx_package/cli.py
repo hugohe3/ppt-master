@@ -1739,6 +1739,7 @@ def _native_object_projection_findings(
                 warnings = native_object_projection_warnings(
                     elem,
                     ancestors=tuple(reversed(ancestors)),
+                    document_root=root,
                 )
             except RuntimeError as exc:
                 warnings = [f"projection validation failed: {exc}"]

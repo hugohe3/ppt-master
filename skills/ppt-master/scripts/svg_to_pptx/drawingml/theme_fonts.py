@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from language_tags import language_base, language_uses_rtl
+
 from .utils import font_px_to_hpt, parse_font_family
 
 
@@ -53,6 +55,9 @@ class ThemeFontSpec:
     minor: ThemeFontFace
     major_family: str
     minor_family: str
+    # Supplemental theme scripts (``Arab`` / ``Hebr``) a right-to-left deck
+    # writes in; they take the locked complex-script face.
+    rtl_scripts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -196,6 +201,7 @@ def load_theme_font_spec(
         minor=_font_face(minor_family, language),
         major_family=major_family,
         minor_family=minor_family,
+        rtl_scripts=_rtl_theme_scripts(language),
     )
 
 
@@ -261,7 +267,18 @@ def theme_font_tokens(
     }
 
 
-def _patch_font_collection(collection: ET.Element, face: ThemeFontFace) -> None:
+def _rtl_theme_scripts(language: str | None) -> tuple[str, ...]:
+    """Return the theme supplemental script a right-to-left language uses."""
+    if not language or not language_uses_rtl(language):
+        return ()
+    return ("Hebr",) if language_base(language) in {"he", "yi"} else ("Arab",)
+
+
+def _patch_font_collection(
+    collection: ET.Element,
+    face: ThemeFontFace,
+    rtl_scripts: tuple[str, ...] = (),
+) -> None:
     for tag, value in (("latin", face.latin), ("ea", face.ea), ("cs", face.cs)):
         elem = collection.find(f"{{{DML_NS}}}{tag}")
         if elem is None:
@@ -270,6 +287,8 @@ def _patch_font_collection(collection: ET.Element, face: ThemeFontFace) -> None:
     for supplemental in collection.findall(f"{{{DML_NS}}}font"):
         if supplemental.get("script") in _CJK_THEME_SCRIPTS:
             supplemental.set("typeface", face.ea)
+        elif supplemental.get("script") in rtl_scripts:
+            supplemental.set("typeface", face.cs)
 
 
 def apply_theme_font_spec(extract_dir: Path, spec: ThemeFontSpec) -> None:
@@ -293,8 +312,8 @@ def apply_theme_font_spec(extract_dir: Path, spec: ThemeFontSpec) -> None:
         if major is None or minor is None:
             raise ThemeFontError(f"Theme has no major/minor font collection: {theme_path}")
         font_scheme.set("name", "PPT Master")
-        _patch_font_collection(major, spec.major)
-        _patch_font_collection(minor, spec.minor)
+        _patch_font_collection(major, spec.major, spec.rtl_scripts)
+        _patch_font_collection(minor, spec.minor, spec.rtl_scripts)
         tree.write(theme_path, encoding="utf-8", xml_declaration=True)
 
 
