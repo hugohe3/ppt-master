@@ -507,6 +507,12 @@ class RtlAndTemplateExportTests(unittest.TestCase):
         self.assertEqual((whole.fill, whole.bold), ("5E7D4F", True))
         self.assertEqual(mixed.fill, "2B1D15")
 
+    def test_explicit_run_colour_beats_cell_default(self) -> None:
+        from svg_to_pptx.native_objects.table import _table_cell_parity_text_style
+        cell = {"color": "#2B1D15", "paragraphs": [
+            {"runs": [{"text": "الهيل", "bold": True, "color": "#5E7D4F"}]}]}
+        self.assertEqual(_table_cell_parity_text_style(cell), (True, "5E7D4F"))
+
     def test_rtl_template_levels_flip(self) -> None:
         from svg_to_pptx.pptx_package.builder import _rtl_text_levels
         xml = '<a:lvl1pPr marL="0" algn="l" rtl="0"/><a:lvl1pPr algn="ctr" rtl="0"/>'

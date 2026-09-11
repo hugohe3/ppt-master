@@ -846,11 +846,13 @@ def _table_cell_parity_text_style(
     if runs and None not in run_colors and len(run_colors) == 1:
         uniform_color = run_colors.pop()
 
-    bold = cell_data.get("bold") if "bold" in cell_data else uniform_bold
+    # Explicit run properties override the cell's (as the export writes them),
+    # so a cell whose every run carries one value renders in that value.
+    bold = uniform_bold if uniform_bold is not None else cell_data.get("bold")
     color = (
-        _hex_or_none(cell_data.get("color"))
-        if "color" in cell_data
-        else uniform_color
+        uniform_color
+        if uniform_color is not None
+        else _hex_or_none(cell_data.get("color"))
     )
     return bold, color
 
