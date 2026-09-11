@@ -473,6 +473,16 @@ class StampIndependenceTests(unittest.TestCase):
         self.assertIn("02_bad.svg: invalid SVG XML", err.getvalue())
 
 
+class ArabicPdfTests(unittest.TestCase):
+    def test_reversed_lam_alef_layer_warns(self) -> None:
+        broken = "نشرة اإلحصاءات الزراعية األعلى آالف " * 40
+        self.assertEqual(len(pdf_to_md.arabic_text_layer_warnings(broken)), 1)
+
+    def test_well_formed_arabic_does_not_warn(self) -> None:
+        clean = "القهوة العربية رمز للكرم والضيافة في شبه الجزيرة العربية " * 20
+        self.assertEqual(pdf_to_md.arabic_text_layer_warnings(clean), [])
+
+
 class SlideSizeTypeTests(unittest.TestCase):
     def test_standard_ratios_keep_their_token(self) -> None:
         self.assertEqual(_slide_size_type(12192000, 6858000), "screen16x9")

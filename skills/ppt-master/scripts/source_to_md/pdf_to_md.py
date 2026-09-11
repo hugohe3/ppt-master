@@ -231,6 +231,29 @@ def scanned_pdf_warnings(markdown: str, page_count: int, image_count: int) -> li
     ]
 
 
+# Two alef forms before a lam ("اإلحصاءات" for "الإحصاءات") is a lam-alef
+# ligature decomposed in the wrong order; well-formed Arabic practically
+# never has it. A run of tatweel marks where glyphs were dropped.
+_BROKEN_LAM_ALEF_RE = re.compile("[\u0627\u0623\u0625\u0622][\u0627\u0623\u0625\u0622]\u0644")
+
+
+def arabic_text_layer_warnings(markdown: str) -> list[str]:
+    """Warn when an Arabic text layer came out in visual order or lost glyphs."""
+    arabic = len(re.findall("[\u0600-\u06ff]", markdown))
+    if arabic < 200:
+        return []
+    broken = len(_BROKEN_LAM_ALEF_RE.findall(markdown))
+    tatweel = markdown.count("\u0640")
+    if broken < 5 and tatweel < arabic // 20:
+        return []
+    return [
+        f"Arabic text layer looks damaged: {broken} reversed lam-alef "
+        f"sequences and {tatweel} tatweel marks in {arabic} Arabic letters; "
+        "words, table cells, and numbers may be out of order or missing "
+        "letters, so check every figure against the PDF itself"
+    ]
+
+
 def detect_list_item(text: str) -> tuple:
     """Detect if the text is a list item. Returns (is_list, list_type, content)."""
     text = text.strip()
@@ -1821,6 +1844,7 @@ def extract_pdf_to_markdown(
                 encoding="utf-8",
             )
         warnings = scanned_pdf_warnings(markdown_content, page_count, img_count)
+        warnings += arabic_text_layer_warnings(markdown_content)
         for warning in warnings:
             print(f"[WARN] {warning}")
         profile_path = write_conversion_profile_best_effort(
