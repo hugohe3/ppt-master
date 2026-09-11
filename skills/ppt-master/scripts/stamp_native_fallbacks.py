@@ -303,10 +303,19 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         files = _svg_files(args.input.resolve())
-        prepared = [
-            (path, *_prepare_file(path))
-            for path in files
-        ]
+    except (NativeFallbackStampError, OSError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    # Pages stamp independently: one malformed page is reported without
+    # leaving every valid page unstamped.
+    prepared = []
+    errors: list[str] = []
+    for path in files:
+        try:
+            prepared.append((path, *_prepare_file(path)))
+        except (NativeFallbackStampError, OSError) as exc:
+            errors.append(str(exc))
+    try:
         if args.write:
             for path, payload, _svg_first, _json_first, changed in prepared:
                 if changed:
@@ -339,7 +348,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
     if changed_files and not args.write:
         print("Re-run with --write to apply these validated baseline updates.")
-    return 0
+    for error in errors:
+        print(f"Error: {error}", file=sys.stderr)
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":

@@ -444,6 +444,26 @@ class KoreanIntakeTests(unittest.TestCase):
         self.assertIn("|  | 2025 | 2024 |\n| 계 | 7,482 | 7,561 |", markdown)
 
 
+class StampIndependenceTests(unittest.TestCase):
+    def test_bad_page_does_not_block_valid_pages(self) -> None:
+        import contextlib
+        import io
+        import stamp_native_fallbacks
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "01_ok.svg").write_text(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"/>', encoding="utf-8")
+            (root / "02_bad.svg").write_text(
+                '<svg xmlns="http://www.w3.org/2000/svg"><text>R&D</text></svg>', encoding="utf-8")
+            out, err = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                code = stamp_native_fallbacks.main([str(root)])
+        self.assertEqual(code, 1)
+        self.assertIn("01_ok.svg: unchanged", out.getvalue())
+        self.assertIn("02_bad.svg: invalid SVG XML", err.getvalue())
+
+
 class SlideSizeTypeTests(unittest.TestCase):
     def test_standard_ratios_keep_their_token(self) -> None:
         self.assertEqual(_slide_size_type(12192000, 6858000), "screen16x9")
