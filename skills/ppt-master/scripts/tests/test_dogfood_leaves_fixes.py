@@ -26,6 +26,7 @@ if str(BACKEND_DIR) not in sys.path:
 
 import pdf_to_md  # noqa: E402
 import doc_to_md  # noqa: E402
+import ppt_to_md  # noqa: E402
 import web_to_md  # noqa: E402
 from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa: E402
 from svg_to_pptx.drawingml.utils import project_filter_errors  # noqa: E402
@@ -395,6 +396,25 @@ class DocxIntakeTests(unittest.TestCase):
         [markdown] = replacements.values()
         self.assertIn("Bar queues[^2]", markdown)
         self.assertIn("[^2]: Theatre closed until Winter 2026.", markdown)
+
+
+class BeautifyReadbackTests(unittest.TestCase):
+    def test_toc_and_chapter_keywords_match_whole_words(self) -> None:
+        toc = "吉林省自然资源厅 Department of Natural Resources\n目\n录\n出台背景\n政策依据"
+        self.assertEqual(_classify_page_type(2, 20, toc, [{}] * 8), "toc_candidate")
+        prose = "Quality assurance for the aquarium sector " * 4
+        self.assertEqual(_classify_page_type(5, 20, prose, [{}] * 4), "content_candidate")
+
+    def test_soft_line_break_survives_readback(self) -> None:
+        from pptx import Presentation
+        from pptx.util import Inches
+
+        deck = Presentation()
+        slide = deck.slides.add_slide(deck.slide_layouts[6])
+        box = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(4), Inches(1))
+        box.text_frame.text = "Section one\vOverall duties"  # \v writes <a:br/>
+        markdown = ppt_to_md.text_frame_to_markdown(box.text_frame, box)
+        self.assertIn("Section one\nOverall duties", markdown)
 
 
 class SlideSizeTypeTests(unittest.TestCase):

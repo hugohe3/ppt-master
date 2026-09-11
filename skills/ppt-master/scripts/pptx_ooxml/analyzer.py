@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import zipfile
 from pathlib import Path
 from typing import Any
@@ -175,16 +176,26 @@ def _text_metrics(container: ET.Element, paragraph_count: int) -> dict[str, Any]
     }
 
 
-def _classify_page_type(index: int, total: int, text: str, slots: list[dict[str, Any]]) -> str:
+def _has_keyword(text: str, keywords: tuple[str, ...]) -> bool:
+    """Match Latin keywords as whole words and CJK keywords across line breaks."""
     normalized = text.lower()
+    compact = re.sub(r"\s+", "", normalized)  # vertical "目\n录" still reads 目录
+    return any(
+        re.search(rf"(?<![a-z]){re.escape(keyword)}(?![a-z])", normalized)
+        if keyword.isascii() else keyword in compact
+        for keyword in keywords
+    )
+
+
+def _classify_page_type(index: int, total: int, text: str, slots: list[dict[str, Any]]) -> str:
     if index == 1:
         return "cover_candidate"
-    if index == total or any(keyword in normalized for keyword in THANKS_KEYWORDS):
+    if index == total or _has_keyword(text, THANKS_KEYWORDS):
         return "ending_candidate"
-    if any(keyword in normalized for keyword in TOC_KEYWORDS):
+    if _has_keyword(text, TOC_KEYWORDS):
         return "toc_candidate"
     # Body prose mentions "部分"/"part" too; only a short page reads as a divider.
-    if len(text) <= 120 and any(keyword in normalized for keyword in CHAPTER_KEYWORDS):
+    if len(text) <= 120 and _has_keyword(text, CHAPTER_KEYWORDS):
         return "chapter_candidate"
     if len(slots) <= 2 and len(text) <= 80:
         return "chapter_candidate"

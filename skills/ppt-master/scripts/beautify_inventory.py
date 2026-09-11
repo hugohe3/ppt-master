@@ -173,6 +173,12 @@ def _summary_view(inventory: dict) -> dict:
             "slide_index": slide.get("slide_index"),
             "page_type": slide.get("page_type"),
             "text_block_count": len(slide.get("text_blocks", [])),
+            # Blocks include empty and decorative frames; the non-space
+            # character count is the density signal.
+            "text_char_count": sum(
+                len("".join(str(block.get("text") or "").split()))
+                for block in slide.get("text_blocks", [])
+            ),
             "table_count": len(slide.get("tables", [])),
             "chart_count": len(slide.get("charts", [])),
             "diagram_count": len(slide.get("diagrams", [])),

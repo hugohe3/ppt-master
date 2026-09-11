@@ -63,6 +63,7 @@ if not _HELP_REQUESTED:
         from pptx.enum.action import PP_ACTION
         from pptx.enum.shapes import MSO_SHAPE_TYPE
         from pptx.oxml.ns import qn
+        from pptx.text.text import _Run
     except ImportError:
         print("[ERROR] python-pptx not installed. Run: pip install python-pptx", file=sys.stderr)
         sys.exit(1)
@@ -302,7 +303,15 @@ def _paragraph_to_markdown(
         parts.append(f"{lead}[{display}]({current_url}){trail}")
 
     has_run_hyperlink = False
-    for run in paragraph.runs:
+    for child in paragraph._p:
+        tag = child.tag.rsplit("}", 1)[-1] if isinstance(child.tag, str) else ""
+        if tag == "br":
+            # A soft line break inside the paragraph; python-pptx's runs skip it.
+            current_text += "\n"
+            continue
+        if tag != "r":
+            continue
+        run = _Run(child, paragraph)
         url = _run_url(run, shape)
         if url:
             has_run_hyperlink = True

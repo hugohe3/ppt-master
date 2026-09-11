@@ -16,7 +16,7 @@ description: Generate profile for 1:1, content-faithful re-layout of an existing
 
 Existing `.pptx` + beautify intent ("把这份 PPT 美化一下" / "make this deck look better"), re-layout intent ("重新排版这份 PPT，内容别动"), or paste-back intent ("重排后我要把元素贴回原来的模板").
 
-**Hard rule — content is frozen**: every source text string is preserved exactly (no add / remove / reword / reorder); freedom lives only in layout, hierarchy, spacing, and rhythm.
+**Hard rule — content is frozen**: every source text string is preserved exactly (no add / remove / reword / reorder); freedom lives only in layout, hierarchy, spacing, and rhythm. Run-level emphasis (words the source colors or bolds) is hierarchy to keep: the same words stand out, restyled in the effective palette.
 
 **Hard rule — not a patch, not a fill**: this regenerates a native deck through the selected runtime; it never edits the source in place, is not Edit Native PPTX, and never parses a third-party template for text-only substitution (the rejected #53 direction). It is the inverse of a `replication_mode: mirror` template ([`executor-structured.md`](../../references/executor-structured.md) §1.1), which keeps layout and edits text. When the authoritative input is a raster page roster whose visible layout must be preserved, activate the Quick-only [`image-to-pptx.md`](./image-to-pptx.md) instead; the two fidelity profiles never compose.
 
@@ -50,7 +50,7 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <s
 
 **Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the effective style, never spliced byte-for-byte; data values are frozen, only rendering is the deck's own; pictures are reused but re-laid-out. A user who wants an original element verbatim copies it across themselves.
 
-**Optional source-SVG visual reference**: when the deck has complex vector decoration or a visual language colors/fonts cannot capture, build a read-only reference package for understanding style, not a carry-over path:
+**Optional source-SVG visual reference**: when the deck has complex vector decoration, run-level emphasis (`sources/<stem>.md` and the inventory carry no run styles), or a visual language colors/fonts cannot capture, build a read-only reference package for understanding style, not a carry-over path:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/pptx_to_svg.py <project_path>/sources/<source.pptx> -o <project_path>/analysis/source_svg_import
@@ -65,7 +65,7 @@ Use the cleaned `svg-flat/slide_*.svg` pages and `svg-flat_vector_asset_inventor
 python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/<stem>.slide_library.json --images <project_path>/images/image_manifest.json -o <project_path>/analysis/beautify_inventory.json
 ```
 
-Omit `--images` when no pictures were extracted. It joins `text_blocks`, `tables`, `charts`, `diagrams` (SmartArt nodes + hierarchy + source layout), and `images` (bound through `image_manifest` `occurrences[].slide_index`, with geometry and `usage_count`) per slide with frozen values inlined, and emits empty `ignored` and `needs_confirmation` arrays to fill with judgment: `ignored` — hidden slides/shapes, master-only text, full-slide template-skin or fully covered pictures, image crop/opacity/rotation/mask; `needs_confirmation` — unreadable SmartArt, combo / dual-axis / waterfall charts, merged-cell or multi-header tables, density outliers (overcrowded or near-empty). SmartArt keeps its wording and relationships and is redrawn as ordinary editable shapes, never regenerated natively.
+Omit `--images` when no pictures were extracted. It joins `text_blocks`, `tables`, `charts`, `diagrams` (SmartArt nodes + hierarchy + source layout), and `images` (bound through `image_manifest` `occurrences[].slide_index`, with geometry and `usage_count`) per slide with frozen values inlined, and emits empty `ignored` and `needs_confirmation` arrays to fill with judgment: `ignored` — hidden slides/shapes, master-only text, full-slide template-skin or fully covered pictures, image crop/opacity/rotation/mask; `needs_confirmation` — unreadable SmartArt, combo / dual-axis / waterfall charts, merged-cell or multi-header tables, density outliers (overcrowded or near-empty; `--summary` counts each page's `text_char_count`). SmartArt keeps its wording and relationships and is redrawn as ordinary editable shapes, never regenerated natively.
 
 **Mandatory — bounded inventory reads**: the complete inventory is the validation ledger, not the authoring prompt. Read `beautify_inventory.py <inventory> --summary`, then `--page <N>`, adding `--with-geometry` only for structural ambiguity; never bulk-read either complete file during authoring.
 
