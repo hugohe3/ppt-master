@@ -468,6 +468,20 @@ def project_image_errors(
     return sorted(errors)
 
 
+def shape_display_name(elem: ET.Element, fallback: str) -> str:
+    """Name a PowerPoint object after its SVG identity when it has one.
+
+    ``data-pptx-shape-name`` wins, then the SVG ``id`` (or ``data-name``), so
+    the Selection and Animation panes show ``p08-rail-edge`` rather than
+    ``Freeform 9``; unnamed objects keep the positional fallback.
+    """
+    for attribute in ('data-pptx-shape-name', 'id', 'data-name'):
+        value = (elem.get(attribute) or '').strip()
+        if value:
+            return value
+    return fallback
+
+
 def _wrap_shape(
     shape_id: int, name: str,
     off_x: int, off_y: int,
@@ -550,7 +564,7 @@ def _wrap_geometry_object(
     """Wrap a semantic leaf as a shape or connector without guessing."""
     if not effect_xml:
         effect_xml = _element_effect_xml(elem, ctx)
-    name = elem.get('data-pptx-shape-name') or name
+    name = shape_display_name(elem, name)
     shape_style_xml = _decode_shape_style(elem)
     object_kind = elem.get('data-pptx-object')
     if object_kind != 'connector':
@@ -3638,7 +3652,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     shape_xml = f'''<p:sp>
 <p:nvSpPr>
-<p:cNvPr id="{shape_id}" name="TextBox {shape_id}"/>
+<p:cNvPr id="{shape_id}" name="{_xml_escape(shape_display_name(elem, f'TextBox {shape_id}'))}"/>
 <p:cNvSpPr txBox="1"/><p:nvPr/>
 </p:nvSpPr>
 <p:spPr>
@@ -4989,7 +5003,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
-<p:cNvPr id="{shape_id}" name="Image {shape_id}"/>
+<p:cNvPr id="{shape_id}" name="{_xml_escape(shape_display_name(elem, f'Image {shape_id}'))}"/>
 <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>
 <p:nvPr/>
 </p:nvPicPr>
@@ -5572,7 +5586,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
-<p:cNvPr id="{shape_id}" name="Image {shape_id}"/>
+<p:cNvPr id="{shape_id}" name="{_xml_escape(shape_display_name(elem, f'Image {shape_id}'))}"/>
 <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>
 <p:nvPr/>
 </p:nvPicPr>

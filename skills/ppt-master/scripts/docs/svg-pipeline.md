@@ -754,6 +754,8 @@ EMF/WMF images referenced by a page are preserved as external references, never 
 
 Convert project SVGs into PPTX. EMF/WMF images referenced from `svg_output/` are embedded as native `image/x-emf` / `image/x-wmf` media at full vector fidelity.
 
+Each exported object is named after `data-pptx-shape-name`, else its SVG `id` (or `data-name`), else a positional `Group N` / `TextBox N`; forced-Morph `!!` names still win. The PowerPoint Selection and Animation panes therefore read like the source SVG.
+
 Native formulas use the two markers owned by
 [`native-formula.md`](../../references/native-formula.md). A standalone block
 stores delimiter-free LaTeX in the JSON metadata of

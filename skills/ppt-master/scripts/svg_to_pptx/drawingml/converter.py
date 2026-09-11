@@ -94,6 +94,7 @@ from .styles import (
 )
 from .elements import (
     complete_preset_adjustments,
+    shape_display_name,
     empty_clip_path_reason,
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
@@ -831,6 +832,9 @@ def _convert_semantic_shape(
     ):
         if carrier.get(name) is None and shape.get(name) is not None:
             carrier.set(name, str(shape.get(name)))
+    if carrier.get('data-name') is None and shape.get('id'):
+        # The carrier path becomes the native object; keep the group's name.
+        carrier.set('data-name', str(shape.get('id')))
 
     if shape.get('data-pptx-geometry-kind') == 'custom':
         for name in (
@@ -1444,7 +1448,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     return ShapeResult(xml=f'''<p:grpSp>
 <p:nvGrpSpPr>
-<p:cNvPr id="{group_id}" name="Group {group_id}"/>
+<p:cNvPr id="{group_id}" name="{_xml_escape(shape_display_name(elem, f'Group {group_id}'))}"/>
 <p:cNvGrpSpPr/>
 <p:nvPr/>
 </p:nvGrpSpPr>

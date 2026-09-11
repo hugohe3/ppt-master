@@ -204,7 +204,7 @@ class PolygonFilterTests(unittest.TestCase):
             svg_path.write_text(self.SVG, encoding="utf-8")
             xml, *_rest = convert_svg_to_slide_shapes(svg_path, resource_root=root)
         self.assertIn("<a:outerShdw", xml)
-        self.assertIn("Polygon", xml)
+        self.assertIn('name="sheet"', xml)  # named after its SVG id
 
 
 class PresetPaintCompactionTests(unittest.TestCase):
