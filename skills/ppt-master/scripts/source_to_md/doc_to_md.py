@@ -1345,6 +1345,7 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
         cmd.extend(["--extract-media", rel_media_dir])
 
     result = subprocess.run(cmd, capture_output=True, text=True,
+                            encoding="utf-8", errors="replace",
                             cwd=str(out_file.parent))
     if result.returncode != 0:
         print(f"[ERROR] Pandoc conversion failed:\n{result.stderr}")

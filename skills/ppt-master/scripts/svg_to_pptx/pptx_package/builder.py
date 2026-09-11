@@ -71,7 +71,7 @@ from pptx_opc_validation import (
 from pptx_workspace import WorkspaceResourceSpec
 from pptx_ooxml.clone import clone_presentation_slides
 from pptx_ooxml.package import prune_unreferenced_directory_parts
-from language_tags import normalize_language_tag
+from language_tags import office_language_tag
 from hyperlink_contract import (
     HYPERLINK_REL_TYPE,
     trigger_shape_hyperlink_errors,
@@ -5140,14 +5140,19 @@ def _relax_output_permissions(output_path: Path) -> list[str]:
         result = subprocess.run(
             ['icacls', str(output_path), '/grant', '*S-1-5-32-545:R'],
             capture_output=True,
-            text=True,
             check=False,
         )
     except OSError as exc:
         warnings.append(f"icacls skipped for {output_path}: {exc}")
     else:
         if result.returncode != 0:
-            message = (result.stderr or result.stdout or '').strip()
+            # icacls writes in the console OEM code page, so decode lazily
+            # and leniently; text mode would decode under the interpreter's
+            # encoding (UTF-8 in UTF-8 mode) and raise inside the reader
+            # thread on non-ASCII bytes.
+            message = (result.stderr or result.stdout or b'').decode(
+                'oem', errors='replace',
+            ).strip()
             details = f": {message}" if message else ''
             warnings.append(f"icacls failed for {output_path}{details}")
 
@@ -5999,6 +6004,25 @@ def _prerender_legacy_pngs(
     return results
 
 
+def _apply_template_text_language(extract_dir: Path, language: str) -> None:
+    """Retag base-template en-US default text with the deck language.
+
+    Covers the presentation default text style (new text boxes) and master and
+    layout placeholders, so proofing follows the deck rather than en-US.
+    """
+    ppt_dir = extract_dir / "ppt"
+    parts = [ppt_dir / "presentation.xml"]
+    parts += sorted((ppt_dir / "slideMasters").glob("slideMaster*.xml"))
+    parts += sorted((ppt_dir / "slideLayouts").glob("slideLayout*.xml"))
+    for part in parts:
+        if not part.is_file():
+            continue
+        xml = part.read_text(encoding="utf-8")
+        updated = xml.replace('lang="en-US"', f'lang="{language}"')
+        if updated != xml:
+            part.write_text(updated, encoding="utf-8")
+
+
 def _presentation_format(width: float, height: float) -> str:
     """Map the slide aspect ratio to PowerPoint's PresentationFormat label.
     Non-standard ratios (square, portrait, banner crops) report 'Custom'.
@@ -6548,7 +6572,7 @@ def create_pptx_with_native_svg(
         )
     text_flow = resolve_text_flow(text_flow, merge_paragraphs)
     if primary_language is not None:
-        primary_language = normalize_language_tag(primary_language)
+        primary_language = office_language_tag(primary_language)
     public_svg_files = list(svg_files)
     passthrough_slides = set(roundtrip_passthrough_slides or set())
     slide_patches = dict(roundtrip_slide_patches or {})
@@ -8167,6 +8191,9 @@ def create_pptx_with_native_svg(
                 'PPTX package contains dangling internal relationship targets; '
                 'PowerPoint will report the file as corrupt:\n' + details
             )
+
+        if primary_language is not None and not roundtrip_export:
+            _apply_template_text_language(extract_dir, primary_language)
 
         # Replace the python-pptx base-template metadata (stale "Steve Canny"
         # author, 2013 dates, "generated using python-pptx", Slides=0) with
