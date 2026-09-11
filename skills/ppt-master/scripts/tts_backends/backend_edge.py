@@ -16,6 +16,10 @@ _TICKS_PER_MILLISECOND = 10_000
 _SENTENCE_END = frozenset("。！？!?")
 _CLAUSE_END = frozenset("，,；;：:")
 _CLOSING_PUNCTUATION = frozenset('”’」』）》)"\'')
+# Characters that spell one number when adjacent: digits, CJK numerals and
+# their connectors. A cue boundary between two of them splits a value such as
+# 一百一十点五 or 2,750 across two subtitles.
+_NUMERAL_CHARS = frozenset("0123456789零〇一二三四五六七八九十百千万亿两点.,%")
 
 
 @dataclass(frozen=True)
@@ -196,6 +200,13 @@ def _sentence_spans(text: str) -> list[tuple[int, int]]:
     return spans
 
 
+def _inside_number(text: str, index: int) -> bool:
+    """Return whether a cut at ``index`` would split one written-out number."""
+    if index <= 0 or index >= len(text):
+        return False
+    return text[index - 1] in _NUMERAL_CHARS and text[index] in _NUMERAL_CHARS
+
+
 def _hard_split_span(
     text: str,
     span: tuple[int, int],
@@ -214,6 +225,15 @@ def _hard_split_span(
             if start < word.source_end < end
             and _display_length(text, start, word.source_end) <= max_chars
         ]
+        # Provider word boundaries in Chinese are often per character; prefer
+        # the cuts that keep a number whole and fall back only when no other
+        # cut fits the width.
+        whole_number_candidates = [
+            candidate for candidate in candidates
+            if not _inside_number(text, candidate[0])
+        ]
+        if whole_number_candidates:
+            candidates = whole_number_candidates
         if candidates:
             split_at, _ = min(
                 candidates,

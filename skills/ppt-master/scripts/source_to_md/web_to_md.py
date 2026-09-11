@@ -1014,6 +1014,7 @@ def _convert_remote_document(
 
     route = build_conversion_command(local_path, output_path)
     print(f"   [>>] {route.script_name} {local_path}")
+    sys.stdout.flush()
     rc = subprocess.run(route.command).returncode
     if rc != 0 or not os.path.isfile(output_path):
         return False, url, f"{route.script_name} exited with {rc}", None
@@ -1203,10 +1204,17 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
 
+    if args.output and len(targets) > 1:
+        print(
+            "web_to_md.py: error: -o/--output names one Markdown file and takes "
+            "one URL; for several URLs pass --dir <output directory> instead",
+            file=sys.stderr,
+        )
+        return 2
+
     results = []
     for i, url in enumerate(targets):
-        # Allow specific output file only if 1 URL
-        out = args.output if (len(targets) == 1 and args.output) else None
+        out = args.output or None
         success, url, err, out_path = process_url(
             url,
             out,

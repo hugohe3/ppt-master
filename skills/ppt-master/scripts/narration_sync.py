@@ -308,8 +308,9 @@ def _project_path(project_path: Path, value: str | None, default: Path) -> Path:
 
 
 def _project_input_path(project_path: Path, value: str) -> Path:
+    """Resolve an input path: absolute, or existing as given, else project-relative."""
     path = Path(value)
-    if path.is_absolute():
+    if path.is_absolute() or path.exists():
         return path
     return project_path / path
 

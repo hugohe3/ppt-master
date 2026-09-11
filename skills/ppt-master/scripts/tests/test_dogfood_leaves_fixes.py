@@ -28,6 +28,8 @@ from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa:
 from svg_to_pptx.drawingml.utils import project_filter_errors  # noqa: E402
 from svg_to_pptx.pptx_package.builder import _slide_size_type  # noqa: E402
 from project_management.cli import _is_project_tree, PROJECTS_ROOT  # noqa: E402
+from narration_sync import _project_input_path  # noqa: E402
+from tts_backends import backend_edge  # noqa: E402
 
 PDF_URL = "https://www.example.gov/content/pkg/report/pdf/report.pdf"
 
@@ -128,6 +130,43 @@ class ImportSourcesProjectTreeTests(unittest.TestCase):
                 for child in scratch.iterdir():
                     child.unlink()
                 scratch.rmdir()
+
+
+class NarrationRoundTests(unittest.TestCase):
+    def test_subtitle_split_keeps_a_written_number_whole(self) -> None:
+        text = "分别定点在东经八十度、一百一十点五度和一百四十度。"
+        # Per-character word boundaries, as MiniMax returns them for Chinese.
+        words = [
+            backend_edge._MappedWord(start=i * 10, end=i * 10 + 10, source_start=i, source_end=i + 1)
+            for i in range(len(text))
+        ]
+        parts = backend_edge._hard_split_span(text, (0, len(text)), words, 14)
+        pieces = [text[a:b] for a, b in parts]
+        for piece in pieces:
+            self.assertFalse(
+                piece.startswith(("一十", "十点", "点五")) or piece.endswith(("一百", "一百一", "点")),
+                pieces,
+            )
+        self.assertEqual("".join(pieces), text.replace(" ", ""))
+
+    def test_project_input_path_accepts_a_cwd_relative_existing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project = root / "project"
+            (project / "exports").mkdir(parents=True)
+            pptx = project / "exports" / "deck.pptx"
+            pptx.write_bytes(b"PK")
+            self.assertEqual(_project_input_path(project, "exports/deck.pptx"), project / "exports" / "deck.pptx")
+            self.assertEqual(_project_input_path(project, str(pptx)), pptx)
+
+    def test_web_to_md_refuses_output_file_for_several_urls(self) -> None:
+        import io
+        from contextlib import redirect_stderr
+        buffer = io.StringIO()
+        with redirect_stderr(buffer):
+            rc = web_to_md.main(["https://example.org/a", "https://example.org/b", "-o", "out.md"])
+        self.assertEqual(rc, 2)
+        self.assertIn("--dir", buffer.getvalue())
 
 
 class PolygonFilterTests(unittest.TestCase):
