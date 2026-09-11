@@ -177,7 +177,7 @@ Preset patterns are a separate PPT interface in [`native-data-interface.md`](./n
 
 A filter is native-effect metadata, not a pixel-filter surface: one direct
 `<defs><filter>` referenced as a direct `filter="url(#id)"` on a `<rect>`,
-`<circle>`, `<image>`, `<path>`, `<text>`, or a helper-authored preset group,
+`<circle>`, `<polygon>`, `<image>`, `<path>`, `<text>`, or a helper-authored preset group,
 built from `feDropShadow` or the blur + flood + composite + merge graph below
 with explicit `stdDeviation`, `dx`/`dy`, and `flood-opacity`. A meaningful
 offset becomes one outer shadow; zero offset — even `feDropShadow` with

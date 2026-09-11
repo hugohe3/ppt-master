@@ -48,7 +48,10 @@ low = round(span * 0.025); start = round(span * 0.029); high = round(span * 0.03
 | `wechat` | 900 | 23–30 | 26 |
 | `moments` | 1080 | 27–36 | 31 |
 | `xiaohongshu` | 1660 | 42–55 | 48 |
-| `story` / `banner` | 1920 | 48–63 | 56 |
+| `banner` | 1920 | 48–63 | 56 |
+| `story` | 1920 | 48–63 | 56 |
 | `a4` | 1754 | 44–58 | 51 |
+
+`story` and `banner` share one span but not one measure: the same body size sits on a 1920 px line in `banner` and a 1080 px line in `story` (about half the characters per line), so portrait pages often settle at the low end of the band.
 
 **Default — starting anchor, not a floor (may override when confirmed identity, source fidelity, or target viewing conditions require it)**: start from the table or formula, then resolve the complete role ramp and page density from the content and delivery context. The band only surfaces unusual values; falling outside it is not a validation failure. Apply the viewing-distance baseline in [`shared-standards-core.md`](./shared-standards-core.md) instead of silently shrinking a recurring role to make content fit.

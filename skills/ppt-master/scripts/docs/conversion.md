@@ -61,8 +61,10 @@ Useful options:
   `--no-images`, and `--filter-images` map to the PDF image mode.
   `--no-images` (or `--images none`) also applies to web pages (images stay
   remote links, no `<stem>_files/`) and is a no-op on Markdown/text.
-- A `.md` / `.markdown` / `.txt` URL whose body is not HTML is saved verbatim
-  under a `Source:` header, named by the URL's filename stem.
+- A URL that serves a PDF / Office document (by Content-Type, body magic, or
+  suffix) is saved beside the Markdown and converted by that document's
+  backend; a `.md` / `.txt` URL whose body is not HTML is saved verbatim
+  under a `Source:` header, named by the URL stem.
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.

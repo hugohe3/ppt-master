@@ -554,7 +554,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Concern | Contract |
 |---|---|
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
-| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>`; one validated compact authored shape-preset `<g>`; an exact outer `<g filter>` whose sole visual child is one clipped `<image>` |
+| Public targets | `<rect>`, `<circle>`, `<polygon>`, `<image>`, `<path>`, `<text>`; one validated compact authored shape-preset `<g>`; an exact outer `<g filter>` whose sole visual child is one clipped `<image>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
 | Generated glow form | Zero-offset `feDropShadow` with flood paint, or the complete blur + flood + composite + merge graph; never bare blur |
 | Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx`, `dy`, and `flood-opacity` on `feDropShadow`; explicit `flood-opacity` on `feFlood`; explicit `slope` on linear `feFuncA` |

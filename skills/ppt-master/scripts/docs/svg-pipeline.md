@@ -1037,9 +1037,12 @@ class-average estimate, with the existing fixed advances for monospaced faces.
   (headroom included), while the checker measures each real line glyph by
   glyph: capital-heavy words, digits, and wide letters run wider than the Latin
   rate, so the table also prints CAPS and DIGITS rates, and a zone should stay
-  about 5% below its bounds width. `--outline` adds the longest §IX planned
+  about 5% below its bounds width. The rates ignore `letter-spacing`, so a
+  tracked role or a display-size line is sized per string with `measure
+  --letter-spacing`. `--outline` adds the longest §IX planned
   line per role — the planned wording only; a line rewritten while authoring
-  is re-estimated with the rates. The checker's overflow
+  is re-estimated with the rates. Quick projects have no Design Spec, so
+  the column stays empty there and the table says so. The checker's overflow
   diagnostic prints that line's average px per character, which is not a
   reusable rate. A lock role without its own
   `<role>_family` resolves to `title_family` when the role name contains
