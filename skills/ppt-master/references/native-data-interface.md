@@ -34,7 +34,7 @@ python3 ${SKILL_DIR}/scripts/stamp_native_fallbacks.py "<svg-file-or-directory>"
 
 The hash is a synchronization receipt, not proof of semantic equivalence; never stamp stale JSON to satisfy validation.
 
-**Hard rule — activation is the opt-in**: a marker only declares eligibility. Normal `svg_to_pptx.py` converts the fallback children into editable DrawingML shapes; `--native-charts-and-tables` emits the PowerPoint Chart/Table object and discards the fallback children, so everything the fallback shows lives in the payload — data, point emphasis, line/area treatment, spacing, chrome, and companion text — and the final checker's parity findings block that export until they do. A convertible marker stays even when a detail has no native field: it becomes companion text or an unmarked sibling object, never a simpler drawing.
+**Hard rule — activation is the opt-in**: a marker only declares eligibility. Normal `svg_to_pptx.py` converts the fallback children into editable DrawingML shapes (a structured `chart` / `table` placeholder slot has no shape path and needs the flag); `--native-charts-and-tables` emits the PowerPoint Chart/Table object and discards the fallback children, so everything the fallback shows lives in the payload — data, point emphasis, line/area treatment, spacing, chrome, and companion text — and the final checker's parity findings block that export until they do. A convertible marker stays even when a detail has no native field: it becomes companion text or an unmarked sibling object, never a simpler drawing.
 
 | Replacement marker | Native output | Required metadata |
 |---|---|---|

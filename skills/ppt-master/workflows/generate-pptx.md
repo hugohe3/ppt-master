@@ -353,7 +353,7 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 
 | Decision | Flag |
 |---|---|
-| Explicit editable Chart/Table delivery decision | Append `--native-charts-and-tables` (markers, templates, semantic tables, and imported charts never activate it; formulas are always native) |
+| Explicit editable Chart/Table delivery decision, or a structured `chart` / `table` placeholder slot | Append `--native-charts-and-tables` (markers, templates, semantic tables, and imported charts never activate it; formulas are always native) |
 | Final checker reports oversized images | Append `--image-sizing display` |
 | Preserved or produced `animations.json` | Keep the base command; the exporter reads the sidecar |
 | Deck-wide motion setting | Append the resolved [`animations.md`](../references/animations.md) flags |

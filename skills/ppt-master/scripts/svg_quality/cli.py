@@ -281,6 +281,13 @@ def main() -> None:
             checker.check_directory(check_target, expected_format)
 
     if not roundtrip and stage == "final" and Path(target).is_dir():
+        if checker._structured_native_slots:
+            print(
+                "[TIP] Structured "
+                + "/".join(checker._structured_native_slots)
+                + " placeholder slot(s) are filled by native objects: export "
+                "with --native-charts-and-tables (the standard export refuses them)."
+            )
         if checker._has_incomplete_page_roster:
             print(
                 "[TIP] This final-stage run found an incomplete page roster. "

@@ -1187,6 +1187,7 @@ class SVGQualityChecker:
         self._communication_traced_projects: set[Path] = set()
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._has_incomplete_page_roster = False
+        self._structured_native_slots: list[str] = []
         self._active_slide_count: int | None = None
         # Early/page stages see part of the roster, so a slide jump's upper
         # bound waits for the final gate.
@@ -1459,6 +1460,7 @@ class SVGQualityChecker:
         project_path = Path(workspace).resolve()
         authoring_dir = project_path / 'authoring-svg-flat'
         self._has_incomplete_page_roster = False
+        self._structured_native_slots: list[str] = []
         if not project_path.is_dir():
             print(f"[ERROR] Round-trip workspace does not exist: {project_path}")
             self.summary['errors'] += 1
@@ -6790,6 +6792,7 @@ class SVGQualityChecker:
         """
         dir_path = Path(directory)
         self._has_incomplete_page_roster = False
+        self._structured_native_slots: list[str] = []
         self._undeclared_size_occurrences = Counter()
         self._undeclared_size_counts_ready = False
 
@@ -7233,6 +7236,12 @@ class SVGQualityChecker:
             self._pptx_structure_issues.append(('error', str(exc)))
             return
 
+        self._structured_native_slots = sorted({
+            str(item.placeholder)
+            for spec in specs
+            for item in spec.placeholders
+            if item.placeholder in {'chart', 'table'}
+        })
         if complete_roster:
             actual_slides = {spec.slide_num for spec in specs}
             expected_slides = {
