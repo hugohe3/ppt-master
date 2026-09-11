@@ -13,6 +13,7 @@ import json
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -24,6 +25,7 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 import pdf_to_md  # noqa: E402
+import doc_to_md  # noqa: E402
 import web_to_md  # noqa: E402
 from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa: E402
 from svg_to_pptx.drawingml.utils import project_filter_errors  # noqa: E402
@@ -333,6 +335,66 @@ class TraditionalChineseIntakeTests(unittest.TestCase):
             record_source_url(markdown, "https://example.gov.tw/report.pdf")
             profile = json.loads(profile_path_for(markdown).read_text(encoding="utf-8"))
         self.assertEqual(profile["source"]["url"], "https://example.gov.tw/report.pdf")
+
+
+class DocxIntakeTests(unittest.TestCase):
+    W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    DOCUMENT = (
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+        'xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"><w:body>'
+        '<w:p><w:r><w:drawing><c:chart r:id="rId9"/></w:drawing></w:r></w:p>'
+        '<w:tbl><w:tr><w:tc><w:p><w:r><w:t>Bar queues</w:t></w:r>'
+        '<w:r><w:footnoteReference w:id="2"/></w:r></w:p></w:tc></w:tr></w:tbl>'
+        '</w:body></w:document>'
+    )
+    RELS = (
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId9" Type="chart" Target="charts/chart1.xml"/></Relationships>'
+    )
+    CHART = (
+        '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">'
+        '<c:chart><c:plotArea><c:barChart><c:barDir val="col"/><c:grouping val="clustered"/>'
+        '<c:ser><c:idx val="0"/><c:order val="0"/>'
+        '<c:cat><c:strRef><c:strCache><c:ptCount val="2"/>'
+        '<c:pt idx="0"><c:v>2022/23</c:v></c:pt><c:pt idx="1"><c:v>2023/24</c:v></c:pt>'
+        '</c:strCache></c:strRef></c:cat>'
+        '<c:val><c:numRef><c:numCache><c:ptCount val="2"/>'
+        '<c:pt idx="0"><c:v>702</c:v></c:pt><c:pt idx="1"><c:v>659</c:v></c:pt>'
+        '</c:numCache></c:numRef></c:val></c:ser></c:barChart></c:plotArea></c:chart></c:chartSpace>'
+    )
+    FOOTNOTES = (
+        '<w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        '<w:footnote w:type="separator" w:id="-1"><w:p/></w:footnote>'
+        '<w:footnote w:id="2"><w:p><w:r><w:t>Theatre closed until Winter 2026.</w:t></w:r></w:p>'
+        '</w:footnote></w:footnotes>'
+    )
+
+    def _docx(self, root: Path) -> Path:
+        path = root / "report.docx"
+        with zipfile.ZipFile(path, "w") as docx:
+            docx.writestr("word/document.xml", self.DOCUMENT)
+            docx.writestr("word/_rels/document.xml.rels", self.RELS)
+            docx.writestr("word/charts/chart1.xml", self.CHART)
+            docx.writestr("word/footnotes.xml", self.FOOTNOTES)
+        return path
+
+    def test_embedded_chart_cache_becomes_a_table(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            patched, replacements, warnings = doc_to_md._docx_inject_charts_markdown(
+                self._docx(Path(tmp)))
+            patched.unlink()
+        [markdown] = replacements.values()
+        self.assertIn("| 2023/24 | 659 |", markdown)
+        self.assertEqual(warnings, [])
+
+    def test_table_cell_footnote_survives(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            patched, replacements = doc_to_md._docx_inject_tables_markdown(self._docx(Path(tmp)))
+            patched.unlink()
+        [markdown] = replacements.values()
+        self.assertIn("Bar queues[^2]", markdown)
+        self.assertIn("[^2]: Theatre closed until Winter 2026.", markdown)
 
 
 class SlideSizeTypeTests(unittest.TestCase):

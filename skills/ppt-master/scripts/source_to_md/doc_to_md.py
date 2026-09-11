@@ -3,7 +3,8 @@
 Document to Markdown Converter (hybrid Python + Pandoc fallback)
 
 Primary formats (pure Python, no external tools required):
-    .docx   → mammoth (tables preserved; OMML equations rewritten to inline LaTeX)
+    .docx   → mammoth (tables and embedded chart data as Markdown tables;
+              OMML equations rewritten to inline LaTeX)
     .html   → markdownify + BeautifulSoup
     .epub   → ebooklib + markdownify
     .ipynb  → nbconvert
@@ -82,6 +83,13 @@ DOCX_NS = {
     "m": "http://schemas.openxmlformats.org/officeDocument/2006/math",
 }
 EMU_PER_INCH = 914400
+CHART_NS = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+# Word's built-in Title / Subtitle styles carry the cover heading; mammoth
+# leaves them as plain paragraphs unless mapped.
+DOCX_STYLE_MAP = """
+p[style-name='Title'] => h1:fresh
+p[style-name='Subtitle'] => h2:fresh
+"""
 MATH_NS = DOCX_NS["m"]
 W_NS = DOCX_NS["w"]
 XML_SPACE_ATTR = "{http://www.w3.org/XML/1998/namespace}space"
@@ -704,7 +712,25 @@ def _docx_paragraph_text(paragraph: ET.Element) -> str:
             parts.append("\t")
         elif local in {"br", "cr"}:
             parts.append(" ")
+        elif local == "footnoteReference":
+            parts.append(f"[^{elem.get(f'{{{W_NS}}}id')}]")
     return "".join(parts).strip()
+
+
+def _docx_footnote_texts(docx: zipfile.ZipFile) -> dict[str, str]:
+    """Return footnote id → plain text from ``word/footnotes.xml``."""
+    try:
+        root = ET.fromstring(docx.read("word/footnotes.xml"))
+    except (KeyError, ET.ParseError):
+        return {}
+    return {
+        note.get(f"{{{W_NS}}}id", ""): " ".join(
+            _docx_paragraph_text(paragraph)
+            for paragraph in note.findall("w:p", DOCX_NS)
+        ).strip()
+        for note in root.findall("w:footnote", DOCX_NS)
+        if note.get(f"{{{W_NS}}}type") is None
+    }
 
 
 def _docx_table_has_media(table: ET.Element) -> bool:
@@ -760,6 +786,7 @@ def _docx_inject_tables_markdown(
     try:
         with zipfile.ZipFile(input_file) as docx:
             document_xml = docx.read("word/document.xml")
+            footnotes = _docx_footnote_texts(docx)
     except (KeyError, zipfile.BadZipFile, OSError):
         return None
     try:
@@ -776,6 +803,12 @@ def _docx_inject_tables_markdown(
         markdown = _docx_table_to_markdown(table)
         if not markdown:
             continue
+        # The table never reaches mammoth, so its footnotes would lose both
+        # the reference and the note text; keep them under the table.
+        for reference in table.iter(f"{{{W_NS}}}footnoteReference"):
+            note_id = reference.get(f"{{{W_NS}}}id", "")
+            if footnotes.get(note_id):
+                markdown += f"\n\n[^{note_id}]: {footnotes[note_id]}"
         parent = parent_map.get(table)
         if parent is None:
             continue
@@ -803,6 +836,93 @@ def _docx_inject_tables_markdown(
     return out_path, replacements
 
 
+def _docx_chart_markdown(chart_xml: bytes, name: str) -> str:
+    """Render one embedded Word chart's cached data as a Markdown table."""
+    import importlib.util
+
+    if importlib.util.find_spec("pptx") is None:
+        return f"> [Chart] {name} — data unavailable (python-pptx is not installed)"
+    from pptx.chart.chart import Chart
+    from pptx.oxml import parse_xml
+    from ppt_to_md import chart_to_markdown
+
+    return chart_to_markdown(Chart(parse_xml(chart_xml), None), name)
+
+
+def _docx_inject_charts_markdown(
+    input_file: Path,
+) -> tuple[Path, dict[str, str], list[str]] | None:
+    """Place each embedded chart's cached data after its paragraph in a temp DOCX.
+
+    Mammoth drops ``c:chart`` drawings entirely, so the chart values — often
+    the only copy of a report's numbers — would vanish from the Markdown.
+    """
+    try:
+        with zipfile.ZipFile(input_file) as docx:
+            document_xml = docx.read("word/document.xml")
+            rels_root = ET.fromstring(docx.read("word/_rels/document.xml.rels"))
+            chart_parts = {
+                name: docx.read(name)
+                for name in docx.namelist()
+                if name.startswith("word/charts/") and name.endswith(".xml")
+            }
+    except (KeyError, ET.ParseError, zipfile.BadZipFile, OSError):
+        return None
+    try:
+        root = ET.fromstring(document_xml)
+    except ET.ParseError:
+        return None
+    charts = list(root.iter(f"{{{CHART_NS}}}chart"))
+    if not charts:
+        return None
+
+    rels = {
+        rel.attrib.get("Id"): rel.attrib.get("Target", "")
+        for rel in rels_root.findall("rel:Relationship", DOCX_NS)
+    }
+    parent_map = {child: parent for parent in root.iter() for child in parent}
+    token_base = uuid.uuid4().hex
+    replacements: dict[str, str] = {}
+    warnings: list[str] = []
+    seen: set[str] = set()
+    for chart in charts:
+        rel_id = chart.get(f"{{{DOCX_NS['r']}}}id")
+        paragraph = parent_map.get(chart)
+        while paragraph is not None and _local_name(paragraph) != "p":
+            paragraph = parent_map.get(paragraph)
+        if not rel_id or rel_id in seen or paragraph is None:
+            continue
+        seen.add(rel_id)
+        name = f"Chart {len(replacements) + 1}"
+        part_name = posixpath.normpath(posixpath.join("word", rels.get(rel_id, "")))
+        try:
+            markdown = _docx_chart_markdown(chart_parts[part_name], name)
+        except Exception as exc:  # a malformed cache must not sink the document
+            markdown = f"> [Chart] {name} — data unavailable ({exc.__class__.__name__})"
+        if "data unavailable" in markdown:
+            warnings.append(f"{name} ({part_name}): chart data unavailable")
+        parent = parent_map[paragraph]
+        token = f"MARKDOWNCHART{token_base}{len(replacements):04d}"
+        parent.insert(list(parent).index(paragraph) + 1, _make_text_paragraph(token))
+        replacements[token] = markdown
+    if not replacements:
+        return None
+
+    for prefix, uri in DOCX_NS.items():
+        if prefix != "rel":
+            ET.register_namespace(prefix, uri)
+    patched_xml = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    tmp = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
+    tmp.close()
+    out_path = Path(tmp.name)
+    with zipfile.ZipFile(input_file) as zin, \
+            zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = patched_xml if item.filename == "word/document.xml" else zin.read(item.filename)
+            zout.writestr(item, data)
+    return out_path, replacements, warnings
+
+
 def _clean_mammoth_markdown(markdown: str) -> str:
     """Remove Mammoth escapes for punctuation that is safe as literal text."""
     def _repl(match: re.Match[str]) -> str:
@@ -821,7 +941,9 @@ def _clean_mammoth_markdown(markdown: str) -> str:
 # DOCX → Markdown (mammoth)
 # ─────────────────────────────────────────────────────────────
 
-def _convert_docx(input_file: Path, out_file: Path) -> str:
+def _convert_docx(
+    input_file: Path, out_file: Path, warnings: list[str] | None = None,
+) -> str:
     try:
         import mammoth
     except ImportError:
@@ -887,13 +1009,27 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
     if table_injection is not None:
         table_file, table_replacements = table_injection
         mammoth_source = table_file
+    chart_file = None
+    chart_replacements: dict[str, str] = {}
+    chart_injection = _docx_inject_charts_markdown(mammoth_source)
+    if chart_injection is not None:
+        chart_file, chart_replacements, chart_warnings = chart_injection
+        mammoth_source = chart_file
+        if warnings is not None:
+            warnings.extend(chart_warnings)
     try:
         with mammoth_source.open("rb") as f:
             result = mammoth.convert_to_markdown(
                 f,
                 convert_image=mammoth.images.img_element(_save_image),
+                style_map=DOCX_STYLE_MAP,
             )
     finally:
+        if chart_file is not None:
+            try:
+                chart_file.unlink()
+            except OSError:
+                pass
         if table_file is not None:
             try:
                 table_file.unlink()
@@ -908,10 +1044,14 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
     markdown = result.value
     for token, table_markdown in table_replacements.items():
         markdown = markdown.replace(token, table_markdown)
+    for token, chart_markdown in chart_replacements.items():
+        markdown = markdown.replace(token, chart_markdown)
     for token, latex in math_replacements.items():
         markdown = markdown.replace(token, latex)
     markdown = _html_img_to_md(markdown)
     markdown = _clean_mammoth_markdown(markdown)
+    # A logo set in a heading style is an image, not a heading.
+    markdown = re.sub(r"^#{1,6} (!\[[^\]]*\]\([^)]*\))[ \t]*$", r"\1", markdown, flags=re.M)
     out_file.write_text(markdown, encoding="utf-8")
 
     if manifest:
@@ -924,9 +1064,13 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
         media_dir.rmdir()
         media_dir = None  # type: ignore[assignment]
 
+    if chart_replacements:
+        print(f"   Charts: {len(chart_replacements)} rendered from their cached data")
     for msg in result.messages:
         if msg.type == "warning":
             print(f"   [warn] {msg.message}")
+            if warnings is not None:
+                warnings.append(msg.message)
 
     _report_result(out_file, media_dir)
     return markdown
@@ -1414,8 +1558,9 @@ def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
     if suffix in NATIVE_FORMATS:
         desc = _FORMAT_DESC[suffix]
         print(f"[INFO] Converting {desc}: {input_file.name}")
+        warnings: list[str] = []
         if suffix == ".docx":
-            markdown = _convert_docx(input_file, out_file)
+            markdown = _convert_docx(input_file, out_file, warnings)
         elif suffix in (".html", ".htm"):
             markdown = _convert_html(input_file, out_file)
         elif suffix == ".epub":
@@ -1430,6 +1575,7 @@ def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
                 markdown_path=out_file,
                 converter="doc_to_md.py",
                 conversion_type=suffix.lstrip("."),
+                warnings=warnings,
             )
             if profile_path:
                 print(f"   Wrote conversion profile -> {profile_path}")

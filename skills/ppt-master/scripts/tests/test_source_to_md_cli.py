@@ -372,7 +372,8 @@ class SourceCollisionTests(unittest.TestCase):
                     if encoding == "utf-8":
                         self.assertEqual(profile["warnings"], [])
                     else:
-                        self.assertIn(encoding, result.stdout)
+                        # --json keeps stdout machine-readable; the notice is on stderr.
+                        self.assertIn(encoding, result.stderr)
                         self.assertIn(encoding, " ".join(profile["warnings"]))
 
     def test_invalid_passthrough_fails_before_writing_outputs(self) -> None:

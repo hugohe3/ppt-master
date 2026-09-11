@@ -27,6 +27,7 @@ import argparse
 import filecmp
 import json
 import os
+import stat
 import re
 import shutil
 import subprocess
@@ -182,6 +183,12 @@ def _read_existing_image_manifest(path: Path) -> list[dict]:
 
 def _write_json_atomic(path: Path, payload: object) -> None:
     """Write JSON through a same-directory temporary file and atomic rename."""
+    try:
+        mode = stat.S_IMODE(path.stat().st_mode)
+    except FileNotFoundError:
+        umask = os.umask(0)
+        os.umask(umask)
+        mode = 0o666 & ~umask
     fd, temp_name = tempfile.mkstemp(
         prefix=f"{path.stem}.",
         suffix=".tmp",
@@ -191,6 +198,8 @@ def _write_json_atomic(path: Path, payload: object) -> None:
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
             json.dump(payload, handle, ensure_ascii=False, indent=2)
             handle.write("\n")
+        # mkstemp creates 0600; keep the file's own (or the default) mode.
+        os.chmod(temp_name, mode)
         os.replace(temp_name, path)
     except Exception:
         try:
