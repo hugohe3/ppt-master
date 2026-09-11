@@ -24,7 +24,7 @@ Custom canvases likewise use `0 0 W H` with positive integer pixels; a fractiona
 
 ## Platform Keep-clear
 
-Canvas dimensions imply no title band, content topology, or recurring chrome; reserve space only for a real output obstruction. For `story`, keep meaning-bearing text, identity, and calls to action within `y=120..1740` by default because mobile story controls occupy the top and bottom; images, backgrounds, and texture may stay full bleed. An exact target-platform overlay guide or installed template overrides this advisory band.
+Canvas dimensions imply no title band, content topology, or recurring chrome; reserve space only for a real output obstruction. For `story`, keep meaning-bearing text, identity, and calls to action within `y=120..1740` by default because mobile story controls occupy the top and bottom; images, backgrounds, and texture may stay full bleed. An exact target-platform overlay guide or installed template overrides this advisory band. Story starting geometry: 80 px margins, 920 px measure, title band ≈ 90 px; regions stack, side-by-side only for near-square halves, and the band below 1740 carries bleed, texture, or a cropped element, not dead space.
 
 ## Typography Scale Start
 
