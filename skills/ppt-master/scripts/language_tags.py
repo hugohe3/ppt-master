@@ -265,6 +265,29 @@ def normalize_language_tag(value: str) -> str:
     return "-".join(normalized)
 
 
+_OFFICE_CHINESE_REGIONS = {
+    "Hans": ("CN", frozenset({"CN", "SG"})),
+    "Hant": ("TW", frozenset({"TW", "HK", "MO"})),
+}
+
+
+def office_language_tag(value: str) -> str:
+    """Return the region-form tag Office writes for one canonical tag.
+
+    PowerPoint's own files tag Chinese text ``zh-CN`` / ``zh-TW`` / ``zh-HK``
+    and match proofing languages by those culture names, so a script-qualified
+    Chinese tag (``zh-Hant-TW``, ``zh-Hans``) is written in that form. Every
+    other tag passes through unchanged.
+    """
+    tag = normalize_language_tag(value)
+    parts = tag.split("-")
+    if parts[0] != "zh" or len(parts) < 2 or parts[1] not in _OFFICE_CHINESE_REGIONS:
+        return tag
+    default_region, regions = _OFFICE_CHINESE_REGIONS[parts[1]]
+    region = parts[2] if len(parts) > 2 and parts[2] in regions else default_region
+    return f"zh-{region}"
+
+
 def language_base(value: str) -> str:
     """Return the lower-case primary language subtag."""
     return normalize_language_tag(value).split("-", 1)[0]
