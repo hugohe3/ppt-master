@@ -317,8 +317,8 @@ def sanitize_filename(name: str) -> str:
     """Sanitize a string for filesystem-safe filenames."""
     # Replace whitespace with underscore first
     clean = re.sub(r'\s+', '_', name)
-    # Remove all except Chinese, English, Numbers, Underscore
-    clean = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9_]', '', clean)
+    # Remove all except Chinese, English, Numbers, Underscore, Hyphen
+    clean = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9_-]', '', clean)
     # Collapse repeating underscores
     clean = re.sub(r'_+', '_', clean)
     return clean[:80]  # Truncate

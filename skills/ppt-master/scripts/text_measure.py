@@ -674,8 +674,9 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             'rates for ' + ', '.join(bold_roles) + ' are measured at bold weight'
             if bold_roles else
             'every role is measured at normal weight; recalibrate a role '
-            'realized as bold deck-wide with --role NAME:FAMILY:SIZE:bold, '
-            'since bold runs about 7% wider'
+            'realized as bold deck-wide with --role NAME:FAMILY:SIZE:bold: '
+            'bold widens Latin and digits about 7%, while the bundled advance '
+            'table gives CJK one width for both weights'
         )
         output_path = project_path / 'validation' / 'text_calibration.json'
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -753,8 +754,9 @@ def build_parser() -> argparse.ArgumentParser:
         type=_role_argument,
         default=[],
         metavar='NAME:FAMILY:SIZE[:bold]',
-        help='Typography role to calibrate when spec_lock.md is absent, e.g. '
-             'body:"Microsoft YaHei":20; repeatable.',
+        help='Typography role to calibrate, e.g. body:"Microsoft YaHei":20; '
+             'repeatable. Adds or overrides that role whether or not '
+             'spec_lock.md exists (FAMILY replaces the role\'s font stack).',
     )
     calibrate.add_argument('--json', action='store_true')
     for command in (measure, wrap, box):

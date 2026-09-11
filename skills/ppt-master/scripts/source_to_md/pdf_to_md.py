@@ -199,6 +199,37 @@ def is_bullet_glyph_span(text: str) -> bool:
     return len(stripped) == 1 and stripped in _BULLET_GLYPHS
 
 
+# Below this many extracted text characters per page the PDF has no usable
+# text layer; a scan renders as one image per page and nothing else.
+SCANNED_PDF_TEXT_CHARS_PER_PAGE = 40
+
+
+def scanned_pdf_warnings(markdown: str, page_count: int, image_count: int) -> list[str]:
+    """Return a warning when the Markdown holds page images but almost no text.
+
+    ``[Done] Success`` with an empty Markdown body is worse than a failure:
+    a downstream reader takes the file as the converted source and concludes
+    the document has no usable content. The check counts text outside image
+    references and page comments against the page count.
+    """
+    if page_count <= 0:
+        return []
+    text_lines = [
+        line for line in markdown.splitlines()
+        if line.strip() and not line.lstrip().startswith(("![", "<!--"))
+    ]
+    text_chars = sum(len(line.strip()) for line in text_lines)
+    if text_chars >= SCANNED_PDF_TEXT_CHARS_PER_PAGE * page_count:
+        return []
+    if image_count < max(1, page_count // 2):
+        return []
+    return [
+        f"scanned PDF: {text_chars} text characters over {page_count} pages, "
+        f"{image_count} page images; no text layer was extracted, so the "
+        "clauses exist only inside the images (OCR or a text-layer copy is needed)"
+    ]
+
+
 def detect_list_item(text: str) -> tuple:
     """Detect if the text is a list item. Returns (is_list, list_type, content)."""
     text = text.strip()
@@ -214,8 +245,11 @@ def detect_list_item(text: str) -> tuple:
             return (True, 'ul', marker + ' ' + text[match.end():])
 
     # ``83.2%`` at the start of a line is a decimal, not item 83: after a
-    # dot the marker must not be followed by another digit.
-    ol_pattern = r'^(\d+)(?:[、)]|\.(?!\d))\s*'
+    # dot the marker must not be followed by another digit. ``1. 1 职业名称``
+    # (a clause number set with a space, as Chinese standards do) is a
+    # heading path, not item 1 with the text "1 职业名称": a short digit group
+    # right after the marker, followed by a space or CJK, keeps the line as is.
+    ol_pattern = r'^(\d+)(?:[、)]|\.(?!\d)(?!\s*\d{1,2}(?:\.\s*\d+)*[\s\u4e00-\u9fff]))\s*'
     match = re.match(ol_pattern, text)
     if match:
         num = match.group(1)
@@ -1747,6 +1781,7 @@ def extract_pdf_to_markdown(
         if prev_was_code:
             flush_code_block()
 
+    page_count = len(doc)
     doc.close()
 
     markdown_content = merge_markdown_continuation_tables(markdown_content)
@@ -1763,12 +1798,16 @@ def extract_pdf_to_markdown(
                 json.dumps(image_manifest, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
+        warnings = scanned_pdf_warnings(markdown_content, page_count, img_count)
+        for warning in warnings:
+            print(f"[WARN] {warning}")
         profile_path = write_conversion_profile_best_effort(
             input_path=pdf_path,
             markdown_path=output_path,
             converter="pdf_to_md.py",
             conversion_type="pdf",
             asset_dir=img_dir,
+            warnings=warnings,
         )
         print(f"[OK] Saved Markdown to: {output_path}")
         if profile_path:

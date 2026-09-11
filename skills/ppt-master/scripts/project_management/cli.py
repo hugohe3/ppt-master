@@ -105,6 +105,25 @@ DEFERRED_CANVAS_MESSAGE = (
 )
 
 
+def _is_project_tree(source_path: Path) -> bool:
+    """Return whether a file under projects/ sits inside an initialized project.
+
+    A sibling directory such as ``projects/<slug>_web_sources/`` (topic-research
+    output) is scratch material, not another project's tree.
+    """
+    try:
+        relative = source_path.resolve().relative_to(PROJECTS_ROOT.resolve())
+    except ValueError:
+        return False
+    if not relative.parts:
+        return False
+    root = PROJECTS_ROOT.resolve() / relative.parts[0]
+    return any(
+        (root / marker).exists()
+        for marker in ("svg_output", "design_spec.md", "spec_lock.md", "README.md")
+    )
+
+
 def _validate_image_manifest(
     payload: object,
     path: Path,
@@ -281,7 +300,9 @@ class ProjectManager:
             # full project dir name pasted back into init) is used as-is —
             # re-appending would produce
             # `name_ppt169_20260101_ppt169_20260102`.
-            if re.search(rf"_{re.escape(normalized_format)}_\d{{8}}$", project_name):
+            if re.search(r"_\d{8}$", project_name):
+                # `_<format>_<YYYYMMDD>` or a plain `_<YYYYMMDD>`: the caller
+                # pinned the directory name; --format still sets the canvas.
                 project_dir_name = project_name
             else:
                 project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
@@ -865,6 +886,7 @@ class ProjectManager:
                 inside_projects
                 and not is_within_path(source_path, project_dir.resolve())
                 and source_path.resolve().parent != PROJECTS_ROOT.resolve()
+                and _is_project_tree(source_path)
             )
             if copy:
                 effective_move = False
@@ -1125,7 +1147,12 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     init = subparsers.add_parser("init", help="Create a project directory")
-    init.add_argument("project_name", help="Project name")
+    init.add_argument(
+        "project_name",
+        help="Project name; the directory becomes <name>_<YYYYMMDD>, or "
+             "<name>_<format>_<YYYYMMDD> with --format. A name already ending "
+             "in _<YYYYMMDD> is used as-is.",
+    )
     init.add_argument(
         "--format",
         default=None,

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Regression tests for the fixes reported by the Why Leaves Turn dogfood run.
+"""Regression tests for fixes reported by the September 2026 dogfood runs.
 
 Document URLs route to their own converter, bullet glyphs never promote a PDF
-line to a heading, ``<polygon>`` carries a filter, and the exported slide size
-type token follows the canvas.
+line to a heading, clause numbers stay text, a scanned PDF warns, ``<polygon>``
+carries a filter, the exported slide size type token follows the canvas, and
+``init`` keeps a pinned directory name.
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ import web_to_md  # noqa: E402
 from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa: E402
 from svg_to_pptx.drawingml.utils import project_filter_errors  # noqa: E402
 from svg_to_pptx.pptx_package.builder import _slide_size_type  # noqa: E402
+from project_management.cli import _is_project_tree, PROJECTS_ROOT  # noqa: E402
 
 PDF_URL = "https://www.example.gov/content/pkg/report/pdf/report.pdf"
 
@@ -84,6 +86,48 @@ class PdfBulletTests(unittest.TestCase):
         self.assertTrue(pdf_to_md.is_bullet_glyph_span("·\x01"))
         self.assertFalse(pdf_to_md.is_bullet_glyph_span("Oaks"))
         self.assertFalse(pdf_to_md.is_bullet_glyph_span("· Oaks"))
+
+
+class PdfClauseAndScanTests(unittest.TestCase):
+    def test_spaced_clause_number_is_not_a_list(self) -> None:
+        self.assertFalse(pdf_to_md.detect_list_item("1. 1 职业名称")[0])
+        self.assertFalse(pdf_to_md.detect_list_item("2. 1. 1 职业道德基本知识")[0])
+
+    def test_ordinary_ordered_items_still_match(self) -> None:
+        self.assertEqual(pdf_to_md.detect_list_item("1. 职业概况"), (True, "ol", "1. 职业概况"))
+        self.assertEqual(pdf_to_md.detect_list_item("3. Overview"), (True, "ol", "3. Overview"))
+        self.assertEqual(pdf_to_md.detect_list_item("1. 2024年营收"), (True, "ol", "1. 2024年营收"))
+        self.assertFalse(pdf_to_md.detect_list_item("83.2% of respondents")[0])
+
+    def test_scanned_pdf_warns(self) -> None:
+        markdown = "\n".join(
+            f"<!-- Page {i} -->\n![page {i}](scan_files/page_{i}.jpg)" for i in range(1, 14))
+        warnings = pdf_to_md.scanned_pdf_warnings(markdown, 13, 13)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("13 page images", warnings[0])
+
+    def test_text_pdf_does_not_warn(self) -> None:
+        markdown = "\n".join("第一章 总则 " * 20 for _ in range(13))
+        self.assertEqual(pdf_to_md.scanned_pdf_warnings(markdown, 13, 2), [])
+
+
+class ImportSourcesProjectTreeTests(unittest.TestCase):
+    def test_research_web_sources_dir_is_not_a_project(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECTS_ROOT) as tmp:
+            root = Path(tmp)
+            scratch = root.with_name(root.name + "_web_sources")
+            scratch.mkdir()
+            try:
+                (scratch / "page.md").write_text("# page\n", encoding="utf-8")
+                self.assertFalse(_is_project_tree(scratch / "page.md"))
+                (root / "svg_output").mkdir()
+                (root / "sources").mkdir()
+                (root / "sources" / "a.md").write_text("# a\n", encoding="utf-8")
+                self.assertTrue(_is_project_tree(root / "sources" / "a.md"))
+            finally:
+                for child in scratch.iterdir():
+                    child.unlink()
+                scratch.rmdir()
 
 
 class PolygonFilterTests(unittest.TestCase):
