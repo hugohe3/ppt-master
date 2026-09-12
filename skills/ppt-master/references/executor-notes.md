@@ -8,7 +8,7 @@ Conditional late-stage authority for generating or validating the complete speak
 
 ## 1. Complete Speaker-notes Document
 
-Write the whole deck to `notes/total.md` in one batch: `# <number>_<page_title>` per page, `---` between pages; only the heading is stripped before TTS. `notes_to_audio.py` reads the body verbatim, so write prose only — no list/bullet markup, stage markers, key-point labels, duration lines, or other metadata. Keep one language; spell out digits or symbols when literal TTS would sound wrong (Chinese "百分之六十八" rather than "68%").
+Write the whole deck to `notes/total.md` in one batch: `# <number>_<page_title>` per page, `---` between pages; only the heading is stripped before TTS. `notes_to_audio.py` reads the body verbatim, so write prose only — no list/bullet markup, stage markers, key-point labels, duration lines, or other metadata. Keep one language unless the confirmed contract is bilingual — then every page keeps the same segment order (first language, blank line, second language); spell out digits or symbols when literal TTS would sound wrong (Chinese "百分之六十八" rather than "68%").
 
 **Pre-SVG narration branch**: when `notes/total.md` already exists from a final/literal script or Quick direct narrated video, validate it instead of regenerating. Retain every word and segment of a final/literal script; agent-authored Quick narration may be repaired only for final-SVG inconsistency and before audio. A `# Slide <number>` heading remains valid until Generate Step 7.1 resolves the roster.
 

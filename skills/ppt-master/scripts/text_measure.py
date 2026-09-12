@@ -499,13 +499,17 @@ def _outline_candidates(
             value = _clean_planned_line(field_match.group('value'))
             if label == 'title':
                 if value and 'title' in candidates:
-                    candidates['title'].append((slide, value))
+                    candidates['title'].extend(
+                        (slide, part) for part in _split_joined_blocks(value)
+                    )
                 line_index += 1
                 continue
             if label == 'core message':
                 role = 'subtitle' if 'subtitle' in candidates else 'body'
                 if value and role in candidates:
-                    candidates[role].append((slide, value))
+                    candidates[role].extend(
+                        (slide, part) for part in _split_joined_blocks(value)
+                    )
                 line_index += 1
                 continue
 

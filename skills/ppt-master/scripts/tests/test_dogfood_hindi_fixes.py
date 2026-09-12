@@ -52,3 +52,14 @@ class TableFallbackFaceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RunLanguageTests(unittest.TestCase):
+    def test_latin_runs_in_a_cjk_deck_are_english(self) -> None:
+        from svg_to_pptx.drawingml.utils import detect_text_lang
+        self.assertEqual(detect_text_lang("China's NEV Exports 2025", "zh-CN"), "en-US")
+        self.assertEqual(detect_text_lang("Sources: CAAM, CPCA", "ar-SA"), "en-US")
+        self.assertEqual(detect_text_lang("2025", "zh-CN"), "zh-CN")
+        self.assertEqual(detect_text_lang("出口 Exports", "zh-CN"), "zh-CN")
+        self.assertEqual(detect_text_lang("Hello", "en-GB"), "en-GB")
+        self.assertEqual(detect_text_lang("Xin chào", "vi-VN"), "vi-VN")

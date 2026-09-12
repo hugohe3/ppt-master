@@ -3479,7 +3479,29 @@ def detect_text_lang(
             frozenset({'el'}),
             'el-GR',
         )
+    if (
+        default_language
+        and language_base(default_language) in _NON_LATIN_SCRIPT_BASES
+        and any(ch.isalpha() for ch in text)
+    ):
+        # A run of Latin letters inside a CJK/Arabic/... deck (an English
+        # subtitle, a source line) proofs and reads as English, not as the
+        # deck language; digits and punctuation alone keep the deck tag.
+        return 'en-US'
     return default_language or 'en-US'
+
+
+# Language bases whose script the detector recognises above; a Latin-letter
+# run under one of these deck languages is not written in that language.
+_NON_LATIN_SCRIPT_BASES = frozenset({
+    'zh', 'ja', 'ko',
+    'ar', 'fa', 'ps', 'sd', 'ug', 'ur',
+    'he', 'yi',
+    'hi', 'mr', 'ne', 'sa',
+    'th',
+    'be', 'bg', 'kk', 'ky', 'mk', 'mn', 'ru', 'sr', 'uk',
+    'el',
+})
 
 
 def _is_grapheme_extend(ch: str) -> bool:
