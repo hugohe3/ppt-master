@@ -228,7 +228,9 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate --no
 
 **Exporter behavior**: `--quick-generate` reads `svg_output/`, resolves project-local assets, infers one canvas and one all-page structure mode (no metadata → flat; complete Master/Layout/slot metadata → structured), and needs no lock. Notes, Custom Animations, and narration stay off unless the agent enabled them or the video rule requires them; append `--native-charts-and-tables` only for an explicit native Chart/Table delivery decision. Never run `finalize_svg.py`. The exporter requires a passing `final` report whose fingerprint matches the current `svg_output/`; the default output path keeps backup and postflight, an explicit `-o <path>.pptx` skips backup.
 
-**On failure**: repair the owning SVG, resource, or capability input, rerun the checker, and export again — never create a Design Spec or lock. When Narration Audio is enabled, run [`generate-audio`](../stages/generate-audio.md) after the validated export (page audio/SRT, narrated PPTX, optional raw MP4, final mixed or captured MP4, or the capture-ready handoff).
+**On failure**: repair the owning SVG, resource, or capability input, rerun the checker, and export again — never create a Design Spec or lock.
+
+**Revision after delivery**: a Quick project that comes back with a change has no spec or lock to update — edit the owning SVG (and every page repeating the line), `notes/total.md`, and `animations.json` directly; a page inserted, dropped, or moved renumbers files, footers, contents-page numbers, sidecar keys, and each Morph `from` first; a deck-wide colour or family is substituted by hand across `svg_output/` (`update_spec.py` reads a lock). Then rerun the same final check, the notes split when notes changed, `animation_config.py validate`, and the export; earlier exports stay. When Narration Audio is enabled, run [`generate-audio`](../stages/generate-audio.md) after the validated export (page audio/SRT, narrated PPTX, optional raw MP4, final mixed or captured MP4, or the capture-ready handoff).
 
 ```markdown
 ## ✅ Quick Generate Complete
