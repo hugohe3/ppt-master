@@ -318,20 +318,69 @@ def _require_unique_target_ids(
         raise ValueError(_duplicate_target_error(slide_name, duplicates))
 
 
+ROUNDTRIP_AUTHORING_DIR = 'authoring-svg-flat'
+ROUNDTRIP_PAGE_PLAN = 'page_plan.json'
+
+
+def resolve_slide_svg_files(project_path: Path) -> tuple[list[Path], str | None]:
+    """Return the project's slide SVGs in output order, or an error message.
+
+    A Generate project keeps its roster in ``svg_output/``. A round-trip
+    workspace keeps it in ``authoring-svg-flat/``; when ``page_plan.json``
+    exists its ``pages`` order is the output roster (each entry's ``svg``
+    name, else the source page's ``slide_NN.svg``), which is the roster the
+    round-trip exporter reads the sidecar against. A plan the exporter would
+    reject falls back to the authoring files in filename order.
+    """
+    svg_dir = project_path / 'svg_output'
+    if svg_dir.is_dir():
+        return discover_slide_svgs(svg_dir), None
+    authoring_dir = project_path / ROUNDTRIP_AUTHORING_DIR
+    if not authoring_dir.is_dir():
+        return [], f'svg_output directory not found: {svg_dir}'
+    files = discover_slide_svgs(authoring_dir)
+    plan_path = project_path / ROUNDTRIP_PAGE_PLAN
+    if not plan_path.is_file():
+        return files, None
+    by_source: dict[int, Path] = {}
+    for path in files:
+        match = re.fullmatch(r'slide_(\d+)', path.stem)
+        if match:
+            by_source[int(match.group(1))] = path
+    try:
+        pages = json.loads(plan_path.read_text(encoding='utf-8')).get('pages')
+    except (OSError, ValueError, AttributeError):
+        return files, None
+    if not isinstance(pages, list):
+        return files, None
+    ordered: list[Path] = []
+    for raw in pages:
+        if not isinstance(raw, dict):
+            return files, None
+        svg_name = raw.get('svg')
+        if isinstance(svg_name, str) and svg_name:
+            path = authoring_dir / svg_name
+        else:
+            path = by_source.get(raw.get('source_slide'))
+        if path is None or not path.is_file():
+            return files, None
+        ordered.append(path)
+    return (ordered or files), None
+
+
 def scan_project_targets(
     project_path: Path,
     *,
     svg_files: list[Path] | None = None,
     include_hidden: bool = False,
 ) -> tuple[dict[str, list[GroupTarget]], list[str]]:
-    """Scan selected SVG files, defaulting to ``svg_output/*.svg``."""
+    """Scan selected SVG files, defaulting to the project's slide roster."""
     targets_by_slide: dict[str, list[GroupTarget]] = {}
     anonymous_groups: list[str] = []
     if svg_files is None:
-        svg_dir = project_path / 'svg_output'
-        if not svg_dir.is_dir():
-            return targets_by_slide, [f'svg_output directory not found: {svg_dir}']
-        svg_files = discover_slide_svgs(svg_dir)
+        svg_files, error = resolve_slide_svg_files(project_path)
+        if error is not None:
+            return targets_by_slide, [error]
 
     for svg_path in svg_files:
         targets, anonymous = scan_svg_targets(svg_path, include_hidden=include_hidden)
@@ -1653,8 +1702,7 @@ def validate_animation_config(
     if morph_pairs:
         scan_files = svg_files
         if scan_files is None:
-            svg_dir = project_path / 'svg_output'
-            scan_files = discover_slide_svgs(svg_dir) if svg_dir.is_dir() else []
+            scan_files, _error = resolve_slide_svg_files(project_path)
         for svg_path in scan_files:
             root_primitives_by_slide[svg_path.stem] = scan_root_primitives(svg_path)
     for pair in morph_pairs:
