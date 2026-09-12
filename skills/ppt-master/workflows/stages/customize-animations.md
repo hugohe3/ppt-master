@@ -36,6 +36,7 @@ Before editing `animations.json`, read every semantic file that exists — `desi
 | Explicit adjustment / tuning / repair | Validate first; preserve valid semantic units; migrate affected references after regrouping |
 | Stage activated with a sidecar and new §IX suggestions, no replacement request | Validate first; preserve valid choreography, adjust only affected units |
 | Sidecar with no new instruction | Validate and preserve unchanged; repair an invalid sidecar/group reference before export |
+| Roster changed (page inserted, dropped, or renumbered) | Rename keys with the pages, re-point each Morph `from` to the new preceding page, and move a preview group's endpoint with its page; then validate |
 | Ambiguous request | Default asks regenerate-or-modify; Quick decides from the request, SVG, and sidecar |
 
 Unless an all-motion disable bypasses it, validate an existing sidecar first: `python3 ${SKILL_DIR}/scripts/animation_config.py validate <project_path>`.
