@@ -1039,7 +1039,9 @@ class-average estimate, with the existing fixed advances for monospaced faces.
   a JSON bounds object with `--json`.
 - `calibrate` measures fixed CJK and Latin samples for every typography role
   from `spec_lock.md` or repeatable `--role NAME:FAMILY:SIZE[:bold]` overrides, writes
-  `validation/text_calibration.json`, and prints a compact table or JSON. The
+  `validation/text_calibration.json`, and prints a compact table or JSON.
+  Incremental `--role` calls retain other saved roles with their weights, rates,
+  and script samples; unmeasured script cells display `-`. The
   estimator is additive across scripts, so a line mixing CJK with Latin words
   or digits is estimated as (CJK chars ÷ CJK rate + other chars ÷ Latin rate)
   × 100; spaces and ASCII punctuation count as Latin, fullwidth punctuation as

@@ -50,6 +50,7 @@ _PREFERRED_BREAK_PUNCTUATION = frozenset('，。；：')
 # visibly short line, so the greedy fill wins.
 _PREFERRED_BREAK_MIN_FILL = 0.75
 _LATIN_TOKEN_CONNECTORS = frozenset("'’._:/+%@#-")
+_WORD_JOIN_CONTROLS = frozenset('\u034f\u200c\u200d\u2060')
 # A unit-like sign glued to a number stays with it: never break "71" | "%".
 _NUMBER_SUFFIXES = frozenset("%‰°")
 _WEIGHTS = ('normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900')
@@ -166,7 +167,11 @@ def _is_word_cluster(cluster: str) -> bool:
         ch
         for ch in cluster
         if unicodedata.category(ch) not in {'Mn', 'Mc', 'Me'}
+        and ch not in _WORD_JOIN_CONTROLS
     ]
+    if not bases:
+        # A standalone word joiner can sit between two rendered clusters.
+        return any(ch in _WORD_JOIN_CONTROLS for ch in cluster)
     return bool(bases) and all(
         ch.isdigit()
         or (
@@ -573,6 +578,7 @@ def _calibration_payload(
     include_outline: bool,
     weights: dict[str, str] | None = None,
     samples: list[str] | None = None,
+    previous_samples: dict[str, str] | None = None,
 ) -> dict[str, object]:
     weights = weights or {}
     longest = (
@@ -587,6 +593,8 @@ def _calibration_payload(
     )
     planned_texts.extend(text for rows in outline_candidates.values() for _slide, text in rows)
     script_samples = _script_rate_samples(planned_texts)
+    # Retained rates refer to these exact samples; new roles use them too.
+    script_samples.update(previous_samples or {})
     cjk_length = len(split_project_text_clusters(_CALIBRATION_CJK_SAMPLE))
     latin_length = len(split_project_text_clusters(_CALIBRATION_LATIN_SAMPLE))
     digits_length = len(split_project_text_clusters(_CALIBRATION_DIGITS_SAMPLE))
@@ -653,7 +661,10 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
     role_rows = payload['roles']
     assert isinstance(role_rows, dict)
     headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px', 'CAPS ≈chars/100px', 'DIGITS ≈chars/100px', 'CITE ≈chars/100px']
-    script_labels = sorted(payload.get('script_samples') or {})
+    script_labels = sorted(
+        set(payload.get('script_samples') or {})
+        | {label for row in role_rows.values() for label in row.get('script_clusters_per_100px', {})}
+    )
     headers.extend(f'{label} ≈clusters/100px' for label in script_labels)
     if include_outline:
         headers.append('longest planned line (px, slide, text)')
@@ -675,7 +686,7 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             f'{raw_row.get("citation_chars_per_100px", 0.0):.1f}',
         ]
         script_rates = raw_row.get('script_clusters_per_100px') or {}
-        row.extend(f'{script_rates.get(label, 0.0):.1f}' for label in script_labels)
+        row.extend(f'{script_rates[label]:.1f}' if label in script_rates else '-' for label in script_labels)
         if include_outline:
             planned = raw_row['longest_planned_line']
             row.append(
@@ -742,6 +753,19 @@ def _run_calibrate(args: argparse.Namespace) -> int:
         )
         return 2
     try:
+        output_path = project_path / 'validation' / 'text_calibration.json'
+        previous_roles = {}
+        previous_samples = {}
+        if args.role and output_path.is_file():
+            try:
+                previous = json.loads(output_path.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                previous = {}
+            if isinstance(previous, dict):
+                if isinstance(previous.get('roles'), dict):
+                    previous_roles = previous['roles']
+                if isinstance(previous.get('script_samples'), dict):
+                    previous_samples = previous['script_samples']
         fallbacks: dict[str, str] = {}
         weights: dict[str, str] = {}
         roles = (
@@ -753,7 +777,13 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             roles[name] = (family, size)
             weights[name] = weight
             fallbacks.pop(name, None)
-        ordered_roles = _ordered_roles(roles)
+        # Lock roles seed the first run; incremental calls only remeasure
+        # named roles and roles that have no saved calibration yet.
+        named_roles = {name for name, _family, _size, _weight in args.role}
+        ordered_roles = [
+            row for row in _ordered_roles(roles)
+            if row[0] in named_roles or row[0] not in previous_roles
+        ]
         if not ordered_roles:
             raise ValueError('no typography size roles were found')
         source = 'spec_lock.md' if lock_path.is_file() else '--role'
@@ -764,14 +794,24 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             include_outline=args.outline,
             weights=weights,
             samples=list(args.sample or []),
+            previous_samples=previous_samples,
         )
-        payload['notes'] = _fallback_notes(roles, fallbacks)
+        merged_roles = dict(previous_roles)
+        merged_roles.update(payload['roles'])
+        payload['roles'] = merged_roles
+        payload['notes'] = _fallback_notes(
+            {name: (row['family'], row['size']) for name, row in merged_roles.items()},
+            {
+                name: fallback for name, fallback in fallbacks.items()
+                if merged_roles[name]['family'] == roles[name][0]
+            },
+        )
         if args.outline and not (project_path / 'design_spec.md').is_file():
             payload['notes'].append(
                 'no design_spec.md in this project (Quick writes none), so the '
                 '--outline column has no §IX source and stays empty'
             )
-        bold_roles = sorted(name for name, weight in weights.items() if weight == 'bold')
+        bold_roles = sorted(name for name, row in merged_roles.items() if row.get('weight') == 'bold')
         payload['notes'].append(
             'rates for ' + ', '.join(bold_roles) + ' are measured at bold weight'
             if bold_roles else
@@ -780,21 +820,7 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             'bold widens Latin and digits about 7%, while the bundled advance '
             'table gives CJK one width for both weights'
         )
-        output_path = project_path / 'validation' / 'text_calibration.json'
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        if args.role and output_path.is_file():
-            # A --role run recalibrates only the named roles; keep the roles
-            # an earlier run already wrote, so "calibrate again only for a
-            # role never calibrated" is incremental, not a table overwrite.
-            try:
-                previous = json.loads(output_path.read_text(encoding='utf-8'))
-            except (OSError, ValueError):
-                previous = {}
-            previous_roles = previous.get('roles') if isinstance(previous, dict) else None
-            if isinstance(previous_roles, dict):
-                merged = dict(previous_roles)
-                merged.update(payload['roles'])
-                payload['roles'] = merged
         rendered_json = json.dumps(payload, ensure_ascii=False, indent=2)
         output_path.write_text(rendered_json + '\n', encoding='utf-8')
     except (OSError, ValueError) as exc:

@@ -11,7 +11,7 @@ from xml.etree import ElementTree as ET
 
 from language_tags import language_base, language_uses_rtl
 
-from .utils import font_px_to_hpt, parse_font_family
+from .utils import _explicit_language_script, font_px_to_hpt, parse_font_family
 
 
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -329,6 +329,9 @@ def _complex_theme_scripts(language: str | None) -> tuple[str, ...]:
     """Return the theme supplemental script(s) the primary language writes in."""
     if not language:
         return ()
+    script = _explicit_language_script(language)
+    if script:
+        return (script,)
     base = language_base(language)
     if base in _COMPLEX_SCRIPT_BY_LANGUAGE:
         return (_COMPLEX_SCRIPT_BY_LANGUAGE[base],)

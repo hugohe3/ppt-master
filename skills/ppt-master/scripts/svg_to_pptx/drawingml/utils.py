@@ -31,7 +31,7 @@ from pptx_shapes import (
     svg_preset_preview_fingerprint,
     validate_ooxml_xfrm,
 )
-from language_tags import language_base, language_uses_rtl
+from language_tags import language_base, language_uses_rtl, normalize_language_tag
 
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
@@ -3362,6 +3362,18 @@ def _contains_codepoint_range(
     )
 
 
+def _explicit_language_script(language: str) -> str | None:
+    """Return the explicit script before any region, variant, or extension."""
+    parts = normalize_language_tag(language).split('-')
+    index = 1
+    if len(parts[0]) <= 3:
+        while index < len(parts) and len(parts[index]) == 3 and parts[index].isalpha():
+            index += 1
+    if index < len(parts) and len(parts[index]) == 4 and parts[index].isalpha():
+        return parts[index]
+    return None
+
+
 def _default_language_for_script(
     default_language: str | None,
     bases: frozenset[str],
@@ -3483,6 +3495,7 @@ def detect_text_lang(
     if (
         default_language
         and language_base(default_language) in _NON_LATIN_SCRIPT_BASES
+        and _explicit_language_script(default_language) != 'Latn'
         and any(ch.isalpha() for ch in text)
     ):
         # A run of Latin letters inside a CJK/Arabic/... deck (an English

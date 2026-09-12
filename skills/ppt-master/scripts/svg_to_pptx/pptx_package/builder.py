@@ -97,7 +97,7 @@ from ..drawingml.theme_fonts import (
     apply_master_text_style_spec,
     apply_theme_font_spec,
 )
-from ..drawingml.utils import EMU_PER_PX
+from ..drawingml.utils import EMU_PER_PX, detect_text_lang
 from ..semantic_markers import (
     chrome_token_from_markers,
     page_layout_name_from_svg,
@@ -6028,7 +6028,7 @@ def _rtl_text_levels(xml: str) -> str:
 
 
 def _apply_template_text_language(extract_dir: Path, language: str) -> None:
-    """Retag base-template en-US default text with the deck language.
+    """Tag template defaults with the deck language and authored runs by script.
 
     Covers the presentation default text style (new text boxes) and master and
     layout placeholders, so proofing follows the deck rather than en-US; a
@@ -6043,7 +6043,37 @@ def _apply_template_text_language(extract_dir: Path, language: str) -> None:
         if not part.is_file():
             continue
         xml = part.read_text(encoding="utf-8")
-        updated = xml.replace('lang="en-US"', f'lang="{language}"')
+        root = ET.fromstring(xml)
+        language_updates = {
+            props: language
+            for tag in ("defRPr", "endParaRPr")
+            for props in root.iter(f"{{{DML_NS}}}{tag}")
+        }
+        for tag in ("r", "fld"):
+            for run in root.iter(f"{{{DML_NS}}}{tag}"):
+                text = run.find(f"{{{DML_NS}}}t")
+                if text is None or not (text.text or "").strip():
+                    continue
+                props = run.find(f"{{{DML_NS}}}rPr")
+                if props is None:
+                    props = ET.Element(f"{{{DML_NS}}}rPr")
+                    run.insert(0, props)
+                language_updates[props] = detect_text_lang(text.text, language)
+        for shape in root.iter(f"{{{PML_NS}}}sp"):
+            placeholder = shape.find(
+                f"{{{PML_NS}}}nvSpPr/{{{PML_NS}}}nvPr/{{{PML_NS}}}ph"
+            )
+            if placeholder is not None and not any(
+                (text.text or "").strip() for text in shape.iter(f"{{{DML_NS}}}t")
+            ):
+                for props in shape.iter(f"{{{DML_NS}}}rPr"):
+                    language_updates[props] = language
+        changed = False
+        for props, text_language in language_updates.items():
+            if props.get("lang") != text_language:
+                props.set("lang", text_language)
+                changed = True
+        updated = serialize_source_xml(root, xml).decode("utf-8") if changed else xml
         if rtl:
             updated = _rtl_text_levels(updated)
         if updated != xml:
