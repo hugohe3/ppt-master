@@ -28,11 +28,11 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 [PackyCode](https://www.packyapi.ai/register?aff=ppt-master) 提供 Claude Code、Codex、Gemini 等服务的中转接入。通过专属链接注册，并在充值时填写优惠码 **`ppt-master`**，即可享受 9 折优惠。
 
-### APIKEY.FUN
+### APIKEY.FAN
 
-<a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a>
+<a href="https://apikey.fan/register?aff=PPT-MASTER"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apikey-fan.png" alt="APIKEY.FAN" width="150"></a>
 
-[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER) 提供 Claude、OpenAI、Gemini 等主流模型的企业级接入服务。通过专属链接注册，最高可享永久充值 95 折优惠。
+[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER) 提供 Claude、OpenAI、Gemini 等主流模型的企业级接入服务。通过专属链接注册，最高可享永久充值 95 折优惠。
 
 ### RunAPI
 

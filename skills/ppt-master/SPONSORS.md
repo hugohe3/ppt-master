@@ -28,11 +28,11 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT M
 
 [PackyCode](https://www.packyapi.ai/register?aff=ppt-master) provides relay access to Claude Code, Codex, Gemini, and other services. Register through the dedicated link and enter the promo code **`ppt-master`** during recharge to receive 10% off.
 
-### APIKEY.FUN
+### APIKEY.FAN
 
-<a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a>
+<a href="https://apikey.fan/register?aff=PPT-MASTER"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apikey-fan.png" alt="APIKEY.FAN" width="150"></a>
 
-[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER) provides enterprise-grade access to Claude, OpenAI, Gemini, and other mainstream models. Register through the dedicated link to receive up to a permanent 5% discount on top-ups.
+[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER) provides enterprise-grade access to Claude, OpenAI, Gemini, and other mainstream models. Register through the dedicated link to receive up to a permanent 5% discount on top-ups.
 
 ### RunAPI
 

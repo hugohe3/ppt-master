@@ -15,7 +15,7 @@ English | [中文](./README_CN.md)
 
 ## ❤️ Sponsors
 
-This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a> and other sponsors.
+This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a> and other sponsors.
 
 > **[Want to appear here?](SPONSORING.md)**
 
@@ -38,8 +38,8 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
     <td>Thanks to PackyCode for sponsoring this project! PackyCode is a reliable and efficient API relay service provider, offering relay services for Claude Code, Codex, Gemini, and more. PackyCode provides special discounts for our project users: register using <a href="https://www.packyapi.ai/register?aff=ppt-master">this link</a> and enter the promo code <strong>ppt-master</strong> during recharge to get 10% off.</td>
   </tr>
   <tr>
-    <td width="180"><a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a></td>
-    <td>Thanks to APIKEY.FUN for sponsoring this project! APIKEY.FUN is a professional enterprise-grade AI relay service committed to stable, efficient, and low-cost AI access for businesses and developers. The platform supports mainstream models including Claude, OpenAI, and Gemini, with prices as low as <strong>7% of official rates</strong>. Register through <a href="https://apikey.fun/register?aff=PPT-MASTER">our dedicated link</a> for an exclusive perk: <strong>up to 5% off on top-ups, permanently</strong>.</td>
+    <td width="180"><a href="https://apikey.fan/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fan.png" alt="APIKEY.FAN" width="150"></a></td>
+    <td>Thanks to APIKEY.FAN for sponsoring this project! APIKEY.FAN is a professional enterprise-grade AI relay service committed to stable, efficient, and low-cost AI access for businesses and developers. The platform supports mainstream models including Claude, OpenAI, and Gemini, with prices as low as <strong>7% of official rates</strong>. Register through <a href="https://apikey.fan/register?aff=PPT-MASTER">our dedicated link</a> for an exclusive perk: <strong>up to 5% off on top-ups, permanently</strong>.</td>
   </tr>
   <tr>
     <td width="180"><a href="https://runapi.host/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a></td>
@@ -219,7 +219,7 @@ Never used one of these? Don't worry — in this project they play exactly one r
 
 > **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
 
-**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** and **[RunAPI](https://runapi.host/register?aff=WMLJ)** offer pay-as-you-go access to Claude, GPT, Gemini and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
+**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)** and **[RunAPI](https://runapi.host/register?aff=WMLJ)** offer pay-as-you-go access to Claude, GPT, Gemini and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
 
 **🔀 Juggling several providers?** Once you hold keys from more than one of them, [cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app — lets you one-click switch API providers for Claude Code, Codex, Gemini CLI and more, no manual config editing.
 
@@ -410,7 +410,7 @@ PPT Master is currently built and maintained primarily by me. Every new template
 &nbsp;
 <a href="https://www.packyapi.ai/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
 &nbsp;
-<a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" height="40" /></a>
+<a href="https://apikey.fan/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fan.png" alt="APIKEY.FAN" height="40" /></a>
 &nbsp;
 <a href="https://runapi.host/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" height="40" /></a>
 &nbsp;
