@@ -49,7 +49,7 @@ Route selection authority for PPT Master. Select exactly one top-level route, th
 | Explicit current brand/style/layout/deck workspace root outside Image to PPTX | Default preserves the exact path as a Stage-1 candidate; Quick validates and installs it directly without Steps 3–4 or Confirm UI. Classify as `library` only when the normalized root exactly matches a registered index entry, otherwise `explicit`. Consume the workspace root, never only its inner `templates/` |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | Generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
-| Delivered project returns with a revision | Stay in Generate: [`generate-pptx.md`](./generate-pptx.md) Revision Round (Default) or [`quick-generate.md`](./profiles/quick-generate.md) §4 (Quick), then the final gate and export |
+| Delivered project revision | Stay in Generate: [`generate-pptx.md`](./generate-pptx.md) Revision Round (Default) or [`quick-generate.md`](./profiles/quick-generate.md) §4 (Quick) |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Design Spec Gate 1 and before lock Gate 2 |
 | Data charts exist | Run [`verify-charts`](./stages/verify-charts.md) before export |
 | User explicitly requests visual review | Run [`visual-review`](./stages/visual-review.md) before post-processing |
