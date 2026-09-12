@@ -55,7 +55,23 @@ _BATCH_ITEM_FIELDS = frozenset({
     "stroke_linejoin",
     "filter_id",
     "adjustments",
+    "adjust",
 })
+
+
+def _batch_adjustments(item: dict[str, object], label: str) -> dict[str, str]:
+    """Accept ``adjustments`` as an object or, like ``render --adjust``, NAME=FORMULA strings."""
+    raw = item.get("adjustments", item.get("adjust", {}))
+    if isinstance(raw, dict):
+        return {str(name): str(formula) for name, formula in raw.items()}
+    if isinstance(raw, str):
+        raw = [raw]
+    if isinstance(raw, list) and all(isinstance(value, str) for value in raw):
+        return _parse_adjustments(raw)
+    raise ValueError(
+        f"{label}.adjustments must be a JSON object keyed by guide name "
+        '({"adj": "val 32000"}) or a list of NAME=FORMULA strings'
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -465,9 +481,7 @@ def _render_batch_items(items: Sequence[object]) -> list[str]:
         frame = raw_item["frame"]
         if not isinstance(frame, list) or len(frame) != 4:
             raise ValueError(f"{label}.frame must be a four-number JSON array")
-        adjustments = raw_item.get("adjustments", {})
-        if not isinstance(adjustments, dict):
-            raise ValueError(f"{label}.adjustments must be a JSON object")
+        adjustments = _batch_adjustments(raw_item, label)
 
         try:
             style = _style_from_values(

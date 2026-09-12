@@ -55,9 +55,10 @@ class ThemeFontSpec:
     minor: ThemeFontFace
     major_family: str
     minor_family: str
-    # Supplemental theme scripts (``Arab`` / ``Hebr``) a right-to-left deck
-    # writes in; they take the locked complex-script face.
-    rtl_scripts: tuple[str, ...] = ()
+    # Supplemental theme scripts (``Arab``, ``Hebr``, ``Thai``, ``Deva``, ...)
+    # the deck's primary language writes in; they take the locked
+    # complex-script face instead of the Office factory default.
+    cs_scripts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -201,7 +202,7 @@ def load_theme_font_spec(
         minor=_font_face(minor_family, language),
         major_family=major_family,
         minor_family=minor_family,
-        rtl_scripts=_rtl_theme_scripts(language),
+        cs_scripts=_complex_theme_scripts(language),
     )
 
 
@@ -267,17 +268,32 @@ def theme_font_tokens(
     }
 
 
-def _rtl_theme_scripts(language: str | None) -> tuple[str, ...]:
-    """Return the theme supplemental script a right-to-left language uses."""
-    if not language or not language_uses_rtl(language):
+# Theme ``<a:font script="...">`` codes by language base for scripts that
+# PowerPoint renders through the complex-script slot.
+_COMPLEX_SCRIPT_BY_LANGUAGE = {
+    "he": "Hebr", "yi": "Hebr",
+    "th": "Thai", "lo": "Laoo", "km": "Khmr", "my": "Mymr", "bo": "Tibt",
+    "hi": "Deva", "mr": "Deva", "ne": "Deva", "sa": "Deva", "kok": "Deva",
+    "bn": "Beng", "as": "Beng", "pa": "Guru", "gu": "Gujr", "or": "Orya",
+    "ta": "Taml", "te": "Telu", "kn": "Knda", "ml": "Mlym", "si": "Sinh",
+    "ka": "Geor", "hy": "Armn", "am": "Ethi", "ti": "Ethi",
+}
+
+
+def _complex_theme_scripts(language: str | None) -> tuple[str, ...]:
+    """Return the theme supplemental script(s) the primary language writes in."""
+    if not language:
         return ()
-    return ("Hebr",) if language_base(language) in {"he", "yi"} else ("Arab",)
+    base = language_base(language)
+    if base in _COMPLEX_SCRIPT_BY_LANGUAGE:
+        return (_COMPLEX_SCRIPT_BY_LANGUAGE[base],)
+    return ("Arab",) if language_uses_rtl(language) else ()
 
 
 def _patch_font_collection(
     collection: ET.Element,
     face: ThemeFontFace,
-    rtl_scripts: tuple[str, ...] = (),
+    cs_scripts: tuple[str, ...] = (),
 ) -> None:
     for tag, value in (("latin", face.latin), ("ea", face.ea), ("cs", face.cs)):
         elem = collection.find(f"{{{DML_NS}}}{tag}")
@@ -287,7 +303,7 @@ def _patch_font_collection(
     for supplemental in collection.findall(f"{{{DML_NS}}}font"):
         if supplemental.get("script") in _CJK_THEME_SCRIPTS:
             supplemental.set("typeface", face.ea)
-        elif supplemental.get("script") in rtl_scripts:
+        elif supplemental.get("script") in cs_scripts:
             supplemental.set("typeface", face.cs)
 
 
@@ -312,8 +328,8 @@ def apply_theme_font_spec(extract_dir: Path, spec: ThemeFontSpec) -> None:
         if major is None or minor is None:
             raise ThemeFontError(f"Theme has no major/minor font collection: {theme_path}")
         font_scheme.set("name", "PPT Master")
-        _patch_font_collection(major, spec.major, spec.rtl_scripts)
-        _patch_font_collection(minor, spec.minor, spec.rtl_scripts)
+        _patch_font_collection(major, spec.major, spec.cs_scripts)
+        _patch_font_collection(minor, spec.minor, spec.cs_scripts)
         tree.write(theme_path, encoding="utf-8", xml_declaration=True)
 
 

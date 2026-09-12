@@ -592,6 +592,17 @@ class DataPoint:
     label: Optional[str] = None
 
 
+def slot_midpoint_points(points: List['DataPoint'], coord: 'CoordinateSystem') -> List['DataPoint']:
+    """Re-place points at category slot centres across the chart area width."""
+    if not points:
+        return points
+    area = coord.chart_area
+    slot = (area.x_max - area.x_min) / len(points)
+    for index, point in enumerate(points):
+        point.svg_x = round(area.x_min + slot * (index + 0.5), 1)
+    return points
+
+
 class LineChartCalculator:
     """Line / scatter chart calculator"""
 
@@ -1373,6 +1384,12 @@ Common commands:
     line_parser.add_argument('--area', help='Chart area "x_min,y_min,x_max,y_max"')
     line_parser.add_argument('--x-range', help='X axis range "min,max"')
     line_parser.add_argument('--y-range', help='Y axis range "min,max"')
+    line_parser.add_argument(
+        '--slot-midpoints', action='store_true',
+        help='Place each point at the centre of its category slot (the native '
+             'category-axis line/area model, crossBetween="between") instead '
+             'of spreading the first and last point to the area edges',
+    )
 
     # Grid layout
     grid_parser = calc_subparsers.add_parser('grid', help='Grid layout')
@@ -1484,6 +1501,8 @@ Common commands:
             y_range = parse_tuple(args.y_range) if args.y_range else None
 
             points = calc.calculate(data, x_range, y_range)
+            if getattr(args, 'slot_midpoints', False):
+                points = slot_midpoint_points(points, coord)
 
             print(f"\n=== Line / Scatter Chart Coordinate Calculation ===")
             print(f"Canvas: {CANVAS_FORMATS.get(canvas, {}).get('dimensions', canvas)}")

@@ -60,6 +60,44 @@ _CALIBRATION_DIGITS_SAMPLE = '0123456789'
 # A source line: dataset ids, years, brackets and caps mixed into prose.
 _CALIBRATION_CITATION_SAMPLE = 'NYC DOE, dataset sgsi-66kk (2018-19 to 2022-23), v2.1'
 _CORE_CALIBRATION_ROLES = ('body', 'title', 'subtitle', 'annotation')
+# Scripts the CJK/Latin columns do not describe; a rate column is added for
+# each one the planned outline (or --sample) actually uses.
+_SCRIPT_RATE_LABELS = {
+    'THAI': 'Thai', 'LAO': 'Lao', 'KHMER': 'Khmer', 'MYANMAR': 'Myanmar',
+    'TIBETAN': 'Tibetan', 'DEVANAGARI': 'Devanagari', 'BENGALI': 'Bengali',
+    'GURMUKHI': 'Gurmukhi', 'GUJARATI': 'Gujarati', 'TAMIL': 'Tamil',
+    'TELUGU': 'Telugu', 'KANNADA': 'Kannada', 'MALAYALAM': 'Malayalam',
+    'SINHALA': 'Sinhala', 'ARABIC': 'Arabic', 'HEBREW': 'Hebrew',
+    'CYRILLIC': 'Cyrillic', 'GREEK': 'Greek', 'ARMENIAN': 'Armenian',
+    'GEORGIAN': 'Georgian', 'ETHIOPIC': 'Ethiopic',
+}
+_SCRIPT_SAMPLE_MIN_CLUSTERS = 12
+_SCRIPT_SAMPLE_MAX_CLUSTERS = 40
+
+
+def _cluster_script(cluster: str) -> str | None:
+    """Return the rate label of a grapheme cluster's base letter, if any."""
+    for ch in cluster:
+        if unicodedata.category(ch)[0] not in {'L', 'N'}:
+            continue
+        prefix = unicodedata.name(ch, '').split(' ', 1)[0]
+        return _SCRIPT_RATE_LABELS.get(prefix)
+    return None
+
+
+def _script_rate_samples(texts: list[str]) -> dict[str, str]:
+    """Collect one measurement sample per script used by the planned text."""
+    clusters_by_script: dict[str, list[str]] = {}
+    for text in texts:
+        for cluster in split_project_text_clusters(text):
+            label = _cluster_script(cluster)
+            if label is not None:
+                clusters_by_script.setdefault(label, []).append(cluster)
+    return {
+        label: ''.join(clusters[:_SCRIPT_SAMPLE_MAX_CLUSTERS])
+        for label, clusters in clusters_by_script.items()
+        if len(clusters) >= _SCRIPT_SAMPLE_MIN_CLUSTERS
+    }
 _SLIDE_HEADING_RE = re.compile(
     r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+|NN)\b.*$',
     flags=re.IGNORECASE | re.MULTILINE,
@@ -530,6 +568,7 @@ def _calibration_payload(
     source: str,
     include_outline: bool,
     weights: dict[str, str] | None = None,
+    samples: list[str] | None = None,
 ) -> dict[str, object]:
     weights = weights or {}
     longest = (
@@ -537,6 +576,13 @@ def _calibration_payload(
         if include_outline
         else {name: None for name, _family, _size in roles}
     )
+    planned_texts = list(samples or [])
+    outline_candidates = _outline_candidates(
+        project_path / 'design_spec.md',
+        {name for name, _family, _size in roles},
+    )
+    planned_texts.extend(text for rows in outline_candidates.values() for _slide, text in rows)
+    script_samples = _script_rate_samples(planned_texts)
     cjk_length = len(split_project_text_clusters(_CALIBRATION_CJK_SAMPLE))
     latin_length = len(split_project_text_clusters(_CALIBRATION_LATIN_SAMPLE))
     digits_length = len(split_project_text_clusters(_CALIBRATION_DIGITS_SAMPLE))
@@ -559,10 +605,19 @@ def _calibration_payload(
             'caps_chars_per_100px': round(100.0 * latin_length / caps_width, 1),
             'digits_chars_per_100px': round(100.0 * digits_length / digits_width, 1),
             'citation_chars_per_100px': round(100.0 * citation_length / citation_width, 1),
+            'script_clusters_per_100px': {
+                label: round(
+                    100.0 * len(split_project_text_clusters(sample))
+                    / measure_text(sample, **style),
+                    1,
+                )
+                for label, sample in script_samples.items()
+            },
             'longest_planned_line': longest[name],
         }
     return {
         'roles': role_rows,
+        'script_samples': script_samples,
         'source': source,
         'generated_at': datetime.now(timezone.utc)
         .isoformat(timespec='seconds')
@@ -594,6 +649,8 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
     role_rows = payload['roles']
     assert isinstance(role_rows, dict)
     headers = ['role', 'family', 'size', 'CJK ≈chars/100px', 'Latin ≈chars/100px', 'CAPS ≈chars/100px', 'DIGITS ≈chars/100px', 'CITE ≈chars/100px']
+    script_labels = sorted(payload.get('script_samples') or {})
+    headers.extend(f'{label} ≈clusters/100px' for label in script_labels)
     if include_outline:
         headers.append('longest planned line (px, slide, text)')
     lines = [
@@ -613,6 +670,8 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
             f'{raw_row["digits_chars_per_100px"]:.1f}',
             f'{raw_row.get("citation_chars_per_100px", 0.0):.1f}',
         ]
+        script_rates = raw_row.get('script_clusters_per_100px') or {}
+        row.extend(f'{script_rates.get(label, 0.0):.1f}' for label in script_labels)
         if include_outline:
             planned = raw_row['longest_planned_line']
             row.append(
@@ -628,6 +687,12 @@ def _render_calibration_table(payload: dict[str, object], *, include_outline: bo
         'rate) × 100; spaces and punctuation count as Latin, digits use the '
         'DIGITS rate.'
     )
+    if script_labels:
+        lines.append(
+            '[NOTE] a script column (' + ', '.join(script_labels) + ') counts '
+            'grapheme clusters of that script measured from the planned text; '
+            'use it instead of the Latin rate for runs in that script.'
+        )
     if include_outline:
         lines.append(
             '[NOTE] the longest planned line is the §IX wording; a line rewritten '
@@ -694,6 +759,7 @@ def _run_calibrate(args: argparse.Namespace) -> int:
             source=source,
             include_outline=args.outline,
             weights=weights,
+            samples=list(args.sample or []),
         )
         payload['notes'] = _fallback_notes(roles, fallbacks)
         if args.outline and not (project_path / 'design_spec.md').is_file():
@@ -780,6 +846,15 @@ def build_parser() -> argparse.ArgumentParser:
     calibrate = subparsers.add_parser('calibrate', help='Calibrate project typography roles.')
     calibrate.add_argument('project_path', type=Path)
     calibrate.add_argument('--outline', action='store_true')
+    calibrate.add_argument(
+        '--sample',
+        action='append',
+        default=[],
+        metavar='TEXT',
+        help='Planned text in a non-Latin, non-CJK script (Thai, Devanagari, '
+             'Arabic, ...) measured as its own rate column; repeatable. The '
+             'design_spec.md outline is scanned for such scripts automatically.',
+    )
     calibrate.add_argument(
         '--role',
         action='append',

@@ -382,7 +382,9 @@ def canonical_authoring_errors(
         errors.append(
             "Authoring SVG contains noncanonical or redundant inherited "
             f"style declarations ({stats.styles.changed_declarations} "
-            "change(s)); examples: "
+            "change(s)); examples (group:attr None -> value hoists the shared "
+            "value onto that group; child:attr value -> None drops the copy "
+            "the child now inherits): "
             + "; ".join(examples)
         )
     if stats.coordinates.changed_attributes:
