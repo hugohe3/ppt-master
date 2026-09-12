@@ -574,13 +574,19 @@ def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]
     column_widths = payload.get("column_widths")
     if column_widths is not None:
         if not isinstance(column_widths, list) or len(column_widths) != col_count:
-            raise RuntimeError("Native PPTX table column_widths must match the resolved column count")
+            raise RuntimeError(
+                "Native PPTX table column_widths must match the resolved column count "
+                f"(expected {col_count} entries)"
+            )
         _table_weights(column_widths, "column_widths")
 
     row_heights = payload.get("row_heights")
     if row_heights is not None:
         if not isinstance(row_heights, list) or len(row_heights) != len(table_rows):
-            raise RuntimeError("Native PPTX table row_heights must match the resolved row count")
+            raise RuntimeError(
+                "Native PPTX table row_heights must match the resolved row count "
+                f"(expected {len(table_rows)} entries, header rows included)"
+            )
         _table_weights(row_heights, "row_heights")
 
     return col_count

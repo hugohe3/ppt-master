@@ -193,6 +193,43 @@ def _extract_rows(
     return normalized_rows, rows_truncated, cols_truncated
 
 
+def _is_caption_row(
+    row: list[Any],
+    row_index: int,
+    min_col: int,
+    merged_values: dict[tuple[int, int], Any],
+) -> bool:
+    """Return whether a leading row is a sheet title or source note, not a header.
+
+    Public datasets (World Bank, OECD, Eurostat exports) put a free-text
+    source line above the real header; it fills only the first cell or one
+    merged band, so every other column is empty or repeats the same value.
+    """
+    values = [value for value in row if not _is_empty(value)]
+    if len(values) != 1 and len({str(value) for value in values}) != 1:
+        return False
+    if len(values) == 1:
+        return len(row) > 1
+    return (row_index, min_col) in merged_values
+
+
+def _split_caption_rows(
+    rows: list[list[Any]],
+    min_row: int,
+    min_col: int,
+    merged_values: dict[tuple[int, int], Any],
+) -> tuple[list[str], list[list[Any]]]:
+    """Peel title/source rows off the top so the first table row is the header."""
+    captions: list[str] = []
+    while len(rows) > 1 and _is_caption_row(rows[0], min_row + len(captions), min_col, merged_values):
+        remaining = rows[1:]
+        if not any(len([v for v in row if not _is_empty(v)]) >= 2 for row in remaining):
+            break
+        captions.append(_format_cell_value(next(value for value in rows[0] if not _is_empty(value))))
+        rows = remaining
+    return captions, rows
+
+
 def _column_alignments(rows: list[list[Any]]) -> list[str]:
     if not rows:
         return []
@@ -290,6 +327,10 @@ def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: in
             f"- Columns: {max_col - min_col + 1}",
             "",
         ])
+
+        captions, rows = _split_caption_rows(rows, min_row, min_col, merged_values)
+        for caption in captions:
+            lines.extend([f"> {caption}", ""])
 
         if rows_truncated or cols_truncated:
             limit_notes = []

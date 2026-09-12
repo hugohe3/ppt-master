@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import sys
@@ -1133,6 +1134,118 @@ def _add_table_candidate(
     _append_table_markdown_candidate(candidates, bbox, markdown, method)
 
 
+ORPHAN_CELL_MAX_CHARS = 24
+ORPHAN_COLUMN_GAP = 12.0
+ORPHAN_ROW_COVERAGE = 0.6
+
+
+def _cluster_orphan_columns(cells: list[tuple[fitz.Rect, str, int]]) -> list[list[int]]:
+    """Group orphan text lines into columns by overlapping x-extents."""
+    ordered = sorted(range(len(cells)), key=lambda idx: cells[idx][0].x0)
+    columns: list[list[int]] = []
+    column_x1 = 0.0
+    for idx in ordered:
+        rect = cells[idx][0]
+        if columns and rect.x0 <= column_x1 + ORPHAN_COLUMN_GAP:
+            columns[-1].append(idx)
+            column_x1 = max(column_x1, rect.x1)
+        else:
+            columns.append([idx])
+            column_x1 = rect.x1
+    return columns
+
+
+def _orphan_side_columns(
+    cells: list[tuple[fitz.Rect, str, int]],
+    row_count: int,
+) -> list[list[str]] | None:
+    """Return per-row cell text for one side of a ruled table, or None."""
+    if not cells:
+        return None
+    covered_rows = {row_index for _rect, _text, row_index in cells}
+    if len(covered_rows) < max(2, math.ceil(row_count * ORPHAN_ROW_COVERAGE)):
+        return None
+    if any(len(text) > ORPHAN_CELL_MAX_CHARS for _rect, text, _row in cells):
+        return None
+
+    columns = _cluster_orphan_columns(cells)
+    table: list[list[str]] = [["" for _ in columns] for _ in range(row_count)]
+    for col_index, members in enumerate(columns):
+        for idx in sorted(members, key=lambda item: cells[item][0].x0):
+            rect, text, row_index = cells[idx]
+            current = table[row_index][col_index]
+            table[row_index][col_index] = f"{current} {text}".strip() if current else text
+    return table
+
+
+def _extend_ruled_table(
+    page: fitz.Page,
+    tab: object,
+    lines: list[tuple[fitz.Rect, str]],
+) -> tuple[fitz.Rect, str] | None:
+    """Re-attach columns that sit outside a partially ruled table's borders.
+
+    Statistical bulletins often rule only the middle columns; PyMuPDF then
+    returns a narrow table and the label and change columns fall out as loose
+    text. Text lines that share a row band with the table but lie fully to its
+    left or right are clustered into extra columns and prepended/appended.
+    """
+    try:
+        raw_rows = tab.extract() or []
+        row_rects = [fitz.Rect(row.bbox) for row in tab.rows]
+    except Exception:
+        return None
+    if len(raw_rows) < 2 or len(row_rects) != len(raw_rows):
+        return None
+
+    table_rect = fitz.Rect(tab.bbox)
+    left: list[tuple[fitz.Rect, str, int]] = []
+    right: list[tuple[fitz.Rect, str, int]] = []
+    for rect, text in lines:
+        if rect.y1 < table_rect.y0 - 2 or rect.y0 > table_rect.y1 + 2:
+            continue
+        center_y = (rect.y0 + rect.y1) / 2
+        row_index = next(
+            (
+                idx for idx, row_rect in enumerate(row_rects)
+                if row_rect.y0 - 2 <= center_y <= row_rect.y1 + 2
+            ),
+            None,
+        )
+        if row_index is None:
+            continue
+        if rect.x1 <= table_rect.x0 + 1:
+            left.append((rect, text, row_index))
+        elif rect.x0 >= table_rect.x1 - 1:
+            right.append((rect, text, row_index))
+        elif not (table_rect.x0 <= rect.x0 and rect.x1 <= table_rect.x1):
+            return None
+
+    left_cols = _orphan_side_columns(left, len(raw_rows))
+    right_cols = _orphan_side_columns(right, len(raw_rows))
+    if left_cols is None and right_cols is None:
+        return None
+
+    rows: list[list[object]] = []
+    for idx, row in enumerate(raw_rows):
+        merged: list[object] = []
+        if left_cols is not None:
+            merged.extend(left_cols[idx])
+        merged.extend(row)
+        if right_cols is not None:
+            merged.extend(right_cols[idx])
+        rows.append(merged)
+
+    markdown = _rows_to_markdown(_clean_table_rows(rows))
+    if not _is_valid_table_markdown(markdown):
+        return None
+
+    bbox = fitz.Rect(table_rect)
+    for rect, _text, _row in (left if left_cols is not None else []) + (right if right_cols is not None else []):
+        bbox |= rect
+    return bbox, markdown
+
+
 def _merge_word_runs(words: list[tuple]) -> list[dict[str, object]]:
     """Group PyMuPDF words into row-level text runs."""
     rows: list[list[tuple]] = []
@@ -1249,13 +1362,18 @@ def find_page_tables(
 ) -> tuple[list[dict[str, object]], bool]:
     """Find line-detected tables plus caption-guided text tables on one page."""
     candidates: list[dict[str, object]] = []
+    lines = _extract_text_lines(page)
     try:
         for tab in page.find_tables():
-            _add_table_candidate(candidates, tab, "lines")
+            extended = _extend_ruled_table(page, tab, lines)
+            if extended is None:
+                _add_table_candidate(candidates, tab, "lines")
+                continue
+            bbox, markdown = extended
+            _append_table_markdown_candidate(candidates, bbox, markdown, "lines+text")
     except Exception:
         pass
 
-    lines = _extract_text_lines(page)
     for rect, text in lines:
         if not _is_table_caption(text):
             continue
