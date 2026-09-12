@@ -21,7 +21,7 @@ from ..drawingml.utils import (
     text_has_rtl_characters,
     text_uses_rtl,
 )
-from .chart_style import _font_face_xml
+from .chart_style import _fallback_text_attr_values, _font_face_xml, _most_common_value
 from .marker_common import (
     TABLE_URI,
     _bool_attr,
@@ -1744,6 +1744,13 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         "#FFFFFF" if header_fill is not None else body_text,
     )
     font_face = str(style["font_family"]) if style.get("font_family") else None
+    if font_face is None and not preserve_source_style:
+        # Typography mirrors the fallback: an SVG-first table drawn in one face
+        # exports in that face rather than falling to the theme font.
+        inherited = getattr(ctx, "inherited_styles", None) or {}
+        font_face = _most_common_value(
+            _fallback_text_attr_values(elem, "font-family", inherited.get("font-family"))
+        )
     body_font_size = _font_size_hpt(style.get("font_size"), 18)
     band_rows_enabled = _table_bool(
         style.get("band_row"),

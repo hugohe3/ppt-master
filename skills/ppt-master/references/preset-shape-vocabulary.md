@@ -21,7 +21,7 @@ still be the best result.
 
 **When to run**: run `preset_shape_svg.py describe <name> --compact` only when
 an exact candidate needs objective adjustment, connector, path,
-connection-site, or text rectangle facts (`--frame X Y W H` adds the text rectangle in page px). Authoring syntax and fragment
+connection-site, or text rectangle facts (`--frame X Y W H` adds the text rectangle in page px; ribbon, chevron, arrow, and callout bodies hold far less text than their frame, so read that rectangle before sizing a label). Authoring syntax and fragment
 contracts remain in
 [`native-shape-authoring.md`](./native-shape-authoring.md).
 
