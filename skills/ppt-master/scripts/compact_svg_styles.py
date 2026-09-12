@@ -515,9 +515,46 @@ def _compact_svg_bytes(
         encoding="utf-8",
         xml_declaration=original.lstrip().startswith(b"<?xml"),
     )
+    if b"<![CDATA[" in original:
+        payload = _restore_json_cdata(payload)
     if not payload.endswith(b"\n"):
         payload += b"\n"
     return payload, stats
+
+
+_JSON_METADATA_RE = re.compile(
+    rb'(<metadata\b[^>]*\btype="application/json"[^>]*>)(.*?)(</metadata>)',
+    re.DOTALL,
+)
+_XML_ENTITY_UNESCAPES = (
+    (b"&lt;", b"<"),
+    (b"&gt;", b">"),
+    (b"&quot;", b'"'),
+    (b"&apos;", b"'"),
+    (b"&amp;", b"&"),
+)
+
+
+def _restore_json_cdata(payload: bytes) -> bytes:
+    """Re-wrap serialized JSON metadata in CDATA.
+
+    ElementTree drops CDATA sections on parse and escapes ``<``/``&`` on
+    write; the native payload examples are authored as CDATA, so a compacted
+    file keeps that form for grep-style readers.
+    """
+
+    def _wrap(match: re.Match[bytes]) -> bytes:
+        body = match.group(2)
+        if body.lstrip().startswith(b"<![CDATA["):
+            return match.group(0)
+        text = body
+        for entity, literal in _XML_ENTITY_UNESCAPES:
+            text = text.replace(entity, literal)
+        if b"]]>" in text:
+            return match.group(0)
+        return match.group(1) + b"<![CDATA[" + text + b"]]>" + match.group(3)
+
+    return _JSON_METADATA_RE.sub(_wrap, payload)
 
 
 def _write_atomic(path: Path, payload: bytes) -> None:

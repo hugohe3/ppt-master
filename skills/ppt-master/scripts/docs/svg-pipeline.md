@@ -765,7 +765,13 @@ stores delimiter-free LaTeX in the JSON metadata of
 `<tspan data-pptx-inline-formula="...">preview</tspan>` inside ordinary text
 exports `m:oMath` in the same DrawingML paragraph as its surrounding runs; it
 inherits computed size and visible solid fill, then uses the project text
-language and Cambria Math.
+language and Cambria Math. LaTeX can be compile-checked before any SVG is
+written, so an unsupported command is caught at planning time:
+
+```bash
+python3 -c "import sys; sys.path.insert(0, 'skills/ppt-master/scripts'); from svg_to_pptx.native_objects.formula_compiler import compile_latex_to_omml as c; c(sys.argv[1])" '\frac{a}{b} \int_0^T e^{-i\omega t}\, dt'
+```
+
 Matrices, multiline derivations, and other high-structure expressions remain
 blocks. Formula replacement is always active, independent of
 `--native-charts-and-tables`: export replaces only the registered SVG preview

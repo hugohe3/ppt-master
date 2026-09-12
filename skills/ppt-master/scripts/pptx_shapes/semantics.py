@@ -342,6 +342,7 @@ class PresetShapeSemantics:
                     "literal_only",
                     "recommended_for",
                     "avoid_for",
+                    "adjustment_notes",
                 },
             )
             normalized_details: dict[str, object] = {
@@ -386,6 +387,11 @@ class PresetShapeSemantics:
                         details[field],
                         f"{preset_label}.{field}",
                     )
+            if "adjustment_notes" in details:
+                normalized_details["adjustment_notes"] = _require_string(
+                    details["adjustment_notes"],
+                    f"{preset_label}.adjustment_notes",
+                )
             normalized_presets[preset_name] = normalized_details
         recommended_for = _require_string_list(
             group.get("recommended_for"),

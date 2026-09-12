@@ -306,6 +306,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "scope": semantics["scope"],
                 "literal_only": semantics["literal_only"],
                 "adjustments": adjustments,
+                **(
+                    {"adjustment_notes": semantics["adjustment_notes"]}
+                    if "adjustment_notes" in semantics
+                    else {}
+                ),
                 "connector_preset": connector_preset,
                 "path_count": path_count,
                 "connection_site_count": connection_site_count,

@@ -397,7 +397,7 @@ def _clean_planned_line(raw: str) -> str:
     return ' '.join(text.split())
 
 
-_JOINED_BLOCK_SEPARATOR_RE = re.compile(r'\s+[·•|/]\s+|；|;\s')
+_JOINED_BLOCK_SEPARATOR_RE = re.compile(r'\s+[·•|/]\s+|；|;(?=\s|[^\x00-\x7f])')
 
 
 def _split_joined_blocks(text: str) -> list[str]:

@@ -843,8 +843,9 @@ def _native_chart_line_marker_warnings(
     if not has_markers:
         warnings.append(
             f"Native PPTX line chart fallback draws {len(dots)} point marker(s) "
-            "but the payload has none; set line_style \"lineMarker\" (marker_size in px) "
-            "for every point, or series point_colors with a colour per marked point "
+            "but the payload has none; set chart-root line_style \"lineMarker\" "
+            "(combo: per plot; marker_size in px) for every point, or series "
+            "point_colors with a colour per marked point "
             "and null elsewhere"
         )
     series_count = (

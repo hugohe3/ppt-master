@@ -1173,10 +1173,10 @@
         "Use the cloud variant only for thought, uncertainty, or a literal cloud context."
       ],
       "presets": {
-        "wedgeRectCallout": {"intent": "Rectangular annotation body with a pointed wedge to the target."},
-        "wedgeRoundRectCallout": {"intent": "Rounded rectangular annotation body with a pointed wedge."},
-        "wedgeEllipseCallout": {"intent": "Oval speech-like annotation body with a pointed wedge."},
-        "cloudCallout": {"intent": "Cloud-shaped thought callout with a dotted tail."}
+        "wedgeRectCallout": {"intent": "Rectangular annotation body with a pointed wedge to the target.", "adjustment_notes": "adj1 / adj2 place the wedge tip relative to the shape centre, in 1/100000 of width / height: negative = left / above, positive = right / below; the defaults point down-left."},
+        "wedgeRoundRectCallout": {"intent": "Rounded rectangular annotation body with a pointed wedge.", "adjustment_notes": "adj1 / adj2 place the wedge tip relative to the shape centre, in 1/100000 of width / height: negative = left / above, positive = right / below; the defaults point down-left."},
+        "wedgeEllipseCallout": {"intent": "Oval speech-like annotation body with a pointed wedge.", "adjustment_notes": "adj1 / adj2 place the wedge tip relative to the shape centre, in 1/100000 of width / height: negative = left / above, positive = right / below; the defaults point down-left."},
+        "cloudCallout": {"intent": "Cloud-shaped thought callout with a dotted tail.", "adjustment_notes": "adj1 / adj2 place the tail bubble relative to the shape centre, in 1/100000 of width / height: negative = left / above, positive = right / below; the defaults point down-left."}
       }
     },
     {
