@@ -379,6 +379,90 @@ def validate_communication_trace(
     return errors
 
 
+def _outline_slide_numbers(design_text: str) -> List[int] | None:
+    """Return the Slide numbers named in design_spec §IX, or None without a §IX."""
+    outline_match = re.search(
+        r'^##[ \t]+IX\.[ \t]+Content Outline\b.*$',
+        design_text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if outline_match is None:
+        return None
+    next_section = re.search(
+        r'^##[ \t]+',
+        design_text[outline_match.end():],
+        flags=re.MULTILINE,
+    )
+    outline_end = (
+        outline_match.end() + next_section.start()
+        if next_section
+        else len(design_text)
+    )
+    return [
+        int(match.group(1))
+        for match in re.finditer(
+            r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+)\b',
+            design_text[outline_match.end():outline_end],
+            flags=re.IGNORECASE | re.MULTILINE,
+        )
+    ]
+
+
+def validate_outline_roster(project_path: str | Path) -> List[str]:
+    """Compare the design_spec §IX Slide numbers with the svg_output/ roster.
+
+    A revision round that inserts, drops, or renumbers a page can leave the
+    outline naming a page that no SVG carries (or an SVG the outline never
+    planned) while every per-file check still passes. Only a complete roster
+    is comparable, so callers run this at the final gate; an empty
+    ``svg_output/`` (before authoring) is not a mismatch.
+    """
+    root = Path(project_path)
+    design_spec = next(
+        (root / name for name in _DESIGN_SPEC_NAMES if (root / name).is_file()),
+        None,
+    )
+    svg_output = root / 'svg_output'
+    if design_spec is None or not svg_output.is_dir():
+        return []
+    svg_numbers = set()
+    for svg_file in discover_slide_svgs(svg_output):
+        match = re.match(r'(\d+)', svg_file.name)
+        if match:
+            svg_numbers.add(int(match.group(1)))
+    if not svg_numbers:
+        return []
+    try:
+        design_text = design_spec.read_text(encoding='utf-8-sig')
+    except OSError as exc:
+        return [f'Outline roster: unable to read {design_spec.name}: {exc}']
+    outline_numbers = _outline_slide_numbers(design_text)
+    if not outline_numbers:
+        return []
+    planned = set(outline_numbers)
+    missing = sorted(planned - svg_numbers)
+    extra = sorted(svg_numbers - planned)
+    if not missing and not extra:
+        return []
+    parts = [
+        f'Outline roster: {design_spec.name} §IX names {len(planned)} slide(s) '
+        f'but svg_output/ holds {len(svg_numbers)};'
+    ]
+    if missing:
+        parts.append(
+            'no SVG for Slide ' + ', '.join(f'{n:02d}' for n in missing) + ';'
+        )
+    if extra:
+        parts.append(
+            'no §IX block for page ' + ', '.join(f'{n:02d}' for n in extra) + ';'
+        )
+    parts.append(
+        'renumber the outline, the lock page keys, and the sidecar together '
+        'with the pages.'
+    )
+    return [' '.join(parts)]
+
+
 def validate_project_structure(
     project_path: str,
     verbose: bool = False,
