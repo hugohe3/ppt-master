@@ -1126,6 +1126,8 @@ standards rather than this pipeline overview.
 
 Analyze and review supported chart coordinates after SVG generation.
 
+Numeric parameters and data values must be finite; NaN and either Infinity sign exit non-zero with the offending parameter or data point identified.
+
 Use this after `svg_quality_checker.py` passes, and only for chart types supported by this script: `bar`, `pie` / `donut`, `radar`, `line` / `area` / `scatter`, and `grid`. Area charts do not have a separate calculator mode: use `calc line` for the upper boundary points, then close the filled region to the plot area's bottom baseline (`y_max`) in the SVG.
 
 ### Calculate expected coordinates

@@ -92,6 +92,13 @@ class _FallbackShapeRecord:
 
 
 @dataclass(frozen=True)
+class _FallbackTextRun:
+    text: str
+    fill: str | None
+    bold: bool
+
+
+@dataclass(frozen=True)
 class _FallbackTextRecord:
     text: str
     x: float | None
@@ -100,6 +107,7 @@ class _FallbackTextRecord:
     bold: bool
     anchor: str
     labels: tuple[str, ...]
+    runs: tuple[_FallbackTextRun, ...] = ()
 
 
 def _local_tag(elem: ET.Element) -> str:
@@ -647,23 +655,37 @@ def fallback_text_inheritance(values: dict[str, str]) -> Iterator[None]:
         _FALLBACK_TEXT_INHERITANCE.reset(token)
 
 
+def _fallback_text_bold(weight: str | None) -> bool:
+    raw_weight = str(weight or "").strip().lower()
+    numeric_weight = _maybe_number(raw_weight)
+    return raw_weight in {"bold", "bolder"} or (
+        numeric_weight is not None and numeric_weight >= 600
+    )
+
+
 def _dominant_text_style(
     elem: ET.Element,
     fill: str | None,
     weight: str | None,
+    *,
+    runs: list[_FallbackTextRun] | None = None,
 ) -> tuple[str | None, str | None]:
     """Return the fill and weight carried by most visible characters."""
     counts: dict[tuple[str | None, str | None], int] = {}
 
+    def add_text(text: str, node_fill: str | None, node_weight: str | None) -> None:
+        key = (node_fill, node_weight)
+        counts[key] = counts.get(key, 0) + len("".join(text.split()))
+        if text and runs is not None:
+            runs.append(_FallbackTextRun(text, _hex_or_none(node_fill), _fallback_text_bold(node_weight)))
+
     def visit(node: ET.Element, node_fill: str | None, node_weight: str | None) -> None:
         node_fill = _style_attr(node, "fill") or node_fill
         node_weight = _style_attr(node, "font-weight") or node_weight
-        key = (node_fill, node_weight)
-        counts[key] = counts.get(key, 0) + len("".join((node.text or "").split()))
+        add_text(node.text or "", node_fill, node_weight)
         for child in node:
             visit(child, node_fill, node_weight)
-            tail = len("".join((child.tail or "").split()))
-            counts[key] = counts.get(key, 0) + tail
+            add_text(child.tail or "", node_fill, node_weight)
 
     visit(elem, fill, weight)
     return max(counts, key=counts.get) if any(counts.values()) else (fill, weight)
@@ -714,25 +736,22 @@ def _fallback_text_records(
         # A <text> whose visible characters mostly sit in styled <tspan>s
         # reads in their paint and weight (a whole cell set in an emphasis
         # tspan is that colour, not the <text> default).
-        fill, weight = _dominant_text_style(elem, fill, weight)
+        runs: list[_FallbackTextRun] = []
+        fill, weight = _dominant_text_style(elem, fill, weight, runs=runs)
         x = _project_geometry_number(elem, "x") if elem.get("x") is not None else None
         y = _project_geometry_number(elem, "y") if elem.get("y") is not None else None
         if x is not None and y is not None:
             x, y = transform_point(local_matrix, x, y)
-        raw_weight = str(weight or "").strip().lower()
-        numeric_weight = _maybe_number(raw_weight)
-        bold = raw_weight in {"bold", "bolder"} or (
-            numeric_weight is not None and numeric_weight >= 600
-        )
         return [
             _FallbackTextRecord(
                 text=text,
                 x=x,
                 y=y,
                 fill=_hex_or_none(fill),
-                bold=bold,
+                bold=_fallback_text_bold(weight),
                 anchor=str(anchor or "start").strip().lower(),
                 labels=labels,
+                runs=tuple(runs),
             )
         ]
 

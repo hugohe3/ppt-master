@@ -75,9 +75,8 @@ _KEY_DRIFT_MARGIN = 4
 _KEY_PURITY_OPAQUE_RATIO = 0.6
 # At most this many trim pixels on a touched edge count as isolated drift.
 _EDGE_DRIFT_MAX_PIXELS = 8
-# Strict-alpha haze gate: when this share of an element's trimmed box sits in
-# the semi-transparent alpha band, the key field itself was recovered as soft
-# alpha (the sheet ground is not the stated key), not an element edge.
+# Semi-transparent coverage nominates a haze candidate; only a failed key-only
+# margin can distinguish off-key ground from legitimate shadows and glows.
 _HAZE_ALPHA_LOW = 20
 _HAZE_ALPHA_HIGH = 150
 _HAZE_MAX_SHARE = 0.15
@@ -215,7 +214,10 @@ def _sample_bg(cell: Image.Image, tolerance: int) -> tuple[int, int, int]:
 
 def _sample_sheet_border(
     sheet: Image.Image,
-) -> tuple[tuple[int, int, int], int]:
+    *,
+    border_ratio: float = _SHEET_DIAGNOSTIC_BORDER_RATIO,
+    key: Optional[tuple[int, int, int]] = None,
+) -> tuple[tuple[int, int, int], int, int]:
     """Return the dominant RGB cluster, its spread, and the ring's farthest pixel.
 
     The spread describes the key field itself; the outlier distance is what a
@@ -224,8 +226,8 @@ def _sample_sheet_border(
     """
     rgb = sheet.convert("RGB")
     width, height = rgb.size
-    border_x = max(1, round(width * _SHEET_DIAGNOSTIC_BORDER_RATIO))
-    border_y = max(1, round(height * _SHEET_DIAGNOSTIC_BORDER_RATIO))
+    border_x = max(1, round(width * border_ratio))
+    border_y = max(1, round(height * border_ratio))
     px = rgb.load()
     pixels: list[tuple[int, int, int]] = []
 
@@ -262,8 +264,9 @@ def _sample_sheet_border(
         - min(pixel[index] for pixel in dominant_pixels)
         for index in range(3)
     ]
+    measured_key = dominant if key is None else key
     outlier = max(
-        max(abs(pixel[index] - dominant[index]) for index in range(3))
+        max(abs(pixel[index] - measured_key[index]) for index in range(3))
         for pixel in pixels
     )
     return dominant, max(channel_spreads), outlier  # type: ignore[return-value]
@@ -556,14 +559,17 @@ def _haze_finding(
     alpha_mask: Image.Image,
     bbox: tuple[int, int, int, int],
     bg: tuple[int, int, int],
+    *,
+    cell: Image.Image,
+    tolerance: int,
 ) -> Optional[str]:
-    """Report an element box that is mostly semi-transparent haze.
+    """Report semi-transparent haze only when the key-only margins are off-key.
 
     Soft-alpha recovery assumes the key field lies at the stated key; when the
     real ground sits farther than the tolerance, the whole field comes back as
     faint half-foreground that reads as a glowing rectangle on a dark slide.
-    `--strict-alpha` only inspects the outer gutter, so this gate looks at the
-    trimmed box itself.
+    A shadow or glow can fill most of the trimmed box. Check all four margins
+    at the sheet contract's 10% width before diagnosing the field itself.
     """
     box = alpha_mask.crop(bbox)
     total = box.width * box.height
@@ -574,13 +580,21 @@ def _haze_finding(
     share = hazy / total
     if share <= _HAZE_MAX_SHARE:
         return None
+    dominant, spread, distance = _sample_sheet_border(
+        cell, border_ratio=0.10, key=bg,
+    )
+    dominant_distance = max(abs(dominant[index] - bg[index]) for index in range(3))
+    if max(dominant_distance, spread, distance) <= tolerance:
+        return None
     hex_bg = "#{:02X}{:02X}{:02X}".format(*bg)
+    measured_bg = "#{:02X}{:02X}{:02X}".format(*dominant)
     return (
         f"{label}: {share:.0%} of the trimmed element box is semi-transparent "
-        f"(alpha {_HAZE_ALPHA_LOW}-{_HAZE_ALPHA_HIGH}): the key field itself "
-        f"was recovered as soft alpha, so the sheet ground is not {hex_bg}; "
-        "rerun with --bg set to the measured ground colour (see the sheet "
-        "border line below) instead of the nearest pure key"
+        f"(alpha {_HAZE_ALPHA_LOW}-{_HAZE_ALPHA_HIGH}) and its four 10% key-only "
+        f"margins differ from {hex_bg} (dominant {measured_bg}; key spread "
+        f"{spread}; farthest pixel {distance} from key): the ground or an effect "
+        "occupies the key-only margin; regenerate with clear margins or rerun "
+        "with --bg set to the measured ground colour when it is flat"
     )
 
 
@@ -822,7 +836,10 @@ def slice_sheet(
                     notices=notices,
                 ))
                 if strict_alpha:
-                    haze = _haze_finding(f"cell ({r},{c})", alpha_mask, bbox, cell_bg)
+                    haze = _haze_finding(
+                        f"cell ({r},{c})", alpha_mask, bbox, cell_bg,
+                        cell=cell, tolerance=tolerance,
+                    )
                     if haze:
                         findings.append(haze)
 

@@ -955,17 +955,45 @@ class SVGPositionValidator:
 # Command Line Interface
 # =============================================================================
 
+class _NonFiniteNumberError(ValueError):
+    """Reject a number before it can enter coordinate calculations."""
+
+
+def _finite_number(value: Any, location: str) -> float:
+    number = float(value)
+    if not math.isfinite(number):
+        raise _NonFiniteNumberError(
+            f"{location} must be finite; replace NaN or Infinity with a finite number: {value!r}"
+        )
+    return number
+
+
+def _validate_finite_json(value: Any, location: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            _validate_finite_json(item, f"{location}.{key}")
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _validate_finite_json(item, f"{location}[{index}]")
+    elif isinstance(value, float):
+        _finite_number(value, location)
+
+
 def parse_data_string(data_str: str) -> Dict[str, float]:
     """Parse data string in 'label1:value1,label2:value2' format"""
     result = {}
-    for item in data_str.split(','):
+    for index, item in enumerate(data_str.split(','), start=1):
         item = item.strip()
         if not item:
             continue
         if ':' in item:
             label, value = item.split(':', 1)
             try:
-                result[label.strip()] = float(value.strip())
+                result[label.strip()] = _finite_number(
+                    value.strip(), f"--data point {index} ({label.strip()!r}) value"
+                )
+            except _NonFiniteNumberError:
+                raise
             except ValueError:
                 print(f"[Warning] Unable to parse value: '{value.strip()}', skipped")
         else:
@@ -983,7 +1011,8 @@ def parse_xy_data_string(data_str: str) -> List[Tuple[float, float]]:
     verifier that changes the point count verifies a different chart.
     """
     pairs: List[Tuple[str, float]] = []
-    for item in data_str.split(','):
+    numeric_x = []
+    for index, item in enumerate(data_str.split(','), start=1):
         item = item.strip()
         if not item:
             continue
@@ -991,12 +1020,22 @@ def parse_xy_data_string(data_str: str) -> List[Tuple[float, float]]:
             raise ValueError(f"Invalid format (expected 'x:y'): '{item}'")
         x, y = item.rsplit(':', 1)
         try:
-            pairs.append((x.strip(), float(y.strip())))
+            pairs.append((x.strip(), _finite_number(
+                y.strip(), f"--data point {index} ({x.strip()!r}) y"
+            )))
+        except _NonFiniteNumberError:
+            raise
         except ValueError as exc:
             raise ValueError(f"Unable to parse value: '{item}'") from exc
-    try:
-        return [(float(x), y) for x, y in pairs]
-    except ValueError:
+        try:
+            numeric_x.append(_finite_number(x.strip(), f"--data point {index} x"))
+        except _NonFiniteNumberError:
+            raise
+        except ValueError:
+            numeric_x.append(None)
+    if all(x is not None for x in numeric_x):
+        return [(x, y) for x, (_label, y) in zip(numeric_x, pairs)]
+    else:
         print(
             f"[Note] Category axis: {len(pairs)} labels mapped to ordinals 1..{len(pairs)} "
             "(pass --x-range=0.5,N+0.5 to centre them in equal slots)"
@@ -1004,9 +1043,12 @@ def parse_xy_data_string(data_str: str) -> List[Tuple[float, float]]:
         return [(float(index), y) for index, (_label, y) in enumerate(pairs, start=1)]
 
 
-def parse_tuple(s: str) -> Tuple[float, ...]:
+def parse_tuple(s: str, location: str = 'tuple') -> Tuple[float, ...]:
     """Parse comma-separated numeric tuple"""
-    return tuple(float(x.strip()) for x in s.split(','))
+    return tuple(
+        _finite_number(x.strip(), f"{location}[{index}]")
+        for index, x in enumerate(s.split(','))
+    )
 
 
 def extract_attr(element: str, attr_name: str) -> Optional[str]:
@@ -1111,7 +1153,7 @@ def analyze_svg_file(svg_file: str) -> None:
     print(f"\n{'='*70}")
 
 
-def interactive_mode() -> None:
+def interactive_mode() -> int:
     """Interactive calculation mode"""
     print("\n" + "="*60)
     print("SVG Position Calculator - Interactive Mode")
@@ -1156,9 +1198,9 @@ def interactive_mode() -> None:
                     continue
 
                 center_str = input("Center coordinates [420,400]: ").strip() or '420,400'
-                radius = float(input("Radius [200]: ").strip() or '200')
+                radius = _finite_number(input("Radius [200]: ").strip() or '200', 'radius')
 
-                center = parse_tuple(center_str)
+                center = parse_tuple(center_str, 'center')
                 calc = PieChartCalculator(center, radius)
                 data = parse_data_string(data_str)
                 slices = calc.calculate(data)
@@ -1173,9 +1215,9 @@ def interactive_mode() -> None:
                     continue
 
                 center_str = input("Center coordinates [640,400]: ").strip() or '640,400'
-                radius = float(input("Radius [200]: ").strip() or '200')
+                radius = _finite_number(input("Radius [200]: ").strip() or '200', 'radius')
 
-                center = parse_tuple(center_str)
+                center = parse_tuple(center_str, 'center')
                 calc = RadarChartCalculator(center, radius)
                 data = parse_data_string(data_str)
                 points = calc.calculate(data)
@@ -1194,6 +1236,8 @@ def interactive_mode() -> None:
                 calc = LineChartCalculator(coord)
                 try:
                     data = parse_xy_data_string(data_str)
+                except _NonFiniteNumberError:
+                    raise
                 except ValueError as exc:
                     print(f"[Error] {exc}")
                     continue
@@ -1203,8 +1247,12 @@ def interactive_mode() -> None:
 
             elif choice == '5':
                 print("\n=== Grid Layout Calculation ===")
-                rows = int(input("Rows: ").strip() or '2')
-                cols = int(input("Columns: ").strip() or '3')
+                rows_input = input("Rows: ").strip() or '2'
+                _finite_number(rows_input, 'rows')
+                rows = int(rows_input)
+                cols_input = input("Columns: ").strip() or '3'
+                _finite_number(cols_input, 'cols')
+                cols = int(cols_input)
                 canvas = input("Canvas format [ppt169]: ").strip() or 'ppt169'
 
                 coord = CoordinateSystem(canvas)
@@ -1217,18 +1265,18 @@ def interactive_mode() -> None:
                 print("\n=== Custom Line Calculation ===")
                 print("For custom formula line charts, such as price index charts")
 
-                base_x = float(input("X start value [170]: ").strip() or '170')
-                step_x = float(input("X step [40]: ").strip() or '40')
-                base_y = float(input("Y baseline [595]: ").strip() or '595')
-                scale_y = float(input("Y scale factor [20]: ").strip() or '20')
-                ref_value = float(input("Reference baseline value [100]: ").strip() or '100')
+                base_x = _finite_number(input("X start value [170]: ").strip() or '170', 'base_x')
+                step_x = _finite_number(input("X step [40]: ").strip() or '40', 'step_x')
+                base_y = _finite_number(input("Y baseline [595]: ").strip() or '595', 'base_y')
+                scale_y = _finite_number(input("Y scale factor [20]: ").strip() or '20', 'scale_y')
+                ref_value = _finite_number(input("Reference baseline value [100]: ").strip() or '100', 'ref_value')
 
                 print(f"\nFormula: X = {base_x} + index * {step_x}")
                 print(f"         Y = {base_y} - (value - {ref_value}) * {scale_y}")
 
                 data_str = input("\nEnter data (comma-separated values): ").strip()
                 if data_str:
-                    values = [float(v.strip()) for v in data_str.split(',')]
+                    values = parse_tuple(data_str, 'data')
                     print(f"\n{'Index':<6}{'Value':<10}  {'X':<8}  {'Y':<8}")
                     print("-" * 35)
                     for i, v in enumerate(values, 1):
@@ -1251,8 +1299,13 @@ def interactive_mode() -> None:
         except KeyboardInterrupt:
             print("\nExiting interactive mode")
             break
+        except _NonFiniteNumberError as exc:
+            print(f"[Error] {exc}", file=sys.stderr)
+            return 1
         except Exception as e:
             print(f"Error: {e}")
+
+    return 0
 
 
 def from_json_config(config_file: str) -> None:
@@ -1266,6 +1319,7 @@ def from_json_config(config_file: str) -> None:
 
     with open(config_path, 'r', encoding='utf-8') as f:
         config = json.load(f)
+    _validate_finite_json(config, 'config')
 
     chart_type = config.get('type', 'bar')
     data = config.get('data', {})
@@ -1420,27 +1474,38 @@ Common commands:
 
     args = parser.parse_args(argv)
 
+    try:
+        for name, value in vars(args).items():
+            if isinstance(value, float):
+                _finite_number(value, f"--{name.replace('_', '-')}")
+        for name in ('area', 'center', 'value_range', 'x_range', 'y_range'):
+            value = getattr(args, name, None)
+            if value is not None:
+                setattr(args, name, parse_tuple(value, f"--{name.replace('_', '-')}"))
+        if args.command == 'calc' and hasattr(args, 'data'):
+            parse_data = parse_xy_data_string if args.chart_type == 'line' else parse_data_string
+            args.data = parse_data(args.data)
+    except ValueError as exc:
+        parser.error(str(exc))
+
     if args.command == 'calc':
         # Parse chart area
         chart_area = None
         if hasattr(args, 'area') and args.area:
-            parts = parse_tuple(args.area)
+            parts = args.area
             chart_area = ChartArea(parts[0], parts[1], parts[2], parts[3])
 
         if args.chart_type == 'bar':
             canvas = args.canvas if hasattr(args, 'canvas') else 'ppt169'
             coord = CoordinateSystem(canvas, chart_area)
             calc = BarChartCalculator(coord)
-            data = parse_data_string(args.data)
+            data = args.data
 
             # Parse value-range from axis tick labels (if provided)
             v_min, v_max = 0, None
             scale_source = 'auto (max*1.1)'
             if hasattr(args, 'value_range') and args.value_range:
-                try:
-                    vr = parse_tuple(args.value_range)
-                except ValueError:
-                    parser.error('calc bar --value-range must be numeric "min,max"')
+                vr = args.value_range
                 if len(vr) != 2:
                     parser.error('calc bar --value-range must contain exactly two values: "min,max"')
                 v_min, v_max = vr[0], vr[1]
@@ -1471,18 +1536,18 @@ Common commands:
             print(calc.format_table(positions))
 
         elif args.chart_type == 'pie':
-            center = parse_tuple(args.center)
+            center = args.center
             calc = PieChartCalculator(center, args.radius)
-            data = parse_data_string(args.data)
+            data = args.data
             slices = calc.calculate(data, start_angle=args.start_angle, inner_radius=args.inner_radius)
 
             print(f"\n=== Pie Chart Slice Calculation ===")
             print(calc.format_table(slices))
 
         elif args.chart_type == 'radar':
-            center = parse_tuple(args.center)
+            center = args.center
             calc = RadarChartCalculator(center, args.radius)
-            data = parse_data_string(args.data)
+            data = args.data
             points = calc.calculate(data, max_value=args.max_value)
 
             print(f"\n=== Radar Chart Vertex Calculation ===")
@@ -1492,13 +1557,9 @@ Common commands:
             canvas = args.canvas if hasattr(args, 'canvas') else 'ppt169'
             coord = CoordinateSystem(canvas, chart_area)
             calc = LineChartCalculator(coord)
-            try:
-                data = parse_xy_data_string(args.data)
-            except ValueError as exc:
-                parser.error(f'calc line --data: {exc}')
-
-            x_range = parse_tuple(args.x_range) if args.x_range else None
-            y_range = parse_tuple(args.y_range) if args.y_range else None
+            data = args.data
+            x_range = args.x_range
+            y_range = args.y_range
 
             points = calc.calculate(data, x_range, y_range)
             if getattr(args, 'slot_midpoints', False):
@@ -1548,6 +1609,10 @@ Common commands:
                 return 1
             with open(expected_path, 'r', encoding='utf-8') as f:
                 expected_coords = json.load(f)
+            try:
+                _validate_finite_json(expected_coords, '--expected')
+            except _NonFiniteNumberError as exc:
+                parser.error(str(exc))
             results = validator.validate_from_file(args.svg_file, expected_coords)
             print(validator.format_results(results))
         else:
@@ -1558,10 +1623,13 @@ Common commands:
         analyze_svg_file(args.svg_file)
 
     elif args.command == 'interactive':
-        interactive_mode()
+        return interactive_mode()
 
     elif args.command == 'from-json':
-        from_json_config(args.config_file)
+        try:
+            from_json_config(args.config_file)
+        except _NonFiniteNumberError as exc:
+            parser.error(str(exc))
 
     else:
         parser.print_help()

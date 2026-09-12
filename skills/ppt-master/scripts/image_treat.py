@@ -321,7 +321,13 @@ def _convert_duotone_source_to_srgb(image: Image.Image) -> tuple[Image.Image, by
 
 
 def _has_alpha(image: Image.Image) -> bool:
-    return "A" in image.getbands() or "transparency" in image.info
+    if "A" in image.getbands():
+        with image.getchannel("A") as alpha:
+            return alpha.getextrema()[0] < 255
+    if "transparency" in image.info:
+        with image.convert("RGBA") as rgba:
+            return rgba.getextrema()[3][0] < 255
+    return False
 
 
 def _apply_treatments(

@@ -24,6 +24,7 @@ from ..drawingml.utils import (
 from .chart_style import _fallback_text_attr_values, _font_face_xml, _most_common_value
 from .marker_common import (
     TABLE_URI,
+    _FallbackTextRecord,
     _bool_attr,
     _bounds,
     _clean_hex,
@@ -857,6 +858,76 @@ def _table_cell_parity_text_style(
     return bold, color
 
 
+def _table_cell_parity_style_gaps(
+    cell: Any,
+    record: _FallbackTextRecord,
+    default_color: str | None = None,
+    occurrence: int = 0,
+) -> tuple[bool, set[str]]:
+    """Compare corresponding visible characters using each run's effective style."""
+    cell_data = _cell_payload(cell)
+    paragraphs = _table_cell_paragraphs(cell_data)
+    if paragraphs is None:
+        paragraphs = (_TableParagraph(str(cell_data.get("text") or "")),)
+    # A fallback <text> can contain the whole cell or just one paragraph.
+    joined_texts = {
+        _normalized_fallback_text(separator.join(paragraph.text for paragraph in paragraphs))
+        for separator in ("", " ")
+    }
+    if record.text not in joined_texts:
+        matches = tuple(
+            paragraph for paragraph in paragraphs
+            if _normalized_fallback_text(paragraph.text) == record.text
+        )
+        paragraphs = matches[occurrence:occurrence + 1]
+    cell_bold, cell_color = _table_cell_parity_text_style(cell_data)
+    cell_color = cell_color or default_color
+    native_styles = [
+        (
+            run.bold if run.bold is not None else cell_bold,
+            run.color or cell_color,
+        )
+        for paragraph in paragraphs
+        for run in (paragraph.runs or (_TableRun(paragraph.text),))
+        for character in run.text
+        if not character.isspace()
+    ]
+    fallback_styles = [
+        (run.bold, run.fill)
+        for run in record.runs
+        for character in run.text
+        if not character.isspace()
+    ]
+    missing_bold = False
+    missing_colors: set[str] = set()
+    for index, (bold, color) in enumerate(fallback_styles):
+        native_bold, native_color = (
+            native_styles[index] if index < len(native_styles) else (None, None)
+        )
+        if bold and native_bold is not True:
+            missing_bold = True
+        if color is not None and color != native_color:
+            missing_colors.add(color)
+    return missing_bold, missing_colors
+
+
+def _table_parity_style_gaps(
+    table_rows: list[list[Any]],
+    text_cells: list[tuple[Any, int, int]],
+    default_color: str | None,
+):
+    """Pair repeated paragraph text with its occurrence inside the same cell."""
+    occurrences: dict[tuple[int, int, str], int] = {}
+    for record, row_idx, col_idx in text_cells:
+        key = (row_idx, col_idx, record.text)
+        occurrence = occurrences.get(key, 0)
+        occurrences[key] = occurrence + 1
+        bold, colors = _table_cell_parity_style_gaps(
+            table_rows[row_idx][col_idx], record, default_color, occurrence
+        )
+        yield record, row_idx, col_idx, bold, colors
+
+
 def _table_text_cells(
     text_records: list[Any],
     table_rows: list[list[Any]],
@@ -931,25 +1002,15 @@ def _native_table_header_warnings(
         ):
             missing.append("style.header_fill")
 
-    header_colors = [record.fill for record, _, _ in header_text_cells if record.fill]
-    header_text_color = max(set(header_colors), key=header_colors.count) if header_colors else None
-    if header_text_color is not None and style.get("header_text") is None:
-        if not all(
-            _table_cell_parity_text_style(
-                table_rows[row_idx][col_idx]
-            )[1] == record.fill
-            for record, row_idx, col_idx in header_text_cells
-            if record.fill is not None
-        ):
-            missing.append("style.header_text")
-
-    if any(
-        record.bold
-        and _table_cell_parity_text_style(
-            table_rows[row_idx][col_idx]
-        )[0] is not True
-        for record, row_idx, col_idx in header_text_cells
-    ):
+    header_text = _clean_hex(
+        style.get("header_text"),
+        "#FFFFFF" if _hex_or_none(style.get("header_fill")) is not None
+        else _clean_hex(style.get("body_text"), "#1F2937"),
+    )
+    header_style_gaps = list(_table_parity_style_gaps(table_rows, header_text_cells, header_text))
+    if any(colors for _, _, _, _, colors in header_style_gaps):
+        missing.append("style.header_text")
+    if any(bold for _, _, _, bold, _ in header_style_gaps):
         missing.append("columns[].bold")
     # Header cells export centred unless the payload sets align, so a missing
     # align only matches a fallback whose header text is centred.
@@ -1064,23 +1125,13 @@ def _native_table_body_text_warnings(
     body_records = [item for item in text_cells if item[1] >= header_rows]
     if not body_records:
         return []
-    body_colors = [
-        record.fill
-        for record, _, col_idx in body_records
-        if col_idx != 0 and record.fill
-    ]
-    body_color = max(set(body_colors), key=body_colors.count) if body_colors else None
     missing_colors: set[str] = set()
-    for record, row_idx, col_idx in body_records:
-        if record.fill is None:
-            continue
-        if col_idx == 0 and record.fill != body_color:
+    for record, _, col_idx, _, colors in _table_parity_style_gaps(
+        table_rows, body_records, style_body_text
+    ):
+        if col_idx == 0:
             continue  # first-column emphasis is reported separately
-        cell_color = _table_cell_parity_text_style(table_rows[row_idx][col_idx])[1]
-        if cell_color is None:
-            cell_color = style_body_text
-        if cell_color != record.fill:
-            missing_colors.add(record.fill)
+        missing_colors.update(colors)
     if not missing_colors:
         return []
     return [
@@ -1107,32 +1158,14 @@ def _native_table_first_column_warnings(
     first_column = [item for item in body_records if item[2] == 0]
     if not first_column:
         return []
-    body_colors = [
-        record.fill
-        for record, _, col_idx in body_records
-        if col_idx != 0 and record.fill
-    ]
-    body_color = max(set(body_colors), key=body_colors.count) if body_colors else None
     missing: list[str] = []
-    if any(
-        record.bold
-        and _table_cell_parity_text_style(
-            table_rows[row_idx][col_idx]
-        )[0] is not True
-        for record, row_idx, col_idx in first_column
-    ):
+    first_column_style_gaps = list(_table_parity_style_gaps(table_rows, first_column, style_body_text))
+    if any(bold for _, _, _, bold, _ in first_column_style_gaps):
         missing.append("bold")
     missing_colors = sorted({
-        record.fill
-        for record, row_idx, col_idx in first_column
-        if (
-            record.fill is not None
-            and record.fill != body_color
-            and (
-                _table_cell_parity_text_style(table_rows[row_idx][col_idx])[1]
-                or style_body_text
-            ) != record.fill
-        )
+        color
+        for _, _, _, _, colors in first_column_style_gaps
+        for color in colors
     })
     if missing_colors:
         missing.append("color " + "/".join(f"#{color}" for color in missing_colors))
