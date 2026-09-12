@@ -829,7 +829,10 @@ def _point_color(color: Any, chart_type: str) -> str | None:
     if chart_type == "line" and (color is None or _compact_key(color) == "none"):
         return None
     if color is None:
-        raise RuntimeError("Native PPTX chart series point_colors entries must be colours")
+        raise RuntimeError(
+            f"Native PPTX {chart_type} chart series point_colors entries must be "
+            "colours (only a line series may leave a point null)"
+        )
     return _clean_hex(color, "#4472C4")
 
 

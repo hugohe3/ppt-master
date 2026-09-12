@@ -36,7 +36,7 @@ Artifact roles follow [`artifact-ownership.md`](../../references/artifact-owners
 
 | Signal | Action |
 |---|---|
-| Adjacent beats may share one mental map | Evaluate visible states (repetition alone needs no Morph); if continuity clarifies orientation, enable Custom Animations, load [`animations.md`](../../references/animations.md) before SVG, and author compatible Morph endpoints |
+| Adjacent beats may share one mental map | Evaluate visible states (repetition alone needs no Morph); author every continuing unit as compatible Morph endpoints with recorded partner ids whether or not Custom Animations is enabled; when continuity clarifies orientation, enable Custom Animations and load [`animations.md`](../../references/animations.md) before SVG |
 | A page- or object-specific reveal, emphasis, movement, or removal clarifies the message | Load `animations.md` before authoring, preserve the required units/states, run [`customize-animations`](../stages/customize-animations.md) after the final checker |
 | One deck-wide entrance policy supplies all staged reveal | Load `animations.md` before export and use an exporter flag such as `-a auto`; no custom stage |
 | A directional/section boundary benefits from a non-default transition | Load `animations.md` before export and choose from its §3 playbook |

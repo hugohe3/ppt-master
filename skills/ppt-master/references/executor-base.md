@@ -157,11 +157,11 @@ Repeating symmetric card grids without a page job is the failure mode these stru
 
 **Hard rule — discovery does not expand compatibility**: follow `svg-effects.md` syntax and fallbacks. Source/backdrop blur, blend mode, `<mask>` / per-pixel masking, dense texture, and skew stay baked or alternative-only.
 
-**Default — author motion endpoints while pages are still being written (may override when the deck has no continuous action)**: effects, transitions, and Morph pair keys are post-processing, but the two visible endpoint states are not. A sequence that should read as one action (slide-in, flip, push-in, progressive reveal, pan) is authored now as consecutive pages, each continuing endpoint in a compatible direct-root group; ids or geometry may differ, and `animations.json` binds them later.
+**Default — author motion endpoints while pages are still being written (may override when the deck has no continuous action)**: effects, transitions, and Morph pair keys are post-processing, but the two visible endpoint states are not. A sequence that should read as one action (slide-in, flip, progressive reveal, pan) is authored now as consecutive pages, each continuing endpoint in a compatible direct-root group; geometry may differ, and `animations.json` binds them later.
 
 | Motion endpoints | Rule |
 |---|---|
-| Activation | Only an explicit user motion instruction, an enabled Custom Animations outcome, or an existing `animations.json`; a §IX Motion suggestion alone does not activate it |
+| Activation | Effects and transitions need an explicit motion instruction, an enabled Custom Animations outcome, or an existing `animations.json`; a §IX Motion suggestion activates none — its Morph candidates are still authored as compatible direct-root groups with recorded partner ids for a later pass |
 | Missing state | A deck exported without both states cannot gain the motion by a flag |
 | Extra page | Adding a page is a §IX roster change and returns to Strategist |
 | Endpoint id | Fix the first endpoint's direct-root `<g id>` when that page is drawn and record the intended partner id with `workflow_log.py` (never in `notes/total.md`, which is read verbatim by TTS); the next page reuses it, so no endpoint is renamed after both pages exist (a rename reruns the gate) |
