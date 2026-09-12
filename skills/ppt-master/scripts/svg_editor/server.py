@@ -32,7 +32,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Iterable, Optional
@@ -68,6 +67,7 @@ from server_common import (  # noqa: E402
     clear_lock as _clear_lock,
     find_free_port as _find_free_port,
     lock_pid as _lock_pid,
+    open_preview_browser,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -1125,17 +1125,7 @@ def _wait_for_ready(
 
 
 def _open_browser(url: str) -> bool:
-    """Best-effort browser launch after the local server is reachable."""
-    try:
-        if os.name == 'nt':
-            os.startfile(url)  # type: ignore[attr-defined]
-            return True
-        return bool(webbrowser.open(url))
-    except OSError as exc:
-        logger.warning('browser auto-open failed: %s', exc)
-    except webbrowser.Error as exc:
-        logger.warning('browser auto-open failed: %s', exc)
-    return False
+    return open_preview_browser(url, logger=logger)
 
 
 def _reuse_running_server(
