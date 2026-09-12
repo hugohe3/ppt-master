@@ -35,7 +35,7 @@ Never create an optional directory or placeholder solely to keep an empty path; 
 | Create Layout | Reuse a brand-neutral structural skeleton without a recurring application | `templates/layouts/<layout_id>/` | Canvas, page grammar, semantic text roles, Master/Layout/slot contract, SVG roster; no identity or application contract |
 | Create Deck | Reuse a branded structural system or a recurring application | `templates/decks/<deck_id>/` | Descriptive application context, integrated identity/structure, SVG roster |
 
-A complete source PPTX does not determine the kind — classify only the stable rules worth reusing. Ask one discriminator only when the requested artifact is genuinely ambiguous. Once selected, never reopen kind selection inside the child's gate, execute two children for one workspace, or blend schemas. Shared kind and workspace model: [`templates/README.md`](../templates/README.md); application: [`apply-template-workspace`](./stages/apply-template-workspace.md).
+A complete source PPTX does not determine the kind — classify only the stable rules worth reusing. A request for one organisation's "layout and style" for a recurring deck is Deck; a brand-neutral skeleton alone is Layout; a communication method without identity or roster is Style; identity alone is Brand. Ask one discriminator only when the requested artifact is genuinely ambiguous. Once selected, never reopen kind selection inside the child's gate, execute two children for one workspace, or blend schemas. Shared kind and workspace model: [`templates/README.md`](../templates/README.md); application: [`apply-template-workspace`](./stages/apply-template-workspace.md).
 
 ## Process Overview
 
@@ -71,7 +71,7 @@ Future decks need not keep source page count/order.
 
 ### 1A. `.pptx` reference
 
-Run `pptx_template_import.py "<reference.pptx>"`; the workspace it produces and each artifact's role are [`template-tools.md`](../scripts/docs/template-tools.md). Type A is the canonical mirror path; in `standard` / `fidelity`, imported facts do not define output topology. Never copy lossless or flat pages into `templates/`. For Type A `mirror`, `mirror_template_materialize.py` validates and publishes after review, fidelity edits, and the readability pass; authored modes never use it.
+Run `pptx_template_import.py "<reference.pptx>" -o "<import_workspace>"` (without `-o` the workspace lands beside the source file); the workspace it produces and each artifact's role are [`template-tools.md`](../scripts/docs/template-tools.md). Type A is the canonical mirror path; in `standard` / `fidelity`, imported facts do not define output topology. Never copy lossless or flat pages into `templates/`. For Type A `mirror`, `mirror_template_materialize.py` validates and publishes after review, fidelity edits, and the readability pass; authored modes never use it.
 
 **Explicit complex-SVG picture normalization** (`standard` / `fidelity` only): when one imported native group is deliberately retained as one complex SVG picture rather than rebuilt as editable paths, select its exact id in the layered IR with `extract_svg_pictures.py ... --select "<group_id>" --resource-root "<import_workspace>" --images-dir "<import_workspace>/picture-assets" --inplace` (repeat `--select` for independent siblings; select the outer group when an ancestor carries a transform, style, clip, or opacity). If chosen for a Master or Layout, copy the asset into the image pool and author the fixed atom as a direct `<image data-pptx-layer="master|layout">`. This is a semantic decision, never automatic, never by repetition, never a way to infer ownership. Not for placeholders, individual native shapes, table/chart fallbacks, icon placeholders, authored presets, or `mirror`.
 
@@ -82,7 +82,7 @@ Run `pptx_template_import.py "<reference.pptx>"`; the workspace it produces and 
 | `standard` / `fidelity` | `analysis/manifest.json`, exported resources, `svg/inheritance.json`, `authoring_summary.json`, and every cleaned layered IR document (Masters, Layouts, Slides — the complete read surface, including Layouts unused by any sample slide); flat pages are optional spot checks; never `authoring_manifest.json` |
 | `mirror` | Both manifests, inheritance, the summary, every source Slide SVG, and only reachable Master/Layout SVGs |
 
-Use manifest facts for orientation and screenshots or the original PPTX only for visual cross-checking; never bulk-read opaque payload.
+Use manifest facts for orientation and screenshots or the original PPTX only for visual cross-checking; never bulk-read opaque payload. If the reference was also brought in with `import-sources`, its extracted bitmaps were propagated into the project's `images/`; keep only identity assets there (a logo, an emblem) before Step 4, or `apply_template.py` carries the sample pictures into every downstream project.
 
 **Mirror reachable-graph gate**: before offering `mirror`, compare every source Slide and referenced Layout/Master with the authoring summary; missing reachable evidence or ambiguous parentage blocks; omit unused identities. The publisher verifies source SHA, refs, graph/assignment closure, and subtree hashes; an authored change never triggers visible XML restoration.
 
@@ -192,7 +192,7 @@ Compose one concise natural-language proposal, in the user's language, describin
 
 ## Step 3: User Confirmation Gate
 
-**MANDATORY interactive gate — blocks Steps 4 onward.** Echo the finalized brief in one message, then emit `[TEMPLATE_BRIEF_CONFIRMED]` on its own line. Silently inferring values from files, direct text, an opened IDE file, or prior conversation is a route violation: even a complete PPTX, website, or written brief only informs the brief.
+**MANDATORY interactive gate — blocks Steps 4 onward.** Echo the finalized brief in one message, then emit `[TEMPLATE_BRIEF_CONFIRMED]` on its own line. Silently inferring values from files, direct text, an opened IDE file, or prior conversation is a route violation: even a complete PPTX, website, or written brief only informs the brief. When the user has explicitly delegated this confirmation, decide the open items yourself, record each decision with its reason in the brief and the completion summary, and emit the marker — never fabricate a reply ([`confirm-surface.md`](../references/confirm-surface.md) §1).
 
 Before emitting the marker, all of these hold:
 

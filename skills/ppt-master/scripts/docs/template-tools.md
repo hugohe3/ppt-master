@@ -8,7 +8,7 @@ Tool behavior behind [`create-template.md`](../../workflows/create-template.md) 
 python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>" [--inheritance-mode layered|both|flat]
 ```
 
-Produces one import workspace (typically under `/tmp/pptx_template_import/`; an analysis intermediate, never a final template):
+Produces one import workspace (default `<pptx_stem>_template_import/` beside the source file; pass `-o` to place it elsewhere; an analysis intermediate, never a final template):
 
 | Output | Content |
 |---|---|

@@ -4475,8 +4475,16 @@ def _replace_literal_run_with_slidenum_field(
     if tx_body is None:
         return False
     a_t = f"{{{DML_NS}}}t"
+
+    def _is_expected(text: str) -> bool:
+        # A zero-padded literal ("02") names the same slide as "2".
+        stripped = text.strip()
+        return stripped == expected_text or (
+            stripped.isdigit() and str(int(stripped)) == expected_text
+        )
+
     total_text = "".join(t.text or "" for t in tx_body.iter(a_t))
-    if total_text.strip() != expected_text:
+    if not _is_expected(total_text):
         return False
     text_runs = [
         (paragraph, run)
@@ -4487,7 +4495,7 @@ def _replace_literal_run_with_slidenum_field(
     if len(text_runs) != 1:
         return False
     paragraph, run = text_runs[0]
-    if (run.findtext(a_t) or "").strip() != expected_text:
+    if not _is_expected(run.findtext(a_t) or ""):
         return False
 
     fld = ET.Element(f"{{{DML_NS}}}fld", {"id": field_guid, "type": "slidenum"})

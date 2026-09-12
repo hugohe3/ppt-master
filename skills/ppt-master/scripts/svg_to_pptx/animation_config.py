@@ -90,6 +90,8 @@ class GroupTarget:
     structurally_static: bool = False
     has_hyperlink: bool = False
     hidden_reason: str | None = None
+    placeholder: str | None = None
+    on_structured_page: bool = False
 
 
 @dataclass(frozen=True)
@@ -282,6 +284,8 @@ def scan_svg_targets(
                 chrome=chrome,
                 structurally_static=structurally_static,
                 hidden_reason=hidden_reason,
+                placeholder=placeholder,
+                on_structured_page=root.get('data-pptx-layout') is not None,
                 has_hyperlink=any(
                     _tag_name(descendant) == 'a'
                     or descendant.get(SHAPE_HYPERLINK_ATTR) is not None
@@ -1735,7 +1739,40 @@ def validate_animation_config(
                     'animations.json Morph references structural group: '
                     f'{slide_name}/{group_id}'
                 )
+            elif (
+                target.placeholder is not None
+                and target.on_structured_page
+                and _lock_structure_mode(project_path) != 'flat'
+            ):
+                warnings.append(
+                    f'animations.json Morph endpoint {slide_name}/{group_id} '
+                    f'is the placeholder slot {target.placeholder!r}: structured '
+                    'export rewrites a slot into a layout placeholder, so it '
+                    'cannot carry a Morph name; pair a Slide-local group instead'
+                )
     return list(dict.fromkeys(warnings))
+
+
+def _lock_structure_mode(project_path: Path) -> str | None:
+    """Return ``spec_lock.md``'s ``pptx_structure.mode``, or None without one."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        text = lock_path.read_text(encoding='utf-8-sig')
+    except OSError:
+        return None
+    section = re.search(
+        r'^##[ \t]+pptx_structure[ \t]*$(?P<body>.*?)(?=^##[ \t]|\Z)',
+        text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    if section is None:
+        return None
+    mode = re.search(
+        r'^-[ \t]+mode[ \t]*:[ \t]*([A-Za-z_-]+)',
+        section.group('body'),
+        flags=re.MULTILINE,
+    )
+    return mode.group(1).lower() if mode else None
 
 
 def build_scaffold(project_path: Path) -> dict[str, Any]:
