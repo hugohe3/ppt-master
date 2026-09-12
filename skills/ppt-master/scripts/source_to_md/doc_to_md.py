@@ -729,7 +729,9 @@ def _docx_footnote_texts(docx: zipfile.ZipFile) -> dict[str, str]:
             for paragraph in note.findall("w:p", DOCX_NS)
         ).strip()
         for note in root.findall("w:footnote", DOCX_NS)
-        if note.get(f"{{{W_NS}}}type") is None
+        if note.get(f"{{{W_NS}}}type") not in {
+            "separator", "continuationSeparator", "continuationNotice",
+        }
     }
 
 
@@ -894,7 +896,7 @@ def _docx_inject_charts_markdown(
             continue
         seen.add(rel_id)
         name = f"Chart {len(replacements) + 1}"
-        part_name = posixpath.normpath(posixpath.join("word", rels.get(rel_id, "")))
+        part_name = posixpath.normpath(posixpath.join("word", rels.get(rel_id, ""))).lstrip("/")
         try:
             markdown = _docx_chart_markdown(chart_parts[part_name], name)
         except Exception as exc:  # a malformed cache must not sink the document

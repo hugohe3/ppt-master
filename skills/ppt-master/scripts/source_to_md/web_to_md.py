@@ -41,8 +41,10 @@ import socket
 import subprocess
 import sys
 import time
+from email.message import Message
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
+from urllib.request import Request
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -93,6 +95,11 @@ class _UnsafeUrlError(ValueError):
     """Reject a URL that cannot be verified as a public HTTP(S) target."""
 
 
+_NON_PUBLIC_IPV4_NETWORKS = tuple(ipaddress.ip_network(network) for network in (
+    "0.0.0.0/8", "100.64.0.0/10", "240.0.0.0/4",
+))
+
+
 def _validate_public_url(url: str) -> None:
     """Reject non-HTTP(S) URLs and hosts resolving to non-public addresses."""
     try:
@@ -117,12 +124,74 @@ def _validate_public_url(url: str) -> None:
     if CONFIG["allow_private_hosts"]:
         return
     for address in addresses:
+        if isinstance(address, ipaddress.IPv6Address) and address.ipv4_mapped:
+            address = address.ipv4_mapped
         if (address.is_loopback or address.is_link_local
-                or address.is_private or address.is_unspecified):
+                or address.is_private or address.is_unspecified
+                or address.is_multicast or address.is_reserved
+                or any(address in network for network in _NON_PUBLIC_IPV4_NETWORKS)):
             raise _UnsafeUrlError(
                 f"Refusing non-public URL target: {hostname} resolves to {address} "
                 "(pass --allow-private-hosts for intranet or localhost pages)"
             )
+
+
+def _validate_response_redirect(response, **kwargs) -> None:
+    """Check requests redirects before its redirect engine sends the next hop."""
+    try:
+        _validate_public_url(response.url)
+        if response.is_redirect:
+            # Match requests' decoding of the HTTP Location header.
+            location = response.headers["location"].encode("latin1").decode("utf8")
+            _validate_public_url(urljoin(response.url, location))
+    except _UnsafeUrlError:
+        response.close()
+        raise
+
+
+def _curl_http_get(url: str, *, headers: dict | None, timeout: int | None,
+                   verify: bool, stream: bool):
+    """Follow curl redirects explicitly, retaining scoped response cookies."""
+    cookies = requests.cookies.RequestsCookieJar()
+    headers = requests.structures.CaseInsensitiveDict(headers or {})
+    max_redirects = requests.models.DEFAULT_REDIRECT_LIMIT
+    for redirect_count in range(max_redirects + 1):
+        _validate_public_url(url)
+        response = curl_requests.get(
+            url, headers=headers, timeout=timeout, verify=verify,
+            impersonate=_CURL_IMPERSONATE, stream=stream,
+            allow_redirects=False, cookies=cookies,
+        )
+        try:
+            _validate_public_url(response.url)
+        except _UnsafeUrlError:
+            response.close()
+            raise
+        if response.status_code not in (301, 302, 303, 307, 308):
+            return response
+        location = response.headers.get("Location")
+        if not location:
+            return response
+        try:
+            next_url = urljoin(response.url, location)
+            _validate_public_url(next_url)
+            if redirect_count >= max_redirects:
+                raise requests.exceptions.TooManyRedirects(
+                    f"Exceeded {max_redirects} redirects.", response=response,
+                )
+            cookie_headers = Message()
+            for value in response.headers.get_list("Set-Cookie"):
+                cookie_headers.add_header("Set-Cookie", value)
+            cookies.extract_cookies(
+                requests.cookies.MockResponse(cookie_headers), Request(response.url),
+            )
+            if requests.Session().should_strip_auth(response.url, next_url):
+                headers = headers.copy()
+                for name in ("Authorization", "Cookie", "Host"):
+                    headers.pop(name, None)
+            url = next_url
+        finally:
+            response.close()
 
 
 def _http_get(url: str, *, headers: dict | None = None, timeout: int | None = None,
@@ -135,13 +204,19 @@ def _http_get(url: str, *, headers: dict | None = None, timeout: int | None = No
     """
     _validate_public_url(url)
     if curl_requests is not None:
-        response = curl_requests.get(
-            url, headers=headers, timeout=timeout,
-            verify=verify, impersonate=_CURL_IMPERSONATE, stream=stream,
-        )
+        if not CONFIG["allow_private_hosts"]:
+            return _curl_http_get(
+                url, headers=headers, timeout=timeout, verify=verify, stream=stream,
+            )
+        response = curl_requests.get(url, headers=headers, timeout=timeout,
+                                     verify=verify, impersonate=_CURL_IMPERSONATE,
+                                     stream=stream)
     else:
+        hooks = None if CONFIG["allow_private_hosts"] else {
+            "response": _validate_response_redirect,
+        }
         response = requests.get(url, headers=headers, timeout=timeout,
-                                verify=verify, stream=stream)
+                                verify=verify, stream=stream, hooks=hooks)
     try:
         _validate_public_url(response.url)
     except _UnsafeUrlError:
@@ -1117,7 +1192,7 @@ def process_url(
     try:
         response = fetch_response(url)
         suffix = remote_document_suffix(
-            url, response.headers.get("Content-Type", ""), response.content[:8])
+            response.url, response.headers.get("Content-Type", ""), response.content[:8])
         if suffix:
             return _convert_remote_document(
                 url, response.content, suffix, output_file, download_images,
