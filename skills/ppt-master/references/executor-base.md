@@ -157,7 +157,7 @@ Repeating symmetric card grids without a page job is the failure mode these stru
 
 **Hard rule — discovery does not expand compatibility**: follow `svg-effects.md` syntax and fallbacks. Source/backdrop blur, blend mode, `<mask>` / per-pixel masking, dense texture, and skew stay baked or alternative-only.
 
-**Default — author motion endpoints while pages are still being written (may override when the deck has no continuous action)**: effects, transitions, and Morph pair keys are post-processing, but the two visible endpoint states are not. A sequence that should read as one action (slide-in, flip, pan) is authored now as consecutive pages, each continuing endpoint in a compatible direct-root group; geometry may differ, and `animations.json` binds them later.
+**Default — author motion endpoints while pages are still being written (may override when the deck has no continuous action)**: effects, transitions, and Morph pair keys are post-processing, but the two visible endpoint states are not. A sequence that should read as one action is authored now as consecutive pages, each continuing endpoint in a compatible direct-root group; geometry may differ, and `animations.json` binds them later.
 
 | Motion endpoints | Rule |
 |---|---|
