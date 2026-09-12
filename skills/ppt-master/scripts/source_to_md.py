@@ -108,6 +108,11 @@ def _dispatch_output_arg(
         # directory: `-o sources_cf` writes `sources_cf.md` (a directory is
         # spelled with a trailing separator or already exists).
         if not Path(output_arg).suffix:
+            _print_status(
+                f"[INFO] -o names the Markdown file for a single input: writing "
+                f"{output_arg}.md (spell a directory with a trailing separator, "
+                "or create it first)"
+            )
             return f"{output_arg}.md"
         return output_arg
     return None

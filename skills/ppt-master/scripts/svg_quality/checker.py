@@ -393,6 +393,24 @@ HEX_VALUE_RE = re.compile(
 # fail closed; Create Template must author a new current-contract workspace.
 _CHECK_PPTX_STRUCTURED_PROJECT = True
 
+_SPEC_RELATIONSHIPS_LINE_RE = re.compile(
+    r'^\s*-\s*\*\*Relationships(?:\s*\([^)]*\))?\*\*\s*[:：]\s*(?P<value>.*)$'
+)
+_CARRIED_RELATION_WORD_RE = re.compile(
+    r'\b(?:order|link|parent|membership)\b', re.IGNORECASE
+)
+
+
+def count_carried_relationship_pages(design_spec_text: str) -> int:
+    """Count §IX ``Relationships`` lines naming order, link, parent, or membership."""
+    count = 0
+    for line in design_spec_text.splitlines():
+        match = _SPEC_RELATIONSHIPS_LINE_RE.match(line)
+        if match and _CARRIED_RELATION_WORD_RE.search(match.group('value')):
+            count += 1
+    return count
+
+
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
@@ -4520,7 +4538,9 @@ class SVGQualityChecker:
             result['warnings'].append(
                 'Cannot verify root viewBox bounds for visible text with '
                 f'unsupported or unresolved geometry: {sample}{suffix}; use '
-                'supported explicit text positioning when page fit matters'
+                'supported explicit text positioning when page fit matters '
+                '(continuation <tspan> lines repeat the parent x; a hanging '
+                'indent needs its own <text>)'
             )
 
         root_groups = [
@@ -9253,11 +9273,37 @@ class SVGQualityChecker:
             'pages': len(receipts),
             'totals': dict(totals),
             'pages_with': dict(pages_with),
+            'relationship_pages': self._relationship_page_count(),
             'geometry_elements': dict(sorted(geometry_counts.items())),
             'preset_names': dict(sorted(preset_names.items())),
             'native_objects': dict(sorted(native_objects.items())),
             'image_page_max_frame_share_range': frame_share_range,
         }
+
+    def _relationship_page_count(self) -> int | None:
+        """Count design_spec §IX pages whose Relationships line names a carried relation.
+
+        The executor's receipt review compares pages carrying a preset or
+        connector against pages whose ``Relationships`` line names ``order``,
+        ``link``, ``parent``, or ``membership``; this reads that count from the
+        project's ``design_spec.md`` so the comparison is on the receipt. None
+        when no exact ``design_spec.md`` is present (Quick, templates).
+        """
+        paths = [
+            Path(result['path'])
+            for result in self.results
+            if result.get('path') and result.get('info', {}).get('carrier_receipt')
+        ]
+        if not paths:
+            return None
+        spec_path = self._resolve_project_path(paths[0]) / 'design_spec.md'
+        if not spec_path.is_file():
+            return None
+        try:
+            text = spec_path.read_text(encoding='utf-8')
+        except OSError:
+            return None
+        return count_carried_relationship_pages(text)
 
     def _print_carrier_receipt_summary(self) -> None:
         """Print a compact actual-use receipt without a score or threshold."""
@@ -9302,6 +9348,16 @@ class SVGQualityChecker:
             else '(none)'
         )
         print(f"  Presets: {preset_text}")
+        relationship_pages = receipt.get('relationship_pages')
+        preset_pages = pages_with['presets']
+        if relationship_pages is None:
+            print(f"  Pages carrying a preset or connector: {preset_pages}")
+        else:
+            print(
+                f"  Relationship pages: {relationship_pages} "
+                "(§IX names order / link / parent / membership) | "
+                f"pages carrying a preset or connector: {preset_pages}"
+            )
         image_range = receipt['image_page_max_frame_share_range']
         if image_range:
             print(
