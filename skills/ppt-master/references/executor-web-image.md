@@ -4,7 +4,7 @@
 
 Conditional Executor authority for inline attribution on web-sourced images and their prepared derivatives.
 
-**Trigger**: any placed `Status: Sourced` image, or a placed derivative whose filename has a copied `image_sources.json` record; Quick uses the same manifest without interaction.
+**Trigger**: any placed `Status: Sourced` image, or a placed image or derivative whose filename has an `image_sources.json` record (copied web provenance, or a user-supplied asset registered with its licence terms); Quick uses the same manifest without interaction.
 
 ## 1. Inline Attribution for Sourced Images
 

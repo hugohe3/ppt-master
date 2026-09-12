@@ -10,7 +10,7 @@ Conditional Executor authority for image status handling, placement, crop behavi
 
 | Status | Handling |
 |---|---|
-| `Existing` (user-provided) | Reference from `../images/` |
+| `Existing` (user-provided) | Reference from `../images/`; a manifest-backed file also loads [`executor-web-image.md`](./executor-web-image.md) |
 | `Generated` (Image_Generator) | Reference from `../images/`; a manifest-backed file also loads [`executor-web-image.md`](./executor-web-image.md) |
 | `Sourced` (Image_Searcher) | Reference from `../images/`; read `image_sources.json` for attribution — load [`executor-web-image.md`](./executor-web-image.md) |
 | `Needs-Manual` | Default uses a placeholder until Step 7; Quick blocks every required row, file presence notwithstanding |

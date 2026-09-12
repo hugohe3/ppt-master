@@ -131,7 +131,7 @@ Read ${SKILL_DIR}/templates/tables/table-vocabulary.md
 
 | Resource | Preparation |
 |---|---|
-| Supplied/extracted image | Copy the selected file into `images/`; keep its provenance; use the measured file |
+| Supplied/extracted image | Copy the selected file into `images/`; keep its provenance (supplied licence terms → `image_sources.json`, [`image-base.md`](../../references/image-base.md) §4); use the measured file |
 | Image-to-PPTX reconstruction asset | In Codex, preserve identity graphics through an exact vector, deterministic redraw, sufficient source asset, or reference-based high-resolution reconstruction; keep data graphics native-and-verified or exact; build the minimum registered clean-base/midground/subject/foreground group for scene imagery, batching padded-bbox-disjoint objects into one shared plate split by grid slicing or nested-SVG crops |
 | Bundled/custom/brand SVG icon | [Icon library contract](../../templates/icons/README.md): one primary generic library per pool (`icon_sync.py` rejects mixed batches), synced without page assignment; `simple-icons` for named brands |
 | Formula | No resource file; keep the LaTeX and choose text, inline marker, or block marker in §3 |

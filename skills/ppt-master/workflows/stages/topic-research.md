@@ -49,7 +49,7 @@ Default bundles only genuinely missing scope or research-boundary decisions into
 
 ## Step 2: Gather factual sources
 
-Use the search and fetch tools available in the research context; an isolated worker without them returns `blocked: web-tools-unavailable`. With no usable search/fetch context, pause and ask the user for authoritative URLs covering the gaps, then fetch each with `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL> -o projects/<research_slug>_web_sources/<source_slug>.md --no-images` (remote image links stay in the Markdown; nothing is downloaded).
+Use the search and fetch tools available in the research context (a `source_to_md.py` / `web_to_md.py` fetch takes `--no-images`, so no `_files/` sidecar lands beside the Markdown to enter the image pool on import); an isolated worker without them returns `blocked: web-tools-unavailable`. With no usable search/fetch context, pause and ask the user for authoritative URLs covering the gaps, then fetch each with `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL> -o projects/<research_slug>_web_sources/<source_slug>.md --no-images` (remote image links stay in the Markdown; nothing is downloaded).
 
 Orient (map authoritative sources to the gaps) → deep fetch (read the highest-signal primary pages in full) → targeted fill (search only for gaps still unsupported). Prefer primary sources (an encyclopedia page is a pointer — chase its claim one level to the source it cites and record that source), official sites, institutional releases, standards, and original research; then authoritative reference works and academic sources; then reputable reporting; avoid unsourced reposts, unverifiable summaries, and stock-aggregator pages.
 
