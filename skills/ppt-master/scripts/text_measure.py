@@ -856,7 +856,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         metavar='TEXT',
         help='Planned text in a non-Latin, non-CJK script (Thai, Devanagari, '
-             'Arabic, ...) measured as its own rate column; repeatable. The '
+             'Arabic, Hebrew, Cyrillic, ...) measured as its own rate column; repeatable. The '
              'design_spec.md outline is scanned for such scripts automatically.',
     )
     calibrate.add_argument(

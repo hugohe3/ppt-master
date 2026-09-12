@@ -36,6 +36,7 @@ import ipaddress
 import json
 import os
 import re
+import unicodedata
 import socket
 import subprocess
 import sys
@@ -314,12 +315,25 @@ def clean_title(title: str) -> str:
     return clean.strip()
 
 
+_FILENAME_TRANSLITERATIONS = str.maketrans({
+    'đ': 'd', 'Đ': 'D', 'ø': 'o', 'Ø': 'O', 'ł': 'l', 'Ł': 'L',
+    'ß': 'ss', 'æ': 'ae', 'Æ': 'AE', 'œ': 'oe', 'Œ': 'OE', 'ı': 'i',
+})
+
+
 def sanitize_filename(name: str) -> str:
-    """Sanitize a string for filesystem-safe filenames."""
+    """Sanitize a string for filesystem-safe filenames.
+
+    Accented Latin letters fold to their base letter (``Khát vọng`` ->
+    ``Khat_vong``) instead of vanishing; letters of any script and digits
+    stay, everything else is dropped.
+    """
+    folded = unicodedata.normalize('NFKD', name.translate(_FILENAME_TRANSLITERATIONS))
+    folded = ''.join(ch for ch in folded if not unicodedata.combining(ch))
     # Replace whitespace with underscore first
-    clean = re.sub(r'\s+', '_', name)
-    # Remove all except Chinese, English, Numbers, Underscore, Hyphen
-    clean = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9_-]', '', clean)
+    clean = re.sub(r'\s+', '_', folded)
+    # Keep letters and digits of any script, underscore, hyphen
+    clean = ''.join(ch for ch in clean if ch.isalnum() or ch in '_-')
     # Collapse repeating underscores
     clean = re.sub(r'_+', '_', clean)
     return clean[:80]  # Truncate

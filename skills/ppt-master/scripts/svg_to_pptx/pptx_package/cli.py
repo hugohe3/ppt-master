@@ -106,6 +106,7 @@ from ..drawingml.theme_fonts import (
     infer_master_text_style_spec,
     load_master_text_style_spec,
     load_theme_font_spec,
+    load_theme_font_spec_from_pages,
 )
 from ..drawingml.utils import unsafe_exported_font_faces
 from .narration import (
@@ -1631,26 +1632,53 @@ def _declared_canvas_viewbox(project_path: Path) -> str | None:
     return value.strip() if isinstance(value, str) and value.strip() else None
 
 
+_XML_LANG_ATTR = '{http://www.w3.org/XML/1998/namespace}lang'
+
+
+def _svg_root_language(project_path: Path) -> str | None:
+    """Return the ``lang`` / ``xml:lang`` the first svg_output page declares.
+
+    Quick has no lock; its pages carry the deck language on the root
+    ``<svg lang="...">`` instead.
+    """
+    pages = sorted((project_path / 'svg_output').glob('*.svg'))
+    for page in pages[:1]:
+        try:
+            for _event, elem in ET.iterparse(str(page), events=('start',)):
+                value = elem.get('lang') or elem.get(_XML_LANG_ATTR)
+                if isinstance(value, str) and value.strip():
+                    try:
+                        return normalize_language_tag(value)
+                    except LanguageTagError as exc:
+                        raise LanguageTagError(
+                            f'{page.name} root lang is invalid: {exc}'
+                        ) from exc
+                return None
+        except ET.ParseError:
+            return None
+    return None
+
+
 def _declared_primary_language(project_path: Path) -> str | None:
-    """Return the canonical content language declared by the execution lock."""
+    """Return the canonical content language: the lock's, else the first page's root lang."""
     lock_path = project_path / 'spec_lock.md'
     try:
         from update_spec import parse_lock
 
         lock = parse_lock(lock_path)
     except (OSError, ValueError):
-        return None
+        lock = {}
     communication = lock.get('communication', {})
     value = communication.get('primary_language')
-    if not isinstance(value, str) or not value.strip():
-        return None
-    try:
-        return normalize_language_tag(value)
-    except LanguageTagError as exc:
-        raise LanguageTagError(
-            'spec_lock.md communication.primary_language '
-            f'is invalid: {exc}'
-        ) from exc
+    if isinstance(value, str) and value.strip():
+        try:
+            return normalize_language_tag(value)
+        except LanguageTagError as exc:
+            raise LanguageTagError(
+                'spec_lock.md communication.primary_language '
+                f'is invalid: {exc}'
+            ) from exc
+    return _svg_root_language(project_path)
 
 
 def _print_structure_contract_error(
@@ -1994,6 +2022,18 @@ Recorded narration:
             'spec_lock.md. Require a matching final quality report, infer one '
             'consistent canvas, infer flat versus structured output from the '
             'complete SVG roster, and support normal export capabilities.'
+        ),
+    )
+    parser.add_argument(
+        '--primary-language',
+        type=str,
+        default=None,
+        metavar='TAG',
+        help=(
+            'Deck language as a BCP-47 tag (vi-VN, he-IL). Overrides '
+            'spec_lock.md communication.primary_language and the root '
+            '<svg lang="..."> of the first page; sets run proofing language, '
+            'right-to-left defaults, theme script slots, and docProps.'
         ),
     )
     parser.add_argument(
@@ -2392,19 +2432,26 @@ Recorded narration:
         else _declared_pptx_structure_mode(project_path)
     )
     primary_language = None
-    if not lockless_export:
-        try:
-            primary_language = _declared_primary_language(project_path)
-        except LanguageTagError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
-        if primary_language is None:
-            print(
-                "Warning: spec_lock.md has no "
-                "communication.primary_language; using legacy per-run "
-                "language detection.",
-                file=sys.stderr,
+    try:
+        primary_language = (
+            normalize_language_tag(args.primary_language)
+            if args.primary_language
+            else _declared_primary_language(project_path)
+        )
+    except LanguageTagError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    if primary_language is None:
+        print(
+            "Warning: no deck language declared ("
+            + (
+                "root <svg lang=\"...\"> on the first page, or --primary-language"
+                if lockless_export
+                else "spec_lock.md communication.primary_language"
             )
+            + "); using legacy per-run language detection.",
+            file=sys.stderr,
+        )
     if (
         pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES
         and not (args.roundtrip and pptx_structure == 'preserve')
@@ -2639,6 +2686,10 @@ Recorded narration:
             "  Quick PPTX structure: "
             f"{pptx_structure} (inferred from {len(native_files)} SVG page(s))"
         )
+        if primary_language is not None and theme_font_spec is None:
+            # A lockless roster that declares its language still gets theme
+            # fonts (and their script slots) from the faces its pages use.
+            theme_font_spec = load_theme_font_spec_from_pages(project_path, primary_language)
         if quick_template_specs is not None:
             try:
                 (

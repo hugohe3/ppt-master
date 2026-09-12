@@ -3813,6 +3813,12 @@ def describe_animation_effect(effect: object) -> dict[str, Any]:
         }
         if raw_spec.get('type') == 'enum':
             spec['values'] = list(raw_spec['values'])
+        if name == 'direction':
+            spec['note'] = (
+                'the direction the motion travels; PowerPoint names the origin '
+                'edge, so right = "From Left", left = "From Right", down = '
+                '"From Top", up = "From Bottom"'
+            )
         option_contract[name] = spec
     return {
         'input': effect,

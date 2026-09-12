@@ -756,7 +756,7 @@ Convert project SVGs into PPTX. EMF/WMF images referenced from `svg_output/` are
 
 Each exported object is named after `data-pptx-shape-name`, else its SVG `id` (or `data-name`), else a positional `Group N` / `TextBox N`; forced-Morph `!!` names still win. The PowerPoint Selection and Animation panes therefore read like the source SVG.
 
-The lock's `primary_language` tags base-template default text (new text boxes, master and layout placeholders); a right-to-left language also makes those defaults right-to-left and right-aligned and points the theme's `Arab` / `Hebr` script font at the locked face.
+The deck language — the lock's `primary_language`, else the first page's root `<svg lang="...">` (Quick's channel), else `--primary-language TAG` — tags base-template default text (new text boxes, master and layout placeholders) and docProps; a right-to-left language also makes those defaults right-to-left and right-aligned, and the theme's script font for that language (`Arab`, `Hebr`, `Thai`, `Deva`, ...) points at the locked face, which a lockless roster takes from its pages. A run of Latin letters inside a non-Latin deck is tagged `en-US`.
 
 Native formulas use the two markers owned by
 [`native-formula.md`](../../references/native-formula.md). A standalone block

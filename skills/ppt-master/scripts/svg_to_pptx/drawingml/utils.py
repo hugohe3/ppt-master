@@ -177,6 +177,7 @@ PPT_SAFE_FONTS = frozenset({
     'malgun gothic', 'gulim', 'dotum', 'batang',
     'nirmala ui', 'mangal', 'kokila', 'aparajita', 'utsaah',
     'leelawadee ui', 'leelawadee', 'cordia new', 'angsana new', 'browallia new',
+    'david', 'miriam', 'frank ruehl', 'gisha', 'levenim mt', 'narkisim', 'aharoni',
     'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
     'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
     'times new roman', 'times', 'georgia', 'cambria', 'cambria math', 'palatino',

@@ -297,7 +297,7 @@ animation-to-video contract.
 | `order` | Page-wide order for ordinary rows; ties keep SVG group order, then `effects[]` index; an unlisted animated group inherits the order of the nearest listed group above it in SVG order (0 before the first); `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
 | `delay` | Row-specific seconds added to the resolved Start or shape trigger |
 | `duration` | Per-row schedule duration; scalable native trees keep internal ratios, while `entrance_appear` and instantaneous presets keep their authored duration and use the value for `after-previous` spacing |
-| `effect_options` | Effect-specific parameters (`direction`, `amount`, `color`, `font_name`, `relative`, `size`) limited to what the selected effect supports (`pptx_animations.py --describe <effect>`); requires an explicit canonical `effect` in the same block or row; `font_name` is one target-installed face |
+| `effect_options` | Effect-specific parameters (`direction`, `amount`, `color`, `font_name`, `relative`, `size`) limited to what the selected effect supports (`pptx_animations.py --describe <effect>`; `direction` is the way the motion travels — PowerPoint names the origin edge, so `right` is its "From Left"); requires an explicit canonical `effect` in the same block or row; `font_name` is one target-installed face |
 | `trigger_shape` | Different top-level group id for native **On Click of**; row-only, not inherited; implies `on-click` and accepts an explicit row `trigger` only when it is also `on-click` |
 | `repeat_count` / `repeat_duration` | Repeat count or total repeat span; mutually exclusive |
 | `auto_reverse`, `rewind` | Reverse each cycle and/or restore the pre-animation state |

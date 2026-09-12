@@ -1292,6 +1292,24 @@ class SVGQualityChecker:
                     if hydrated_payloads:
                         result['info']['native_payload_refs'] = hydrated_payloads
 
+                if (
+                    self.quick_generate
+                    and svg_path.name == sorted(
+                        p.name for p in svg_path.parent.glob('*.svg')
+                    )[0]
+                    and not (
+                        root.get('lang')
+                        or root.get('{http://www.w3.org/XML/1998/namespace}lang')
+                    )
+                ):
+                    result['warnings'].append(
+                        'Quick roster declares no deck language: put '
+                        'lang="<BCP-47>" (vi-VN, he-IL, ...) on the first '
+                        "page's root <svg>; export reads it for run proofing "
+                        'language, right-to-left defaults, theme script slots '
+                        'and docProps (advisory)'
+                    )
+
                 # 1. Check viewBox
                 self._check_viewbox(
                     root,
