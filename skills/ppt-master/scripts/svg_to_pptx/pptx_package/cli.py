@@ -1644,16 +1644,17 @@ def _svg_root_language(project_path: Path) -> str | None:
     pages = sorted((project_path / 'svg_output').glob('*.svg'))
     for page in pages[:1]:
         try:
-            for _event, elem in ET.iterparse(str(page), events=('start',)):
-                value = elem.get('lang') or elem.get(_XML_LANG_ATTR)
-                if isinstance(value, str) and value.strip():
-                    try:
-                        return normalize_language_tag(value)
-                    except LanguageTagError as exc:
-                        raise LanguageTagError(
-                            f'{page.name} root lang is invalid: {exc}'
-                        ) from exc
-                return None
+            with open(str(page), 'rb') as page_file:
+                for _event, elem in ET.iterparse(page_file, events=('start',)):
+                    value = elem.get('lang') or elem.get(_XML_LANG_ATTR)
+                    if isinstance(value, str) and value.strip():
+                        try:
+                            return normalize_language_tag(value)
+                        except LanguageTagError as exc:
+                            raise LanguageTagError(
+                                f'{page.name} root lang is invalid: {exc}'
+                            ) from exc
+                    return None
         except ET.ParseError:
             return None
     return None
