@@ -447,12 +447,15 @@ def _build_template_library() -> tuple[dict, dict[str, dict], dict[str, dict], d
     return library, candidates, registered_roots, index_contracts
 
 
-def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
+def _build_template_options(
+    confirm_dir: Path, root_snapshots: list[dict] | None = None,
+) -> tuple[dict, dict[str, dict]]:
     """Return the browser contract and its server-owned candidate whitelist."""
     source, explicit_roots = _read_template_options_input(confirm_dir)
     library, candidates, registered_roots, index_contracts = _build_template_library()
     explicit = []
     suggested_keys = []
+    snapshots = {item['workspace_root']: item for item in root_snapshots or []}
     for root in explicit_roots:
         canonical_root = str(root)
         registered = registered_roots.get(canonical_root)
@@ -460,7 +463,10 @@ def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
             suggested_keys.append(registered['key'])
             continue
         digest = hashlib.sha256(canonical_root.encode('utf-8')).hexdigest()
+        snapshot = snapshots.get(canonical_root)
         root_specs = [
+            (root / spec['path'], spec['kind']) for spec in snapshot['specs']
+        ] if snapshot is not None else [
             (spec, _template_kind_from_spec(spec))
             for spec in _template_design_specs(root)
         ]
@@ -490,8 +496,7 @@ def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
 
     # One supplied exact root is an unambiguous convenience default, including
     # a multi-kind root whose kinds compose rather than compete. Several roots
-    # are candidates for the single-select controls, not an instruction to
-    # select all of them.
+    # remain unselected candidates until the user chooses a combination.
     preselected_keys = suggested_keys if len(explicit_roots) == 1 else []
 
     response = {
@@ -534,12 +539,14 @@ def _template_selection_sha256(
     mode: str,
     selections: list[dict],
     options_sha256: str,
+    root_snapshots: list[dict],
 ) -> str:
     """Bind one resolved choice to the candidate/options contract it used."""
     return _json_sha256({
         'mode': mode,
         'selections': selections,
         'options_sha256': options_sha256,
+        'root_snapshots': root_snapshots,
     })
 
 
@@ -554,6 +561,7 @@ def _validate_template_selection(data: dict) -> None:
         'options_sha256',
         'selection_sha256',
         'confirmed_at',
+        'root_snapshots',
     }
     if set(data) != expected_fields:
         raise ValueError(f'{TEMPLATE_SELECTION_NAME} has invalid fields')
@@ -587,7 +595,6 @@ def _validate_template_selection(data: dict) -> None:
 
     seen_root_kinds = set()
     seen_kinds: set[str] = set()
-    explicit_roots_seen: dict[str, set[str]] = {}
     for index, selection in enumerate(selections):
         if not isinstance(selection, dict):
             raise ValueError(
@@ -632,20 +639,31 @@ def _validate_template_selection(data: dict) -> None:
                 f'{TEMPLATE_SELECTION_NAME} selections[{index}] '
                 'workspace_root must be a canonical absolute path'
             )
-        if source == 'explicit':
-            # One explicit workspace root may contribute several kinds, so the
-            # cap counts roots rather than selections.
-            explicit_roots_seen.setdefault(workspace_root, set()).add(kind)
-            if len(explicit_roots_seen) > 1:
-                raise ValueError(
-                    'template selection allows at most one explicit workspace'
-                )
         if (workspace_root, kind) in seen_root_kinds:
             raise ValueError(
                 f'{TEMPLATE_SELECTION_NAME} contains duplicate workspace root '
                 f'for kind {kind!r}: {workspace_root}'
             )
         seen_root_kinds.add((workspace_root, kind))
+    snapshots = data.get('root_snapshots')
+    if not isinstance(snapshots, list):
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} requires root_snapshots; confirm Stage 1 again')
+    snapshot_selections = []
+    try:
+        for root in snapshots:
+            if sorted(spec['kind'] for spec in root['specs']) != root['kinds']:
+                raise ValueError('snapshot kinds do not match specs')
+            if not isinstance(root['files'], dict) or any(spec['path'] not in root['files'] for spec in root['specs']):
+                raise ValueError('snapshot is missing spec fingerprints')
+            for spec in root['specs']:
+                item = {'source': root['source'], 'kind': spec['kind'], 'workspace_root': root['workspace_root']}
+                if root['source'] == 'library':
+                    item['id'] = spec['id']
+                snapshot_selections.append(item)
+    except (KeyError, TypeError) as exc:
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} has invalid root_snapshots') from exc
+    if sorted(map(_json_sha256, snapshot_selections)) != sorted(map(_json_sha256, selections)):
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} root_snapshots do not match selections')
     if not isinstance(data.get('confirmed_at'), str) or not data['confirmed_at']:
         raise ValueError(
             f'{TEMPLATE_SELECTION_NAME} confirmed_at must be a non-empty string'
@@ -654,6 +672,7 @@ def _validate_template_selection(data: dict) -> None:
         mode,
         selections,
         options_sha256,
+        snapshots,
     )
     if selection_sha256 != expected_selection_sha256:
         raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 does not match')
@@ -686,7 +705,9 @@ def _validate_explicit_root_closure(
 
 
 def _read_template_selection(selection_file: Path) -> dict:
-    """Read a selection and revalidate it against current indexed options."""
+    """Check the frozen choice, source bytes, and still-current options/indexes."""
+    from apply_template import validate_template_snapshot_sources
+
     data = _read_json_object(selection_file)
     _validate_template_selection(data)
     options_file = selection_file.parent / TEMPLATE_OPTIONS_NAME
@@ -695,7 +716,10 @@ def _read_template_selection(selection_file: Path) -> dict:
             f'{TEMPLATE_SELECTION_NAME} must be confirmed after the current '
             f'{TEMPLATE_OPTIONS_NAME}'
         )
-    options, candidates = _build_template_options(selection_file.parent)
+    validate_template_snapshot_sources(
+        selection_file.parent.parent, data['root_snapshots'], data['selection_sha256'],
+    )
+    options, candidates = _build_template_options(selection_file.parent, data['root_snapshots'])
     if data['options_sha256'] != options['options_sha256']:
         raise ValueError(
             f'{TEMPLATE_SELECTION_NAME} options_sha256 no longer matches current options'
@@ -765,28 +789,10 @@ def _read_template_handoff(project_path: Path, handoff_file: Path) -> dict:
             f'{TEMPLATE_HANDOFF_NAME} selection_sha256 does not match selection'
         )
     if data['mode'] == 'templates':
-        if not _installed_template_specs(project_path):
-            raise ValueError(
-                f'{TEMPLATE_HANDOFF_NAME} requires at least one installed '
-                f'template spec: {project_path / "templates"}/'
-                'design_spec.<kind>.<id>.md'
-            )
+        from apply_template import read_template_install
+
+        read_template_install(project_path, selection['root_snapshots'], selection['selection_sha256'])
     return data
-
-
-def _installed_template_specs(project_path: Path) -> list[Path]:
-    """Return every template spec installed into the project by the apply stage.
-
-    The apply stage installs one file per selected workspace, named
-    ``design_spec.<kind>.<id>.md``. A bare ``design_spec.md`` under
-    ``templates/`` means the project is itself a Create Template workspace and
-    is deliberately excluded here.
-    """
-    return sorted(
-        path
-        for path in (project_path / 'templates').glob('design_spec.*.md')
-        if path.is_file() and _TEMPLATE_SPEC_NAME_RE.fullmatch(path.name)
-    )
 
 
 def _complete_template_selection(project_path: Path) -> int:
@@ -810,12 +816,12 @@ def _complete_template_selection(project_path: Path) -> int:
         )
         return 1
     if selection['mode'] == 'templates':
-        if not _installed_template_specs(project_path):
-            logger.error(
-                'cannot complete template selection before template apply '
-                'writes %s/design_spec.<kind>.<id>.md',
-                project_path / 'templates',
-            )
+        from apply_template import read_template_install
+
+        try:
+            read_template_install(project_path, selection['root_snapshots'], selection['selection_sha256'])
+        except (OSError, ValueError) as exc:
+            logger.error('cannot complete template selection: %s', exc)
             return 1
 
     handoff_file = confirm_dir / TEMPLATE_HANDOFF_NAME
@@ -939,6 +945,7 @@ def _resolve_template_confirmation(
     payload: dict,
     candidates: dict[str, dict],
     options_sha256: str,
+    project_path: Path,
 ) -> dict:
     """Resolve browser keys against the current server-owned candidate set."""
     required_fields = {'mode', 'selection_keys'}
@@ -974,10 +981,17 @@ def _resolve_template_confirmation(
         item.get('id', ''),
         item['workspace_root'],
     ))
+    from apply_template import snapshot_template_roots
+
+    _validate_explicit_root_closure(selections, candidates)
+    root_snapshots = snapshot_template_roots(
+        project_path, sorted({item['workspace_root'] for item in selections}),
+    )
     selection_sha256 = _template_selection_sha256(
         mode,
         selections,
         options_sha256,
+        root_snapshots,
     )
     receipt = {
         'schema_version': TEMPLATE_SCHEMA_VERSION,
@@ -988,9 +1002,9 @@ def _resolve_template_confirmation(
         'options_sha256': options_sha256,
         'selection_sha256': selection_sha256,
         'confirmed_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+        'root_snapshots': root_snapshots,
     }
     _validate_template_selection(receipt)
-    _validate_explicit_root_closure(selections, candidates)
     return receipt
 
 
@@ -2812,6 +2826,7 @@ def create_app(
                     template_selection_payload,
                     template_candidates,
                     template_options['options_sha256'],
+                    project_path,
                 )
             except (OSError, json.JSONDecodeError, ValueError) as exc:
                 return jsonify({

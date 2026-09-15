@@ -53,7 +53,7 @@ class ApplyTemplateTests(unittest.TestCase):
             text[h1:],
         )
         self.assertEqual(text.count("**Installed from**"), 1)
-        self.assertEqual(sorted(p.name for p in self.project.iterdir()), ["templates"])
+        self.assertEqual(sorted(p.name for p in self.project.iterdir()), ["template_install.json", "templates"])
         receipt = _receipt(plan)
         self.assertIn("sources=library", receipt)
         self.assertIn("kinds=style", receipt)

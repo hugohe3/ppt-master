@@ -3124,9 +3124,21 @@ def _remove_template_shape(
     sp_tree.remove(shape)
 
 
+def _template_reference_indices(
+    states: list[_TemplateRuntimeSlide],
+    public_slide_count: int | None,
+) -> list[int]:
+    """Use public pages as truth, or prototypes for an otherwise unused Master."""
+    return [
+        index for index, state in enumerate(states)
+        if public_slide_count is None or state.spec.slide_num <= public_slide_count
+    ] or list(range(len(states)))
+
+
 def _move_template_background(
     states: list[_TemplateRuntimeSlide],
     target_path: Path,
+    public_slide_count: int | None = None,
 ) -> str:
     backgrounds = [
         _extract_slide_background_xml(state.slide_path.read_text(encoding="utf-8"))
@@ -3137,8 +3149,10 @@ def _move_template_background(
             "Template background metadata must resolve to an explicit background "
             "on every affected slide"
         )
+    reference_indices = _template_reference_indices(states, public_slide_count)
     canonical_backgrounds = set()
-    for background in backgrounds:
+    for index in reference_indices:
+        background = backgrounds[index]
         if background is None:
             continue
         wrapper = ET.fromstring(
@@ -3148,11 +3162,11 @@ def _move_template_background(
             ET.tostring(list(wrapper)[0], encoding="utf-8")
         )
     if len(canonical_backgrounds) != 1:
-        slide_names = ", ".join(state.spec.svg_path.name for state in states)
+        slide_names = ", ".join(states[index].spec.svg_path.name for index in reference_indices)
         raise TemplateStructureError(
             f"Explicit template background differs across slides: {slide_names}"
         )
-    background_xml = backgrounds[0]
+    background_xml = backgrounds[reference_indices[0]]
     if background_xml is None:
         raise TemplateStructureError("Template background is unexpectedly empty")
     target_xml = target_path.read_text(encoding="utf-8")
@@ -3181,6 +3195,7 @@ def _move_template_solid_background_shapes(
     shapes: list[ET.Element],
     target_path: Path,
     slide_size_emu: tuple[int, int],
+    public_slide_count: int | None = None,
 ) -> str | None:
     """Move repeated full-slide solid rects into a master/layout p:bg."""
     backgrounds = [
@@ -3194,13 +3209,14 @@ def _move_template_solid_background_shapes(
             "A template background resolves to a full-slide solid rect on only "
             "some slides sharing the structure"
         )
-    canonical = {background for background in backgrounds if background is not None}
+    reference_indices = _template_reference_indices(states, public_slide_count)
+    canonical = {backgrounds[index] for index in reference_indices}
     if len(canonical) != 1:
-        slide_names = ", ".join(state.spec.svg_path.name for state in states)
+        slide_names = ", ".join(states[index].spec.svg_path.name for index in reference_indices)
         raise TemplateStructureError(
             f"Explicit template solid background differs across slides: {slide_names}"
         )
-    background_xml = backgrounds[0]
+    background_xml = backgrounds[reference_indices[0]]
     if background_xml is None:
         return None
     target_xml = target_path.read_text(encoding="utf-8")
@@ -3295,7 +3311,7 @@ def _move_template_static_shape(
             raise TemplateStructureError(
                 f"{item.element_id}: structure item is a background on only some slides"
             )
-        return _move_template_background(states, target_path)
+        return _move_template_background(states, target_path, public_slide_count)
 
     resolved_shapes = [shape for shape in shapes if shape is not None]
     if item.is_background:
@@ -3304,6 +3320,7 @@ def _move_template_static_shape(
             resolved_shapes,
             target_path,
             slide_size_emu,
+            public_slide_count,
         )
         if background_xml is None:
             raise TemplateStructureError(
@@ -3315,10 +3332,9 @@ def _move_template_static_shape(
     # pages alone decide the atom (a re-skinned rule must not be refused
     # because an unused prototype still carries the original paint).
     reference = [
-        (state, shape)
-        for state, shape in zip(states, resolved_shapes)
-        if public_slide_count is None or state.spec.slide_num <= public_slide_count
-    ] or list(zip(states, resolved_shapes))
+        (states[index], resolved_shapes[index])
+        for index in _template_reference_indices(states, public_slide_count)
+    ]
     canonical = {
         _canonical_shape_xml(shape, state.rels)
         for state, shape in reference
@@ -3713,13 +3729,15 @@ def _set_placeholder_theme_font_role(
     item: TemplateElementSpec,
     theme_font_spec: ThemeFontSpec | None,
 ) -> None:
-    """Force semantic text placeholders onto the correct theme font role."""
+    """Use the placeholder's theme role only when it preserves the actual face."""
     if theme_font_spec is None:
         return
     if item.placeholder == "title":
         prefix = "+mj"
+        target_face = theme_font_spec.major
     elif item.placeholder in TEMPLATE_PLACEHOLDER_TYPES:
         prefix = "+mn"
+        target_face = theme_font_spec.minor
     else:
         return
     for props_tag in ("rPr", "defRPr", "endParaRPr"):
@@ -3727,7 +3745,13 @@ def _set_placeholder_theme_font_role(
             for font_tag, suffix in (("latin", "lt"), ("ea", "ea"), ("cs", "cs")):
                 font = props.find(f"{{{DML_NS}}}{font_tag}")
                 if font is not None:
-                    font.set("typeface", f"{prefix}-{suffix}")
+                    face = font.get("typeface")
+                    if face == f"+mj-{suffix}":
+                        face = getattr(theme_font_spec.major, font_tag)
+                    elif face == f"+mn-{suffix}":
+                        face = getattr(theme_font_spec.minor, font_tag)
+                    if face and face == getattr(target_face, font_tag):
+                        font.set("typeface", f"{prefix}-{suffix}")
 
 
 def _layout_placeholder_shape(

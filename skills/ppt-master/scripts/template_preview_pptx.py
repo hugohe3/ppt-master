@@ -43,6 +43,7 @@ from svg_to_pptx.pptx_package.builder import (  # noqa: E402
 )
 from svg_to_pptx.pptx_package.template_structure import (  # noqa: E402
     load_template_source_themes,
+    parse_template_slides,
 )
 
 
@@ -322,7 +323,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help=(
             "Replace eligible SVG chart/table fallbacks with PowerPoint-native "
-            "objects. Default review export keeps the visible SVG fallbacks."
+            "objects. Enabled automatically for typed chart/table placeholders; "
+            "otherwise the default keeps visible SVG fallbacks."
         ),
     )
     return parser
@@ -380,11 +382,20 @@ def main(argv: list[str] | None = None) -> int:
         text_style, title_px, body_px = infer_master_text_style_spec(
             all_svg_files
         )
+        typed_slots = sorted({
+            item.placeholder
+            for spec in parse_template_slides(svg_files)
+            for item in spec.placeholders
+            if item.placeholder in {"chart", "table"}
+        })
+        native_objects = args.native_charts_and_tables or bool(typed_slots)
 
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")
         print(f"  Template source: {template_dir}")
         print(f"  Slide SVG prototypes: {len(svg_files)}")
+        if typed_slots:
+            print("  Native Chart/Table compilation: required by typed " + ", ".join(typed_slots) + " slots")
         if replication_mode == "mirror":
             print("  Review placeholder frames: preserved source Slide geometry")
         else:
@@ -408,7 +419,7 @@ def main(argv: list[str] | None = None) -> int:
                 enable_notes=False,
                 animation=None,
                 image_optimize=False,
-                native_objects=args.native_charts_and_tables,
+                native_objects=native_objects,
                 pptx_structure="structured",
                 use_layout_placeholder_frames=use_full_placeholder_frames,
                 master_text_style_spec=text_style,

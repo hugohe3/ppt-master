@@ -22,10 +22,13 @@ from __future__ import annotations
 
 import argparse
 import filecmp
+import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -51,12 +54,13 @@ CHECKER = SCRIPT_DIR / "svg_quality_checker.py"
 KINDS = ("brand", "style", "layout", "deck")
 STRUCTURAL_KINDS = ("layout", "deck")
 ASSET_DIRS = ("images", "icons")
+INSTALL_RECEIPT_NAME = "template_install.json"
 BITMAP_SUFFIXES = {
     ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp",
 }
 
 
-class ApplyTemplateError(Exception):
+class ApplyTemplateError(ValueError):
     """A contract violation that blocks installation."""
 
 
@@ -109,6 +113,8 @@ class InstallPlan:
     owner_kind: str | None
     mappings: list[Mapping] = field(default_factory=list)
     removals: list[Path] = field(default_factory=list)
+    root_snapshots: list[dict] = field(default_factory=list)
+    selection_sha256: str | None = None
 
     @property
     def installed_specs(self) -> list[str]:
@@ -378,17 +384,202 @@ def _preflight(plan: InstallPlan) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _write(plan: InstallPlan) -> None:
-    for path in plan.removals:
-        path.unlink()
-    for mapping in plan.mappings:
-        if mapping.status == "identical":
+def _file_sha256(path: Path) -> str:
+    with path.open("rb") as stream:
+        digest = hashlib.sha256()
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _workspace_files(root: Path) -> dict[str, str]:
+    return {
+        path.relative_to(root).as_posix(): _file_sha256(path)
+        for name in ("templates", *ASSET_DIRS)
+        for path in _iter_files(root / name)
+    }
+
+
+def _root_snapshots(roots: list[RootRecord]) -> list[dict]:
+    return [{
+        "workspace_root": str(record.root),
+        "source": record.source,
+        "kinds": sorted(record.kinds),
+        "specs": [{
+            "kind": spec.kind,
+            "id": spec.template_id,
+            "path": spec.path.relative_to(record.root).as_posix(),
+        } for spec in sorted(record.specs, key=lambda spec: spec.kind)],
+        "files": _workspace_files(record.root),
+    } for record in sorted(roots, key=lambda record: str(record.root))]
+
+
+def snapshot_template_roots(project: Path, root_args: list[str]) -> list[dict]:
+    """Freeze the selected roots, kinds, spec identities, and portable file bytes."""
+    roots = [_load_root(arg, project) for arg in root_args]
+    return _root_snapshots(roots)
+
+
+def _install_contract(snapshots: list[dict]) -> tuple[list[str], dict | None, set[str]]:
+    specs = sorted(
+        f"design_spec.{spec['kind']}.{spec['id']}.md"
+        for root in snapshots for spec in root["specs"]
+    )
+    paths = {f"templates/{name}" for name in specs}
+    for root in snapshots:
+        paths.update(name for name in root["files"] if name.startswith(("images/", "icons/")))
+    owner = next((root for root in snapshots if "layout" in root["kinds"]), None)
+    owner_kind = "layout"
+    if owner is None:
+        owner = next((root for root in snapshots if "deck" in root["kinds"]), None)
+        owner_kind = "deck"
+    roster = None
+    if owner is not None:
+        structural = sorted(
+            name for name in owner["files"]
+            if name.startswith("templates/")
+            and not _is_spec_file(Path(name))
+            and Path(name).suffix.lower() not in BITMAP_SUFFIXES
+        )
+        paths.update(structural)
+        roster = {"workspace_root": owner["workspace_root"], "kind": owner_kind, "files": structural}
+    return specs, roster, paths
+
+
+def read_template_install(
+    project: Path,
+    snapshots: list[dict],
+    selection_sha256: str | None,
+    *,
+    content_root: Path | None = None,
+) -> dict:
+    """Verify installer provenance and every installed spec, roster file, and asset.
+
+    Extra project images/icons are allowed; selected assets and the exact active
+    template roster must still match. ``content_root`` validates staging before
+    publication using the same checks as Confirm UI handoff.
+    """
+    content_root = content_root or project
+    receipt_path = content_root / INSTALL_RECEIPT_NAME
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ApplyTemplateError(f"Cannot read {receipt_path}; run apply_template.py: {exc}") from exc
+    if not isinstance(receipt, dict) or receipt.get("schema_version") != 1:
+        raise ApplyTemplateError(f"Invalid {INSTALL_RECEIPT_NAME}; rerun apply_template.py")
+    if (receipt.get("project") != str(project.resolve())
+            or receipt.get("roots") != snapshots
+            or receipt.get("selection_sha256") != selection_sha256):
+        raise ApplyTemplateError("Template installation does not match the confirmed roots/snapshot")
+    specs, roster, expected_paths = _install_contract(snapshots)
+    files = receipt.get("files")
+    if (receipt.get("installed_specs") != specs or receipt.get("active_roster") != roster
+            or not isinstance(files, dict) or set(files) != expected_paths):
+        raise ApplyTemplateError("Template installation spec/roster/asset receipt is incomplete")
+    actual_specs = sorted(path.name for path in (content_root / "templates").glob("design_spec*.md"))
+    actual_roster = {
+        path.relative_to(content_root).as_posix()
+        for path in _iter_files(content_root / "templates")
+        if not _is_spec_file(path) and path.suffix.lower() not in BITMAP_SUFFIXES
+    }
+    if actual_specs != specs or actual_roster != set(roster["files"] if roster else []):
+        raise ApplyTemplateError("Installed template specs or active roster differ from the selection")
+    for name, digest in files.items():
+        path = content_root / name
+        if not path.is_file() or _file_sha256(path) != digest:
+            raise ApplyTemplateError(f"Installed template file changed or is missing: {name}")
+    return receipt
+
+
+def validate_template_snapshot_sources(
+    project: Path, snapshots: list[dict], selection_sha256: str,
+) -> None:
+    """Reject source drift, allowing only an installer-proven in-place change."""
+    for root in snapshots:
+        path = Path(root["workspace_root"])
+        if _workspace_files(path) == root["files"]:
             continue
-        mapping.dst.parent.mkdir(parents=True, exist_ok=True)
-        if mapping.content is not None:
-            mapping.dst.write_bytes(mapping.content)
+        if path == project.resolve():
+            read_template_install(project, snapshots, selection_sha256)
         else:
-            shutil.copy2(mapping.src, mapping.dst)
+            raise ApplyTemplateError(f"Confirmed template source changed: {path}; confirm Stage 1 again")
+
+
+def _write(plan: InstallPlan) -> None:
+    """Stage and verify the full install, then publish with rollback on failure.
+
+    Directory renames are atomic individually. The journal restores all earlier
+    renames if any publication fails, including removed Deck files and the old
+    receipt. Backups survive if rollback itself fails so recovery remains possible.
+    """
+    transaction = Path(tempfile.mkdtemp(prefix=".template-install-", dir=plan.project))
+    staged = transaction / "staged"
+    backup = transaction / "backup"
+    moved: list[str] = []
+    published: list[str] = []
+    cleanup = True
+    try:
+        staged.mkdir()
+        backup.mkdir()
+        names = ["templates", *ASSET_DIRS]
+        for name in names:
+            current = plan.project / name
+            if current.exists():
+                shutil.copytree(current, staged / name)
+        for path in plan.removals:
+            (staged / path.relative_to(plan.project)).unlink()
+        for mapping in plan.mappings:
+            destination = staged / mapping.dst.relative_to(plan.project)
+            if mapping.status != "identical":
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                if mapping.content is not None:
+                    destination.write_bytes(mapping.content)
+                else:
+                    shutil.copy2(mapping.src, destination)
+            expected = (
+                hashlib.sha256(mapping.content).hexdigest()
+                if mapping.content is not None else _file_sha256(mapping.src)
+            )
+            if _file_sha256(destination) != expected:
+                raise ApplyTemplateError(f"Staged file does not match its source: {mapping.dst}")
+        if _root_snapshots(plan.roots) != plan.root_snapshots:
+            raise ApplyTemplateError("Template source changed during staging; retry the installation")
+        specs, roster, paths = _install_contract(plan.root_snapshots)
+        receipt = {
+            "schema_version": 1,
+            "project": str(plan.project),
+            "selection_sha256": plan.selection_sha256,
+            "roots": plan.root_snapshots,
+            "installed_specs": specs,
+            "active_roster": roster,
+            "files": {name: _file_sha256(staged / name) for name in sorted(paths)},
+        }
+        (staged / INSTALL_RECEIPT_NAME).write_text(
+            json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8",
+        )
+        read_template_install(plan.project, plan.root_snapshots, plan.selection_sha256, content_root=staged)
+        for name in [*names, INSTALL_RECEIPT_NAME]:
+            if not (staged / name).exists():
+                continue
+            current = plan.project / name
+            if current.exists():
+                os.replace(current, backup / name)
+                moved.append(name)
+            os.replace(staged / name, current)
+            published.append(name)
+    except BaseException:
+        try:
+            for name in reversed(published):
+                os.replace(plan.project / name, staged / name)
+            for name in reversed(moved):
+                os.replace(backup / name, plan.project / name)
+        except OSError as exc:
+            cleanup = False
+            raise ApplyTemplateError(f"Installation rollback failed; recover backups in {transaction}: {exc}") from exc
+        raise
+    finally:
+        if cleanup:
+            shutil.rmtree(transaction)
 
 
 def _receipt(plan: InstallPlan) -> str:
@@ -439,6 +630,13 @@ def apply_templates(
         for record in roots:
             _validate_root(record)
     plan = _plan(project, roots)
+    plan.root_snapshots = _root_snapshots(roots)
+    selection_file = project / "confirm_ui" / "template_selection.json"
+    if selection_file.is_file():
+        selection = json.loads(selection_file.read_text(encoding="utf-8"))
+        if selection.get("mode") != "templates" or selection.get("root_snapshots") != plan.root_snapshots:
+            raise ApplyTemplateError("Selected roots or source bytes differ from the Stage-1 confirmation")
+        plan.selection_sha256 = selection["selection_sha256"]
     _preflight(plan)
     if not dry_run:
         _write(plan)
@@ -479,7 +677,7 @@ def main(argv: list[str] | None = None) -> int:
             dry_run=args.dry_run,
             validate=not args.skip_validation,
         )
-    except ApplyTemplateError as exc:
+    except (OSError, ValueError) as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
         return 1
     verb = "would install" if args.dry_run else "installed"
@@ -494,6 +692,8 @@ def main(argv: list[str] | None = None) -> int:
     copied = len(plan.mappings) - same
     note = f", {same} already present" if same else ""
     print(f"[OK] {verb} {copied} file(s) into {plan.project}{note}")
+    if not args.dry_run:
+        print(f"[receipt] {plan.project / INSTALL_RECEIPT_NAME}")
     print(_receipt(plan))
     return 0
 

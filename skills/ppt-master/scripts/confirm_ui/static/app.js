@@ -38,7 +38,7 @@
             sec_template_library: "Template combination",
             template_library_hint: "Choose at most one workspace per kind. All four kinds can combine; Layout takes structural precedence over Deck.",
             sec_template_explicit: "Specified templates",
-            template_explicit_hint: "Choose at most one exact workspace supplied for this run; every kind it contains is applied. Its source path is shown for verification.",
+            template_explicit_hint: "Choose exact workspaces supplied for this run with non-overlapping kinds; every kind in each selected root is applied. Source paths are shown for verification.",
             template_kind_brand: "Brand",
             template_kind_style: "Style",
             template_kind_layout: "Layout",
@@ -227,7 +227,7 @@
             sec_template_library: "テンプレートの組み合わせ",
             template_library_hint: "種類ごとにワークスペースを1件まで選択できます。4種類はすべて組み合わせ可能で、構造は Layout が Deck より優先されます。",
             sec_template_explicit: "指定テンプレート",
-            template_explicit_hint: "この実行で指定された正確なワークスペースを1件まで選択でき、そこに含まれる種別はすべて適用されます。確認用に参照元パスを表示します。",
+            template_explicit_hint: "この実行で指定されたワークスペースを、種別が重複しない範囲で複数選択できます。各ルートに含まれる全種別が適用され、確認用に参照元パスを表示します。",
             template_kind_brand: "Brand",
             template_kind_style: "Style",
             template_kind_layout: "Layout",
@@ -416,7 +416,7 @@
             sec_template_library: "模板组合",
             template_library_hint: "每种模板最多选择一个工作区；四种模板均可组合，结构由 Layout 优先于 Deck。",
             sec_template_explicit: "指定模板",
-            template_explicit_hint: "本次运行明确提供的精确工作区最多选择一个，它包含的每一类都会被采用；显示来源路径供你核对。",
+            template_explicit_hint: "可选择本次运行提供的多个精确工作区，各根的模板类型不得重叠；选中的根会采用其全部类型，来源路径供你核对。",
             template_kind_brand: "Brand",
             template_kind_style: "Style",
             template_kind_layout: "Layout",
@@ -605,7 +605,7 @@
             sec_template_library: "範本組合",
             template_library_hint: "每種範本最多選擇一個工作區；四種範本均可組合，結構由 Layout 優先於 Deck。",
             sec_template_explicit: "指定範本",
-            template_explicit_hint: "本次執行明確提供的精確工作區最多選擇一個，它包含的每一類都會被採用；顯示來源路徑供你核對。",
+            template_explicit_hint: "可選擇本次執行提供的多個精確工作區，各根的範本類型不得重疊；選中的根會採用其全部類型，來源路徑供你核對。",
             template_kind_brand: "Brand",
             template_kind_style: "Style",
             template_kind_layout: "Layout",
@@ -1143,11 +1143,16 @@
             if (!candidate || !slot) {
                 throw new Error("Invalid preselected template key: " + key);
             }
-            var value = slot === "explicit" ? (candidate.workspace_root || "") : key;
-            if (TEMPLATE_SELECTIONS[slot] && TEMPLATE_SELECTIONS[slot] !== value) {
+            if (slot === "explicit") {
+                if (TEMPLATE_SELECTIONS.explicit.indexOf(candidate.workspace_root) < 0) {
+                    TEMPLATE_SELECTIONS.explicit.push(candidate.workspace_root);
+                }
+                return;
+            }
+            if (TEMPLATE_SELECTIONS[slot] && TEMPLATE_SELECTIONS[slot] !== key) {
                 throw new Error("Multiple preselected templates for slot: " + slot);
             }
-            TEMPLATE_SELECTIONS[slot] = value;
+            TEMPLATE_SELECTIONS[slot] = key;
         });
         // Publish options before syncing: expanding an explicit root into its
         // kinds reads TEMPLATE_OPTIONS, so a preselected root would otherwise
@@ -1158,7 +1163,7 @@
     }
 
     function emptyTemplateSelections() {
-        return { brand: "", style: "", layout: "", deck: "", explicit: "" };
+        return { brand: "", style: "", layout: "", deck: "", explicit: [] };
     }
 
     function templateSelectionSlot(candidate) {
@@ -1211,8 +1216,10 @@
         TEMPLATE_SELECTED_KEYS = TEMPLATE_KINDS.map(function (kind) {
             return TEMPLATE_SELECTIONS[kind];
         });
-        explicitCandidatesForRoot(TEMPLATE_SELECTIONS.explicit).forEach(function (candidate) {
-            TEMPLATE_SELECTED_KEYS.push(candidate.key);
+        TEMPLATE_SELECTIONS.explicit.forEach(function (root) {
+            explicitCandidatesForRoot(root).forEach(function (candidate) {
+                TEMPLATE_SELECTED_KEYS.push(candidate.key);
+            });
         });
         TEMPLATE_SELECTED_KEYS = TEMPLATE_SELECTED_KEYS.filter(Boolean);
     }
@@ -1243,6 +1250,16 @@
 
     function chooseTemplateForSlot(slot, key) {
         TEMPLATE_SELECTIONS[slot] = String(key || "");
+        syncTemplateSelectionState();
+        TEMPLATE_MODE = "templates";
+        updateTemplateSelectionControls();
+    }
+
+    function chooseExplicitTemplateRoot(root, selected) {
+        TEMPLATE_SELECTIONS.explicit = TEMPLATE_SELECTIONS.explicit.filter(function (value) {
+            return value !== root;
+        });
+        if (selected) TEMPLATE_SELECTIONS.explicit.push(root);
         syncTemplateSelectionState();
         TEMPLATE_MODE = "templates";
         updateTemplateSelectionControls();
@@ -1283,20 +1300,29 @@
         });
         field.appendChild(select);
 
-        if (slot === "explicit") {
-            field.appendChild(el(
-                "div",
-                "template-select-help",
-                candidates.length ? t("template_explicit_hint") : t("template_none_explicit")
-            ));
-            var path = el("div", "template-selected-path");
-            path.id = "template-explicit-path";
-            path.appendChild(el("span", "template-selected-path-label", t("template_source_path") + ":"));
-            var code = el("code", "template-selected-path-value");
-            code.id = "template-explicit-path-value";
-            path.appendChild(code);
-            field.appendChild(path);
-        }
+        return field;
+    }
+
+    function renderExplicitTemplateChoices() {
+        var field = el("div", "template-select-field template-select-field-explicit");
+        field.appendChild(el("div", "template-select-label", t("template_source_explicit")));
+        var roots = explicitRootOptions();
+        field.appendChild(el("div", "template-select-help",
+            roots.length ? t("template_explicit_hint") : t("template_none_explicit")));
+        roots.forEach(function (candidate) {
+            var label = el("label", "template-select-help");
+            var checkbox = el("input", "template-explicit-choice");
+            checkbox.type = "checkbox";
+            checkbox.value = candidate.workspace_root;
+            checkbox.checked = TEMPLATE_SELECTIONS.explicit.indexOf(checkbox.value) >= 0;
+            checkbox.addEventListener("change", function () {
+                chooseExplicitTemplateRoot(checkbox.value, checkbox.checked);
+            });
+            label.appendChild(checkbox);
+            label.appendChild(el("span", "", templateCandidateTitle(candidate) + " · " + candidate.summary));
+            label.appendChild(el("code", "template-selected-path-value", candidate.workspace_root));
+            field.appendChild(label);
+        });
         return field;
     }
 
@@ -1339,25 +1365,11 @@
             var candidates = TEMPLATE_OPTIONS.library[kind] || [];
             grid.appendChild(renderTemplateSelectField(kind, templateKindLabel(kind), candidates));
         });
-        grid.appendChild(renderTemplateSelectField(
-            "explicit",
-            t("template_source_explicit"),
-            explicitRootOptions()
-        ));
+        grid.appendChild(renderExplicitTemplateChoices());
         panel.appendChild(grid);
         sec.appendChild(panel);
         host.appendChild(sec);
         updateTemplateSelectionControls();
-    }
-
-    function updateTemplateExplicitPath() {
-        var path = document.getElementById("template-explicit-path");
-        var value = document.getElementById("template-explicit-path-value");
-        if (!path || !value) return;
-        var workspaceRoot = TEMPLATE_SELECTIONS.explicit || "";
-        path.hidden = !workspaceRoot;
-        value.textContent = workspaceRoot;
-        value.title = workspaceRoot;
     }
 
     function updateTemplateSelectionControls() {
@@ -1376,11 +1388,13 @@
             useChoice.setAttribute("aria-expanded", templatesSelected ? "true" : "false");
         }
         if (selectorPanel) selectorPanel.hidden = !templatesSelected;
-        TEMPLATE_KINDS.concat(["explicit"]).forEach(function (slot) {
+        TEMPLATE_KINDS.forEach(function (slot) {
             var select = document.getElementById("template-select-" + slot);
             if (select) select.value = TEMPLATE_SELECTIONS[slot] || "";
         });
-        updateTemplateExplicitPath();
+        document.querySelectorAll(".template-explicit-choice").forEach(function (checkbox) {
+            checkbox.checked = TEMPLATE_SELECTIONS.explicit.indexOf(checkbox.value) >= 0;
+        });
         var status = document.getElementById("confirm-status");
         if (status) status.textContent = "";
     }
