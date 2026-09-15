@@ -71,7 +71,7 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <s
 
 ### Step 3: Template Candidate Preparation
 
-Internal preparation for every Default run — no page, question, receipt, selection, template read, or installation. Quick skips this Step.
+Internal preparation for every Default run — no page, question, receipt, selection, or installation; read only the frontmatter an exact root needs for kind and canvas. Quick skips this Step.
 
 Candidates follow [`routing.md`](./routing.md) §7: registered roots from the four indexes plus every exact root supplied for this run. Raw PPTX is source material, not a candidate — raw PPTX plus new content is [`edit-native-pptx`](./edit-native-pptx.md), and a reusable workspace comes from [`create-template`](./create-template.md).
 
@@ -84,15 +84,15 @@ Resolve the surface under [`confirm-surface.md`](../references/confirm-surface.m
 
 Stage 1 initializes from `default_mode` but the user may switch. Template mode requires at least one selection; exactly one supplied root may be preselected, several remain unselected.
 
-**✅ Checkpoint** — candidates ready; nothing selected, read, validated, or installed. Proceed to Step 4 without a user-visible stop.
+**✅ Checkpoint** — candidates ready; nothing selected, validated, or installed. Proceed to Step 4 without a user-visible stop.
 
 ---
 
 ### Step 4: Strategist Phase (MANDATORY in the default pipeline)
 
-🚧 **GATE**: Steps 1–3 complete; no template content in planning context; Stage 1 not started.
+🚧 **GATE**: Steps 1–3 complete; Stage 1 not started.
 
-**Hard rule — Stage 1 is template-independent**: author every Stage-1 recommendation from the user's request, source facts, conversation constraints, and project-initialization state only; candidate paths, index summaries, template specs/prototypes/assets, and template canvas are not evidence. Template inspection begins only after Stage 1 confirms both the communication contract and the template/free-design choice and any selection is installed.
+**Hard rule — a template never rewrites the goal**: audience, intent, outcome, core message, delivery context, and afterlife come from the user's request, source facts, conversation constraints, and project-initialization state; a candidate's existence, summary, or prototypes never bend them. Template facts already in context — a root handed off by Create Template in this conversation, an exact root's kind and canvas — may inform the recommended canvas and page range, and a canvas that differs from project initialization is a visible Stage-1 decision, never a silent Stage-2 override. Prototype-level planning begins only after Stage 1 confirms both the communication contract and the template/free-design choice and any selection is installed.
 
 Load the planning core in one batch, plus the structured facts already in `<project_path>/analysis/`:
 
@@ -129,7 +129,7 @@ This is a capability map, not a usage checklist; direction construction follows 
 
 **Only the user confirms**: the agent authors recommendations, operates the server, reads state, and applies a template. It never confirms on the user's behalf, automates submission, synthesizes a payload, or writes user result state; silence confirms nothing. Under explicit delegation the agent makes the Stage-1 decision, installs it, derives Stage 2, and presents one complete summary without fabricating UI receipts.
 
-**UI branch** — `template_options.json` (Step 3), `recommendations.stage1.json`, `template_handoff.json` (written only by `--complete-template-selection`), and `recommendations.stage2.json` are agent inputs; `template_selection.json` and `result.json` are user receipts. Only the active unconfirmed stage file may be overwritten, in place, never with a revision suffix or another stage's payload. Author Stage 1 without reading candidates, launch, post the [`confirm-surface.md`](../references/confirm-surface.md) handoff summary, then wait:
+**UI branch** — `template_options.json` (Step 3), `recommendations.stage1.json`, `template_handoff.json` (written only by `--complete-template-selection`), and `recommendations.stage2.json` are agent inputs; `template_selection.json` and `result.json` are user receipts. Only the active unconfirmed stage file may be overwritten, in place, never with a revision suffix or another stage's payload. Author Stage 1 without opening candidate specs or prototypes, launch, post the [`confirm-surface.md`](../references/confirm-surface.md) handoff summary, then wait:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon

@@ -53,7 +53,7 @@ The two rules that prevent most mistakes:
 ### How selection works
 
 Default Generate places template selection inside **Stage 1**, beside the
-template-independent communication contract. The page first shows switchable
+communication contract. The page first shows switchable
 Free design / Use templates choices. Ordinary requests initialize Free design
 and keep the detailed selectors collapsed. Explicit template intent or any
 exact workspace root initializes Use templates and expands the registered

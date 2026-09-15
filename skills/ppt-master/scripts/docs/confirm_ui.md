@@ -1,7 +1,7 @@
 # Confirm UI — Strategist and Template Confirmation Page
 
 > The interactive surface for [`generate-pptx`](../../workflows/generate-pptx.md)
-> Step 4. Stage 1 shows the template-independent communication recommendation
+> Step 4. Stage 1 shows the communication recommendation
 > and the template/free-design choice on one page and confirms both with one
 > submission. That submission writes the Strategist contract to `result.json`
 > and the selection sidecar to `template_selection.json`. The agent then installs

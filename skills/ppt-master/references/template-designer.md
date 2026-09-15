@@ -227,7 +227,7 @@ Mirror retains literal source text and placeholder metadata and inserts no `{{..
 </g>
 <rect x="40" y="90" width="1200" height="550" fill="#FFFFFF" rx="8"/>
 <g id="body-slot" data-pptx-placeholder="body" data-pptx-bounds="40 90 1200 550">
-  <text id="body-carrier" data-pptx-carrier="true" x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="16">{{CONTENT_AREA}}</text>
+  <text id="body-carrier" data-pptx-carrier="true" x="64" y="122" fill="#CBD5E1" font-size="16">{{CONTENT_AREA}}</text>
 </g>
 ```
 

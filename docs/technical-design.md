@@ -83,7 +83,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── If canonical same-stem Markdown is absent, run ppt_to_md.py against that archived PPTX
     └── Content-type files in sources/ become the content contract
     ↓
-[Template Candidate Preparation (Step 3)] — internal only; no UI, wait, selection, template read, or installation
+[Template Candidate Preparation (Step 3)] — internal only; no UI, wait, selection, or installation
     Prepare indexed Brand/Style/Layout/Deck candidates and supplied exact roots
     Stage 1 confirms communication plus free design/template use together; selected workspaces are then validated and installed before Stage 2
     ↓
@@ -406,8 +406,8 @@ The architectural choice worth flagging: **viewBox is in pixels, not absolute un
 ## Template System & Selection
 
 Template use is **opt-in, not inferred**. Default Step 3 only prepares
-candidates; it never opens UI or reads template content. Stage 1 displays its
-template-independent communication recommendation together with a switchable
+candidates; it never opens UI or installs template content. Stage 1 displays its
+communication recommendation together with a switchable
 free-design/template choice. Ordinary requests default to free design; explicit
 template intent or any supplied root defaults to template mode. Exactly one root
 may be preselected, while multiple roots remain unselected candidates. The

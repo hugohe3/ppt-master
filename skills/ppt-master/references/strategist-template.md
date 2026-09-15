@@ -12,7 +12,7 @@ Conditional extension for applying an installed Brand/Style/Layout/Deck workspac
 
 **Inputs**: every installed `<project_path>/templates/design_spec.<kind>.<id>.md` is a template-design source; read all of them. A `design_spec.style.*.md` file marks an active Direction / method segment. A legacy or incomplete Layout/Deck is rejected under [`pptx-structure-interface.md`](./pptx-structure-interface.md) §3; never mutate the input.
 
-**Hard rule — no Stage-1 influence**: never revise a confirmed Stage 1 to match the workspace (Stage-1 evidence boundary: [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4).
+**Hard rule — no Stage-1 influence**: never revise a confirmed Stage 1 to match the workspace (Stage-1 goal boundary: [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4).
 
 **Outputs**:
 
@@ -72,7 +72,7 @@ A Style installed alongside Layout/Deck changes only Direction / method and neve
 - **Master roster**: one `pptx_masters` row per Master as `<master_key>: <picker name>`, copied from the workspace roster. Keys are 1–64 ASCII letters/digits/dots/underscores/hyphens starting with a letter or digit; spaces belong only in the picker name. Master visuals are root-level atoms, never `<g>`.
 - **Reusable Layout roster**: every unique Layout once as `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. Each installed `template:<basename>` is a complete Slide prototype, including ones not selected for this deck; a new adaptive Layout uses its first generated `P<NN>`. Reuse a key only when fixed atoms and slot ids/types/indices/bounds/binding modes are identical. Name authored keys after composition, never page topic. Zero-slot Layouts are valid; do not manufacture an empty `utility` kind or a full-page fake slot.
 - **Page assignment**: exactly one `page_pptx_layouts` row per page; each key must exist in `pptx_layouts`. Check that distinct compositions do not collapse into role-only keys and that one skeleton does not split into topic-specific keys.
-- **Slot planning**: each reusable slot is a direct root `<g id>` with `data-pptx-placeholder`, positive design-zone bounds from the safe area, column, panel inset, or media frame — not sample text ink — and exactly one compatible direct carrier. A genuinely composite region uses only the explicit `object` + `proxy` downgrade.
+- **Slot fit**: before locking a typography role, check each page's planned content against its selected prototype's slot bounds with that role's family and anchor size (`text_measure.py`); when it does not fit, change the expression, pick another prototype, or declare an adaptive Layout — never drop a reusable slot's role below its band or widen the slot in Executor. Slot syntax and the `object` + `proxy` downgrade are [`pptx-structure-interface.md`](./pptx-structure-interface.md) §2.
 - **Adaptive refinement**: initial definitions are complete. If construction shows that reusable framing or slot topology/bounds must change, return to Strategist to add a definition sourced from that page and update its assignment before execution resumes. Executor never mutates the contract; export only compiles declared structure.
 - **Input prototypes**: one `page_layouts` row per page using a complete Slide prototype. Strict preserves that SVG's contract; adaptive keeps its Master and may declare a new output Layout. Mirror preserves authored visuals and text-node topology; a JSON-first Chart/Table may regenerate only its derived preview children.
 

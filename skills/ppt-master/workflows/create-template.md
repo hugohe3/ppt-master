@@ -40,7 +40,7 @@ A complete source PPTX does not determine the kind — classify only the stable 
 ## Process Overview
 
 ```
-Reference Bundle Intake & Analysis → Fact-Based Brief Proposal → User Confirmation Gate → Preflight + Invoke Selected Child → Validate Child Output → [Review PPTX: optional for one Master, required for multi-Master] → [Register Library Index] → Output
+Reference Bundle Intake & Analysis → Fact-Based Brief Proposal → User Confirmation Gate → Preflight + Invoke Selected Child → Validate Child Output → [Prototype Review Round: Layout/Deck] → [Review PPTX: optional for one Master, required for multi-Master] → [Register Library Index] → Output
 ```
 
 **No final template directory, template SVG, or Design Spec may be written until `[TEMPLATE_BRIEF_CONFIRMED]` is emitted in Step 3.** Reference-analysis intermediates (import workspaces under `/tmp/`) are not subject to this gate.
@@ -301,6 +301,10 @@ Checker behavior in template mode: [`template-tools.md`](../scripts/docs/templat
 
 This step is a **hard gate**: no review PPTX, registration, staged install, or handoff until it passes. After a staged project install, rerun the checker on the final `<target_project>/templates/`. A one-Master template may skip Step 6 when no review was requested; a multi-Master template must pass Step 6 before registration or completion.
 
+### Step 5.1: Prototype Review Round
+
+Layout/Deck only; Brand and Style skip it. Step 3 confirmed scope from a brief, not from the new design, so show the validated prototypes before they become durable: list the roster with one line per prototype (basename, role, slots) and point to the files or the Step 6 review PPTX, then wait for the user's reaction. Feedback revises prototypes or the spec inside the confirmed brief; a change to scope, kind, canvas, or replication intent returns to Step 2. After any revision rerun Step 5 (and Step 6 when triggered) before Step 7. Under explicit delegation, record `Prototype review: delegated` in the completion summary and continue.
+
 ---
 
 ## Step 6: Template Review PPTX and Multi-Master Package Gate
@@ -309,7 +313,7 @@ This step is a **hard gate**: no review PPTX, registration, staged install, or h
 
 ```bash
 python3 skills/ppt-master/scripts/template_preview_pptx.py "<authoring_workspace>"            # exports/<template_id>_template_preview.pptx
-python3 skills/ppt-master/scripts/template_preview_pptx.py "<authoring_workspace>" --native-charts-and-tables -o "<authoring_workspace>/exports/<template_id>_template_preview_native.pptx"   # optional JSON-first check
+python3 skills/ppt-master/scripts/template_preview_pptx.py "<authoring_workspace>" --native-charts-and-tables -o "<authoring_workspace>/exports/<template_id>_template_preview_native.pptx"   # explicit native review; typed chart/table slots already compile natively in the default run
 python3 skills/ppt-master/scripts/template_preview_pptx.py "<authoring_workspace>" --force    # intentional replacement after a fix
 ```
 
@@ -333,7 +337,7 @@ A multi-Master failure blocks registration and completion; an unrequested one-Ma
 
 | Scope | Action |
 |---|---|
-| `library` | After Step 5 (and Step 6 when requested or required), run `python3 skills/ppt-master/scripts/register_template.py <template_id> --kind brand|style|deck|layout`; it derives the entry from the spec frontmatter (preferred) or prose plus the actual `templates/*.svg` roster and updates that kind's `*_index.json` — the complete discovery source for Default Stage-1 controls and chat listing (neither scans directories) |
+| `library` | After Step 5.1 (and Step 6 when requested or required), run `python3 skills/ppt-master/scripts/register_template.py <template_id> --kind brand|style|deck|layout`; it derives the entry from the spec frontmatter (preferred) or prose plus the actual `templates/*.svg` roster and updates that kind's `*_index.json` — the complete discovery source for Default Stage-1 controls and chat listing (neither scans directories) |
 | `project` | Skip the registrar, edit no index or README, and report `Not registered (project workspace)` |
 
 An exact unregistered root supplied by the user or handed off by this route appears as an `explicit` candidate preselected only when it is the sole root; a root matching a registered canonical root may display as `library`; bare names are never resolved. Frontmatter examples per kind live in the child workflows; `--rebuild-all` rebuilds a kind's index after editing many specs.
@@ -354,6 +358,7 @@ An exact unregistered root supplied by the user or handed off by this route appe
 **Bitmap Path**: `<template_workspace>/images/`  ← omit when nothing was written or adopted
 **Imported Vector Path**: `<template_workspace>/icons/imported/`  ← omit when nothing was written or adopted
 **Review PPTX**: `<template_workspace>/exports/<template_id>_template_preview.pptx`  ← Layout/Deck only; omit when an optional one-Master review was not requested
+**Prototype Review**: user-reviewed | delegated  ← Layout/Deck only
 **Primary Color**: <hex>  ← Brand/Deck only
 **Index Registration**: Done | Not registered (project workspace)
 

@@ -14,7 +14,7 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 | Context | Load policy |
 |---|---|
-| `templates/design_spec.md` | Reuse in a valid context; after invalidation read it once with the planning artifacts |
+| Installed `templates/design_spec.<kind>.<id>.md` files | Every installed spec, segments owned per [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) §5; reuse in a valid context and after invalidation read them once with the planning artifacts |
 | Current page mapping | The retained `spec_lock.md page_layouts` row; a page change needs no file load |
 | Selected prototype SVG | Read the complete `templates/<basename>.svg` once per valid context and reuse it until a known change |
 
