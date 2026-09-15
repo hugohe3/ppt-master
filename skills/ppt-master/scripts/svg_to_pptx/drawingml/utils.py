@@ -95,6 +95,7 @@ SYSTEM_FONTS = {'system-ui', '-apple-system', 'BlinkMacSystemFont'}
 
 # macOS/Linux-only fonts -> Windows equivalents
 FONT_FALLBACK_WIN = {
+    '微软雅黑': 'Microsoft YaHei',
     'PingFang SC': 'Microsoft YaHei',
     'PingFang TC': 'Microsoft JhengHei',
     'PingFang HK': 'Microsoft JhengHei',
@@ -152,6 +153,11 @@ GENERIC_FONT_MAP = {
     'monospace': 'Consolas',
     'sans-serif': 'Segoe UI',
     'serif': 'Times New Roman',
+}
+
+_FONT_CANONICAL_NAMES = {
+    name.casefold(): name
+    for name in EA_FONTS | SYSTEM_FONTS | FONT_FALLBACK_WIN.keys() | GENERIC_FONT_MAP.keys()
 }
 
 # When the latin font is serif and no EA font is specified,
@@ -3249,6 +3255,7 @@ def parse_font_family(
     ea_font = None
 
     for font in fonts:
+        font = _FONT_CANONICAL_NAMES.get(font.casefold(), font)
         if font in SYSTEM_FONTS:
             continue
         if font in GENERIC_FONT_MAP:
@@ -3262,7 +3269,7 @@ def parse_font_family(
         win_font = (
             _JA_FONT_FALLBACK_WIN.get(font) if is_japanese else None
         ) or FONT_FALLBACK_WIN.get(font, font)
-        if font in EA_FONTS:
+        if font in EA_FONTS or win_font in EA_FONTS:
             ea_font = ea_font or win_font
         else:
             latin_font = latin_font or win_font

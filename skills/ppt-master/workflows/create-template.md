@@ -302,7 +302,7 @@ This step is a **hard gate**: no review PPTX, registration, staged install, or h
 
 ### Step 5.1: Prototype Review Round
 
-Layout/Deck only; Brand and Style skip it. Step 3 confirmed scope from a brief, not from the new design, so show the validated prototypes before they become durable: list the roster with one line per prototype (basename, role, slots) and point to the files or the Step 6 review PPTX, then wait for the user's reaction. Feedback revises prototypes or the spec inside the confirmed brief; a change to scope, kind, canvas, or replication intent returns to Step 2. After any revision rerun Step 5 (and Step 6 when triggered) before Step 7. Under explicit delegation, record `Prototype review: delegated` in the completion summary and continue.
+Layout/Deck only; Brand and Style skip it. Step 3 confirmed scope from a brief, not from the new design, so show the validated prototypes before they become durable: list the roster with one line per prototype (basename, role, slots) and point to the files or the Step 6 review PPTX, then wait for the user's reaction. Feedback revises prototypes or the spec inside the confirmed brief; a change to scope, kind, canvas, or replication intent returns to Step 2; `mirror` prototypes are hash-preserved, so feedback lands only in the spec or returns to Step 2. After any revision rerun Step 5 (and Step 6 when triggered) before Step 7. Under explicit delegation, perform the review yourself — the roster line, the advisory capacity report, every prototype's slot carriers (baseline inside the frame, a font stack with Latin and EA faces), and roster ↔ §V agreement — then record `Prototype review: delegated` with the items checked and any revision in the completion summary.
 
 ---
 

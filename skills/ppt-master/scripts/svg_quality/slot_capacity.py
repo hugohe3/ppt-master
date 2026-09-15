@@ -10,13 +10,19 @@ Dependencies:
 
 from __future__ import annotations
 
+import json
 import math
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from text_measure import measure_text
+from template_text_slots import analyze_template_text_slots
+from svg_to_pptx.drawingml.text_properties import (
+    resolve_project_font_sizes,
+    resolve_project_letter_spacings,
+)
 
-from .checker import _effective_presentation_value, _parse_positive_bounds
+from .checker import SVGQualityChecker, _effective_presentation_value, _parse_positive_bounds
 
 
 def _number(value: str | None, default: float) -> float:
@@ -51,31 +57,91 @@ def _capacity(width: float, height: float, size: float, family: str,
     }
 
 
+def _mirror_text_bounds(carrier, parents, font_sizes, spacings):
+    """Use the source text frame, falling back to measured text geometry."""
+    owner = carrier
+    while owner is not None:
+        for name in ('data-pptx-bounds', 'data-pptx-frame'):
+            raw = owner.get(name)
+            if raw is None:
+                continue
+            try:
+                bounds = _parse_positive_bounds(raw)
+            except ValueError:
+                continue
+            if bounds is not None:
+                return bounds, name
+        owner = parents.get(id(owner))
+    estimated = SVGQualityChecker._estimated_text_bounds(carrier, parents, font_sizes, spacings)
+    if estimated is None:
+        return None, 'unresolved text geometry'
+    left, top, right, bottom = estimated
+    return (left, top, right - left, bottom - top), 'estimated text geometry'
+
+
+def _text_targets(path, root, parents, font_sizes, spacings):
+    for slot in root.iter():
+        placeholder = slot.get('data-pptx-placeholder')
+        if not placeholder:
+            continue
+        carriers = [child for child in slot
+                    if child.tag.rsplit('}', 1)[-1] == 'text'
+                    and child.get('data-pptx-carrier') == 'true']
+        if not carriers:
+            continue
+        try:
+            bounds = _parse_positive_bounds(slot.get('data-pptx-bounds', ''))
+        except ValueError:
+            bounds = None
+        yield {'file': str(path), 'slot_id': slot.get('id'), 'source': 'placeholder',
+               'placeholder': placeholder, 'bounds': bounds}, carriers[0]
+
+    manifest = path.parent / 'template_execution_manifest.json'
+    sidecar = path.parent / 'template_execution' / f'{path.stem}.text-slots.json'
+    if not manifest.is_file() or not sidecar.is_file():
+        return
+    manifest_data = json.loads(manifest.read_text(encoding='utf-8'))
+    if not isinstance(manifest_data, dict):
+        raise ValueError(f'{manifest}: expected a manifest object')
+    if manifest_data.get('replication_mode') != 'mirror':
+        return
+    text_elements = [element for element in root.iter() if element.tag.rsplit('}', 1)[-1] == 'text']
+    by_selector = {
+        selector: element
+        for slot, element in zip(analyze_template_text_slots(root), text_elements)
+        for selector in (slot.selector, slot.legacy_selector)
+    }
+    sidecar_data = json.loads(sidecar.read_text(encoding='utf-8'))
+    if not isinstance(sidecar_data, dict) or not isinstance(sidecar_data.get('text_slots'), list):
+        raise ValueError(f'{sidecar}: expected a text_slots array')
+    for slot in sidecar_data['text_slots']:
+        if not isinstance(slot, dict) or not isinstance(slot.get('selector'), str):
+            raise ValueError(f'{sidecar}: each text slot requires a selector string')
+        selector = slot['selector']
+        carrier = by_selector.get(selector)
+        row = {'file': str(path), 'slot_id': selector, 'selector': selector,
+               'source': 'mirror-text-slot', 'placeholder': None, 'bounds': None}
+        if carrier is None:
+            yield {**row, 'unavailable': 'selector does not resolve to a text element'}, None
+            continue
+        row['bounds'], row['bounds_source'] = _mirror_text_bounds(carrier, parents, font_sizes, spacings)
+        yield row, carrier
+
+
 def slot_capacity_report(svg_files: list[Path]) -> dict:
-    """Read text placeholders without adding checker issues or changing files."""
+    """Read placeholder and mirror text targets without changing files or gates."""
     slots = []
     for path in svg_files:
         root = ET.parse(path).getroot()
         parents = {id(child): parent for parent in root.iter() for child in parent}
-        for slot in root.iter():
-            placeholder = slot.get('data-pptx-placeholder')
-            if not placeholder:
-                continue
-            carriers = [child for child in slot
-                        if child.tag.rsplit('}', 1)[-1] == 'text'
-                        and child.get('data-pptx-carrier') == 'true']
-            if not carriers:
-                continue
-            try:
-                bounds = _parse_positive_bounds(slot.get('data-pptx-bounds', ''))
-            except ValueError:
-                bounds = None
-            row = {'file': str(path), 'slot_id': slot.get('id'),
-                   'placeholder': placeholder, 'bounds': bounds}
+        font_sizes = resolve_project_font_sizes(root)
+        spacings = resolve_project_letter_spacings(root, font_sizes)
+        for row, carrier in _text_targets(path, root, parents, font_sizes, spacings):
+            bounds = row['bounds']
             if bounds is None:
-                slots.append({**row, 'unavailable': 'missing or invalid slot bounds'})
+                row.setdefault('unavailable', 'missing or invalid slot bounds')
+                slots.append(row)
                 continue
-            carrier = carriers[0]
             # Imported paragraphs can put all visible text and typography on
             # tspans. Use the first visible run, and expose mixed-run conditions.
             runs = [node for node in carrier.iter() if (node.text or '').strip()]
@@ -83,16 +149,10 @@ def slot_capacity_report(svg_files: list[Path]) -> dict:
             def value(name: str) -> str | None:
                 return _effective_presentation_value(first_run, name, parents)
 
-            size = _number(value('font-size'), 16.0)
+            size = font_sizes[id(first_run)]
             family = value('font-family') or 'Calibri'
             weight = value('font-weight') or 'normal'
-            spacing_raw = value('letter-spacing') or '0'
-            try:
-                spacing = float(spacing_raw.removesuffix('px'))
-                if not math.isfinite(spacing):
-                    spacing = 0.0
-            except ValueError:
-                spacing = 0.0
+            spacing = spacings[id(first_run)]
             raw_line_height = value('line-height')
             line_height = size * 1.2
             line_height_source = 'estimated 1.2em'
@@ -132,9 +192,24 @@ def slot_capacity_report(svg_files: list[Path]) -> dict:
                 'cjk': _capacity(bounds[2], bounds[3], size, family, weight,
                                  spacing, line_height, '汉'),
             })
+            ascent, descent = SVGQualityChecker._text_line_vertical_extent([], size)
+            row['baseline_allowed'] = [bounds[1] + ascent, bounds[1] + bounds[3] - descent]
+            lines = SVGQualityChecker._resolved_text_lines(carrier, parents, font_sizes, spacings)
+            row['baseline'] = lines[0][2] if lines else None
+            if not lines:
+                # Source paragraph models may have a known first baseline even
+                # when the estimator cannot resolve every subsequent line.
+                try:
+                    baseline = float((value('y') or '0').removesuffix('px'))
+                except ValueError:
+                    baseline = math.nan
+                if math.isfinite(baseline):
+                    row['baseline'] = baseline
+            if lines and len(lines) > 1:
+                row['baselines'] = [line[2] for line in lines]
             variants = sorted({
                 (_effective_presentation_value(run, 'font-family', parents) or family,
-                 _number(_effective_presentation_value(run, 'font-size', parents), size))
+                 font_sizes[id(run)])
                 for run in runs
             })
             if len(variants) > 1:
@@ -143,10 +218,14 @@ def slot_capacity_report(svg_files: list[Path]) -> dict:
                 ]
                 row['estimate_scope'] = 'first visible run; measure mixed content separately'
             slots.append(row)
-    return {
+    report = {
         'schema': 'ppt-master.slot-capacity.v1', 'advisory': True,
         'assumptions': 'Uniform carrier typography; Latin sample distribution and CJK full-width glyphs. '
                        'Line count uses declared/baseline pitch or an explicit 1.2em estimate. '
                        'Measure actual content before locking typography; these are not limits.',
         'slots': slots,
     }
+    if not slots:
+        report['note'] = ('No text placeholder carriers or mirror text-slot targets were found. '
+                          'Mirror targets are listed in template_execution/*.text-slots.json.')
+    return report

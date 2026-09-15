@@ -9,7 +9,7 @@
   <g id="section-divider-number-slot" data-pptx-placeholder="body" data-pptx-idx="1"
     data-pptx-bounds="48 200 200 72">
     <text id="section-divider-number-carrier" data-pptx-carrier="true"
-      x="48" y="260" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      x="48" y="250" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="56" font-weight="700">{{CHAPTER_NUM}}</text>
   </g>
   <g id="section-divider-title-slot" data-pptx-placeholder="title"

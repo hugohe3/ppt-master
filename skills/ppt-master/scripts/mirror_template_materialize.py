@@ -2958,7 +2958,9 @@ def _spec_skeleton(native: dict, pages: list[tuple[Path, ET.Element]], kind: str
         cells = [f"`{path.name}`", root.get("data-pptx-master", ""),
                  root.get("data-pptx-layout", ""), root.get("data-pptx-layout-name", ""), slots]
         lines.append("| " + " | ".join(c.replace("|", "\\|").replace("\n", " ") for c in cells) + " |")
-    lines += ["", "### Source Preservation Map", "",
+    lines += ["", "Slots `none` means the source package declared no PowerPoint placeholder; "
+              "editable text targets are listed in `template_execution/<prototype>.text-slots.json`.",
+              "", "### Source Preservation Map", "",
               f"Source package SHA-256: `{native['source']['sha256']}`", "",
               "| Source slide | Template | Master | Layout |", "| --- | --- | --- | --- |"]
     for slide, (path, root) in zip(sorted(native["slides"], key=lambda item: int(item["index"])), pages):
@@ -3243,11 +3245,13 @@ def materialize_mirror_template(
             _source_geometry_is_unchanged(documents),
         )
     )
-    spec_name = (
-        f"design_spec.{kind}.TODO.md"
-        if list((template_workspace / "templates").glob("design_spec.*.md"))
-        else "design_spec.md"
+    library_root = Path(__file__).resolve().parent.parent / "templates"
+    resolved_workspace = template_workspace.resolve()
+    library_scope = any(
+        (library_root / directory).resolve() in resolved_workspace.parents
+        for directory in ("brands", "styles", "layouts", "decks")
     )
+    spec_name = "design_spec.md" if library_scope else f"design_spec.{kind}.TODO.md"
     files.append(MaterializedFile(
         Path("templates") / spec_name,
         _spec_skeleton(native, materialized_roots, kind).encode("utf-8"),

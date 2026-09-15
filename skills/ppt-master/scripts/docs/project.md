@@ -26,7 +26,8 @@ Notes:
 - `import-sources --no-image-propagation` keeps extracted companion assets and
   their Markdown references in `sources/`, skipping their copy/manifest merge
   into the runtime `images/` pool. Create Template project-scope reference
-  intake uses this switch; Generate keeps the default propagation. It covers
+  intake requires this switch; see [Create Template §1A](../../workflows/create-template.md#1a-pptx-reference).
+  Generate keeps the default propagation. It covers
   new conversions and existing companion Markdown. Explicit bitmap inputs
   still enter `images/`; the switch does not clean up images imported earlier.
 - A moved topic-research pair `projects/<slug>.md` takes its sibling

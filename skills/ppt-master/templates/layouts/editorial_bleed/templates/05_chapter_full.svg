@@ -21,7 +21,7 @@
   <g id="chapter-full-number-slot" data-pptx-placeholder="body" data-pptx-idx="2"
     data-pptx-bounds="80 232 320 72">
     <text id="chapter-full-number-carrier" data-pptx-carrier="true"
-      x="80" y="292" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      x="80" y="282" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="56" font-weight="700">{{CHAPTER_NUM}}</text>
   </g>
   <g id="chapter-full-title-slot" data-pptx-placeholder="title"

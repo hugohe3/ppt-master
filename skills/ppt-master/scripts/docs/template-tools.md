@@ -36,10 +36,10 @@ Type A mirror is a tool publication path. Run these commands serially on the
 importer's unchanged output:
 
 ```bash
-python3 scripts/pptx_template_import.py "<source.pptx>" -o "<import_workspace>" --inheritance-mode both
-python3 scripts/mirror_template_materialize.py "<import_workspace>" "<template_workspace>" [--kind deck|layout]
-python3 scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
-python3 scripts/template_preview_pptx.py "<template_workspace>" -o "<preview.pptx>"
+python3 skills/ppt-master/scripts/pptx_template_import.py "<source.pptx>" -o "<import_workspace>" --inheritance-mode both
+python3 skills/ppt-master/scripts/mirror_template_materialize.py "<import_workspace>" "<template_workspace>" [--kind deck|layout]
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
+python3 skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>" -o "<preview.pptx>"
 ```
 
 Only `pptx_template_import.py` workspaces with layered IR,
@@ -51,8 +51,10 @@ The materializer writes the Design Spec skeleton in the same publication
 transaction. It defaults to Deck because its factual roster is one prototype
 per source slide; `--kind layout` records a previously chosen neutral Layout
 target. The default skeleton is necessary for the next checker/preview commands,
-so it needs no separate enable flag. It uses `templates/design_spec.md`, or a
-qualified `design_spec.<kind>.TODO.md` beside existing qualified specs. It
+so it needs no separate enable flag. A workspace whose resolved path lies under
+`skills/ppt-master/templates/<kind_dir>/` uses `templates/design_spec.md`;
+every other workspace uses `templates/design_spec.<kind>.TODO.md`, including an
+empty project workspace. The `spec_skeleton` receipt records that path. It
 records exact canvas dimensions/viewBox (`custom` if no registered size matches),
 source page count, Master/Layout keys, picker names, text slots and a Source
 Preservation Map. The identity and Overview/Color Scheme/Typography/other design
@@ -101,7 +103,14 @@ declared `line-height`, explicit tspan baselines, or a clearly labeled 1.2em
 estimate. If visible text uses tspans, it reads the first visible run and reports
 mixed family/size variants separately. The estimate assumes uniform carrier typography and does not promise
 a fixed capacity across fonts, mixed runs, languages or wrapping choices.
-Invalid bounds are reported as unavailable data, never as checker findings.
+It also reports `baseline_allowed: [top + 0.85 * size, bottom - 0.35 * size]`
+and the current `baseline` (plus `baselines` for multiple lines). Template-mode
+validation applies the existing vertical overflow severity to placeholder
+carriers even when their text is a `{{...}}` marker; marker length has no content-width contract.
+Mirror workspaces also read `template_execution/<prototype>.text-slots.json`:
+each selector produces a `source: mirror-text-slot` row using the source text
+frame or measured geometry and effective typography. Empty results include a
+`note`. Invalid bounds are reported as unavailable data, never as checker findings.
 
 ## `template_preview_pptx.py`
 
@@ -121,7 +130,7 @@ Runs the install half of [`apply-template-workspace.md`](../../workflows/stages/
 
 The installer stages complete `templates/`, `images/`, and `icons/` trees on the target filesystem, verifies every mapped file and the final spec/roster/asset set, then publishes by directory rename. A publication failure rolls back all earlier renames, including removed Deck files and any previous receipt. If rollback itself fails, the error identifies retained backups for recovery. This is exception rollback across directories, not a single filesystem transaction or a process-crash recovery protocol.
 
-Successful installation also writes `<project>/template_install.json` in that transaction. Its version-1 object records `project`, `roots` (canonical roots, source labels, kinds, spec paths/identities, and source SHA-256 fingerprints), `installed_specs`, `active_roster` (root, kind, and structural file paths, or `null`), and `files` (installed relative paths → SHA-256). `selection_sha256` binds a UI installation to its frozen Stage-1 snapshot; it is `null` for installations without a UI selection. If `confirm_ui/template_selection.json` exists, the supplied roots and their bytes must match it before installation. Confirm UI checks this machine receipt and installed content before exposing or accepting Stage 2; a textual provenance line is insufficient.
+Successful installation also writes `<project>/template_install.json` in that transaction. Its version-1 object records `project`, `roots` (canonical roots, source labels, kinds, spec paths/identities, and source SHA-256 fingerprints), `installed_specs`, `active_roster` (root, kind, and structural file paths, or `null`), and `files` (installed relative paths → SHA-256). A spec's source and installed fingerprints differ by design because installation inserts one provenance line under its H1. `selection_sha256` binds a UI installation to its frozen Stage-1 snapshot; it is `null` for installations without a UI selection. If `confirm_ui/template_selection.json` exists, the supplied roots and their bytes must match it before installation. Confirm UI checks this machine receipt and installed content before exposing or accepting Stage 2; a textual provenance line is insufficient.
 
 ## `register_template.py`
 

@@ -1507,6 +1507,7 @@ class SVGQualityChecker:
                     return
         except (OSError, ValueError, TypeError):
             return
+        result['info']['mirror_source_unchanged'] = True
         source_import = manifest.get('source_import')
         if isinstance(source_import, dict):
             self._source_import_summary = source_import
@@ -4520,10 +4521,15 @@ class SVGQualityChecker:
             if self._is_hidden_element(text_element, parent_by_id):
                 continue
             visible_text = ''.join(text_element.itertext())
-            if (
-                not visible_text.strip()
-                or ('{{' in visible_text and '}}' in visible_text)
-            ):
+            marker_text = '{{' in visible_text and '}}' in visible_text
+            slot = parent_by_id.get(id(text_element))
+            template_carrier = (
+                self.template_mode
+                and text_element.get('data-pptx-carrier') == 'true'
+                and slot is not None
+                and slot.get('data-pptx-placeholder') is not None
+            )
+            if not visible_text.strip() or (marker_text and not template_carrier):
                 continue
             estimated = self._estimated_text_bounds(
                 text_element,
@@ -4532,11 +4538,19 @@ class SVGQualityChecker:
                 letter_spacings,
                 include_headroom=True,
             )
+            if estimated is not None and marker_text:
+                # A token has no content-width contract, but its carrier still
+                # has the same baseline/line-box contract as a generated page.
+                resolved_slot = self._resolved_root_module_bounds(slot)
+                if resolved_slot is not None:
+                    boundary = resolved_slot[1]
+                    estimated = (boundary[0], estimated[1], boundary[2], estimated[3])
             if estimated is not None:
                 estimated_by_id[id(text_element)] = estimated
 
             if (
-                canvas is None
+                marker_text
+                or canvas is None
                 or self._has_zero_opacity(text_element, parent_by_id)
             ):
                 continue
@@ -6290,6 +6304,8 @@ class SVGQualityChecker:
             if local_name in definition_containers:
                 return
             if local_name == 'text':
+                if element.get('data-pptx-layer') in {'master', 'layout'}:
+                    return
                 counts.update(collect_text_object_sizes(element))
                 return
             for child in element:
@@ -9445,6 +9461,10 @@ class SVGQualityChecker:
     def _print_provenance_category_summary(self):
         """Print compact JSON-equivalent counts for token-safe gate handling."""
         categories = self._provenance_categories()
+        unchanged_mirror = self.template_mode and self.results and all(
+            result.get('info', {}).get('mirror_source_unchanged')
+            for result in self.results
+        )
         rows = (
             (
                 'blocking',
@@ -9454,7 +9474,8 @@ class SVGQualityChecker:
             (
                 'introduced',
                 len(categories['introduced']),
-                'advisory; new or changed',
+                ('advisory; mirror: source-authored spellings, workspace unmodified'
+                 if unchanged_mirror else 'advisory; new or changed'),
             ),
             (
                 'inherited',

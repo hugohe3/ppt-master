@@ -376,7 +376,7 @@ def main() -> int:
             print(
                 "Source structure assessment: "
                 f"{native_structure['strategy']['recommendedMode']}; "
-                "create-template rebuilds explicit SVG structure"
+                "create-template supports authored structure or unchanged mirror publication"
             )
         return 0
     finally:

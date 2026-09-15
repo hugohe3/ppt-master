@@ -16,7 +16,7 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 |---|---|
 | Installed `templates/design_spec.<kind>.<id>.md` files | Every installed spec, segments owned per [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) §5; reuse in a valid context and after invalidation read them once with the planning artifacts |
 | Current page mapping | The retained `spec_lock.md page_layouts` row; a page change needs no file load |
-| Selected prototype SVG | Read the complete `templates/<basename>.svg` once per valid context and reuse it until a known change |
+| Selected prototype SVG | Read the complete `<project_path>/templates/<basename>.svg` (the installed project-local copy, never the source workspace) once per valid context and reuse it until a known change |
 
 **Hard rule**: the complete Slide prototype SVG is authoritative and already resolves its Master + Layout; standalone Master/Layout definition SVGs are invalid; never author from a roster, manifest, sidecar, filename, or summary (manifest/text-slot files are tool metadata whose absence neither invalidates a legacy workspace nor permits text-topology changes). Resolve each page's prototype directly from its `page_layouts` row — `mirror` → §1.1 (the workspace must support `replication_mode: mirror`); `layout` → resolve `P<NN>: <basename>`, retain the structure system, apply the re-skin/reflow rules below; a missing row stops (adaptive mode still needs one selected input prototype, and there is no filename/page-type fallback). A mapping change stops and returns to Strategist to update the plan, read back and validate, then load the new prototype.
 

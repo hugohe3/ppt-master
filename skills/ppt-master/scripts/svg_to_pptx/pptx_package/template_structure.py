@@ -37,6 +37,8 @@ from pptx_to_svg.preset_authoring import (
 
 from ..drawingml.utils import (
     is_picture_effect_carrier,
+    parse_inline_style,
+    parse_opacity,
     parse_project_geometry_length,
     project_geometry_length_errors,
 )
@@ -454,6 +456,8 @@ def _svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
 def _is_full_canvas_solid_rect(
     elem: ET.Element,
     canvas: tuple[float, float, float, float],
+    *,
+    root: ET.Element | None = None,
 ) -> bool:
     """Return whether a direct rect is eligible for scoped p:bg compilation."""
     if canvas[2] <= 0 or canvas[3] <= 0:
@@ -461,6 +465,24 @@ def _is_full_canvas_solid_rect(
     if _local_tag(elem) != "rect":
         return False
     if any(elem.get(attr) for attr in ("transform", "filter", "clip-path")):
+        return False
+    style = parse_inline_style(elem.get("style"))
+    root_style = parse_inline_style(root.get("style")) if root is not None else {}
+
+    def root_value(name: str) -> str | None:
+        return root_style.get(name, root.get(name)) if root is not None else None
+
+    try:
+        fill_opacity = style.get("fill-opacity", elem.get("fill-opacity"))
+        if fill_opacity in {None, "inherit"}:
+            fill_opacity = root_value("fill-opacity")
+        opacity = style.get("opacity", elem.get("opacity"))
+        if opacity == "inherit":
+            opacity = root_value("opacity")
+        if any(parse_opacity(value, allow_percentage=True) < 1
+               for value in (fill_opacity, opacity, root_value("opacity"))):
+            return False
+    except ValueError:
         return False
     try:
         geometry = (
@@ -1631,7 +1653,7 @@ def parse_template_slide(
         binding_raw = elem.get("data-pptx-binding")
         carrier_raw = elem.get("data-pptx-carrier")
         editable_raw = elem.get("data-pptx-editable")
-        is_background = _is_full_canvas_solid_rect(elem, canvas)
+        is_background = _is_full_canvas_solid_rect(elem, canvas, root=root)
         effective_layer = layer or ("slide" if is_background else None)
 
         if (
@@ -1725,7 +1747,8 @@ def parse_template_slide(
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} violates template paint order; "
                 "use Master background, Layout background, Slide background, "
-                "Master shapes, Layout shapes, then Slide content/placeholders"
+                "Master shapes, Layout shapes, then Slide content/placeholders. "
+                "Full-canvas solid rects are treated as backgrounds; translucent overlays are not backgrounds"
             )
         last_order_rank = order_rank
 
@@ -3691,7 +3714,7 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
         layer = (elem.get("data-pptx-layer") or "").strip().lower() or None
         if layer not in _LAYERS:
             layer = None
-        is_background = _is_full_canvas_solid_rect(elem, canvas)
+        is_background = _is_full_canvas_solid_rect(elem, canvas, root=root)
         effective_layer = layer or ("slide" if is_background else None)
         if is_background and effective_layer is not None:
             order_rank = {"master": 0, "layout": 1, "slide": 2}[effective_layer]
@@ -3705,7 +3728,8 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
             errors.append(
                 f"{svg_path.name}: {elem.get('id') or tag} violates template paint "
                 "order; use Master background, Layout background, Slide background, "
-                "Master shapes, Layout shapes, then Slide content/placeholders"
+                "Master shapes, Layout shapes, then Slide content/placeholders. "
+                "Full-canvas solid rects are treated as backgrounds; translucent overlays are not backgrounds"
             )
             continue
         last_order_rank = order_rank

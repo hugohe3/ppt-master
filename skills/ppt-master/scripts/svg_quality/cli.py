@@ -192,7 +192,7 @@ def main() -> None:
             sys.exit(1)
         try:
             print(json.dumps(slot_capacity_report(files), ensure_ascii=False, indent=2))
-        except (OSError, ET.ParseError) as exc:
+        except (OSError, ValueError, KeyError, TypeError, ET.ParseError) as exc:
             print(f"[ERROR] Cannot read template slots: {exc}", file=sys.stderr)
             sys.exit(1)
         sys.exit(0)

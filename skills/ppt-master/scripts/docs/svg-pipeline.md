@@ -653,7 +653,11 @@ counts and is written to stdout only. It also writes a factual Design Spec
 skeleton by default (kind `deck`; choose `--kind layout` for a neutral Layout
 publication). The skeleton records canvas, source slide count, Master/Layout keys,
 picker names, slots, and a Source Preservation Map. Identity and design prose
-remain TODOs; finish them before registration. See [template-tools.md](template-tools.md#mirror-publication). This validator/publisher is for Type A mirror,
+remain TODOs; finish them before registration. Resolved workspaces under
+`skills/ppt-master/templates/<kind_dir>/` use `templates/design_spec.md`;
+all other workspaces use `templates/design_spec.<kind>.TODO.md`, even when their
+`templates/` is empty. The `spec_skeleton` receipt records that path.
+See [template-tools.md](template-tools.md#mirror-publication). This validator/publisher is for Type A mirror,
 not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
 or export.
 
