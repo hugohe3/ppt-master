@@ -12,7 +12,7 @@ Main entry point for project setup and validation.
 
 ```bash
 python3 scripts/project_manager.py init <project_name> [--format <registered_format>]
-python3 scripts/project_manager.py import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...]
+python3 scripts/project_manager.py import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...] [--no-image-propagation]
 python3 scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
 python3 scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper
 python3 scripts/project_manager.py validate <project_path>
@@ -22,6 +22,13 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
+
+- `import-sources --no-image-propagation` keeps extracted companion assets and
+  their Markdown references in `sources/`, skipping their copy/manifest merge
+  into the runtime `images/` pool. Create Template project-scope reference
+  intake uses this switch; Generate keeps the default propagation. It covers
+  new conversions and existing companion Markdown. Explicit bitmap inputs
+  still enter `images/`; the switch does not clean up images imported earlier.
 - A moved topic-research pair `projects/<slug>.md` takes its sibling
   `projects/<slug>_web_sources/` along to `analysis/research_web_sources/`.
 - Local sources under `projects/` are moved into the target project unless

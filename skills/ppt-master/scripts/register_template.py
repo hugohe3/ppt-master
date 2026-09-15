@@ -1170,6 +1170,12 @@ def _extract_entry(
     frontmatter, body = _read_spec(spec_path)
     fm = frontmatter or {}
 
+    if fm.get(f"{kind}_id") == "TODO" or "<!-- TODO -->" in body:
+        raise SpecParseError(
+            "incomplete Design Spec skeleton: finish the TODO identity and design "
+            "sections before registration, then rerun --dry-run"
+        )
+
     declared_kind = fm.get("kind")
     if declared_kind not in (None, kind):
         raise SpecParseError(

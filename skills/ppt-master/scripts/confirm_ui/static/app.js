@@ -22,7 +22,7 @@
             btn_confirm: "Confirm",
             btn_confirm_contract: "Confirm contract & continue →",
             btn_confirm_final_plan: "Confirm final plan →",
-            deriving: "Generating the downstream options from your choices…",
+            deriving: "Preparing the final plan and verifying your selected templates…",
             template_selection_required: "Choose free design or use templates. When using templates, select at least one workspace.",
             template_selection_conflict: "Choose at most one workspace per kind.",
             connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
@@ -211,7 +211,7 @@
             btn_confirm: "確定",
             btn_confirm_contract: "契約内容を確定して次へ →",
             btn_confirm_final_plan: "最終プランを確定 →",
-            deriving: "選択内容をもとに後続の選択肢を生成しています…",
+            deriving: "最終プランを準備し、選択したテンプレートを確認しています…",
             template_selection_required: "自由デザインまたはテンプレート利用を選んでください。テンプレート利用時は、1つ以上のワークスペースを選択してください。",
             template_selection_conflict: "種類ごとにワークスペースを1件まで選択してください。",
             connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
@@ -400,7 +400,7 @@
             btn_confirm: "确认",
             btn_confirm_contract: "确认沟通契约并继续 →",
             btn_confirm_final_plan: "确认最终方案 →",
-            deriving: "正在根据你的选择生成下游选项…",
+            deriving: "正在准备最终方案并核验所选模板…",
             template_selection_required: "请选择自由设计或使用模板；选择使用模板时，至少选择一个工作区。",
             template_selection_conflict: "每种模板最多选择一个工作区。",
             connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
@@ -589,7 +589,7 @@
             btn_confirm: "確認",
             btn_confirm_contract: "確認溝通契約並繼續 →",
             btn_confirm_final_plan: "確認最終方案 →",
-            deriving: "正在根據你的選擇生成下游選項…",
+            deriving: "正在準備最終方案並核驗所選範本…",
             template_selection_required: "請選擇自由設計或使用範本；選擇使用範本時，至少選擇一個工作區。",
             template_selection_conflict: "每種範本最多選擇一個工作區。",
             connection_lost: "確認頁服務連線中斷，正在重試；如果持續失敗，請回到聊天視窗走聊天確認。",
@@ -1112,6 +1112,7 @@
             throw new Error("template_options.default_mode must be free_design or templates");
         }
         var normalized = {
+            options_sha256: data && data.options_sha256,
             lang: data && data.lang,
             default_mode: defaultMode,
             library: {},
@@ -4251,6 +4252,7 @@
     function stage1Payload() {
         var payload = communicationPayload();
         payload.stage = "stage1";
+        payload.options_sha256 = TEMPLATE_OPTIONS.options_sha256;
         payload.template_selection = {
             mode: TEMPLATE_MODE,
             selection_keys: TEMPLATE_MODE === "templates"

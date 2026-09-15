@@ -2106,12 +2106,14 @@ def structured_layout_definition_files(
     specs: list[TemplateSlideSpec],
     structure_lock: PptxStructureLock,
 ) -> list[Path]:
-    """Validate the unique Layout roster and return unused prototype SVGs.
+    """Validate the explicit registered Layout set and return unused carriers.
 
     A generated page can be the carrier for a used Layout definition. A Layout
     with no generated page must point at one installed template SVG; the builder
     converts that SVG on an internal trailing slide and removes the carrier slide
     after registering the reusable Layout.
+    Installed prototypes absent from ``pptx_layouts`` are never compiled.
+    Lockless Quick export compiles only its public pages' Layouts.
     """
     if structure_lock.mode != "structured":
         return []

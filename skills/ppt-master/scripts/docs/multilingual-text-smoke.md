@@ -82,6 +82,8 @@ with TemporaryDirectory(prefix="ppt-master-multilingual-smoke-") as tmp:
     confirm.mkdir(parents=True)
     recommendation = {
         "stage": "stage1",
+        "template_options": {"schema_version": 1, "phase": "template",
+                             "default_mode": "free_design", "explicit_workspace_roots": []},
         "lang": "en",
         "primary_language": "AR_sa",
         "audience": {"value": "Team"},
@@ -97,27 +99,18 @@ with TemporaryDirectory(prefix="ppt-master-multilingual-smoke-") as tmp:
         json.dumps(recommendation),
         encoding="utf-8",
     )
-    (confirm / "template_options.json").write_text(
-        json.dumps(
-            {
-                "schema_version": 1,
-                "phase": "template",
-                "default_mode": "free_design",
-                "explicit_workspace_roots": [],
-            }
-        ),
-        encoding="utf-8",
-    )
     app = create_app(str(project), idle_timeout=0)
     app.testing = True
     client = app.test_client()
     response = client.get("/api/recommendations")
     assert response.status_code == 200
     assert response.get_json()["primary_language"] == "ar-SA"
+    options_sha256 = response.get_json()["template_options"]["options_sha256"]
     response = client.post(
         "/api/confirm",
         json={
             "stage": "stage1",
+            "options_sha256": options_sha256,
             "template_selection": {
                 "mode": "free_design",
                 "selection_keys": [],

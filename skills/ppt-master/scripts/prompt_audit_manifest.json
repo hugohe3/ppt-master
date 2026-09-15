@@ -2133,7 +2133,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "9cef05268f4f",
+              "fingerprint": "39cbcc1365b7",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2217,7 +2217,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "b10eddc66b34",
+              "fingerprint": "0cfaaa77ab86",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2247,7 +2247,7 @@
             {
               "path": "skills/ppt-master/references/pptx-structure-interface.md",
               "role": "reference",
-              "fingerprint": "51fe75ceb256",
+              "fingerprint": "d43b6b9804a4",
               "reason": "This reference mirrors the owner field grammar or ownership boundary."
             },
             {
@@ -2302,6 +2302,20 @@
         "skills/ppt-master/workflows/*.md",
         "skills/ppt-master/workflows/**/*.md",
         "skills/ppt-master/templates/*.md"
+      ],
+      "accepted": [
+        {
+          "field": "image_ai_path",
+          "owner_fingerprint": "29f97cdb0797",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/confirm-surface.md",
+              "role": "reference",
+              "fingerprint": "dda9d2e6f1ee",
+              "reason": "result.json field list restates the owner grammar; stage1_sha256/selection_sha256 binding added by the template-flow audit."
+            }
+          ]
+        }
       ]
     }
   ],

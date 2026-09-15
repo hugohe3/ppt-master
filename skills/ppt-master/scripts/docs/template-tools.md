@@ -30,6 +30,43 @@ Produces one import workspace (default `<pptx_stem>_template_import/` beside the
 
 **Artifact roles**: `analysis/manifest.json` is the truth for source-deck facts (slide size, theme, fonts, background inheritance, resource inventory, declared structure, reuse relationships); `analysis/native_structure.json` for source PowerPoint identity (keys, picker names, parents, placeholder types/indices, package hash); `svg/inheritance.json` for consumption and visibility. The three overlap only at contract boundaries so materialization can cross-check identity, ownership, and visibility — never collapse or substitute them. `authoring_summary.json` is the model-facing roster index; `authoring_manifest.json` is machine-only provenance validated by the mirror compiler. Exported `images/` is the canonical reusable image pool; `icons/imported/*.svg` is the canonical decoration pool but not part of the default read set — use `authoring_summary.json` `icon_refs` and cleaned SVGs first, query `*_vector_asset_inventory.json` by exact asset id only when source-ref or fingerprint detail is needed, and open an individual asset only when it affects a design decision.
 
+## Mirror publication
+
+Type A mirror is a tool publication path. Run these commands serially on the
+importer's unchanged output:
+
+```bash
+python3 scripts/pptx_template_import.py "<source.pptx>" -o "<import_workspace>" --inheritance-mode both
+python3 scripts/mirror_template_materialize.py "<import_workspace>" "<template_workspace>" [--kind deck|layout]
+python3 scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --canonical-authoring
+python3 scripts/template_preview_pptx.py "<template_workspace>" -o "<preview.pptx>"
+```
+
+Only `pptx_template_import.py` workspaces with layered IR,
+`analysis/native_structure.json`, and `sources/source.pptx` qualify. A generic
+SVG workspace is consumed through `apply_template.py` with its exact root.
+Do not relabel a generic projection or fabricate source facts.
+
+The materializer writes the Design Spec skeleton in the same publication
+transaction. It defaults to Deck because its factual roster is one prototype
+per source slide; `--kind layout` records a previously chosen neutral Layout
+target. The default skeleton is necessary for the next checker/preview commands,
+so it needs no separate enable flag. It uses `templates/design_spec.md`, or a
+qualified `design_spec.<kind>.TODO.md` beside existing qualified specs. It
+records exact canvas dimensions/viewBox (`custom` if no registered size matches),
+source page count, Master/Layout keys, picker names, text slots and a Source
+Preservation Map. The identity and Overview/Color Scheme/Typography/other design
+sections remain TODOs. Registration rejects the unfinished skeleton with an
+actionable message; Template_Designer completes its judgment before registering.
+
+The execution manifest records the source package hash, whether every reachable
+import document still matches its importer hash, and hashes of published SVGs
+and their native records/assets. Template-mode checks classify only unchanged source text-bound estimates
+and source-object overlaps as inherited information. Edited import documents, SVGs or packaged dependencies invalidate that classification; XML, images, native payloads and reusable structure remain blocking.
+This is source preservation, not proof that every original slide fits. The
+checker and preview do not require completed design prose. Detailed source
+validation, asset packaging and rollback: [svg-pipeline.md](svg-pipeline.md#mirror_template_materializepy).
+
 ## Type B source bundles
 
 ```bash
@@ -46,6 +83,25 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_source>" --t
 ```
 
 Globs `*.svg` in the template directory; skips `spec_lock.md` drift checks; enforces roster ↔ resolved Design Spec consistency as errors (orphan or missing files break the contract and, in library scope, the index); emits advisory warnings when a page lacks a conventional placeholder (silence them with a `placeholders:` frontmatter map); requires every SVG root to declare one output Master and Layout (zero-slot Layouts are valid); rejects ordinary Master/Layout `<g>` elements, nested structure markers, missing slot bounds, and carrier-bound slots without exactly one compatible carrier (a validated compact authored-preset `<g>` is the sole fixed-layer group exception and may be one `object` carrier); validates cross-page Master equality and same-key Layout atom/slot equality; warns when distinct Layout keys have identical static framing/slot contracts. For `kind: brand` it validates the identity-only frontmatter/sections/colors/provenance/asset references; for `kind: style` the frontmatter, section/field shape, conditional custom and fallback values, portable ID, and one-file roster-free boundary. It validates the authoring contract, not the compiled OOXML package.
+
+### Advisory slot capacity
+
+```bash
+python3 scripts/svg_quality_checker.py "<template_workspace_or_svg>" --template-mode --slot-capacity-report
+```
+
+This read-only mode prints JSON to stdout and creates no report or workflow log.
+It does not run the quality gate or add errors/warnings. Use it during Create
+Template review and before the Strategist locks typography. Each text carrier
+reports its slot bounds, inherited font family/size/weight/tracking, line pitch
+and representative Latin/CJK capacities measured with `text_measure.measure_text`
+(including its calibration/headroom). Latin uses a stated letter sample; CJK uses
+a full-width glyph. Actual text must still be measured. Line pitch comes from
+declared `line-height`, explicit tspan baselines, or a clearly labeled 1.2em
+estimate. If visible text uses tspans, it reads the first visible run and reports
+mixed family/size variants separately. The estimate assumes uniform carrier typography and does not promise
+a fixed capacity across fonts, mixed runs, languages or wrapping choices.
+Invalid bounds are reported as unavailable data, never as checker findings.
 
 ## `template_preview_pptx.py`
 
@@ -65,7 +121,7 @@ Runs the install half of [`apply-template-workspace.md`](../../workflows/stages/
 
 The installer stages complete `templates/`, `images/`, and `icons/` trees on the target filesystem, verifies every mapped file and the final spec/roster/asset set, then publishes by directory rename. A publication failure rolls back all earlier renames, including removed Deck files and any previous receipt. If rollback itself fails, the error identifies retained backups for recovery. This is exception rollback across directories, not a single filesystem transaction or a process-crash recovery protocol.
 
-Successful installation also writes `<project>/template_install.json` in that transaction. Its version-1 object records `project`, `roots` (canonical roots, source labels, kinds, spec paths/identities, and source SHA-256 fingerprints), `installed_specs`, `active_roster` (root, kind, and structural file paths, or `null`), and `files` (installed relative paths → SHA-256). `selection_sha256` binds a UI installation to its frozen Stage-1 snapshot; it is `null` for installations without a UI selection. If `confirm_ui/template_selection.json` exists, the supplied roots and their bytes must match it before installation. Confirm UI checks this machine receipt and installed content before completing or reading a handoff; a textual provenance line is insufficient.
+Successful installation also writes `<project>/template_install.json` in that transaction. Its version-1 object records `project`, `roots` (canonical roots, source labels, kinds, spec paths/identities, and source SHA-256 fingerprints), `installed_specs`, `active_roster` (root, kind, and structural file paths, or `null`), and `files` (installed relative paths → SHA-256). `selection_sha256` binds a UI installation to its frozen Stage-1 snapshot; it is `null` for installations without a UI selection. If `confirm_ui/template_selection.json` exists, the supplied roots and their bytes must match it before installation. Confirm UI checks this machine receipt and installed content before exposing or accepting Stage 2; a textual provenance line is insufficient.
 
 ## `register_template.py`
 

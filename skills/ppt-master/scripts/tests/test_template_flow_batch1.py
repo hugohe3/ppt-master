@@ -55,9 +55,11 @@ def _workspace(root: Path, kind: str, template_id: str) -> Path:
 
 def _confirm(project: Path, roots: list[Path], mode: str = 'templates') -> dict:
     confirm = project / 'confirm_ui'
-    server._write_json_atomic(confirm / server.TEMPLATE_OPTIONS_NAME, {
-        'schema_version': 1, 'phase': 'template', 'default_mode': mode,
-        'explicit_workspace_roots': [str(root) for root in roots],
+    server._write_json_atomic(confirm / server.RECOMMENDATION_STAGE_NAMES[1], {
+        'stage': 'stage1', 'template_options': {
+            'schema_version': 1, 'phase': 'template', 'default_mode': mode,
+            'explicit_workspace_roots': [str(root) for root in roots],
+        },
     })
     options, candidates = server._build_template_options(confirm)
     keys = [key for key, candidate in candidates.items()
@@ -69,6 +71,8 @@ def _confirm(project: Path, roots: list[Path], mode: str = 'templates') -> dict:
     server._write_json_atomic(confirm / server.TEMPLATE_SELECTION_NAME, selection)
     server._write_json_atomic(confirm / server.RESULT_NAME, {
         'stage': 'stage1', 'status': 'stage1-confirmed',
+        'stage1_sha256': server._stage1_sha256(confirm),
+        'selection_sha256': selection['selection_sha256'],
     })
     return selection
 
@@ -158,11 +162,9 @@ class TemplateInstallTests(unittest.TestCase):
             self.project, [str(self.project), str(TEMPLATES / 'layouts' / 'report_core')],
             validate=False,
         )
-        self.assertEqual(server._complete_template_selection(self.project), 0)
-        handoff = server._read_template_handoff(
-            self.project, self.project / 'confirm_ui' / server.TEMPLATE_HANDOFF_NAME,
-        )
-        self.assertEqual(handoff['status'], 'ready')
+        self.assertIsNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
+        handoff = server._read_template_installation(self.project)
+        self.assertEqual(handoff['status'], 'confirmed')
 
     def test_n6_external_spec_drift_is_rejected_before_install(self) -> None:
         _confirm(self.project, [self.layout])
@@ -179,9 +181,9 @@ class TemplateInstallTests(unittest.TestCase):
 
     def test_n6_options_drift_is_still_rejected(self) -> None:
         _confirm(self.project, [self.layout])
-        options_path = self.project / 'confirm_ui' / server.TEMPLATE_OPTIONS_NAME
+        options_path = self.project / 'confirm_ui' / server.RECOMMENDATION_STAGE_NAMES[1]
         options = json.loads(options_path.read_text(encoding='utf-8'))
-        options['lang'] = 'ja'
+        options['template_options']['lang'] = 'ja'
         previous_time = options_path.stat().st_mtime_ns
         server._write_json_atomic(options_path, options)
         os.utime(options_path, ns=(previous_time, previous_time))
@@ -195,33 +197,31 @@ class TemplateInstallTests(unittest.TestCase):
         _confirm(self.project, [self.project, brand])
         apply_template.apply_templates(self.project, [str(self.project), str(brand)], validate=False)
         (brand / 'images' / 'logo.bin').write_bytes(b'drift')
-        self.assertEqual(server._complete_template_selection(self.project), 1)
+        self.assertIsNotNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
     def test_n8_unrelated_installed_spec_cannot_complete_handoff(self) -> None:
         _confirm(self.project, [TEMPLATES / 'brands' / 'zcare-rescue', TEMPLATES / 'layouts' / 'report_core'])
-        self.assertEqual(server._complete_template_selection(self.project), 1)
+        self.assertIsNotNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
     def test_n8_correct_filenames_without_installer_receipt_are_rejected(self) -> None:
         _confirm(self.project, [self.layout])
         shutil.copy2(self.layout / 'templates' / 'design_spec.layout.new.md', self.project / 'templates')
-        self.assertEqual(server._complete_template_selection(self.project), 1)
+        self.assertIsNotNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
     def test_n8_installed_asset_drift_invalidates_ready_handoff(self) -> None:
         _confirm(self.project, [self.project, TEMPLATES / 'brands' / 'zcare-rescue'])
         apply_template.apply_templates(
             self.project, [str(self.project), str(TEMPLATES / 'brands' / 'zcare-rescue')], validate=False,
         )
-        self.assertEqual(server._complete_template_selection(self.project), 0)
+        self.assertIsNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
         (self.project / 'icons' / 'keep.bin').write_bytes(b'changed')
         with self.assertRaises((ValueError, apply_template.ApplyTemplateError)):
-            server._read_template_handoff(
-                self.project, self.project / 'confirm_ui' / server.TEMPLATE_HANDOFF_NAME,
-            )
+            server._read_template_installation(self.project)
 
     def test_n8_receipt_for_another_selection_cannot_authorize_handoff(self) -> None:
         apply_template.apply_templates(self.project, [str(self.project)], validate=False)
         _confirm(self.project, [self.layout])
-        self.assertEqual(server._complete_template_selection(self.project), 1)
+        self.assertIsNotNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
     def test_n8_installed_spec_and_roster_changes_are_rejected(self) -> None:
         _confirm(self.project, [self.project])
@@ -231,14 +231,14 @@ class TemplateInstallTests(unittest.TestCase):
                 path = self.project / relative
                 before = path.read_bytes()
                 path.write_bytes(before + b'changed')
-                self.assertEqual(server._complete_template_selection(self.project), 1)
+                self.assertIsNotNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
                 path.write_bytes(before)
         (self.project / 'images' / 'later-project-asset.bin').write_bytes(b'new project material')
-        self.assertEqual(server._complete_template_selection(self.project), 0)
+        self.assertIsNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
     def test_free_design_still_completes_without_installation(self) -> None:
         _confirm(self.project, [], mode='free_design')
-        self.assertEqual(server._complete_template_selection(self.project), 0)
+        self.assertIsNone(server._stage2_ready_error(self.project, self.project / 'confirm_ui'))
 
 
 class TemplateBuilderTests(unittest.TestCase):

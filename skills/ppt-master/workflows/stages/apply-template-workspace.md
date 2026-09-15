@@ -8,7 +8,7 @@ description: Generate-PPTX runbook for validating and installing selected Brand,
 
 ## 1. Gate and Normalize Inputs
 
-🚧 **GATE**: Default Stage 1 confirmed a non-free selection, or Quick received exact roots directly from the user/current Create Template handoff — in Quick that input is the complete selection authority (no Confirm UI, no `template_options.json` / `template_selection.json` / `template_handoff.json`). Every selected input resolves to one current contract:
+🚧 **GATE**: Default Stage 1 confirmed a non-free selection, or Quick received exact roots directly from the user/current Create Template handoff — in Quick that input is the complete selection authority (no Confirm UI recommendations or selection receipt). Every selected input resolves to one current contract:
 
 | Input shape | Spec and SVG source | Asset source |
 |---|---|---|
@@ -111,4 +111,4 @@ Each installed file keeps its own frontmatter `kind` and `<id>`; nothing is rela
 - [x] Every kind schema passed preflight; structured SVG checks ran only for Layout/Deck inputs
 - [x] Duplicate kinds and destination collisions were rejected before one atomic install; Layout-over-Deck precedence selected exactly one active roster
 - [x] `<project_path>/templates/` and portable sibling assets are complete and the only downstream template source
-- [ ] **Next**: Default completes the template-selection handoff and continues [`generate-pptx.md`](../generate-pptx.md) Step 4 Stage 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2
+- [ ] **Next**: Default continues [`generate-pptx.md`](../generate-pptx.md) Step 4 Stage 2 after the server verifies selection and installation; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2

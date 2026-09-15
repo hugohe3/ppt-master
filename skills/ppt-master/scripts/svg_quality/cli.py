@@ -13,7 +13,9 @@ Dependencies:
     Standard library plus local PPT Master validation modules.
 """
 
+import json
 import sys
+from xml.etree import ElementTree as ET
 from pathlib import Path
 
 from attribution_guard import require_skill_integrity
@@ -134,6 +136,7 @@ def print_usage() -> None:
     print("  --page <basename|path>         Required with --stage page; must resolve under")
     print("                                  the target project's svg_output/ directory.")
     print("  --json                         Write a machine-readable quality report")
+    print("  --slot-capacity-report         With --template-mode: print advisory slot JSON only")
     print("  --json-output <path>           Override the JSON report path")
     print("  --export                       Write a plain-text quality report")
     print("  --output <path>                Override the plain-text report path")
@@ -175,6 +178,24 @@ def main() -> None:
         sys.exit(1)
 
     template_mode = "--template-mode" in sys.argv
+    if "--slot-capacity-report" in sys.argv:
+        if not template_mode:
+            print("[ERROR] --slot-capacity-report requires --template-mode", file=sys.stderr)
+            sys.exit(1)
+        from .slot_capacity import slot_capacity_report
+
+        target = Path(sys.argv[1])
+        source = target / "templates" if (target / "templates").is_dir() else target
+        files = [source] if source.is_file() else sorted(source.glob("*.svg"))
+        if not files:
+            print(f"[ERROR] No template SVG files found: {source}", file=sys.stderr)
+            sys.exit(1)
+        try:
+            print(json.dumps(slot_capacity_report(files), ensure_ascii=False, indent=2))
+        except (OSError, ET.ParseError) as exc:
+            print(f"[ERROR] Cannot read template slots: {exc}", file=sys.stderr)
+            sys.exit(1)
+        sys.exit(0)
     quick_generate = "--quick-generate" in sys.argv
     canonical_authoring = "--canonical-authoring" in sys.argv
     roundtrip = "--roundtrip" in sys.argv

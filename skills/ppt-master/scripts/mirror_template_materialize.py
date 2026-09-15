@@ -191,6 +191,7 @@ class AuthoringDocument:
     source_path: Path
     source_sha256: str
     source_refs: dict[str, SourceRefRecord]
+    initial_authoring_sha256: str = ""
 
 
 @dataclass(frozen=True)
@@ -263,6 +264,8 @@ def _compact_json_bytes(payload: dict[str, object]) -> bytes:
 def _template_execution_manifest_files(
     materialized_roots: list[tuple[Path, ET.Element]],
     source_import: dict[str, object] | None,
+    source_package_sha256: str | None = None,
+    source_geometry_unchanged: bool = False,
 ) -> list[MaterializedFile]:
     """Serialize one compact roster plus per-prototype text-slot sidecars."""
     templates: list[dict[str, object]] = []
@@ -297,6 +300,7 @@ def _template_execution_manifest_files(
         ))
         templates.append({
             "prototype": prototype,
+            "source_svg_sha256": _sha256_bytes(_serialize_svg(root)),
             "page_type": relative_path.stem.split("_", 1)[-1],
             "viewBox": root.get("viewBox"),
             "master": root.get("data-pptx-master"),
@@ -330,6 +334,8 @@ def _template_execution_manifest_files(
             "by_code": {},
         },
         "source_themes": SOURCE_THEMES_FILENAME,
+        "source_package_sha256": source_package_sha256,
+        "source_geometry_unchanged": source_geometry_unchanged,
         "templates": templates,
     }
     files.append(MaterializedFile(
@@ -619,7 +625,9 @@ def _load_authoring_documents(
         )
     if manifest.get("projection_kind") != "layered":
         raise MirrorMaterializationError(
-            "Mirror materialization requires projection_kind='layered'"
+            "mirror publishes only pptx_template_import.py workspaces; "
+            "an SVG workspace is consumed as an exact root by apply_template.py "
+            "(projection_kind must be layered)"
         )
     if manifest.get("authoring_root") != ".":
         raise MirrorMaterializationError("authoring_manifest.json authoring_root must be '.'")
@@ -727,6 +735,7 @@ def _load_authoring_documents(
 
         documents[authoring_name] = AuthoringDocument(
             name=authoring_name,
+            initial_authoring_sha256=str(raw.get("initial_authoring_sha256") or ""),
             authoring_path=authoring_path,
             source_path=source_path,
             source_sha256=expected_source_sha,
@@ -913,6 +922,12 @@ def _validate_source_ref_closure(
 
 def _load_native_graph(workspace: Path) -> dict[str, Any]:
     native_path = native_structure_path(workspace)
+    if not native_path.is_file() or not (workspace / "sources" / "source.pptx").is_file():
+        raise MirrorMaterializationError(
+            "mirror publishes only pptx_template_import.py workspaces; "
+            "an SVG workspace is consumed as an exact root by apply_template.py "
+            "(requires analysis/native_structure.json and sources/source.pptx)"
+        )
     native = _load_json(native_path, context="native structure")
     if native.get("schema") != NATIVE_STRUCTURE_SCHEMA:
         raise MirrorMaterializationError(
@@ -2417,11 +2432,9 @@ def _compose_template(
         },
     )
 
-    typography_roots = [
-        candidate
-        for candidate in (master_root, layout_root, slide_root)
-        if candidate is not None
-    ]
+    # Each layer/slide atom receives its own source inheritance below. A Slide
+    # root's compacted font must not become inheritance for Master atoms.
+    typography_roots = [master_root]
     for name in _ROOT_TYPOGRAPHY_ATTRIBUTES:
         for candidate in typography_roots:
             value = candidate.get(name)
@@ -2482,6 +2495,13 @@ def _compose_template(
                 slide_backgrounds.append(item)
             else:
                 item.set("id", item.get("id") or f"slide-{slide['index']}-node-{index + 1}")
+                # A source line can have a zero-width/height frame. Publish its
+                # single geometry atom; a content group requires positive bounds.
+                if _local_name(item.tag) == "g" and item.get("data-pptx-prst") == "line":
+                    atoms = _flatten_fixed_group(item, context=f"Slide {slide['index']} line")
+                    if len(atoms) == 1:
+                        atoms[0].set("id", item.get("id"))
+                        item = atoms[0]
                 if _local_name(item.tag) == "g" and _visible_leaf(item):
                     bounds = _frame(item)
                     if bounds is None:
@@ -2899,11 +2919,64 @@ def _publish_files(
         raise MirrorMaterializationError(f"Mirror publish failed: {exc}") from exc
 
 
+def _source_geometry_is_unchanged(documents: dict[str, AuthoringDocument]) -> bool:
+    """Require every reachable compact document to match its importer hash."""
+    return bool(documents) and all(
+        document.initial_authoring_sha256 == _sha256_file(document.authoring_path)
+        for document in documents.values()
+    )
+
+
+def _spec_skeleton(native: dict, pages: list[tuple[Path, ET.Element]], kind: str) -> str:
+    """Describe source facts only; design judgment remains explicitly unfinished."""
+    from project_utils import CANVAS_FORMATS
+
+    width = native["slideSize"]["width_px"]
+    height = native["slideSize"]["height_px"]
+    viewbox = f"0 0 {format_coordinate(width)} {format_coordinate(height)}"
+    canvas = next((key for key, value in CANVAS_FORMATS.items()
+                   if value["width"] == width and value["height"] == height), "custom")
+    lines = [
+        "---", f"kind: {kind}", f"{kind}_id: TODO", "replication_mode: mirror",
+        "native_structure_mode: structured", f"canvas_format: {canvas}",
+        f"canvas_width: {format_coordinate(width)}", f"canvas_height: {format_coordinate(height)}",
+        f'canvas_viewbox: "{viewbox}"', f'source_viewbox: "{viewbox}"',
+        f"page_count: {len(pages)}", "---", "", "# Mirror Template Design Spec", "",
+        "## I. Template Overview", "", "<!-- TODO -->", "",
+        "## II. Color Scheme", "", "<!-- TODO -->", "",
+        "## III. Typography", "", "<!-- TODO -->", "",
+        "## IV. Signature Design Elements", "", "<!-- TODO -->", "",
+        "## V. Page Roster", "",
+        "| File | Master | Layout key | PowerPoint picker name | Slots |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for path, root in pages:
+        slots = ", ".join(
+            f"{e.get('id')}: {e.get('data-pptx-placeholder')}"
+            for e in root.iter() if e.get("data-pptx-placeholder")
+        ) or "none"
+        cells = [f"`{path.name}`", root.get("data-pptx-master", ""),
+                 root.get("data-pptx-layout", ""), root.get("data-pptx-layout-name", ""), slots]
+        lines.append("| " + " | ".join(c.replace("|", "\\|").replace("\n", " ") for c in cells) + " |")
+    lines += ["", "### Source Preservation Map", "",
+              f"Source package SHA-256: `{native['source']['sha256']}`", "",
+              "| Source slide | Template | Master | Layout |", "| --- | --- | --- | --- |"]
+    for slide, (path, root) in zip(sorted(native["slides"], key=lambda item: int(item["index"])), pages):
+        lines.append(f"| {slide['index']} | `{path.name}` | {root.get('data-pptx-master')} | {root.get('data-pptx-layout')} |")
+    lines += ["", "Only source-slide-reachable Masters and Layouts are retained.", "",
+              "## VI. Assets", "", "<!-- TODO -->", ""]
+    return "\n".join(lines)
+
+
 def materialize_mirror_template(
     import_workspace: Path,
     template_workspace: Path,
+    *,
+    kind: str = "deck",
 ) -> dict[str, Any]:
     """Publish source Slide prototypes with their reachable mirror structure."""
+    if kind not in {"layout", "deck"}:
+        raise MirrorMaterializationError("Mirror publication kind must be layout or deck")
     native = _load_native_graph(import_workspace)
     inheritance = _load_inheritance(import_workspace)
     masters: dict[str, dict[str, Any]] = {}
@@ -3081,6 +3154,21 @@ def materialize_mirror_template(
         )
         compact_svg_tree(root, compact_native_frames=False)
         compact_svg_style_tree(root)
+        # Compaction may hoist a Slide-specific font to the shared SVG root.
+        # Localize it again so Master/Layout resources have stable inheritance.
+        parents = {child: parent for parent in root.iter() for child in parent}
+        for text in root.iter(f"{{{SVG_NS}}}text"):
+            for name in _ROOT_TYPOGRAPHY_ATTRIBUTES:
+                ancestor = text
+                while ancestor is not None:
+                    value = _paint_value(ancestor, name)
+                    if value is not None:
+                        if ancestor is root:
+                            text.set(name, value)
+                        break
+                    ancestor = parents.get(ancestor)
+        for name in _ROOT_TYPOGRAPHY_ATTRIBUTES:
+            root.attrib.pop(name, None)
         _refresh_preset_preview_hashes(root)
         _refresh_fresh_native_fallback_hashes(root)
         try:
@@ -3151,8 +3239,19 @@ def materialize_mirror_template(
         _template_execution_manifest_files(
             materialized_roots,
             _source_import_summary(import_workspace),
+            native["source"]["sha256"],
+            _source_geometry_is_unchanged(documents),
         )
     )
+    spec_name = (
+        f"design_spec.{kind}.TODO.md"
+        if list((template_workspace / "templates").glob("design_spec.*.md"))
+        else "design_spec.md"
+    )
+    files.append(MaterializedFile(
+        Path("templates") / spec_name,
+        _spec_skeleton(native, materialized_roots, kind).encode("utf-8"),
+    ))
     source_themes_path = Path("templates") / SOURCE_THEMES_FILENAME
     files.append(MaterializedFile(source_themes_path, source_theme_bundle))
 
@@ -3172,6 +3271,18 @@ def materialize_mirror_template(
         files.append(
             MaterializedFile(PAYLOAD_STORE_RELATIVE_PATH, payload_store)
         )
+    # Geometry provenance covers the SVG's native records and reusable assets
+    # as well. Finishing the Design Spec must not invalidate source geometry.
+    preservation_files = {
+        Path(os.path.relpath(item.relative_path, "templates")).as_posix(): _sha256_bytes(item.payload)
+        for item in files
+        if item.relative_path != execution_manifest_path and item.relative_path.suffix != ".md"
+    }
+    for item in files:
+        if item.relative_path == execution_manifest_path:
+            manifest = json.loads(item.payload)
+            manifest["source_files_sha256"] = preservation_files
+            item.payload = _json_bytes(manifest)
     relative_files = [item.relative_path for item in files]
     if len(relative_files) != len(set(relative_files)):
         raise MirrorMaterializationError("Materializer produced duplicate output paths")
@@ -3245,6 +3356,7 @@ def materialize_mirror_template(
         },
         "template_svg_count": len(materialized_roots),
         "template_execution_manifest": execution_manifest_path.as_posix(),
+        "spec_skeleton": f"templates/{spec_name}",
         "source_themes": source_themes_path.as_posix(),
         "template_text_slot_manifest_count": len(materialized_roots),
         "imported_vector_count": len(referenced_icons),
@@ -3273,8 +3385,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Materialize a deterministic mirror template from one PPTX import "
-            "workspace's layered authoring IR."
+            "workspace's layered authoring IR, including a factual Design Spec "
+            "skeleton. SVG workspaces use apply_template.py with their exact root."
         )
+    )
+    parser.add_argument(
+        "--kind", choices=("deck", "layout"), default="deck",
+        help="Kind of the factual Design Spec skeleton (default: deck); finish its TODOs before registration",
     )
     parser.add_argument(
         "import_workspace",
@@ -3301,7 +3418,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Error: import workspace does not exist: {import_workspace}", file=sys.stderr)
         return 1
     try:
-        report = materialize_mirror_template(import_workspace, template_workspace)
+        report = materialize_mirror_template(import_workspace, template_workspace, kind=args.kind)
     except (MirrorMaterializationError, OSError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
