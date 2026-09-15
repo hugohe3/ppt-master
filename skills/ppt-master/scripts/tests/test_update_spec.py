@@ -113,6 +113,8 @@ class UpdateSpecNativeFallbackTests(unittest.TestCase):
                 check=False,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
             self.assertIn(
@@ -132,6 +134,8 @@ class UpdateSpecNativeFallbackTests(unittest.TestCase):
                 check=False,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             self.assertEqual(update.returncode, 0, update.stderr)
             self.assertIn(
@@ -157,6 +161,8 @@ class UpdateSpecNativeFallbackTests(unittest.TestCase):
                 check=False,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             self.assertEqual(
                 checker.returncode,

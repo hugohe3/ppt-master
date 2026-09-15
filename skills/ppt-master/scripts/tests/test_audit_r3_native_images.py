@@ -401,7 +401,7 @@ class NativeTableMixedRunAuditTests(unittest.TestCase):
         for script, *arguments in commands:
             result = subprocess.run(
                 [sys.executable, "-B", str(scripts / script), *arguments],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
             )
             results.append(result)
         for result in results[:2]:

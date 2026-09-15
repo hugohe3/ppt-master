@@ -129,6 +129,7 @@ class PdfClauseAndScanTests(unittest.TestCase):
 
 class ImportSourcesProjectTreeTests(unittest.TestCase):
     def test_research_web_sources_dir_is_not_a_project(self) -> None:
+        PROJECTS_ROOT.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=PROJECTS_ROOT) as tmp:
             root = Path(tmp)
             scratch = root.with_name(root.name + "_web_sources")

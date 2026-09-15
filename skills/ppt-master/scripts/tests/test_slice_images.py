@@ -120,6 +120,8 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
                 ],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 check=False,
             )
 
@@ -163,6 +165,8 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
                 ],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 check=False,
             )
 
@@ -203,7 +207,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
                     "--bg", "#0000FF", "--inset", "0,0.06",
                     "--output", str(output_dir),
                 ],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(Image.open(output_dir / "a.png").size, (381, 33))
@@ -230,7 +234,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             ]
             result = subprocess.run(
                 args + ["--bg", "#0000FF", "--tolerance", "62"],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
             )
             self.assertEqual(result.returncode, 1)
             self.assertIn("semi-transparent", result.stderr)
@@ -239,7 +243,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
 
             result = subprocess.run(
                 args + ["--bg", "#034AF4", "--tolerance", "62"],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(Image.open(output_dir / "mark.png").size, (41, 41))
@@ -267,7 +271,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
                     "--bg", "#0000FF", "--inset", "0.05",
                     "--output", str(output_dir),
                 ],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
             )
             self.assertEqual(result.returncode, 1)
             self.assertIn("painted backing panel", result.stderr)

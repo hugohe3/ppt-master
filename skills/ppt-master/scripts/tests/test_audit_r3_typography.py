@@ -272,7 +272,7 @@ class IncrementalCalibrationTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, "-B", str(SCRIPTS_DIR / "text_measure.py"),
              "calibrate", str(project), *options],
-            capture_output=True, text=True, check=False,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         return result
