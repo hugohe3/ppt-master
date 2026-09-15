@@ -10,6 +10,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from language_tags import language_base, language_uses_rtl
+from slide_roster import discover_slide_svgs
 
 from .utils import _explicit_language_script, font_px_to_hpt, parse_font_family
 
@@ -215,7 +216,7 @@ def load_theme_font_spec_from_pages(
     The page root's ``font-family`` is the minor (body) face; the family of
     the largest text on the page is the major (title) face.
     """
-    pages = sorted((project_path / "svg_output").glob("*.svg"))
+    pages = discover_slide_svgs(project_path / "svg_output")
     if not pages:
         return None
     try:
