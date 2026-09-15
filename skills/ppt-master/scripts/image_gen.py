@@ -20,6 +20,7 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=fal         -> fal.ai backend
   IMAGE_BACKEND=replicate   -> Replicate backend
   IMAGE_BACKEND=openrouter  -> OpenRouter backend
+  IMAGE_BACKEND=api-route   -> API Route backend
 
 Configuration source (process env wins, `.env` is the fallback layer):
   1. Current process environment variables
@@ -228,6 +229,14 @@ BACKEND_REGISTRY = {
         "default_model": "black-forest-labs/flux-1.1-pro",
         "default_image_size": "1K",
         "key_hint": "REPLICATE_API_TOKEN / REPLICATE_API_KEY",
+    },
+    "api-route": {
+        "module": "backend_api_route",
+        "tier": "experimental",
+        "label": "API Route",
+        "default_model": "google/gemini-2.5-flash-image",
+        "default_image_size": "1K",
+        "key_hint": "API_ROUTE_API_KEY",
     },
     "openrouter": {
         "module": "backend_openrouter",
