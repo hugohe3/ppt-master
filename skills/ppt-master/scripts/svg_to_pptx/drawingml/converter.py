@@ -746,6 +746,11 @@ def _semantic_shape_text_body(
     shape: ET.Element,
     ctx: ConvertContext,
 ) -> str | None:
+    metadata = _txbody_metadata(shape)
+    if metadata is not None:
+        preserved = _decode_unchanged_txbody(shape, metadata)
+        if preserved is not None:
+            return preserved[0]
     texts = [
         child
         for child in shape
@@ -829,6 +834,10 @@ def _convert_semantic_shape(
         'data-pptx-shape-name',
         'data-pptx-shape-scope',
         'data-name',
+        'data-ph-type',
+        'data-pptx-placeholder-index',
+        'data-pptx-placeholder-size',
+        'data-pptx-placeholder-orientation',
     ):
         if carrier.get(name) is None and shape.get(name) is not None:
             carrier.set(name, str(shape.get(name)))
@@ -2375,7 +2384,6 @@ def convert_svg_to_slide_shapes(
         text_font_sizes=text_font_sizes,
         text_letter_spacings=text_letter_spacings,
     )
-
     shapes: list[str] = []
     converted = 0
     skipped = 0

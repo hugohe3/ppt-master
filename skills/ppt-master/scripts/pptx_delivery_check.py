@@ -38,6 +38,8 @@ from console_encoding import configure_utf8_stdio  # noqa: E402
 configure_utf8_stdio()
 
 from beautify_identity import extract_identity  # noqa: E402
+from pptx_ooxml.package import unused_slide_relationship_problems  # noqa: E402
+from pptx_ooxml.slideshow import custom_show_problems  # noqa: E402
 from pptx_opc_validation import (  # noqa: E402
     canonical_opc_part_path,
     resolve_internal_opc_target,
@@ -448,6 +450,8 @@ def _archive_member_problems(
 
 
 def _relationship_problem_code(problem: str) -> str:
+    if "unreferenced relationship" in problem:
+        return "unreferenced_slide_relationship"
     if "<invalid relationships XML:" in problem:
         return "invalid_relationship_xml"
     if " -> <" in problem:
@@ -988,6 +992,11 @@ def audit_pptx_delivery(path: str | Path) -> dict[str, object]:
                     relationship_problems = verify_internal_relationships(
                         extract_dir
                     )
+                    relationship_problems.extend(unused_slide_relationship_problems(extract_dir))
+                    for problem in custom_show_problems({
+                        name: archive.read(name) for name in archive.namelist() if name.endswith('.xml')
+                    }):
+                        errors.append(_issue("dangling_custom_show_reference", problem))
             relationships = package["relationships"]
             if not isinstance(relationships, dict):
                 raise AssertionError(
@@ -995,9 +1004,15 @@ def audit_pptx_delivery(path: str | Path) -> dict[str, object]:
                 )
             relationships["problems"] = relationship_problems
             for problem in relationship_problems:
+                code = _relationship_problem_code(problem)
+                if code == "unreferenced_slide_relationship":
+                    # The target exists and PowerPoint ignores the entry; it
+                    # is dead weight, not a broken package.
+                    advisories.append(_issue(code, problem))
+                    continue
                 errors.append(
                     _issue(
-                        _relationship_problem_code(problem),
+                        code,
                         problem,
                     )
                 )

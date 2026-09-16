@@ -35,10 +35,12 @@ from extract_svg_assets import (
     VECTOR_INVENTORY_SCHEMA,
     extract_file,
 )
+from hyperlink_contract import ADOPTED_SOURCE_LINK_ATTR, SHAPE_HYPERLINK_ATTR, SOURCE_HREF_ATTR
 from pptx_workspace import (
     ROUNDTRIP_MANIFEST_PATH,
     ROUNDTRIP_PAGE_PLAN_PATH,
 )
+from pptx_shapes import svg_text_fingerprint
 from slide_roster import discover_slide_svgs
 from svg_authoring_view import (
     AUTHORING_OMITTED_SOURCE_ATTRIBUTES,
@@ -48,6 +50,8 @@ from svg_authoring_view import (
     SOURCE_REF_ATTRIBUTE,
     SOURCE_PROXY_ATTRIBUTE,
     SOURCE_PROXY_KIND,
+    _element_chain,
+    _materialize_adopted_context,
     project_svg_batch,
     semantic_subtree_sha256,
 )
@@ -73,6 +77,7 @@ _ROOT_AUTHORING_ATTRIBUTES = (
     "style",
     *INHERITABLE_ATTRS,
     "opacity",
+    "transform",
 )
 
 ET.register_namespace("", SVG_NS)
@@ -133,6 +138,7 @@ class VectorAssetRecord:
 class RefOccurrence:
     element: ET.Element
     asset: VectorAssetRecord | None
+    root: ET.Element
 
 
 @dataclass(frozen=True)
@@ -1038,6 +1044,100 @@ def normalized_authoring_subtree_sha256(
     )
 
 
+def _contextual_authoring_element(element: ET.Element, root: ET.Element | None) -> ET.Element:
+    """Resolve the same effective context used when moving an authored object."""
+    if root is None:
+        return element
+    resolved = copy.deepcopy(element)
+    _materialize_adopted_context(root, element, ET.Element(f"{{{SVG_NS}}}svg"), resolved)
+    links = [
+        dict(ancestor.attrib)
+        for ancestor in _element_chain(root, element)[:-1]
+        if _local_name(ancestor.tag) == "a"
+    ]
+    if links:
+        resolved.set("data-pptx-runtime-ancestor-links", json.dumps(links, sort_keys=True))
+    return resolved
+
+
+def _source_jump_links(current_root: ET.Element, baseline_root: ET.Element) -> dict[ET.Element, tuple[str, str]]:
+    """Identify surviving links by their source owner and position in that owner."""
+    def links(root: ET.Element) -> dict[tuple, tuple[ET.Element, str, str]]:
+        found = {}
+
+        def visit(node: ET.Element, owner: str | None = None, path: tuple = ()) -> None:
+            source_ref = node.get(SOURCE_REF_ATTRIBUTE)
+            if source_ref:
+                owner, path = source_ref, ()
+            attrs = [SHAPE_HYPERLINK_ATTR]
+            if _local_name(node.tag) == "a":
+                attrs.extend(("href", f"{{{XLINK_NS}}}href"))
+            for name in attrs:
+                href = node.get(name, "")
+                if not re.fullmatch(r"#slide-[1-9]\d*", href):
+                    continue
+                if owner:
+                    key = (owner, path, name)
+                else:
+                    descendants = tuple(item.get(SOURCE_REF_ATTRIBUTE) for item in node.iter()
+                                        if item.get(SOURCE_REF_ATTRIBUTE))
+                    if not descendants:
+                        continue
+                    key = (descendants, name)
+                found[key] = (node, name, href)
+            for index, child in enumerate(node):
+                visit(child, owner, path + ((child.tag, index),))
+
+        visit(root)
+        return found
+
+    baseline = links(baseline_root)
+    return {
+        node: (name, href)
+        for key, (node, name, href) in links(current_root).items()
+        if key in baseline and baseline[key][2] == href
+        and (baseline[key][0].get(SOURCE_HREF_ATTR) is None or node.get(SOURCE_HREF_ATTR) == href)
+    }
+
+
+def preserve_adopted_source_links(
+    authoring_dir: Path, source_name: str, source_root: ET.Element,
+    source_element: ET.Element, adopted: ET.Element,
+) -> None:
+    """Carry source jump provenance across adoption after native identity is removed."""
+    project_path = authoring_dir.parent
+    if not (project_path / ROUNDTRIP_MANIFEST_PATH).is_file():
+        return
+    source_dir, proxy_dir, documents, _, _ = _load_documents(project_path, authoring_dir)
+    pages, _ = _load_page_plan(project_path, authoring_dir, documents)
+    output_docs = {doc.name: doc for doc in _output_documents(pages, documents, authoring_dir)}
+    document = output_docs.get(source_name) or documents.get(source_name)
+    if document is None:
+        raise AuthoringRoundtripError(f"Cannot resolve adopted source page {source_name}")
+    _, inventory = _load_current_assets(project_path, authoring_dir, documents)
+    temporary, baseline_dir, _ = _generate_baseline_bundle(
+        project_path, source_dir, proxy_dir, documents, inventory,
+    )
+    try:
+        inherited = _source_jump_links(source_root, _parse_svg(baseline_dir / document.source_name))
+    finally:
+        temporary.cleanup()
+    for original, clone in zip(source_element.iter(), adopted.iter()):
+        if original in inherited:
+            clone.set(SOURCE_HREF_ATTR, inherited[original][1])
+        if clone.get(SOURCE_HREF_ATTR):
+            clone.set(ADOPTED_SOURCE_LINK_ATTR, "true")
+    for ancestor in _element_chain(source_root, source_element)[:-1]:
+        if _local_name(ancestor.tag) != "a":
+            continue
+        href = ancestor.get("href") or ancestor.get(f"{{{XLINK_NS}}}href")
+        if href:
+            adopted.set(SHAPE_HYPERLINK_ATTR, href)
+            if ancestor in inherited or ancestor.get(SOURCE_HREF_ATTR) == href:
+                adopted.set(SOURCE_HREF_ATTR, href)
+                adopted.set(ADOPTED_SOURCE_LINK_ATTR, "true")
+
+
 def authoring_source_ref_is_unchanged(
     current_element: ET.Element,
     baseline_element: ET.Element,
@@ -1047,8 +1147,12 @@ def authoring_source_ref_is_unchanged(
     changed_definition_ids: set[str],
     current_asset: VectorAssetRecord | None = None,
     baseline_asset: VectorAssetRecord | None = None,
+    current_root: ET.Element | None = None,
+    baseline_root: ET.Element | None = None,
 ) -> bool:
     """Compare one source-ref occurrence exactly as round-trip export does."""
+    current_element = _contextual_authoring_element(current_element, current_root)
+    baseline_element = _contextual_authoring_element(baseline_element, baseline_root)
     return (
         normalized_authoring_subtree_sha256(
             current_element,
@@ -1114,14 +1218,17 @@ def _ref_occurrences(
         source_ref = element.get(SOURCE_REF_ATTRIBUTE)
         if source_ref:
             occurrences.setdefault(source_ref, []).append(
-                RefOccurrence(element=element, asset=None)
+                RefOccurrence(element=element, asset=None, root=root)
             )
     for record, asset_root in referenced_assets.values():
+        context_root = copy.deepcopy(root)
+        use = next(item for item in context_root.iter() if item.get("data-icon") == record.icon)
+        use.append(asset_root)
         for element in asset_root.iter():
             source_ref = element.get(SOURCE_REF_ATTRIBUTE)
             if source_ref:
                 occurrences.setdefault(source_ref, []).append(
-                    RefOccurrence(element=element, asset=record)
+                    RefOccurrence(element=element, asset=record, root=context_root)
                 )
     return occurrences
 
@@ -1409,6 +1516,32 @@ def _restore_preserved_effect_metadata(
                 item.set(name, value)
 
 
+def _restore_unchanged_text_body(
+    target: ET.Element,
+    source: ET.Element,
+    current: RefOccurrence,
+    baseline: RefOccurrence,
+) -> None:
+    """Recover native text only while its projected text and context agree."""
+    metadata = next((child for child in source if child.get("data-pptx-part") == "txbody"), None)
+    if metadata is None or current.element.get("data-pptx-frame") != baseline.element.get("data-pptx-frame"):
+        return
+
+    def text_state(occurrence: RefOccurrence) -> list[str]:
+        return [
+            semantic_subtree_sha256(_contextual_authoring_element(text, occurrence.root))
+            for text in occurrence.element.iter(f"{{{SVG_NS}}}text")
+        ]
+
+    if text_state(current) != text_state(baseline):
+        return
+    restored = copy.deepcopy(metadata)
+    # Projection compacts text runs and paragraphs. Validate that projection
+    # above, then let the existing decoder validate the recovered payload.
+    restored.set("data-pptx-text-sha256", svg_text_fingerprint(target))
+    target.append(restored)
+
+
 def _apply_authoring_root_attributes(
     target: ET.Element,
     authoring_root: ET.Element,
@@ -1474,10 +1607,39 @@ def _materialize_document(
     output_path: Path,
     current_assets: dict[str, VectorAssetRecord],
     baseline_assets: dict[str, VectorAssetRecord],
+    *,
+    page: RoundtripPage | None = None,
+    pages: tuple[RoundtripPage, ...] = (),
 ) -> dict[str, Any]:
     current_root = _parse_svg(document.authoring_path)
     baseline_root = _parse_svg(baseline_path)
     layered_root = _parse_svg(document.layered_source_path)
+    inherited_links = _source_jump_links(current_root, baseline_root)
+
+    def remap_link(clone: ET.Element, original: ET.Element) -> None:
+        inherited = inherited_links.get(original)
+        source_href = original.get(SOURCE_HREF_ATTR)
+        if source_href and re.fullmatch(r"#slide-[1-9]\d*", source_href):
+            for name in (SHAPE_HYPERLINK_ATTR, "href", f"{{{XLINK_NS}}}href"):
+                if original.get(name) == source_href:
+                    inherited = (name, source_href)
+                    break
+        clone.attrib.pop(SOURCE_HREF_ATTR, None)
+        clone.attrib.pop(ADOPTED_SOURCE_LINK_ATTR, None)
+        if inherited is None or page is None:
+            return
+        name, href = inherited
+        target = int(href.removeprefix("#slide-"))
+        targets = [candidate.output_index for candidate in pages if candidate.source_slide == target]
+        if original.get(ADOPTED_SOURCE_LINK_ATTR) != "true" and target == page.source_slide:
+            targets = [page.output_index]
+        if len(targets) != 1:
+            reason = "omitted" if not targets else "repeated"
+            raise AuthoringRoundtripError(
+                f"{document.name} inherited link {href!r} targets {reason} source slide {target}; "
+                "include the target exactly once or remove/change the link"
+            )
+        clone.set(name, f"#slide-{targets[0]}")
     document_unchanged = (
         normalized_authoring_subtree_sha256(current_root, current_assets)
         == normalized_authoring_subtree_sha256(
@@ -1572,11 +1734,24 @@ def _materialize_document(
             changed_definition_ids=changed_definition_ids,
             current_asset=current.asset,
             baseline_asset=baseline.asset,
+            current_root=current.root,
+            baseline_root=baseline.root,
         ):
             unchanged_refs.add(source_ref)
         else:
             edited_refs.add(source_ref)
     deleted_refs = expected_refs - set(current_occurrences)
+    changed_inherited_refs = sorted(
+        source_ref for source_ref in edited_refs | deleted_refs
+        if source_ref.startswith(("master:", "layout:"))
+    )
+    if changed_inherited_refs:
+        raise AuthoringRoundtripError(
+            f"{document.name} edits or deletes inherited object(s): "
+            + ", ".join(changed_inherited_refs)
+            + "; Master/Layout objects must remain unchanged because a flat "
+            "slide cannot edit shared structure; edit Slide-local objects instead"
+        )
     edited_proxy_refs = sorted(edited_refs & manifest_proxy_refs)
     if edited_proxy_refs:
         raise AuthoringRoundtripError(
@@ -1599,18 +1774,6 @@ def _materialize_document(
             + ", ".join(deleted_external_linked_image_refs)
             + "; keep each proxy unchanged to restore its original external "
             "picture relationship"
-        )
-    deleted_inherited_proxy_refs = sorted(
-        source_ref
-        for source_ref in deleted_refs & manifest_proxy_refs
-        if not source_ref.startswith("slide:")
-    )
-    if deleted_inherited_proxy_refs:
-        raise AuthoringRoundtripError(
-            f"{document.name} deletes inherited source-backed proxy object(s): "
-            + ", ".join(deleted_inherited_proxy_refs)
-            + "; Master/Layout proxies must remain unchanged because a flat "
-            "slide cannot delete shared structure"
         )
 
     def restore_nodes(
@@ -1642,6 +1805,14 @@ def _materialize_document(
                         restored.extend(
                             restore_nodes(outer, record.asset_path.parent)
                         )
+                    context_attrs = {
+                        name: value for name, value in element.attrib.items()
+                        if name in {*INHERITABLE_ATTRS, "style", "opacity", "transform"}
+                    }
+                    if context_attrs:
+                        wrapper = ET.Element(f"{{{SVG_NS}}}g", context_attrs)
+                        wrapper.extend(restored)
+                        return [wrapper]
                     return restored
 
         clone = copy.deepcopy(element)
@@ -1653,7 +1824,12 @@ def _materialize_document(
                 replacements[-1].tail = original_child.tail
             for replacement in replacements:
                 clone.append(replacement)
+        if _local_name(clone.tag) == "a" and not len(clone) and any(
+            item.get(SOURCE_REF_ATTRIBUTE) in unchanged_refs for item in element.iter()
+        ):
+            return []  # Its inherited native objects stay on the Master/Layout.
         clone.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
+        remap_link(clone, element)
         _rebase_resource_references(
             clone,
             source_dir,
@@ -1674,6 +1850,23 @@ def _materialize_document(
                         if clone.get(name) is None and source.get(name) is not None:
                             clone.set(name, str(source.get(name)))
                 _restore_preserved_effect_metadata(clone, source)
+                _restore_unchanged_text_body(
+                    clone, source, current_occurrences[source_ref][0], baseline_occurrences[source_ref][0],
+                )
+        if (
+            _local_name(clone.tag) == "g" and source_ref is None
+            and set(clone.attrib) <= {*INHERITABLE_ATTRS, "style", "opacity", "transform"}
+            and len(clone) > 1
+            and all(_local_name(child.tag) not in {"defs", "metadata"} for child in clone)
+        ):
+            # A context-only wrapper must not merge separate source objects
+            # into one new DrawingML group, which would lose their ownership.
+            resolved = []
+            for child in clone:
+                contextual = ET.Element(clone.tag, clone.attrib)
+                contextual.append(child)
+                resolved.append(contextual)
+            return resolved
         return [clone]
 
     baseline_unreferenced = Counter(
@@ -1767,8 +1960,13 @@ def _materialize_document(
             )
             if baseline_unreferenced[child_hash] > 0:
                 baseline_unreferenced[child_hash] -= 1
-                continue
-            authored_unreferenced += 1
+                if not any(
+                    item.get(SOURCE_REF_ATTRIBUTE) or item.get("data-icon") in current_assets
+                    for item in child.iter()
+                ):
+                    continue
+            else:
+                authored_unreferenced += 1
         replacements = restore_nodes(child)
         if _local_name(child.tag) == "use" and len(replacements) > 1:
             expanded_vector_uses += 1
@@ -1876,8 +2074,10 @@ def materialize_flat_authoring_roundtrip(
                 output_dir / document.name,
                 current_assets,
                 baseline_assets,
+                page=page,
+                pages=pages,
             )
-            for document in output_documents
+            for page, document in zip(pages, output_documents)
         ]
     finally:
         baseline_temporary.cleanup()

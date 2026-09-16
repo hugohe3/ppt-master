@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import posixpath
 import re
+from collections.abc import Callable
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -20,6 +21,87 @@ from .ooxml import (
     _rels_name_for_part,
     _xml_bytes,
 )
+
+_OFFICE_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+_SLIDE_TAG = "{http://schemas.openxmlformats.org/presentationml/2006/main}sld"
+# These Slide relationships require explicit XML consumers. Structural links
+# (Layout, notes, comments, tags, theme overrides, etc.) are implicit and stay.
+_EXPLICIT_SLIDE_REL_KINDS = frozenset({
+    "audio", "video", "media", "image", "hyperlink", "slide", "chart", "chartEx",
+    "oleObject", "package", "diagramData", "diagramLayout", "diagramQuickStyle",
+    "diagramColors", "diagramDrawing", "control", "model3d",
+})
+
+
+def unreferenced_slide_relationships(
+    slide: ET.Element,
+    relationships: ET.Element,
+    *,
+    owner_part: str,
+    read_part: Callable[[str], bytes],
+) -> list[ET.Element]:
+    """Find explicit Slide payload relationships with no remaining XML use."""
+    if slide.tag != _SLIDE_TAG:
+        return []
+    referenced = {
+        value for node in slide.iter() for name, value in node.attrib.items()
+        if name.startswith(f"{{{_OFFICE_REL_NS}}}")
+    }
+    drawing_ids = {
+        rel.get("Id") for rel in relationships
+        if rel.get("Type", "").endswith("/diagramDrawing")
+    }
+    # Older SmartArt stores dataModelExt@relId in the live diagram data XML,
+    # but resolves it against the owning Slide's relationships. Newer files
+    # resolve it against the data part's own .rels instead.
+    for rel in relationships:
+        if rel.get("Id") not in referenced or not rel.get("Type", "").endswith("/diagramData"):
+            continue
+        data_part = _normalize_part(rel.get("Target", ""), owner_part)
+        if rel.get("TargetMode") == "External" or data_part == ".." or data_part.startswith("../"):
+            continue
+        try:
+            data = ET.fromstring(read_part(data_part))
+        except (KeyError, OSError, ET.ParseError):
+            continue
+        try:
+            data_rels = ET.fromstring(read_part(_rels_name_for_part(data_part)))
+            local_ids = {item.get("Id") for item in data_rels}
+        except (KeyError, OSError, ET.ParseError):
+            local_ids = set()
+        referenced.update(
+            node.get("relId") for node in data.iter(
+                "{http://schemas.microsoft.com/office/drawing/2008/diagram}dataModelExt"
+            ) if node.get("relId") in drawing_ids and node.get("relId") not in local_ids
+        )
+    return [
+        rel for rel in relationships
+        if rel.get("Type", "").rsplit("/", 1)[-1] in _EXPLICIT_SLIDE_REL_KINDS
+        and rel.get("Id") not in referenced
+    ]
+
+
+def unused_slide_relationship_problems(package_root: Path) -> list[str]:
+    """Report dangling explicit relationships without rejecting implicit ones."""
+    problems = []
+    for path in sorted((package_root / "ppt" / "slides").glob("*.xml")):
+        part = path.relative_to(package_root).as_posix()
+        rels = package_root / _rels_name_for_part(part)
+        if not rels.is_file():
+            continue
+        try:
+            unused = unreferenced_slide_relationships(
+                ET.parse(path).getroot(), ET.parse(rels).getroot(), owner_part=part,
+                read_part=lambda name: (package_root / name).read_bytes(),
+            )
+        except ET.ParseError:
+            continue  # The package XML verifier owns malformed XML.
+        problems.extend(
+            f"{part}: unreferenced relationship {rel.get('Id')!r} -> {rel.get('Target')!r}; "
+            "the slide XML has no reference to this relationship"
+            for rel in unused
+        )
+    return problems
 
 
 def _content_type_root(root: ET.Element) -> ET.Element:
@@ -126,7 +208,11 @@ def _prune_unreferenced_parts(entries: dict[str, bytes], content_root: ET.Elemen
             content_root.remove(override)
 
 
-def prune_unreferenced_directory_parts(package_root: Path) -> int:
+def prune_unreferenced_directory_parts(
+    package_root: Path,
+    *,
+    edited_slide_parts: set[str] | frozenset[str] = frozenset(),
+) -> int:
     """Prune unreachable parts from one extracted OOXML package directory."""
     entries = {
         path.relative_to(package_root).as_posix(): path.read_bytes()
@@ -137,6 +223,19 @@ def prune_unreferenced_directory_parts(package_root: Path) -> int:
     if content_types is None:
         raise RuntimeError("Extracted PPTX package has no [Content_Types].xml")
     content_root = _content_type_root(ET.fromstring(content_types))
+    for part in sorted(edited_slide_parts):
+        rels_name = _rels_name_for_part(part)
+        if part not in entries or rels_name not in entries:
+            continue
+        relationships = ET.fromstring(entries[rels_name])
+        unused = unreferenced_slide_relationships(
+            ET.fromstring(entries[part]), relationships, owner_part=part, read_part=entries.__getitem__,
+        )
+        if unused:
+            for rel in unused:
+                relationships.remove(rel)
+            entries[rels_name] = _xml_bytes(relationships)
+            (package_root / rels_name).write_bytes(entries[rels_name])
     before = set(entries)
     _prune_unreferenced_parts(entries, content_root)
     removed = before - set(entries)

@@ -612,20 +612,20 @@ def _imported_placeholder_xml(elem: ET.Element) -> str:
     """Restore an imported slide placeholder marker when its identity is exact."""
     placeholder_type = elem.get('data-ph-type')
     placeholder_index = elem.get('data-pptx-placeholder-index')
-    if not placeholder_type or placeholder_index is None:
+    if placeholder_type is None and placeholder_index is None:
         return ''
-    if not re.fullmatch(r'[A-Za-z][A-Za-z0-9]*', placeholder_type):
+    if placeholder_type is not None and not re.fullmatch(r'[A-Za-z][A-Za-z0-9]*', placeholder_type):
         raise ValueError(
             f'Invalid imported placeholder type: {placeholder_type!r}'
         )
-    if not placeholder_index.isdigit() or int(placeholder_index) > 0xFFFFFFFF:
+    if placeholder_index is not None and (
+        not placeholder_index.isdigit() or int(placeholder_index) > 0xFFFFFFFF
+    ):
         raise ValueError(
             f'Invalid imported placeholder index: {placeholder_index!r}'
         )
-    attrs = {
-        'type': placeholder_type,
-        'idx': placeholder_index,
-    }
+    attrs = {name: value for name, value in (('type', placeholder_type), ('idx', placeholder_index))
+             if value is not None}
     placeholder_size = elem.get('data-pptx-placeholder-size')
     if placeholder_size is not None:
         if placeholder_size not in {'full', 'half', 'quarter'}:

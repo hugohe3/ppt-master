@@ -34,6 +34,8 @@ SLIDE_REL_TYPE = (
 )
 SLIDE_JUMP_ACTION = "ppaction://hlinksldjump"
 SHAPE_HYPERLINK_ATTR = "data-pptx-shape-hyperlink"
+SOURCE_HREF_ATTR = "data-pptx-source-href"
+ADOPTED_SOURCE_LINK_ATTR = "data-pptx-adopted-source-link"
 
 _SLIDE_TARGET_RE = re.compile(r"#slide-([1-9][0-9]*)")
 _URI_SCHEME_RE = re.compile(r"([A-Za-z][A-Za-z0-9+.-]*):")

@@ -6266,6 +6266,7 @@ def _create_preserved_base_pptx(
     *,
     roundtrip_page_sources: tuple[int, ...] | None = None,
     package_overrides: dict[str, bytes] | None = None,
+    slide_patches: dict[int, RoundtripSlidePatch] | None = None,
 ) -> bool:
     """Create the preserve base and report whether source Slides were retained."""
     if roundtrip_page_sources is not None:
@@ -6291,6 +6292,10 @@ def _create_preserved_base_pptx(
                 roundtrip_page_sources,
                 output_path,
                 package_overrides=package_overrides,
+                discarded_shape_links={
+                    index: _slide_ref_shape_ids(patch.edited_ref_ids | patch.deleted_ref_ids)
+                    for index, patch in (slide_patches or {}).items()
+                },
             )
         except (OSError, RuntimeError, zipfile.BadZipFile) as exc:
             raise TemplateStructureError(
@@ -7031,6 +7036,7 @@ def create_pptx_with_native_svg(
                 (width_emu, height_emu),
                 roundtrip_page_sources=roundtrip_page_sources,
                 package_overrides=page_plan_package_overrides,
+                slide_patches=slide_patches,
             )
         else:
             # Create the standard base PPTX with python-pptx.
@@ -8329,14 +8335,26 @@ def create_pptx_with_native_svg(
             ):
                 content_types_path.write_bytes(source_content_types_bytes)
 
-        if page_plan_export:
+        if roundtrip_export:
+            edited_slide_parts = {
+                f"ppt/slides/slide{index}.xml" for index, patch in slide_patches.items()
+                if patch.visual_changed
+            }
+        else:
+            # Generated slides own every relationship they carry; a shape
+            # promoted to a Master/Layout part leaves its slide entry behind.
+            edited_slide_parts = {
+                path.relative_to(extract_dir).as_posix()
+                for path in (extract_dir / 'ppt' / 'slides').glob('slide*.xml')
+            }
+        if page_plan_export or edited_slide_parts:
             pruned_page_plan_parts = prune_unreferenced_directory_parts(
-                extract_dir
+                extract_dir, edited_slide_parts=edited_slide_parts,
             )
             if verbose and pruned_page_plan_parts:
                 print(
-                    "  Round-trip page plan: pruned "
-                    f"{pruned_page_plan_parts} unreachable package part(s)"
+                    "  Package: pruned "
+                    f"{pruned_page_plan_parts} unreachable part(s)"
                 )
 
         if package_uses_timings:

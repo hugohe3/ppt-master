@@ -280,10 +280,15 @@ remains strict rather than silently treating the raster preview as the
 template's canonical asset.
 
 Supported `a:hlinkClick` on shape/picture `p:cNvPr` and text `a:rPr` becomes
-the shared SVG `<a href>` form for absolute external URIs and final-roster
-`#slide-N` jumps. A source shape that also has linked inner runs uses the
+the shared SVG `<a href>` form for absolute external URIs and source-roster
+`#slide-N` jumps. Imported jump provenance survives text edits and adoption;
+round-trip materialization maps inherited destinations to the output roster,
+while new or changed links use output-page numbers. A source shape that also has linked inner runs uses the
 importer-only `data-pptx-shape-hyperlink` transport to avoid nested SVG anchors.
 Unsupported click actions produce a diagnostic; strict import stops.
+Unsupported graphic frames (SmartArt, OLE, and unsupported native payloads)
+are atomic source proxies in the round-trip authoring bundle, with their
+existing previews retained. Supported JSON chart/table editing stays available.
 
 ### Import compatibility and recovery boundary
 

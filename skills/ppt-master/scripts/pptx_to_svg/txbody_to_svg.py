@@ -27,6 +27,7 @@ from typing import Callable
 from unicodedata import east_asian_width
 from xml.etree import ElementTree as ET
 
+from hyperlink_contract import SOURCE_HREF_ATTR
 from svg_to_pptx.drawingml.utils import detect_text_lang, is_cjk_char
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
@@ -1691,7 +1692,11 @@ def _wrap_run_hyperlink(markup: str, run: TextRun) -> str:
     """Wrap one visible SVG run in the canonical hyperlink carrier."""
     if not run.hyperlink_href:
         return markup
-    return f'<a href="{_xml_escape(run.hyperlink_href)}">{markup}</a>'
+    provenance = (
+        f' {SOURCE_HREF_ATTR}="{_xml_escape(run.hyperlink_href)}"'
+        if run.hyperlink_href.startswith('#slide-') else ''
+    )
+    return f'<a href="{_xml_escape(run.hyperlink_href)}"{provenance}>{markup}</a>'
 
 
 def _xml_escape(text: str) -> str:

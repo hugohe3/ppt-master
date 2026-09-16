@@ -55,8 +55,9 @@ staging transaction, before the editable bundle first appears:
   move to `icons/imported/*.svg`; the asset, placeholder, and v2 inventory all
   declare the fixed `decoration` role. Any subtree containing semantic
   authoring content remains inline;
-- unsupported, text-free, schema-free source ornaments with no semantic marker
-  may become
+- unsupported graphic frames (including SmartArt and OLE) become atomic source
+  proxies, retaining their existing labelled preview. Large text-free,
+  schema-free source ornaments may also become
   `<image data-pptx-source-proxy="native-restore">` references whose hashed SVG
   previews live under `images/source-object-previews/`.
 
@@ -65,8 +66,8 @@ an imported vector asset only when editing that decoration. An unchanged asset
 restores its native source objects; editing the asset rebuilds every slide whose
 placeholder references that vector edit unit. A source proxy remains atomic: leave it unchanged
 to restore the original native PowerPoint object. A complete Slide-local proxy
-may be removed to delete that object; an inherited Master/Layout proxy must
-remain because one flat page cannot delete shared structure. Editing the proxy
+may be removed to delete that object. Every inherited Master/Layout source ref
+must remain unchanged because one flat page cannot edit shared structure. Editing the proxy
 or its preview asset fails round-trip export instead of silently rasterizing or
 flattening the object.
 
@@ -90,7 +91,13 @@ invalid. `svg_to_pptx.py --roundtrip` always reads `authoring-svg-flat/`,
 restores unchanged source refs from `analysis/roundtrip-svg/`, expands imported
 vector edit units from `icons/imported/`, and retains edits/deletions/new
 content without rewriting the bundle. Unchanged slides and resources pass
-through byte-for-byte. A page edit rebuilds that output page; a changed
+through byte-for-byte. Object comparison includes effective ancestor transforms,
+opacity, inherited styles, and enclosing links; changing a proxy's context also
+fails. When an edited shape's text and text context still match the baseline,
+the materializer restores its relationship-free source `txBody` through the
+existing fingerprint/relationship checks, preserving fields, numbering,
+autofit, language, and text effects. Edited text follows normal conversion.
+A page edit rebuilds that output page; a changed
 materialized or derived resource rebuilds every output page that references it.
 Changed materialized bytes must still match the source package part's extension
 and Content-Type. Resource hrefs resolve exactly relative to the page or
@@ -143,15 +150,29 @@ An unchanged planned page keeps the source slide XML and receives its own
 relationship graph. Repeated pages clone notes slides, charts, diagrams,
 embeddings, and other private structured parts under unique part names while
 ordinary media may remain shared. An edited copy overlays only its edited
-owners onto its cloned source page. Same-deck slide-jump links follow the
-page-plan contract: a target must map to exactly one output page. An
-omitted or repeated destination is an error; external links remain unchanged.
+owners onto its cloned source page. Inherited same-deck slide jumps retain
+source-page identity through text edits and adoption, then map to the output
+roster. New links and changed destinations use output-page `#slide-N` numbers.
+An inherited target must map to exactly one output page; omitted or repeated
+destinations fail, except that a source self-jump follows its own output copy.
+An adopted link still targets its source destination. Removed/replaced object
+links do not block the source-package preflight; surviving links still do.
+External links remain unchanged.
 Omitting a source slide deliberately drops its private video, audio, or opaque
 native payloads; a kept slide still fails if rebuilding it would discard such
 relationships.
 With a plan present, presentation-level `sectionLst` and custom-show rosters
-are dropped, output `p:sldId` values are renumbered, and the slide count in
-`docProps/app.xml` is updated.
+are dropped, show/range playback selections reset to all output slides, output
+`p:sldId` values are renumbered, and the slide count in `docProps/app.xml` is
+updated. A retained action targeting a removed custom show fails with its
+slide/part and show ID; delivery checking also verifies this semantic closure.
+
+After a slide edit, unused explicit payload relationships are removed before
+package reachability pruning. This removes replaced charts, their workbooks,
+and deleted diagram dependencies. Layout/notes and other implicit structural
+relationships stay. Legacy SmartArt drawing-cache references in live diagram
+data also stay. Delivery checking reports explicit Slide relationships with no
+remaining XML consumer under `relationships.problems`.
 
 Output-page sidecars are keyed by the authoring SVG stem. A repeated copy
 inherits its source row from `animations.json` unless that output stem has its

@@ -45,7 +45,7 @@ from pptx_effects import (
     txbody_has_run_effects,
     unsupported_effect_metadata,
 )
-from hyperlink_contract import SHAPE_HYPERLINK_ATTR
+from hyperlink_contract import SHAPE_HYPERLINK_ATTR, SOURCE_HREF_ATTR
 from svg_to_pptx.drawingml.paths import (
     PathCommand,
     normalize_path_commands,
@@ -1856,7 +1856,10 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 + "\n"
                 + _graphic_preview_label(node, "ole preview")
             )
-            return _wrap_shape_group(labelled, node, ctx, top_level=top_level)
+            return _wrap_shape_group(
+                labelled, node, ctx, top_level=top_level,
+                extra_attrs=[f'{_SOURCE_PROXY_ATTRIBUTE}="native-restore"'],
+            )
 
     if preview_svg:
         labelled = (
@@ -1867,7 +1870,10 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 f"{uri.rsplit('/', 1)[-1]} preview",
             )
         )
-        return _wrap_shape_group(labelled, node, ctx, top_level=top_level)
+        return _wrap_shape_group(
+            labelled, node, ctx, top_level=top_level,
+            extra_attrs=[f'{_SOURCE_PROXY_ATTRIBUTE}="native-restore"'],
+        )
 
     label = uri.rsplit("/", 1)[-1]
     placeholder = (
@@ -1886,7 +1892,10 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         node,
         ctx,
         top_level=top_level,
-        extra_attrs=chart_replacement_attrs,
+        extra_attrs=chart_replacement_attrs + (
+            [] if 'data-pptx-replace-with="chart"' in chart_replacement_attrs
+            else [f'{_SOURCE_PROXY_ATTRIBUTE}="native-restore"']
+        ),
     )
 
 
@@ -2171,6 +2180,8 @@ def _render_graphic_chart(
         payload_metadata = _replacement_payload_metadata(payload)
         replacement_attrs.append('data-pptx-replace-with="chart"')
         replacement_attrs.append('data-pptx-native-authority="json"')
+        if not result.native_payload:
+            replacement_attrs.append(f'{_SOURCE_PROXY_ATTRIBUTE}="native-restore"')
     elif result.native_status:
         replacement_attrs.append(
             'data-pptx-replacement-status="'
@@ -2515,9 +2526,12 @@ def _wrap_shape_group(
             attrs.append(
                 f'{SHAPE_HYPERLINK_ATTR}="{_xml_escape(href)}"'
             )
+            if href.startswith('#slide-'):
+                attrs.append(f'{SOURCE_HREF_ATTR}="{_xml_escape(href)}"')
             return f"<g {' '.join(attrs)}>\n{inner}\n</g>"
         if href is not None:
-            return f'<a href="{_xml_escape(href)}">{group_xml}</a>'
+            provenance = f' {SOURCE_HREF_ATTR}="{_xml_escape(href)}"' if href.startswith('#slide-') else ''
+            return f'<a href="{_xml_escape(href)}"{provenance}>{group_xml}</a>'
     return group_xml
 
 

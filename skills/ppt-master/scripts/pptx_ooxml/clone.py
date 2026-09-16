@@ -61,7 +61,9 @@ from .package import (
     _max_numeric_rid,
     _prune_unreferenced_parts,
     _relative_target,
+    unreferenced_slide_relationships,
 )
+from .slideshow import custom_show_problems, reset_slide_show_selection
 
 _REL_TYPE_BASE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/"
 
@@ -646,12 +648,31 @@ def _verify_entries_before_zip(
         )
 
 
+def _discard_rebuilt_shape_links(root: ET.Element, shape_ids: set[str]) -> None:
+    """Remove old actions owned by objects that the SVG overlay replaces."""
+    shape_tags = {_qn(NS["p"], name) for name in ("sp", "pic", "cxnSp", "grpSp", "graphicFrame")}
+
+    def visit(node: ET.Element, owner: str | None = None) -> None:
+        if node.tag in shape_tags:
+            props = next((child for child in node if child.tag.rsplit("}", 1)[-1].startswith("nv")), None)
+            identity = props.find("p:cNvPr", NS) if props is not None else None
+            owner = identity.get("id") if identity is not None else None
+        for child in list(node):
+            if owner in shape_ids and child.tag in {_qn(NS["a"], "hlinkClick"), _qn(NS["a"], "hlinkMouseOver")}:
+                node.remove(child)
+            else:
+                visit(child, owner)
+
+    visit(root)
+
+
 def clone_presentation_slides(
     source_pptx: Path,
     source_slides: tuple[int, ...],
     output_path: Path,
     *,
     package_overrides: dict[str, bytes] | None = None,
+    discarded_shape_links: dict[int, set[str]] | None = None,
 ) -> None:
     """Clone an ordered source-slide roster into canonical output slide parts.
 
@@ -709,6 +730,7 @@ def clone_presentation_slides(
         if rel.attrib.get("Type") == SLIDE_REL_TYPE:
             presentation_rels_root.remove(rel)
     _remove_stale_slide_order_metadata(presentation_root)
+    reset_slide_show_selection(entries)
 
     next_rid = _max_numeric_rid(presentation_rels_root) + 1
     allocate = _make_part_allocator(entries)
@@ -738,6 +760,22 @@ def clone_presentation_slides(
             if source_rels_xml is not None
             else _empty_relationships_root()
         )
+        discarded = (discarded_shape_links or {}).get(output_index, set())
+        if discarded:
+            _discard_rebuilt_shape_links(slide_root, discarded)
+            for rel in unreferenced_slide_relationships(
+                slide_root, relationships_root, owner_part=source_ref.part_name,
+                read_part=source_entries.__getitem__,
+            ):
+                relationships_root.remove(rel)
+            source_slide_xml = _xml_bytes(slide_root)
+        for node in slide_root.iter():
+            if node.get("action", "").startswith("ppaction://customshow?"):
+                raise RuntimeError(
+                    f"Source slide {source_index} (output slide {output_index}) retains "
+                    f"custom show action {node.get('action')!r}; page planning removes "
+                    "custom shows; remove the action or its object before export"
+                )
         _remap_slide_jump_relationships(
             slide_root,
             relationships_root,
@@ -803,6 +841,9 @@ def clone_presentation_slides(
         presentation_rels_root
     )
     _prune_unreferenced_parts(entries, content_root)
+    show_problems = custom_show_problems(entries)
+    if show_problems:
+        raise RuntimeError("Page plan leaves invalid custom shows: " + "; ".join(show_problems))
     entries["[Content_Types].xml"] = _xml_bytes(content_root)
     _update_app_slide_count(entries, len(source_slides))
 
