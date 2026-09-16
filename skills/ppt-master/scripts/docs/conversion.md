@@ -281,14 +281,9 @@ template's canonical asset.
 
 Supported `a:hlinkClick` on shape/picture `p:cNvPr` and text `a:rPr` becomes
 the shared SVG `<a href>` form for absolute external URIs and source-roster
-`#slide-N` jumps. Imported jump provenance survives text edits and adoption;
-round-trip materialization maps inherited destinations to the output roster,
-while new or changed links use output-page numbers. A source shape that also has linked inner runs uses the
+`#slide-N` jumps. A source shape that also has linked inner runs uses the
 importer-only `data-pptx-shape-hyperlink` transport to avoid nested SVG anchors.
 Unsupported click actions produce a diagnostic; strict import stops.
-Unsupported graphic frames (SmartArt, OLE, and unsupported native payloads)
-are atomic source proxies in the round-trip authoring bundle, with their
-existing previews retained. Supported JSON chart/table editing stays available.
 
 ### Import compatibility and recovery boundary
 
@@ -651,7 +646,6 @@ On success, the converter uses the shared best-effort sidecar contract for
 `<stem>.conversion_profile.json` beside the Markdown output.
 `--emit-result` is for wrapper scripts that need the actual saved Markdown path
 when the converter derives a title-based filename.
-
 
 ## Image Orientation Review
 

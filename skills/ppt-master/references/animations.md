@@ -18,7 +18,7 @@ Motion is several separate capabilities, not one dial; two of them are decided w
 | A transition or object animation needs an audible cue | Optional `transition.sound` or object `sound`, selected only after the visual solution is complete and synced from the global library; a narrated MP4 uses either the verified native-export mix or explicit slideshow capture, never both | Post-motion; §2.2 |
 | Nothing should move | `-t none` and per-element `none` | Export; §1 |
 
-**Hard rule — Morph geometry is an authoring decision; pairing is a later execution decision**: export cannot invent endpoint states. Author both consecutive pages while `svg_output/` is being built. For deterministic identity expose each endpoint as a compatible direct-root group and declare the pair in `animations.json` (§2.1); ids and geometry may differ. `-t morph` without pairs leaves matching to PowerPoint's heuristic.
+**Hard rule — Morph geometry is an authoring decision; pairing is a later execution decision**: export cannot invent endpoint states. Author both consecutive pages during the selected route's page authoring. For deterministic identity expose each endpoint as a compatible direct-root group and declare the pair in `animations.json` (§2.1); ids and geometry may differ. `-t morph` without pairs leaves matching to PowerPoint's heuristic.
 
 **Reference — not a constraint**: per-element animation stays off by default; auto-firing builds on every page are an unsolicited "AI deck" tell, and each capability earns its place per page.
 
