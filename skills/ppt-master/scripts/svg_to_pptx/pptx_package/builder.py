@@ -1896,6 +1896,71 @@ def _unused_part_path(directory: Path, filename: str) -> Path:
     return candidate
 
 
+def _remove_all_notes_parts(extract_dir: Path) -> None:
+    """Remove notes slides, masters, their relationships, and type overrides."""
+    content_types_path = extract_dir / '[Content_Types].xml'
+    content_tree = ET.parse(content_types_path)
+    content_root = content_tree.getroot()
+    notes_content_types = {
+        'application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml',
+        _NOTES_MASTER_CONTENT_TYPE,
+    }
+    notes_parts = {
+        _canonical_opc_part_path(node.get('PartName', '').lstrip('/'))
+        for node in content_root
+        if node.get('ContentType') in notes_content_types
+    } - {None}
+    notes_files = [
+        path for path in extract_dir.rglob('*')
+        if path.is_file() and (
+            _canonical_opc_part_path(path.relative_to(extract_dir).as_posix()) in notes_parts
+            or path.relative_to(extract_dir).as_posix().startswith((
+                'ppt/notesSlides/', 'ppt/notesMasters/',
+            ))
+        )
+    ]
+    notes_parts.update(
+        _canonical_opc_part_path(path.relative_to(extract_dir).as_posix())
+        for path in notes_files
+    )
+    for rels_path in extract_dir.rglob('*.rels'):
+        tree = ET.parse(rels_path)
+        root = tree.getroot()
+        removed = False
+        rels_name = rels_path.relative_to(extract_dir).as_posix()
+        for relationship in list(root):
+            if (
+                relationship.get('Type') in {NOTES_SLIDE_REL_TYPE, _NOTES_MASTER_REL_TYPE}
+                or (
+                    relationship.get('TargetMode', '').lower() != 'external'
+                    and _resolve_internal_opc_target(
+                        rels_name, relationship.get('Target', ''),
+                    ) in notes_parts
+                )
+            ):
+                root.remove(relationship)
+                removed = True
+        if removed:
+            _write_xml_tree(rels_path, tree)
+    presentation = extract_dir / 'ppt/presentation.xml'
+    tree = ET.parse(presentation)
+    notes_masters = tree.getroot().find(f'{{{PML_NS}}}notesMasterIdLst')
+    if notes_masters is not None:
+        tree.getroot().remove(notes_masters)
+        _write_xml_tree(presentation, tree)
+    for path in notes_files:
+        rels_path = _relationships_path_for_part(extract_dir, path.relative_to(extract_dir).as_posix())
+        rels_path.unlink(missing_ok=True)
+        path.unlink(missing_ok=True)
+    removed = False
+    for node in list(content_root):
+        if _canonical_opc_part_path(node.get('PartName', '').lstrip('/')) in notes_parts:
+            content_root.remove(node)
+            removed = True
+    if removed:
+        _write_xml_tree(content_types_path, content_tree)
+
+
 def _apply_slide_notes(
     extract_dir: Path,
     rels_path: Path,
@@ -8370,6 +8435,9 @@ def create_pptx_with_native_svg(
                 "  Round-trip resources: reinjected "
                 f"{reinjected_resources} source package part(s)"
             )
+
+        if not enable_notes:
+            _remove_all_notes_parts(extract_dir)
 
         rels_problems = verify_internal_relationships(extract_dir)
         if rels_problems:

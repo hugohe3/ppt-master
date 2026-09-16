@@ -37,6 +37,7 @@ from extract_svg_assets import (
 )
 from hyperlink_contract import ADOPTED_SOURCE_LINK_ATTR, SHAPE_HYPERLINK_ATTR, SOURCE_HREF_ATTR
 from pptx_workspace import (
+    AUTHORING_SVG_FLAT_DIR,
     ROUNDTRIP_MANIFEST_PATH,
     ROUNDTRIP_PAGE_PLAN_PATH,
 )
@@ -86,6 +87,27 @@ ET.register_namespace("xlink", XLINK_NS)
 
 class AuthoringRoundtripError(RuntimeError):
     """Reject stale, ambiguous, or incomplete authoring round-trip input."""
+
+
+def roundtrip_source_fingerprint(project_path: Path) -> dict[str, object]:
+    """Bind validation and export to the authoring SVGs and optional page plan."""
+    paths = list((project_path / AUTHORING_SVG_FLAT_DIR).glob('*.svg'))
+    plan_path = project_path / ROUNDTRIP_PAGE_PLAN_PATH
+    if plan_path.is_file():
+        paths.append(plan_path)
+    files: list[dict[str, str]] = []
+    aggregate = hashlib.sha256()
+    for path in sorted(paths, key=lambda item: item.relative_to(project_path).as_posix()):
+        name = path.relative_to(project_path).as_posix()
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        files.append({'file': name, 'sha256': digest})
+        aggregate.update(name.encode('utf-8') + b'\0' + digest.encode('ascii') + b'\n')
+    return {
+        'algorithm': 'sha256',
+        'digest': aggregate.hexdigest(),
+        'file_count': len(files),
+        'files': files,
+    }
 
 
 @dataclass(frozen=True)

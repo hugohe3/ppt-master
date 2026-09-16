@@ -185,7 +185,7 @@ notes and an absent file keeps them. Deleting inherited source notes only on a
 copy is not supported in v1. The same output-stem rule applies to narration
 audio.
 
-When a round-trip recorded-narration export omits `--animation-config`, it uses the workspace `animations.json` when present and otherwise applies no sidecar while preserving source motion.
+When a round-trip recorded-narration export omits `--animation-config`, it reads the workspace `animations.json` the importer wrote; that sidecar is part of the workspace contract, so deleting it fails export rather than restoring source motion.
 
 Narration audio is keyed by the output SVG stem. A copied output page uses its
 own stem-keyed notes when present and otherwise inherits the declared source
@@ -210,7 +210,7 @@ while order, notes, or motion may change; `rebuilt` means visible authoring or
 one of its referenced resources changed.
 Without `-o`, round-trip export names the deck `<workspace-directory-name>_<timestamp>[<flavor-suffix>].pptx` under `exports/`.
 
-Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip`
+Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip --json`
 as the round-trip text-capacity gate. It resolves the output roster from
 `authoring-svg-flat/` and optional `page_plan.json`, then applies the shared
 font-family, font-size, text-width, and canvas metrics only to new text or
@@ -221,6 +221,24 @@ overflow against the nearest-rect-sibling fallback is advisory, while bounds
 leaving the page canvas remain blocking. Other advisories remain non-blocking.
 Unchanged source refs, source proxies, and generated-project-only spec,
 template, canonical-authoring, and resource-manifest checks are excluded.
+
+The checker also enforces the exporter's semantic shape text contract on
+converted content: a `data-pptx-semantic-object="shape"` group may contain at
+most one direct `<text>`, with `data-pptx-frame` on its owner. Multiple lines
+belong in that component's `<tspan>` paragraphs. Ordinary groups are unaffected;
+unchanged native source objects remain excluded. Generate checks the same
+contract.
+
+`--json` writes `validation/svg_quality_report.json`. Both tools fingerprint
+`authoring-svg-flat/*.svg` and the optional `page_plan.json`; changing either
+after validation makes the export receipt `quality_gate=stale`. A current
+report with no blocking errors yields `quality_gate=passed`. Without a report,
+export remains allowed and reports `quality_gate=not-provided`.
+
+`--roundtrip --no-notes` removes all speaker notes slide/master parts, their
+relationships, and Content-Type overrides, including on the identity export
+without a page plan. `pptx_delivery_check.py` reports unreferenced notes parts
+as an advisory.
 
 Regenerate the summary after direct edits that do not pass through one of the
 in-place normalization tools:

@@ -883,6 +883,20 @@ def audit_pptx_delivery(path: str | Path) -> dict[str, object]:
             reference_counts, relationship_types, external_media = (
                 _relationship_inventory(archive, part_names, errors)
             )
+            orphan_notes = sorted(
+                name for name in part_names
+                if _content_type_for_part(name, defaults, overrides) in {
+                    'application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml',
+                    'application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml',
+                }
+                and reference_counts.get(canonical_opc_part_path(name) or '', 0) == 0
+            )
+            if orphan_notes:
+                advisories.append(_issue(
+                    "orphan_notes_parts",
+                    "Unreferenced speaker notes parts remain in the package; remove them if no longer needed.",
+                    parts=orphan_notes,
+                ))
 
             media_infos = [
                 info_by_name[name]

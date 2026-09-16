@@ -13,7 +13,7 @@ Tool behavior behind the [`generate-audio`](../../workflows/stages/generate-audi
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>              # edge
 python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice> --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice <ShortName> --rate=<rate> [--concurrency <N>]
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice <ShortName> --rate=<rate> [--pitch=<pitch>] [--volume=<volume>] [--concurrency <N>]
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider elevenlabs --voice-id <id> --elevenlabs-model eleven_multilingual_v2
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider minimax --voice-id <id> --minimax-model speech-2.8-hd
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider qwen --voice-id <voice> --qwen-model qwen3-tts-flash --qwen-language-type Chinese
@@ -25,6 +25,8 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider co
 - **Formats**: PowerPoint-reliable audio is `m4a` (AAC), `mp3`, or `wav`; edge defaults to `mp3`; provider `pcm` / `opus` / `flac` output must be transcoded before embedding.
 - **Edge SRT**: MP3 and page SRT come from the same `edge-tts` stream using `WordBoundary` timing. Sentence-ending punctuation always closes a cue; text over the 20-visible-character default (`--subtitle-max-chars`) splits at commas, semicolons, or colons, then at the nearest word boundary. Adjacent overlap up to 100 ms moves the later cue start to the previous end; larger overlap fails. Each SRT uses a page-local timeline starting at `00:00:00,000` including leading silence. Default concurrency is three slide pairs (`--concurrency 1` for serial troubleshooting); cloud providers stay serial.
 - **Provider timing**: MiniMax reads word timing from its synchronous subtitle file (a normalized number such as `42` comes back as one row per spoken syllable sharing one original-text span; the adapter merges rows by that span, never by text alone); ElevenLabs uses `/with-timestamps` with original-text character alignment; CosyVoice enables HTTP streaming plus `word_timestamp_enabled` and uses the final audio URL and word timing — unsupported model/voice pairs fail without replacing the prior pair unless `--cosyvoice-audio-only` was explicit (model and voice families must match; cloned voices need a supported v3.5/v3/v2 model or a timestamp-supported system voice); Qwen exposes no timing and never gets estimated SRT. Provider-timed paths share punctuation-first, `--subtitle-max-chars`-bounded regrouping, exact-text validation, and rollback-safe pair publication.
+
+Signed Edge values accept both equals and space forms: `--rate=-5%` / `--rate -5%`, `--pitch=-2Hz` / `--pitch -2Hz`, and `--volume=-10%` / `--volume -10%`. The examples use equals for clarity; omitted pitch and volume remain `+0Hz` and `+0%`. These three options are ignored by cloud providers.
 
 ## `narration_sync.py`
 

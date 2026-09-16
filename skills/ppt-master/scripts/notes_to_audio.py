@@ -283,6 +283,8 @@ def _provider_manifest_details(
     if backend.provider == "edge":
         return "edge-tts", {
             "rate": args.rate,
+            "pitch": args.pitch,
+            "volume": args.volume,
         }
     if backend.provider == "elevenlabs":
         return args.elevenlabs_model, {
@@ -380,6 +382,8 @@ async def _generate_edge_jobs(
     *,
     voice: str,
     rate: str,
+    pitch: str = "+0Hz",
+    volume: str = "+0%",
     subtitle_max_chars: int,
     concurrency: int,
 ) -> list[BaseException | None]:
@@ -393,6 +397,8 @@ async def _generate_edge_jobs(
                 job.output_path,
                 voice=voice,
                 rate=rate,
+                pitch=pitch,
+                volume=volume,
                 subtitle_path=subtitle_dir / f"{job.output_path.stem}.srt",
                 subtitle_max_chars=subtitle_max_chars,
             )
@@ -407,7 +413,26 @@ async def _generate_edge_jobs(
     ]
 
 
-def main() -> int:
+def _normalize_voice_option_args(argv: list[str]) -> list[str]:
+    """Keep signed voice values from being interpreted as argparse options."""
+    normalized: list[str] = []
+    index = 0
+    while index < len(argv):
+        option = argv[index]
+        if (
+            option in {"--rate", "--pitch", "--volume"}
+            and index + 1 < len(argv)
+            and re.fullmatch(r"-\d+(?:\.\d+)?(?:%|Hz)?", argv[index + 1])
+        ):
+            normalized.append(f"{option}={argv[index + 1]}")
+            index += 2
+        else:
+            normalized.append(option)
+            index += 1
+    return normalized
+
+
+def main(argv: list[str] | None = None) -> int:
     _load_tts_env_file()
 
     parser = argparse.ArgumentParser(
@@ -436,6 +461,14 @@ def main() -> int:
         "--rate",
         default="+0%",
         help='edge-tts speaking rate, e.g. "+0%%", "-10%%", "+15%%" (default: +0%%). Ignored by cloud providers.',
+    )
+    parser.add_argument(
+        "--pitch", default="+0Hz",
+        help="edge-tts pitch adjustment (default: +0Hz). Ignored by cloud providers.",
+    )
+    parser.add_argument(
+        "--volume", default="+0%",
+        help="edge-tts volume adjustment (default: +0%%). Ignored by cloud providers.",
     )
     parser.add_argument(
         "--concurrency",
@@ -560,12 +593,9 @@ def main() -> int:
     parser.add_argument("--list-common-voices", action="store_true", help="print a curated voice list and exit")
     parser.add_argument("--list-voices", action="store_true", help="query provider voices and exit")
     parser.add_argument("--locale", default=None, help='filter --list-voices by locale, e.g. "zh-CN"')
-    raw_args = list(sys.argv[1:])
-    # argparse otherwise interprets a separate negative percentage as an option.
-    for index in range(len(raw_args) - 2, -1, -1):
-        if raw_args[index] == "--rate" and re.fullmatch(r"-\d+(?:\.\d+)?%", raw_args[index + 1]):
-            raw_args[index:index + 2] = [f"--rate={raw_args[index + 1]}"]
-    args = parser.parse_args(raw_args)
+    args = parser.parse_args(_normalize_voice_option_args(
+        sys.argv[1:] if argv is None else argv
+    ))
 
     if args.list_common_voices:
         backend_edge.print_common_voices()
@@ -747,6 +777,8 @@ def main() -> int:
                 subtitle_dir,
                 voice=args.voice,
                 rate=args.rate,
+                pitch=args.pitch,
+                volume=args.volume,
                 subtitle_max_chars=args.subtitle_max_chars,
                 concurrency=args.concurrency,
             ))

@@ -80,6 +80,8 @@ async def generate(
     *,
     voice: str,
     rate: str,
+    pitch: str = "+0Hz",
+    volume: str = "+0%",
     subtitle_path: Path | None = None,
     subtitle_max_chars: int = DEFAULT_SUBTITLE_MAX_CHARS,
 ) -> None:
@@ -91,6 +93,8 @@ async def generate(
             subtitle_path,
             voice=voice,
             rate=rate,
+            pitch=pitch,
+            volume=volume,
             max_chars=subtitle_max_chars,
         )
         return
@@ -103,7 +107,9 @@ async def generate(
             "python3 -m pip install edge-tts"
         ) from exc
 
-    communicate = edge_tts.Communicate(text, voice=voice, rate=normalize_rate(rate))
+    communicate = edge_tts.Communicate(
+        text, voice=voice, rate=normalize_rate(rate), pitch=pitch, volume=volume,
+    )
     await communicate.save(str(output_path))
 
 
@@ -439,6 +445,8 @@ async def _generate_with_subtitles(
     *,
     voice: str,
     rate: str,
+    pitch: str = "+0Hz",
+    volume: str = "+0%",
     max_chars: int,
 ) -> None:
     """Generate one MP3 and compact SRT from the same Edge word-timing stream."""
@@ -454,6 +462,8 @@ async def _generate_with_subtitles(
         text,
         voice=voice,
         rate=normalize_rate(rate),
+        pitch=pitch,
+        volume=volume,
         boundary="WordBoundary",
     )
     audio_descriptor = -1

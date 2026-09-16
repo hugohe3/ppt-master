@@ -31,6 +31,7 @@ from authoring_roundtrip import (  # noqa: E402
     RoundtripPage,
     is_flat_authoring_bundle,
     materialize_flat_authoring_roundtrip,
+    roundtrip_source_fingerprint,
 )
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from language_tags import (  # noqa: E402
@@ -1421,7 +1422,11 @@ def _write_postflight_report(
             f"{package['slides']} != {len(svg_files)}"
         )
     source_audit = _source_resource_audit(svg_files)
-    source_fingerprint = _svg_source_fingerprint(svg_files)
+    source_fingerprint = (
+        roundtrip_source_fingerprint(project_path)
+        if authoring_roundtrip is not None
+        else _svg_source_fingerprint(svg_files)
+    )
     quality = _quality_report_context(project_path, source_fingerprint)
     quality_gate, introduced_warning_count = _quality_gate_status(quality)
     unresolved_tokens = source_audit['unresolved_template_tokens']
@@ -1573,9 +1578,14 @@ def _load_deck_motion_handoff(
     if report.get('status') not in {'passed', 'passed-with-warnings'}:
         raise ValueError('deck-motion handoff report is not a successful export')
     source = _as_dict(report.get('source'))
-    if source.get('fingerprint') != _svg_source_fingerprint(svg_files):
+    current_fingerprint = (
+        roundtrip_source_fingerprint(project_path)
+        if source.get('authoring_roundtrip') is not None
+        else _svg_source_fingerprint(svg_files)
+    )
+    if source.get('fingerprint') != current_fingerprint:
         raise ValueError(
-            'deck-motion handoff does not match the current svg_output; '
+            'deck-motion handoff does not match the current source inputs; '
             'run the base export again'
         )
     motion = report.get('deck_motion')

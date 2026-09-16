@@ -202,6 +202,31 @@ def _local_name(name: object) -> str:
     return name.rsplit("}", 1)[-1] if isinstance(name, str) else ""
 
 
+def semantic_shape_text_component(
+    shape: ET.Element,
+    *,
+    included_text_ids: set[int] | None = None,
+) -> ET.Element | None:
+    """Validate text compiled into one semantic shape, excluding native restores."""
+    def included(element: ET.Element) -> bool:
+        return (
+            element.tag.replace(f'{{{SVG_NS}}}', '') == 'text'
+            and (included_text_ids is None or id(element) in included_text_ids)
+        )
+
+    texts = [child for child in shape if included(child)]
+    nested_texts = [child for child in shape.iter() if included(child)]
+    if nested_texts != texts:
+        raise ValueError('Semantic shape text must be one direct SVG text component')
+    if not texts:
+        return None
+    if len(texts) != 1:
+        raise ValueError('Semantic shape requires at most one paragraph-based text component')
+    if shape.get('data-pptx-frame') is None:
+        raise ValueError('Semantic shape text requires data-pptx-frame on its owner')
+    return texts[0]
+
+
 @dataclass
 class SourceReference:
     source_ref: str

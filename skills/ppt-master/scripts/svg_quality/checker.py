@@ -33,6 +33,11 @@ from pptx_workspace import (
 )
 from slide_roster import discover_slide_svgs
 from svg_authoring_contract import canonical_authoring_errors
+from svg_authoring_view import (
+    SEMANTIC_OBJECT_ATTRIBUTE,
+    SEMANTIC_SHAPE_KIND,
+    semantic_shape_text_component,
+)
 
 from . import svg_contracts
 from .xml_support import (
@@ -1175,6 +1180,7 @@ class SVGQualityChecker:
         self.quick_generate = quick_generate
         self.canonical_authoring = canonical_authoring
         self.results = []
+        self._roundtrip_source_fingerprint: Dict[str, object] | None = None
         self.summary = {
             'total': 0,
             'passed': 0,
@@ -1399,6 +1405,7 @@ class SVGQualityChecker:
 
                 # 5. Check text wrapping methods
                 self._check_text_elements(content, root, result)
+                self._check_semantic_shape_text(root, result)
 
                 # 5b. Validate native hyperlink targets and carrier structure.
                 self._check_hyperlinks(root, result)
@@ -1548,6 +1555,7 @@ class SVGQualityChecker:
             _load_documents,
             _load_page_plan,
             _parse_svg,
+            roundtrip_source_fingerprint,
         )
 
         project_path = Path(workspace).resolve()
@@ -1569,6 +1577,7 @@ class SVGQualityChecker:
             return []
 
         try:
+            self._roundtrip_source_fingerprint = roundtrip_source_fingerprint(project_path)
             source_root, source_proxy_dir, documents, _, _ = _load_documents(
                 project_path,
                 authoring_dir,
@@ -1676,6 +1685,9 @@ class SVGQualityChecker:
                     )
                 )
                 result['info']['edited_text_elements'] = len(included_text_ids)
+                self._check_semantic_shape_text(
+                    root, result, included_text_ids=included_text_ids,
+                )
                 if included_text_ids:
                     scoped_content = self._roundtrip_text_scope_content(
                         root,
@@ -1715,6 +1727,27 @@ class SVGQualityChecker:
             result['errors'].append(f"Failed to read file: {exc}")
             result['passed'] = False
         return self._record_result(result)
+
+    @staticmethod
+    def _check_semantic_shape_text(
+        root: ET.Element,
+        result: Dict,
+        *,
+        included_text_ids: set[int] | None = None,
+    ) -> None:
+        """Report the exporter's semantic-shape text contract before conversion."""
+        parents = {id(child): parent for parent in root.iter() for child in parent}
+        for shape in root.iter(f'{{{SVG_NS}}}g'):
+            if shape.get(SEMANTIC_OBJECT_ATTRIBUTE) != SEMANTIC_SHAPE_KIND:
+                continue
+            if _svg_hidden_reason is not None and _svg_hidden_reason(
+                shape, parents, preserve_native_carriers=True,
+            ) is not None:
+                continue
+            try:
+                semantic_shape_text_component(shape, included_text_ids=included_text_ids)
+            except ValueError as exc:
+                result['errors'].append(f"{_element_label(shape)}: {exc}")
 
     @staticmethod
     def _roundtrip_text_diff_ids(
@@ -9848,7 +9881,11 @@ class SVGQualityChecker:
             'schema': 'ppt-master.svg-quality-report.v1',
             'stage': stage,
             'target': str(Path(target).resolve()),
-            'source_fingerprint': _quality_source_fingerprint(self.results),
+            'source_fingerprint': (
+                self._roundtrip_source_fingerprint
+                if self._roundtrip_source_fingerprint is not None
+                else _quality_source_fingerprint(self.results)
+            ),
             'summary': dict(self.summary),
             'issue_types': dict(sorted(self.issue_types.items())),
             'categories': {
