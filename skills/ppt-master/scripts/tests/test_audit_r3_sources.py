@@ -145,7 +145,7 @@ class SourceHttpSecurityTests(unittest.TestCase):
                 backend = Mock()
                 with self.subTest(host=host, curl=use_curl), \
                         patch.object(web_to_md, "curl_requests", backend if use_curl else None), \
-                        patch.object(requests, "get", backend.get):
+                        patch.object(requests.Session, "get", backend.get):
                     with self.assertRaisesRegex(ValueError, "non-public"):
                         web_to_md._http_get(f"http://{host}/")
                     backend.get.assert_not_called()
@@ -158,7 +158,7 @@ class SourceHttpSecurityTests(unittest.TestCase):
             non_public = (family, socket.SOCK_STREAM, 6, "", (address, 0))
             with self.subTest(host=host), \
                     patch.object(socket, "getaddrinfo", return_value=[public, non_public]), \
-                    patch.object(requests, "get") as transport:
+                    patch.object(requests.Session, "get") as transport:
                 with self.assertRaisesRegex(ValueError, "non-public"):
                     web_to_md._http_get("https://source.example/")
                 transport.assert_not_called()
@@ -176,7 +176,7 @@ class SourceHttpSecurityTests(unittest.TestCase):
                 with self.subTest(host=host):
                     url = f"http://{host}/"
                     response = Mock(url=url)
-                    with patch.object(requests, "get", return_value=response) as transport:
+                    with patch.object(requests.Session, "get", return_value=response) as transport:
                         self.assertIs(web_to_md._http_get(url), response)
                         transport.assert_called_once()
 
@@ -458,6 +458,7 @@ class CurlSourceRedirectTests(unittest.TestCase):
     def setUp(self) -> None:
         for guard in (
             patch.dict(web_to_md.CONFIG, allow_private_hosts=False),
+            patch.object(web_to_md, "CurlOpt", SimpleNamespace(RESOLVE=10203, PROXY=10004)),
             patch.object(socket, "getaddrinfo", side_effect=AssertionError("Unexpected DNS")),
             patch.object(socket.socket, "connect", side_effect=AssertionError("Unexpected network")),
         ):
@@ -534,15 +535,20 @@ class CurlSourceRedirectTests(unittest.TestCase):
             for response in responses:
                 response.close.assert_called_once_with()
 
-    def test_a01_curl_private_opt_in_keeps_automatic_redirects(self) -> None:
-        response = Mock(url=self.PRIVATE)
-        backend = SimpleNamespace(get=Mock(return_value=response))
+    def test_a01_curl_private_opt_in_keeps_redirects_without_pinning(self) -> None:
+        routes = {
+            self.START: (302, {"Location": self.PRIVATE}),
+            self.PRIVATE: (302, {"Location": self.FINAL}),
+            self.FINAL: (200, {}),
+        }
         with patch.dict(web_to_md.CONFIG, allow_private_hosts=True), \
-                patch.object(web_to_md, "curl_requests", backend):
-            self.assertIs(web_to_md._http_get(self.START), response)
-        backend.get.assert_called_once()
-        self.assertNotIn("allow_redirects", backend.get.call_args.kwargs)
-        response.close.assert_not_called()
+                _memory_curl(routes) as (visited, responses):
+            self.assertIs(web_to_md._http_get(self.START), responses[-1])
+        self.assertEqual([item["url"] for item in visited], [self.START, self.PRIVATE, self.FINAL])
+        for item in visited:
+            self.assertEqual(item["kwargs"]["curl_options"], {})
+            self.assertIs(item["kwargs"]["allow_redirects"], False)
+        responses[-1].close.assert_not_called()
 
     def test_a01_curl_nonredirect_or_missing_location_returns_response(self) -> None:
         for status, headers in ((200, {"Location": self.PRIVATE}), (302, {})):
