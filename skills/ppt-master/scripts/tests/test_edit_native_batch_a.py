@@ -231,7 +231,14 @@ class EditNativeBatchATests(unittest.TestCase):
         )
         repeated, *_ = self._export(imported, '--recorded-narration', 'audio')
         with zipfile.ZipFile(repeated) as archive:
-            self.assertNotIn('ppt/media/narration1.wav', archive.namelist())
+            # The earlier narration part is replaced in place: one narration
+            # media part, carrying the replacement bytes, no `_1` suffix growth.
+            narration_parts = [
+                name for name in archive.namelist()
+                if name.startswith('ppt/media/narration') and name.endswith('.wav')
+            ]
+            self.assertEqual(narration_parts, ['ppt/media/narration1.wav'])
+            self.assertEqual(archive.read('ppt/media/narration1.wav'), replacement.read_bytes())
             self.assertEqual(len(self._slide(repeated).findall('.//p:audio', NS)), 1)
 
     def test_a5_full_overlay_preserves_advance_and_explicit_advance_wins(self) -> None:

@@ -1884,6 +1884,19 @@ def _remove_relationships_by_type(rels_path: Path, rel_type: str) -> int:
     return removed
 
 
+def _part_has_relationship_references(extract_dir: Path, part_name: str) -> bool:
+    """Return whether any relationships file in the package still targets a part."""
+    for rels_path in (extract_dir / 'ppt').rglob('*.rels'):
+        source_part = _part_name_for_relationships_path(rels_path)
+        for attrs in _read_relationships(rels_path).values():
+            if attrs.get('TargetMode') == 'External':
+                continue
+            target = attrs.get('Target')
+            if target and _resolve_package_target(source_part, target) == part_name:
+                return True
+    return False
+
+
 def _unused_part_path(directory: Path, filename: str) -> Path:
     """Allocate a part name without overwriting any existing package member."""
     requested = Path(filename)
@@ -7968,6 +7981,20 @@ def create_pptx_with_native_svg(
                                 f'ppt/slides/slide{slide_num}.xml', relationship['Target'],
                             ))
                         _remove_relationship(rels_path, rel_id)
+                    requested_media = media_dir / f'narration{slide_num}{ext}'
+                    if (
+                        requested_media.exists()
+                        and requested_media.relative_to(extract_dir).as_posix()
+                        in replaced_narration_parts
+                        and not _part_has_relationship_references(
+                            extract_dir,
+                            requested_media.relative_to(extract_dir).as_posix(),
+                        )
+                    ):
+                        # The earlier PPT Master narration for this slide was
+                        # just unlinked; reuse its name instead of growing a
+                        # `_1`, `_1_1`, ... suffix with every re-recording.
+                        requested_media.unlink()
                     media_name = _unused_part_path(media_dir, f'narration{slide_num}{ext}').name
                     shutil.copy2(audio_path, media_dir / media_name)
                     audio_exts_used.add(ext)

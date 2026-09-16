@@ -1455,7 +1455,7 @@ def _write_artifact_tree(
             _collect_media(art.media_files)
 
     _write_animation_config(output_dir, result)
-    _write_speaker_notes(output_dir, result)
+    _write_speaker_notes(output_dir, result, write_total=not options.roundtrip)
     if result.native_structure is not None:
         if result.source_pptx_path is None:
             raise RuntimeError(
@@ -1568,7 +1568,12 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _write_speaker_notes(output_dir: Path, result: ConvertResult) -> None:
+def _write_speaker_notes(
+    output_dir: Path,
+    result: ConvertResult,
+    *,
+    write_total: bool = True,
+) -> None:
     """Write imported notes into the standard per-slide Markdown contract."""
     if not result.speaker_notes:
         return
@@ -1584,6 +1589,10 @@ def _write_speaker_notes(output_dir: Path, result: ConvertResult) -> None:
             "",
             note.markdown.strip(),
         ])
+    if not write_total:
+        # Round-trip notes are keyed by output stem; the Generate-only
+        # total.md would only pose as a second source of truth.
+        return
     (notes_dir / "total.md").write_text(
         "\n".join(combined).rstrip() + "\n",
         encoding="utf-8",
@@ -1727,14 +1736,7 @@ def _write_roundtrip_manifest(
                 "sha256": _sha256_file(animation_path),
                 "baseline": result.animation_config,
             },
-            "notesTotal": (
-                {
-                    "file": "notes/total.md",
-                    "sha256": _sha256_file(output_dir / "notes/total.md"),
-                }
-                if result.speaker_notes
-                else None
-            ),
+            "notesTotal": None,
         },
         "directories": {
             "authoringSvg": AUTHORING_SVG_FLAT_DIR.as_posix(),
@@ -1829,7 +1831,11 @@ def _write_conversion_report(
         "notes": [
             (Path("notes") / note.filename).as_posix()
             for note in result.speaker_notes
-        ] + (["notes/total.md"] if result.speaker_notes else []),
+        ] + (
+            ["notes/total.md"]
+            if result.speaker_notes and not options.roundtrip
+            else []
+        ),
     }
     if embedded_font_paths:
         artifacts["embeddedFontManifest"] = embedded_font_paths[-1]
