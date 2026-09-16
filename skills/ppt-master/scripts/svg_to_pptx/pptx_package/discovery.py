@@ -76,6 +76,10 @@ def find_notes_files(
         Dict mapping SVG filename stem to notes content.
     """
     notes_dir = project_path / 'notes'
+    roundtrip = (
+        (project_path / 'analysis' / 'roundtrip_manifest.json').is_file()
+        or (project_path / 'authoring-svg-flat').is_dir()
+    )
     index_notes: dict[str, tuple[Path, str]] = {}
     filename_notes: dict[str, tuple[Path, str]] = {}
 
@@ -93,7 +97,7 @@ def find_notes_files(
         stem = notes_file.stem
 
         # Try index-based matching (backward compat with slide01.md format).
-        match = re.search(r'slide[_]?(\d+)', stem)
+        match = None if roundtrip else re.search(r'slide[_]?(\d+)', stem)
         mapped_stem = (
             svg_index_mapping.get(int(match.group(1)))
             if match

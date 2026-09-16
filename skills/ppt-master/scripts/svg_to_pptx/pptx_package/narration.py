@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import base64
 import json
+import posixpath
 import re
 import subprocess
+import zipfile
 from collections.abc import Iterable
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from pptx_workspace import load_roundtrip_manifest, source_pptx_path
 from pptx_transitions import (
     AdvanceUpdate,
     EnterUpdate,
@@ -42,6 +45,7 @@ AUDIO_CONTENT_TYPES = {
 
 NARRATION_EXTENSIONS = tuple(AUDIO_CONTENT_TYPES.keys())
 DEFAULT_NARRATION_START_FLOOR = 0.8
+NARRATION_SHAPE_PREFIX = "PPT Master narration: "
 
 AUDIO_MARKER_SIZE_EMU = 457200  # 48 SVG px
 AUDIO_MARKER_OFF_CANVAS_EMU = -AUDIO_MARKER_SIZE_EMU
@@ -86,7 +90,7 @@ def _leading_number(text: str) -> int | None:
 
 
 def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Path]:
-    """Return `{svg_stem: audio_path}` matched by exact stem, normalized stem, or index."""
+    """Match exact stems, imported narration, then legacy normalized/index names."""
     if not audio_dir.exists() or not audio_dir.is_dir():
         return {}
 
@@ -104,11 +108,17 @@ def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Pa
         if number is not None:
             numbered.setdefault(number, []).append(path)
 
+    unmatched_stems = [svg for svg in svg_files if svg.stem not in exact]
+    inherited = _roundtrip_narration_files(audio_dir, unmatched_stems) if unmatched_stems else {}
     matched: dict[str, Path] = {}
     claimed_by: dict[Path, str] = {}
     for index, svg in enumerate(svg_files, 1):
         stem = svg.stem
         candidates = exact.get(stem)
+        if not candidates and stem in inherited:
+            # A page-plan copy intentionally shares its source narration file.
+            matched[stem] = inherited[stem]
+            continue
         if not candidates:
             candidates = normalized.get(_normalize_title(stem))
         if not candidates:
@@ -132,6 +142,117 @@ def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Pa
         matched[stem] = candidate
         claimed_by[candidate] = stem
     return matched
+
+
+def narration_shapes(root: ET.Element) -> list[ET.Element]:
+    """Identify our marked narration and the exact legacy off-canvas carrier."""
+    autoplay_ids = {
+        target.get("spid")
+        for audio in root.iter(_qn(PML_NS, "audio"))
+        for target in audio.iter(_qn(PML_NS, "spTgt"))
+    }
+    found = []
+    for picture in root.findall(f"{_qn(PML_NS, 'cSld')}/{_qn(PML_NS, 'spTree')}/{_qn(PML_NS, 'pic')}"):
+        props = picture.find(f"{_qn(PML_NS, 'nvPicPr')}/{_qn(PML_NS, 'cNvPr')}")
+        if props is None or picture.find(f".//{_qn(DRAWINGML_NS, 'audioFile')}") is None:
+            continue
+        name = props.get("name", "")
+        marked = name.startswith(NARRATION_SHAPE_PREFIX)
+        offset = picture.find(f"{_qn(PML_NS, 'spPr')}/{_qn(DRAWINGML_NS, 'xfrm')}/{_qn(DRAWINGML_NS, 'off')}")
+        extent = picture.find(f"{_qn(PML_NS, 'spPr')}/{_qn(DRAWINGML_NS, 'xfrm')}/{_qn(DRAWINGML_NS, 'ext')}")
+        legacy = (
+            re.fullmatch(r"narration[1-9]\d*\.(?:m4a|mp3|wav)", name) is not None
+            and props.get("id") in autoplay_ids
+            and offset is not None and extent is not None
+            and all(offset.get(key) == str(AUDIO_MARKER_OFF_CANVAS_EMU) for key in ("x", "y"))
+            and all(extent.get(key) == str(AUDIO_MARKER_SIZE_EMU) for key in ("cx", "cy"))
+            and picture.find(f".//{_qn(P14_NS, 'media')}") is not None
+        )
+        if marked or legacy:
+            found.append(picture)
+    return found
+
+
+def narration_audio_parts(slide_xml: bytes, rels_xml: bytes, slide_part: str) -> tuple[str, ...]:
+    """Read recognized narration targets without reconstructing source motion."""
+    relationships = {rel.get("Id"): rel for rel in ET.fromstring(rels_xml)}
+    parts = set()
+    for picture in narration_shapes(ET.fromstring(slide_xml)):
+        audio = picture.find(f".//{_qn(DRAWINGML_NS, 'audioFile')}")
+        relationship = relationships.get(audio.get(_qn(RELATIONSHIPS_NS, "link")))
+        if relationship is None or relationship.get("TargetMode") == "External":
+            continue
+        target = relationship.get("Target", "")
+        if target:
+            parts.add(posixpath.normpath(posixpath.join(posixpath.dirname(slide_part), target)).lstrip("/"))
+    return tuple(sorted(parts))
+
+
+def _roundtrip_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Path]:
+    workspace = audio_dir.parent
+    manifest = load_roundtrip_manifest(workspace)
+    if manifest is None:
+        return {}
+    rows = {row["index"]: row for row in manifest["slides"]}
+    sources = {f"slide_{index:02d}": index for index in rows}
+    plan_path = workspace / "page_plan.json"
+    if plan_path.is_file():
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        sources = {
+            Path(page.get("svg", f"slide_{page['source_slide']:02d}.svg")).stem: page["source_slide"]
+            for page in plan["pages"]
+        }
+    resource_paths = {
+        row["packagePart"]: row["workspacePath"]
+        for row in manifest["resources"]["items"]
+    }
+    inherited = {}
+    # Legacy manifests can recover the same mapping from immutable source XML.
+    with zipfile.ZipFile(source_pptx_path(workspace)) as archive:
+        for svg in svg_files:
+            row = rows.get(sources.get(svg.stem))
+            if row is None:
+                continue
+            relative = row.get("narrationAudio")
+            if "narrationAudio" not in row:
+                part = row["sourcePart"]
+                rels = posixpath.join(posixpath.dirname(part), "_rels", posixpath.basename(part) + ".rels")
+                parts = narration_audio_parts(archive.read(part), archive.read(rels), part)
+                relative = resource_paths.get(parts[0]) if len(parts) == 1 else None
+            if not isinstance(relative, str):
+                continue
+            path = (workspace / relative).resolve()
+            if path.parent == audio_dir.resolve() and path.is_file() and path.suffix.lower() in NARRATION_EXTENSIONS:
+                inherited[svg.stem] = path
+    return inherited
+
+
+def remove_narration(slide_xml: str) -> tuple[str, set[str]]:
+    """Remove owned narration carriers/timing and return exclusively owned rIds."""
+    root = parse_source_xml(slide_xml)
+    pictures = narration_shapes(root)
+    if not pictures:
+        return slide_xml, set()
+    shape_ids = {
+        picture.find(f"{_qn(PML_NS, 'nvPicPr')}/{_qn(PML_NS, 'cNvPr')}").get("id")
+        for picture in pictures
+    }
+    relationship_ids = {
+        value for picture in pictures for node in picture.iter()
+        for key, value in node.attrib.items() if key.startswith(f"{{{RELATIONSHIPS_NS}}}") and value
+    }
+    for parent in root.iter():
+        for child in list(parent):
+            if child in pictures or (
+                child.tag == _qn(PML_NS, "audio")
+                and any(target.get("spid") in shape_ids for target in child.iter(_qn(PML_NS, "spTgt")))
+            ):
+                parent.remove(child)
+    still_used = {
+        value for node in root.iter() for key, value in node.attrib.items()
+        if key.startswith(f"{{{RELATIONSHIPS_NS}}}")
+    }
+    return serialize_source_xml(root, slide_xml).decode("utf-8"), relationship_ids - still_used
 
 
 def probe_audio_duration(audio_path: Path) -> float | None:
@@ -184,7 +305,7 @@ def _create_audio_pic_element(
     c_nv_pr = ET.SubElement(
         nv_pic_pr,
         _qn(PML_NS, "cNvPr"),
-        {"id": str(shape_id), "name": shape_name},
+        {"id": str(shape_id), "name": NARRATION_SHAPE_PREFIX + shape_name},
     )
     ET.SubElement(
         c_nv_pr,
@@ -517,6 +638,7 @@ def inject_narration(
             f"{start_delay_ms} ms"
         )
 
+    slide_xml, _removed_relationships = remove_narration(slide_xml)
     root = parse_source_xml(slide_xml)
     if root.tag != _qn(PML_NS, "sld"):
         raise ValueError("narration source XML root must be p:sld")
@@ -568,6 +690,8 @@ def inject_narration(
         _validate_root_timing_position(root, timing_anchor)
         for timing in timing_branches:
             timing_root = _existing_timing_root(timing)
+            if timing_root.find(_qn(PML_NS, "childTnLst")) is None:
+                ET.SubElement(timing_root, _qn(PML_NS, "childTnLst"))
             child_nodes = _direct_child(
                 timing_root,
                 _qn(PML_NS, "childTnLst"),

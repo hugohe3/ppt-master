@@ -43,6 +43,7 @@ from pptx_transitions import (
     apply_slide_motion_xml,
     create_transition_xml,
     normalize_transition_effect_request,
+    read_slide_transition_xml,
     serialize_source_xml,
     set_directory_use_timings,
     transition_carriers,
@@ -129,6 +130,7 @@ from .narration import (
     narration_lead_in_seconds,
     next_shape_id,
     probe_audio_duration,
+    remove_narration,
 )
 from .slide_xml import (
     create_slide_xml_with_svg, create_slide_rels_xml,
@@ -249,6 +251,7 @@ class RoundtripSlidePatch:
     transition_replaced: bool
     animation_changed: bool
     notes_changed: bool
+    advance_changed: bool = False
 
 
 @dataclass(frozen=True)
@@ -1208,9 +1211,12 @@ def _replace_roundtrip_motion(
     transition_changed: bool,
     transition_replaced: bool,
     animation_changed: bool,
+    advance_changed: bool = True,
 ) -> None:
     """Replace only explicitly changed transition and animation state."""
     if transition_changed and transition_replaced:
+        if not advance_changed:
+            _replace_roundtrip_transition_advance(generated_root, source_root)
         generated_carriers = transition_carriers(generated_root)
         if len(generated_carriers) > 1:
             raise TemplateStructureError(
@@ -1294,10 +1300,12 @@ def _replace_roundtrip_transition_advance(
     )
 
     if not source_carriers:
-        if generated_carriers:
-            clone = ET.fromstring(
-                ET.tostring(generated_carriers[0], encoding="utf-8")
-            )
+        if advance_click is not None or advance_after is not None:
+            clone = ET.Element(transition_tag)
+            if advance_click is not None:
+                clone.set("advClick", advance_click)
+            if advance_after is not None:
+                clone.set("advTm", advance_after)
             children = list(source_root)
             insert_at = next(
                 (
@@ -1443,6 +1451,7 @@ def _apply_roundtrip_transition_overlay(
     duration: float,
     auto_advance: float | None,
     replace_transition: bool,
+    advance_changed: bool = True,
 ) -> bool:
     """Patch only transition/advance state while preserving source timing."""
     source_bytes = slide_path.read_bytes()
@@ -1464,9 +1473,12 @@ def _apply_roundtrip_transition_overlay(
             effect_options=effect_options,
         )
     advance = (
-        AdvanceUpdate(mode="click")
-        if auto_advance is None
-        else AdvanceUpdate(mode="both", after=auto_advance)
+        AdvanceUpdate(mode="preserve")
+        if not advance_changed else (
+            AdvanceUpdate(mode="click")
+            if auto_advance is None
+            else AdvanceUpdate(mode="both", after=auto_advance)
+        )
     )
     updated_xml, uses_timings = apply_slide_motion_xml(
         source_xml,
@@ -1478,13 +1490,16 @@ def _apply_roundtrip_transition_overlay(
             "Round-trip transition overlay changed source object animations"
         )
     if replace_transition:
+        original = read_slide_transition_xml(source_xml)
         validate_generated_transition_xml(
             updated_xml,
             effect=effect,
             effect_options=effect_options,
             duration=duration,
-            advance_on_click=True,
-            advance_after=auto_advance,
+            advance_on_click=True if advance_changed else original.advance_on_click,
+            advance_after=auto_advance if advance_changed else (
+                original.advance_after_ms / 1000 if original.advance_after_ms is not None else None
+            ),
         )
     slide_path.write_bytes(
         _preserve_roundtrip_timing_markup(
@@ -1793,6 +1808,7 @@ def _apply_roundtrip_slide_overlay(
             transition_changed=patch.transition_changed,
             transition_replaced=patch.transition_replaced,
             animation_changed=patch.animation_changed,
+            advance_changed=patch.advance_changed,
         )
     restored_shape_id_map = {
         generated_top_id: source_id
@@ -1868,6 +1884,18 @@ def _remove_relationships_by_type(rels_path: Path, rel_type: str) -> int:
     return removed
 
 
+def _unused_part_path(directory: Path, filename: str) -> Path:
+    """Allocate a part name without overwriting any existing package member."""
+    requested = Path(filename)
+    occupied = {path.name.casefold() for path in directory.iterdir()}
+    candidate = directory / requested.name
+    suffix = 1
+    while candidate.name.casefold() in occupied:
+        candidate = directory / f"{requested.stem}_{suffix}{requested.suffix}"
+        suffix += 1
+    return candidate
+
+
 def _apply_slide_notes(
     extract_dir: Path,
     rels_path: Path,
@@ -1878,6 +1906,24 @@ def _apply_slide_notes(
     enable_notes: bool,
 ) -> _NotesMasterReference | None:
     """Replace one slide's notes relationship and return its notes master."""
+    existing_target = _find_relationship_target(rels_path, NOTES_SLIDE_REL_TYPE)
+    source_part = _part_name_for_relationships_path(rels_path)
+    existing_part = (
+        _resolve_package_target(source_part, existing_target) if existing_target else None
+    )
+    exclusive = existing_part is not None
+    if exclusive:
+        for other_rels in rels_path.parent.glob('*.rels'):
+            if other_rels == rels_path:
+                continue
+            other_part = _part_name_for_relationships_path(other_rels)
+            if any(
+                attrs.get('Type') == NOTES_SLIDE_REL_TYPE
+                and _resolve_package_target(other_part, attrs.get('Target', '')) == existing_part
+                for attrs in _read_relationships(other_rels).values()
+            ):
+                exclusive = False
+                break
     _remove_relationships_by_type(rels_path, NOTES_SLIDE_REL_TYPE)
     if not enable_notes:
         return None
@@ -1888,25 +1934,29 @@ def _apply_slide_notes(
     notes_master = _ensure_notes_master(extract_dir, primary_language)
     notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
     notes_slides_dir.mkdir(exist_ok=True)
-    notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
+    notes_xml_path = (
+        extract_dir / existing_part if exclusive
+        else _unused_part_path(notes_slides_dir, f'notesSlide{slide_num}.xml')
+    )
+    notes_part = notes_xml_path.relative_to(extract_dir).as_posix()
     notes_xml_path.write_text(
         create_notes_slide_xml(slide_num, notes_text, primary_language),
         encoding='utf-8',
     )
-    notes_rels_dir = notes_slides_dir / '_rels'
+    notes_rels_dir = notes_xml_path.parent / '_rels'
     notes_rels_dir.mkdir(exist_ok=True)
-    notes_rels_path = notes_rels_dir / f'notesSlide{slide_num}.xml.rels'
+    notes_rels_path = notes_rels_dir / f'{notes_xml_path.name}.rels'
     notes_rels_path.write_text(
         create_notes_slide_rels_xml(
             slide_num,
-            posixpath.relpath(notes_master.package_part, 'ppt/notesSlides'),
+            posixpath.relpath(notes_master.package_part, posixpath.dirname(notes_part)),
         ),
         encoding='utf-8',
     )
     _ensure_relationship(
         rels_path,
         NOTES_SLIDE_REL_TYPE,
-        f'../notesSlides/notesSlide{slide_num}.xml',
+        posixpath.relpath(notes_part, posixpath.dirname(source_part)),
     )
     return notes_master
 
@@ -6943,12 +6993,14 @@ def create_pptx_with_native_svg(
                 else transition
             )
             print(f"  Transition effect: {trans_name}")
-        if enable_notes and notes:
-            print(f"  Speaker notes: {len(notes)} page(s)")
-        elif enable_notes:
-            print(f"  Speaker notes: Enabled (no notes files found)")
-        else:
-            print(f"  Speaker notes: Disabled")
+        # Round-trip counts include inherited notes from the finished package.
+        if not roundtrip_export:
+            if enable_notes and notes:
+                print(f"  Speaker notes: {len(notes)} page(s)")
+            elif enable_notes:
+                print(f"  Speaker notes: Enabled (no notes files found)")
+            else:
+                print(f"  Speaker notes: Disabled")
         print()
 
     animation_cli_overrides = animation_cli_overrides or {}
@@ -7089,6 +7141,7 @@ def create_pptx_with_native_svg(
         notes_master_parts_used: set[str] = set()
         notes_master_theme_parts_created: set[str] = set()
         narration_slides_created: set[int] = set()
+        replaced_narration_parts: set[str] = set()
         audio_exts_used: set[str] = set()
         package_uses_timings = False
         mixed_animation_offset = 0
@@ -7228,6 +7281,7 @@ def create_pptx_with_native_svg(
                     )
                     direct_transition_overlay = (
                         overlay_animation is None
+                        and not slide_patch.animation_changed
                         and not overlay_groups
                         and not animation_override_requested
                         and overlay_transition_sound is None
@@ -7248,6 +7302,7 @@ def create_pptx_with_native_svg(
                             duration=overlay_transition_duration,
                             auto_advance=overlay_auto_advance,
                             replace_transition=slide_patch.transition_replaced,
+                            advance_changed=slide_patch.advance_changed,
                         ):
                             package_uses_timings = True
                         if slide_patch.notes_changed:
@@ -7791,6 +7846,13 @@ def create_pptx_with_native_svg(
 
                 resolved_advance_after = slide_auto_advance
                 resolved_advance_on_click = True
+                if slide_patch is not None and not slide_patch.advance_changed:
+                    source_motion = read_slide_transition_xml(source_slide_bytes)
+                    resolved_advance_on_click = source_motion.advance_on_click
+                    resolved_advance_after = (
+                        source_motion.advance_after_ms / 1000
+                        if source_motion.advance_after_ms is not None else None
+                    )
 
                 # --- Process notes (shared between native and legacy mode) ---
                 notes_changed = slide_patch is None or slide_patch.notes_changed
@@ -7826,12 +7888,24 @@ def create_pptx_with_native_svg(
                     rels_path = extract_dir / 'ppt' / 'slides' / '_rels' / f'slide{slide_num}.xml.rels'
 
                     ext = audio_path.suffix.lower()
-                    media_name = f'narration{slide_num}{ext}'
+                    slide_xml, removed_rids = remove_narration(slide_xml_path.read_text(encoding='utf-8'))
+                    source_relationships = _read_relationships(rels_path)
+                    for rel_id in removed_rids:
+                        relationship = source_relationships.get(rel_id, {})
+                        if relationship.get('Target') and relationship.get('TargetMode') != 'External':
+                            replaced_narration_parts.add(_resolve_package_target(
+                                f'ppt/slides/slide{slide_num}.xml', relationship['Target'],
+                            ))
+                        _remove_relationship(rels_path, rel_id)
+                    media_name = _unused_part_path(media_dir, f'narration{slide_num}{ext}').name
                     shutil.copy2(audio_path, media_dir / media_name)
                     audio_exts_used.add(ext)
 
                     poster_name = 'narration_poster.png'
                     poster_path = media_dir / poster_name
+                    if poster_path.exists() and poster_path.read_bytes() != AUDIO_MARKER_PNG_BYTES:
+                        poster_path = _unused_part_path(media_dir, poster_name)
+                        poster_name = poster_path.name
                     if not poster_path.exists():
                         poster_path.write_bytes(AUDIO_MARKER_PNG_BYTES)
                     has_any_image = True
@@ -7853,7 +7927,6 @@ def create_pptx_with_native_svg(
                         f'../media/{poster_name}',
                     )
 
-                    slide_xml = slide_xml_path.read_text(encoding='utf-8')
                     narration_shape_id = next_shape_id(slide_xml)
                     narration_transition_duration = (
                         slide_transition_duration
@@ -8123,13 +8196,13 @@ def create_pptx_with_native_svg(
             pruned_roundtrip_payloads = (
                 _prune_unreferenced_definition_payload_parts(
                     extract_dir,
-                    preserved_parts=roundtrip_source_parts,
+                    preserved_parts=roundtrip_source_parts - replaced_narration_parts,
                 )
             )
             if verbose and pruned_roundtrip_payloads:
                 print(
                     "  Round-trip overlay: pruned "
-                    f"{pruned_roundtrip_payloads} unused generated payload part(s)"
+                    f"{pruned_roundtrip_payloads} unused payload part(s)"
                 )
 
         if (
@@ -8233,9 +8306,15 @@ def create_pptx_with_native_svg(
                     _NOTES_MASTER_CONTENT_TYPE,
                 )
             for i in sorted(notes_slides_created):
+                notes_target = _find_relationship_target(
+                    extract_dir / 'ppt' / 'slides' / '_rels' / f'slide{i}.xml.rels',
+                    NOTES_SLIDE_REL_TYPE,
+                )
+                if notes_target is None:
+                    raise RuntimeError(f"Slide {i} lost its generated notes relationship")
                 content_types = _add_content_type_override(
                     content_types,
-                    f'/ppt/notesSlides/notesSlide{i}.xml',
+                    '/' + _resolve_package_target(f'ppt/slides/slide{i}.xml', notes_target),
                     'application/vnd.openxmlformats-officedocument.presentationml.'
                     'notesSlide+xml',
                 )
@@ -8388,6 +8467,12 @@ def create_pptx_with_native_svg(
         if verbose:
             print()
             print(f"[Done] Saved: {output_path}")
+            if roundtrip_export:
+                from pptx_to_svg.notes_import import import_speaker_notes
+                from pptx_to_svg.ooxml_loader import OoxmlPackage
+
+                with OoxmlPackage(output_path) as package:
+                    print(f"  Speaker notes: {len(import_speaker_notes(package))} page(s)")
             for warning in permission_warnings:
                 print(f"  [warn] {warning}")
             if conversion_trace_path and conversion_trace is not None:

@@ -17,9 +17,11 @@ import base64
 import hashlib
 import json
 import os
+import posixpath
 import re
 import shutil
 import tempfile
+import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 from html import unescape
@@ -57,6 +59,7 @@ from svg_to_pptx.animation_config import (
     validate_animation_config_errors,
     validate_transition_config,
 )
+from svg_to_pptx.pptx_package.narration import narration_audio_parts
 from template_import.manifest import (
     count_drawable_shapes,
     extract_placeholders,
@@ -1648,6 +1651,15 @@ def _write_roundtrip_manifest(
         and item.get("packagePart")
     }
     slides: list[dict[str, object]] = []
+    narration_by_index: dict[int, str | None] = {}
+    with zipfile.ZipFile(source_path) as archive:
+        for index, native_slide in native_by_index.items():
+            part = str(native_slide["packagePart"])
+            rels_part = posixpath.join(posixpath.dirname(part), "_rels", posixpath.basename(part) + ".rels")
+            parts = narration_audio_parts(archive.read(part), archive.read(rels_part), part)
+            narration_by_index[index] = (
+                result.resource_inventory.path_map().get(parts[0]) if len(parts) == 1 else None
+            )
     for slide in result.slides:
         layered_path = ROUNDTRIP_LAYERED_SVG_DIR / f"slide_{slide.index:02d}.svg"
         native_slide = native_by_index.get(slide.index, {})
@@ -1662,6 +1674,7 @@ def _write_roundtrip_manifest(
                 result.animation_config,
                 f"slide_{slide.index:02d}",
             ),
+            "narrationAudio": narration_by_index.get(slide.index),
         }
         referenced_svg_paths = [output_dir / layered_path]
         if slide.index in flat_by_index:
@@ -1712,6 +1725,7 @@ def _write_roundtrip_manifest(
             "animations": {
                 "file": "animations.json",
                 "sha256": _sha256_file(animation_path),
+                "baseline": result.animation_config,
             },
             "notesTotal": (
                 {

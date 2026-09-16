@@ -560,7 +560,12 @@ def main() -> int:
     parser.add_argument("--list-common-voices", action="store_true", help="print a curated voice list and exit")
     parser.add_argument("--list-voices", action="store_true", help="query provider voices and exit")
     parser.add_argument("--locale", default=None, help='filter --list-voices by locale, e.g. "zh-CN"')
-    args = parser.parse_args()
+    raw_args = list(sys.argv[1:])
+    # argparse otherwise interprets a separate negative percentage as an option.
+    for index in range(len(raw_args) - 2, -1, -1):
+        if raw_args[index] == "--rate" and re.fullmatch(r"-\d+(?:\.\d+)?%", raw_args[index + 1]):
+            raw_args[index:index + 2] = [f"--rate={raw_args[index + 1]}"]
+    args = parser.parse_args(raw_args)
 
     if args.list_common_voices:
         backend_edge.print_common_voices()

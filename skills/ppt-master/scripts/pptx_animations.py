@@ -3243,6 +3243,25 @@ def validate_slide_animation_structure(
     return errors
 
 
+def read_slide_click_dependencies(slide_xml: str | bytes) -> tuple[int, ...]:
+    """Read native click/interactive targets without requiring supported effects."""
+    root = ET.fromstring(slide_xml)
+    targets: set[int] = set()
+    for timing in root.iter(_qn(PML_NS, 'timing')):
+        for node in timing.iter(_qn(PML_NS, 'cTn')):
+            conditions = node.findall(f"{_qn(PML_NS, 'stCondLst')}/{_qn(PML_NS, 'cond')}")
+            interactive = node.get('nodeType') in {'clickEffect', 'interactiveSeq'} or any(
+                condition.get('evt') in {'onClick', 'onDblClick', 'onMouseOver', 'onMouseOut', 'onNext', 'onPrev'}
+                for condition in conditions
+            )
+            if interactive:
+                targets.update(
+                    int(value) for target in node.iter(_qn(PML_NS, 'spTgt'))
+                    if (value := target.get('spid', '')).isdigit()
+                )
+    return tuple(sorted(targets))
+
+
 def read_slide_animation_sequence(
     slide_xml: str | bytes,
     *,

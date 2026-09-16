@@ -66,10 +66,13 @@ DRAWINGML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 PRESENTATION_NS = (
     "http://schemas.openxmlformats.org/presentationml/2006/main"
 )
-_SLIDE_PART_RE = re.compile(r"ppt/slides/slide[1-9]\d*\.xml")
-_NOTES_PART_RE = re.compile(r"ppt/notesSlides/notesSlide[1-9]\d*\.xml")
-_MASTER_PART_RE = re.compile(r"ppt/slideMasters/slideMaster[1-9]\d*\.xml")
-_LAYOUT_PART_RE = re.compile(r"ppt/slideLayouts/slideLayout[1-9]\d*\.xml")
+_PRESENTATION_PART_TYPES = {
+    key: f"application/vnd.openxmlformats-officedocument.presentationml.{kind}+xml"
+    for key, kind in (
+        ("slides", "slide"), ("notes", "notesSlide"),
+        ("masters", "slideMaster"), ("layouts", "slideLayout"),
+    )
+}
 _MEDIA_REL_KINDS = frozenset({"audio", "image", "media", "video"})
 _PPT_SAFE_FONT_ALIASES = {
     "等线": "DengXian",
@@ -784,10 +787,7 @@ def audit_pptx_delivery(path: str | Path) -> dict[str, object]:
             package["parts"] = {
                 "entries": len(file_infos),
                 "unique": len(part_names),
-                "slides": sum(bool(_SLIDE_PART_RE.fullmatch(name)) for name in part_names),
-                "notes": sum(bool(_NOTES_PART_RE.fullmatch(name)) for name in part_names),
-                "masters": sum(bool(_MASTER_PART_RE.fullmatch(name)) for name in part_names),
-                "layouts": sum(bool(_LAYOUT_PART_RE.fullmatch(name)) for name in part_names),
+                **dict.fromkeys(_PRESENTATION_PART_TYPES, 0),
                 "media": sum(
                     (canonical_opc_part_path(name) or "").startswith(
                         "ppt/media/"
@@ -832,6 +832,14 @@ def audit_pptx_delivery(path: str | Path) -> dict[str, object]:
                 )
 
             defaults, overrides = _content_type_maps(archive, errors)
+            declared_types = Counter(
+                _declared_content_type_for_part(name, defaults, overrides)
+                for name in part_names
+            )
+            package["parts"].update({
+                key: declared_types[content_type]
+                for key, content_type in _PRESENTATION_PART_TYPES.items()
+            })
             content_type_registry_valid = not any(
                 issue.get("code") in {
                     "missing_content_types",
