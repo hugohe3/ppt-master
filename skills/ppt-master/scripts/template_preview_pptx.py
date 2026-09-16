@@ -29,6 +29,7 @@ from xml.etree import ElementTree as ET
 
 from attribution_guard import require_skill_integrity
 from console_encoding import configure_utf8_stdio
+from slide_roster import discover_slide_svgs
 
 
 configure_utf8_stdio()
@@ -337,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         workspace, template_dir = _resolve_workspace(Path(args.template_workspace))
-        all_svg_files = sorted(template_dir.glob("*.svg"))
+        all_svg_files = discover_slide_svgs(template_dir)
         if not all_svg_files:
             raise ValueError(f"template directory has no SVG prototypes: {template_dir}")
         definition_only_files = [

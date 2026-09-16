@@ -56,6 +56,7 @@ from xml.etree import ElementTree as ET
 from attribution_guard import require_skill_integrity
 from console_encoding import configure_utf8_stdio
 from config import CANVAS_FORMATS
+from slide_roster import discover_slide_svgs
 
 try:
     import yaml  # type: ignore
@@ -444,7 +445,8 @@ def _template_content_dir(template_root: Path) -> Path:
 
 
 def _list_pages(template_dir: Path) -> list[str]:
-    return sorted(p.stem for p in template_dir.glob("*.svg"))
+    """Page stems in roster order, the order the preview and export use."""
+    return [p.stem for p in discover_slide_svgs(template_dir)]
 
 
 def _derive_page_types(pages: list[str]) -> list[str]:

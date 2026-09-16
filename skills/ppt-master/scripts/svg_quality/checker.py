@@ -1320,9 +1320,10 @@ class SVGQualityChecker:
                     if hydrated_payloads:
                         result['info']['native_payload_refs'] = hydrated_payloads
 
+                roster = discover_slide_svgs(svg_path.parent) if self.quick_generate else []
                 if (
-                    self.quick_generate
-                    and svg_path.name == discover_slide_svgs(svg_path.parent)[0].name
+                    roster
+                    and svg_path.name == roster[0].name
                     and not (
                         root.get('lang')
                         or root.get('{http://www.w3.org/XML/1998/namespace}lang')
