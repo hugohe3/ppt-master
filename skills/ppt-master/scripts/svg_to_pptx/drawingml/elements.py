@@ -72,6 +72,7 @@ from .utils import (
     combine_opacity, parse_hex_color, parse_svg_color,
     resolve_project_text_image_fill, resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char,
+    _EA_PUNCTUATION_ADVANCE_EM,
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
     get_font_advances, primary_font_family,
     resolve_text_run_fonts, split_project_text_clusters,
@@ -2224,7 +2225,48 @@ def _estimate_run_width_with_headroom(run: dict[str, Any]) -> float:
     # the segment that follows it. Headroom is a safety margin, so the result
     # never falls below the run's raw advance either.
     width += letter_spacing_px * (len(segments) - 1)
+    width += _boundary_margin_px(run)
     return max(width, _estimate_run_text_width(run))
+
+
+# Renderers insert extra spacing at CJK<->Latin script boundaries (measured
+# ~0.24 em per boundary against LibreOffice 25.2.3.2 at 13.5-24 pt); the
+# estimator has no term for it, and a renderer that ignores wrap="none" folds
+# any line whose rendered width exceeds the frame.
+_CJK_LATIN_BOUNDARY_MARGIN_EM = 0.25
+
+
+def _ea_boundary_class(ch: str) -> bool:
+    """Return whether one character sits on the East Asian side of a boundary."""
+    return is_cjk_char(ch) or ch in _EA_PUNCTUATION_ADVANCE_EM
+
+
+def _cjk_latin_boundary_count(run: dict[str, Any]) -> int:
+    """Count CJK<->Latin script boundaries in one run, spaces transparent.
+
+    A renderer attaches each space to the script before it and inserts no
+    spacing around it, so only the nearest non-space clusters are compared.
+    """
+    classes = [
+        any(_ea_boundary_class(ch) for ch in cluster)
+        for cluster in split_project_text_clusters(str(run.get('text', '')))
+        if cluster.strip()
+    ]
+    return sum(
+        1 for left, right in zip(classes, classes[1:]) if left != right
+    )
+
+
+def _boundary_margin_px(run: dict[str, Any]) -> float:
+    """Return the script-boundary spacing margin for one run."""
+    count = _cjk_latin_boundary_count(run)
+    if not count:
+        return 0.0
+    font_size_px = (
+        font_px_to_hpt(float(run.get('font_size', 16)))
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    return font_size_px * _CJK_LATIN_BOUNDARY_MARGIN_EM * count
 
 
 # Faces whose glyphs run wider than the generic advance table at the same
@@ -2617,6 +2659,7 @@ def _estimate_bullet_line_width(
     line_runs, bullet = _extract_text_bullet(runs)
     line_runs = _coalesce_text_runs(line_runs, default_fonts, ctx)
     width = _estimate_text_runs_width(line_runs, include_headroom=False)
+    width += sum(_boundary_margin_px(run) for run in line_runs)
     if bullet:
         fs_px = float(line_runs[0].get('font_size', 16)) if line_runs else 16.0
         width += _bullet_margin_px(bullet, fs_px)

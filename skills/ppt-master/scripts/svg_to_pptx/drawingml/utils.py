@@ -3652,6 +3652,23 @@ def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
     return {'latin': latin, 'ea': ea, 'cs': latin}
 
 
+# East Asian punctuation resolves to the CJK face near a full em, while the
+# generic 0.55em fallback under-sizes the box and makes renderers that ignore
+# wrap="none" (LibreOffice) wrap the line. Advances are the wider of the
+# Microsoft YaHei and SimSun measurements taken on 2026-09-16, so a stack that
+# resolves either face is covered, and every value is capped at 1.1em.
+_EA_PUNCTUATION_ADVANCE_EM = {
+    '—': 1.08,
+    '–': 1.0,
+    '“': 1.0,
+    '”': 1.0,
+    '‘': 1.0,
+    '’': 1.0,
+    '…': 1.0,
+    '·': 1.0,
+}
+
+
 def _estimate_character_width(ch: str, font_size: float) -> float:
     if (
         0xFF00 <= ord(ch) <= 0xFFEF
@@ -3660,6 +3677,9 @@ def _estimate_character_width(ch: str, font_size: float) -> float:
         return font_size * 0.5
     if is_cjk_char(ch):
         return font_size
+    ea_punctuation_advance = _EA_PUNCTUATION_ADVANCE_EM.get(ch)
+    if ea_punctuation_advance is not None:
+        return font_size * ea_punctuation_advance
     if ch == ' ':
         return font_size * 0.3
     if ch in 'mMwWOQ%':

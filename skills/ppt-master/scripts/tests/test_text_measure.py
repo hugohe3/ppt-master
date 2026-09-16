@@ -452,5 +452,58 @@ class TextMeasureTests(unittest.TestCase):
         )
 
 
+class EastAsianPunctuationWidthTests(unittest.TestCase):
+    """Full-width punctuation must not under-size single-line text frames.
+
+    LibreOffice keeps a ``wrap="none"`` frame on one line only while the
+    frame is at least as wide as the rendered line, so an em dash or curly
+    quote estimated at the generic 0.55 em fallback folds the line there.
+    The two thresholds below are the fine-grained fold boundaries measured
+    against LibreOffice 25.2.3.2 for the reported deck.
+    """
+
+    COVER_RUN = {
+        'text': '1851—1864',
+        'font_size': 32.0,
+        'font_family': 'Microsoft YaHei, Arial',
+        'font_weight': '400',
+        'letter_spacing': 4.0,
+    }
+    P13_RUN = {
+        'text': '其间：1860 青浦、1862 慈溪——两挫“洋枪队”',
+        'font_size': 18.0,
+        'font_family': 'Microsoft YaHei, Arial',
+        'font_weight': '400',
+        'letter_spacing': 0.0,
+    }
+
+    def test_cover_digits_and_em_dash_clear_the_fold_threshold(self) -> None:
+        # The cover line holds no CJK glyph at all, so the wider punctuation
+        # advance must apply on its own rather than only beside CJK text.
+        self.assertGreaterEqual(
+            estimate_single_line_text_frame_width([self.COVER_RUN]), 206.5,
+        )
+
+    def test_cjk_line_with_dashes_and_quotes_clears_the_fold_threshold(self) -> None:
+        self.assertGreaterEqual(
+            estimate_single_line_text_frame_width([self.P13_RUN]), 414.5,
+        )
+
+    def test_east_asian_punctuation_keeps_a_full_width_fallback(self) -> None:
+        # Microsoft YaHei and SimSun advances measured 2026-09-16: every
+        # listed character renders at least one em wide in the wider face,
+        # while the generic fallback charged 0.55 em.
+        for char in '—–“”‘’…·':
+            with self.subTest(char=char):
+                width = sum(estimate_text_cluster_widths(
+                    char, 20.0, font_family='Microsoft YaHei',
+                ))
+                self.assertGreaterEqual(width, 20.0)
+        em_dash = sum(estimate_text_cluster_widths(
+            '—', 20.0, font_family='Microsoft YaHei',
+        ))
+        self.assertGreaterEqual(em_dash, 21.6)
+
+
 if __name__ == '__main__':
     unittest.main()
