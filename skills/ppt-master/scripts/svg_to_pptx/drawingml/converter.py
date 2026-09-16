@@ -1593,6 +1593,11 @@ def _extract_background_candidate(
             return '', None
         if child.get('transform') or child.get('filter') or child.get('clip-path'):
             return '', None
+        if child.get('data-pptx-shape-id') is not None:
+            # A source-identified object (including the round-trip
+            # native-restore placeholder for an unchanged full-canvas picture)
+            # must stay a shape so its native original can take its place.
+            return '', None
         style_overrides = _extract_inheritable_styles(child)
         local_opacity = get_element_opacity(child)
         child_ctx = ctx.child(

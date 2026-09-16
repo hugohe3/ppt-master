@@ -44,8 +44,8 @@ python3 skills/ppt-master/scripts/pptx_to_svg.py "<source.pptx>" -o "projects/<s
 | `authoring-svg-flat/slide_NN.svg` | One compact editable SVG per source slide, in order | Open only pages you will edit or must judge for reuse |
 | `authoring-svg-flat/authoring_summary.json` | Roster plus per-page canvas, text, image, vector, placeholder, source-ref, and proxy counts | Read first; plan from it before opening any SVG |
 | `images/`, `icons/imported/`, `audio/`, `video/`, `sounds/` | Source media and imported vectors | Keep names; changed bytes rebuild every output page whose source graph references that part, and a format mismatch fails export |
-| `notes/slide_NN.md` | Source speaker notes | Edit, delete, or add per output page (§6) |
-| `native-payloads/`, `analysis/` | Immutable native backing and tool-owned contracts | Do not read, edit, or quote the tool-written files; your own notes may sit beside them |
+| `notes/slide_NN.md` | Source speaker notes, when the source has any | Edit, delete, or add per output page (§6) |
+| `native-payloads/`, `analysis/` | Immutable native backing and tool-owned contracts | Tool-written; do not read, edit, or quote them |
 | `sources/source.pptx` | Exact source package | Read only through `source_to_md/ppt_to_md.py "<workspace>/sources/source.pptx" -o "<workspace>/validation/source_readback.md"` when you need page text without opening every SVG |
 | `validation/`, `exports/` | Diagnostics and published decks | Tool-written |
 
@@ -73,7 +73,7 @@ Write `page_plan.json` at the workspace root only when the output differs from t
 }
 ```
 
-`pages` is the complete non-empty output order; `source_slide` is the one-based source index whose native slide backs the page; `svg` is the authoring filename inside `authoring-svg-flat/`, omitted to use that page's `slide_NN.svg` — to reuse a source page twice, copy its SVG under a new name and list the copy, since every output page needs a distinct file and every extra file must appear in the plan. Only these fields are accepted. **Forbidden — plans the exporter refuses**: a same-deck slide jump whose destination is omitted or repeated; unknown, duplicated, or cross-owned `svg` filenames; `source_slide` out of range. Omitting a slide drops the audio, video, or undecodable payloads only it owns (export prints a note). With a plan, presentation-level sections, custom shows, and a playback selection naming one are dropped and slide ids renumbered.
+`pages` is the complete non-empty output order; `source_slide` is the one-based source index whose native slide backs the page; `svg` is the authoring filename inside `authoring-svg-flat/`, omitted to use that page's `slide_NN.svg` — to reuse a source page twice, copy its SVG under a new name and list the copy, since every output page needs a distinct file and every extra file must appear in the plan. Only these fields are accepted. **Forbidden — plans the exporter refuses**: a same-deck slide jump whose destination is omitted or repeated; unknown, duplicated, or cross-owned `svg` filenames; `source_slide` out of range. Omitting a slide drops the audio, video, or undecodable payloads only it owns (export prints a note). With a plan, presentation-level sections, custom shows, and a playback selection naming one are dropped and slide ids renumbered; every Master and Layout stays.
 
 **Combining pages**: one output page has exactly one skeleton (`source_slide`). To merge, pick the page whose layout carries the result, then bring objects from other pages only through the adopt command — never pasted raw SVG, because source refs are page-local. The adopted object materializes its effective inherited presentation attributes and ancestor transforms, loses native identity, and makes the page `rebuilt`; a source proxy cannot leave its page, so a merge that needs one keeps that page as the skeleton. The object lands at the end of the target page for normal editing.
 
@@ -110,9 +110,9 @@ Load [`shared-standards-core.md`](../references/shared-standards-core.md) before
 |---|---|
 | Text replacement | Fit the slot's visual capacity from its geometry and font size, not the old placeholder length; resolve overflow by rewriting shorter → splitting across another selected page → choosing a larger source layout; shrinking type is last and never deck-wide |
 | Cover / chapter pages | Replace title, subtitle, author, section label only |
-| Imported multi-line text | Arrives in one of two exporter-read models: `data-pptx-text-model="lines"` with continuation `<tspan data-paragraph-line-break>` lacking `x` / `dy` (ordinary renderers stack them on one baseline and the checker flags edited text as unresolved geometry — give each line its own `x` and `dy`; export ignores them), or `data-pptx-text-model="paragraphs"` with one nested `<tspan>` per paragraph and `data-paragraph-line-height`. Edit the text inside either model, or replace the whole `<text>` with canonical positioned lines and drop the import-side attributes |
+| Imported multi-line text | Arrives as `data-pptx-text-model="lines"` (continuation `<tspan data-paragraph-line-break>`) or `"paragraphs"` (one nested `<tspan>` per paragraph) with `data-paragraph-line-height`; the rows carry no `x` / `dy` and both the exporter and the checker read the model. Edit the text inside it, or replace the whole `<text>` with canonical positioned lines and drop the import-side attributes |
 | Dense content pages | Compress to the slot count the page has; move overflow to another selected page |
-| Native tables / charts | Imported objects carry `data-pptx-native-authority="json"`: edit cell text or categories/series values in the inline JSON, keep structure and formatting from the source, and export with `--native-charts-and-tables` — without it the source chart object ships unchanged with its original data |
+| Native tables / charts | Imported objects carry `data-pptx-native-authority="json"`: edit cell text or categories/series values in the inline JSON, keep structure and formatting from the source, and export with `--native-charts-and-tables` — without it the source chart object ships unchanged with its original data. A table the importer marked `unsupported-table-*` is positioned text over a baked grid: editing it exports shapes, not `a:tbl` (the checker warns); leave it unchanged to keep the native table |
 | Images | Point the existing `<image>` at a new file under `images/`; keep the frame |
 | New elements | Canonical compact SVG per shared standards; icons via `icon_sync.py "<workspace>" <lib/name>`; AI images via `image_gen.py --manifest` when wanted |
 | Objects from another page | `--adopt-object` only (§4.1); proxies cannot move |
@@ -125,7 +125,7 @@ python3 skills/ppt-master/scripts/svg_authoring_view.py "projects/<slug>_<YYYYMM
 python3 skills/ppt-master/scripts/svg_quality_checker.py "projects/<slug>_<YYYYMMDD>" --roundtrip --json
 ```
 
-🚧 **GATE**: `--roundtrip` estimates edited text against its frame and canvas; errors block export until the text is rewritten, split, or moved to a larger layout, warnings are fixed or accepted with a stated reason. Width calibration samples unchanged text on the same page, so a fully rewritten page reports `0%` calibration and uses the default estimator — not an error. The exporter remains the final gate and fails closed on a page it cannot restore or convert.
+🚧 **GATE**: `--roundtrip` estimates edited text against its frame and canvas; errors set `quality_gate=failed` on the export receipt — clear them by rewriting, splitting, or moving the text to a larger layout; warnings are fixed or accepted with a stated reason. Width calibration samples unchanged text on the same page, so a fully rewritten page reports `0%` calibration and uses the default estimator — not an error. The exporter remains the final gate and fails closed on a page it cannot restore or convert.
 
 ---
 
@@ -155,7 +155,7 @@ Round-trip export summary: output_pages=N passthrough=P cloned_passthrough=C pat
 
 `passthrough` = identity page with original XML (referenced, no plan, no overlay); `cloned_passthrough` = planned referenced page on a cloned part; `patched` = source shape XML kept while order, notes, transitions, animation, or narration timing changed; `rebuilt` = visible authoring or a referenced materialized resource changed — exactly the pages marked edited in §4.3 plus pages referencing a changed resource, and a delivery-only job must show `rebuilt=0`.
 
-**Revision round**: every count is measured against `sources/source.pptx`, so a second round on a delivered deck — more edits or delivery only — starts by importing that delivered PPTX as a new workspace (re-exporting an edited workspace untouched repeats its earlier `rebuilt`); a delivery-only round targets `rebuilt=0`, and narration already embedded in the delivered deck is source media that a new narration pass replaces rather than stacks.
+**Revision round**: every count is measured against `sources/source.pptx`, so a second round on a delivered deck — more edits or delivery only — starts by importing that delivered PPTX as a new workspace; a delivery-only round targets `rebuilt=0`, and a new narration pass replaces embedded narration rather than stacking it.
 
 **Validation**: `pptx_delivery_check.py "<printed_output.pptx>" > ".../validation/<output_stem>.delivery.json"` (no structural errors; review advisories) and `source_to_md/ppt_to_md.py "<printed_output.pptx>" -o ".../validation/readback.md"` — slide count equals the plan length (or source count), key titles and replaced text present, notes count matches, receipt buckets match the confirmed roster.
 

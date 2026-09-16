@@ -40,7 +40,7 @@ Authoring contract for PowerPoint-native click hyperlinks on complete objects an
 
 Inline links become `a:rPr/a:hlinkClick`, whole-object links `p:cNvPr/a:hlinkClick` on each clickable leaf, each with an external hyperlink relationship; slide jumps add an internal slide relationship and `ppaction://hlinksldjump`. Supported PPTX import reconstructs the same canonical `<a href>` form.
 
-**Hard rule — Edit Native PPTX preservation**: unchanged round-trip pages keep their hyperlink XML and relationships byte-for-byte; external links are preserved. With a `page_plan.json`, a same-deck jump is retargeted only when its source target maps unambiguously to one output page — omitted or repeated targets make `svg_to_pptx.py --roundtrip` fail rather than link to an orphan or wrong slide. New links on an edited page use this contract.
+**Hard rule — Edit Native PPTX preservation**: unchanged round-trip pages keep their hyperlink XML and relationships byte-for-byte; external links are preserved. With a `page_plan.json`, a same-deck jump is retargeted only when its source target maps unambiguously to one output page — omitted or repeated targets make `svg_to_pptx.py --roundtrip` fail rather than link to an orphan or wrong slide. New links on an edited page use this contract. Wrapping an object that a source animation targets in an anchor keeps both; only a `trigger_shape` conflicts.
 
 ---
 

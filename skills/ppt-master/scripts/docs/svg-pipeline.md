@@ -162,7 +162,7 @@ Omitting a source slide deliberately drops its private video, audio, or opaque
 native payloads; a kept slide still fails if rebuilding it would discard such
 relationships.
 With a plan present, presentation-level `sectionLst` and custom-show rosters
-are dropped, show/range playback selections reset to all output slides, output
+are dropped, show/range playback selections reset to all output slides, every Master and Layout part is retained, output
 `p:sldId` values are renumbered, and the slide count in `docProps/app.xml` is
 updated. A retained action targeting a removed custom show fails with its
 slide/part and show ID; delivery checking also verifies this semantic closure.
