@@ -1322,9 +1322,7 @@ class SVGQualityChecker:
 
                 if (
                     self.quick_generate
-                    and svg_path.name == sorted(
-                        p.name for p in svg_path.parent.glob('*.svg')
-                    )[0]
+                    and svg_path.name == discover_slide_svgs(svg_path.parent)[0].name
                     and not (
                         root.get('lang')
                         or root.get('{http://www.w3.org/XML/1998/namespace}lang')

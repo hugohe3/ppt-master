@@ -70,6 +70,7 @@ from pptx_workspace import (  # noqa: E402
     source_pptx_path,
     workspace_resource_specs,
 )
+from slide_roster import discover_slide_svgs  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -1659,7 +1660,7 @@ def _svg_root_language(project_path: Path) -> str | None:
     Quick has no lock; its pages carry the deck language on the root
     ``<svg lang="...">`` instead.
     """
-    pages = sorted((project_path / 'svg_output').glob('*.svg'))
+    pages = discover_slide_svgs(project_path / 'svg_output')
     for page in pages[:1]:
         try:
             with open(str(page), 'rb') as page_file:
