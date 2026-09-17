@@ -8,7 +8,7 @@ Authoring contract for PowerPoint-native click hyperlinks on complete objects an
 
 | Layer | Ownership |
 |---|---|
-| Default Strategist | Record the linked text/object intent and exact target in the §IX page block; never invent or normalize an unknown destination |
+| Default Strategist | Record each linked text/object and its exact target on the §IX page block's `Hyperlinks` line — same-deck jumps as `#slide-N`, external destinations as the full URI; never invent or normalize an unknown destination |
 | Default Executor | Choose the whole-object or inline carrier and author the canonical SVG anchor |
 | Active Quick context | Both responsibilities directly |
 | SVG-to-PPTX exporter | Validate the target, create the native relationship, and attach the click action |
@@ -48,4 +48,4 @@ Inline links become `a:rPr/a:hlinkClick`, whole-object links `p:cNvPr/a:hlinkCli
 
 **Forbidden — unsupported action settings**: mouse-over links, custom shows, first/last/next/previous navigation, program or macro execution, OLE or file actions, and arbitrary `ppaction://` or relationship injection. An `actionButton*` preset stays visual geometry until wrapped in a supported anchor.
 
-**Validation**: the final SVG checker validates carrier structure, target syntax, and slide range; export validates relationship type/mode and final roster membership. Unsupported PPTX click actions produce an import diagnostic; strict import fails rather than fabricating an SVG link.
+**Validation**: the final SVG checker validates carrier structure, target syntax, and slide range, and compares each page's anchors with its §IX `Hyperlinks` line (an in-range jump to the wrong page passes the range check and is caught only here); export validates relationship type/mode and final roster membership. Unsupported PPTX click actions produce an import diagnostic; strict import fails rather than fabricating an SVG link.
