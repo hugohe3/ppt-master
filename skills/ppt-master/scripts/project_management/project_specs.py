@@ -87,6 +87,15 @@ _CUSTOM_REFERENCE_CATALOGS = (
     ),
 )
 
+# Display names the registry carried before it was aligned with
+# references/canvas-formats.md; locks written against them still validate.
+_LEGACY_CANVAS_NAMES = {
+    "xiaohongshu": ("小红书",),
+    "moments": ("Moments/Instagram",),
+    "story": ("Story/Vertical",),
+    "banner": ("Horizontal Banner",),
+}
+
 _MARKDOWN_H2_RE = re.compile(r"^##[ \t]+(.+?)[ \t]*$", re.MULTILINE)
 _MARKDOWN_SUBHEADING_RE = re.compile(r"^#{3,6}[ \t]+(.+?)[ \t]*$", re.MULTILINE)
 _MARKDOWN_DATA_LINE_RE = re.compile(
@@ -1227,9 +1236,14 @@ def _validate_spec_lock_relations(
     if canvas is not None:
         expected_format = str(canvas["name"])
         expected_viewbox = str(canvas["viewbox"])
+        accepted_formats = {
+            expected_format,
+            format_key,
+            *_LEGACY_CANVAS_NAMES.get(format_key, ()),
+        }
         if (
             "format" in canvas_fields
-            and _normalize_schema_value(canvas_fields["format"]) != expected_format
+            and _normalize_schema_value(canvas_fields["format"]) not in accepted_formats
         ):
             errors.append(
                 f"{markdown_name} schema: canvas.format must be '{expected_format}'"

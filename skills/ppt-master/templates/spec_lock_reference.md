@@ -14,7 +14,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 
 | Section | Required keys | Notes |
 | --- | --- | --- |
-| `canvas` | `viewBox`, `format` | `format` is the canonical display name (e.g. `PPT 16:9`); `viewBox` the exact geometry |
+| `canvas` | `viewBox`, `format` | `format` is the Format column of [`canvas-formats.md`](../references/canvas-formats.md) (e.g. `PPT 16:9`) or the format ID; `viewBox` the exact geometry |
 | `communication` | `primary_language`, `audience`, `objective`, `core_message` | Canonical BCP-47 (reject `und` and Chinese without script/region; old locks may omit it); `objective` merges intent/outcome; `consumption_mode` optional off PPT |
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
