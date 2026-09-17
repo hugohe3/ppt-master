@@ -2301,11 +2301,16 @@ def run_search_manifest(
                     elif selection_required:
                         item["status"] = SEARCH_STATUS_NEEDS_SELECTION
                         _clear_candidate_selection_outputs(item)
+                        # The row's own `provider` is the caller's pin; the
+                        # next candidate page must search the same provider.
+                        pinned_provider = item.get("provider")
                         if manifest_item is not None:
                             item.update(manifest_item)
                         item.pop("last_error", None)
                         item.pop("provider", None)
                         item.pop("license_tier", None)
+                        if pinned_provider:
+                            item["provider"] = pinned_provider
                         needs_selection_count += 1
                         print(f"  [REVIEW] {item['filename']} — {error}")
                     elif retryable:
