@@ -52,6 +52,14 @@ A compact logo and link placement for organizations that support ongoing mainten
 
 **From $200/month.**
 
+## Minimum Term
+
+Corporate sponsorship starts at **one quarter (three consecutive months)**, across every placement above. Rates are quoted per month as a pricing unit only; single-month placements are not accepted.
+
+A sponsor placement is a standing recommendation to users, not a short-run ad slot. A partner that appears for one month and then leaves churns the sponsor surfaces and makes users doubt what they are shown there — which hurts the project and its other partners alike.
+
+Individual support is not subject to this minimum.
+
 ## Partnership Requirements
 
 Partners should provide:
@@ -93,7 +101,7 @@ To discuss sponsorship, email **heyug3@gmail.com** with:
 - Requested placement and sponsorship period.
 - Brand assets and approved description.
 
-Rates above are starting points. Final terms, placement, and duration are agreed individually. Please do not open a public bug report for sponsorship discussions.
+Rates above are starting points. Final terms, placement, and duration (one quarter or longer) are agreed individually. Please do not open a public bug report for sponsorship discussions.
 
 ## Individual Support
 
