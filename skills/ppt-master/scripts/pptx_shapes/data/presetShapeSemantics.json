@@ -172,7 +172,7 @@
       ],
       "presets": {
         "rect": {"intent": "Fully neutral rectangular field or carrier."},
-        "roundRect": {"intent": "Uniformly rounded carrier with a softer, more approachable boundary."}
+        "roundRect": {"intent": "Uniformly rounded carrier with a softer, more approachable boundary.", "adjustment_notes": "adj is the corner radius in 1/100000 of the shorter side (0–50000): radius = min(w, h) × adj / 100000, so the default 16667 rounds a 600×300 box by 50 px."}
       }
     },
     {
@@ -385,8 +385,8 @@
         "Do not use folded or diagonal details without a matching page-level edge language."
       ],
       "presets": {
-        "foldedCorner": {"intent": "Sheet-like carrier or accent with one folded corner."},
-        "frame": {"intent": "Closed rectangular frame for a strong aperture or ownership boundary."},
+        "foldedCorner": {"intent": "Sheet-like carrier or accent with one folded corner.", "adjustment_notes": "adj is the fold size in 1/100000 of the shorter side (0–50000): the folded triangle spans min(w, h) × adj / 100000 along the right and bottom edges."},
+        "frame": {"intent": "Closed rectangular frame for a strong aperture or ownership boundary.", "adjustment_notes": "adj1 is the frame thickness in 1/100000 of the shorter side (0–50000): thickness = min(w, h) × adj1 / 100000 on all four sides."},
         "halfFrame": {"intent": "Partially open frame for directional grouping or an incomplete boundary."},
         "corner": {"intent": "L-shaped corner piece for edge anchoring or a partial frame."},
         "diagStripe": {"intent": "Diagonal band for edge emphasis, slanted continuity, or a literal stripe."}
@@ -414,7 +414,7 @@
       "presets": {
         "leftBracket": {"intent": "Left-side bracket that collects content to its right."},
         "rightBracket": {"intent": "Right-side bracket that collects content to its left."},
-        "bracketPair": {"intent": "Paired brackets that enclose a complete range or set."}
+        "bracketPair": {"intent": "Paired brackets that enclose a complete range or set.", "adjustment_notes": "adj is the bracket corner radius in 1/100000 of the shorter side (0–50000): radius = min(w, h) × adj / 100000; on a large frame the default 16667 reaches far into the enclosed area, so lower it."}
       }
     },
     {
@@ -439,7 +439,7 @@
       "presets": {
         "leftBrace": {"intent": "Left-side brace that groups or assigns content to its right."},
         "rightBrace": {"intent": "Right-side brace that groups or assigns content to its left."},
-        "bracePair": {"intent": "Paired braces that enclose a complete set."}
+        "bracePair": {"intent": "Paired braces that enclose a complete set.", "adjustment_notes": "adj is the brace curl radius in 1/100000 of the shorter side (0–25000): radius = min(w, h) × adj / 100000, and each brace is twice that wide."}
       }
     },
     {
