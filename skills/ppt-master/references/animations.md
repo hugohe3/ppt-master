@@ -14,7 +14,7 @@ Motion is several separate capabilities, not one dial; two of them are decided w
 | A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages**, then select Morph and add explicit pairs when identity must be deterministic; there is no keyframe timeline anywhere — the difference between two editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
 | A static full-bleed page that should stop looking frozen | Slow `path_*` motion on a visually subordinate image or atmospheric layer | Post-processing; §4.1 |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recipes assembled from the mechanisms above; carousel and odometer need paired pages | §4.2 |
-| Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
+| Unattended looping playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
 | A transition or object animation needs an audible cue | Optional `transition.sound` or object `sound`, selected only after the visual solution is complete and synced from the global library; a narrated MP4 uses either the verified native-export mix or explicit slideshow capture, never both | Post-motion; §2.2 |
 | Nothing should move | `-t none` and per-element `none` | Export; §1 |
 
@@ -153,7 +153,7 @@ python3 skills/ppt-master/scripts/sound_sync.py <project_path> <namespace>/<soun
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5            # kiosk playback
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5            # unattended playback
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advance 5
 ```
 
