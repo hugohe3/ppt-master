@@ -359,6 +359,16 @@ Features:
     # Split notes
     success = split_notes(notes, output_dir, verbose)
 
+    # A renamed, dropped, or renumbered page leaves its old per-page file
+    # behind; nothing reads it now, but a page that returns to that stem would.
+    stale = sorted(
+        p.name for p in output_dir.glob('*.md')
+        if p.stem not in notes and extract_leading_number(p.stem) is not None
+    )
+    if stale:
+        print(f"[ADVISORY] {len(stale)} per-page notes file(s) match no current page; "
+              f"delete them if they are leftovers: {', '.join(stale)}")
+
     if success:
         if verbose:
             print(f"\n[Done] Notes splitting complete")

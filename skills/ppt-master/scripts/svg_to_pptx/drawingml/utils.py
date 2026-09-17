@@ -3652,6 +3652,23 @@ def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
     return {'latin': latin, 'ea': ea, 'cs': latin}
 
 
+# Unicode fixed-width spaces carry their width in their definition; bundled
+# advance tables omit them, and the generic 0.55em fallback triples the thin
+# spaces German and French typography sets before '%', units, and '§'.
+_FIXED_SPACE_EMS = {
+    ' ': 0.5,    # en space
+    ' ': 1.0,    # em space
+    ' ': 1 / 3,  # three-per-em space
+    ' ': 0.25,   # four-per-em space
+    ' ': 1 / 6,  # six-per-em space
+    ' ': 0.55,   # figure space
+    ' ': 0.3,    # punctuation space
+    ' ': 0.2,    # thin space
+    ' ': 0.1,    # hair space
+    ' ': 0.2,    # narrow no-break space
+}
+
+
 def _estimate_character_width(ch: str, font_size: float) -> float:
     if (
         0xFF00 <= ord(ch) <= 0xFFEF
@@ -3662,6 +3679,8 @@ def _estimate_character_width(ch: str, font_size: float) -> float:
         return font_size
     if ch == ' ':
         return font_size * 0.3
+    if ch in _FIXED_SPACE_EMS:
+        return font_size * _FIXED_SPACE_EMS[ch]
     if ch in 'mMwWOQ%':
         return font_size * 0.75
     if ch in 'iIlj!|':
