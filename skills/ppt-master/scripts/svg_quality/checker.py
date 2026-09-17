@@ -51,12 +51,14 @@ try:
     from project_utils import (
         CANVAS_FORMATS,
         validate_communication_trace,
+        validate_outline_hyperlinks,
         validate_outline_roster,
     )
 except ImportError:
     print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
     validate_communication_trace = None
+    validate_outline_hyperlinks = None
     validate_outline_roster = None
 
 from svg_to_pptx.canvas_contract import (
@@ -7395,6 +7397,11 @@ class SVGQualityChecker:
                     self._communication_trace_issues.extend(
                         ('error', message)
                         for message in validate_outline_roster(project_path)
+                    )
+                if not self.partial_roster and validate_outline_hyperlinks is not None:
+                    self._communication_trace_issues.extend(
+                        ('error', message)
+                        for message in validate_outline_hyperlinks(project_path)
                     )
         return self.results
 

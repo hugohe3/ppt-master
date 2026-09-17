@@ -463,6 +463,139 @@ def validate_outline_roster(project_path: str | Path) -> List[str]:
     return [' '.join(parts)]
 
 
+_SLIDE_JUMP_RE = re.compile(r'#slide-([1-9][0-9]*)\b')
+_EXTERNAL_LINK_RE = re.compile(r'\b(?:[a-z][a-z0-9+.-]*://|mailto:|tel:)[^\s<>"「」『』（）()]+', re.IGNORECASE)
+_LINK_TRAIL_CHARS = ';,.;，。、）)]'
+
+
+def _outline_hyperlink_lines(design_text: str) -> Dict[int, str | None]:
+    """Map each §IX Slide number to its ``Hyperlinks`` line (continuation lines joined)."""
+    outline_match = re.search(
+        r'^##[ \t]+IX\.[ \t]+Content Outline\b.*$',
+        design_text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if outline_match is None:
+        return {}
+    next_section = re.search(r'^##[ \t]+', design_text[outline_match.end():], flags=re.MULTILINE)
+    outline_end = (
+        outline_match.end() + next_section.start() if next_section else len(design_text)
+    )
+    outline = design_text[outline_match.end():outline_end]
+    slide_matches = list(re.finditer(
+        r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+)\b.*$',
+        outline,
+        flags=re.IGNORECASE | re.MULTILINE,
+    ))
+    lines_by_slide: Dict[int, str | None] = {}
+    for index, slide_match in enumerate(slide_matches):
+        block_end = (
+            slide_matches[index + 1].start() if index + 1 < len(slide_matches) else len(outline)
+        )
+        block_lines = outline[slide_match.end():block_end].splitlines()
+        value = None
+        for position, line in enumerate(block_lines):
+            field = re.match(
+                r'^[ \t]*-[ \t]+(?:\*\*)?Hyperlinks(?:[ \t]*\([^)]*\))?(?:\*\*)?[ \t]*[:：](.*)$',
+                line,
+                flags=re.IGNORECASE,
+            )
+            if field is None:
+                continue
+            parts = [field.group(1)]
+            for continuation in block_lines[position + 1:]:
+                if not continuation.strip() or not continuation.startswith((' ', '\t')):
+                    break
+                parts.append(continuation)
+            value = ' '.join(parts)
+            break
+        lines_by_slide[int(slide_match.group(1))] = value
+    return lines_by_slide
+
+
+def _svg_hyperlink_targets(svg_file: Path) -> Tuple[set, set] | None:
+    """Return (same-deck slide numbers, external hrefs) of an SVG's anchors, or None if unreadable."""
+    try:
+        text = svg_file.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    slides, externals = set(), set()
+    for match in re.finditer(r'<a\b[^>]*?\s(?:xlink:)?href=["\']([^"\']*)["\']', text):
+        href = match.group(1).strip()
+        jump = _SLIDE_JUMP_RE.fullmatch(href)
+        if jump:
+            slides.add(int(jump.group(1)))
+        elif href:
+            externals.add(href)
+    return slides, externals
+
+
+def validate_outline_hyperlinks(project_path: str | Path) -> List[str]:
+    """Compare each page's hyperlink anchors with its design_spec §IX ``Hyperlinks`` line.
+
+    ``#slide-N`` is an absolute page number, so a page inserted, dropped, or
+    moved shifts every jump after it while each target stays inside the
+    roster and passes the per-file range check. The §IX line names the
+    planned targets in the same ``#slide-N`` form; a page whose anchors and
+    plan disagree is reported. Pages with neither are skipped.
+    """
+    root = Path(project_path)
+    design_spec = next(
+        (root / name for name in _DESIGN_SPEC_NAMES if (root / name).is_file()),
+        None,
+    )
+    svg_output = root / 'svg_output'
+    if design_spec is None or not svg_output.is_dir():
+        return []
+    try:
+        design_text = design_spec.read_text(encoding='utf-8-sig')
+    except OSError as exc:
+        return [f'Outline hyperlinks: unable to read {design_spec.name}: {exc}']
+    planned_lines = _outline_hyperlink_lines(design_text)
+    if not planned_lines:
+        return []
+    errors = []
+    for svg_file in discover_slide_svgs(svg_output):
+        match = re.match(r'(\d+)', svg_file.name)
+        if not match:
+            continue
+        number = int(match.group(1))
+        targets = _svg_hyperlink_targets(svg_file)
+        if targets is None or number not in planned_lines:
+            continue
+        svg_slides, svg_externals = targets
+        line = planned_lines[number]
+        if line is None:
+            if svg_slides or svg_externals:
+                errors.append(
+                    f'Outline hyperlinks: {svg_file.name} carries hyperlinks but '
+                    f'{design_spec.name} §IX Slide {number:02d} has no Hyperlinks line; '
+                    'record each target there (same-deck jumps as #slide-N).'
+                )
+            continue
+        planned_slides = {int(n) for n in _SLIDE_JUMP_RE.findall(line)}
+        planned_externals = {
+            found.group(0).rstrip(_LINK_TRAIL_CHARS)
+            for found in _EXTERNAL_LINK_RE.finditer(line)
+        }
+        if planned_slides != svg_slides:
+            def _fmt(numbers: set) -> str:
+                return ', '.join(f'#slide-{n}' for n in sorted(numbers)) or '(none)'
+            errors.append(
+                f'Outline hyperlinks: {svg_file.name} jumps to {_fmt(svg_slides)} but '
+                f'{design_spec.name} §IX Slide {number:02d} plans {_fmt(planned_slides)}; '
+                'retarget the anchors or the plan so both name the current roster.'
+            )
+        if planned_externals != svg_externals:
+            def _fmt_links(links: set) -> str:
+                return ', '.join(sorted(links)) or '(none)'
+            errors.append(
+                f'Outline hyperlinks: {svg_file.name} links to {_fmt_links(svg_externals)} but '
+                f'{design_spec.name} §IX Slide {number:02d} plans {_fmt_links(planned_externals)}.'
+            )
+    return errors
+
+
 def validate_project_structure(
     project_path: str,
     verbose: bool = False,
