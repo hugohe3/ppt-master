@@ -46,6 +46,12 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT M
 
 [YouYun ZhiSuan](https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624), UCloud's AI cloud platform, provides domestic and international model APIs, CodingPlan packages, enterprise concurrency, technical support, and invoicing. Register through the dedicated link to receive up to **¥10 in free trial credit**. PPT Master is also available there as a hosted Agent for users who do not want to deploy it locally.
 
+### APIMart
+
+<a href="https://go.apimart.ai/gh-ppt-master1"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apimart.png" alt="APIMart" width="150"></a>
+
+[APIMart](https://go.apimart.ai/gh-ppt-master1) is a low-cost API platform for AI image and video generation, with GPT-Image-2 from **$0.006 per image**. One async API covers both image and video: submit a task, get an ID, and fetch results by polling or callback. Pay-as-you-go with no monthly fee; register through the dedicated link to get started.
+
 ## Infrastructure Support
 
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40"></a>

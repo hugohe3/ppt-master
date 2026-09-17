@@ -46,6 +46,12 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 [优云智算](https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624) 是 UCloud 旗下 AI 云平台，提供国内外模型 API、CodingPlan 套餐、企业级并发、技术支持和开票服务。通过专属链接注册，最高可获得 **¥10 免费体验金**。平台还提供无需本地部署的 PPT Master Agent。
 
+### APIMart
+
+<a href="https://go.apimart.ai/gh-ppt-master1"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apimart.png" alt="APIMart" width="150"></a>
+
+[APIMart](https://go.apimart.ai/gh-ppt-master1) 是专注 AI 图片/视频生成的低价 API 平台，GPT-Image-2 低至 **$0.006/张**。图片、视频共用一套异步 API：提交任务拿 ID，轮询或回调取结果。按量付费、无月费，通过专属链接注册即可开用。
+
 ## 基础设施支持
 
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40"></a>
