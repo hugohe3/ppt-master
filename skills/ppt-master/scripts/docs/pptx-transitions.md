@@ -291,6 +291,12 @@ effect prefix without updating these attributes corrupts compatibility.
 ppt/presProps.xml p:presentationPr/p:showPr useTimings=1. Do not write showPr
 into ppt/presentation.xml.
 
+**Kiosk show**: `svg_to_pptx.py --kiosk` writes `p:showPr loop="1"` with a
+`p:kiosk` child (PowerPoint's "Browsed at a kiosk"): the show loops until
+Escape and ignores click and keyboard advance, so only `advTm` timings and
+hyperlinks move between slides. It leaves `useTimings` to the timing rule, so
+a hyperlink-driven touch guide can be a kiosk show without timed advance.
+
 ---
 
 ## 6. Validation and Read-Back
