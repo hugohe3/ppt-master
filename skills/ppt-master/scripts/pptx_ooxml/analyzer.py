@@ -258,7 +258,7 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
                 shape_id, shape_name = _shape_identity(container, order)
                 paragraphs = _paragraph_texts(container)
                 text = "\n".join(paragraphs)
-                geometry = _container_geometry(container)
+                geometry = _container_geometry(container, slide_root)
                 role = _slot_role(
                     {
                         "text": text,

@@ -182,7 +182,30 @@ def _paragraph_texts(container: ET.Element) -> list[str]:
     return [text] if text else []
 
 
-def _container_geometry(container: ET.Element) -> dict[str, int | None]:
+def _group_chain(container: ET.Element, slide_root: ET.Element) -> list[ET.Element]:
+    """Return the ``p:grpSp`` ancestors of ``container``, innermost first."""
+    parents = {child: parent for parent in slide_root.iter() for child in parent}
+    chain: list[ET.Element] = []
+    node = parents.get(container)
+    group_tag = f"{{{NS['p']}}}grpSp"
+    while node is not None:
+        if node.tag == group_tag:
+            chain.append(node)
+        node = parents.get(node)
+    return chain
+
+
+def _container_geometry(
+    container: ET.Element,
+    slide_root: ET.Element | None = None,
+) -> dict[str, int | None]:
+    """Return the container's slide-space box in px.
+
+    A shape inside ``p:grpSp`` stores its ``a:xfrm`` in the group's child
+    space; with ``slide_root`` every enclosing group's ``off/ext`` versus
+    ``chOff/chExt`` mapping is applied so nested siblings do not all report
+    the same local corner.
+    """
     xfrm = container.find("p:spPr/a:xfrm", NS)
     if xfrm is None:
         xfrm = container.find("p:xfrm", NS)
@@ -192,12 +215,42 @@ def _container_geometry(container: ET.Element) -> dict[str, int | None]:
         return {"x": None, "y": None, "width": None, "height": None}
     off = xfrm.find("a:off", NS)
     ext = xfrm.find("a:ext", NS)
-    return {
-        "x": _emu_to_px(off.attrib.get("x")) if off is not None else None,
-        "y": _emu_to_px(off.attrib.get("y")) if off is not None else None,
-        "width": _emu_to_px(ext.attrib.get("cx")) if ext is not None else None,
-        "height": _emu_to_px(ext.attrib.get("cy")) if ext is not None else None,
-    }
+    try:
+        x = float(off.attrib["x"]) if off is not None else None
+        y = float(off.attrib["y"]) if off is not None else None
+        width = float(ext.attrib["cx"]) if ext is not None else None
+        height = float(ext.attrib["cy"]) if ext is not None else None
+    except (KeyError, ValueError):
+        return {"x": None, "y": None, "width": None, "height": None}
+    if slide_root is not None:
+        for group in _group_chain(container, slide_root):
+            group_xfrm = group.find("p:grpSpPr/a:xfrm", NS)
+            if group_xfrm is None:
+                continue
+            parts = [group_xfrm.find(name, NS) for name in ("a:off", "a:ext", "a:chOff", "a:chExt")]
+            if any(part is None for part in parts):
+                continue
+            g_off, g_ext, ch_off, ch_ext = parts
+            try:
+                ch_cx = float(ch_ext.attrib["cx"])
+                ch_cy = float(ch_ext.attrib["cy"])
+                scale_x = float(g_ext.attrib["cx"]) / ch_cx if ch_cx else 1.0
+                scale_y = float(g_ext.attrib["cy"]) / ch_cy if ch_cy else 1.0
+                if x is not None:
+                    x = float(g_off.attrib["x"]) + (x - float(ch_off.attrib["x"])) * scale_x
+                if y is not None:
+                    y = float(g_off.attrib["y"]) + (y - float(ch_off.attrib["y"])) * scale_y
+            except (KeyError, ValueError):
+                continue
+            if width is not None:
+                width *= scale_x
+            if height is not None:
+                height *= scale_y
+
+    def _px(value: float | None) -> int | None:
+        return None if value is None else round(value / EMU_PER_INCH * PX_PER_INCH)
+
+    return {"x": _px(x), "y": _px(y), "width": _px(width), "height": _px(height)}
 
 
 def _text_containers(slide_root: ET.Element) -> list[ET.Element]:

@@ -387,6 +387,7 @@ def _read_diagram_container(
     zf: zipfile.ZipFile,
     container: ET.Element,
     *,
+    slide_root: ET.Element,
     slide_part: str,
     slide_index: int,
     order: int,
@@ -431,7 +432,7 @@ def _read_diagram_container(
         "kind": "smartart",
         "shape_id": shape_id,
         "shape_name": shape_name,
-        "geometry": _container_geometry(container),
+        "geometry": _container_geometry(container, slide_root),
         "layout": _layout_info(layout_root, data_root),
         "root_ids": [node["id"] for node in nodes if node["parent_id"] is None],
         "nodes": nodes,
@@ -452,6 +453,7 @@ def _read_diagram_container(
 def _failed_diagram(
     container: ET.Element,
     *,
+    slide_root: ET.Element,
     slide_index: int,
     order: int,
     error: Exception,
@@ -463,7 +465,7 @@ def _failed_diagram(
         "kind": "smartart",
         "shape_id": shape_id,
         "shape_name": shape_name,
-        "geometry": _container_geometry(container),
+        "geometry": _container_geometry(container, slide_root),
         "layout": {"name": None, "unique_id": None, "categories": []},
         "root_ids": [],
         "nodes": [],
@@ -502,6 +504,7 @@ def read_smartart_diagrams(
             diagram = _read_diagram_container(
                 zf,
                 container,
+                slide_root=slide_root,
                 slide_part=slide_part,
                 slide_index=slide_index,
                 order=order,
@@ -512,6 +515,7 @@ def read_smartart_diagrams(
         except (OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError, KeyError, ValueError) as exc:
             diagram = _failed_diagram(
                 container,
+                slide_root=slide_root,
                 slide_index=slide_index,
                 order=order,
                 error=exc,
