@@ -132,7 +132,7 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertIn("--bg #57B265 --tolerance 12", result.stderr)
             self.assertFalse((output_dir / "element.png").exists())
 
-    def test_strict_alpha_names_edge_wide_near_key_noise_as_key_noise(self) -> None:
+    def test_strict_alpha_retries_once_when_every_finding_is_key_noise(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             sheet_path = root / "sheet.png"
@@ -170,11 +170,13 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
                 check=False,
             )
 
-            self.assertEqual(result.returncode, 1)
-            self.assertIn("this is key noise", result.stderr)
+            # Every finding is measured key noise, so the tool retries once
+            # with the tolerance it measured instead of asking for a rerun.
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("key noise", result.stderr)
+            self.assertIn("auto-retrying once with --tolerance", result.stderr)
             self.assertNotIn("content reaches the", result.stderr)
-            self.assertIn("Suggested rerun:", result.stderr)
-            self.assertFalse((output_dir / "element.png").exists())
+            self.assertTrue((output_dir / "element.png").exists())
 
     def test_inset_accepts_horizontal_and_vertical_fractions(self) -> None:
         from slice_images import parse_inset

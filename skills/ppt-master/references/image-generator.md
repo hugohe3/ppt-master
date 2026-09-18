@@ -157,8 +157,8 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
     --names team,product,customer,growth,risk,vision --trim --alpha \
     --bg "${SHEET_KEY_HEX}" --strict-alpha
 # Generated sheets arrive through JPEG, so the ground is never exactly the pure
-# key: the first run usually fails with a measured border line — rerun with the
-# --bg / --tolerance it names (the measured ground, which skips despill).
+# key: when every finding is measured key noise the tool retries once with the
+# tolerance it measured; content touching a cell edge still fails and stays yours.
 ```
 
 `--names` count equals `rows*cols`; `--strict-alpha` writes nothing on an incomplete cut. Three quality constraints:

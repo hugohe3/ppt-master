@@ -760,6 +760,7 @@ def slice_sheet(
     strict_alpha: bool = False,
     bg: Optional[tuple[int, int, int]] = None,
     tolerance: int = 18,
+    _auto_retry: bool = True,
 ) -> list[Path]:
     """Slice `sheet_path` into rows*cols element PNGs under `output_dir`.
 
@@ -865,6 +866,31 @@ def slice_sheet(
             idx += 1
 
     if findings:
+        # When every finding is measured key noise or drift (never content on
+        # an edge), the tool already knows the tolerance that clears it: apply
+        # it once instead of asking for the same command again.
+        suggested = [
+            int(match.group(1))
+            for finding in findings
+            for match in [re.search(r"rerun with --tolerance (\d+)", finding)]
+            if match is not None
+        ]
+        if (
+            strict_alpha
+            and _auto_retry
+            and len(suggested) == len(findings)
+        ):
+            retry_tolerance = max(suggested)
+            _log(
+                f"[WARN] strict alpha: all {len(findings)} finding(s) are key noise; "
+                f"auto-retrying once with --tolerance {retry_tolerance} (measured)"
+            )
+            return slice_sheet(
+                sheet_path, rows, cols, output_dir,
+                names=names, prefix=prefix, inset=inset, trim=trim, alpha=alpha,
+                strict_alpha=strict_alpha, bg=bg, tolerance=retry_tolerance,
+                _auto_retry=False,
+            )
         sheet_border = _sample_sheet_border(sheet) if strict_alpha else None
         _log_keying_findings(
             findings,
