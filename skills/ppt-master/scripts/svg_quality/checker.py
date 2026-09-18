@@ -78,6 +78,7 @@ except ImportError:
 
 try:
     from svg_to_pptx.animation_config import (
+        effective_top_level as _effective_top_level,
         load_animation_config as _load_animation_config,
         usable_animation_group_id as _usable_animation_group_id,
         validate_animation_config as _validate_animation_config,
@@ -85,6 +86,7 @@ try:
         validate_transition_config as _validate_transition_config,
     )
 except ImportError as exc:
+    _effective_top_level = None
     _load_animation_config = None
     _validate_animation_config = None
     _validate_animation_config_errors = None
@@ -5659,6 +5661,8 @@ class SVGQualityChecker:
         visual_index = 0
 
         for child in root:
+            if _effective_top_level is not None:
+                child = _effective_top_level(child)
             tag = _local_name(child)
             if tag in non_visual:
                 continue
@@ -5761,6 +5765,8 @@ class SVGQualityChecker:
         signatures: List[Tuple[object, ...]] = []
         visual_index = 0
         for child in root:
+            if _effective_top_level is not None:
+                child = _effective_top_level(child)
             tag = _local_name(child)
             if tag in non_visual:
                 continue

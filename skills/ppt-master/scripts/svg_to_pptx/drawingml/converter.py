@@ -105,7 +105,12 @@ from .elements import (
     project_image_errors,
     project_nested_svg_crop_errors,
 )
-from ..animation_config import is_chrome_id, usable_animation_group_id
+from ..animation_config import (
+    anchor_wrapped_group,
+    effective_top_level,
+    is_chrome_id,
+    usable_animation_group_id,
+)
 from ..canvas_contract import (
     CanvasContractError,
     parse_project_svg_root,
@@ -1459,7 +1464,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 def convert_a(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert one standard SVG anchor into a clickable DrawingML object."""
-    result = convert_g(elem, ctx)
+    # A bare anchor around one <g> is transparent: the group converts at the
+    # anchor's own depth, so a top-level <a href><g id> stays an animation
+    # anchor, and the click lands on its leaves.
+    wrapped = anchor_wrapped_group(elem)
+    result = convert_g(wrapped if wrapped is not None else elem, ctx)
     if result is None:
         return None
     return apply_shape_hyperlink(result, ctx, svg_hyperlink_href(elem))
@@ -2376,7 +2385,7 @@ def convert_svg_to_slide_shapes(
     converted = 0
     skipped = 0
     has_top_level_group = any(
-        child.tag.replace(f'{{{SVG_NS}}}', '') == 'g'
+        effective_top_level(child).tag.replace(f'{{{SVG_NS}}}', '') == 'g'
         for child in root
     )
     background_xml, background_skip_id = (
@@ -2409,11 +2418,12 @@ def convert_svg_to_slide_shapes(
             shapes.append(result.xml)
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
-            elem_id = child.get('id')
-            role = child.get('data-pptx-role')
-            placeholder = child.get('data-pptx-placeholder')
+            unit = effective_top_level(child)
+            elem_id = unit.get('id')
+            role = unit.get('data-pptx-role')
+            placeholder = unit.get('data-pptx-placeholder')
             has_explicit_semantics = role is not None or placeholder is not None
-            structurally_static = child.get('data-pptx-layer') is not None
+            structurally_static = unit.get('data-pptx-layer') is not None
             legacy_chrome = (
                 is_static_page_frame(role, placeholder)
                 if has_explicit_semantics

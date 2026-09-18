@@ -34,7 +34,7 @@ from pptx_transitions import (
 )
 from slide_roster import discover_slide_svgs
 
-from .drawingml.utils import SVG_NS
+from .drawingml.utils import SVG_NS, XLINK_NS
 from .pptx_package.narration import AUDIO_CONTENT_TYPES
 from .semantic_markers import is_static_page_frame
 
@@ -201,6 +201,7 @@ def scan_root_primitives(svg_path: Path) -> dict[str, str]:
     root = ET.parse(str(svg_path)).getroot()
     primitives: dict[str, str] = {}
     for child in root:
+        child = effective_top_level(child)
         tag = _tag_name(child)
         if tag in _NON_VISUAL_TAGS or tag == 'g':
             continue
@@ -213,6 +214,39 @@ def scan_root_primitives(svg_path: Path) -> dict[str, str]:
             description += f' with data-pptx-role="{role}"'
         primitives[elem_id] = description
     return primitives
+
+
+_ANCHOR_OWN_ATTRIBUTES = frozenset((
+    'href',
+    f'{{{XLINK_NS}}}href',
+    'xlink:href',
+))
+
+
+def anchor_wrapped_group(elem: ET.Element) -> ET.Element | None:
+    """Return the single ``<g>`` a bare hyperlink anchor wraps, else ``None``.
+
+    ``<a href><g id>…</g></a>`` is the canonical whole-object link
+    (native-hyperlinks.md §2). The anchor carries only its target, so the
+    group inside is the page's real top-level unit: it stays the animation
+    anchor and the checker's grouping unit, and export attaches the click to
+    its leaves. An anchor with other attributes or several children is an
+    ordinary container.
+    """
+    if _tag_name(elem) != 'a':
+        return None
+    if any(attr not in _ANCHOR_OWN_ATTRIBUTES for attr in elem.attrib):
+        return None
+    visual = [child for child in elem if _tag_name(child) not in _NON_VISUAL_TAGS]
+    if len(visual) != 1 or _tag_name(visual[0]) != 'g':
+        return None
+    return visual[0]
+
+
+def effective_top_level(elem: ET.Element) -> ET.Element:
+    """Return the element a top-level scan should treat ``elem`` as."""
+    wrapped = anchor_wrapped_group(elem)
+    return elem if wrapped is None else wrapped
 
 
 def usable_animation_group_id(raw: str | None) -> str | None:
@@ -237,6 +271,7 @@ def scan_svg_targets(
     page_reference_size = _page_reference_size(root)
 
     for child in root:
+        child = effective_top_level(child)
         tag = _tag_name(child)
         if tag in _NON_VISUAL_TAGS:
             continue
