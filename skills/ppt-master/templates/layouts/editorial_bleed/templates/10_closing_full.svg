@@ -5,6 +5,7 @@
   <defs>
     <linearGradient id="closing-full-scrim-paint" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.40" stop-color="#000000" stop-opacity="0.60"/>
       <stop offset="1" stop-color="#000000" stop-opacity="0.82"/>
     </linearGradient>
   </defs>

@@ -5,10 +5,12 @@
   <defs>
     <linearGradient id="triptych-top-paint" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#000000" stop-opacity="0.78"/>
+      <stop offset="0.68" stop-color="#000000" stop-opacity="0.62"/>
       <stop offset="1" stop-color="#000000" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="triptych-bottom-paint" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.43" stop-color="#000000" stop-opacity="0.62"/>
       <stop offset="1" stop-color="#000000" stop-opacity="0.80"/>
     </linearGradient>
   </defs>

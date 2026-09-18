@@ -5,8 +5,8 @@
   <defs>
     <linearGradient id="hero-full-scrim-paint" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#000000" stop-opacity="0"/>
-      <stop offset="0.55" stop-color="#000000" stop-opacity="0.30"/>
-      <stop offset="1" stop-color="#000000" stop-opacity="0.78"/>
+      <stop offset="0.43" stop-color="#000000" stop-opacity="0.60"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.80"/>
     </linearGradient>
   </defs>
   <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"

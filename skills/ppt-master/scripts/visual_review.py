@@ -245,7 +245,8 @@ def discover_pages(project_path: Path, requested: list[str] | None) -> list[str]
     if not requested:
         return all_svgs
     selected: list[str] = []
-    for token in requested:
+    tokens = [part for item in requested for part in item.split(',') if part]
+    for token in tokens:
         match = next((n for n in all_svgs if n.startswith(token) or n == token), None)
         if match is None:
             raise ValueError(f'no SVG matches token {token!r} in {svg_dir}')
@@ -310,7 +311,8 @@ def main() -> int:
     parser.add_argument(
         '--pages', nargs='+', default=None,
         help='Page tokens to render (default: all SVGs in svg_output/). '
-             "Accepts '02', '02_three_steps', or '02_three_steps.svg'.",
+             "Accepts '02', '02_three_steps', or '02_three_steps.svg'; several "
+             "pages are space- or comma-separated (--pages 02 04 or --pages 02,04).",
     )
     parser.add_argument(
         '--server-url', default=None,
