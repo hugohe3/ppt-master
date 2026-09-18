@@ -6961,19 +6961,27 @@ class SVGQualityChecker:
                 continue
 
             license_name = str(item.get('license_name') or '').upper()
-            license_token = 'CC BY-SA' if 'BY-SA' in license_name else 'CC BY'
+            # Only a Creative Commons licence has a token the credit must
+            # repeat; a publisher's own source-credit terms bind the credit to
+            # the author/source name alone.
+            if 'CC' in license_name or 'CREATIVE COMMONS' in license_name:
+                license_token = 'CC BY-SA' if 'BY-SA' in license_name else 'CC BY'
+            else:
+                license_token = None
             author = str(item.get('author') or '').strip()
             has_credit = bool(author) and any(
                 author.casefold() in block.casefold()
-                and license_token in block.upper()
+                and (license_token is None or license_token in block.upper())
                 for block in credit_blocks
             )
             if not has_credit:
+                expected = f"{author or 'unknown author'}"
+                if license_token:
+                    expected += f"; {license_token}"
                 result['errors'].append(
                     f"Missing image-specific inline attribution for sourced "
-                    f"image {filename} ({author or 'unknown author'}; "
-                    f"{license_token}). Add compact author + license credit per "
-                    f"references/image-searcher.md §7."
+                    f"image {filename} ({expected}). Add compact author + "
+                    f"license credit per references/image-searcher.md §7."
                 )
 
     @classmethod

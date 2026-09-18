@@ -15,7 +15,7 @@ Every provider-sourced image lands in one of two tiers; everything else is rejec
 | Tier | Licenses | On-slide attribution |
 |---|---|---|
 | `no-attribution` | CC0, Public Domain, Pexels License, Pixabay Content License | None |
-| `attribution-required` | CC BY, CC BY-SA | Inline credit `<text>` on the slide |
+| `attribution-required` | CC BY, CC BY-SA, publisher terms that require a source credit | Inline credit `<text>` on the slide (the CC token only for a CC licence) |
 | `manual` | Directly selected URL or adopted-page image, license unverified | None — rights and any credit are the user's responsibility |
 
 **Forbidden — auto-rejected**: CC BY-NC, CC BY-NC-SA, CC BY-ND, CC BY-NC-ND, All Rights Reserved, unknown or missing license.
@@ -124,7 +124,7 @@ Each successful download appends or replaces one entry keyed on `filename` (writ
 
 ## 7. On-Slide Attribution Contract
 
-For `license_tier: attribution-required`, every slide using the asset carries a visible, readable credit bound unambiguously to it, preserving author, source/provider, and CC BY / CC BY-SA facts from `attribution_text`. Position, size, color, per-image versus combined credits, labels, and contrast treatment belong to the page — a compact credit near the image edge or footnote area for one image, per-image credits or one labeled combined line for several, a quiet region (a scrim or gradient only when contrast fails) on a hero. Compress without dropping required facts: `team.jpg — "Untitled" via Openverse — license: CC0 (...)` → `via Openverse / CC0`; `team.jpg — "Sunset" by Jane Doe via Wikimedia Commons — license: CC BY-SA 4.0 (...)` → `© Jane Doe / Wikimedia / CC BY-SA 4.0`.
+For `license_tier: attribution-required`, every slide using the asset carries a visible, readable credit bound unambiguously to it, preserving author, source/provider, and — for a CC licence — the CC BY / CC BY-SA fact from `attribution_text`. Position, size, color, per-image versus combined credits, labels, and contrast treatment belong to the page — a compact credit near the image edge or footnote area for one image, per-image credits or one labeled combined line for several, a quiet region (a scrim or gradient only when contrast fails) on a hero. Compress without dropping required facts: `team.jpg — "Untitled" via Openverse — license: CC0 (...)` → `via Openverse / CC0`; `team.jpg — "Sunset" by Jane Doe via Wikimedia Commons — license: CC BY-SA 4.0 (...)` → `© Jane Doe / Wikimedia / CC BY-SA 4.0`.
 
 ---
 
