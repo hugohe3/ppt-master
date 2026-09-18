@@ -117,7 +117,7 @@ A/B describe a hero or a local single-subject region; C/D are hero-page composit
 
 A sheet generates compatible transparent **illustration**, **illustrated-icon**, or **decorative lettering** elements sharing rendering, deck-color treatment, and finish; subjects, silhouettes, weights, and jobs may differ, and SVG composes after slicing. Lettering is stable Layer 1 artwork, never page copy turned into an image.
 
-**Default — batch compatible elements; split when separate generation improves the result**: group illustrated-icon cues normally; group lettering by compatible letterform character and treatment (not font name); split for style, geometry, detail, quality, or semantic precision. A single element may use a keyed `1x1` sheet. Full-canvas or opaque images take the normal §4.1 path.
+**Default — batch compatible elements; split when separate generation improves the result**: group illustrated-icon cues normally; group lettering by compatible letterform character and treatment (not font name); split for style, geometry, detail, quality, or semantic precision. A single element may use a keyed `1x1` sheet. Full-canvas or opaque images take the normal §4.1 path; several opaque photos for a multi-cell layout may share one sheet under the same contract, sliced by `--grid` with `--inset` and no key color, `--trim`, or `--alpha`.
 
 **Hard rule — a sheet is a generation source, not a slide asset**: never referenced from SVG; out of `spec_lock.md images` in Default, generation-only in Quick's context and manifest; only sliced element rows are placed.
 

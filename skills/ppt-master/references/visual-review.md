@@ -19,7 +19,7 @@ Read inputs 2–5 once at the start, then iterate the batch sequentially: apply 
 | H1 | Out-of-bounds | element bbox outside `canvas.view_box` | shrink or reposition into canvas |
 | H2 | Text overflow | text bbox extends past its visual container | reduce font-size or line-break |
 | H3 | Text overlap | two `<text>` bboxes intersect (tspans within one text excluded) | reposition or resize |
-| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px), or text directly atop a complex image with no scrim | when neither color is a brand token: position-only escape — add a `<rect>` scrim under the text, or raise the text to ≥ 24px so the 3.0 threshold applies; when either color is a brand token: do not edit → §1.1 |
+| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px), or text directly atop a complex image with no scrim | when neither color is a brand token: position-only escape — add a `<rect>` scrim under the text, raise the text to ≥ 24px so the 3.0 threshold applies, or deepen the stops of a `decoration` gradient already under the text (same geometry and technique, sibling pages of that Layout alike); when either color is a brand token: do not edit → §1.1 |
 | ~~H5~~ | Font-ramp drift | covered by `svg_quality_checker.py` (§0) | n/a |
 | H6 | Element collision | rect/circle/path bboxes overlap with z-order violating semantics | open spacing |
 | H7 | Declared page chrome displaced | page number / header / footer explicitly declared by `design_spec §IX`, `spec_lock.md`, or the installed template with a concrete anchor is covered, missing, or outside `canvas.view_box` | restore only that declared chrome; never invent undeclared chrome |
@@ -34,7 +34,7 @@ If H4 fires and the foreground or background is a brand token from `spec_lock.md
 
 ## §2 Soft rules (act only when clearly bad)
 
-When in doubt, leave it — under-fixing beats oscillation.
+When in doubt, leave it — under-fixing beats oscillation. A soft hit whose same condition plainly recurs on pages outside the batch is a deck-wide choice: leave it, record it under `untouched_concerns` with reason `deck_wide`, and the aggregating agent applies or drops it once for every page.
 
 | # | Category | Trigger | Fix direction |
 |---|----------|---------|---------------|
@@ -90,7 +90,7 @@ One file per page at `<project>/.review/<page>.json`; every `needs_human_items` 
     "verified_in_iter": 2,
     "backup_path": ".review/backup/02_three_steps.iter1.svg"
   }],
-  "untouched_concerns": [{"rule": "S1", "evidence": "...", "reason": "soft-cap reached" | "ambiguous_design_intent"}],
+  "untouched_concerns": [{"rule": "S1", "evidence": "...", "reason": "soft-cap reached" | "ambiguous_design_intent" | "deck_wide"}],
   "needs_human_items": [{"rule": "H9", "suggested_fix_summary": "Hero subtitle declared in spec §IX.4 missing; add a <text> at (80,496) per design language"}],
   "design_intent_check": {"spec_says": "TL;DR — emphasize 意图 as the core abstraction", "render_delivers": true, "note": "..."}
 }

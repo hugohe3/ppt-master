@@ -8,7 +8,7 @@ What the Strategist needs to run the two-stage confirmation: the surface decisio
 
 | Most recent explicit surface instruction | Branch |
 |---|---|
-| The user explicitly delegates confirmation | Make the combined Stage-1 communication/template decision, install it, then present one complete final summary. Do not launch the page or fabricate UI receipts. |
+| The user explicitly delegates confirmation | Make the combined Stage-1 communication/template decision, install it, then present one complete final summary. Do not launch the page or fabricate UI receipts; delegation skips the page, not the craft — the three solution intents are still authored and the chosen one recorded with its reason. |
 | The user asks for or agrees to personally confirm in chat, or declines the page | Use chat for both stages; Stage 1 includes the template/free-design choice. Do not launch the page, run `--wait-only`, or require UI-authored results. |
 | No explicit instruction | Use the page. |
 

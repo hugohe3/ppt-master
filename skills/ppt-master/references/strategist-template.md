@@ -67,7 +67,7 @@ When the communication contract conflicts with the workspace, state the best-fit
 | Style-only or Style + Brand | `pptx_structure.mode: flat`, `template_reuse_scope: style`; omit `template_adherence` and every structured mapping section |
 | `mirror` / `layout` | `pptx_structure.mode: structured`, `template_adherence: strict\|adaptive` (mirror always `strict`); no legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows |
 
-A Style installed alongside Layout/Deck changes only Direction / method and never forces flat/structured routing; a literal `mirror` plan is compatible only when the Style segment requires no visual or topology change.
+A Style installed alongside Layout/Deck changes only Direction / method, never flat/structured routing; a literal `mirror` plan is compatible only when the Style segment requires no visual or topology change. Morph pairs Slide-local groups, never slots.
 
 - **Master roster**: one `pptx_masters` row per Master as `<master_key>: <picker name>`, copied from the workspace roster. Keys are 1–64 ASCII letters/digits/dots/underscores/hyphens starting with a letter or digit; spaces belong only in the picker name. Master visuals are root-level atoms, never `<g>`.
 - **Registered Layouts**: list used keys and only deliberately retained unused keys once as `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. An unused Layout uses `template:<basename>`; a new adaptive Layout uses its first generated `P<NN>`. Reuse keys only for identical fixed atoms and slot ids/types/indices/bounds/bindings. Name authored keys after composition, never topic. Zero-slot Layouts are valid; never invent an empty `utility` kind or full-page fake slot.
