@@ -3669,6 +3669,19 @@ _FIXED_SPACE_EMS = {
 }
 
 
+_UNDECOMPOSED_BASE_LETTERS = str.maketrans('đĐłŁøØħĦ', 'dDlLoOhH')
+
+
+def _base_letter(ch: str) -> str:
+    """Return the unaccented letter a precomposed character advances like."""
+    decomposed = unicodedata.normalize('NFD', ch)
+    if len(decomposed) > 1 and all(
+        unicodedata.category(mark) == 'Mn' for mark in decomposed[1:]
+    ):
+        ch = decomposed[0]
+    return ch.translate(_UNDECOMPOSED_BASE_LETTERS)
+
+
 def _estimate_character_width(ch: str, font_size: float) -> float:
     if (
         0xFF00 <= ord(ch) <= 0xFFEF
@@ -3681,6 +3694,7 @@ def _estimate_character_width(ch: str, font_size: float) -> float:
         return font_size * 0.3
     if ch in _FIXED_SPACE_EMS:
         return font_size * _FIXED_SPACE_EMS[ch]
+    ch = _base_letter(ch)
     if ch in 'mMwWOQ%':
         return font_size * 0.75
     if ch in 'iIlj!|':
@@ -3765,6 +3779,18 @@ def estimate_text_cluster_widths(
             for ch in cluster
         ):
             widths.append(sum(advances[ch] for ch in cluster) * font_size)
+            continue
+        # A precomposed letter the table lacks advances like its base letter.
+        bases = [
+            _base_letter(ch) for ch in cluster if not _is_grapheme_extend(ch)
+        ]
+        if advances is not None and not cjk and bases and all(
+            ch in advances and not _is_emoji_base(ch) for ch in bases
+        ) and all(
+            unicodedata.category(ch) == 'Mn' and not 0xFE00 <= ord(ch) <= 0xFE0F
+            for ch in cluster if _is_grapheme_extend(ch)
+        ):
+            widths.append(sum(advances[ch] for ch in bases) * font_size)
             continue
         width = _estimate_grapheme_width(cluster, font_size)
         widths.append(width * 1.05 if bold and not cjk else width)

@@ -202,7 +202,7 @@ class TextMeasureTests(unittest.TestCase):
                 )
 
     def test_extended_clusters_keep_existing_widths_and_tracking(self) -> None:
-        text = 'e\u0301👩🏽‍💻🇨🇳1️⃣Ａｱ'
+        text = '👩🏽‍💻🇨🇳1️⃣Ａｱ'
         for weight in ('400', 'bold'):
             with self.subTest(weight=weight):
                 crude = estimate_text_cluster_widths(text, 20, weight)
@@ -215,6 +215,13 @@ class TextMeasureTests(unittest.TestCase):
                                  letter_spacing=2, include_headroom=False),
                     sum(crude) + 2 * (len(crude) - 1),
                 )
+
+    def test_accented_letters_outside_the_table_advance_like_their_base(self) -> None:
+        for family in ('Arial', 'Cambria'):
+            with self.subTest(family=family):
+                accented = estimate_text_cluster_widths('ỔỊe\u0301ệ', 20, font_family=family)
+                plain = estimate_text_cluster_widths('OIee', 20, font_family=family)
+                self.assertEqual(accented, plain)
 
     def test_arial_black_keeps_wide_family_factor(self) -> None:
         crude = sum(estimate_text_cluster_widths('CAPS', 20, 'bold'))
