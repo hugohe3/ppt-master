@@ -55,7 +55,7 @@ python3 skills/ppt-master/scripts/pptx_to_svg.py "<source.pptx>" -o "projects/<s
 
 ## 4. Plan the Output Deck
 
-**Defaults (may override when the user fixes the mapping, asks to preserve order, or asks for new pages)**: treat the roster as a slide library, not an outline — a source page's layout already encodes a rhetorical shape (hero statement, lead-then-detail, comparison, progression, metric row, dense explanation), so match each target message to a page whose structure expresses the same logic and drop content or the page rather than force a fit; the target story controls order, so source slides may move, be omitted, or be reused; the source deck is the skeleton — most output pages keep a source structure, sub-content recombines freely, and new pages appear where the story needs them.
+**Defaults (may override when the user fixes the mapping, asks to preserve order, or asks for new pages)**: treat the roster as a slide library, not an outline — a source page's layout encodes a rhetorical shape (hero statement, lead-then-detail, comparison, progression, metric row, dense explanation), so match each message to a page whose structure expresses the same logic and drop content or the page rather than force a fit; the target story controls order, so source slides may move, drop, or repeat; the source deck is the skeleton — most output pages keep a source structure, sub-content recombines freely, and new pages appear where the story needs them.
 
 ### 4.1 Page plan
 
@@ -73,7 +73,7 @@ Write `page_plan.json` at the workspace root only when the output differs from t
 }
 ```
 
-`pages` is the complete non-empty output order; `source_slide` is the one-based source index whose native slide backs the page; `svg` is the authoring filename inside `authoring-svg-flat/`, omitted to use that page's `slide_NN.svg` — to reuse a source page twice, copy its SVG under a new name and list the copy, since every output page needs a distinct file and every extra file must appear in the plan. Only these fields are accepted. **Forbidden — plans the exporter refuses**: a same-deck slide jump whose destination is omitted or repeated; unknown, duplicated, or cross-owned `svg` filenames; `source_slide` out of range. Omitting a slide drops the audio, video, or undecodable payloads only it owns (export prints a note). With a plan, presentation-level sections, custom shows, and a playback selection naming one are dropped and slide ids renumbered; every Master and Layout stays.
+`pages` is the complete non-empty output order; `source_slide` is the one-based source index whose native slide backs the page; `svg` is the authoring filename inside `authoring-svg-flat/`, omitted to use that page's `slide_NN.svg` — to reuse a source page twice, list a renamed copy of its SVG, since every output page needs a distinct file and every extra file must appear in the plan. Only these fields are accepted. **Forbidden — plans the exporter refuses**: a same-deck slide jump whose destination is omitted or repeated; unknown, duplicated, or cross-owned `svg` filenames; `source_slide` out of range. Omitting a slide drops the audio, video, or undecodable payloads only it owns (export prints a note). With a plan, presentation-level sections, custom shows, and a playback selection naming one are dropped and slide ids renumbered; every Master and Layout stays.
 
 **Combining pages**: one output page has exactly one skeleton (`source_slide`). To merge, pick the page whose layout carries the result, then bring objects from other pages only through the adopt command — never pasted raw SVG, because source refs are page-local. The adopted object materializes its effective inherited presentation attributes and ancestor transforms, loses native identity, and makes the page `rebuilt`; a source proxy cannot leave its page, so a merge that needs one keeps that page as the skeleton. The object lands at the end of the target page for normal editing.
 
@@ -117,6 +117,7 @@ Load [`shared-standards-core.md`](../references/shared-standards-core.md) before
 | New elements | Canonical compact SVG per shared standards; icons via `icon_sync.py "<workspace>" <lib/name>`; AI images via `image_gen.py --manifest` when wanted |
 | Objects from another page | `--adopt-object` only (§4.1); proxies cannot move |
 | Source proxies | Leave or delete; never edit (§3) |
+| Same-deck jumps | Export remaps an inherited `<a href>` (marked `data-pptx-source-href`) to the target's output page and fails on links to omitted pages, listing every slide; to retarget, delete that attribute and write the output `#slide-N` |
 
 **Mandatory after editing** — refresh the summary, then run the capacity gate:
 
@@ -137,7 +138,7 @@ Skip when no §4.2 module beyond preserving source notes is enabled.
 
 **Narration audio**: run [`generate-audio`](./stages/generate-audio.md) Steps 1–4 with the workspace path after notes are complete; the source deck's own media in `audio/` is left alone; `notes_to_audio.py` resolves the roster from `page_plan.json` (copies inherit) and refuses an incomplete roster. Stop after audio; §7 integrates it.
 
-**Motion**: load [`animations.md`](../references/animations.md) when transitions or object animations are requested; `animations.json` rows are keyed by output stem, a copied page inherits its source row unless it has its own, and a row that omits `transition` keeps the source transition. **Hard rule — rebuilt animation targets**: removing an object a source animation targets leaves that animation without a target and export stops with `Edited slide removed source animation target(s)` naming the PowerPoint shape id (its imported root group is `shape-<id>`); give the page its own row — `"<stem>": {"animation": {"effect": "none"}}` drops the source build, or author the page's motion — then export again.
+**Motion**: load [`animations.md`](../references/animations.md) when transitions or object animations are requested; `animations.json` rows are keyed by output stem, a copied page inherits its source row unless it has its own, a row that omits `transition` keeps the source transition; drop rows for pages the plan omits. **Hard rule — rebuilt animation targets**: removing an object a source animation targets leaves that animation without a target and export stops with `Edited slide removed source animation target(s)` naming the PowerPoint shape id (its imported root group is `shape-<id>`); give the page its own row — `"<stem>": {"animation": {"effect": "none"}}` drops the source build, or author the page's motion — then export again.
 
 ---
 
@@ -171,4 +172,4 @@ Round-trip export summary: output_pages=N passthrough=P cloned_passthrough=C pat
 
 ## 8. Current Boundary
 
-Supported: referencing unchanged pages byte-for-byte with select / reorder / repeat / omit; editing text, paint, images, native table cells, and native chart data on selected pages (chart/table edits export only with `--native-charts-and-tables`); authoring new elements as canonical compact SVG; preserving SmartArt, complex effects, and embedded media as atomic proxies; notes, narration, auto-advance, transitions, and object animations as overlays keyed by output page. Not supported: deleting inherited source notes on a copied page (give the copy its own file); editing a source proxy; changing slide size; adding Master/Layout structure (use Create Template → Generate).
+Supported: referencing unchanged pages byte-for-byte with select / reorder / repeat / omit; editing text, paint, images, native table cells, and chart data on selected pages (chart/table edits export only with `--native-charts-and-tables`); authoring new elements as canonical compact SVG; preserving SmartArt, complex effects, and embedded media as atomic proxies; notes, narration, auto-advance, transitions, and object animations as overlays keyed by output page. Not supported: deleting inherited source notes on a copied page (give the copy its own file); editing a source proxy; changing slide size; adding Master/Layout structure (Create Template → Generate instead).
