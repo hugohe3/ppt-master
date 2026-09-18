@@ -85,7 +85,7 @@ primary_color: "#XXXXXX"
 - Only when real `images/` or `icons/` assets exist.
 ```
 
-Keep a supplied logo's extension; with several lockups use descriptive filenames and name exactly one default presenting entity; create another workspace when a subsidiary/campaign identity differs materially.
+A manual's usage rules — color frequency, logo prohibitions, banned words, size scale, photo policy, fixed footer text — go as bullets under the section they govern, which downstream reads whole. Keep a supplied logo's extension; with several lockups use descriptive filenames and name exactly one default presenting entity; create another workspace when a subsidiary/campaign identity differs materially.
 
 ## 4. Brand Validation
 

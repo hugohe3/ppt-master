@@ -79,7 +79,7 @@ Run `pptx_template_import.py "<reference.pptx>" -o "<import_workspace>"` (withou
 
 | Strategy | Read |
 |---|---|
-| `standard` / `fidelity` | `analysis/manifest.json`, exported resources, `svg/inheritance.json`, `authoring_summary.json`, and every cleaned layered IR document (Masters, Layouts, Slides — the complete read surface, including Layouts unused by any sample slide); flat pages are optional spot checks; never `authoring_manifest.json` |
+| `standard` / `fidelity` | `analysis/manifest.json`, exported resources, `svg/inheritance.json`, `authoring_summary.json`, and the cleaned layered IR — every Master and Layout, including Layouts unused by any sample slide, plus every Slide under `fidelity` or enough Slides to settle direction and assets under `standard`; flat pages are optional spot checks; never `authoring_manifest.json` |
 | `mirror` | Source summaries and asset evidence needed for reuse and Design Spec judgment; tools consume the complete import workspace |
 
 Use manifest facts for orientation and screenshots or the original PPTX only for visual cross-checking; never bulk-read opaque payload. When bringing a reference into project scope for analysis, use `project_manager.py import-sources --no-image-propagation` to retain extracted bitmaps under `sources/`; adopt identity assets into `images/` deliberately before Step 4.
@@ -302,7 +302,7 @@ This step is a **hard gate**: no review PPTX, registration, staged install, or h
 
 ### Step 5.1: Prototype Review Round
 
-Layout/Deck only; Brand and Style skip it. Step 3 confirmed scope from a brief, not from the new design, so show the validated prototypes before they become durable: list the roster with one line per prototype (basename, role, slots) and point to the files or the Step 6 review PPTX, then wait for the user's reaction. Feedback revises prototypes or the spec inside the confirmed brief; a change to scope, kind, canvas, or replication intent returns to Step 2; `mirror` prototypes are hash-preserved, so feedback lands only in the spec or returns to Step 2. After any revision rerun Step 5 (and Step 6 when triggered) before Step 7. Under explicit delegation, perform the review yourself — the roster line, the advisory capacity report, every prototype's slot carriers (baseline inside the frame, a font stack with Latin and EA faces), and roster ↔ §V agreement — then record `Prototype review: delegated` with the items checked and any revision in the completion summary.
+Layout/Deck only; Brand and Style skip it. Step 3 confirmed scope from a brief, not from the new design, so show the validated prototypes before they become durable: list the roster with one line per prototype (basename, role, slots) and point to the files or the Step 6 review PPTX, then wait for the user's reaction. Feedback revises prototypes or the spec inside the confirmed brief; a change to scope, kind, canvas, or replication intent returns to Step 2; `mirror` prototypes are hash-preserved, so feedback lands only in the spec or returns to Step 2. After any revision rerun Step 5 (and Step 6 when triggered) before Step 7. Under explicit delegation, perform the review yourself — the roster line, the advisory capacity report, every prototype's slot carriers (baseline inside the frame; a Deck's font stack with Latin and EA faces, a Layout's one neutral Latin face), and roster ↔ §V agreement — then record `Prototype review: delegated` with the items checked and any revision in the completion summary.
 
 ---
 

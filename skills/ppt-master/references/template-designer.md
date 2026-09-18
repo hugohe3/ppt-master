@@ -213,7 +213,7 @@ Every template SVG satisfies the structured metadata contract of [`pptx-structur
 | Fixed atoms | Authored Master/Layout atoms also carry `data-pptx-editable="false"`; preserved source atoms keep their ownership and comparable paint order (grouping and spelling may differ, regrouping may not) |
 | Keys | `standard` / `fidelity` write authored keys; `mirror` preserves the source keys, picker names, placeholder types/indices/bounds, and carrier identity exactly (never replacing `subTitle`, `obj`, `media`, or `dt` with generic body) |
 | Slot roles | Authored modes assign `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, `slide-number` deliberately, with indices only to disambiguate repeated roles |
-| Slot bounds | Authored slots derive `data-pptx-bounds` from the intended safe area, column, panel inset, or media frame — never from character count, glyph width, wrapping, or the sample-content box; mirror keeps the source Layout frame |
+| Slot bounds | Authored slots derive `data-pptx-bounds` from the intended safe area, column, panel inset, or media frame — never from character count, glyph width, wrapping, or the sample-content box; leave recurring page types some Slide-local field, since a structured deck pairs Morph only on Slide-local groups, never on slots; mirror keeps the source Layout frame |
 | Inherited visuals | Repeated in every standalone SVG so preview stays complete; export validates their equality and infers no ownership |
 | Source refs | Final templates contain no `data-pptx-source-ref` |
 
