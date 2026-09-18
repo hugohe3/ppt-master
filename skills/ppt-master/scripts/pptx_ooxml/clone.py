@@ -666,6 +666,73 @@ def _discard_rebuilt_shape_links(root: ET.Element, shape_ids: set[str]) -> None:
     visit(root)
 
 
+def _report_all_dangling_slide_jumps(
+    entries: dict[str, bytes],
+    planned_refs: list[SlideRef],
+    *,
+    outputs_by_source_part: dict[str, list[str]],
+    source_ref_by_part: dict[str, SlideRef],
+    discarded_shape_links: dict[int, set[str]] | None = None,
+) -> None:
+    """Raise once, naming every planned slide whose jumps leave the plan.
+
+    The per-slide remap stops at the first bad relationship; a page plan that
+    drops two slides from a navigation deck would otherwise surface one
+    offending page per export attempt.
+    """
+    problems: list[str] = []
+    for output_index, source_ref in enumerate(planned_refs, start=1):
+        rels_xml = entries.get(source_ref.rels_name)
+        slide_xml = entries.get(source_ref.part_name)
+        if not rels_xml or not slide_xml:
+            continue
+        try:
+            slide_root = ET.fromstring(slide_xml)
+            rels_root = ET.fromstring(rels_xml)
+        except ET.ParseError:
+            continue
+        # A link on a shape the edited page removed leaves with the shape.
+        discarded = (discarded_shape_links or {}).get(output_index, set())
+        if discarded:
+            _discard_rebuilt_shape_links(slide_root, discarded)
+        owner_label = f"Source slide {source_ref.index}"
+        relationship_ids = _slide_jump_relationship_ids(slide_root, owner_label=owner_label)
+        relationships = {
+            rel.attrib.get("Id", ""): rel
+            for rel in rels_root.findall(_qn(REL_NS, "Relationship"))
+        }
+        omitted: dict[str, int] = {}
+        repeated: dict[str, int] = {}
+        for relationship_id in relationship_ids:
+            rel = relationships.get(relationship_id)
+            if rel is None or rel.attrib.get("Type") != SLIDE_REL_TYPE:
+                continue
+            target = rel.attrib.get("Target")
+            if not target:
+                continue
+            source_target_part = _normalize_part(target, source_ref.part_name)
+            if source_target_part == source_ref.part_name:
+                continue
+            target_ref = source_ref_by_part.get(source_target_part)
+            target_label = (
+                f"source slide {target_ref.index}" if target_ref is not None else source_target_part
+            )
+            outputs = outputs_by_source_part.get(source_target_part, [])
+            if not outputs:
+                omitted[target_label] = omitted.get(target_label, 0) + 1
+            elif len(outputs) > 1:
+                repeated[target_label] = repeated.get(target_label, 0) + 1
+        for label, count in sorted(omitted.items()):
+            problems.append(f"{owner_label} links to omitted {label} ({count} relationship(s))")
+        for label, count in sorted(repeated.items()):
+            problems.append(f"{owner_label} links to repeated {label} ({count} relationship(s))")
+    if problems:
+        raise RuntimeError(
+            f"{len(problems)} slide-jump target(s) leave the page plan; include each "
+            "target exactly once or retarget the links: " + "; ".join(problems)
+        )
+
+
 def clone_presentation_slides(
     source_pptx: Path,
     source_slides: tuple[int, ...],
@@ -749,6 +816,13 @@ def clone_presentation_slides(
             output_part
         )
     source_entries = dict(entries)
+    _report_all_dangling_slide_jumps(
+        source_entries,
+        [slide_refs[index] for index in source_slides],
+        outputs_by_source_part=outputs_by_source_part,
+        source_ref_by_part=source_ref_by_part,
+        discarded_shape_links=discarded_shape_links,
+    )
     for output_index, source_index in enumerate(source_slides, start=1):
         source_ref = slide_refs[source_index]
         output_part, output_rels = output_slides[output_index - 1]
