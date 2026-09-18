@@ -13,6 +13,7 @@ Usage:
     python3 scripts/beautify_inventory.py <slide_library.json> [--images <image_manifest.json>] [-o inventory.json]
     python3 scripts/beautify_inventory.py <inventory.json> --summary
     python3 scripts/beautify_inventory.py <inventory.json> --page N [--with-geometry]
+    python3 scripts/beautify_inventory.py <inventory.json> --verify <exported.pptx>
 
 Examples:
     python3 scripts/beautify_inventory.py projects/x/analysis/<stem>.slide_library.json \
@@ -30,7 +31,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any, Optional
 
@@ -220,6 +223,100 @@ def _positive_int(value: str) -> int:
     return parsed
 
 
+_WHITESPACE_RE = re.compile(r"\s+")
+
+
+def _compact(text: str) -> str:
+    """Whitespace-free form for containment checks: layout may rewrap, never reword."""
+    return _WHITESPACE_RE.sub("", text or "")
+
+
+def _frozen_strings(slide: dict) -> list[str]:
+    """Every source string a slide must still carry: paragraphs, table cells, chart labels, SmartArt nodes."""
+    strings: list[str] = []
+    for block in slide.get("text_blocks", []):
+        strings.extend(line for line in (block.get("text") or "").split("\n") if line.strip())
+    for table in slide.get("tables", []):
+        for row in table.get("cells", []):
+            strings.extend(cell for cell in row if cell and cell.strip())
+    for chart in slide.get("charts", []):
+        strings.extend(str(c) for c in chart.get("categories", []) if str(c).strip())
+        strings.extend(str(series.get("name")) for series in chart.get("series", []) if series.get("name"))
+    for diagram in slide.get("diagrams", []):
+        strings.extend(node.get("text") for node in diagram.get("nodes", []) if node.get("text"))
+    return strings
+
+
+def _exported_text_by_slide(pptx_path: Path) -> dict[int, str]:
+    """Compact per-slide text of an exported deck, read with the same analyzer as intake."""
+    from pptx_ooxml.analyzer import analyze_pptx
+
+    library = analyze_pptx(pptx_path)
+    by_slide: dict[int, str] = {}
+    for slide in library.get("slides", []):
+        parts: list[str] = [slot.get("text", "") for slot in slide.get("slots", [])]
+        for table in slide.get("tables", []):
+            for row in table.get("rows", []):
+                parts.extend(cell.get("text", "") for cell in row.get("cells", []))
+        for chart in slide.get("charts", []):
+            parts.extend(str(c) for c in chart.get("categories", []))
+            parts.extend(str(series.get("name", "")) for series in chart.get("series", []))
+        for diagram in slide.get("diagrams", []):
+            parts.extend(str(t) for t in diagram.get("text_items", []))
+        by_slide[int(slide.get("slide_index"))] = _compact("\n".join(parts))
+    return by_slide
+
+
+def verify_against_export(inventory: dict, pptx_path: Path) -> tuple[list[dict], bool]:
+    """Per-slide containment of every frozen source string in the exported deck."""
+    exported = _exported_text_by_slide(pptx_path)
+    rows: list[dict] = []
+    clean = True
+    for slide in inventory.get("slides", []):
+        idx = int(slide.get("slide_index"))
+        page_text = exported.get(idx)
+        frozen = _frozen_strings(slide)
+        if page_text is None:
+            rows.append({"slide_index": idx, "frozen": len(frozen), "missing": frozen, "exported_page": False})
+            clean = False
+            continue
+        missing = [text for text in frozen if _compact(text) not in page_text]
+        source_chars = Counter(_compact("".join(frozen)))
+        added = Counter(page_text) - source_chars
+        rows.append({
+            "slide_index": idx,
+            "frozen": len(frozen),
+            "missing": missing,
+            "added_chars": sum(added.values()),
+            "added_sample": "".join(sorted(added.elements()))[:40],
+        })
+        if missing:
+            clean = False
+    extra_pages = sorted(set(exported) - {int(s.get("slide_index")) for s in inventory.get("slides", [])})
+    if extra_pages:
+        clean = False
+        rows.append({"slide_index": None, "extra_exported_pages": extra_pages})
+    return rows, clean
+
+
+def _print_verify(rows: list[dict], clean: bool, pptx_path: Path) -> None:
+    print(f"[VERIFY] frozen source strings vs {pptx_path.name}")
+    for row in rows:
+        if row.get("slide_index") is None:
+            print(f"  extra exported page(s) with no source slide: {row['extra_exported_pages']}")
+            continue
+        if not row.get("exported_page", True):
+            print(f"  slide {row['slide_index']:02d}: no exported page; {row['frozen']} frozen string(s) unplaced")
+            continue
+        status = "ok" if not row["missing"] else f"MISSING {len(row['missing'])}"
+        added = row["added_chars"]
+        note = f", +{added} char(s) not in source" if added else ""
+        print(f"  slide {row['slide_index']:02d}: {row['frozen']} frozen, {status}{note}")
+        for text in row["missing"][:5]:
+            print(f"      - {text[:80]}")
+    print(f"[VERIFY] {'passed: every frozen string is present on its page' if clean else 'FAILED: frozen strings are missing or pages do not match'}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -253,6 +350,11 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="N",
         help="Print one slide's frozen content/data by slide_index to stdout",
     )
+    view_group.add_argument(
+        "--verify",
+        metavar="EXPORTED_PPTX",
+        help="Check that every frozen source string is present on its page of an exported deck; exit 1 when any is missing",
+    )
     parser.add_argument(
         "--with-geometry",
         action="store_true",
@@ -265,7 +367,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    view_requested = args.summary or args.page is not None
+    view_requested = args.summary or args.page is not None or args.verify is not None
     if view_requested and args.output:
         parser.error("--summary/--page write to stdout and cannot be combined with --output")
     if args.with_geometry and args.page is None:
@@ -306,6 +408,15 @@ def main(argv: Optional[list[str]] = None) -> int:
         input_data,
         _images_by_slide(manifest),
     )
+
+    if args.verify is not None:
+        pptx_path = Path(args.verify)
+        if not pptx_path.is_file():
+            print(f"[ERROR] exported deck not found: {pptx_path}", file=sys.stderr)
+            return 1
+        rows, clean = verify_against_export(inventory, pptx_path)
+        _print_verify(rows, clean, pptx_path)
+        return 0 if clean else 1
 
     if args.summary:
         print(json.dumps(_summary_view(inventory), ensure_ascii=False, indent=2))
