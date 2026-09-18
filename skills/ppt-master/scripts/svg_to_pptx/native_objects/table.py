@@ -1260,9 +1260,22 @@ def _native_table_border_topology_warnings(
     row_count = len(row_edges) - 1
     col_count = len(column_edges) - 1
     for record in shape_records:
-        if record.tag != "line" or record.stroke is None:
+        if record.stroke is None:
             continue
         x1, y1, x2, y2 = record.bounds
+        if record.tag == "rect":
+            # A stroked rect on the table's outer bounds draws the outer frame.
+            if (
+                abs(x1 - column_edges[0]) <= 2 and abs(x2 - column_edges[-1]) <= 2
+                and abs(y1 - row_edges[0]) <= 2 and abs(y2 - row_edges[-1]) <= 2
+            ):
+                for col_idx in range(col_count):
+                    covered.update({("h", 0, col_idx), ("h", row_count, col_idx)})
+                for row_idx in range(row_count):
+                    covered.update({("v", 0, row_idx), ("v", col_count, row_idx)})
+            continue
+        if record.tag != "line":
+            continue
         if abs(y2 - y1) <= 1:
             boundary = next(
                 (idx for idx, edge in enumerate(row_edges) if abs(edge - y1) <= 2),

@@ -310,8 +310,10 @@ def main() -> None:
             print(
                 "[TIP] Structured "
                 + "/".join(checker._structured_native_slots)
-                + " placeholder slot(s) are filled by native objects: export "
-                "with --native-charts-and-tables (the standard export refuses them)."
+                + " placeholder slot(s) are filled by native objects: this deck "
+                "exports only with --native-charts-and-tables and the standard "
+                "export fails; for both forms author that object as a Slide-local "
+                "marker group beside the slots instead."
             )
         if checker._has_incomplete_page_roster:
             print(

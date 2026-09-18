@@ -949,11 +949,18 @@ class ProjectManager:
             if suffix in {".md", ".markdown"}:
                 duplicate_markdown = self._find_equivalent_markdown(source_path, sources_dir)
                 if duplicate_markdown is not None:
-                    summary["markdown"].append(str(duplicate_markdown))
+                    if str(duplicate_markdown) not in summary["markdown"]:
+                        summary["markdown"].append(str(duplicate_markdown))
                     if propagate_images:
                         self._propagate_companion_image_assets(duplicate_markdown, project_dir)
+                    # A moved source must leave projects/ even when its content
+                    # already sits in the project under another name.
+                    removed = ""
+                    if effective_move and source_path.resolve() != duplicate_markdown.resolve():
+                        source_path.unlink()
+                        removed = "; the moved duplicate was removed"
                     summary["notes"].append(
-                        f"{item}: skipped duplicate markdown import because equivalent content already exists as {duplicate_markdown.name}"
+                        f"{item}: skipped duplicate markdown import because equivalent content already exists as {duplicate_markdown.name}{removed}"
                     )
                     continue
 
