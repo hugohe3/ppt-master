@@ -1213,6 +1213,7 @@ class SVGQualityChecker:
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
         self._spec_only_template_kind: str | None = None
+        self._template_roster_pages = 0
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._communication_trace_issues: List[Tuple[str, str]] = []
@@ -9282,6 +9283,7 @@ class SVGQualityChecker:
         custom_contract = self._extract_frontmatter_placeholders(spec_text) if spec_text else {}
 
         on_disk = {p.stem for p in svg_files}
+        self._template_roster_pages = len(spec_pages)
 
         if spec_pages:
             spec_set = set(spec_pages)
@@ -9921,6 +9923,11 @@ class SVGQualityChecker:
             pretty_kind = self._spec_only_template_kind.title()
             print(f"  {pretty_kind} design_spec.md contract passed.")
         if not errors:
+            if self._template_roster_pages:
+                print(
+                    f"  Roster contract passed "
+                    f"({self._template_roster_pages} declared page(s) matched)."
+                )
             if self._spec_only_template_kind is None:
                 print("  No structural roster issues.")
                 print("  Conventional placeholder-name hints may be declared through "

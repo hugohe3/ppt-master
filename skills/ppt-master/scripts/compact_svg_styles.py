@@ -147,6 +147,13 @@ def _is_preset_atom(element: ET.Element) -> bool:
     return isinstance(element.tag, str) and authored_preset_encoding(element) is not None
 
 
+def _keeps_local_paint(element: ET.Element) -> bool:
+    """Preset atoms and icon references resolve paint from their own attributes."""
+    return _is_preset_atom(element) or (
+        _local_name(element.tag) == "use" and element.get("data-icon") is not None
+    )
+
+
 def is_canonical_presentation_value(
     value: str,
     *,
@@ -366,9 +373,9 @@ def _promote_common_group_defaults(
     ]
     if len(children) < 2:
         return
-    # Helper-owned preset atoms keep their paint local; the preset contract
-    # rejects paint that only arrives from an ancestor group.
-    if any(_is_preset_atom(child) for child in children):
+    # Helper-owned preset atoms and icon references keep their paint local;
+    # both contracts reject paint that only arrives from an ancestor group.
+    if any(_keeps_local_paint(child) for child in children):
         return
 
     element_styles = _style_declarations(element.get("style"))
@@ -419,7 +426,7 @@ def _remove_redundant_inherited_styles(
 ) -> None:
     if (
         _local_name(element.tag) in _DEFINITION_SUBTREES
-        or _is_preset_atom(element)
+        or _keeps_local_paint(element)
     ):
         return
     declarations = _style_declarations(element.get("style"))
