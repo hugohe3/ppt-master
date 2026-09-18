@@ -116,7 +116,7 @@ Extract the source's observable operating rules â€” not generic design advice â€
 
 ### 1C. Image / visual references
 
-`Read` each image/PDF page: rough theme hues (never exact HEX as fact), approximate page count, typography style (sans / serif / display, never a font name), motifs and rhythm. Every derived value is `[suggested]`.
+`Read` each image; for a long PDF, locate its page situations from converted text first, then `Read` a few representative pages, never the whole document: rough theme hues (never exact HEX as fact), approximate page count, typography style (sans / serif / display, never a font name), motifs and rhythm. Every derived value is `[suggested]`.
 
 ### 1D. Text, document, website, and asset references
 

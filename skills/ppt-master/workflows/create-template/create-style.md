@@ -50,9 +50,9 @@ keywords: [<three-to-five discovery tags>]
 | Sources | <URLs, references, or user brief; date/version when known> |
 
 ## II. Communication Method
-- **Preferred Mode**: <catalog id or custom; omit when none>
-- **Mode References**: <catalog ids used by a custom seed; omit when none>
-- **Mode Behavior**: <required for custom; omit for a preset>
+- **Preferred Mode**: <catalog id or custom; drop the line when none>
+- **Mode References**: <custom only — drop the line otherwise: catalog ids used as its seed>
+- **Mode Behavior**: <custom only — drop the line for a preset>
 - **Argument Flow** / **Page Message Discipline** / **Claim Discipline**: <prose>
 
 ## III. Page Role Vocabulary
