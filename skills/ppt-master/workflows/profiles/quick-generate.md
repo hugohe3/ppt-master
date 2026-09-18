@@ -56,6 +56,8 @@ Artifact roles follow [`artifact-ownership.md`](../../references/artifact-owners
 | CSV / TSV | Read directly as a plain-text table |
 | Markdown or conversation text | Read directly |
 
+A book-length converted source is located by its heading index and searched phrases, then read only in the sections the deck draws on.
+
 **Orientation review**: apply [`conversion.md`](../../scripts/docs/conversion.md) § Image Orientation Review before import when correction is requested, converted text asks for rotated viewing, or an asset is visibly sideways (skip the legacy HTML tool).
 
 **Research scope**: after reading every source, research only the gaps where the requested outcome would otherwise require inventing, omitting, or leaving unsupported an externally verifiable claim. An Image to PPTX surface is a closed corpus whose unreadable regions become `manual_required`; a closed/source-only brief stays within its material.
