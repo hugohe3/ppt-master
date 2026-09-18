@@ -219,9 +219,9 @@ An authored native preset fragment (§1.5) is already an atomic `<g id>` and cou
   <!-- Shadow only if the card floats over a colored panel; on flat white, omit it. -->
   <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
   <use data-icon="chunk-filled/bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
-  <g id="card-benefits-metric">
-    <text x="105" y="270" font-size="56" font-weight="bold" fill="#0071E3">10×</text>
-    <text x="250" y="270" font-size="30" font-weight="bold" fill="#1D1D1F">Faster</text>
+  <g id="card-benefits-metric" font-weight="bold">  <!-- shared presentation lives on the group -->
+    <text x="105" y="270" font-size="56" fill="#0071E3">10×</text>
+    <text x="250" y="270" font-size="30" fill="#1D1D1F">Faster</text>
   </g>
   <text x="105" y="310" font-size="18" fill="#6E6E73">Reduce production time from days to hours.</text>
 </g>
