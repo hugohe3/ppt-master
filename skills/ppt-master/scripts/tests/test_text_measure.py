@@ -125,7 +125,7 @@ class TextMeasureTests(unittest.TestCase):
         text = 'The dissemination layer covers the poster you stand next to at a conference session'
         crude = sum(estimate_text_cluster_widths(text, 16))
         self.assertAlmostEqual(crude, 661.6)
-        for family in ('Segoe UI', 'Unlisted Sans', 'Segoe UI, Arial'):
+        for family in ('Aptos', 'Unlisted Sans', 'Aptos, Arial'):
             with self.subTest(family=family):
                 self.assertEqual(
                     measure_text(text, size=16, family=family, include_headroom=False),
