@@ -28,7 +28,7 @@ Missing names, or one batch mixing the four stylistic libraries, exit non-zero; 
 <use data-icon="simple-icons/github" x="100" y="200" width="48" height="48" fill="#181717"/>
 ```
 
-`data-icon` is `<library>/<icon-name>` (filename without `.svg`), case-sensitive because it resolves a real file — bundled names are canonical lowercase (`tabler-outline/award`), custom icons keep their file case; `x`, `y` position; `width`, `height` size (32–48px recommended); `fill` color. A complete `library/name` identifier is mandatory: bare names, abbreviated namespaces, paths into `templates/icons/`, and unsynced bundled files fail rather than fall back. `finalize_svg.py` embeds every placeholder during post-processing (`scripts/svg_finalize/embed_icons.py svg_output/*.svg` runs it manually).
+`data-icon` is `<library>/<icon-name>` (filename without `.svg`), case-sensitive because it resolves a real file — bundled names are canonical lowercase (`tabler-outline/award`), custom icons keep their file case; `x`, `y` position; `width`, `height` size (32–48px recommended on a 1280-wide canvas; scale with canvas width); `fill` color. A complete `library/name` identifier is mandatory: bare names, abbreviated namespaces, paths into `templates/icons/`, and unsynced bundled files fail rather than fall back. `finalize_svg.py` embeds every placeholder during post-processing (`scripts/svg_finalize/embed_icons.py svg_output/*.svg` runs it manually).
 
 ## Searching for Icons
 

@@ -163,7 +163,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advanc
 |---|---|
 | `-t/--transition` | Default `fade`; `none` keeps an explicit auto-advance |
 | `--transition-duration` | Default `0.4` |
-| `--auto-advance` | Seconds; click still advances |
+| `--auto-advance` | Seconds, longer than the page's animation total; click still advances |
 
 **Hard rule — no silent downgrade**: an unknown effect, unsupported option, or invalid duration fails export and is never replaced by `fade`. Carrier XML, MCE fallbacks, and read-back: [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md).
 
