@@ -1724,6 +1724,7 @@ class SVGQualityChecker:
                     result,
                     included_text_ids,
                     unchanged_text_ids,
+                    baseline_root=baseline_root,
                 )
                 self._check_roundtrip_unsupported_table_edits(
                     root,
@@ -1779,9 +1780,31 @@ class SVGQualityChecker:
             ) is not None:
                 continue
             try:
-                semantic_shape_text_component(shape, included_text_ids=included_text_ids)
+                component = semantic_shape_text_component(
+                    shape, included_text_ids=included_text_ids,
+                )
             except ValueError as exc:
                 result['errors'].append(f"{_element_label(shape)}: {exc}")
+                continue
+            if (
+                component is None
+                or _classify_paragraph_block is None
+                or not any(
+                    _local_name(child) == 'tspan'
+                    and any(child.get(name) for name in ('x', 'y', 'dy'))
+                    for child in component
+                )
+                or _classify_paragraph_block(
+                    component, preserve_line_breaks=True,
+                ) is not None
+            ):
+                continue
+            result['errors'].append(
+                f"{_element_label(shape)}: multi-line semantic shape text must "
+                "stay one paragraph block, which export otherwise splits into "
+                "several text components; write the first line on <text x y> "
+                "and each later line as <tspan x dy>, never an absolute tspan y"
+            )
 
     @staticmethod
     def _roundtrip_text_diff_ids(
@@ -2144,6 +2167,7 @@ class SVGQualityChecker:
         result: Dict,
         included_text_ids: set[int],
         unchanged_text_ids: set[int],
+        baseline_root: ET.Element | None = None,
     ) -> None:
         """Calibrate source text widths, then check edited owning frames."""
         helpers = (
@@ -2221,6 +2245,7 @@ class SVGQualityChecker:
             max(positive_overflow_ratios, default=0.0),
             _ROUNDTRIP_TEXT_CALIBRATION_CAP,
         )
+        source_slot_overflow = self._roundtrip_source_slot_overflow(baseline_root)
         result['info']['roundtrip_text_calibration'] = {
             'factor': calibration,
             'measured_unchanged': measured_unchanged,
@@ -2280,6 +2305,12 @@ class SVGQualityChecker:
             )
             if corrected_horizontal_ratio <= 0:
                 continue
+            # The source text of this same slot already reached this far.
+            if horizontal_ratio <= source_slot_overflow.get(
+                self._roundtrip_frame_source_ref(text_element, parent_by_id),
+                0.0,
+            ):
+                continue
             left, top, right, bottom = estimated
             frame_left, frame_top, frame_right, frame_bottom = frame
             overflow_detail = (
@@ -2305,6 +2336,68 @@ class SVGQualityChecker:
                 )
             else:
                 result['errors'].append(finding)
+
+    @staticmethod
+    def _roundtrip_frame_source_ref(
+        text_element: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> str | None:
+        """Return the source ref of the object whose frame owns one text."""
+        current: ET.Element | None = text_element
+        while current is not None:
+            if current.get('data-pptx-frame') is not None:
+                return current.get('data-pptx-source-ref')
+            current = parent_by_id.get(id(current))
+        return None
+
+    def _roundtrip_source_slot_overflow(
+        self,
+        baseline_root: ET.Element | None,
+    ) -> Dict[str | None, float]:
+        """Measure how far each imported slot's own source text overflows it."""
+        if baseline_root is None:
+            return {}
+        try:
+            font_sizes = _resolve_project_font_sizes(baseline_root)
+            letter_spacings = _resolve_project_letter_spacings(
+                baseline_root,
+                font_sizes,
+            )
+        except ValueError:
+            return {}
+        parent_by_id = {
+            id(child): parent
+            for parent in baseline_root.iter()
+            for child in list(parent)
+        }
+        overflow: Dict[str | None, float] = {}
+        for text_element in baseline_root.iter(f'{{{SVG_NS}}}text'):
+            source_ref = self._roundtrip_frame_source_ref(
+                text_element,
+                parent_by_id,
+            )
+            if source_ref is None:
+                continue
+            estimated = self._estimated_text_bounds(
+                text_element,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+                include_headroom=True,
+            )
+            _label, frame, _error, _inferred = self._roundtrip_text_frame(
+                text_element,
+                parent_by_id,
+            )
+            if estimated is None or frame is None:
+                continue
+            metrics = self._bounds_overflow_metrics(estimated, frame)
+            if metrics is not None and metrics[1] > 0:
+                overflow[source_ref] = max(
+                    overflow.get(source_ref, 0.0),
+                    metrics[1],
+                )
+        return overflow
 
     @classmethod
     def _roundtrip_text_frame(
