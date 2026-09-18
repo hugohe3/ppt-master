@@ -81,6 +81,14 @@ def main(argv: list[str] | None = None) -> int:
     if not project_path.exists():
         print(f'Error: Project path does not exist: {project_path}', file=sys.stderr)
         return 1
+    if not project_path.is_dir():
+        # A sidecar path here would make validate look for <file>/animations.json,
+        # find nothing, and pass an unchecked file.
+        print(
+            f'Error: expected a project directory, got a file: {project_path}',
+            file=sys.stderr,
+        )
+        return 1
 
     if args.command == 'scaffold':
         try:
