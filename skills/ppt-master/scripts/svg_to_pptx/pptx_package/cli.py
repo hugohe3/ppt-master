@@ -2229,6 +2229,10 @@ Recorded narration:
                         help='Transition duration in seconds (default: 0.4)')
     parser.add_argument('--auto-advance', type=non_negative_float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
+    parser.add_argument('--kiosk', action='store_true',
+                        help='Export as a looping kiosk show: PowerPoint ignores click and '
+                             'keyboard advance, so only --auto-advance timings and hyperlinks '
+                             'move between slides')
 
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
                         default=None,
@@ -3750,6 +3754,7 @@ Recorded narration:
         transition_sound=transition_sound,
         transition_duration=transition_duration,
         auto_advance=auto_advance,
+        kiosk=args.kiosk,
         notes=notes,
         enable_notes=enable_notes,
         animation=animation,

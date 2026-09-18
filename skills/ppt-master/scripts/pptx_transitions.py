@@ -3131,12 +3131,56 @@ def set_package_use_timings(
     _ensure_presentation_props_references(parts, props_part=props_part)
 
 
+def set_package_kiosk_show(parts: MutableMapping[str, bytes]) -> None:
+    """Make ppt/presProps.xml a looping kiosk show (browsed at a kiosk).
+
+    PowerPoint's "Browsed at a kiosk (full screen)" setting: the show loops
+    until Escape and ignores click and keyboard advance, so only timings and
+    hyperlinks move between slides — what a touch-screen guide or a signage
+    loop needs. `useTimings` is left as the timing pass set it.
+    """
+    rels_root = parse_source_xml(parts[PRESENTATION_RELS_PART])
+    existing_props_part = _presentation_props_part(rels_root)
+    props_part = existing_props_part or PRESENTATION_PROPS_PART
+    if props_part in parts:
+        source = parts[props_part]
+        root = parse_source_xml(source)
+    else:
+        if existing_props_part is not None:
+            raise ValueError(
+                f"presentation properties part is missing: {props_part}"
+            )
+        source = (
+            f'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            f'<p:presentationPr xmlns:p="{PML_NS}"/>'
+        ).encode("utf-8")
+        root = parse_source_xml(source)
+
+    show_properties = root.find(_qn(PML_NS, "showPr"))
+    if show_properties is None:
+        show_properties = ET.Element(_qn(PML_NS, "showPr"))
+        _insert_show_properties(root, show_properties)
+    show_properties.set("loop", "1")
+    # CT_ShowProperties opens with one of present / browse / kiosk.
+    for child in list(show_properties):
+        if child.tag in {_qn(PML_NS, kind) for kind in ("present", "browse", "kiosk")}:
+            show_properties.remove(child)
+    show_properties.insert(0, ET.Element(_qn(PML_NS, "kiosk")))
+    parts[props_part] = serialize_source_xml(root, source)
+    _ensure_presentation_props_references(parts, props_part=props_part)
+
+
 def set_directory_use_timings(
     extract_dir: Path,
     *,
-    enabled: bool = True,
+    enabled: bool | None = True,
+    kiosk: bool = False,
 ) -> None:
-    """Set presentation timing playback in an extracted PPTX directory."""
+    """Set presentation timing playback (and optionally kiosk looping) in an extracted PPTX directory.
+
+    ``enabled=None`` leaves ``useTimings`` untouched so a kiosk show can be
+    written without claiming timed advance.
+    """
     part_names = {
         PRESENTATION_RELS_PART,
         CONTENT_TYPES_PART,
@@ -3150,7 +3194,10 @@ def set_directory_use_timings(
         name: (extract_dir / name).read_bytes()
         for name in part_names
     }
-    set_package_use_timings(parts, enabled=enabled)
+    if enabled is not None:
+        set_package_use_timings(parts, enabled=enabled)
+    if kiosk:
+        set_package_kiosk_show(parts)
     for name, payload in parts.items():
         path = extract_dir / name
         path.parent.mkdir(parents=True, exist_ok=True)

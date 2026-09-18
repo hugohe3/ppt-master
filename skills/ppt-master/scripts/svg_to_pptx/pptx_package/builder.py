@@ -6626,6 +6626,7 @@ def create_pptx_with_native_svg(
     transition: str | None = 'fade',
     transition_duration: float = 0.5,
     auto_advance: float | None = None,
+    kiosk: bool = False,
     use_compat_mode: bool = True,
     notes: dict[str, str] | None = None,
     enable_notes: bool = True,
@@ -6698,6 +6699,7 @@ def create_pptx_with_native_svg(
             generated page transition.
         transition_duration: Transition duration in seconds.
         auto_advance: Auto-advance interval in seconds.
+        kiosk: Write a looping kiosk show (no click/keyboard advance).
         use_compat_mode: Retained for API compatibility; ignored in native mode.
         notes: Notes dict, key is SVG stem, value is notes content.
         enable_notes: Whether to enable notes embedding.
@@ -8449,8 +8451,12 @@ def create_pptx_with_native_svg(
                     f"{pruned_page_plan_parts} unreachable part(s)"
                 )
 
-        if package_uses_timings:
-            set_directory_use_timings(extract_dir)
+        if package_uses_timings or kiosk:
+            set_directory_use_timings(
+                extract_dir,
+                enabled=True if package_uses_timings else None,
+                kiosk=kiosk,
+            )
 
         reinjected_resources = _reinject_roundtrip_resources(
             extract_dir,
