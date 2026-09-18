@@ -464,8 +464,8 @@ def validate_outline_roster(project_path: str | Path) -> List[str]:
 
 
 _SLIDE_JUMP_RE = re.compile(r'#slide-([1-9][0-9]*)\b')
-_EXTERNAL_LINK_RE = re.compile(r'\b(?:[a-z][a-z0-9+.-]*://|mailto:|tel:)[^\s<>"「」『』（）()]+', re.IGNORECASE)
-_LINK_TRAIL_CHARS = ';,.;，。、）)]'
+_EXTERNAL_LINK_RE = re.compile(r'\b(?:[a-z][a-z0-9+.-]*://|mailto:|tel:)[^\s<>"`「」『』（）()]+', re.IGNORECASE)
+_LINK_TRAIL_CHARS = ';,.;，。、）)]`'
 
 
 def _outline_hyperlink_lines(design_text: str) -> Dict[int, str | None]:
