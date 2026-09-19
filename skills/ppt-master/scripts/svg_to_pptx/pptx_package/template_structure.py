@@ -3025,7 +3025,9 @@ def _layout_contract_difference(
         details.append("generated Layout element order differs")
     if not details:
         details.append(
-            "shared Layout element metadata, geometry, topology, or content differs"
+            "shared Layout element metadata (data-pptx-* attributes), geometry, "
+            "topology, or content differs; fills, strokes, and gradients may be "
+            "repainted"
         )
     return "; ".join(details)
 
@@ -3323,8 +3325,13 @@ def template_prototype_errors(
             errors.append(
                 f"{spec.svg_path.name}: template Master structure differs "
                 f"from prototype {reference.svg_path.name}; strict and adaptive "
-                "routes must retain its ids, topology, geometry, and content"
-                + (" including mirror visual styling" if literal_visual else "")
+                "routes must retain its ids, topology, geometry, data-pptx-* "
+                "metadata, and content"
+                + (
+                    " including mirror visual styling"
+                    if literal_visual
+                    else "; fills, strokes, and gradients may be repainted"
+                )
                 + (
                     f"; first difference: {master_difference}"
                     if master_difference else ""

@@ -4961,7 +4961,12 @@ class SVGQualityChecker:
                     ),
                     outer=boundary,
                     repair=(
-                        'expand the root module bounds into available '
+                        # A Layout slot's bounds are its contract on every page.
+                        'reflow the text, or map the page to a Layout whose '
+                        'slot is larger; slot bounds stay as the prototype '
+                        'declares them'
+                        if module.get('data-pptx-placeholder') is not None
+                        else 'expand the root module bounds into available '
                         'non-overlapping space; otherwise reflow the text'
                     ),
                     width_diagnostic=self._text_width_diagnostic(
