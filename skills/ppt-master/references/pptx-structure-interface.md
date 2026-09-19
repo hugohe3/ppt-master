@@ -64,6 +64,8 @@ Every new SVG project declares one deterministic route:
 
 **Slot bounds**: derive `data-pptx-bounds` from the intended design zone, column, panel inset, safe area, or picture frame — never from text length, glyph width, line count, or a tight content box. Repeat the same slot ids/types/effective indices/default bounds/binding modes on every slide using that Layout; Slide content and local carrier geometry may differ from the default frame. A template-owned chart/table carrier may declare `data-pptx-native-authority="json"`; its metadata, marker identity, bounds, and slot binding are structural facts while its preview children are derived.
 
+**Slot capacity**: a slot's bounds are a capacity, not a whitespace quota. When a page's content leaves a slot mostly empty, set its type at the top of the role's band, bring in the source's supporting detail, or map the page to a prototype with smaller slots.
+
 **Morph endpoints**: a slot becomes a Layout placeholder at export and cannot pair; template prototypes supply only fixed layers and slots, so a Morph pair is a Slide-local group authored beside them, decided before P01.
 
 **Text carriers**: a multiline placeholder stays one native text frame, so leave strict-line text Slide-local when separate frames are required. Leave a carrier empty or whitespace-only when the placeholder must be visually blank — export materializes an invisible run; never insert a dummy dash, sub-1pt text, or an opacity-hidden glyph. A materialized mirror carrier may keep the source `data-pptx-frame`; do not add it to an authored `standard` / `fidelity` carrier merely to duplicate its bounds. `object` is the generic content slot; `media` binds an authored image/crop and does not synthesize video or audio from a decorative group.
