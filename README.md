@@ -15,7 +15,7 @@ English | [中文](./README_CN.md)
 
 ## ❤️ Sponsors
 
-This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a>, <a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> and other sponsors.
+This project is kept free and open source with the support of <a href="https://www.kimi.com/code?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">YouYun ZhiSuan</a>, <a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> and other sponsors.
 
 > **[Want to appear here?](SPONSORING.md)**
 
@@ -23,12 +23,12 @@ This project is kept free and open source with the support of <a href="https://w
 <summary>Click to collapse</summary>
 
 <p align="center">
-  <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi" width="100%"></a>
+  <a href="https://www.kimi.com/code?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi" width="100%"></a>
 </p>
 
-Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this project! [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) is the world's first open 3T-class model, featuring native vision and a 1-million-token context window. With PPT Master, K3 can understand source materials such as PDFs, DOCX files, and web pages, identify key points, structure the narrative, and generate a natively editable PPTX that you can continue refining in PowerPoint.
+Thanks to [Kimi](https://www.kimi.com/code?aff=ppt-master) for sponsoring this project! [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) is the world's first open 3T-class model, featuring native vision and a 1-million-token context window. With PPT Master, K3 can understand source materials such as PDFs, DOCX files, and web pages, identify key points, structure the narrative, and generate a natively editable PPTX that you can continue refining in PowerPoint.
 
-**Try a [Kimi Code plan](https://www.kimi.com/code/?aff=ppt-master) ([中文站](https://www.kimi.com/code/?aff=ppt-master) | [Global](https://www.kimi.ai/code/?aff=ppt-master)), or access the API through the Kimi Open Platform ([中文站](https://platform.kimi.com?aff=ppt-master) | [Global](https://platform.kimi.ai?aff=ppt-master)).**
+**Try a [Kimi Code plan](https://www.kimi.com/code?aff=ppt-master) ([中文站](https://www.kimi.com/code?aff=ppt-master) | [Global](https://www.kimi.ai/code?aff=ppt-master)), or access the API through the Kimi Open Platform ([中文站](https://platform.kimi.com?aff=ppt-master) | [Global](https://platform.kimi.ai?aff=ppt-master)).**
 
 <hr>
 
@@ -221,7 +221,7 @@ Never used one of these? Don't worry — in this project they play exactly one r
 | **IDE plugin / extension** | [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [GitHub Copilot](https://github.com/features/copilot), [Cline](https://cline.bot/), etc. | Installed inside hosts like VS Code or JetBrains |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
-> **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
+> **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
 
 **🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)** and **[RunAPI](https://runapi.host/register?aff=WMLJ)** offer pay-as-you-go access to Claude, GPT, Gemini and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
 
@@ -410,7 +410,7 @@ PPT Master is currently built and maintained primarily by me. Every new template
 
 **Corporate sponsors**
 
-<a href="https://www.kimi.com/code/?aff=ppt-master"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsors/kimi-dark.svg"><img src="docs/assets/sponsors/kimi-light.svg" alt="Kimi" height="40" /></picture></a>
+<a href="https://www.kimi.com/code?aff=ppt-master"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsors/kimi-dark.svg"><img src="docs/assets/sponsors/kimi-light.svg" alt="Kimi" height="40" /></picture></a>
 &nbsp;
 <a href="https://www.packyapi.ai/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
 &nbsp;

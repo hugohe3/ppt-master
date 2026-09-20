@@ -15,7 +15,7 @@
 
 ## ❤️ 赞助
 
-本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a>、<a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> 等赞助方支持，得以持续免费开源。
+本项目由 <a href="https://www.kimi.com/code?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a>、<a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> 等赞助方支持，得以持续免费开源。
 
 > **[想出现在这里？](SPONSORING_CN.md)**
 
@@ -23,12 +23,12 @@
 <summary>点击收起</summary>
 
 <p align="center">
-  <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
+  <a href="https://www.kimi.com/code?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
 </p>
 
-感谢 [Kimi](https://www.kimi.com/code/?aff=ppt-master) 赞助本项目！[Kimi K3](https://platform.kimi.com/docs/guide/kimi-k3-quickstart) 是全球首个开源 3T 级模型，拥有原生视觉能力与 100 万 Token 上下文。搭配 PPT Master，K3 可以理解 PDF、DOCX、网页等原始资料，提炼重点、规划演示逻辑，并生成可在 PowerPoint 中继续修改的原生可编辑 PPTX。
+感谢 [Kimi](https://www.kimi.com/code?aff=ppt-master) 赞助本项目！[Kimi K3](https://platform.kimi.com/docs/guide/kimi-k3-quickstart) 是全球首个开源 3T 级模型，拥有原生视觉能力与 100 万 Token 上下文。搭配 PPT Master，K3 可以理解 PDF、DOCX、网页等原始资料，提炼重点、规划演示逻辑，并生成可在 PowerPoint 中继续修改的原生可编辑 PPTX。
 
-**立即体验 [Kimi Code](https://www.kimi.com/code/?aff=ppt-master)（[中文站](https://www.kimi.com/code/?aff=ppt-master)｜[Global](https://www.kimi.ai/code/?aff=ppt-master)），或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
+**立即体验 [Kimi Code](https://www.kimi.com/code?aff=ppt-master)（[中文站](https://www.kimi.com/code?aff=ppt-master)｜[Global](https://www.kimi.ai/code?aff=ppt-master)），或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
 
 <hr>
 
@@ -221,7 +221,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 | **IDE 插件 / 扩展** | [Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[GitHub Copilot](https://github.com/features/copilot)、[Cline](https://cline.bot/)、通义灵码 等 | 装在 VS Code / JetBrains 等宿主里使用 |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
 
-> **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图 —— **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
+> **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图 —— **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
 
 **🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**、**[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.host/register?aff=WMLJ)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
 
@@ -415,7 +415,7 @@ PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文�
 
 **企业赞助方**
 
-<a href="https://www.kimi.com/code/?aff=ppt-master"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsors/kimi-dark.svg"><img src="docs/assets/sponsors/kimi-light.svg" alt="Kimi" height="40" /></picture></a>
+<a href="https://www.kimi.com/code?aff=ppt-master"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsors/kimi-dark.svg"><img src="docs/assets/sponsors/kimi-light.svg" alt="Kimi" height="40" /></picture></a>
 &nbsp;
 <a href="https://www.packyapi.ai/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
 &nbsp;

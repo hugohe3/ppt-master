@@ -8,17 +8,17 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 ## 当前模型推荐
 
-追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图模型 **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。如果模型能力正在拖累产出质量，应先升级驱动模型，而不是削弱工作流或质量要求。
+追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图模型 **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。如果模型能力正在拖累产出质量，应先升级驱动模型，而不是削弱工作流或质量要求。
 
 ## Kimi
 
 <p align="center">
-  <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
+  <a href="https://www.kimi.com/code?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
 </p>
 
-感谢 [Kimi](https://www.kimi.com/code/?aff=ppt-master) 赞助 PPT Master。[Kimi K3](https://platform.kimi.com/docs/guide/kimi-k3-quickstart) 是全球首个开源 3T 级模型，拥有原生视觉能力与 100 万 Token 上下文。搭配 PPT Master，K3 可以理解 PDF、DOCX、网页等原始资料，梳理演示逻辑并生成原生可编辑的 PPTX。
+感谢 [Kimi](https://www.kimi.com/code?aff=ppt-master) 赞助 PPT Master。[Kimi K3](https://platform.kimi.com/docs/guide/kimi-k3-quickstart) 是全球首个开源 3T 级模型，拥有原生视觉能力与 100 万 Token 上下文。搭配 PPT Master，K3 可以理解 PDF、DOCX、网页等原始资料，梳理演示逻辑并生成原生可编辑的 PPTX。
 
-**立即体验 [Kimi Code](https://www.kimi.com/code/?aff=ppt-master)（[中文站](https://www.kimi.com/code/?aff=ppt-master)｜[Global](https://www.kimi.ai/code/?aff=ppt-master)），或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
+**立即体验 [Kimi Code](https://www.kimi.com/code?aff=ppt-master)（[中文站](https://www.kimi.com/code?aff=ppt-master)｜[Global](https://www.kimi.ai/code?aff=ppt-master)），或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
 
 ## 模型接入合作伙伴
 
