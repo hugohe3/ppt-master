@@ -69,6 +69,7 @@ python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --d
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --canonical-authoring --stage final --json   # Quick adds --quick-generate; --json writes the report the exporter reads, stdout stays the summary
 python3 skills/ppt-master/scripts/pptx_to_svg.py <source.pptx> -o projects/<slug>_<YYYYMMDD> --inheritance-mode both --roundtrip   # Edit Native PPTX
 python3 skills/ppt-master/scripts/svg_to_pptx.py projects/<slug>_<YYYYMMDD> --roundtrip
+python3 skills/ppt-master/scripts/pptx_design_extractor.py <source.pptx> -o <output_dir> [--screenshots] [--key-slides]   # extract design profile from PPTX
 ```
 
 Every other command (sound sync, slicing, template materialization and preview, animation config, authoring-view refresh) is listed by the route or stage that owns it and in [`svg-pipeline.md`](skills/ppt-master/scripts/docs/svg-pipeline.md).

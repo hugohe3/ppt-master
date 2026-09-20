@@ -5,7 +5,7 @@ Tool behavior behind [`create-template.md`](../../workflows/create-template.md) 
 ## `pptx_template_import.py`
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>" [--inheritance-mode layered|both|flat]
+python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>" [--inheritance-mode layered|both|flat] [--design-profile] [--screenshots]
 ```
 
 Produces one import workspace (default `<pptx_stem>_template_import/` beside the source file; pass `-o` to place it elsewhere; an analysis intermediate, never a final template):
@@ -13,6 +13,7 @@ Produces one import workspace (default `<pptx_stem>_template_import/` beside the
 | Output | Content |
 |---|---|
 | `analysis/manifest.json` | Source facts: slide size, theme colors, fonts, per-master theme summaries, resource inventory and asset-name map, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata (including source-owned inherited-shape visibility), `pageTypeCandidates` |
+| `analysis/design_profile.json` | **`--design-profile` only**: comprehensive design analysis including gradient fills, actual color usage frequency, font hierarchy, shape style patterns, background patterns, and slide composition. Includes `slide_previews/` PNG screenshots when `--screenshots` is also specified |
 | `analysis/native_structure.json` | Stable Master/Layout keys, picker names, placeholder type/index/geometry, inherited-shape visibility, source hash, source-graph quality facts |
 | `sources/source.pptx` | Byte-preserved backing package for cross-checking and identity validation; never copied into a template |
 | `images/` | PowerPoint image media including SVG/EMF/WMF; SVG `href` values reuse the manifest asset map |

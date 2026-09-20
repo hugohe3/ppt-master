@@ -147,6 +147,30 @@ def parse_args() -> argparse.Namespace:
             "uses the separate authoring-svg-flat/ contract."
         ),
     )
+    parser.add_argument(
+        "--design-profile",
+        action="store_true",
+        help=(
+            "Extract a comprehensive design profile (gradients, color usage, "
+            "font hierarchy, shape styles) and optionally generate slide "
+            "screenshots for visual analysis."
+        ),
+    )
+    parser.add_argument(
+        "--screenshots",
+        action="store_true",
+        help=(
+            "Render PNG screenshots of slides (used with --design-profile). "
+            "Uses Playwright/Chromium when available for correct CJK glyphs, "
+            "otherwise falls back to cairosvg."
+        ),
+    )
+    parser.add_argument(
+        "--max-screenshots",
+        type=int,
+        default=10,
+        help="Maximum number of screenshot slides (default: 10)",
+    )
     return parser.parse_args()
 
 
@@ -191,6 +215,39 @@ def _managed_resource_paths(output_dir: Path) -> set[Path]:
     return set()
 
 
+def _managed_design_profile_paths(output_dir: Path) -> set[Path]:
+    """Read the previous design profile's screenshot roster for managed replacement.
+
+    The profile JSON and every PNG it recorded are regenerated on each
+    ``--design-profile`` run, so the prior roster must be removed before the
+    staged tree is overlaid; otherwise the publisher treats changed bytes as an
+    unmanaged collision.
+    """
+    profile_path = template_manifest_path(output_dir).parent / "design_profile.json"
+    if not profile_path.is_file():
+        return set()
+    paths: set[Path] = {profile_path.relative_to(output_dir)}
+    try:
+        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return paths
+    if not isinstance(profile, dict):
+        return paths
+    screenshots = profile.get("screenshots")
+    if isinstance(screenshots, dict):
+        for item in screenshots.get("files", []):
+            if not isinstance(item, dict):
+                continue
+            value = item.get("pngFile")
+            if not isinstance(value, str):
+                continue
+            rel = Path(value)
+            if rel.drive or rel.anchor or rel.is_absolute() or ".." in rel.parts:
+                continue
+            paths.add(rel)
+    return paths
+
+
 def main() -> int:
     """CLI entry point: write the PPTX reference workspace to disk."""
     args = parse_args()
@@ -218,6 +275,7 @@ def main() -> int:
         print(f"Error: {exc}")
         return 1
     previous_resources = _managed_resource_paths(output_dir)
+    previous_managed = previous_resources | _managed_design_profile_paths(output_dir)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     staging_root = Path(tempfile.mkdtemp(
         prefix=f".{output_dir.name}.import-",
@@ -311,6 +369,48 @@ def main() -> int:
                 print(f"Error: failed to create compact authoring SVG: {exc}")
                 return 1
 
+        # ── Design profile extraction (optional, staged before publish) ──
+        design_profile_summary = None
+        design_profile_rel = Path(_MANIFEST_NAME).parent / "design_profile.json"
+        if args.design_profile:
+            try:
+                from pptx_design_extractor import extract_design_profile
+
+                profile = extract_design_profile(
+                    pptx_path,
+                    staged_dir,
+                    include_screenshots=args.screenshots,
+                    include_key_slides=False,
+                    max_screenshot_slides=args.max_screenshots,
+                )
+                profile_path = staged_dir / design_profile_rel
+                profile_path.parent.mkdir(parents=True, exist_ok=True)
+                profile_path.write_text(
+                    json.dumps(profile, ensure_ascii=False, indent=2, default=str) + "\n",
+                    encoding="utf-8",
+                )
+                screenshots = profile.get("screenshots", {})
+                design_profile_summary = {
+                    "gradients": len(profile.get("gradients", [])),
+                    "topColors": [
+                        c["color"]
+                        for c in profile.get("colorPalette", {}).get("usageFrequency", [])[:5]
+                    ],
+                    "fonts": [
+                        f["font"]
+                        for f in profile.get("typography", {}).get("usageFrequency", [])[:3]
+                    ],
+                    "screenshotCount": (
+                        len(screenshots.get("files", []))
+                        if isinstance(screenshots, dict) else 0
+                    ),
+                    "screenshotBackend": (
+                        screenshots.get("backend") if isinstance(screenshots, dict) else None
+                    ),
+                }
+            except Exception as exc:  # noqa: BLE001 — optional analysis
+                print(f"Warning: design profile extraction failed: {exc}")
+
         from pptx_to_svg.converter import publish_staged_workspace
 
         try:
@@ -323,11 +423,28 @@ def main() -> int:
                     SOURCE_TEMPLATE_NAME,
                     _CONVERSION_REPORT_NAME,
                 },
-                managed_relative_paths=previous_resources,
+                managed_relative_paths=previous_managed,
             )
         except (OSError, RuntimeError, ValueError) as exc:
             print(f"Error: failed to publish PPTX template workspace: {exc}")
             return 1
+
+        if design_profile_summary is not None:
+            print(f"Design profile: {design_profile_rel.as_posix()}")
+            if design_profile_summary["gradients"]:
+                print(f"  Unique gradients: {design_profile_summary['gradients']}")
+            if design_profile_summary["topColors"]:
+                print(
+                    "  Top colors: "
+                    + ", ".join(design_profile_summary["topColors"])
+                )
+            if design_profile_summary["fonts"]:
+                print("  Fonts: " + ", ".join(design_profile_summary["fonts"]))
+            if design_profile_summary["screenshotCount"]:
+                print(
+                    f"  Screenshots: {design_profile_summary['screenshotCount']} "
+                    f"({design_profile_summary['screenshotBackend']})"
+                )
 
         if args.manifest_only:
             print(f"Imported PPTX template source: {pptx_path.name}")

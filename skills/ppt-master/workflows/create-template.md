@@ -73,13 +73,29 @@ Future decks need not keep source page count/order.
 
 Run `pptx_template_import.py "<reference.pptx>" -o "<import_workspace>"` (without `-o` the workspace lands beside the source file); the workspace it produces and each artifact's role are [`template-tools.md`](../scripts/docs/template-tools.md). Type A is the canonical mirror path; in `standard` / `fidelity`, imported facts do not define output topology. Never copy lossless or flat pages into `templates/`. For Type A `mirror`, run the unchanged importer output through the [mirror publication tools](../scripts/docs/template-tools.md#mirror-publication); authored modes never use the materializer.
 
+**Enhanced design extraction**: for `standard` / `fidelity`, add `--design-profile --screenshots` to extract a comprehensive design profile including gradient fills, actual color usage patterns, font hierarchy, shape styles, and PNG screenshots:
+
+```bash
+python3 skills/ppt-master/scripts/pptx_template_import.py "<reference.pptx>" -o "<import_workspace>" --design-profile --screenshots
+```
+
+The `analysis/design_profile.json` provides:
+- **Gradient fills** used across shapes (colors, stops, angles)
+- **Color usage frequency** (actual colors used, not just theme.xml)
+- **Font hierarchy** (font families and sizes by usage count)
+- **Shape style patterns** (fill types, outlines, effects)
+- **Background patterns** (solid, gradient, image per slide)
+- **Slide composition** (page type classification: cover, toc, chapter, content, ending)
+
+The `slide_previews/` directory contains PNG screenshots for visual analysis when `--screenshots` is specified.
+
 **Explicit complex-SVG picture normalization** (`standard` / `fidelity` only): when one imported native group is deliberately retained as one complex SVG picture rather than rebuilt as editable paths, select its exact id in the layered IR with `extract_svg_pictures.py ... --select "<group_id>" --resource-root "<import_workspace>" --images-dir "<import_workspace>/picture-assets" --inplace` (repeat `--select` for independent siblings; select the outer group when an ancestor carries a transform, style, clip, or opacity). If chosen for a Master or Layout, copy the asset into the image pool and author the fixed atom as a direct `<image data-pptx-layer="master|layout">`. This is a semantic decision, never automatic, never by repetition, never a way to infer ownership. Not for placeholders, individual native shapes, table/chart fallbacks, icon placeholders, authored presets, or `mirror`.
 
 **Read order**:
 
 | Strategy | Read |
 |---|---|
-| `standard` / `fidelity` | `analysis/manifest.json`, exported resources, `svg/inheritance.json`, `authoring_summary.json`, and the cleaned layered IR — every Master and Layout, including Layouts unused by any sample slide, plus every Slide under `fidelity` or enough Slides to settle direction and assets under `standard`; flat pages are optional spot checks; never `authoring_manifest.json` |
+| `standard` / `fidelity` | `analysis/manifest.json`, `analysis/design_profile.json` (when present), exported resources, `svg/inheritance.json`, `authoring_summary.json`, and the cleaned layered IR — every Master and Layout, including Layouts unused by any sample slide, plus every Slide under `fidelity` or enough Slides to settle direction and assets under `standard`; flat pages are optional spot checks; never `authoring_manifest.json` |
 | `mirror` | Source summaries and asset evidence needed for reuse and Design Spec judgment; tools consume the complete import workspace |
 
 Use manifest facts for orientation and screenshots or the original PPTX only for visual cross-checking; never bulk-read opaque payload. When bringing a reference into project scope for analysis, use `project_manager.py import-sources --no-image-propagation` to retain extracted bitmaps under `sources/`; adopt identity assets into `images/` deliberately before Step 4.
