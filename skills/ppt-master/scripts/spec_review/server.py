@@ -63,6 +63,14 @@ DEFAULT_PORT = 6060
 logger = logging.getLogger("spec_review")
 
 
+class _QuietPolls(logging.Filter):
+    """Drop successful state polls so real requests stay findable in server.log."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        message = record.getMessage()
+        return not ('"GET /api/state ' in message and '" 200 ' in message)
+
+
 def create_app(project_dir: str, idle_timeout: int = 7200) -> Flask:
     """Create the testable HTTP surface; lifecycle threads belong to main()."""
     store = ReviewStore(Path(project_dir))
@@ -235,6 +243,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s spec_review: %(message)s")
+    logging.getLogger("werkzeug").addFilter(_QuietPolls())
     project = Path(args.project_path).resolve()
     runtime = project / "spec_review"
     lock_file = runtime / "lock.json"
