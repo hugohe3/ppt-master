@@ -250,6 +250,46 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(Image.open(output_dir / "mark.png").size, (41, 41))
 
+    def test_uneven_key_ground_is_keyed_by_dominance_without_eating_thin_strokes(self) -> None:
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            output_dir = root / "output"
+            size = 400
+            rng = np.random.default_rng(7)
+            yy, xx = np.mgrid[0:size, 0:size]
+            t = (xx + yy) / (2 * size)
+            # A generated key painted as a gradient with grain: #00FF00 -> #25D23A.
+            ground = np.stack([37 * t, 255 - 45 * t, 58 * t], axis=2)
+            ground += rng.normal(0, 3.0, ground.shape)
+            scale = 4
+            ink = Image.new("L", (size * scale, size * scale), 0)
+            draw = ImageDraw.Draw(ink)
+            for index in range(9):
+                offset = (110 + index * 22) * scale
+                draw.line([(100 * scale, offset), (300 * scale, offset)], fill=255, width=scale)
+                draw.line([(offset, 100 * scale), (offset, 300 * scale)], fill=255, width=scale * 2)
+            ink = ink.resize((size, size), Image.LANCZOS)
+            coverage = np.asarray(ink, dtype=np.float32)[..., None] / 255
+            sheet = ground * (1 - coverage) + np.array([18, 18, 18]) * coverage
+            Image.fromarray(np.clip(sheet, 0, 255).astype(np.uint8), "RGB").save(sheet_path)
+
+            slice_sheet(
+                sheet_path, 1, 1, output_dir, names=["lines"],
+                alpha=True, strict_alpha=True, bg=(0, 255, 0),
+            )
+
+            cut = np.asarray(Image.open(output_dir / "lines.png").convert("RGBA"), dtype=np.float32)
+            alpha = cut[..., 3] / 255
+            reference = coverage[..., 0]
+            self.assertGreater(alpha[reference > 0.9].mean(), 0.95)
+            self.assertLess(alpha[reference < 0.02].mean(), 0.01)
+            opaque = alpha > 0.8
+            key_tinted = opaque & (cut[..., 1] > cut[..., 0] + 30) & (cut[..., 1] > cut[..., 2] + 30)
+            self.assertEqual(int(key_tinted.sum()), 0)
+
     def test_strict_alpha_names_painted_card_cells_instead_of_a_key_rerun(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
