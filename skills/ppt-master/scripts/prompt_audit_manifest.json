@@ -2430,6 +2430,10 @@
         "reason": "Browser editor behavior and lifecycle reference; the live-preview stage carries the launch and annotation procedure."
       },
       {
+        "glob": "skills/ppt-master/scripts/docs/spec_review.md",
+        "reason": "Spec review tool reference for browser editing, annotation sidecars, HTTP APIs, and server lifecycle; not loaded as runtime prompt context."
+      },
+      {
         "glob": "skills/ppt-master/scripts/docs/narration.md",
         "reason": "Narration tool behavior and flag reference; the generate-audio stage carries the procedure and confirmation contract."
       },

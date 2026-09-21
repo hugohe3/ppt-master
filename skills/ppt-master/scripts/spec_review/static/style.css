@@ -1,0 +1,74 @@
+:root {
+  color-scheme: dark;
+  --bg: #12121f;
+  --panel: #1a1a2e;
+  --line: #34344c;
+  --text: #e4e5ef;
+  --muted: #a4a7bf;
+  --accent: #4a9eff;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.6 system-ui, sans-serif; }
+header { padding: 12px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 20px; align-items: center; }
+header strong { color: var(--accent); }
+#fingerprint { flex: 1; color: var(--muted); font-family: monospace; overflow-wrap: anywhere; }
+button, select, textarea { font: inherit; color: inherit; background: #23233b; border: 1px solid var(--line); border-radius: 5px; }
+button { cursor: pointer; padding: 6px 10px; }
+button:hover { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { color: #07192f; background: var(--accent); font-weight: 600; }
+select { padding: 6px; }
+textarea { width: 100%; resize: vertical; padding: 12px; }
+button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.workspace { display: grid; grid-template-columns: 245px minmax(320px, 1fr) 300px; height: calc(100vh - 60px); }
+aside, main { overflow: auto; min-width: 0; padding: 16px; }
+aside { background: var(--panel); }
+.navigation { border-right: 1px solid var(--line); }
+.annotations { border-left: 1px solid var(--line); }
+.navigation-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+#position { color: var(--muted); padding: 10px 0; }
+#blocks { display: flex; flex-direction: column; gap: 4px; }
+#blocks button { text-align: left; border-color: transparent; background: transparent; overflow-wrap: anywhere; }
+#blocks button.slide { padding-left: 22px; }
+#blocks button.part { margin-top: 12px; border-top: 1px solid var(--line); border-radius: 0; font-weight: 700; color: var(--accent); }
+#blocks button.selected { background: #273552; border-color: var(--accent); }
+.badge { color: #eabd64; margin-left: 7px; font-size: 11px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toolbar h1 { font-size: 19px; flex: 1 1 100%; margin: 0 0 8px; }
+.toolbar span { flex: 1; }
+.hint { color: var(--muted); font-size: 12px; }
+.banner { padding: 8px 20px; background: #4b3a20; white-space: pre-wrap; }
+.banner.error { background: #552933; }
+.editor { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 18px; }
+#editor { min-height: 300px; font: 13px/1.6 ui-monospace, monospace; tab-size: 4; }
+#draft-status { color: #eabd64; }
+#validation { color: #edbd6c; }
+.annotations h2 { margin-top: 0; font-size: 17px; }
+.annotations label { display: block; margin-top: 18px; }
+.comment { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.comment small { display: block; color: var(--muted); overflow-wrap: anywhere; }
+.comment .toolbar { margin-top: 6px; }
+.markdown { margin-top: 24px; overflow-wrap: anywhere; }
+.markdown h1, .markdown h2, .markdown h3, .markdown h4 { line-height: 1.35; }
+.markdown h2 { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 22px; }
+.markdown h4 { color: #b8d7ff; font-size: 20px; }
+.markdown li { margin: 5px 0; }
+.markdown blockquote { border-left: 3px solid var(--accent); margin-left: 0; padding: 1px 16px; color: var(--muted); }
+.markdown table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 18px 0; }
+.markdown th, .markdown td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; }
+.markdown th { background: var(--panel); }
+pre, code { font-family: ui-monospace, monospace; background: #0e101c; }
+pre { padding: 14px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; }
+code { padding: 2px 4px; border-radius: 3px; }
+pre code { padding: 0; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+@media (max-width: 1000px) {
+  .workspace { grid-template-columns: 190px minmax(300px, 1fr); height: auto; }
+  .annotations { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+}
+@media (max-width: 600px) {
+  header { flex-wrap: wrap; }
+  .workspace { display: block; }
+  .navigation { max-height: 240px; }
+}

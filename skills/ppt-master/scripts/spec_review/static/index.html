@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPT Master · Spec Review</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header><strong>PPT Master · Spec Review</strong><span id="fingerprint"></span>
+    <select id="language" aria-label="Language">
+      <option value="zh">中文</option><option value="zh-TW">繁體中文</option>
+      <option value="en">English</option><option value="ja">日本語</option>
+    </select>
+    <button id="exit" data-label="exit"></button>
+  </header>
+  <p id="stopped" class="banner" role="status" hidden></p>
+  <div id="hold" class="banner" role="status" hidden></div>
+  <div id="conflict" class="banner" role="status" hidden></div>
+  <div id="error" class="banner error" role="alert" hidden></div>
+  <div class="workspace">
+    <aside class="navigation">
+      <div class="navigation-buttons">
+        <button id="first" data-label="first"></button><button id="prev" data-label="prev"></button>
+        <button id="next" data-label="next"></button><button id="last" data-label="last"></button>
+      </div>
+      <div id="position"></div><nav id="blocks" aria-label="Spec blocks"></nav>
+    </aside>
+    <main>
+      <div class="toolbar"><h1 id="title"></h1>
+        <button id="source" data-label="source" aria-pressed="false"></button>
+        <button id="reload" data-label="reload"></button>
+      </div>
+      <article id="preview" class="markdown"></article>
+      <pre id="raw" hidden></pre>
+      <section class="editor">
+        <label for="editor" data-label="editor"></label>
+        <p class="hint" data-label="structureHint"></p>
+        <textarea id="editor" spellcheck="false"></textarea>
+        <div class="toolbar"><span id="draft-status" role="status"></span>
+          <button id="undo" data-label="undo"></button><button id="rebase" data-label="rebase" hidden></button>
+          <button id="apply" class="primary" data-label="apply"></button>
+        </div>
+        <div id="validation" hidden><h2 data-label="validation"></h2><pre id="validation-errors"></pre></div>
+      </section>
+    </main>
+    <aside class="annotations">
+      <h2 data-label="annotations"></h2>
+      <select id="scope" aria-label="Annotation scope"><option value="block" data-label="thisBlock"></option>
+        <option value="global" data-label="global"></option></select>
+      <div id="comments"></div>
+      <label for="annotation" data-label="newAnnotation"></label>
+      <textarea id="annotation" rows="6"></textarea>
+      <button id="add" class="primary" data-label="saveAnnotation"></button>
+      <p class="hint" data-label="annotationHint"></p>
+    </aside>
+  </div>
+</body>
+</html>
