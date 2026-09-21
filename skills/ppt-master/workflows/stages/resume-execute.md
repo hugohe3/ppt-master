@@ -16,7 +16,7 @@ The user opens a new chat naming a project path with continuation intent — "�
 
 ## Step 1: Sanity check
 
-`<project_path>/design_spec.md` (approved narrative and §IX outline) and `<project_path>/spec_lock.md` (execution anchors and routing contract) must both exist; their complete reads happen after the Executor role core loads. If either is missing, stop and recover through [`failure-recovery.md`](../governance/failure-recovery.md) §3 — never enter Step 6, treat an orphan lock as authority, or invent a replacement.
+`<project_path>/design_spec.md` (approved narrative and §IX outline) and `<project_path>/spec_lock.md` (execution anchors and routing contract) must both exist; their complete reads happen after the Executor role core loads. When `<project_path>/spec_review/` exists, run `python3 ${SKILL_DIR}/scripts/check_spec_annotations.py <project_path>`; a pending comment or an unacknowledged direct edit means the Design Spec moved after the lock was authored — return to [`refine-spec`](refine-spec.md) Step 2 before any execution. If either file is missing, stop and recover through [`failure-recovery.md`](../governance/failure-recovery.md) §3 — never enter Step 6, treat an orphan lock as authority, or invent a replacement.
 
 ---
 

@@ -30,6 +30,7 @@
 | R22 | Template discovery reads only the four `*_index.json` files; never scan kind directories; a bare name never resolves to a path; one root per kind, Layout precedes Deck | `workflows/routing.md` §7 | `workflows/generate-pptx.md` Step 3, `workflows/stages/apply-template-workspace.md` §1, `templates/README.md`, the four kind READMEs, `references/artifact-ownership.md`, `references/strategist-template.md` |
 | R23 | Resource need is decided while composing the roster: which pages need a prepared image, lettering, or illustrated-icon file; the carrier mix itself is never planned | `references/plan-core.md` §5 | `references/strategist.md` Resource Need and Reference Planning (Design Spec handoff only), `workflows/profiles/quick-generate.md` §2, `references/strategist-image.md` §1 |
 | R24 | Whole-roster rhythm check: neighbors and section arcs compared, chapter entries reset, same-density runs intentional, motif carries a continuity job | `references/plan-core.md` §4 | `references/strategist.md` §6.2, `workflows/profiles/quick-generate.md` §2 |
+| R25 | Refine Spec reviews the one Design Spec on the surface the run confirmed on (review page on the page branch, otherwise chat); direct edits and comments revise that same file, and approval is given only in chat | `workflows/stages/refine-spec.md` Step 2 | `workflows/generate-pptx.md` Step 4, `workflows/stages/resume-execute.md` Step 1; `scripts/docs/spec_review.md` documents tool behavior |
 
 ## 3. Structured-template rules
 
