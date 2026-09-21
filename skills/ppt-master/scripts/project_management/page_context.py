@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from .paths import SKILL_DIR as _SKILL_DIR
+from .spec_blocks import SLIDE_HEADING_RE as _SLIDE_HEADING_RE
 from .project_specs import (
     default_spec_lock_forbidden,
     parse_markdown_artifact,
@@ -55,10 +56,6 @@ PAGE_CONTEXT_TOKEN_TARGET = 2000
 LOCK_PROJECTION_TOKEN_TARGET = 1000
 
 _PAGE_RE = re.compile(r"^(?:P)?([0-9]+)$", re.IGNORECASE)
-_SLIDE_HEADING_RE = re.compile(
-    r"^#{3,6}[ \t]+Slide[ \t]+0*([0-9]+)(?:[ \t]*(?:[-:–—]).*)?$",
-    re.IGNORECASE | re.MULTILINE,
-)
 _BLOCK_BOUNDARY_RE = re.compile(r"^#{2,6}[ \t]+", re.MULTILINE)
 _PART_HEADING_RE = re.compile(r"^###[ \t]+(?!#)(.+?)[ \t]*$", re.MULTILINE)
 _PAGE_TOKEN_RE = re.compile(

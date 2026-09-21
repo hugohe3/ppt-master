@@ -1261,7 +1261,27 @@ def _validate_spec_lock_relations(
 def validate_markdown_schema(markdown_path: Path, schema_path: Path) -> list[str]:
     """Validate one existing Markdown artifact against a versioned schema."""
     try:
-        text = markdown_path.read_text(encoding="utf-8-sig")
+        # Candidate validation removes exactly one BOM, as utf-8-sig did here.
+        text = markdown_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        return [f"Schema validation could not read {markdown_path.name}: {exc}"]
+
+    return validate_markdown_text(text, schema_path, markdown_path=markdown_path)
+
+
+def validate_markdown_text(
+    text: str,
+    schema_path: Path,
+    *,
+    markdown_path: Path = Path("design_spec.md"),
+) -> list[str]:
+    """Validate a candidate without reading or writing its Markdown file.
+
+    The path supplies diagnostic names and a base for schema-declared asset
+    references. A design-spec schema never loads the execution lock.
+    """
+    text = text.removeprefix("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
+    try:
         schema = _load_markdown_schema(schema_path)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         return [f"Schema validation could not read {markdown_path.name}: {exc}"]

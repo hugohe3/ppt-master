@@ -27,6 +27,7 @@ from project_management.project_specs import (
     parse_spec_lock_image_value,
     scaffold_project_artifact,
     validate_markdown_schema,
+    validate_markdown_text,
     validate_project_artifacts,
 )
 
@@ -42,5 +43,6 @@ __all__ = [
     "parse_spec_lock_image_value",
     "scaffold_project_artifact",
     "validate_markdown_schema",
+    "validate_markdown_text",
     "validate_project_artifacts",
 ]
