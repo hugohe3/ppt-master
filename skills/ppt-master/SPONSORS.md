@@ -8,17 +8,17 @@ Want to support the project or discuss a partnership? See the [sponsorship guide
 
 ## Current Model Recommendation
 
-For the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the workflow, paired with **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google) for AI image generation. If model capability is limiting output quality, upgrade the driving model before weakening the workflow or its quality requirements.
+For the best results, use **[Kimi K3](https://www.kimi.com/code?aff=ppt-master)** (or Claude) to drive the workflow, paired with **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google) for AI image generation. If model capability is limiting output quality, upgrade the driving model before weakening the workflow or its quality requirements.
 
 ## Kimi
 
 <p align="center">
-  <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi" width="100%"></a>
+  <a href="https://www.kimi.com/code?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi" width="100%"></a>
 </p>
 
-Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT Master. [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) is the world's first open 3T-class model, featuring native vision and a 1-million-token context window. With PPT Master, K3 can understand PDFs, DOCX files, web pages, and other source material, structure the narrative, and generate a natively editable PPTX.
+Thanks to [Kimi](https://www.kimi.com/code?aff=ppt-master) for sponsoring PPT Master. [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) is the world's first open 3T-class model, featuring native vision and a 1-million-token context window. With PPT Master, K3 can understand PDFs, DOCX files, web pages, and other source material, structure the narrative, and generate a natively editable PPTX.
 
-**Try a [Kimi Code plan](https://www.kimi.com/code/?aff=ppt-master) ([中文站](https://www.kimi.com/code/?aff=ppt-master) | [Global](https://www.kimi.ai/code/?aff=ppt-master)), or access the API through the Kimi Open Platform ([中文站](https://platform.kimi.com?aff=ppt-master) | [Global](https://platform.kimi.ai?aff=ppt-master)).**
+**Try a [Kimi Code plan](https://www.kimi.com/code?aff=ppt-master) ([中文站](https://www.kimi.com/code?aff=ppt-master) | [Global](https://www.kimi.ai/code?aff=ppt-master)), or access the API through the Kimi Open Platform ([中文站](https://platform.kimi.com?aff=ppt-master) | [Global](https://platform.kimi.ai?aff=ppt-master)).**
 
 ## Model Access Partners
 
