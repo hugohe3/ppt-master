@@ -410,5 +410,32 @@ class SourceCollisionTests(unittest.TestCase):
                 self.assertFalse(source.with_suffix(".conversion_profile.json").exists())
 
 
+class TypstFallbackTests(unittest.TestCase):
+    def test_project_file_with_imports_keeps_text_and_maps_headings(self) -> None:
+        from doc_to_md import convert_to_markdown
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "chapter.typ"
+            source.write_text(
+                '#import "mod.typ": *\n'
+                "#show: book.page.with(title: [Intro])\n\n"
+                "= Headings\n\n"
+                "Write *markup* here.\n\n"
+                "#code(```typ\n= Not a heading\n```)\n\n"
+                "== Next\n",
+                encoding="utf-8",
+            )
+            with redirect_stdout(io.StringIO()):
+                markdown = convert_to_markdown(str(source))
+
+            lines = markdown.splitlines()
+            self.assertIn("# Headings", lines)
+            self.assertIn("## Next", lines)
+            self.assertIn("= Not a heading", lines)
+            self.assertIn("Write *markup* here.", lines)
+            profile = json.loads(source.with_suffix(".conversion_profile.json").read_text(encoding="utf-8"))
+            self.assertTrue(any("headings mapped" in warning for warning in profile["warnings"]))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -11,6 +11,8 @@ Primary formats (pure Python, no external tools required):
 
 Fallback formats (require pandoc installed):
     .doc .odt .rtf .tex .latex .rst .org .typ
+    (.typ keeps its text with headings mapped when pandoc is absent or cannot
+    evaluate a file that imports a template, package, or custom function)
 
 All paths produce the same output convention:
     <input>.md                     Markdown file
@@ -1528,6 +1530,52 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
     return markdown
 
 
+_TYPST_HEADING_RE = re.compile(r"^(=+)\s+(.*)$")
+_TYPST_FENCE_RE = re.compile(r"`{3,}")
+
+
+def _typst_text_to_markdown(source: str) -> str:
+    """Map Typst headings to Markdown and keep everything else as written.
+
+    Pandoc's Typst reader evaluates the document, so a real project file that
+    imports its template, a package, or a custom function fails as a whole.
+    This pass evaluates nothing: headings become ``#`` headings, while raw
+    blocks (opened anywhere on a line, as in ``#code(```typ``), markup, and
+    code calls stay verbatim.
+    """
+    lines = []
+    fence: str | None = None
+    for line in source.splitlines():
+        heading = _TYPST_HEADING_RE.match(line) if fence is None else None
+        for run in _TYPST_FENCE_RE.findall(line):
+            if fence is None:
+                fence = run
+            elif run == fence:
+                fence = None
+        lines.append(f"{'#' * len(heading.group(1))} {heading.group(2)}" if heading else line)
+    return "\n".join(lines) + "\n"
+
+
+def _convert_typst(input_file: Path, out_file: Path, warnings: list[str]) -> str:
+    """Convert through pandoc, falling back to the non-evaluating text pass."""
+    if _check_pandoc():
+        markdown = _convert_with_pandoc(input_file, out_file, ".typ")
+        if markdown:
+            return markdown
+        reason = "pandoc could not evaluate the Typst source (imports, packages, or custom functions)"
+    else:
+        reason = "pandoc is not installed"
+    print(f"[INFO] {reason}; keeping the Typst text with headings mapped")
+    warnings.append(
+        f"{reason}: kept the source text with headings mapped to Markdown; "
+        "code calls, show/set rules, and math stay as written Typst"
+    )
+    markdown = _typst_text_to_markdown(input_file.read_text(encoding="utf-8"))
+    out_file.write_text(markdown, encoding="utf-8")
+    _report_result(out_file, None)
+    return markdown
+
+
 # ─────────────────────────────────────────────────────────────
 # Dispatcher
 # ─────────────────────────────────────────────────────────────
@@ -1585,13 +1633,18 @@ def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
 
     _, format_desc = PANDOC_FORMATS[suffix]
     print(f"[INFO] Converting {format_desc} via pandoc: {input_file.name}")
-    markdown = _convert_with_pandoc(input_file, out_file, suffix)
+    warnings = []
+    if suffix == ".typ":
+        markdown = _convert_typst(input_file, out_file, warnings)
+    else:
+        markdown = _convert_with_pandoc(input_file, out_file, suffix)
     if markdown:
         profile_path = write_conversion_profile_best_effort(
             input_path=str(input_file),
             markdown_path=out_file,
             converter="doc_to_md.py",
             conversion_type=suffix.lstrip("."),
+            warnings=warnings,
         )
         if profile_path:
             print(f"   Wrote conversion profile -> {profile_path}")

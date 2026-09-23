@@ -128,6 +128,10 @@ Native path (no external binary required):
 
 Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
+- `.typ` evaluates under pandoc, so a real project file that imports its template,
+  a package, or a custom function fails there; it then (or without pandoc) keeps the
+  source text with `=` headings mapped to Markdown and raw blocks, markup, math, and
+  code calls verbatim, recorded as a conversion-profile warning.
 
 ```bash
 python3 scripts/source_to_md/doc_to_md.py lecture.docx
