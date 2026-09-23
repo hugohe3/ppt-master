@@ -163,14 +163,19 @@ crop, mask, rotation, mirror, opacity, shadow, scrim, outline, and overlap remai
 native SVG/PPT treatments. This tool does not perform semantic background
 removal: use `slice_images.py --alpha --bg <key> --strict-alpha` for flat-color
 keys (a pure red/green/blue key also recovers soft alpha and removes spill from
-key-dominant blends, leaving an opaque foreground of the key's hue untouched; thin
-dark strokes of that hue can still fringe, so choose the key by hue absence;
+key-dominant blends — including a light element's edge next to the key — taking
+the recovered key channel from the strongest other channel so shadows stay grey,
+while an opaque foreground of the key's hue stays untouched; thin dark strokes of
+that hue can still fringe, so choose the key by hue absence;
 strict alpha diagnoses off-key haze from the four 10% key-only margins, allowing
 soft shadows and glows on a clean key; a key-hued ground that is not flat —
 a gradient, lighting, or texture painted by the image model — is keyed by
 key-channel dominance against a local ground estimate instead of one colour,
-with a notice to inspect the cut, while a flat ground that merely differs from
-the stated key is still rejected with the measured colour to rerun with), an
+with a notice to inspect the cut, as is a flat ground farther from every pure
+key than drift explains (the measured `--bg` rerun, or the sheet's own ground
+without `--bg`) so shadows cast on it clear, while a flat ground that merely
+differs from the stated key is still rejected with the measured colour to rerun
+with), an
 already prepared RGBA asset or the active host image editor for a standalone cutout, and
 [`image-generator.md`](../../references/image-generator.md) §4.4 only for
 registered subject/base layers.
