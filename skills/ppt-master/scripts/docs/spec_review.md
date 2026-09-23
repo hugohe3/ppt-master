@@ -113,7 +113,8 @@ comment slot and retains the whole-spec `base_current` comparison instead.
 `annotations.jsonl` appends `saved`, `updated`, `removed`,
 and `annotation_applied` events. `storage.guard` serializes browser/CLI
 sidecar transactions and edit-log access across processes. `edits.jsonl` appends `ts`, `key`, `title`,
-`before`, `after`, `before_sha256`, and `after_sha256` for each changed block.
+`before`, `after` (the block text), and `before_sha256` / `after_sha256` (whole-spec
+hashes) for each changed block.
 
 `check_spec_annotations.py` prints compact JSON with pending comments, their
 current baseline statuses, and unread direct-edit summaries (`ts`, `key`, `title`,
