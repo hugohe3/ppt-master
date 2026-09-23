@@ -183,6 +183,33 @@ class CandidatePoolContinuationTests(unittest.TestCase):
                 self.assertGreater(image.getpixel((3, 3))[0], 150)
             self.assertFalse(image_search._normalize_multi_frame_jpeg(path))
 
+    def test_original_above_pillow_warning_size_is_halved_quietly(self) -> None:
+        import warnings
+
+        from PIL import Image
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            target = Path(temp_dir) / "takin.jpg"
+
+            def materialize(path: Path) -> None:
+                Image.new("RGB", (200, 150), (120, 90, 60)).save(path, "JPEG")
+
+            with patch.object(Image, "MAX_IMAGE_PIXELS", 20_000), \
+                    warnings.catch_warnings(record=True) as caught, \
+                    redirect_stderr(io.StringIO()) as stderr:
+                warnings.simplefilter("always")
+                staged, size = image_search._stage_and_validate_image(
+                    target, materialize, min_width=0, min_height=0,
+                    enforce_thumbnail_floor=False,
+                )
+
+            self.assertEqual(size, (100, 75))
+            self.assertIn("downscaled a 200x150 original to 100x75", stderr.getvalue())
+            self.assertFalse(
+                [w for w in caught if issubclass(w.category, Image.DecompressionBombWarning)]
+            )
+            staged.unlink()
+
     def test_multi_frame_camera_jpeg_bakes_exif_orientation(self) -> None:
         from PIL import Image
 
