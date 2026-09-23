@@ -49,6 +49,7 @@ from server_common import (  # noqa: E402
     find_free_port,
     lock_pid,
     open_preview_browser,
+    plain_request_log,
     popen_detached,
     process_alive,
     read_lock,
@@ -222,7 +223,7 @@ def _running(project: Path) -> dict | None:
 
 def _announce(lock: dict, no_browser: bool) -> None:
     url = f"http://{PUBLIC_HOST}:{lock['port']}"
-    print(json.dumps({"service": "spec_review", "url": url, **lock}, separators=(",", ":")))
+    print(json.dumps({"service": "spec_review", "url": url, **lock}, separators=(",", ":")), flush=True)
     if not no_browser:
         open_preview_browser(url, logger=logger)
 
@@ -244,6 +245,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s spec_review: %(message)s")
     logging.getLogger("werkzeug").addFilter(_QuietPolls())
+    plain_request_log()
     project = Path(args.project_path).resolve()
     runtime = project / "spec_review"
     lock_file = runtime / "lock.json"

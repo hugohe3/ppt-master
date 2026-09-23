@@ -66,6 +66,7 @@ from server_common import (  # noqa: E402
     find_free_port as _find_free_port,
     lock_pid as _lock_pid,
     open_preview_browser,
+    plain_request_log,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -2807,6 +2808,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         format='[%(asctime)s] [%(levelname)s] confirm_ui: %(message)s',
         datefmt='%H:%M:%S',
     )
+    plain_request_log()
 
     if args.port is not None:
         try:

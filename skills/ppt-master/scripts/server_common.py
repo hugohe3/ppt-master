@@ -3,10 +3,10 @@
 PPT Master - Local Preview Server Helpers
 
 Shared per-project mutual-exclusion (lock) and liveness helpers for the local
-Flask preview servers (`svg_editor/server.py`, `confirm_ui/server.py`). Each
+Flask preview servers (`svg_editor/server.py`, `confirm_ui/server.py`, `spec_review/server.py`). Each
 server keeps its own lock filename and Flask app; this module owns browser dispatch, the
 cross-platform process-liveness check and the claim/read/release lock logic so
-the two servers cannot drift apart.
+the servers cannot drift apart.
 
 Usage:
     from server_common import find_free_port, validate_port
@@ -20,9 +20,11 @@ import json
 import logging
 import os
 import platform
+import re
 import shutil
 import socket
 import subprocess
+import sys
 import webbrowser
 from pathlib import Path
 from typing import Optional
@@ -118,6 +120,31 @@ def find_free_port(preferred: int, host: str = '127.0.0.1', span: int = 50) -> i
     raise RuntimeError(
         f'no free TCP port on {host} in range {preferred}..{last_port}'
     )
+
+
+_ANSI_SGR = re.compile(r'\x1b\[[0-9;]*m')
+
+
+class _PlainRequestLog(logging.Filter):
+    """Strip werkzeug's ANSI request styling from log arguments."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(
+                _ANSI_SGR.sub('', arg) if isinstance(arg, str) else arg
+                for arg in record.args
+            )
+        return True
+
+
+def plain_request_log() -> None:
+    """Keep request lines free of terminal colour when stderr is not a terminal.
+
+    werkzeug styles request lines unconditionally on POSIX; a detached server
+    writes them to its component ``server.log``, where the escapes are noise.
+    """
+    if not sys.stderr.isatty():
+        logging.getLogger('werkzeug').addFilter(_PlainRequestLog())
 
 
 def popen_detached(
