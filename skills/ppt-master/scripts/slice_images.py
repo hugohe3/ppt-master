@@ -611,6 +611,12 @@ def _content_masks(
     trim_mask = diff.point(lambda p: 255 if p > tolerance else 0)
     tolerance_gate = _soft_mask_from_diff(diff, tolerance)
     key_index = _pure_chroma_channel(bg)
+    if key_index is None:
+        # A measured ground within drift of a pure key is that key drifted;
+        # it keeps pure-key recovery, gated by distance to the measured ground.
+        drifted = _nearest_pure_key(bg)
+        if drifted is not None:
+            key_index = _pure_chroma_channel(drifted[0])
     if key_index is not None:
         chroma_alpha, keyed_rgb = _pure_key_recovery(rgb, key_index)
         alpha_mask = ImageChops.multiply(chroma_alpha, tolerance_gate)
@@ -764,7 +770,9 @@ def _haze_finding(
         cell, border_ratio=0.10, key=bg,
     )
     dominant_distance = max(abs(dominant[index] - bg[index]) for index in range(3))
-    if max(dominant_distance, spread, distance) <= tolerance:
+    # Haze comes from the field itself; a glow or shadow tail entering the
+    # margin over an on-key field recovers as soft alpha and is not haze.
+    if max(dominant_distance, spread) <= tolerance:
         return None
     hex_bg = "#{:02X}{:02X}{:02X}".format(*bg)
     measured_bg = "#{:02X}{:02X}{:02X}".format(*dominant)

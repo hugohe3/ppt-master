@@ -173,7 +173,8 @@ a gradient, lighting, or texture painted by the image model — is keyed by
 key-channel dominance against a local ground estimate instead of one colour,
 with a notice to inspect the cut, as is a flat ground farther from every pure
 key than drift explains (the measured `--bg` rerun, or the sheet's own ground
-without `--bg`) so shadows cast on it clear, while a flat ground that merely
+without `--bg`) so shadows cast on it clear — a measured ground within drift
+of a pure key keeps pure-key recovery — while a flat ground that merely
 differs from the stated key is still rejected with the measured colour to rerun
 with), an
 already prepared RGBA asset or the active host image editor for a standalone cutout, and

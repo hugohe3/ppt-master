@@ -347,6 +347,34 @@ class SliceImagesDiagnosticsTests(unittest.TestCase):
             self.assertEqual(tuple(cut[50, 50]), (150, 90, 60, 255))
             self.assertLess(int(alpha[-5:, -5:].max()), 200)
 
+    def test_glow_tail_in_margin_over_on_key_ground_is_not_haze(self) -> None:
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            size = 200
+            yy, xx = np.mgrid[0:size, 0:size]
+            radius = np.hypot(xx - 100, yy - 100)
+            # A pale disc whose soft glow fades into the key-only margin.
+            coverage = np.where(radius <= 40, 1.0, np.clip(1 - (radius - 40) / 70, 0, 1) * 0.35)
+            ground = np.array([2.0, 8.0, 254.0])
+            sheet = ground * (1 - coverage[..., None]) + np.array([235.0, 225.0, 200.0]) * coverage[..., None]
+            Image.fromarray(sheet.astype(np.uint8), "RGB").save(sheet_path)
+
+            for bg in ((0, 0, 255), (2, 8, 254)):
+                with self.subTest(bg=bg):
+                    out = root / f"out_{bg[0]}"
+                    slice_sheet(
+                        sheet_path, 1, 1, out, names=["moon"],
+                        alpha=True, strict_alpha=True, bg=bg, tolerance=18,
+                    )
+                    cut = np.asarray(Image.open(out / "moon.png").convert("RGBA"), dtype=np.int16)
+                    red, green, blue, alpha = (cut[..., index] for index in range(4))
+                    # A measured near-key ground still despills: the glow is not blue.
+                    bluish = (alpha >= 40) & (blue > np.maximum(red, green) + 30)
+                    self.assertEqual(int(bluish.sum()), 0)
+
     def test_strict_alpha_names_painted_card_cells_instead_of_a_key_rerun(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
