@@ -40,12 +40,6 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 [RunAPI](https://runapi.host/register?aff=WMLJ) 通过一个 API Key 提供 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型。通过专属链接注册并联系管理员，即可领取 **¥7 免费额度**。
 
-### 优云智算
-
-<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/youyun.png" alt="优云智算" width="150"></a>
-
-[优云智算](https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624) 是 UCloud 旗下 AI 云平台，提供国内外模型 API、CodingPlan 套餐、企业级并发、技术支持和开票服务。通过专属链接注册，最高可获得 **¥10 免费体验金**。平台还提供无需本地部署的 PPT Master Agent。
-
 ### APIMart
 
 <a href="https://go.apimart.ai/gh-ppt-master1"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apimart.png" alt="APIMart" width="150"></a>

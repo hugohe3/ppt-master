@@ -40,12 +40,6 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT M
 
 [RunAPI](https://runapi.host/register?aff=WMLJ) provides access to 150+ models, including OpenAI, Claude, Gemini, DeepSeek, and Grok, through one API key. Register through the dedicated link and contact an administrator to claim **¥7 in free credit**.
 
-### YouYun ZhiSuan
-
-<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/youyun.png" alt="YouYun ZhiSuan" width="150"></a>
-
-[YouYun ZhiSuan](https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624), UCloud's AI cloud platform, provides domestic and international model APIs, CodingPlan packages, enterprise concurrency, technical support, and invoicing. Register through the dedicated link to receive up to **¥10 in free trial credit**. PPT Master is also available there as a hosted Agent for users who do not want to deploy it locally.
-
 ### APIMart
 
 <a href="https://go.apimart.ai/gh-ppt-master1"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/apimart.png" alt="APIMart" width="150"></a>
