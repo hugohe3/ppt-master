@@ -1023,7 +1023,7 @@
       "desc_zh": "从情境到张力再到化解，形成故事弧线，保留悬念与转折。适合路演、案例、品牌故事、融资。",
       "desc_zh_tw": "情境、張力、解決方案形成故事弧線，保留懸念與轉折。適合路演、案例、品牌、募資。",
       "desc_en": "Build a story arc from context to tension to resolution, with suspense and turns. Best for roadshows, cases, brand stories, and fundraising.",
-      "desc_ja": "状況設定から緊張、解決へと物語の流れを組み立て、先が気になる展開や転換を残す。説明会・事例紹介・ブランドストーリー・資金調達向け。"
+      "desc_ja": "状況設定から緊張、解決へと物語の流れを組み立て、先が気になる展開や転換を残す。ピッチ・事例紹介・ブランドストーリー・資金調達向け。"
     },
     {
       "id": "instructional",
@@ -1554,7 +1554,7 @@
       "desc_zh": "页面与演讲者共同承担信息：一条主结论配合简短说明、结构化证据或必要列表，适合路演和业务评审。",
       "desc_zh_tw": "頁面與講者共同承擔資訊：一個主結論配合簡短說明、結構化證據或必要列表，適合路演和業務評審。",
       "desc_en": "The page and presenter share the load: pair one primary claim with concise explanation, structured evidence, or a necessary list. Best for roadshows and business reviews.",
-      "desc_ja": "ページと発表者で情報を分担する構成。主張を一つ置き、短い説明、構造化した根拠、または必要なリストを組み合わせる。説明会や事業レビュー向け。"
+      "desc_ja": "ページと発表者で情報を分担する構成。主張を一つ置き、短い説明、構造化した根拠、または必要なリストを組み合わせる。ピッチや事業レビュー向け。"
     },
     {
       "id": "presentation",

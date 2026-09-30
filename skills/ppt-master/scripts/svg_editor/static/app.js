@@ -128,7 +128,7 @@
             err_edit: "編集に失敗しました：",
             label_direct_edit: "オブジェクト属性（「変更を適用」までは保留）",
             prop_multiline_hint: "複数行テキストです — 文字を編集するには1行（tspan）を選択してください",
-            edit_saved_hint: "変更を保留しました。「変更を適用」をクリックすると svg_output に書き込まれます。",
+            edit_saved_hint: "変更は未適用です。「変更を適用」をクリックすると svg_output に書き込まれます。",
             btn_undo: "元に戻す",
             undo_done: "直前の未適用の編集を元に戻しました",
             undo_empty: "元に戻せる編集はありません",
