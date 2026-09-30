@@ -1009,7 +1009,7 @@
       "label_en": "pyramid",
       "label_ja": "ピラミッド",
       "desc_zh": "结论先行；材料支持时采用相互独立、完全穷尽的论证，并为数据配上有依据的对比。适合决策、分析、战略、汇报。",
-      "desc_zh_tw": "結論先行、相互獨立且完全窮盡的論證、每個數據都帶比較。適合決策、分析、策略、報告。",
+      "desc_zh_tw": "結論先行；材料支持時採用相互獨立、完全窮盡的論證，並為數據配上有依據的對比。適合決策、分析、策略、報告。",
       "desc_en": "Lead with the answer, use MECE reasoning where the source supports it, and give data a supported comparison where useful. Best for decisions, analysis, strategy, and reporting.",
       "desc_ja": "結論を先に示し、元資料が裏付ける範囲でMECEな論理構成をとり、根拠のある比較で数値の意味を示す。意思決定・分析・戦略・報告に最適。"
     },
