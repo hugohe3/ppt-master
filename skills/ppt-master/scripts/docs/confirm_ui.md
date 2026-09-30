@@ -312,8 +312,10 @@ binding. Completed results stay closed until a new round starts.
 | `recommendations.stage1.json` (embedded `template_options`) | `"stage1"` | communication contract — content language; audience; open `communication_intent`; audience outcome; core message / primary delivery context + optional secondary use / artifact afterlife / `content_divergence` (all prose fields may be blank); canvas; free-design/template mode and conditional candidate selectors | **Confirm contract & template choice** | writes Stage-1 `result.json` plus `template_selection.json` in one submission; the page stays open and polls while the agent installs and the server verifies the selected roots |
 | `recommendations.stage2.json` | `"stage2"` | complete deck solution and production — conditional natural-language template application, reading mode, mode, page count, visual direction, color, icons, typography, image usage/rendering, conditional AI acquisition path, proactive notes/custom-animation/narration-audio toggles, generation mode, Design Spec review toggle, and Design Spec depth | **Confirm final plan** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
 
-In the UI branch, the AI authors Stage 1 without reading template candidates,
-then launches the combined page. In chat/delegated confirmation it authors the
+In the UI branch, the AI authors Stage 1 without reading candidate indexes or
+workspaces — template facts already in context inform only the canvas and page
+range ([`generate-pptx.md`](../../workflows/generate-pptx.md) Step 4) — then
+launches the combined page. In chat/delegated confirmation it authors the
 same communication recommendation before listing template candidates. After
 the one Stage-1 confirmation, the AI installs any selection, completes the
 handoff/equivalent state, then inspects only the project-local template and

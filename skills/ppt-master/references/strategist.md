@@ -68,7 +68,7 @@ Missing material returns upstream, never invented or substituted.
 
 ### a. Canvas Format Confirmation
 
-Recommend from the scenario and project initialization ([`canvas-formats.md`](canvas-formats.md)). A template canvas is not Stage-1 evidence; Stage 2 later checks whether selected structure serves the confirmed canvas.
+Recommend from the scenario and project initialization ([`canvas-formats.md`](canvas-formats.md)); a template canvas informs it only as [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4 allows. Stage 2 later checks whether selected structure serves the confirmed canvas.
 
 ### b. Page Count Confirmation
 

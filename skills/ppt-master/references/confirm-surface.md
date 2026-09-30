@@ -22,7 +22,7 @@ Interpret the instruction semantically — "confirm here", "use the chat window"
 
 ## 2. `recommendations.stage1.json`
 
-Author before reading any candidate index, spec, prototype, asset, or template canvas. All seven prose values may be blank; `primary_language` is canonical BCP-47 (`und` and Chinese without script/region are rejected); `lang` is the UI language only. The intent paths (inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off) are help text, never a `primary_job` field.
+Author before reading any candidate index, spec, prototype, or asset; template facts already in context inform only the canvas and page range, per [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4. All seven prose values may be blank; `primary_language` is canonical BCP-47 (`und` and Chinese without script/region are rejected); `lang` is the UI language only. The intent paths (inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off) are help text, never a `primary_job` field.
 
 ```json
 {
