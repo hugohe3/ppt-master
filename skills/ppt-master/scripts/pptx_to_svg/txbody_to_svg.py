@@ -206,10 +206,15 @@ def convert_txbody(
             space_after,
         )
     )
+    anchor_space = inner_h - total_h
+    # Overflow stays anchored: centered text grows both ways, bottom text up.
+    # Explicit clipping keeps the leading lines inside the frame instead.
+    if clip_vertical:
+        anchor_space = max(0.0, anchor_space)
     if anchor == "ctr":
-        cursor_y = inner_y + max(0.0, (inner_h - total_h) / 2.0)
+        cursor_y = inner_y + anchor_space / 2.0
     elif anchor == "b":
-        cursor_y = inner_y + max(0.0, inner_h - total_h)
+        cursor_y = inner_y + anchor_space
     else:
         cursor_y = inner_y
 
