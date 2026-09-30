@@ -167,6 +167,11 @@ def convert_txbody(
     bins = _read_emu_attr(body_pr, "bIns", DEFAULT_INSETS_EMU["b"])
     anchor = body_pr.attrib.get("anchor", "t") if body_pr is not None else "t"
     wrap_mode = body_pr.attrib.get("wrap", "square") if body_pr is not None else "square"
+    # DrawingML defaults to overflow: a fixed frame does not hide later lines.
+    clip_vertical = (
+        body_pr is not None
+        and body_pr.attrib.get("vertOverflow") in {"clip", "ellipsis"}
+    )
     respect_edge_spacing = (
         body_pr is not None
         and body_pr.attrib.get("spcFirstLastPara") in {"1", "true"}
@@ -225,7 +230,10 @@ def convert_txbody(
         space_after,
     ):
         cursor_y += before
-        visible_lines = _clip_lines_to_bottom(para, lines, cursor_y, bottom_y)
+        visible_lines = (
+            _clip_lines_to_bottom(para, lines, cursor_y, bottom_y)
+            if clip_vertical else lines
+        )
         if visible_lines:
             text_blocks.append(
                 _emit_paragraph(
@@ -234,7 +242,7 @@ def convert_txbody(
                 )
             )
         cursor_y += height + after
-        if cursor_y >= bottom_y:
+        if clip_vertical and cursor_y >= bottom_y:
             break
 
     svg = "\n".join(text_blocks)
@@ -1561,9 +1569,8 @@ def _clip_lines_to_bottom(
     cursor_y = top_y
     for line in lines:
         line_h = _line_height(para, line)
-        # PowerPoint lets the first line that starts within the box render even
-        # when it slightly exceeds the bottom — only suppress lines whose top
-        # is already at/below the bottom edge.
+        # Approximate explicit clip/ellipsis at line boundaries. Default
+        # overflow bypasses this filter; it must not discard source text.
         if cursor_y >= bottom_y:
             break
         visible.append(line)
