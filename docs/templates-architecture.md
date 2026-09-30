@@ -454,7 +454,7 @@ secondary from deck").
 
 Field-level micro-adjustment goes through the existing Strategist confirmation
 stage path — the user says in chat "use the anthropic brand but change primary
-to #FF0000", and Strategist adjusts fields e/g. Installation adds no
+to #FF0000", and Strategist adjusts the fields on the spot. Installation adds no
 field-level syntax.
 
 ### Selection conflicts
@@ -491,7 +491,7 @@ placeholders, or distillation-era markers are rejected; `create-template` must
 produce a new workspace before generation continues. The `kind` field decides
 **how AI handles the selected path**:
 
-| User path's `kind` | Step 3 action (per-kind branch) |
+| User path's `kind` | Apply behavior after Stage 1 confirmation (per-kind branch) |
 |---|---|
 | `kind: brand` | Install the qualified identity spec and root-owned assets; structure remains free unless the set also contains Layout or Deck |
 | `kind: style` | Install the qualified direction/method spec; require no Style-owned roster or assets and keep generated pages flat unless the set contains Layout or Deck |

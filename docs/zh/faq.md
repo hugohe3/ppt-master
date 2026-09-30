@@ -75,7 +75,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 可以。完整仓库确实很大（Git 历史，加上内置的示例 deck 及其素材），而且这个体积是写进历史里的——在不破坏已有大量 fork 的前提下没法瘦身。如果你只想要 skill、不需要完整仓库，用下面的轻量方式：
 
-- **Marketplace CLI**：`npx skills add hugohe3/ppt-master`，或 Claude Code 里的 `/plugin install`，都只拉取 skill 文件（见 README 的「开始设置」一节）。
+- **Marketplace CLI**：`npx skills add hugohe3/ppt-master`，或 Claude Code 里的 `/plugin install`，都只拉取 skill 文件（见 [README 的「3. 配置项目」一节](../../README_CN.md#3-配置项目)）。
 - **手动下载**：到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载 `ppt-master-skill-*.zip`——只含 skill 文件（约 56 MB），无需 clone 完整仓库。
 
 两种 skill-only 方式装好后，找到同时包含 `SKILL.md` 与 `requirements.txt` 的 skill 安装目录，再运行 `python3 -m pip install -r "<installed-skill-dir>/requirements.txt"`，后处理脚本才能工作。
@@ -112,7 +112,7 @@ python3 -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Q: 能用 AI 生成配图吗？
 
-可以。Agent host 提供原生生图工具时，PPT Master 可直接使用，不需要另配供应商生图 API Key；也可以通过内置 `image_gen.py` 使用已配置的供应商后端。图片方案选择"AI 生图"即可，也可明确要求 Agent 使用自身生图工具。你还可以把自己的图片放到项目的 `images/` 目录下。
+可以。Agent host 提供原生生图工具时，PPT Master 可直接使用，不需要另配服务商生图 API Key；也可以通过内置 `image_gen.py` 使用已配置的服务商后端。图片方案选择"AI 生图"即可，也可明确要求 Agent 使用自身生图工具。你还可以把自己的图片放到项目的 `images/` 目录下。
 
 ## Q: 为什么没有图标？图标应该默认出现在每一页吗？
 
@@ -122,7 +122,7 @@ python3 -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Q: 没有生图 API Key，还能配图吗？
 
-可以。Agent host 提供原生生图能力时，选择"AI 生图"并要求它使用自身生图工具，不需要供应商生图 API Key。否则可在策略师的"图片方案"步骤选择"网络图片"；PPT Master 内置零配置的 `image_search.py`，在 Openverse 和 Wikimedia Commons 中搜索可商用的开放许可图片。零配置搜索适合作为兜底：能直接用，但图片质量不稳定，容易出现普通用户上传、构图随意、清晰度一般的素材。
+可以。Agent host 提供原生生图能力时，选择"AI 生图"并要求它使用自身生图工具，不需要服务商生图 API Key。否则可在策略师的"图片方案"步骤选择"网络图片"；PPT Master 内置零配置的 `image_search.py`，在 Openverse 和 Wikimedia Commons 中搜索可商用的开放许可图片。零配置搜索适合作为兜底：能直接用，但图片质量不稳定，容易出现普通用户上传、构图随意、清晰度一般的素材。
 
 如果想要更现代的商业风照片，建议在 `.env` 里设置 `PEXELS_API_KEY` 和/或 `PIXABAY_API_KEY`（都是免费申请）。搜索会自动纳入 Pexels / Pixabay，人物、办公、生活方式、产品和插画类图片质量通常会明显更稳定。两种路径可以在同一份 deck 里混用（比如 hero 图用 AI 生成、团队照片用网络搜索）；如果选中的图片需要署名，Executor 会在该幻灯片自动添加就地小字署名。
 
@@ -132,13 +132,13 @@ python3 -c "import pptx; import fitz; print('All core dependencies OK')"
 
 可以。提供一张或多张图片，并要求把其中的页面还原为可编辑 PPTX，PPT Master 就会把请求路由到**图片还原为 PPTX**（[`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md)）profile。该 profile 当前要求在 Codex 中使用；其他 Agent host 尚未适配，不对其行为作支持或承诺。图片还原为 PPTX 始终直接启用 Quick，不需要另行说明“快速模式”。它会先把所有输入规范化为一份有序页面画面清单，所以最终页数由实际页面画面决定，而不是由文件数决定。
 
-普通可见文字会还原为原生可编辑文本。Logo、图标、徽标和装饰图形在原图足够清晰时直接使用；像素过低时可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。Chart、table 和 data graphic 禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成 PowerPoint 中的独立图片对象。AI 可以补全拆层后露出的隐藏场景像素，但不能改掉可见构图。把整页截图铺底、只叠少量可编辑元素，不算还原成功。
+普通可见文字会还原为原生可编辑文本。Logo、图标、徽标和装饰图形在原图足够清晰时直接使用；像素过低时可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。图表、表格和数据图形禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成的底图（plate），再通过网格切片或 SVG 包围盒裁切拆成 PowerPoint 中的独立图片对象。AI 可以补全拆层后露出的隐藏场景像素，但不能改掉可见构图。把整页截图铺底、只叠少量可编辑元素，不算还原成功。
 
 ## Q: 生成的 PPT 可以编辑吗？
 
 可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至活动项目的 `exports/`。使用默认输出路径时，Default Generate 与 Quick Generate 都会把作者源 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重新导出 PPTX，无需再走 LLM。对 Quick 而言，这只是包重建，不是可恢复的 AI 设计决策记录。
 
-默认 Generate 流程的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速生成会跳过这项预览产物，但在无锁最终质量检查通过后，仍保留普通 postflight 报告和默认输出路径下的备份。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
+`finalize_svg.py` 在默认 Generate 流程的 Step 7 中仍是强制操作，尽管原生 PPTX 导出读取的是 `svg_output/`。它会在 `svg_final/` 中生成自包含文件，用于视觉检查，也可作为 SVG 图片手动插入另一份 deck。显式快速生成会跳过这项预览产物，但在无锁最终质量检查通过后，仍保留普通 postflight 报告和默认输出路径下的备份。PowerPoint 手工“转换为形状”不是受支持的往返路径；需要可编辑形状时，请使用生成的原生 PPTX。
 
 ## Q: 多行文本会怎样导出？可以让 PowerPoint 自动重排吗？
 
@@ -189,13 +189,13 @@ PowerPoint 最终显示的是 pt，所以**导出时**自动把 px 换成 pt（`
 
 PPT Master 没有文档化的 `wireframe` 运行模式，也没有跨版本视觉等价保证，因此不能只凭观感判定版本回归。先记录本次使用 Default 还是 Quick，以及实际的 mode、visual style、图片方案、基础图标选择、Custom Animations 设置和资源备妥状态。Quick 不写 `design_spec.md` 或 `spec_lock.md`，这些决定只保留在 Agent 的当前上下文。
 
-再比较活动项目 `svg_output/` 中的同一页与导出的 PPTX。SVG 本身已经稀疏时，应检查规划、资源与 SVG 创作层；SVG 中存在预期对象、PPTX 却丢失或改变时，才检查转换或渲染层。这个分界依据 [Materials → Plan → Realization](./technical-design.md)、[Default Generate 工作流](../../skills/ppt-master/workflows/generate-pptx.md)与[快速模式 profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)。
+再比较活动项目 `svg_output/` 中的同一页与导出的 PPTX。SVG 本身已经稀疏时，应检查规划、资源与 SVG 创作层；SVG 中存在预期对象、PPTX 却丢失或改变时，才检查转换或渲染层。这个分界依据[材料 → 规划 → 实现](./technical-design.md#材料--规划--实现餐厅合同)、[Default Generate 工作流](../../skills/ppt-master/workflows/generate-pptx.md)与[快速模式 profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)。
 
 ## Q: PPT Master 如何计费？复用模板会降低 token 用量吗？
 
 按你的 AI 用量计费，不额外收订阅费。
 
-仓库所说的模板复用，是复用身份、方法、结构或重复应用合同；当前没有文档化的测量或保证表明模板复用会改变 token 用量。依据见[产品定位](../../README_CN.md#产品定位)与[模板边界](./templates-guide.md)。
+仓库所说的模板复用，是复用身份、方法、结构或重复应用合同；当前没有文档化的测量或保证表明模板复用会改变 token 用量。依据见[产品定位](../../README_CN.md#产品定位)与[模板边界](./templates-guide.md#三模板的边界)。
 
 ## Q: 生成的图表可以编辑数据吗？
 
@@ -236,7 +236,7 @@ relationship，受支持的 PPTX 回导也会重建同一种 SVG 表达。
 
 这是超链接合同，不是通用 PowerPoint action API。鼠标悬停、custom show、
 导航命令、程序 / macro / OLE / file 以及任意 action setting 不会被创作。
-carrier 与保留边界见 [PowerPoint ↔ SVG 映射指南](./powerpoint-svg-mapping.md)。
+carrier 与保留边界见 [PowerPoint ↔ SVG 映射指南](./powerpoint-svg-mapping.md#10-powerpoint-播放与打包功能)。
 
 ## Q: 为什么没有页内元素动画？动画被移除了吗？
 
@@ -359,7 +359,7 @@ Quick 省略独立规划阶段，但仓库没有文档化的测量或保证表�
 
 可以——这就是 **Edit Native PPTX** 路线，独立于 Generate。把现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把 deck 导入 `projects/` 下保留来源的 round-trip 工作区，把来源页面当作原生页面库，并在编辑选中内容前选择、重排、重复或省略页面。
 
-未改的输出页面会被引用并逐字节恢复；在编辑过的页面上，未改对象恢复为原生形态，只有改过的对象会重建。`page_plan.json` 中有序的 `pages` 清单使用 `source_slide` 和可选的 SVG 副本文件名选择、重排、重复或省略来源页面。讲稿、旁白、计时和转场都作为保留页面上的叠加内容。一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若源页面库缺少所需的新结构，请走普通 Generate，或先 Create Template、再从产出的工作区 Generate。完整步骤：[Edit Native PPTX 工作流](../../skills/ppt-master/workflows/edit-native-pptx.md)。
+未改的输出页面会被引用并逐字节恢复；在编辑过的页面上，未改对象恢复为原生形态，只有改过的对象会重建。`page_plan.json` 中有序的 `pages` 清单使用 `source_slide` 和可选的复制 `svg` 文件名选择、重排、重复或省略来源页面。讲稿、旁白、计时和转场都作为保留页面上的叠加内容。一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若源页面库缺少所需的新结构，请走普通 Generate，或先 Create Template、再从产出的工作区 Generate。完整步骤：[Edit Native PPTX 工作流](../../skills/ppt-master/workflows/edit-native-pptx.md)。
 
 ---
 
@@ -405,7 +405,7 @@ Create Template 会先确认简报，再写入已注册、可发现的 `library`
 
 ## Q: 模板注册后，以后每次生成都会自动使用吗？
 
-不会。注册只让工作区可被发现，不会自动选中。Default Generate 每次仍需在 Stage 1 确认；只提供一个精确工作区 root 时可在页面中预选，但不会跳过确认，提供多个 root 时则都只作为未选候选。Quick 没有模板选择页，因此精确 root 会被直接校验并使用；没有精确 root 就走自由设计。原始 `.pptx`、内层 `templates/` 目录、裸模板名或风格词都不算选中工作区。详见[模板选择机制](./templates-guide.md)与[Quick 模板边界](../../skills/ppt-master/workflows/profiles/quick-generate.md)。
+不会。注册只让工作区可被发现，不会自动选中。Default Generate 每次仍需在 Stage 1 确认；只提供一个精确工作区 root 时可在页面中预选，但不会跳过确认，提供多个 root 时则都只作为未选候选。Quick 没有模板选择页，因此精确 root 会被直接校验并使用；没有精确 root 就走自由设计。原始 `.pptx`、内层 `templates/` 目录、裸模板名或风格词都不算选中工作区。详见[选择方式](./templates-guide.md#选择方式)与[Quick 模板边界](../../skills/ppt-master/workflows/profiles/quick-generate.md)。
 
 ---
 
@@ -417,7 +417,7 @@ Create Template 会先确认简报，再写入已注册、可发现的 `library`
 
 **最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取包内实际存在且受支持的主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把完整来源清单作为证据，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则为每张来源 Slide 输出一个原型，并只把这组 Slide 可达的 Layout/Master 事实物化到新工作区，不做语义归纳或缺口补造；未引用的来源 Layout/Master 只保留为分析证据，不进入 mirror 输出。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
 
-完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
+完整导入 SVG 可以保留原生形状 metadata、隐藏 carrier 和预览指纹；这份无损表示作为来源/包证据保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 把审阅后的当前 IR 发布为可见树；source ref 只用于校验身份并恢复受支持的不可见语义，绝不用于回填普通可见的无损子树。不支持或已修改的对象保留 SVG fallback。
 
 没有源 PPTX 时，也可以提供关键页面类型的截图——封面、目录、章节、内容和结尾——但此时几何、字体和继承关系只能根据画面推断。这里提取的是可复用模板系统；如果目标是把每个页面画面还原成分层可编辑输出页，应改用图片还原为 PPTX（`image-to-pptx`）。
 

@@ -1,6 +1,6 @@
 # 路线图
 
-[English](../roadmap.md) | [Chinese](./roadmap.md)
+[English](../roadmap.md) | [中文](./roadmap.md)
 
 ---
 
@@ -47,7 +47,7 @@
 | 关系图 | 系统化 | 六个关系原子——`order`、`link`、`parent`、`membership`、`contrast`、`overlap` |
 | 公式 | 系统化 | 独立块级公式与同段行内公式可把 Microsoft 365 LaTeX / mhchem 文档中所有明确点名的输入编译为可编辑 OMML，并遵循文档规定的原生归一化，档位外输入直接失败。PPTX 导入可把通过校验的 PPT Master 自有 OMML 恢复为带可见 SVG 预览的规范公式 marker；任意第三方 OMML 与原始 LaTeX 写法恢复仍不在合同内。不生成图片兜底。包目标仍为 PowerPoint 2010+；可执行档位锁定到所述 Microsoft 文档版本，仓库验证覆盖编译器、OMML 与包结构，不等同于完整的 Microsoft 365 UI 认证。非 PowerPoint 客户端仍不在合同内 |
 | 旁白与动画音效 | 系统化 | 逐页旁白音频，以及取自内置 CC0 音效库的原生转场与对象音效 |
-| 任意视频与背景音乐 | 暂不考虑 | 属于一次性、内容特定的插入动作，在 PowerPoint 里手动放进去更快，AI 也无法替你挑文件。背景音乐还会牵出旁白混音决策，那在范围之外。来源 deck 中已有的媒体在 Fill 与 Enhance 路线中原样保留 |
+| 任意视频与背景音乐 | 暂不考虑 | 属于一次性、内容特定的插入动作，在 PowerPoint 里手动放进去更快，AI 也无法替你挑文件。背景音乐还会牵出旁白混音决策，那在范围之外。来源 deck 中已有的媒体在 Edit Native PPTX 路线中原样保留 |
 | SmartArt | 有意的不对称 | 读取来源 diagram part 的内容与结构；生成 deck 用普通形状管线把这些内容重画出来。从不编辑 DiagramML，也不承诺原生 SmartArt 再生 |
 | 3D 模型、OLE 对象 | 暂不考虑 | 两者都要求打开文件的机器装有宿主程序或较新版 Office，否则退化成一张静态预览图——正是本项目有意规避的跨渲染器问题。手动插入只要几秒。来源 deck 中已有的对象原样保留 |
 | 墨迹与摄像头对象（Cameo） | 暂不考虑 | 手绘批注与实时摄像头对象属于演示现场的表面，不是生成的设计内容，且都依赖较新版 Office。来源 deck 中已有的此类 part 经源保留路线作为未改动的包结构透传 |
@@ -127,7 +127,7 @@
 | 2026-03 | **原生 PPTX 路线成形** — SVG → DrawingML 链路可用；图表 / 版式模板索引上线 |
 | 2026-04 | **管线规模化** — 仅凭主题生成、70 个图表模板 + 三套图标库、`spec_lock` 跨页一致性契约、逐元素动画与旁白 / 视频导出 |
 | 2026-05 | **可视化编辑 + AI 图片体系化** — Live Preview 确定性原位编辑（基于 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85)）、从 PPTX 创建模板工作区、rendering × palette × type 图片体系、旧版栅格 LaTeX 渲染器 |
-| 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、可组合插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/hugohe3/ppt-master/pull/155)） |
+| 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、可组合插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/ZhaoZuohong) 的 [PR #155](https://github.com/hugohe3/ppt-master/pull/155)） |
 | 2026-07 | **定位章程 + 原生母版 / 版式 + token 效率**（[v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)）— 三段式分步确认 UI、真 `p:sldMaster` / `p:sldLayout` 导出、`--native-charts-and-tables` opt-in、动效导出加固、图表模板库压缩 |
 | 2026-08 | **模板库 + 页面图重建 + 原生公式与链接 + AI 图像成为构图系统**（[v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0)、[v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)、[v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0)、[v4.8.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.8.0)）— brand / style / layout 工作区库、可视化按信息模型拆分且结构改为组合语法、Codex 支持的 `image-to-pptx` profile、带原生动画音效的视频交付、三条可编辑整体设计方向、覆盖 Microsoft 365 文档化 profile 的可编辑 OMML 公式、原生超链接创作、可跨页复用的 AI 插画元素族与装饰艺术字、按任务决定来源并隔离审阅缩略图的配图路径、转场与对象动画的反向导入，以及四层能力覆盖地图 |
 
@@ -151,7 +151,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 **对应 Issue**：[#99](https://github.com/hugohe3/ppt-master/issues/99)、[#100](https://github.com/hugohe3/ppt-master/issues/100) 类
 
-跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。把默认路线改成 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表默认用 SVG 是 **by design**，不是能力缺失。
+跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。把默认路线改成 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表默认用 SVG 是**有意为之**，不是能力缺失。
 
 窄例外是 `data-pptx-replace-with` marker：Design Spec §IX `Native-ready` 映射中以 `<object-key>=yes` 点名的受支持独立数据图表与纯文本网格表格可以携带 PowerPoint 原生 Chart/Table 替换 payload；`no` 与零星微型图形保持普通 shape。§VII 只记录真正选中的可复用参考。导出加 `--native-charts-and-tables` 才激活已准备的 marker——供主动用跨渲染器保真换取带数据源对象及图表/表格专属编辑模型的用户使用；激活后的对象会保留 deck 的 chart-area / plot / 轴线 / 网格线 / 标签颜色与原生表格格式，不再塌回 PowerPoint 默认主题（见 [v4.0.0 发布说明](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)）。默认导出路径与可编辑的 SVG 派生形状系统不变。
 
@@ -169,7 +169,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 会做：通过 prompt 精简 / 缓存命中率提升带来的间接改善。
 
-显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist 和确认，随后创作 SVG，在 7 页及以上 roster 上运行共用的 early gate，再运行一次无锁最终质量门并导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
+显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist 和确认，随后创作 SVG，在 7 页及以上的 roster 上运行共用的中段 early gate，再运行一次无锁最终质量门并导出最终 PPTX。由于整个规划阶段不再发生——Strategist reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，也不从 lock 派生当前项目 Theme。Flat Quick 保留转换器默认 Theme 脚手架；structured Quick 在工作区提供时保留逐 Master 源 Theme，并从语义 slot carrier 推导 Master 标题／正文字号默认值。由于没有已确认的设计契约或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 默认 Generate 流程仍坚持质量优先。
 

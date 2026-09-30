@@ -1,6 +1,6 @@
 # 模板架构：Brand / Style / Layout / Deck 四分类
 
-[English](../templates-architecture.md) | [Chinese](./templates-architecture.md)
+[English](../templates-architecture.md) | [中文](./templates-architecture.md)
 
 ---
 
@@ -19,7 +19,7 @@
 | **Layout** | `templates/layouts/<id>/` | 仅品牌中立的结构段：canvas / page structure / 语义文字角色 / page types / SVG roster | 不写品牌身份，也不拥有可重复沟通场景 | `workflows/create-template/create-layout.md` |
 | **Deck** | `templates/decks/<id>/` | 一类可重复演示：描述性应用语境 + 一体化身份与结构 | —— | `workflows/create-template/create-deck.md` |
 
-每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。Create Template 根据自然语言意图与来源证据在内部推导 `standard` / `fidelity` / `mirror`；Strategist 再根据真实原型与当前内容推导 strict/adaptive 导出行为。这些实现值都不是用户必选项。Generate 只接受当前嵌套工作区合同；旧平铺或带旧结构语义的包必须通过 Create Template 重建，不能原地升级。
+每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。Create Template 根据自然语言意图与来源证据在内部推导 `standard` / `fidelity` / `mirror`：创作策略生成新的 SVG 与结构，mirror 则物化已验证的来源事实；Strategist 再根据真实原型与当前内容推导 strict/adaptive 导出行为。这些实现值都不是用户必选项。Generate 只接受当前嵌套工作区合同；旧平铺或带旧结构语义的包必须通过 Create Template 重建，不能原地升级。
 
 四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与前置元数据中的 `kind` 字段双向对齐：
 
@@ -97,11 +97,11 @@ native_structure_mode: structured
 
 导入向量统一使用 `data-icon="imported/<name>"`，唯一规范文件位于 `icons/imported/<name>.svg`。具备工作区感知的校验与导出会直接解析这个根目录路径；`templates/icons/` 不属于模板包结构。
 
-原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
+PPTX 导入采用两级 metadata 模型。临时的完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变的来源/包证据；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 把审阅后的当前 IR 发布为可见树；source ref 只用于校验身份并恢复受支持的非可见语义，固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
 
 两种范围都在可移植前置元数据中保留所选 `kind`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
-任何范围第一次写最终文件前，都必须解析 Design Spec 和全部真实目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸名、同 kind spec 或无效的限定名集合；不同 kind 可以共存。Layout 与 Deck 同时存在时，Layout 拥有有效 roster：新增 Deck 不改变已有 Layout roster，新增 Layout 则先隔离校验，再原子替换已有 Deck 结构载荷。两种范围都会检查计划素材和预览目标冲突。任一失败都在写入前停止，不覆盖、不留下半套输出。
+任何范围第一次写最终文件前，都必须解析 Design Spec 和全部真实目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸 spec、同 kind spec 或无效的限定名集合；不同 kind 可以共存。Layout 与 Deck 同时存在时，Layout 拥有有效 roster：新增 Deck 不改变已有 Layout roster，新增 Layout 则先隔离校验，再原子替换已有 Deck 结构载荷。两种范围都会检查计划素材和预览目标冲突。任一失败都在写入前停止，不覆盖、不留下半套输出。
 
 ### 四段的字段切分
 
@@ -118,7 +118,7 @@ native_structure_mode: structured
 
 Deck 编码的是**一类可重复演示**，而不只是预先组合好的 Brand 和 Layout。它描述模板服务哪些沟通场景、支持哪些受众结果，以及常见的叙事或页面角色。身份与结构围绕这份语境形成一个整体；具体选哪些原型、如何处理内容，由当前 Strategist 决定。
 
-`standard` / `fidelity` 检查完整的已确认来源清单并创作新完整系统。Mirror 为每张来源 Slide 输出一个完整原型，只保留这组 Slide 及每张 Slide 可达的 Layout/Master 父子关系；没有被任何来源 Slide 引用的 Layout 或 Master 不属于 mirror 合同。创作模式可以把其中有用的未引用来源结构重著为新的完整 Slide 原型。Mirror 能保留这部分范围内的来源事实，但不能单独证明来源就是可复用 Deck：创建时仍要识别稳定的应用规则。只得到身份时创建 Brand；方法与视觉方向需要脱离原型复用时创建 Style；得到品牌中立的可复用结构时创建 Layout；结构带品牌身份，或者包含场景叙事与内容语法时创建 Deck。
+`standard` / `fidelity` 检查完整的已确认来源清单并创作新完整系统。Mirror 为每张来源 Slide 输出一个完整原型，只保留这组 Slide 及每张 Slide 可达的 Layout/Master 父子关系；没有被任何来源 Slide 引用的 Layout 或 Master 不属于 mirror 合同。创作模式可以把其中有用的未引用来源结构重新创作为新的完整 Slide 原型。Mirror 能保留这部分范围内的来源事实，但不能单独证明来源就是可复用 Deck：创建时仍要识别稳定的应用规则。只得到身份时创建 Brand；方法与视觉方向需要脱离原型复用时创建 Style；得到品牌中立的可复用结构时创建 Layout；结构带品牌身份，或者包含场景叙事与内容语法时创建 Deck。
 
 这也约束创建模式：只有来源合同本身已经品牌中立且应用中立时，Layout mirror 才成立。删除品牌色、字体、Logo、固定身份对象或可复用应用规则都属于重新创作；越过这条边界的来源要么使用 `standard` / `fidelity` 创作新的 Layout，要么保留这些事实并创建 Deck mirror。
 
@@ -222,7 +222,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 
 `category: scenario` 只表示发现时的适配标签。Layout 可以针对某种内容形态或交付环境优化几何，但不能规定沟通目的、受众结果、必需叙事顺序、固定措辞或示例内容；如果这些规则也要重复使用，应创建 Deck。
 
-**不允许出现**：Color Scheme、品牌字体家族/字重身份、最终字号体系、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。Layout 可以保留语义文字角色、对齐、换行与容量规则，因为它们属于结构；SVG 中性 paint、字体和字号只用于审阅。最终色彩与字体由策略师确认阶段或其他模板 kind 解析。
+**不允许出现**：Color Scheme、品牌字体家族/字重身份、最终字号体系、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。Layout 可以保留语义文字角色、对齐、换行与容量规则，因为它们属于结构；SVG 中性 paint、字体和字号只用于审阅。最终色彩与字体由 Strategist 确认阶段或其他模板 kind 解析。
 
 ### Deck 结构定义
 
@@ -340,7 +340,7 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ### 安装只复制，不合并
 
-Step 3 确认已注册和/或指定工作区根目录后，会解析每个 root 的真实 `kind`，
+Stage 1 确认已注册和/或指定工作区根目录后，确认后的 apply 阶段会解析每个 root 的真实 `kind`，
 并把每个选中的工作区安装为**各自独立**的一份项目内文件：
 
 ```
@@ -356,8 +356,9 @@ Step 3 确认已注册和/或指定工作区根目录后，会解析每个 root 
 ```
 
 不存在合并后的项目 spec，也没有组合出来的能力标签。裸的
-`<project>/templates/design_spec.md` 含义完全不同：那表示该项目**自身就是**
-project scope 的 Create Template 产物，永远不会被当作已安装模板消费。
+`<project>/templates/design_spec.md` 是较早的单类型形态：该项目本身就是一个工作区，
+永远不会被当作已安装模板消费。当前 project scope 的 Create Template 改为写入按类型限定命名的文件，
+因此两种形态不会共处一个目录——混用会被拒绝，而不是被静默解析。
 
 `library` / `explicit` 只记录发现来源，不改变所有权。
 
@@ -375,7 +376,7 @@ spec；若 Layout/Deck 拥有结构，还要读取全部已安装 SVG 原型，�
 
 当前用户指令与最终确认覆盖任何起始所有者。Brand 身份对 Style 的色彩／字体回退值
 始终具有权威性。Style 单独、或 Style 加 Brand，走扁平页面创作；Style 与 Layout
-或 Deck 同装时follow所选结构来源。Style 自身不会升级或降级结构。
+或 Deck 同装时，遵循所选结构来源。Style 自身不会升级或降级结构。
 
 **被拥有的片段管的是视觉权重，不只是取值。** 当片段所有者声明某个值应当主导、
 退居次要或保持稀有时，该指令与取值本身具有同等权威——Style 的留白或构图倾向
@@ -392,8 +393,8 @@ Stage 2 开始。
 Logo / Voice / Icon Style 五段从 brand 拿，**不做字段级混搭**（即不会发生
 "primary 从 brand 拿、secondary 从 deck 拿"这类隐式混合）。
 
-字段级微调走策略师确认阶段这条已有路径——用户在 chat 里说"用 anthropic brand，
-但 primary 改成 #FF0000"，由 Strategist 在 e/g 现场调整；安装层不加字段级语法。
+字段级微调走 Strategist 确认阶段这条已有路径——用户在 chat 里说"用 anthropic brand，
+但 primary 改成 #FF0000"，由 Strategist 现场调整相应字段；安装层不加字段级语法。
 
 ### 选择冲突
 
@@ -406,8 +407,6 @@ Logo / Voice / Icon Style 五段从 brand 拿，**不做字段级混搭**（即�
 
 因为不做任何合并，已装集合本身即自描述：文件名带 kind 与 id，来源行带源 root，
 其余正文保持不变。追溯哪一段来自哪里，看目录列表即可，不需要重建合并过程。
-
-让 AI 和人类都能回溯每段来自哪。
 
 ---
 
@@ -431,7 +430,7 @@ apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；根
 
 位图统一进入工作区 `images/`，模板 SVG 通过 `../images/` 引用。如果显式输入根目录本来就是目标项目根目录，apply 阶段原地消费：不得复制到自身，也不得再次移动素材。项目 root 可以被其他项目直接复用；把其中一项移入全局库时，spec 正文保持不变，但要从项目限定名路径放到单 kind 库工作区的裸 spec 路径，并完成注册。
 
-### 策略师确认阶段在不同 kind 下的行为
+### Strategist 确认阶段在不同类型下的行为
 
 安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；其他情况读取全部有效原型（有 Layout 时用 Layout，否则用 Deck）和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用。
 
@@ -458,7 +457,7 @@ Default 确认一段自然语言 `template_application`；Quick 形成同样的�
 | skill 库 | `templates/<kind_dir>/<template_id>/` 已经说明了 kind 和 id | `templates/design_spec.md` |
 | 项目 | 一个平铺、多 kind 共用的 `templates/` | `templates/design_spec.<kind>.<id>.md` |
 
-消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与前置元数据中的 `kind` 及对应 `<kind>_id` 一致；裸名与限定名不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于结构定义不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
+消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与前置元数据中的 `kind` 及对应 `<kind>_id` 一致；裸 spec 与限定名 spec 不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于结构定义不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
 
 选择遵循同一条原则：单位是工作区 **root**，不是 kind。一个 root 会贡献它暴露的全部 kind，所以指向一个同时装了 Brand 和 Style 的项目，两者都会生效。按 kind 浏览全局库只是找到 root 的一种方式——`library` 与 `explicit` 记录的是 root 如何被发现，而不是它拥有什么。
 
@@ -468,7 +467,7 @@ Default 确认一段自然语言 `template_application`；Quick 形成同样的�
 
 ## 七、不做（与本文叙述框架配套的拒绝列表）
 
-- **不在安装层支持字段级覆盖语法** —— 字段级微调走 策略师确认阶段这条已有路径
+- **不在安装层支持字段级覆盖语法** —— 字段级微调走 Strategist 确认阶段这条已有路径
 - **不接受同 kind 重复** —— 安装前先缩小 root 集合；Layout + Deck 按结构优先级解析
 - **不引入双名映射表** —— 模板命名按其品牌/场景母语（中文模板用中文名，英文模板用 snake_case），不强制统一
 - **不为输出范围新增结构分支或 CLI flag** —— 输出范围是 `create-template` 简报里的执行选择；两种范围的 Layout/Deck 都声明 `native_structure_mode: structured`，Brand/Style 均无 roster

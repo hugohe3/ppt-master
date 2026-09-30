@@ -85,7 +85,7 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 |---|---|---|
 | `on-click` | 每次单击显示一个内容组 | 由演讲者控制节奏的现场演示 |
 | `with-previous` | 页面出现时所有内容组同时入场 | 一次协调完成的整体入场 |
-| `after-previous`（默认） | 各内容组无需点击，按顺序自动出现 | 展厅循环、录屏走查和旁白 deck |
+| `after-previous`（默认） | 各内容组无需点击，按顺序自动出现 | 展台循环播放、逐步讲解和旁白 deck |
 
 `--recorded-narration` 不支持 `on-click`；带旁白或用于视频导出的 deck 应使用 `after-previous` 或 `with-previous`。
 

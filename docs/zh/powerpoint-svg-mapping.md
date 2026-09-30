@@ -1,6 +1,6 @@
 # PowerPoint 功能 ↔ 项目 SVG 映射指南
 
-[English](../powerpoint-svg-mapping.md) | [Chinese](./powerpoint-svg-mapping.md)
+[English](../powerpoint-svg-mapping.md) | [中文](./powerpoint-svg-mapping.md)
 
 ---
 
@@ -40,7 +40,7 @@ PowerPoint 意图
 
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
-| 演示文稿页面尺寸 | 根 SVG `viewBox="0 0 W H"`，通过项目画布合同选择 | 演示文稿宽高；96 DPI 下 `1 SVG px = 9,525 EMU` | `Native-stable`；回导的自定义 PPTX 尺寸可使用兼容的正小数 | 数值必须有限、原点为零且尺寸为受支持的正值；所有公开页和内部 Layout 原型必须匹配锁；禁止根 transform |
+| 演示文稿页面尺寸 | 根 SVG `viewBox="0 0 W H"`，通过项目画布合同选择 | 演示文稿宽高；96 DPI 下 `1 SVG px = 9,525 EMU` | `Native-stable`；回导的自定义 PPTX 尺寸可使用兼容的小数（非整数）尺寸 | 数值必须有限、原点为零且尺寸为受支持的正值；所有公开页和内部 Layout 原型必须匹配锁；禁止根 transform |
 | 幻灯片 | 一个完整的 `svg_output/<slide>.svg` 页面 | 一个 `p:sld` 及其 relationships | 重建为一张完整 SVG 页面 | SVG 是可见页面权威；备注和包行为单独承载 |
 | 对象位置与尺寸 | SVG 绝对坐标与元素边界 | `a:xfrm` 偏移和范围 | 经坐标换算后为 `Native-normalized` | 数值必须有限，并使用已登记坐标语法 |
 | Z 顺序 | SVG 源码顺序，由后到前 | PowerPoint shape tree 顺序 | 按 shape tree 顺序重建 | 不得依赖浏览器专属堆叠行为 |

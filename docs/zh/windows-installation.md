@@ -1,6 +1,6 @@
 # Windows 安装指南
 
-[English](../windows-installation.md) | [Chinese](./windows-installation.md)
+[English](../windows-installation.md) | [中文](./windows-installation.md)
 
 ---
 

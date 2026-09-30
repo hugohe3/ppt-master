@@ -190,13 +190,13 @@ Any mode pairs with any visual style.
 
 PPT Master has no documented `wireframe` runtime mode and no documented visual-equivalence guarantee between releases, so appearance alone does not identify a version regression. First record whether the run used Default or Quick, plus the actual mode, visual style, image-usage choice, base-icon choice, Custom Animations setting, and prepared-resource state. Quick keeps these decisions in the active agent context rather than writing `design_spec.md` or `spec_lock.md`.
 
-Next compare the same page in the active project's `svg_output/` with the exported PPTX. If the SVG is already sparse, inspect the planning, resource, and SVG-authoring layers. If the SVG contains the intended objects but the PPTX loses or changes them, inspect the conversion or rendering layer. This boundary follows [Materials → Plan → Realization](./technical-design.md), the [Default Generate workflow](../skills/ppt-master/workflows/generate-pptx.md), and the [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md).
+Next compare the same page in the active project's `svg_output/` with the exported PPTX. If the SVG is already sparse, inspect the planning, resource, and SVG-authoring layers. If the SVG contains the intended objects but the PPTX loses or changes them, inspect the conversion or rendering layer. This boundary follows [Materials → Plan → Realization](./technical-design.md#materials--plan--realization-the-kitchen-contract), the [Default Generate workflow](../skills/ppt-master/workflows/generate-pptx.md), and the [Quick profile](../skills/ppt-master/workflows/profiles/quick-generate.md).
 
 ## Q: How is PPT Master priced, and does template reuse reduce token usage?
 
 You pay according to your AI usage; PPT Master adds no subscription fee.
 
-The repository documents template reuse as reuse of identity, method, structure, or a recurring application contract. It contains no measured or guaranteed relationship between template reuse and token usage. See the [product positioning](../README.md#product-positioning) and [template boundaries](./templates-guide.md).
+The repository documents template reuse as reuse of identity, method, structure, or a recurring application contract. It contains no measured or guaranteed relationship between template reuse and token usage. See the [product positioning](../README.md#product-positioning) and [template boundaries](./templates-guide.md#3-template-boundaries).
 
 ## Q: Are the charts in the generated PPTX editable?
 
@@ -458,7 +458,7 @@ Create Template confirms the brief before writing either an indexed `library` wo
 
 ## Q: Does registering a template make every future deck use it automatically?
 
-No. Registration makes a workspace discoverable; it does not select it. In Default Generate, the template must still be confirmed in Stage 1. Supplying exactly one workspace root can preselect it there, but does not bypass confirmation; supplying several roots leaves them as unselected candidates. Quick has no template selector, so an exact root is validated and used directly, while no exact root means free design. A raw `.pptx`, an inner `templates/` directory, a bare template name, or a style phrase is not a workspace selection. See [How template selection works](./templates-guide.md) and the [Quick template boundary](../skills/ppt-master/workflows/profiles/quick-generate.md).
+No. Registration makes a workspace discoverable; it does not select it. In Default Generate, the template must still be confirmed in Stage 1. Supplying exactly one workspace root can preselect it there, but does not bypass confirmation; supplying several roots leaves them as unselected candidates. Quick has no template selector, so an exact root is validated and used directly, while no exact root means free design. A raw `.pptx`, an inner `templates/` directory, a bare template name, or a style phrase is not a workspace selection. See [How selection works](./templates-guide.md#how-selection-works) and the [Quick template boundary](../skills/ppt-master/workflows/profiles/quick-generate.md).
 
 ---
 

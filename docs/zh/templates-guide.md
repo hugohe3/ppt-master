@@ -1,6 +1,6 @@
 # 模板指南：选用、派生与边界
 
-[English](../templates-guide.md) | [Chinese](./templates-guide.md)
+[English](../templates-guide.md) | [中文](./templates-guide.md)
 
 ---
 
@@ -46,7 +46,7 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 
 ### 选择方式
 
-Default Generate 把模板选择放进 **Stage 1**，与不受模板影响的沟通契约
+Default Generate 把模板选择放进 **Stage 1**，与沟通契约
 同屏。页面先提供可切换的「自由设计 / 使用模板」；普通请求默认自由设计并
 收起详细选项，明确要求使用模板或提供任意精确 root 时默认展开模板模式。
 模板模式展示已注册 Brand/Style/Layout/Deck 与本次提供的 root；只提供一个
@@ -65,8 +65,8 @@ root 时会预选，多 root 仍只作为未选候选。系统不会根据主题
 Stage-1 页面先让用户选择自由设计或使用模板；只有选择使用模板，才展开五个
 紧凑下拉框：Brand、Style、Layout、Deck 各一个已注册工作区单选框，再加
 一个本次运行指定地址单选框。每个下拉框都有“无”；完整选择可以分别选用
-四种 kind，但每个 kind 最多一份。Layout 与 Deck 同时存在时由
-Layout 提供结构。指定地址最多选一个，并原子携带
+四种 kind，但每个 kind 最多一份。Layout 存在时由
+Layout 提供结构，否则由 Deck 提供。指定地址最多选一个，并原子携带
 该 root 暴露的全部 kind。已注册列表只来自四类索引，工作流不会扫描模板
 目录。需要默认展开模板模式并预选某个 Brand/Style/Layout/Deck 工作区时，
 直接在对话里写出精确 root（位置不重要，只要明确即可）：
@@ -213,18 +213,18 @@ Strategist 会把方向拆成两个彼此独立的选择：
 | **已选子工作流** | Create Brand / Create Style / Create Layout / Create Deck，由入口分派后固定 |
 | **模板 ID** | 模板的可移植身份；在 `library` 下同时也是目录名 / 索引键。优先 ASCII slug，如 `acme_consulting`；中文品牌名也行，但要文件系统安全 |
 | **显示名称** | 文档中的人类可读名 |
-| **kind 专属语境** | Brand：身份适用场景和调性。Style：宽泛 best fit 与发现关键词。Layout：结构可承载场景及 category/keywords。Deck：重复应用场景及 category/keywords。你可直接修改文字 |
+| **kind 专属语境** | Brand：身份适用场景和调性。Style：宽泛适用语境与发现关键词。Layout：结构可承载场景及 category/keywords。Deck：重复应用场景及 category/keywords。你可直接修改文字 |
 | **方法与视觉默认值** | 仅 Create Style：沟通方法、开放页面角色词汇、证据/数据表达、视觉默认值、图片/图标方向和审阅关注点；不写受众/页序/结构契约 |
 | **身份** | 仅 Create Brand/Create Deck：色板、字体、Logo、voice 与 icon identity |
 | **画布与结构** | 仅 Create Layout/Create Deck：画布、页面语法、Master/Layout/slot 方案、密度行为和来源结构规则 |
-| **来源处理** | 每个 child 只说明如何提取自己拥有的片段；仅 Layout/Deck 描述原型覆盖范围、保留/重建策略和原生结构 |
+| **来源处理** | 每个子工作流只说明如何提取自己拥有的片段；仅 Layout/Deck 描述原型覆盖范围、保留/重建策略和原生结构 |
 | **来源事实与素材** | Brand/Layout/Deck 列出采用或排除的素材；Layout/Deck 另报告可观察的 Master/Layout 事实和受支持原生能力。Style 只保留文字 provenance |
 
 确认后，工作流会回显一份完整简报并写入标记 `[TEMPLATE_BRIEF_CONFIRMED]`，从这一刻起后续步骤才会启动。**这是一个硬门——简报没确认，不会开始生成**。
 
 无论选择哪种范围，第一次写最终文件前都会做一次完整预检，解析 Design Spec 和全部真实素材目标。Library 范围要求 `templates/` 为空。Project 范围要求目标项目已初始化，并拒绝裸 spec、同 kind spec 或无效限定名集合；不同 kind 可以共存。新增 Deck 而项目已有 Layout 时，不改变 Layout roster；新增 Layout 而项目已有 Deck 时，先隔离校验，再原子替换 Deck 的结构载荷。两种范围都会在写入前拒绝位图、导入向量、审阅导出及其他计划目标冲突。已有空脚手架会原样保留，Create Template 不会只为保留空路径创建可选目录。任一检查失败都会在写入前停止且不覆盖。
 
-> 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是可复用的 ownership contract。先确认所拥有的片段和目标位置，并且只为 Layout/Deck 确认几何，可避免半成品或资产落错目录。
+> 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是可复用的所有权契约。先确认所拥有的片段和目标位置，并且只为 Layout/Deck 确认几何，可避免半成品或资产落错目录。
 
 ### 第三步：AI 推导内部实现
 
@@ -264,7 +264,7 @@ Design Spec 对每个输出 Slide 原型按正常 roster 说明。若来源还�
 
 ### 第四步：验证、预览导出、注册与发现
 
-模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门：Brand 校验 identity-only 规范，Style 校验 method/direction-only 规范，Layout/Deck 校验 SVG roster 和 structured 合同。Brand/Style 不生成预览 PPTX；Layout/Deck 可按需创建 `exports/<id>_template_preview.pptx`，多 Master 时必须创建。创作型模板只在临时预览副本中使用简短占位示例，避免较长的 canonical marker 换行，不会修改源 SVG。唯一按范围分流的动作是全局注册：
+模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门：Brand 校验仅含身份的 spec，Style 校验仅含方法/方向的 spec，Layout/Deck 校验 SVG roster 和 structured 合同。Brand/Style 不生成预览 PPTX；Layout/Deck 可按需创建 `exports/<id>_template_preview.pptx`，多 Master 时必须创建。创作型模板只在临时预览副本中使用简短占位示例，避免较长的 canonical marker 换行，不会修改源 SVG。唯一按范围分流的动作是全局注册：
 
 | 范围 | 工作区根目录 | 预览 | 发现行为 |
 |---|---|---|---|
@@ -333,7 +333,7 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 候选输入，并让 Stage 1 默认展开模板模式；只有该 root 是唯一输入时才会预选。
 每个不同 root 只迁移一次：携带其暴露的全部限定名 spec 及真实包自有
 `images/`、`icons/`，并只安装有效 Layout-or-Deck SVG roster；忽略无关项目脚手架和 `exports/`。
-若把其中一项迁入全局库，应将其放入单 kind 库工作区并执行对应注册命令。
+若把其中一项迁入全局库，应将其放入单类型库工作区并执行对应注册命令，使发现结果反映新位置。
 
 ---
 
@@ -343,9 +343,9 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 
 - **可复用模板是一份显式工作区，不是打包后的源 PPTX。** Brand 与 Style 无 roster；Layout 与 Deck 才增加 structured SVG 合同。创作模式建立这份合同，mirror 则把经过验证的来源归属事实映射进去；导出只编译已声明的结构
 - **模板不是一张不可拆分的“风格皮肤”。** Brand、Style、Layout 与 Deck 有意拆开身份、方向/方法、结构和应用，使每个片段都能单独复用；同时安装多个工作区时，各片段按明确的所有权规则生效
-- **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
+- **模板不会替你做内容决策**。Strategist 仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余
-- **`mirror` 的目标是受支持范围内的视觉及每张来源 Slide 的可达拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许继承补全、固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。
+- **`mirror` 的目标是受支持范围内的视觉及每张来源 Slide 的可达拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许继承补全、固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不会自行归纳替代性的所有权划分。
 
 ---
 

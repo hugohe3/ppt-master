@@ -16,7 +16,7 @@
 
 输入可以是一个主题、源材料、数据、设计参考、品牌资产或已有 `.pptx`。主管线负责生成新 deck；其他明确路线和 profile 可以提炼可复用的 Brand / Style / Layout / Deck 工作区，向现有 PowerPoint 填入新内容、重新设计它，或在保留各自契约所承诺内容的前提下追加原生演示行为。
 
-原生深度是一条持续推进的方向，不是一张固定功能清单。PPT Master 的北极星是不断向 PowerPoint 自身靠拢，缩小 AI 能生成的内容与熟练用户可以在 PowerPoint 中手工完成的内容之间的差距。[PowerPoint ↔ SVG 能力映射](../powerpoint-svg-mapping.md)逐项、诚实地记录当前边界。
+原生深度是一条持续推进的方向，不是一张固定功能清单。PPT Master 的北极星是不断向 PowerPoint 自身靠拢，缩小 AI 能生成的内容与熟练用户可以在 PowerPoint 中手工完成的内容之间的差距。[PowerPoint ↔ SVG 能力映射](./powerpoint-svg-mapping.md)逐项、诚实地记录当前边界。
 
 从产品形态上看，PPT Master 是一套运行在任意支持 Agent 的 AI 工具中的工作流——也就是一个“skill”。它不是模型，不是托管式演示 SaaS，也不是 PowerPoint 的替代品。工作流负责演示文稿专用的推理、契约和质量门；确定性工具负责转换、校验、打包和可重复的文件操作；最终质量上限仍由所选模型决定。
 

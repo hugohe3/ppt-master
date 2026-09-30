@@ -1,6 +1,6 @@
 # 快速入门
 
-[English](../getting-started.md) | [Chinese](./getting-started.md)
+[English](../getting-started.md) | [中文](./getting-started.md)
 
 ---
 
@@ -56,7 +56,7 @@ python3 -m pip install -r "<installed-skill-dir>/requirements.txt"
 
 前者：把 `.pptx` 连同素材（或一个主题）给 AI，说「套模板」——见 [Edit Native PPTX 工作流](../../skills/ppt-master/workflows/edit-native-pptx.md)。本节其余部分讲 create-template。
 
-**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Edit Native PPTX，并不是 Generate 可以直接消费的模板工作区。先创建工作区：
+**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 未经处理的 `.pptx` 加新材料则属于 Edit Native PPTX，它不是 Generate 可直接消费的模板工作区。先创建工作区：
 
 ```
 你：用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 模板
@@ -133,7 +133,7 @@ Layout / slot 元数据会保留，并编译成可复用原生结构。P01 前�
 
 - **实时看着每页渲染**出来。
 - **直接改,无需 AI** —— 选中元素后在右栏改文字、颜色、字体、字号;拖拽即可移动,或用方向键微调(`Shift` = 10px),`Ctrl+Z` 撤销。改动即时预览,点 **Apply changes** 写回 `svg_output/`。
-- **或写注解交给 AI** —— 点选元素写一句要改成什么，点 **Add annotation** 暂存，再点 **Apply changes** 把注解标记写入 `svg_output/`；回到对话说“应用注解”（或 “apply my annotations”），AI 会改写那块区域并重新导出 PPTX。
+- **或写标注交给 AI** —— 点选元素写一句要改成什么，点 **Add annotation** 暂存，再点 **Apply changes** 把标注标记写入 `svg_output/`；回到对话说“应用标注”（或 “apply my annotations”），AI 会改写那块区域并重新导出 PPTX。
 
 PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后融入的(建立在 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85) 之上)。
 
@@ -147,10 +147,9 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 不是嵌入视频。默认保留 `fade` 页间转场，页内动画为 `none`；只有显式使用
 `-a auto`、203 个原生 `entrance_*` / `emphasis_*` / `path_*` / `exit_*`
 预设之一，或 `animations.json` 才会启用对象动画。29 个旧短名称只保留为兼容
-输入；新的动画选择统一使用带前缀的规范名称。未知效果、Start
-模式、非法时序值或缺失对象引用会直接阻断导出，候选 PPTX 还会在发布前回读
-动画目标、效果和 timing 结构。Microsoft PowerPoint 是动效行为的主要验证
-目标；Keynote、WPS、LibreOffice 可能重新映射个别效果。
+输入；新的动画选择统一使用带前缀的规范名称。
+
+动画设置是严格的：未知效果或 Start 模式、非法时序值、缺失的 sidecar 目标都会直接失败，而不会悄悄变成另一种效果。在结果替换现有输出之前，PPT Master 会回读候选包，检查 timing 位置、ID、形状目标、效果、时长和 Start 模式。Microsoft PowerPoint 是动效行为的主要验证目标；其他演示软件可以打开该 PPTX，但对个别动画效果的映射可能不同。
 
 完整说明 → [转场与动画](./animations.md)
 
@@ -158,7 +157,7 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 
 ## 旁白与视频
 
-把演讲者备注按页生成语音旁白,把音频嵌回 PPTX,再用 PowerPoint 导出带旁白和转场的 MP4——无需第三方工具。
+把演讲者备注按页生成语音旁白,把音频嵌回 PPTX,再用 PowerPoint 导出带旁白的 MP4——无需第三方工具。
 
 ```
 你：给这个 PPT 生成音频,并把音频嵌回重新导出
