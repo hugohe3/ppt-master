@@ -375,7 +375,9 @@
         applyI18n();
         refreshLangUI(lang);
         // Re-render dynamic regions so they pick up the new language
+        var annotationDraft = annotationText.value;
         updateSelectionPanel();
+        annotationText.value = annotationDraft;
         updateAnnotationList();
         updateUndoButton();
         updatePendingStatus();
@@ -590,6 +592,12 @@
         if (navLastBtn)  navLastBtn.disabled  = !hasCurrent || idx2 >= total - 1;
     }
 
+    // Keep data-i18n on the shown key so applyI18n() re-translates it instead of resetting it.
+    function setPlaceholder(key) {
+        svgPlaceholder.setAttribute("data-i18n", key);
+        svgPlaceholder.textContent = t(key);
+    }
+
     // ================================================================
     //  1.  loadSlides  -- GET /api/slides
     // ================================================================
@@ -610,9 +618,7 @@
                     slideListEl.appendChild(empty);
                     if (!currentSlide) {
                         svgPlaceholder.style.display = "block";
-                        svgPlaceholder.textContent = liveMode
-                            ? t("placeholder_live_ready")
-                            : t("empty_no_slides");
+                        setPlaceholder(liveMode ? "placeholder_live_ready" : "empty_no_slides");
                         svgContent.style.display = "none";
                     }
                     updateNavLabel();
@@ -694,7 +700,7 @@
         if (!liveMode || name !== currentSlide) return;
         waitingForSlide = name;
         svgPlaceholder.style.display = "block";
-        svgPlaceholder.textContent = t("placeholder_slide_writing");
+        setPlaceholder("placeholder_slide_writing");
         svgContent.style.display = "none";
     }
 
@@ -774,7 +780,7 @@
                 if (!rootSvg || !hasContent) {
                     showError(t("err_empty_svg"));
                     svgPlaceholder.style.display = "block";
-                    svgPlaceholder.textContent = t("err_empty_svg");
+                    setPlaceholder("err_empty_svg");
                     svgContent.style.display = "none";
                     return;
                 }
