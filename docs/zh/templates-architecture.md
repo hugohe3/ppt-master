@@ -91,7 +91,7 @@ native_structure_mode: structured
 
 空的可选目录直接省略，不添加占位文件。预览 PPTX 是派生审阅证据，不是模板
 源资产；单 Master 按需生成，多 Master 必须通过该 package gate。Step 3 只把
-工作区 root 记录为候选输入，不读取其内容；Stage 1 选中后，apply 阶段才消费
+工作区 root 记录为候选输入，只读取精确 root 确定 kind 与画布所需的 frontmatter；Stage 1 选中后，apply 阶段才消费
 `templates/` 及实际存在的 `images/`、`icons/`，不会复制或使用 `exports/`；
 全局库下的 `exports/` 统一由 Git 忽略。
 
@@ -432,7 +432,7 @@ apply 阶段解析一份 library 裸 spec 或全部 project 限定名 spec；根
 
 ### Strategist 确认阶段在不同类型下的行为
 
-安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；其他情况读取全部有效原型（有 Layout 时用 Layout，否则用 Deck）和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用。
+安装模板不会让沟通问题消失。Stage 1 把同一份开放式沟通契约与模板选择同时确认，但两者相互独立：沟通目标（受众、意图、结果、核心信息、交付场景与成品后续生命）只来自当前请求、源材料事实、对话约束和项目初始化状态；上下文中已有的模板事实只可影响推荐画布与页数范围，与项目初始化不同的画布是 Stage 1 中可见的决定。Stage 1 完成且所选模板安装后，最终 Stage 2 才读取该状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；其他情况读取全部有效原型（有 Layout 时用 Layout，否则用 Deck）和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用。
 
 Default 仍提供三套符合模板约束的设计方向。其中的推荐方向是最充分表达解析后模板上下文的可行方案；另外两套只在模板和用户留白的维度上变化。Quick 不生成候选集，而是直接执行同一套推荐规则。
 

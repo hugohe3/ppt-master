@@ -78,8 +78,11 @@ Layout 提供结构，否则由 Deck 提供。指定地址最多选一个，并�
 对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其中真实的限定名 spec。`explicit` 只是来源，不是第五种类型，也不提高优先级。Stage 1 会原子校验每个已选 root；确认后，每个不同 root 的 spec 和真实包自有 `images/`、`icons/` 只映射一次，并只安装有效结构 roster（有 Layout 时用 Layout，否则用 Deck），始终不复制 `exports/`。Deck/Layout root 会在应用优先级前各自校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给下一次 Stage-1 选择器。
 
 模板选择与 Stage 1 共用页面和提交动作，但仍作为独立 sidecar 决策保存。
-沟通推荐只使用当前请求、源材料事实、对话约束和项目初始化状态；候选元数据、
-所选 root、已安装内容及模板画布均不得影响它。合并确认后，非自由设计选择才
+沟通目标（受众、意图、结果、核心信息、交付场景与成品后续生命）只来自当前请求、
+源材料事实、对话约束和项目初始化状态；候选模板的存在、摘要或原型都不会扭曲它。
+上下文中已有的模板事实——本次对话中由 Create Template 交接的 root，或精确 root
+的 kind 与画布——只可影响推荐画布与页数范围；与项目初始化不同的画布是 Stage 1
+中可见的决定。合并确认后，非自由设计选择才
 运行统一 apply 阶段，把所选工作区分别校验并安装到当前项目的 `templates/`、
 `images/`、`icons/`。最终 Stage 2 再把已确认沟通契约与安装状态适配；
 `template_application` 只描述**如何使用**，不负责决定**选哪个模板**。

@@ -92,10 +92,14 @@ sentence is fine; the path just has to be unambiguous:
 For every current template kind, an explicit path is the **template workspace root**. An exact root matching a registered index entry may be displayed as `library`; an unregistered root remains separately labelled `explicit`. The server parses the latter's actual qualified specs; `explicit` is provenance, not a fifth kind or a priority tier. Stage 1 validates each selected root atomically. After confirmation, installation maps every selected spec and asset root exactly once, installs only the effective structural roster (Layout when present, otherwise Deck), and never copies `exports/`. Deck/Layout roots additionally validate their structured SVG contracts before precedence is applied; Brand/Style validate their roster-free specs. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A Create Template run may hand its exact validated workspace root directly to the next Stage-1 selector in the same conversation.
 
 Template selection shares the Stage-1 screen and submit action but remains a
-separate sidecar decision. The communication recommendation is authored only
-from the current request, source facts, conversation constraints, and project
-initialization; candidate metadata, selected roots, installed content, and
-template canvas cannot influence it. After the combined confirmation, a
+separate sidecar decision. The communication goal (audience, intent, outcome,
+core message, delivery context, and afterlife) is authored only from the
+current request, source facts, conversation constraints, and project
+initialization; a candidate's existence, summary, or prototypes never bend it.
+Template facts already in context—a root handed off by Create Template in this
+conversation, or an exact root's kind and canvas—may inform only the
+recommended canvas and page range, and a canvas that differs from project
+initialization is a visible Stage-1 decision. After the combined confirmation, a
 non-free choice runs the common apply stage and installs the selected
 workspaces into the project's `templates/`, `images/`, and `icons/`. Final
 Stage 2 then compares the confirmed communication contract with that installed

@@ -73,7 +73,7 @@ Create Template 会分析参考材料，确认结果属于 Brand、Style、Layou
 | **注册进 skill 库** | `skills/ppt-master/templates/<kind>/<id>/` | 可移植工作区并执行全局注册；问“有哪些模板”时会被列出来 |
 | **放在 projects 下** | `projects/<name>/` | 不执行全局注册的共享限定名 spec root；四种 kind 均可共存，结构由 Layout 优先于 Deck |
 
-Default Generate 把模板选择放在 Stage 1，与沟通契约同屏确认；沟通推荐在此之前不会读取任何模板。普通请求默认自由设计；用户明确要求模板或提供任意精确 root 时，默认进入模板模式，但界面始终允许切换。未注册 root 会进入指定地址下拉框；与注册 canonical root 完全相同的路径会归回对应 kind 下拉框。只提供一个 root 时可预选它；提供多个 root 时都只作为候选、不预选。完整选择中每个 kind 最多一份；Layout 与 Deck 可以共存，结构由 Layout 提供。多 kind project root 必须原子选择。一次确认同时闭合沟通与模板选择，随后才校验、安装所选 root；最终 Stage 2 才读取安装结果。裸模板名不会被解析为工作区。Project root 可直接被其他项目复用；把其中一项迁入 library 时，需要改变 spec 文件名落点并完成注册。
+Default Generate 把模板选择放在 Stage 1，与沟通契约同屏确认；模板不会改写沟通目标，上下文中已有的模板事实（如精确 root 的 kind 与画布）只可影响推荐画布与页数范围。普通请求默认自由设计；用户明确要求模板或提供任意精确 root 时，默认进入模板模式，但界面始终允许切换。未注册 root 会进入指定地址下拉框；与注册 canonical root 完全相同的路径会归回对应 kind 下拉框。只提供一个 root 时可预选它；提供多个 root 时都只作为候选、不预选。完整选择中每个 kind 最多一份；Layout 与 Deck 可以共存，结构由 Layout 提供。多 kind project root 必须原子选择。一次确认同时闭合沟通与模板选择，随后才校验、安装所选 root；最终 Stage 2 才读取安装结果。裸模板名不会被解析为工作区。Project root 可直接被其他项目复用；把其中一项迁入 library 时，需要改变 spec 文件名落点并完成注册。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/presentation_core/
