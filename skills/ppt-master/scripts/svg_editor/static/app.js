@@ -503,7 +503,7 @@
             btn.textContent = t(action.key);
             btn.addEventListener("click", function () {
                 var label = t(action.key);
-                var prefix = (LANG === "zh" || LANG === "ja") ? label + "：" : label + ": ";
+                var prefix = (LANG === "zh" || LANG === "zh-TW" || LANG === "ja") ? label + "：" : label + ": ";
                 if (!annotationText.value.trim()) {
                     annotationText.value = prefix;
                 } else if (annotationText.value.indexOf(prefix) === -1) {
