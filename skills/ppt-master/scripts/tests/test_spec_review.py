@@ -253,7 +253,7 @@ class ReviewServiceTests(unittest.TestCase):
         self.assertEqual(result.status_code, 200, result.get_json())
         self.assertEqual(result.get_json()["validation_errors"], [])
         self.assertNotIn(b"\n", self.path.read_bytes().replace(b"\r\n", b""))
-        log = json.loads((self.root / "spec_review/edits.jsonl").read_text())
+        log = json.loads((self.root / "spec_review/edits.jsonl").read_text(encoding="utf-8"))
         self.assertEqual(log["before_sha256"], draft["sha256"])
         self.assertEqual(log["after_sha256"], sha256(self.path.read_bytes()))
         self.assertIn("Edited", log["after"])
@@ -355,7 +355,7 @@ class ReviewServiceTests(unittest.TestCase):
                                           json={"revision": updated["revision"]}).status_code, 200)
         self.assertEqual(self.path.read_bytes(), before)
         events = [json.loads(line)["event"] for line in
-                  (self.root / "spec_review/annotations.jsonl").read_text().splitlines()]
+                  (self.root / "spec_review/annotations.jsonl").read_text(encoding="utf-8").splitlines()]
         self.assertEqual(events, ["saved", "updated", "removed"])
 
     def test_applied_unchanged_comment_is_removed_and_logged(self):
@@ -363,7 +363,7 @@ class ReviewServiceTests(unittest.TestCase):
         self.assertEqual(self.check()[0], 0)
         self.assertEqual(self.check("--applied", item["id"])[0], 0)
         self.assertEqual(self.store.annotations(), [])
-        self.assertIn('"event":"annotation_applied"', (self.root / "spec_review/annotations.jsonl").read_text())
+        self.assertIn('"event":"annotation_applied"', (self.root / "spec_review/annotations.jsonl").read_text(encoding="utf-8"))
 
     def test_applied_changed_comment_is_retained(self):
         item = self.store.save_annotation("slide:01", "Original")
@@ -386,7 +386,7 @@ class ReviewServiceTests(unittest.TestCase):
         item = self.store.save_annotation("global", "Original")
         self.check()
         path = self.root / "spec_review/annotations.json"
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
         data["items"][0]["body"] = "Manually changed"
         path.write_text(json.dumps(data), encoding="utf-8")
         self.assertEqual(self.check("--applied", item["id"])[0], 1)
@@ -460,7 +460,7 @@ class ReviewServiceTests(unittest.TestCase):
         self.store.save_annotation("slide:01", "Legacy feedback")
         self.store.save_annotation("slide:02", "Missing block feedback")
         sidecar = self.root / "spec_review/annotations.json"
-        data = json.loads(sidecar.read_text())
+        data = json.loads(sidecar.read_text(encoding="utf-8"))
         del data["items"][0]["block_sha256"]
         sidecar.write_text(json.dumps(data), encoding="utf-8")
         block = next(block for block in split_spec_blocks(SPEC).blocks if block.key == "slide:02")
@@ -508,7 +508,7 @@ class ReviewServiceTests(unittest.TestCase):
         with ThreadPoolExecutor(max_workers=2) as pool:
             results = list(pool.map(lambda _: apply(), range(2)))
         self.assertEqual(sorted(results), [200, 409])
-        self.assertEqual(len((self.root / "spec_review/edits.jsonl").read_text().splitlines()), 1)
+        self.assertEqual(len((self.root / "spec_review/edits.jsonl").read_text(encoding="utf-8").splitlines()), 1)
 
     def test_other_block_draft_rebases_only_after_own_edit(self):
         first = self.draft("slide:01")

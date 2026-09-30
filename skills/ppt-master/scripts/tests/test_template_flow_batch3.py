@@ -160,7 +160,7 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
         for path in confirm.iterdir():
             os.utime(path, ns=(1_000_000_000, 1_000_000_000))
         self.assertIsNone(server._stage2_ready_error(self.root, confirm))
-        previous = json.loads((confirm / 'template_selection.json').read_text())
+        previous = json.loads((confirm / 'template_selection.json').read_text(encoding="utf-8"))
         data = _stage1()
         data['revision'] = 2
         _write_json(rec, data)
@@ -176,7 +176,7 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
             'template_selection': {'mode': 'free_design', 'selection_keys': []},
         })
         self.assertEqual(response.status_code, 200, response.get_json())
-        current = json.loads((confirm / 'template_selection.json').read_text())
+        current = json.loads((confirm / 'template_selection.json').read_text(encoding="utf-8"))
         self.assertNotEqual(previous['selection_sha256'], current['selection_sha256'])
 
     def test_b_real_endpoints_require_install_and_selection_bound_stage2(self) -> None:
@@ -198,7 +198,7 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
                     },
                 })
                 self.assertEqual(response.status_code, 200, response.get_json())
-                selection = json.loads((confirm / 'template_selection.json').read_text())
+                selection = json.loads((confirm / 'template_selection.json').read_text(encoding="utf-8"))
                 rec2, final = _stage2(selection['selection_sha256'], template)
                 _write_json(confirm / 'recommendations.stage2.json', rec2)
                 if template:
@@ -221,7 +221,7 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
                 _write_json(confirm / 'recommendations.stage2.json', rec2)
                 response = client.post('/api/confirm', json=final)
                 self.assertEqual(response.status_code, 200, response.get_json())
-                result = json.loads((confirm / 'result.json').read_text())
+                result = json.loads((confirm / 'result.json').read_text(encoding="utf-8"))
                 self.assertEqual(result['status'], 'confirmed')
                 self.assertEqual(result['selection_sha256'], selection['selection_sha256'])
                 self.assertFalse((confirm / 'template_handoff.json').exists())

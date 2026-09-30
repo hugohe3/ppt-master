@@ -628,7 +628,7 @@ class EditNativeBatchBTests(unittest.TestCase):
     def test_b7_retained_diagram_and_replaced_chart_coexist(self) -> None:
         self.import_source(chart=True, mutate=_diagram_fixture)
         path, root = self.page()
-        summary = json.loads((path.parent / 'authoring_summary.json').read_text())
+        summary = json.loads((path.parent / 'authoring_summary.json').read_text(encoding="utf-8"))
         self.assertIn('"source_proxies": 1', json.dumps(summary))
         marker = next(node for node in root.iter() if node.get('data-pptx-replace-with') == 'chart')
         metadata = marker.find('s:metadata[@type="application/json"]', NS)

@@ -121,7 +121,7 @@ class TemplateFlowBatch4Tests(unittest.TestCase):
             'text_slots': [{'selector': '#missing'}],
         }))
         self.assertIn('unavailable', slot_capacity_report([path])['slots'][0])
-        sidecar.write_text('[]')
+        sidecar.write_text('[]', encoding="utf-8")
         with self.assertRaisesRegex(ValueError, 'text_slots array'):
             slot_capacity_report([path])
 
@@ -139,7 +139,7 @@ class TemplateFlowBatch4Tests(unittest.TestCase):
                 self.assertFalse(any('paint order' in issue for issue in result['errors']), result['errors'])
                 parse_template_slide(path, 1)
         # Export an attribute-based case and inspect the native shape alpha.
-        path.write_text(path.read_text().replace('style="opacity:80%"', 'fill-opacity="0.8"'))
+        path.write_text(path.read_text(encoding="utf-8").replace('style="opacity:80%"', 'fill-opacity="0.8"'), encoding="utf-8")
         pptx = self.root / 'scrim.pptx'
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertTrue(create_pptx_with_native_svg(
@@ -150,14 +150,14 @@ class TemplateFlowBatch4Tests(unittest.TestCase):
         self.assertEqual(len(master.findall('./p:cSld/p:bg', NS)), 1)
         self.assertIsNone(master.find('./p:cSld/p:bg//a:alpha', NS))
         self.assertEqual(master.find('.//p:sp/p:spPr/a:solidFill/a:srgbClr/a:alpha', NS).get('val'), '80000')
-        opaque = path.read_text().replace('fill-opacity="0.8"', 'fill-opacity="1"')
-        path.write_text(opaque)
+        opaque = path.read_text(encoding="utf-8").replace('fill-opacity="0.8"', 'fill-opacity="1"')
+        path.write_text(opaque, encoding="utf-8")
         self.assertTrue(any('paint order' in issue for issue in
                             SVGQualityChecker(template_mode=True).check_file(str(path))['errors']))
         for inherited in ('fill-opacity="0.8"', 'style="opacity:0.8"'):
             with self.subTest(inherited=inherited):
                 path.write_text(opaque.replace('fill-opacity="1"', '').replace(
-                    'data-pptx-layout="l"', f'data-pptx-layout="l" {inherited}'))
+                    'data-pptx-layout="l"', f'data-pptx-layout="l" {inherited}'), encoding="utf-8")
                 self.assertFalse(any('paint order' in issue for issue in
                                      SVGQualityChecker(template_mode=True).check_file(str(path))['errors']))
                 parse_template_slide(path, 1)
