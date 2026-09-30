@@ -352,7 +352,7 @@
     {
       "id": "Yu Gothic",
       "label": "Yu Gothic",
-      "label_zh": "游哥特体",
+      "label_zh": "游黑体",
       "label_zh_tw": "游黑體",
       "label_en": "Yu Gothic",
       "label_ja": "游ゴシック",
@@ -378,7 +378,7 @@
     {
       "id": "BIZ UDGothic",
       "label": "BIZ UDGothic",
-      "label_zh": "BIZ UD哥特体",
+      "label_zh": "BIZ UD黑体",
       "label_zh_tw": "BIZ UD黑體",
       "label_en": "BIZ UDGothic",
       "label_ja": "BIZ UDゴシック",
@@ -391,7 +391,7 @@
     {
       "id": "BIZ UDPGothic",
       "label": "BIZ UDPGothic",
-      "label_zh": "BIZ UDP哥特体",
+      "label_zh": "BIZ UDP黑体",
       "label_zh_tw": "BIZ UDP黑體",
       "label_en": "BIZ UDPGothic",
       "label_ja": "BIZ UDPゴシック",
@@ -404,7 +404,7 @@
     {
       "id": "MS Gothic",
       "label": "MS Gothic",
-      "label_zh": "MS 哥特体",
+      "label_zh": "MS 黑体",
       "label_zh_tw": "MS 黑體",
       "label_en": "MS Gothic",
       "label_ja": "ＭＳ ゴシック",
@@ -417,7 +417,7 @@
     {
       "id": "MS PGothic",
       "label": "MS PGothic",
-      "label_zh": "MS P哥特体",
+      "label_zh": "MS P黑体",
       "label_zh_tw": "MS P黑體",
       "label_en": "MS PGothic",
       "label_ja": "ＭＳ Ｐゴシック",
@@ -1008,9 +1008,9 @@
       "label_zh_tw": "金字塔",
       "label_en": "pyramid",
       "label_ja": "ピラミッド",
-      "desc_zh": "结论先行、相互独立且完全穷尽的论证、每个数据都带比较。适合决策、分析、战略、汇报。",
+      "desc_zh": "结论先行；材料支持时采用相互独立、完全穷尽的论证，并为数据配上有依据的对比。适合决策、分析、战略、汇报。",
       "desc_zh_tw": "結論先行、相互獨立且完全窮盡的論證、每個數據都帶比較。適合決策、分析、策略、報告。",
-      "desc_en": "Lead with the answer, use MECE reasoning, and compare every key data point. Best for decisions, analysis, strategy, and reporting.",
+      "desc_en": "Lead with the answer, use MECE reasoning where the source supports it, and give data a supported comparison where useful. Best for decisions, analysis, strategy, and reporting.",
       "desc_ja": "結論を先に示し、元資料が裏付ける範囲でMECEな論理構成をとり、根拠のある比較で数値の意味を示す。意思決定・分析・戦略・報告に最適。"
     },
     {
@@ -1020,7 +1020,7 @@
       "label_zh_tw": "敘事",
       "label_en": "narrative",
       "label_ja": "ナラティブ",
-      "desc_zh": "情境、张力、解决方案形成故事弧线，保留悬念与转折。适合路演、案例、品牌、融资。",
+      "desc_zh": "从情境到张力再到化解，形成故事弧线，保留悬念与转折。适合路演、案例、品牌故事、融资。",
       "desc_zh_tw": "情境、張力、解決方案形成故事弧線，保留懸念與轉折。適合路演、案例、品牌、募資。",
       "desc_en": "Build a story arc from context to tension to resolution, with suspense and turns. Best for roadshows, cases, brand stories, and fundraising.",
       "desc_ja": "状況設定から緊張、解決へと物語の流れを組み立て、先が気になる展開や転換を残す。説明会・事例紹介・ブランドストーリー・資金調達向け。"
@@ -1044,9 +1044,9 @@
       "label_zh_tw": "展演",
       "label_en": "showcase",
       "label_ja": "ショーケース",
-      "desc_zh": "视觉主导，大图、大数和情绪节奏优先。适合发布、品牌秀、活动。",
+      "desc_zh": "视觉主导，大图、大数字和情绪节奏优先。适合发布会、品牌秀、活动。",
       "desc_zh_tw": "視覺主導，大圖、大數和情緒節奏優先。適合發表、品牌秀、活動。",
-      "desc_en": "Use visual rhythm, large images, and strong numbers as the lead. Best for launches, brand showcases, and events.",
+      "desc_en": "Lead visually with large images, strong numbers, and emotional rhythm. Best for launches, brand showcases, and events.",
       "desc_ja": "ビジュアル主導で、大きな画像・インパクトのある数字・感情のリズムを優先する。製品発表・ブランド紹介・イベント向け。"
     },
     {
@@ -1056,7 +1056,7 @@
       "label_zh_tw": "簡報",
       "label_en": "briefing",
       "label_ja": "ブリーフィング",
-      "desc_zh": "中性完整、便于速览，采用主题式标题和均匀权重。适合周报、参考材料、常见问题、会议包。",
+      "desc_zh": "中性完整、便于速览，采用主题式标题和均匀权重。适合周报、参考材料、常见问题、会议资料。",
       "desc_zh_tw": "中性完整、便於速覽，採用主題式標題和均勻權重。適合週報、參考資料、常見問題、會議簡報。",
       "desc_en": "Stay neutral, complete, and scannable with topical headings and balanced weight. Best for weekly reports, reference packs, FAQs, and meeting decks.",
       "desc_ja": "中立的で漏れがなく、ざっと目を通しやすい構成。話題ごとに見出しを立て、各項目を均等な比重で扱う。週次報告・参考資料・FAQ・会議資料に最適。"
@@ -1077,7 +1077,7 @@
           "label_zh_tw": "瑞士極簡",
           "label_en": "swiss-minimal",
           "label_ja": "スイス・ミニマル",
-          "desc_zh": "网格锁定、锐利层级、大留白、少装饰。",
+          "desc_zh": "网格严谨、层级分明、大量留白、装饰极少。",
           "desc_zh_tw": "網格鎖定、銳利層級、大留白、少裝飾。",
           "desc_en": "Grid-locked layout, sharp hierarchy, generous whitespace, and minimal decoration.",
           "desc_ja": "グリッドに沿ったレイアウト、明快な階層、余白を活かした装飾の少ないデザイン。"
@@ -1113,7 +1113,7 @@
           "label_zh_tw": "深色科技",
           "label_en": "dark-tech",
           "label_ja": "ダークテック",
-          "desc_zh": "深色画布、发光强调、几何精确。",
+          "desc_zh": "深色背景、发光强调色、几何精确。",
           "desc_zh_tw": "深色畫布、發光強調、幾何精確。",
           "desc_en": "Dark canvas, glowing accents, and precise geometry.",
           "desc_ja": "ダークな背景、光るアクセント、精密な幾何学表現。"
@@ -1142,7 +1142,7 @@
         {
           "id": "editorial",
           "label": "editorial",
-          "label_zh": "编辑出版",
+          "label_zh": "杂志编辑风",
           "label_zh_tw": "編輯出版",
           "label_en": "editorial",
           "label_ja": "エディトリアル",
@@ -1154,7 +1154,7 @@
         {
           "id": "photo-editorial",
           "label": "photo-editorial",
-          "label_zh": "摄影编辑",
+          "label_zh": "摄影编辑风",
           "label_zh_tw": "攝影編輯",
           "label_en": "photo-editorial",
           "label_ja": "フォトエディトリアル",
@@ -1215,7 +1215,7 @@
           "label_zh_tw": "小刊",
           "label_en": "zine",
           "label_ja": "ジン（自主制作誌）",
-          "desc_zh": "孔版印刷错位、半调、有限色、印刷颗粒。",
+          "desc_zh": "孔版印刷错位、半色调、有限色、印刷颗粒。",
           "desc_zh_tw": "孔版印刷錯位、半色調、有限色、印刷顆粒。",
           "desc_en": "Riso offsets, halftones, limited colors, and print grain.",
           "desc_ja": "リソグラフ印刷特有の版ズレ、ハーフトーン、限られた色数、印刷の粒感。"
@@ -1227,7 +1227,7 @@
           "label_zh_tw": "復古海報",
           "label_en": "vintage-poster",
           "label_ja": "ヴィンテージポスター",
-          "desc_zh": "中世纪扁平色块、半调、复古几何暖意。",
+          "desc_zh": "20 世纪中期风格的扁平色块、半色调与暖调复古几何。",
           "desc_zh_tw": "二十世紀中期的扁平色塊、半色調與暖調復古幾何。",
           "desc_en": "Mid-century flat color blocks, halftones, and warm vintage geometry.",
           "desc_ja": "ミッドセンチュリー調のフラットな色面、ハーフトーン、温かみのあるレトロな幾何学模様。"
@@ -1284,7 +1284,7 @@
           "label_zh_tw": "黑板",
           "label_en": "chalkboard",
           "label_ja": "黒板",
-          "desc_zh": "深板岩底、粉笔笔触、粉彩强调。",
+          "desc_zh": "深石板底、粉笔笔触、粉彩强调。",
           "desc_zh_tw": "深板岩底、粉筆筆觸、粉彩強調。",
           "desc_en": "Dark slate surface, chalk strokes, and pastel emphasis.",
           "desc_ja": "濃いスレート調の背景に、チョークの筆致とパステルの強調色。"
@@ -1357,7 +1357,7 @@
       "label_zh_tw": "線性描邊圖示",
       "label_en": "tabler-outline",
       "label_ja": "線画（アウトライン）アイコン",
-      "desc_zh": "线性描边，轻盈精致，适合屏幕阅读和编辑型图标。",
+      "desc_zh": "线性描边，轻盈精致，适合屏幕阅读和可编辑图标。",
       "desc_zh_tw": "線性描邊，輕盈精緻，適合螢幕閱讀與可編輯圖示。",
       "desc_en": "Linear stroke, light and refined. Good for screen reading and editable icons.",
       "desc_ja": "細い線のストロークで、軽やかで洗練された印象。画面での閲覧や、編集しやすいアイコンに適する。"
@@ -1389,7 +1389,7 @@
     {
       "id": "none",
       "label": "不用图标",
-      "label_zh": "不用图标",
+      "label_zh": "不使用图标",
       "label_zh_tw": "不用圖示",
       "label_en": "No icons",
       "label_ja": "アイコンなし"
@@ -1399,7 +1399,7 @@
     {
       "id": "ai",
       "label": "AI 生成",
-      "label_zh": "生成配图",
+      "label_zh": "AI 生成图",
       "label_zh_tw": "生成配圖",
       "label_en": "AI-generated",
       "label_ja": "AI生成"
@@ -1441,11 +1441,11 @@
     {
       "id": "auto",
       "label": "Automatic Path A → Path B",
-      "label_zh": "自动生成（接口 → 宿主工具）",
+      "label_zh": "自动（API → 宿主原生工具）",
       "label_zh_tw": "自動生成（API → 主機端工具）",
       "label_en": "Automatic Path A → Path B",
       "label_ja": "自動（Path A → Path B）",
-      "desc_zh": "两条自动路径都不可用或失败时暂停，由你选择修复后重试、手动生成或取消受影响的 AI 图；不会自动转为手动。",
+      "desc_zh": "两条自动路径都不可用或失败时暂停，由你选择修复后重试、手动生成或取消受影响的 AI 生成图；不会自动转为手动。",
       "desc_zh_tw": "兩條自動路徑都不可用或失敗時暫停，由你選擇修復後重試、手動生成或取消受影響的 AI 圖；不會自動轉為手動。",
       "desc_en": "If both automated paths are unavailable or fail, pause for your choice: repair and retry, generate manually, or cancel the affected AI images. Manual is never assumed.",
       "desc_ja": "2つの自動経路がどちらも利用できないか失敗した場合は、いったん停止して選択を求めます。選択肢は、修復して再試行、手動で生成、対象のAI画像の生成を取りやめる、の3つです。自動で手動生成に切り替わることはありません。"
@@ -1453,11 +1453,11 @@
     {
       "id": "api",
       "label": "Path A",
-      "label_zh": "接口后端",
+      "label_zh": "API 后端（路径 A）",
       "label_zh_tw": "API 後端",
       "label_en": "Path A",
       "label_ja": "Path A",
-      "desc_zh": "强制走接口后端，第 5 步运行 image_gen.py（需已配置 IMAGE_BACKEND）。",
+      "desc_zh": "强制使用 API 后端，第 5 步运行 image_gen.py（需已配置 IMAGE_BACKEND）。",
       "desc_zh_tw": "強制走 API 後端，第 5 步執行 image_gen.py（需已設定 IMAGE_BACKEND）。",
       "desc_en": "Force the API backend — image_gen.py runs in Step 5 (requires IMAGE_BACKEND).",
       "desc_ja": "APIバックエンドに固定します。ステップ5で image_gen.py を実行します（IMAGE_BACKEND の設定が必要）。"
@@ -1465,11 +1465,11 @@
     {
       "id": "host-native",
       "label": "Path B",
-      "label_zh": "宿主原生工具",
+      "label_zh": "宿主原生工具（路径 B）",
       "label_zh_tw": "主機端原生工具",
       "label_en": "Path B",
       "label_ja": "Path B",
-      "desc_zh": "强制使用当前环境的原生图像工具生成（即使配置了 IMAGE_BACKEND 也跳过接口）；需宿主提供原生图像工具（Codex / Claude Code 等）。",
+      "desc_zh": "强制使用当前环境的原生图像工具生成（即使配置了 IMAGE_BACKEND 也跳过 API）；需宿主提供原生图像工具（Codex / Claude Code 等）。",
       "desc_zh_tw": "強制使用目前環境的原生圖片工具生成（即使設定了 IMAGE_BACKEND 也跳過 API）；需主機提供原生圖片工具（Codex / Claude Code 等）。",
       "desc_en": "Force the host's native image tool (skips the API even if IMAGE_BACKEND is set); requires a host with a native image tool (Codex / Claude Code / similar).",
       "desc_ja": "実行環境に内蔵の画像ツールに固定します（IMAGE_BACKEND が設定されていても API は使いません）。Codex／Claude Code など、画像ツールを内蔵した環境が必要です。"
@@ -1539,7 +1539,7 @@
       "label_zh_tw": "文字型 · 閱讀",
       "label_en": "text / read-close",
       "label_ja": "文書型・手元で読む",
-      "desc_zh": "页面脱离讲者也能独立读懂：使用完整句、短段落、图注、表格和必要细节；bullet 只用于真正并列的项目。",
+      "desc_zh": "页面脱离演讲者也能独立读懂：使用完整句、短段落、图注、表格和必要细节；项目符号只用于真正并列的项目。",
       "desc_zh_tw": "即使沒有講者，頁面也能獨立讀懂：使用完整句、短段落、圖說、表格和必要細節；bullet 只用於真正並列的項目。",
       "desc_en": "The page stands alone without a presenter: use complete sentences, short prose, captions, tables, and necessary detail; reserve bullets for genuinely parallel items.",
       "desc_ja": "発表者がいなくてもページ単体で理解できる構成。完結した文、短い段落、キャプション、表、必要な細部を用い、箇条書きは本当に並列な項目だけに使う。"
@@ -1551,7 +1551,7 @@
       "label_zh_tw": "均衡 · 商務",
       "label_en": "balanced / business",
       "label_ja": "バランス型・ビジネス",
-      "desc_zh": "页面与讲者共同承担信息：一条主结论配合简短说明、结构化证据或必要列表，适合路演和业务评审。",
+      "desc_zh": "页面与演讲者共同承担信息：一条主结论配合简短说明、结构化证据或必要列表，适合路演和业务评审。",
       "desc_zh_tw": "頁面與講者共同承擔資訊：一個主結論配合簡短說明、結構化證據或必要列表，適合路演和業務評審。",
       "desc_en": "The page and presenter share the load: pair one primary claim with concise explanation, structured evidence, or a necessary list. Best for roadshows and business reviews.",
       "desc_ja": "ページと発表者で情報を分担する構成。主張を一つ置き、短い説明、構造化した根拠、または必要なリストを組み合わせる。説明会や事業レビュー向け。"
@@ -1563,7 +1563,7 @@
       "label_zh_tw": "展示型 · 演講",
       "label_en": "presentation / keynote",
       "label_ja": "プレゼン型・講演",
-      "desc_zh": "讲者与视觉承担主要表达：一页一意，以简短主张、关键词、大图或大数字为主，解释进入讲述或备注，避免段落堆积。",
+      "desc_zh": "演讲者与视觉承担主要表达：一页一意，以简短主张、关键词、大图或大数字为主，细节交给口头讲述或备注，避免段落堆积。",
       "desc_zh_tw": "講者與視覺承擔主要表達：一頁一意，以簡短主張、關鍵字、大圖或大數字為主，解釋進入講述或備忘稿，避免段落堆積。",
       "desc_en": "The presenter and visuals carry the explanation: use one idea per page, concise claims, keywords, large visuals, or hero numbers; move detail into speech or notes and avoid paragraph dumps.",
       "desc_ja": "発表者とビジュアルが説明を主に担う構成。1枚1メッセージで、短い主張、キーワード、大きな図や数値を中心にする。詳細は発表者の話やノートに回し、文章の詰め込みは避ける。"
