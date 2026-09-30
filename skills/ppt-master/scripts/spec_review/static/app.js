@@ -85,10 +85,12 @@ const node = (tag, text) => {
 const detected = navigator.language.toLowerCase();
 let lang = detected.startsWith('zh') ? (/\b(tw|hk|mo|hant)\b/.test(detected) && !/\bhans\b/.test(detected) ? 'zh-TW' : 'zh') :
   (detected.startsWith('ja') ? 'ja' : 'en');
-// `ppt_lang` is shared with the other local UIs; the old key is a read-only fallback.
+// `ppt_lang` is the key the other local UIs use; the old key is a read-only fallback.
+// Each key is validated on its own so an invalid new value cannot hide a valid old one.
 try {
-  const stored = localStorage.getItem('ppt_lang') || localStorage.getItem('spec-review-language');
-  if (Object.hasOwn(strings, stored)) lang = stored;
+  const stored = ['ppt_lang', 'spec-review-language'].map(key => localStorage.getItem(key))
+    .find(value => Object.hasOwn(strings, value));
+  if (stored) lang = stored;
 } catch (_) { /* Optional browser storage. */ }
 const t = key => strings[lang][key];
 
