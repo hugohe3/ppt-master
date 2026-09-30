@@ -10,7 +10,6 @@
         en: {
             page_title: "PPT Master - Live Preview",
             panel_slides: "Slides",
-            panel_annotations: "Annotations",
             panel_edit_annotate: "Edit / Annotate",
             placeholder_select_slide: "Select a slide on the left to begin",
             label_selected_element: "Selected element",
@@ -85,7 +84,6 @@
         ja: {
             page_title: "PPT Master - ライブプレビュー",
             panel_slides: "スライド",
-            panel_annotations: "注釈",
             panel_edit_annotate: "編集 / コメント",
             placeholder_select_slide: "左のスライドを選択してください",
             label_selected_element: "選択中の要素",
@@ -160,7 +158,6 @@
         zh: {
             page_title: "PPT Master - 实时预览",
             panel_slides: "幻灯片",
-            panel_annotations: "标注",
             panel_edit_annotate: "编辑 / 标注",
             placeholder_select_slide: "在左侧选择一张幻灯片开始",
             label_selected_element: "已选元素",
@@ -235,7 +232,6 @@
         "zh-TW": {
             page_title: "PPT Master - 即時預覽",
             panel_slides: "投影片",
-            panel_annotations: "標註",
             panel_edit_annotate: "編輯 / 標註",
             placeholder_select_slide: "在左側選擇一張投影片開始",
             label_selected_element: "已選元素",
