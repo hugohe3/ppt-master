@@ -791,6 +791,15 @@
         return dict[key] != null ? dict[key] : key;
     }
 
+    // zh / zh-TW / ja text takes a full-width colon and no space between sentences.
+    function isCjkUi() {
+        return LANG === "zh" || LANG === "zh-TW" || LANG === "ja";
+    }
+
+    function labelSep() {
+        return isCjkUi() ? "：" : ": ";
+    }
+
     // Preserve the existing locale order, then accept zh_tw-only candidate
     // prose from any persisted UI language so browser and server validation agree.
     // Entries are FIELD SUFFIXES, not BCP-47 tags: "zh-TW" data lives in
@@ -1534,7 +1543,7 @@
                 label = label + (o.dim ? " · " + o.dim : "");
             } else {
                 if (o.dim) label += " · " + o.dim;
-                if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
+                if (desc) label += (isCjkUi() ? "：" : " — ") + desc;
                 if (spec && spec.note) label += " · " + spec.note;
             }
             copy.appendChild(el("span", "chip-text", label));
@@ -3303,15 +3312,16 @@
         // Everything is px — lo/hi are only a sanity envelope for the OOR flag.
         refreshBodySizeHint = function () {
             var txt = t("font_body_size_hint");
+            var sep = isCjkUi() ? "" : " ";
             var lo, hi;
             if (isPptCanvas(STATE.canvas)) {
                 var pb = deliveryBodyPx(STATE.delivery_purpose);
                 lo = pb.lo; hi = pb.hi;
-                txt += " " + t("body_size_hint_purpose").replace("{def}", pb.def);
+                txt += sep + t("body_size_hint_purpose").replace("{def}", pb.def);
             } else {
                 var band = bodySizeBandForCanvas(STATE.canvas, STATE.delivery_purpose);
                 lo = band.lo; hi = band.hi;
-                txt += " " + t("body_size_hint_canvas")
+                txt += sep + t("body_size_hint_canvas")
                     .replace("{lo}", lo).replace("{hi}", hi);
             }
             // Flag (hint only) a value far outside the
@@ -3322,7 +3332,7 @@
                 ? t("body_size_pt_hint").replace("{pt}", formatPtFromPx(cur))
                 : "";
             if (isFinite(cur) && isFinite(lo) && isFinite(hi) && (cur < lo || cur > hi)) {
-                txt += " " + t("body_size_hint_oor");
+                txt += sep + t("body_size_hint_oor");
             }
             sizeHint.textContent = txt;
         };
@@ -3552,11 +3562,11 @@
                         t("image_strategy_select_placeholder")));
             var parts = [];
             if (strategy.rendering) {
-                parts.push(t("image_strategy_rendering") + ": " +
+                parts.push(t("image_strategy_rendering") + labelSep() +
                     comparisonValueLabel("rendering", strategy.rendering));
             }
-            if (strategy.visual) parts.push(t("image_strategy_visual") + ": " + strategy.visual);
-            if (strategy.mood) parts.push(t("image_strategy_mood") + ": " + strategy.mood);
+            if (strategy.visual) parts.push(t("image_strategy_visual") + labelSep() + strategy.visual);
+            if (strategy.mood) parts.push(t("image_strategy_mood") + labelSep() + strategy.mood);
             if (strategy.behavior) parts.push(strategy.behavior);
             desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
         }
@@ -3714,7 +3724,7 @@
                 ["image_strategy_visual", customStrategy.visual],
                 ["image_strategy_mood", customStrategy.mood]
             ].forEach(function (row) {
-                if (row[1]) customCard.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
+                if (row[1]) customCard.appendChild(el("div", "color-note", t(row[0]) + labelSep() + row[1]));
             });
             var customCopy = el("div", "ai-custom-candidate-copy",
                 customStrategy.behavior || t("image_strategy_custom_placeholder"));
@@ -3812,7 +3822,7 @@
         (CAT.image_usage || []).forEach(function (option) {
             var label = optionLabel(option);
             var desc = optionDesc(option);
-            if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
+            if (desc) label += (isCjkUi() ? "：" : " — ") + desc;
             var chip = el("div", "chip");
             chip.appendChild(el("span", "chip-text", label));
             if (recommendedIds.indexOf(option.id) >= 0) {
