@@ -435,8 +435,10 @@ class NativeExportGuardTests(unittest.TestCase):
         self.assertEqual(len(group.findall('p:sp', NS)), 2)
         frame = group.find('p:grpSpPr/a:xfrm', NS)
         self.assertEqual(frame.get('rot'), '5400000')
-        self.assertEqual(frame.find('a:off', NS).attrib, {'x': '487680', 'y': '1468755'})
-        self.assertEqual(frame.find('a:chOff', NS).attrib, {'x': '944880', 'y': '981075'})
+        # Arial 20px has a native baseline offset of 15pt (20px), so the
+        # text child starts at y=100 before the group rotates around (100,120).
+        self.assertEqual(frame.find('a:off', NS).attrib, {'x': '516255', 'y': '1468755'})
+        self.assertEqual(frame.find('a:chOff', NS).attrib, {'x': '944880', 'y': '952500'})
         self.assertFalse(group.findall('p:sp/p:spPr/a:xfrm[@rot]', NS))
 
     def test_single_rect_matrix_matches_direct_geometry_and_skew_stays_rejected(self) -> None:

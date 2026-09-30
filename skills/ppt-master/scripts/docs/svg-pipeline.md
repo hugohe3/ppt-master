@@ -1067,6 +1067,39 @@ Requirements:
 
 ## Measuring, wrapping, and calibrating text before authoring
 
+Ordinary generated text frames preserve the SVG's first-line baseline using
+`svg_to_pptx/drawingml/text_baseline.py` and the bundled `font_metrics.json`.
+The metric table records numeric OpenType fields and source-font versions;
+export never reads installed fonts. The selected style uses `typo` metrics
+when `USE_TYPO_METRICS` is set, otherwise `win` metrics. Missing italic styles
+keep the matching bold face when present, then fall back to regular metrics;
+missing faces use an ascent ratio of 0.8. Font aliases resolve through the
+same mapping as emitted text runs.
+
+The first visual line combines the largest size-adjusted ascent and descent
+of its active Latin/CJK faces. Default spacing uses a 1.2-times-font-size
+line height; explicit `spcPts` spacing has a separate first-baseline model,
+including its transition at the natural line height. The renderer rounds
+explicit spacing and the final offset to whole points; the authored `spcPts`
+value stays intact. Preserved line breaks carry the preceding run's font
+properties so presentation defaults do not change line metrics. This behavior
+was measured in PowerPoint for Mac 16.113.2; other renderers and font versions
+can differ. SVG glyph bounds and checker measurements are not PPT frame offsets.
+
+Ordinary horizontal PPTX text imports use the same baseline model with font
+roles resolved from the source DrawingML, including theme fonts, and carry
+`data-pptx-text-baseline="metrics-v1"` on the SVG text element.
+Fixed line advances remain absolute; percentage spacing scales the natural
+line height, with 100% equivalent to the default spacing. Baseline coordinates
+retain enough precision to avoid accumulating inset drift on repeated edits.
+The marker survives line splitting and semantic-shape projection. When marked text is
+rebuilt inside an exact `data-pptx-frame`, export subtracts the shared baseline
+offset from the SVG y coordinate before reconstructing the top inset. Unmarked
+exact-frame text retains the earlier `0.85 * font-size` convention, so existing
+round-trip workspaces do not require migration. Unchanged source text bodies
+still restore their original XML. Native math, baseline-shifted runs, and
+vertical text retain their separate positioning models.
+
 `text_measure.py` imports the same single-line DrawingML width estimator used by
 the SVG quality checker.
 Use Arial, Times New Roman, Georgia, Verdana, Calibri, Cambria, Trebuchet MS, or

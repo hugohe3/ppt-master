@@ -28,6 +28,7 @@ from unicodedata import east_asian_width
 from xml.etree import ElementTree as ET
 
 from hyperlink_contract import SOURCE_HREF_ATTR
+from svg_to_pptx.drawingml.text_baseline import drawingml_text_baseline_offset
 from svg_to_pptx.drawingml.utils import detect_text_lang, is_cjk_char
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
@@ -69,6 +70,8 @@ class TextRun:
     is_break: bool = False  # marks an a:br within a paragraph
     hyperlink_href: str | None = None
     formula_latex: str | None = None
+    font_faces: dict[str, str] = field(default_factory=dict)
+    baseline_shifted: bool = False
 
 
 HyperlinkResolver = Callable[[str, str], str | None]
@@ -90,6 +93,7 @@ class TextParagraph:
     indent_px: float = 0.0
     margin_left_px: float = 0.0
     line_height_ratio: float = DEFAULT_LINE_HEIGHT_RATIO
+    line_spacing_px: float | None = None
     space_before_px: float = 0.0
     space_after_px: float = 0.0
     empty_line_font_size_px: float = DEFAULT_FONT_SIZE_PX
@@ -206,6 +210,13 @@ def convert_txbody(
 
     bottom_y = inner_y + inner_h
     text_blocks: list[str] = []
+    # Semantic rebuilding can merge paragraphs back into one native body.
+    # Keep one baseline convention throughout that body when math or shifted
+    # runs require the exporter's separate vertical-extent model.
+    metrics_baseline = not any(
+        run.formula_latex is not None or run.baseline_shifted
+        for para in paragraphs for run in para.runs
+    )
     for para, lines, height, before, after in zip(
         paragraphs,
         para_lines,
@@ -217,7 +228,10 @@ def convert_txbody(
         visible_lines = _clip_lines_to_bottom(para, lines, cursor_y, bottom_y)
         if visible_lines:
             text_blocks.append(
-                _emit_paragraph(para, visible_lines, inner_x, inner_w, cursor_y)
+                _emit_paragraph(
+                    para, visible_lines, inner_x, inner_w, cursor_y,
+                    metrics_baseline=metrics_baseline,
+                )
             )
         cursor_y += height + after
         if cursor_y >= bottom_y:
@@ -668,6 +682,9 @@ def _parse_paragraph(
     para.margin_left_px = _emu_px_attr_chain(para_style_chain, "marL", 0.0)
     para.indent_px = _emu_px_attr_chain(para_style_chain, "indent", 0.0)
     para.line_height_ratio = _line_height_ratio(para_style_chain)
+    line_spacing = _child_chain(para_style_chain, "a:lnSpc")
+    if line_spacing is not None and line_spacing.find("a:spcPts", NS) is not None:
+        para.line_spacing_px = _spacing_points_px((line_spacing,), "a:spcPts")
     para.space_before_px = _spacing_points_px(para_style_chain, "a:spcBef/a:spcPts")
     para.space_after_px = _spacing_points_px(para_style_chain, "a:spcAft/a:spcPts")
     para.bullet_prefix = _resolve_bullet_prefix(
@@ -788,6 +805,8 @@ def _apply_norm_autofit(
     for para in paragraphs:
         para.empty_line_font_size_px *= font_scale
         para.line_height_ratio *= line_scale
+        if para.line_spacing_px is not None:
+            para.line_spacing_px *= line_scale
         for run in para.runs:
             run.font_size_px *= font_scale
 
@@ -944,6 +963,11 @@ def _build_run(
         strikethrough=strikethrough,
         letter_spacing_px=letter_spacing_px,
         hyperlink_href=hyperlink_href,
+        font_faces={
+            "latin": latin_face or "Segoe UI",
+            "ea": ea_face or latin_face or "Microsoft YaHei",
+        },
+        baseline_shifted=_attr_chain(style_chain, "baseline") not in {None, "0"},
     )
 
 
@@ -996,7 +1020,7 @@ def _line_height_ratio(sources: tuple[ET.Element | None, ...]) -> float:
     if spc_pct is None:
         return DEFAULT_LINE_HEIGHT_RATIO
     try:
-        return float(spc_pct.attrib.get("val", "100000")) / 100000.0
+        return DEFAULT_LINE_HEIGHT_RATIO * float(spc_pct.attrib.get("val", "100000")) / 100000.0
     except ValueError:
         return DEFAULT_LINE_HEIGHT_RATIO
 
@@ -1492,6 +1516,8 @@ def _copy_run(run: TextRun, *, text: str) -> TextRun:
         letter_spacing_px=run.letter_spacing_px,
         hyperlink_href=run.hyperlink_href,
         formula_latex=run.formula_latex,
+        font_faces=dict(run.font_faces),
+        baseline_shifted=run.baseline_shifted,
     )
 
 
@@ -1499,7 +1525,7 @@ def _paragraph_height_from_lines(p: TextParagraph,
                                  lines: list[list[TextRun]]) -> float:
     """Total px height after wrapping. Each line uses its own max font size."""
     if not lines:
-        return p.empty_line_font_size_px * p.line_height_ratio
+        return _line_height(p, [])
     height = 0.0
     for line in lines:
         height += _line_height(p, line)
@@ -1507,6 +1533,8 @@ def _paragraph_height_from_lines(p: TextParagraph,
 
 
 def _line_height(p: TextParagraph, line: list[TextRun]) -> float:
+    if p.line_spacing_px is not None:
+        return p.line_spacing_px
     return _line_font_size(p, line) * p.line_height_ratio
 
 
@@ -1554,6 +1582,8 @@ def _emit_paragraph(
     lines: list[list[TextRun]],
     inner_x: float, inner_w: float,
     top_y: float,
+    *,
+    metrics_baseline: bool,
 ) -> str:
     """Render a paragraph (already split into lines) as one <text> element.
 
@@ -1587,7 +1617,26 @@ def _emit_paragraph(
         return ""
 
     first_run = visible_lines[first_line_idx][0]
-    first_baseline = top_y + 0.85 * first_run.font_size_px
+    baseline_offset = 0.85 * first_run.font_size_px
+    if metrics_baseline:
+        baseline_offset = drawingml_text_baseline_offset(
+            [
+                {
+                    'text': run.text,
+                    'font_size': run.font_size_px,
+                    'font_family': run.font_family,
+                    'font_faces': run.font_faces,
+                    'font_weight': '700' if run.bold else '400',
+                    'font_style': 'italic' if run.italic else 'normal',
+                }
+                for run in visible_lines[first_line_idx]
+            ],
+            {},
+            default_size=first_run.font_size_px,
+            line_spacing_px=para.line_spacing_px,
+            line_spacing_ratio=para.line_height_ratio / DEFAULT_LINE_HEIGHT_RATIO,
+        )
+    first_baseline = top_y + baseline_offset
 
     spans: list[str] = []
     for line_idx, line in enumerate(visible_lines):
@@ -1602,7 +1651,7 @@ def _emit_paragraph(
             if line_advance is not None:
                 spans.append(
                     f'<tspan x="{fmt_num(anchor_x)}" '
-                    f'dy="{fmt_num(line_advance)}"></tspan>'
+                    f'dy="{fmt_num(line_advance, 8)}"></tspan>'
                 )
             continue
         line_has_hyperlink = any(run.hyperlink_href for run in line)
@@ -1615,7 +1664,7 @@ def _emit_paragraph(
                 for run in line
             )
             position_attrs = (
-                f' x="{fmt_num(anchor_x)}" dy="{fmt_num(line_advance)}"'
+                f' x="{fmt_num(anchor_x)}" dy="{fmt_num(line_advance, 8)}"'
                 if line_advance is not None
                 else ''
             )
@@ -1627,19 +1676,21 @@ def _emit_paragraph(
                 if run.formula_latex is not None:
                     spans.append(
                         f'<tspan x="{fmt_num(anchor_x)}" '
-                        f'dy="{fmt_num(line_advance)}">'
+                        f'dy="{fmt_num(line_advance, 8)}">'
                         f'{_run_tspan_markup(run)}</tspan>'
                     )
                 else:
                     spans.append(
                         f'<tspan x="{fmt_num(anchor_x)}" '
-                        f'dy="{fmt_num(line_advance)}"'
+                        f'dy="{fmt_num(line_advance, 8)}"'
                         f'{attrs}>{_xml_escape(run.text)}</tspan>'
                     )
             else:
                 spans.append(_run_tspan_markup(run))
 
     base_attrs = _text_base_attrs(first_run, anchor_x, first_baseline, text_anchor)
+    if metrics_baseline:
+        base_attrs += ' data-pptx-text-baseline="metrics-v1"'
     return f"<text{base_attrs}>{''.join(spans)}</text>"
 
 
@@ -1647,7 +1698,7 @@ def _text_base_attrs(run: TextRun | None, x: float, y: float,
                      text_anchor: str) -> str:
     parts = [
         f'x="{fmt_num(x)}"',
-        f'y="{fmt_num(y)}"',
+        f'y="{fmt_num(y, 8)}"',
         f'text-anchor="{text_anchor}"',
         'xml:space="preserve"',
     ]

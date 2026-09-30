@@ -51,6 +51,7 @@ from .hyperlinks import (
 )
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
+from .text_baseline import drawingml_text_baseline_offset
 from .text_properties import (
     drawingml_letter_spacing,
     normalize_project_text_segments,
@@ -3091,6 +3092,12 @@ def _build_run_xml(
 ) -> str:
     """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
     if run.get('_line_break'):
+        break_run = run.get('_line_break_run')
+        if break_run is not None:
+            properties = dict(break_run)
+            properties.pop(HYPERLINK_RID_KEY, None)
+            properties.pop(HYPERLINK_ACTION_KEY, None)
+            return f'<a:br>{_build_run_properties_xml(properties, default_fonts, ctx)}</a:br>'
         return '<a:br/>'
     text = str(run['text'])
     inline_formula = run.get(_INLINE_FORMULA_KEY)
@@ -3382,6 +3389,50 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                     font_size,
                 ),
             )
+    # Legacy imported frames retain their original baseline/inset convention.
+    # Native math and shifted runs retain their own vertical-extent model.
+    # Ordinary text instead needs PowerPoint's first-line baseline, which is
+    # distinct from the glyph bounds used above and by SVG quality checks.
+    metrics_baseline = (
+        elem.get('data-pptx-frame') is None
+        or elem.get('data-pptx-text-baseline') == 'metrics-v1'
+    )
+    if metrics_baseline and not any(
+        run.get(_INLINE_FORMULA_KEY) is not None or run.get('baseline_shift')
+        for run in runs
+    ):
+        first_line_runs = runs
+        last_line_runs = runs
+        if paragraph_runs is not None:
+            # Paragraph extraction replaces a typed marker with a native bullet
+            # that inherits the body font; its discarded run is not line ink.
+            first_line_runs, _bullet = _extract_text_bullet(visual_line_runs[0])
+            last_line_runs = paragraph_runs[-1]
+            for index, run in enumerate(last_line_runs):
+                if run.get('_line_break'):
+                    last_line_runs = paragraph_runs[-1][index + 1:]
+        first_line_ascent = drawingml_text_baseline_offset(
+            first_line_runs,
+            fonts,
+            default_size=font_size,
+            line_spacing_px=line_height_px if paragraph_runs is not None else None,
+            language=ctx.primary_language,
+        )
+        largest_last_size = max(
+            (font_px_to_hpt(run.get('font_size', font_size)) / FONT_PX_TO_HUNDREDTHS_PT
+             for run in last_line_runs if run.get('text')),
+            default=font_size,
+        )
+        text_height += max(0.0, (largest_last_size - font_size) * 1.5)
+        # An unformatted break can inherit the presentation's default size
+        # instead of the preceding run, changing first-line ascent and advance.
+        for paragraph in paragraph_runs or []:
+            previous_run = None
+            for run in paragraph:
+                if run.get('_line_break') and previous_run is not None:
+                    run['_line_break_run'] = previous_run
+                elif not run.get('_line_break'):
+                    previous_run = run
     padding = _textbox_padding(font_size)
 
     # Adjust position based on text-anchor. This first box follows the visible

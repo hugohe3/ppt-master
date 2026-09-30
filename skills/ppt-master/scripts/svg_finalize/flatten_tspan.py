@@ -175,6 +175,11 @@ def copy_text_attrs(
         v = src_el.get(k)
         if v is not None:
             dst_el.set(k, v)
+    # A split row must retain the imported baseline/inset convention, even
+    # though the version marker is not an inherited SVG presentation property.
+    baseline_attr = "data-pptx-text-baseline"
+    if baseline_attr not in exclude and src_el.get(baseline_attr) is not None:
+        dst_el.set(baseline_attr, src_el.get(baseline_attr))
     # xml:space preservation
     xml_space = src_el.get("{http://www.w3.org/XML/1998/namespace}space")
     if xml_space is not None and "{http://www.w3.org/XML/1998/namespace}space" not in exclude:

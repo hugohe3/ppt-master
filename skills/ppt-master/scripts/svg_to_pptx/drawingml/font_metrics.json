@@ -1,0 +1,1148 @@
+{
+  "schema": "ppt-master.font-metrics.v1",
+  "source": "Raw OpenType head, hhea, OS/2 and name tables. Unprefixed source_file names identify fonts bundled with Microsoft PowerPoint for Mac 16.113.2 (26092012); paths identify supplemental macOS system fonts or the Office CloudFonts cache. Numeric metrics only; no font outlines. Family keys use English legacy name ID 1, keeping weight variants separate. hhea/typo descents are signed; win descents are unsigned. SHA-256 identifies the complete source file, and face_index identifies a collection face.",
+  "families": {
+    "aptos": {
+      "regular": {
+        "face": "Aptos",
+        "source_file": "Aptos.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.01;O365",
+        "sha256": "95980114fcfd42f2f9c446dae429b70582bf2f03097d68433ea9e7d85a49da0b",
+        "units_per_em": 2048,
+        "hhea": [1923, -577, 0],
+        "typo": [1923, -577, 0],
+        "win": [2068, 563],
+        "fsSelection": 192
+      },
+      "bold": {
+        "face": "Aptos Bold",
+        "source_file": "Aptos-Bold.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.01;O365",
+        "sha256": "cf4b35ac6d81e0eb42ffa44c3829b710c058de6fa3cf2c7cdad0407e22538877",
+        "units_per_em": 2048,
+        "hhea": [1923, -577, 0],
+        "typo": [1923, -577, 0],
+        "win": [2068, 563],
+        "fsSelection": 160
+      },
+      "italic": {
+        "face": "Aptos Italic",
+        "source_file": "Aptos-Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.01;O365",
+        "sha256": "888909eceb9acd84157078cc097c11f8a94a34ff3bd3fe08194ce7866f5998d1",
+        "units_per_em": 2048,
+        "hhea": [1923, -577, 0],
+        "typo": [1923, -577, 0],
+        "win": [2068, 563],
+        "fsSelection": 129
+      },
+      "bold-italic": {
+        "face": "Aptos Bold Italic",
+        "source_file": "Aptos-Bold-Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.01;O365",
+        "sha256": "7d7ba35b867c5873274466c743a9812c7bca1a0828f137f7697ae311664f41b9",
+        "units_per_em": 2048,
+        "hhea": [1923, -577, 0],
+        "typo": [1923, -577, 0],
+        "win": [2068, 563],
+        "fsSelection": 161
+      }
+    },
+    "arial": {
+      "regular": {
+        "face": "Arial",
+        "source_file": "arial.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.80i",
+        "sha256": "15663c7e8495594c6136eb51b11983eb8f5bbcdd07bb2c327e0d1e83415b0f06",
+        "units_per_em": 2048,
+        "hhea": [1854, -434, 67],
+        "typo": [1491, -431, 307],
+        "win": [1854, 434],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Arial Bold",
+        "source_file": "arialbd.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.80i",
+        "sha256": "b018b20bd6392de9ad3c5f0a1dcd23ad1fdf94227652fd92541521c32d8e5fc1",
+        "units_per_em": 2048,
+        "hhea": [1854, -434, 67],
+        "typo": [1491, -431, 307],
+        "win": [1854, 434],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Arial Italic",
+        "source_file": "ariali.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.80i",
+        "sha256": "541466c87057d2f665fe190ec1e8011c82326ef9aaae0c318244db88b1ee63f5",
+        "units_per_em": 2048,
+        "hhea": [1854, -434, 67],
+        "typo": [1491, -425, 307],
+        "win": [1854, 434],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Arial Bold Italic",
+        "source_file": "arialbi.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.80i",
+        "sha256": "399f00fe9cca7136639df72e976914c3713cbb321374e52def9ab5a10815904e",
+        "units_per_em": 2048,
+        "hhea": [1854, -434, 67],
+        "typo": [1491, -431, 307],
+        "win": [1854, 434],
+        "fsSelection": 33
+      }
+    },
+    "baskerville old face": {
+      "regular": {
+        "face": "Baskerville Old Face",
+        "source_file": "BaskervilleOldFace.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.51",
+        "sha256": "529c972a6d5c1992c76e908255f655f98989b74b146058c90555af6d925a1715",
+        "units_per_em": 2048,
+        "hhea": [1536, -512, 0],
+        "typo": [1408, -366, 417],
+        "win": [1805, 531],
+        "fsSelection": 64
+      }
+    },
+    "braggadocio": {
+      "regular": {
+        "face": "Braggadocio",
+        "source_file": "Braggadocio.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.52",
+        "sha256": "ae0e2bd920b20bcface2cb063f401cfd71551c4c3cb616210c59f7b50aa89a7e",
+        "units_per_em": 2048,
+        "hhea": [1587, -313, 0],
+        "typo": [1587, -313, 291],
+        "win": [2021, 455],
+        "fsSelection": 64
+      }
+    },
+    "calibri": {
+      "regular": {
+        "face": "Calibri",
+        "source_file": "Calibri.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.20;O365",
+        "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+        "units_per_em": 2048,
+        "hhea": [1950, -550, 0],
+        "typo": [1536, -512, 452],
+        "win": [1950, 550],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Calibri Bold",
+        "source_file": "Calibrib.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.20;O365",
+        "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+        "units_per_em": 2048,
+        "hhea": [1950, -550, 0],
+        "typo": [1536, -512, 452],
+        "win": [1950, 550],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Calibri Italic",
+        "source_file": "Calibrii.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.20;O365",
+        "sha256": "38e28b619448710314a298dd66305a3b8f494a854f19d40aa18b9872e61911fe",
+        "units_per_em": 2048,
+        "hhea": [1950, -550, 0],
+        "typo": [1536, -512, 452],
+        "win": [1950, 550],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Calibri Bold Italic",
+        "source_file": "Calibriz.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.20;O365",
+        "sha256": "77117338878fefc82770d27303bcca90e900f2ef59a0a87d294b7744ec158b5b",
+        "units_per_em": 2048,
+        "hhea": [1950, -550, 0],
+        "typo": [1536, -512, 452],
+        "win": [1950, 550],
+        "fsSelection": 33
+      }
+    },
+    "cambria": {
+      "regular": {
+        "face": "Cambria",
+        "source_file": "Cambria.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.90i",
+        "sha256": "ca2a527ab14967b1c7170a97329ed29f38af51b71c8c2073d89d1c055de22de1",
+        "units_per_em": 2048,
+        "hhea": [1946, -455, 0],
+        "typo": [1593, -455, 353],
+        "win": [1946, 455],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Cambria Bold",
+        "source_file": "Cambriab.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.90i",
+        "sha256": "5f686e13ff1b0f4616d6f3e24bd4b916df671cfb44397f7ddfba3ee03eeee10a",
+        "units_per_em": 2048,
+        "hhea": [1946, -455, 0],
+        "typo": [1593, -455, 353],
+        "win": [1946, 455],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Cambria Italic",
+        "source_file": "Cambriai.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.90i",
+        "sha256": "926b632b6ad114075c083539e3db300accdfac3afe2eabbec3e7e4792f3526ec",
+        "units_per_em": 2048,
+        "hhea": [1946, -455, 0],
+        "typo": [1593, -455, 353],
+        "win": [1946, 455],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Cambria Bold Italic",
+        "source_file": "Cambriaz.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.90i",
+        "sha256": "dd7fc00fe4c8bd7755788d30632c16c81769f37459b0c9c2813c9c3ff3447c8a",
+        "units_per_em": 2048,
+        "hhea": [1946, -455, 0],
+        "typo": [1593, -455, 353],
+        "win": [1946, 455],
+        "fsSelection": 33
+      }
+    },
+    "candara": {
+      "regular": {
+        "face": "Candara",
+        "source_file": "Candara.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.61i",
+        "sha256": "31ef1a249923a19f1cb676e57b9873bdb83f5bb42baf9c6ad9d03906663da294",
+        "units_per_em": 2048,
+        "hhea": [1484, -564, 452],
+        "typo": [1484, -564, 452],
+        "win": [1950, 550],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Candara Bold",
+        "source_file": "Candarab.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.61i",
+        "sha256": "678afaf43e51a054c4c1c9908a86a3870d38b21f30b83751cc9210c56e7f1d39",
+        "units_per_em": 2048,
+        "hhea": [1484, -564, 452],
+        "typo": [1484, -564, 452],
+        "win": [1950, 550],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Candara Italic",
+        "source_file": "Candarai.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.61i",
+        "sha256": "b4179708cd7819a5d65680823b7f97e1b98a16c611f391c1d6162b53818b8ee3",
+        "units_per_em": 2048,
+        "hhea": [1484, -564, 452],
+        "typo": [1484, -564, 452],
+        "win": [1950, 550],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Candara Bold Italic",
+        "source_file": "Candaraz.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.61i",
+        "sha256": "c2384d57476426c17186dcd2580a176c92e6857fde70525314aa90745a5b8a42",
+        "units_per_em": 2048,
+        "hhea": [1484, -564, 452],
+        "typo": [1484, -564, 452],
+        "win": [1950, 550],
+        "fsSelection": 33
+      }
+    },
+    "consolas": {
+      "regular": {
+        "face": "Consolas",
+        "source_file": "Consola.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.32i",
+        "sha256": "b1dc8633f1cca6a74b84a26e04d61dad05cb8151ee094964fdd30d4852386a6b",
+        "units_per_em": 2048,
+        "hhea": [1521, -527, 350],
+        "typo": [1521, -527, 350],
+        "win": [1884, 514],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Consolas Bold",
+        "source_file": "Consolab.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.32i",
+        "sha256": "ee7e1ee08ad5cc2e292f77aebb7fdd8b11ddb58d3968707e850d94168554d67e",
+        "units_per_em": 2048,
+        "hhea": [1521, -527, 350],
+        "typo": [1521, -527, 350],
+        "win": [1884, 514],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Consolas Italic",
+        "source_file": "Consolai.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.32i",
+        "sha256": "ad1158c5608b2f0f03a7e78e0181626ddebb6c49bd2385141027e2e827ca8f6a",
+        "units_per_em": 2048,
+        "hhea": [1521, -527, 350],
+        "typo": [1521, -527, 350],
+        "win": [1884, 514],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Consolas Bold Italic",
+        "source_file": "Consolaz.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.32i",
+        "sha256": "fddcbcd483d3f60781b68fa74f763e20c0858570e81090ac8af62b460aa8f838",
+        "units_per_em": 2048,
+        "hhea": [1521, -527, 350],
+        "typo": [1521, -527, 350],
+        "win": [1884, 514],
+        "fsSelection": 33
+      }
+    },
+    "constantia": {
+      "regular": {
+        "face": "Constantia",
+        "source_file": "Constan.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.90i",
+        "sha256": "86448f9e0ce99376786556b1486417b25acd8da96d81bb8ee8ccd15b3135ea83",
+        "units_per_em": 2048,
+        "hhea": [1538, -510, 452],
+        "typo": [1538, -510, 452],
+        "win": [1950, 550],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Constantia Bold",
+        "source_file": "Constanb.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.90i",
+        "sha256": "dfd6df0556d9cb531d464ba8392bd711c4481383d6fab27532c60516c2f08411",
+        "units_per_em": 2048,
+        "hhea": [1538, -510, 452],
+        "typo": [1538, -510, 452],
+        "win": [1950, 550],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Constantia Italic",
+        "source_file": "Constani.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.90i",
+        "sha256": "4924d9ef2babc00ea43e2a87aa53a1b5315634d428d7fb367ec23687b9f997cf",
+        "units_per_em": 2048,
+        "hhea": [1538, -510, 452],
+        "typo": [1538, -510, 452],
+        "win": [1950, 550],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Constantia Bold Italic",
+        "source_file": "Constanz.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.90i",
+        "sha256": "75757b4f00b30f80667ea5e1f25e42a33dee4572be41d697c8a8c2d514ec7648",
+        "units_per_em": 2048,
+        "hhea": [1538, -510, 452],
+        "typo": [1538, -510, 452],
+        "win": [1950, 550],
+        "fsSelection": 33
+      }
+    },
+    "dengxian": {
+      "regular": {
+        "face": "DengXian Regular",
+        "source_file": "Deng.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.21",
+        "sha256": "b975b088200b56452b0cba317b0735ea457ee0eaac3b92ed927b6f0ec20d7568",
+        "units_per_em": 2048,
+        "hhea": [1659, -475, 0],
+        "typo": [1659, -475, 0],
+        "win": [1659, 475],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "DengXian Bold",
+        "source_file": "Dengb.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.21",
+        "sha256": "be80e1246047a6489a2573c6426519c7cfe0d08c1669dd81c43bb67d39482a19",
+        "units_per_em": 2048,
+        "hhea": [1659, -475, 0],
+        "typo": [1659, -475, 0],
+        "win": [1659, 475],
+        "fsSelection": 32
+      }
+    },
+    "fangsong": {
+      "regular": {
+        "face": "FangSong",
+        "source_file": "Fangsong.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.01i",
+        "sha256": "d6d75adf4be24d51bbf08f7208359bfe7bdf6ec70806bbb9873412ba4e696f75",
+        "units_per_em": 256,
+        "hhea": [220, -36, 36],
+        "typo": [220, -36, 36],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "garamond": {
+      "regular": {
+        "face": "Garamond",
+        "source_file": "GARA.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.40;O365",
+        "sha256": "c66e667b08b85b2058ccc75ccc6549157b96e2589fb5e534e80c1dd3a19496dc",
+        "units_per_em": 2048,
+        "hhea": [1765, -539, 0],
+        "typo": [1339, -539, 313],
+        "win": [1765, 539],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Garamond Bold",
+        "source_file": "GARABD.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.40;O365",
+        "sha256": "1e568efed9d0c68f0ecd349ea9770d2df339eadbc1a625e188a3b4411d9c033c",
+        "units_per_em": 2048,
+        "hhea": [1765, -539, 0],
+        "typo": [1339, -539, 313],
+        "win": [1765, 539],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Garamond Italic",
+        "source_file": "GARAIT.ttf",
+        "face_index": 0,
+        "font_version": "Version 2.40;O365",
+        "sha256": "0e5a5b226790f997d79b354fd0a44832752b6ec265c7b148a318b2d12b582e73",
+        "units_per_em": 2048,
+        "hhea": [1765, -539, 0],
+        "typo": [1339, -539, 313],
+        "win": [1765, 539],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Garamond Bold Italic",
+        "source_file": "GARABDIT.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.00;O365",
+        "sha256": "272dce3ca72f1ca16fdb21b7faef7ffdd8878911e8709ec94d7d6eac1bdcdf76",
+        "units_per_em": 2048,
+        "hhea": [1765, -539, 0],
+        "typo": [1339, -539, 313],
+        "win": [1765, 539],
+        "fsSelection": 33
+      }
+    },
+    "georgia": {
+      "regular": {
+        "face": "Georgia",
+        "source_file": "/System/Library/Fonts/Supplemental/Georgia.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x-4",
+        "sha256": "4f54eb299fccea7f103edeb0d92437359bfd4441811d53222b82b335369f6218",
+        "units_per_em": 2048,
+        "hhea": [1878, -449, 0],
+        "typo": [1549, -444, 198],
+        "win": [1878, 449],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Georgia Bold",
+        "source_file": "/System/Library/Fonts/Supplemental/Georgia Bold.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x-4",
+        "sha256": "1cfa9abd55be746c798c22ef4eba88fce82257934897404be2dae53ed0a4142a",
+        "units_per_em": 2048,
+        "hhea": [1878, -449, 0],
+        "typo": [1549, -444, 198],
+        "win": [1878, 449],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Georgia Italic",
+        "source_file": "/System/Library/Fonts/Supplemental/Georgia Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x-4",
+        "sha256": "7758840cacb7382db65aa038e9fd1194d077ba9b55fe748f9cfb196d2773ac4e",
+        "units_per_em": 2048,
+        "hhea": [1878, -449, 0],
+        "typo": [1549, -444, 198],
+        "win": [1878, 449],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Georgia Bold Italic",
+        "source_file": "/System/Library/Fonts/Supplemental/Georgia Bold Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x-4",
+        "sha256": "a2036878f47d0da1765869a8747cfb0079b6125776675bad352468b59ca4493d",
+        "units_per_em": 2048,
+        "hhea": [1878, -449, 0],
+        "typo": [1549, -444, 198],
+        "win": [1878, 449],
+        "fsSelection": 33
+      }
+    },
+    "kaiti": {
+      "regular": {
+        "face": "KaiTi",
+        "source_file": "Kaiti.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.01i",
+        "sha256": "483c7cdec7874dcc6c39d278c367c512a1b909b34d2776fd72c2a941fc3cfd2e",
+        "units_per_em": 256,
+        "hhea": [220, -36, 36],
+        "typo": [220, -36, 36],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "malgun gothic": {
+      "regular": {
+        "face": "Malgun Gothic",
+        "source_file": "malgun.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.67",
+        "sha256": "a476b34af18296df7d6e61b786affa451b845d7c9c05aadd9423569330251e66",
+        "units_per_em": 2048,
+        "hhea": [2229, -495, 0],
+        "typo": [1638, -410, 0],
+        "win": [2229, 495],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Malgun Gothic Bold",
+        "source_file": "malgunbd.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.60",
+        "sha256": "2bfad2b9a709caa70c4131d1c8ffb526dea53a996fd4f94b022c57ba77709825",
+        "units_per_em": 2048,
+        "hhea": [2229, -495, 0],
+        "typo": [1638, -410, 0],
+        "win": [2229, 495],
+        "fsSelection": 32
+      }
+    },
+    "meiryo": {
+      "regular": {
+        "face": "Meiryo",
+        "source_file": "meiryo.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.30",
+        "sha256": "7207c466d70d897ab21489063f47eee03be6929c351e60845698c5ab4ae16b48",
+        "units_per_em": 2048,
+        "hhea": [2171, -901, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 901],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Meiryo Bold",
+        "source_file": "meiryob.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.30",
+        "sha256": "b2dd42329222da79d8b9a42446b9fa55f44a517b7f5ab17660fcc77b6431aae6",
+        "units_per_em": 2048,
+        "hhea": [2171, -901, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 901],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Meiryo Italic",
+        "source_file": "meiryo.ttc",
+        "face_index": 1,
+        "font_version": "Version 6.30",
+        "sha256": "7207c466d70d897ab21489063f47eee03be6929c351e60845698c5ab4ae16b48",
+        "units_per_em": 2048,
+        "hhea": [2171, -901, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 901],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Meiryo Bold Italic",
+        "source_file": "meiryob.ttc",
+        "face_index": 1,
+        "font_version": "Version 6.30",
+        "sha256": "b2dd42329222da79d8b9a42446b9fa55f44a517b7f5ab17660fcc77b6431aae6",
+        "units_per_em": 2048,
+        "hhea": [2171, -901, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 901],
+        "fsSelection": 33
+      }
+    },
+    "meiryo ui": {
+      "regular": {
+        "face": "Meiryo UI",
+        "source_file": "meiryo.ttc",
+        "face_index": 2,
+        "font_version": "Version 6.30",
+        "sha256": "7207c466d70d897ab21489063f47eee03be6929c351e60845698c5ab4ae16b48",
+        "units_per_em": 2048,
+        "hhea": [2171, -430, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 430],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Meiryo UI Bold",
+        "source_file": "meiryob.ttc",
+        "face_index": 2,
+        "font_version": "Version 6.30",
+        "sha256": "b2dd42329222da79d8b9a42446b9fa55f44a517b7f5ab17660fcc77b6431aae6",
+        "units_per_em": 2048,
+        "hhea": [2171, -430, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 430],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Meiryo UI Italic",
+        "source_file": "meiryo.ttc",
+        "face_index": 3,
+        "font_version": "Version 6.30",
+        "sha256": "7207c466d70d897ab21489063f47eee03be6929c351e60845698c5ab4ae16b48",
+        "units_per_em": 2048,
+        "hhea": [2171, -430, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 430],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Meiryo UI Bold Italic",
+        "source_file": "meiryob.ttc",
+        "face_index": 3,
+        "font_version": "Version 6.30",
+        "sha256": "b2dd42329222da79d8b9a42446b9fa55f44a517b7f5ab17660fcc77b6431aae6",
+        "units_per_em": 2048,
+        "hhea": [2171, -430, 0],
+        "typo": [1798, -250, 1024],
+        "win": [2171, 430],
+        "fsSelection": 33
+      }
+    },
+    "microsoft jhenghei": {
+      "regular": {
+        "face": "Microsoft JhengHei",
+        "source_file": "MSJH.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.10i",
+        "sha256": "d7c8314856d7a7b3cc669d9cf27ffa15b5412af2863af90a79f88f75d105f78f",
+        "units_per_em": 2048,
+        "hhea": [2203, -521, 0],
+        "typo": [1823, -225, 0],
+        "win": [2203, 521],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Microsoft JhengHei Bold",
+        "source_file": "MSJHBD.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.10i",
+        "sha256": "12e60fa2d50ed03279d63bddf48b19a1d41a479f30162603aaec89b6d25d6e7e",
+        "units_per_em": 2048,
+        "hhea": [2203, -521, 0],
+        "typo": [1823, -225, 0],
+        "win": [2203, 521],
+        "fsSelection": 32
+      }
+    },
+    "microsoft yahei": {
+      "regular": {
+        "face": "Microsoft YaHei",
+        "source_file": "msyh.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.30",
+        "sha256": "3084f1f88369af6bf9989c909024164d953d1e38d08734f05f28ef24b2f9d577",
+        "units_per_em": 2048,
+        "hhea": [2167, -536, 0],
+        "typo": [1663, -519, 9],
+        "win": [2167, 536],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Microsoft YaHei Bold",
+        "source_file": "msyhbd.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.30",
+        "sha256": "519309b7ab0479c4dc3ace5e291de5a8702175be5586e165bc810267bd4619a5",
+        "units_per_em": 2048,
+        "hhea": [2167, -536, 0],
+        "typo": [1663, -519, 9],
+        "win": [2167, 536],
+        "fsSelection": 32
+      }
+    },
+    "microsoft yahei light": {
+      "regular": {
+        "face": "Microsoft YaHei Light",
+        "source_file": "msyhl.ttc",
+        "face_index": 0,
+        "font_version": "Version 6.24",
+        "sha256": "f25f39a6d56ec6d1b356254dd776219d71b7e6f3584b3ec1b83aab0ceb08881a",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1655, -519, 9],
+        "win": [2080, 536],
+        "fsSelection": 256
+      }
+    },
+    "microsoft yahei ui": {
+      "regular": {
+        "face": "Microsoft YaHei UI",
+        "source_file": "msyh.ttc",
+        "face_index": 1,
+        "font_version": "Version 6.30",
+        "sha256": "3084f1f88369af6bf9989c909024164d953d1e38d08734f05f28ef24b2f9d577",
+        "units_per_em": 2048,
+        "hhea": [2080, -521, 0],
+        "typo": [1663, -519, 9],
+        "win": [2080, 521],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Microsoft YaHei UI Bold",
+        "source_file": "msyhbd.ttc",
+        "face_index": 1,
+        "font_version": "Version 6.30",
+        "sha256": "519309b7ab0479c4dc3ace5e291de5a8702175be5586e165bc810267bd4619a5",
+        "units_per_em": 2048,
+        "hhea": [2080, -521, 0],
+        "typo": [1663, -519, 9],
+        "win": [2080, 521],
+        "fsSelection": 32
+      }
+    },
+    "ms gothic": {
+      "regular": {
+        "face": "MS Gothic",
+        "source_file": "msgothic.ttc",
+        "face_index": 0,
+        "font_version": "Version 5.30",
+        "sha256": "dc68e70dce920b8fc279e56ee86a67950d192d02506515f848dd4d0d12e1bde9",
+        "units_per_em": 256,
+        "hhea": [220, -36, 0],
+        "typo": [220, -36, 0],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "ms mincho": {
+      "regular": {
+        "face": "MS Mincho",
+        "source_file": "msmincho.ttc",
+        "face_index": 0,
+        "font_version": "Version 5.30",
+        "sha256": "9c2edfd189157477cdbe60bfe85bad7cda4ae27bd66cd269288a07a50dcb2a85",
+        "units_per_em": 256,
+        "hhea": [220, -36, 0],
+        "typo": [220, -36, 0],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "ms pgothic": {
+      "regular": {
+        "face": "MS PGothic",
+        "source_file": "msgothic.ttc",
+        "face_index": 2,
+        "font_version": "Version 5.30",
+        "sha256": "dc68e70dce920b8fc279e56ee86a67950d192d02506515f848dd4d0d12e1bde9",
+        "units_per_em": 256,
+        "hhea": [220, -36, 0],
+        "typo": [220, -36, 0],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "ms pmincho": {
+      "regular": {
+        "face": "MS PMincho",
+        "source_file": "msmincho.ttc",
+        "face_index": 1,
+        "font_version": "Version 5.30",
+        "sha256": "9c2edfd189157477cdbe60bfe85bad7cda4ae27bd66cd269288a07a50dcb2a85",
+        "units_per_em": 256,
+        "hhea": [220, -36, 0],
+        "typo": [220, -36, 0],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "ms ui gothic": {
+      "regular": {
+        "face": "MS UI Gothic",
+        "source_file": "msgothic.ttc",
+        "face_index": 1,
+        "font_version": "Version 5.30",
+        "sha256": "dc68e70dce920b8fc279e56ee86a67950d192d02506515f848dd4d0d12e1bde9",
+        "units_per_em": 256,
+        "hhea": [220, -36, 0],
+        "typo": [220, -36, 0],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "segoe ui": {
+      "regular": {
+        "face": "Segoe UI",
+        "source_file": "~/Library/Group Containers/UBF8T346G9.Office/FontCache/4/CloudFonts/Segoe UI/41119599467.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.67;O365",
+        "sha256": "fcb0c4655a6bc4fd3e9fef00d5c90622e27710914cb1471e6b04c420bf489ded",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1491, -431, 269],
+        "win": [2210, 514],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Segoe UI Bold",
+        "source_file": "~/Library/Group Containers/UBF8T346G9.Office/FontCache/4/CloudFonts/Segoe UI/48155170935.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.67;O365",
+        "sha256": "38444a06583e8e7a0669700ae55a018265491a101326d4e8c3fa32f704789829",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1491, -431, 269],
+        "win": [2210, 514],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Segoe UI Italic",
+        "source_file": "~/Library/Group Containers/UBF8T346G9.Office/FontCache/4/CloudFonts/Segoe UI/41405981916.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.66;O365",
+        "sha256": "e1e3532a02226c950a3b004ca3750ef9f8311e5ca6d9f1f700945e5f5aee155b",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1491, -431, 269],
+        "win": [2210, 514],
+        "fsSelection": 1
+      }
+    },
+    "simhei": {
+      "regular": {
+        "face": "SimHei",
+        "source_file": "SimHei.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.03i",
+        "sha256": "ef70e6bba293c9d30bdeb0dba2dd6019cceacbfddab3fb0c550ff14d9127c813",
+        "units_per_em": 256,
+        "hhea": [220, -36, 36],
+        "typo": [220, -36, 36],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "simsun": {
+      "regular": {
+        "face": "SimSun",
+        "source_file": "Simsun.ttc",
+        "face_index": 0,
+        "font_version": "Version 5.21",
+        "sha256": "05068fa1acae212120dcc7e98c884b174a6eca252a636b4b64030235473ec27e",
+        "units_per_em": 256,
+        "hhea": [220, -36, 36],
+        "typo": [220, -36, 36],
+        "win": [220, 36],
+        "fsSelection": 64
+      }
+    },
+    "stencil": {
+      "regular": {
+        "face": "Stencil",
+        "source_file": "Stencil.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.52",
+        "sha256": "5d53b38fa8ff33d15676cdcd78b261681bfda861c449b4f7ddfd7574a5c11e18",
+        "units_per_em": 2048,
+        "hhea": [1490, -558, 0],
+        "typo": [1365, 0, 683],
+        "win": [1860, 567],
+        "fsSelection": 64
+      }
+    },
+    "stzhongsong": {
+      "regular": {
+        "face": "STZhongsong",
+        "source_file": "STZHONGS.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.02",
+        "sha256": "be40ef56c9b9aefcf042c7602d673a46c06017a27d21ce020886e7acf24b18c3",
+        "units_per_em": 1000,
+        "hhea": [1007, -318, 0],
+        "typo": [800, -200, 144],
+        "win": [912, 225],
+        "fsSelection": 64
+      }
+    },
+    "tahoma": {
+      "regular": {
+        "face": "Tahoma",
+        "source_file": "tahoma.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.98;O365",
+        "sha256": "97e995a383dfb7afd2378297c0c2ce8862190f83f943a1222663871b7860892f",
+        "units_per_em": 2048,
+        "hhea": [2049, -423, 0],
+        "typo": [1566, -423, 59],
+        "win": [2049, 423],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Tahoma Bold",
+        "source_file": "tahomabd.ttf",
+        "face_index": 0,
+        "font_version": "Version 6.98;O365",
+        "sha256": "01b32af2fba9b28cebb2031bbcbbecab1762a6221a426a133104ebad373ea29b",
+        "units_per_em": 2048,
+        "hhea": [2049, -423, 0],
+        "typo": [1566, -423, 59],
+        "win": [2049, 423],
+        "fsSelection": 32
+      }
+    },
+    "times new roman": {
+      "regular": {
+        "face": "Times New Roman",
+        "source_file": "times.ttf",
+        "face_index": 0,
+        "font_version": "Version 7.00;O365",
+        "sha256": "e77f429f5cde743c30216c2d5917706d09ddd938990f4f5ae98bfd4b5c7d0495",
+        "units_per_em": 2048,
+        "hhea": [1825, -443, 0],
+        "typo": [1420, -442, 307],
+        "win": [1825, 443],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Times New Roman Bold",
+        "source_file": "timesbd.ttf",
+        "face_index": 0,
+        "font_version": "Version 7.00;O365",
+        "sha256": "3750f5d563d062ed8c4e2a0516da3374b8fbcdedee0608e107efd97ded80bcae",
+        "units_per_em": 2048,
+        "hhea": [1825, -443, 0],
+        "typo": [1387, -442, 307],
+        "win": [1825, 443],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Times New Roman Italic",
+        "source_file": "timesi.ttf",
+        "face_index": 0,
+        "font_version": "Version 7.00;O365",
+        "sha256": "f957cbaf4af5b52260462b486dd10a01507184dc39cdbbb3364e428b800b37e6",
+        "units_per_em": 2048,
+        "hhea": [1825, -443, 0],
+        "typo": [1422, -442, 307],
+        "win": [1825, 443],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Times New Roman Bold Italic",
+        "source_file": "timesbi.ttf",
+        "face_index": 0,
+        "font_version": "Version 7.00;O365",
+        "sha256": "baad72fc175225bd00e60ce280841131ba8a170be3646901d38a9855ff1bdabc",
+        "units_per_em": 2048,
+        "hhea": [1825, -443, 0],
+        "typo": [1387, -442, 307],
+        "win": [1825, 443],
+        "fsSelection": 33
+      }
+    },
+    "trebuchet ms": {
+      "regular": {
+        "face": "Trebuchet MS",
+        "source_file": "/System/Library/Fonts/Supplemental/Trebuchet MS.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x",
+        "sha256": "ff1d49fde63aabd7f4fc7cd0a80ac7cdb1b9540058988fcbb64d7c23639a7386",
+        "units_per_em": 2048,
+        "hhea": [1923, -455, 0],
+        "typo": [1510, -420, 0],
+        "win": [1923, 455],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Trebuchet MS Bold",
+        "source_file": "/System/Library/Fonts/Supplemental/Trebuchet MS Bold.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x",
+        "sha256": "c7df0daa11665420461614fc22682c687852b2e1cf5c6ff9188096f5d2a8d0b2",
+        "units_per_em": 2048,
+        "hhea": [1923, -455, 0],
+        "typo": [1510, -420, 0],
+        "win": [1923, 455],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Trebuchet MS Italic",
+        "source_file": "/System/Library/Fonts/Supplemental/Trebuchet MS Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.00x",
+        "sha256": "15012b4dfe5470d0f8b75d98b38c461cf81b295485061e1382dc30030c00f2cd",
+        "units_per_em": 2048,
+        "hhea": [1923, -455, 0],
+        "typo": [1510, -420, 0],
+        "win": [1923, 455],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Trebuchet MS Bold Italic",
+        "source_file": "TrebuchetMSBoldItalic.ttf",
+        "face_index": 0,
+        "font_version": "Version 1.26",
+        "sha256": "40ec9117f62ee2b10a4ebd74d57f085e9730df73dbbcaa4ded3d99b7cdbd19a4",
+        "units_per_em": 2048,
+        "hhea": [1923, -455, 0],
+        "typo": [1510, -420, 0],
+        "win": [1923, 455],
+        "fsSelection": 33
+      }
+    },
+    "verdana": {
+      "regular": {
+        "face": "Verdana",
+        "source_file": "Verdana.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.02",
+        "sha256": "aef25c78eaf9cb243f62508ed5a373bb98918fe880a63b3e17ea0b123270175c",
+        "units_per_em": 2048,
+        "hhea": [2059, -430, 0],
+        "typo": [1566, -423, 202],
+        "win": [2059, 430],
+        "fsSelection": 64
+      },
+      "bold": {
+        "face": "Verdana Bold",
+        "source_file": "Verdana Bold.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.02",
+        "sha256": "bba4571a7cc83c0ccc8b96035e2b165526946b1d45baf73d1b402c65ed48de62",
+        "units_per_em": 2048,
+        "hhea": [2059, -430, 0],
+        "typo": [1566, -423, 202],
+        "win": [2059, 430],
+        "fsSelection": 32
+      },
+      "italic": {
+        "face": "Verdana Italic",
+        "source_file": "Verdana Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.02",
+        "sha256": "ff503224a9c81914bfedbafe4d79246bd133ebcfad5b0ffc0cd9ebe18e96f9fb",
+        "units_per_em": 2048,
+        "hhea": [2059, -430, 0],
+        "typo": [1566, -423, 202],
+        "win": [2059, 430],
+        "fsSelection": 1
+      },
+      "bold-italic": {
+        "face": "Verdana Bold Italic",
+        "source_file": "Verdana Bold Italic.ttf",
+        "face_index": 0,
+        "font_version": "Version 5.02",
+        "sha256": "51644512b8e60d007c5c9fd17b9114364722124433bd3c6bb6166916aa9f863b",
+        "units_per_em": 2048,
+        "hhea": [2059, -430, 0],
+        "typo": [1566, -423, 202],
+        "win": [2059, 430],
+        "fsSelection": 33
+      }
+    },
+    "yu gothic": {
+      "regular": {
+        "face": "Yu Gothic Regular",
+        "source_file": "YuGothR.ttc",
+        "face_index": 0,
+        "font_version": "Version 1.85",
+        "sha256": "109b8dcaa475799278a8ca84fd5aeb94fa4fdbf7ee24f226e3de27e0e0c8a103",
+        "units_per_em": 2048,
+        "hhea": [1802, -455, 1024],
+        "typo": [1802, -246, 1024],
+        "win": [2017, 619],
+        "fsSelection": 0
+      },
+      "bold": {
+        "face": "Yu Gothic Bold",
+        "source_file": "YuGothB.ttc",
+        "face_index": 0,
+        "font_version": "Version 1.85",
+        "sha256": "39a1b42e01f83dc08e8ae0a455fb72fe7dbfb6fea65f8cf4e8a941ea683607fb",
+        "units_per_em": 2048,
+        "hhea": [1802, -455, 1024],
+        "typo": [1802, -246, 1024],
+        "win": [2024, 612],
+        "fsSelection": 32
+      }
+    },
+    "yu gothic ui": {
+      "regular": {
+        "face": "Yu Gothic UI Regular",
+        "source_file": "YuGothM.ttc",
+        "face_index": 1,
+        "font_version": "Version 1.85",
+        "sha256": "2b586ca104b51a4ebc8beab1ed99acfa4cd0cfdf38bcb60f6b86841d9cd47854",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1491, -431, 269],
+        "win": [2210, 514],
+        "fsSelection": 0
+      },
+      "bold": {
+        "face": "Yu Gothic UI Bold",
+        "source_file": "YuGothB.ttc",
+        "face_index": 1,
+        "font_version": "Version 1.85",
+        "sha256": "39a1b42e01f83dc08e8ae0a455fb72fe7dbfb6fea65f8cf4e8a941ea683607fb",
+        "units_per_em": 2048,
+        "hhea": [2210, -514, 0],
+        "typo": [1491, -431, 269],
+        "win": [2210, 514],
+        "fsSelection": 32
+      }
+    }
+  }
+}
