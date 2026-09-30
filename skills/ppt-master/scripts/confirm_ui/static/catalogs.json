@@ -11,7 +11,7 @@
       "dim": "1280×720",
       "viewbox": "0 0 1280 720",
       "use_zh": "现代投影 / 在线演示",
-      "use_zh_tw": "現代投影 / 線上簡報",
+      "use_zh_tw": "現代投影機 / 線上簡報",
       "use_en": "Modern projectors / online",
       "use_ja": "現在主流のプロジェクター／オンライン発表"
     },
@@ -25,7 +25,7 @@
       "dim": "1024×768",
       "viewbox": "0 0 1024 768",
       "use_zh": "传统投影",
-      "use_zh_tw": "傳統投影",
+      "use_zh_tw": "傳統投影機",
       "use_en": "Traditional projectors",
       "use_ja": "従来型プロジェクター"
     },
@@ -1009,7 +1009,7 @@
       "label_en": "pyramid",
       "label_ja": "ピラミッド",
       "desc_zh": "结论先行、相互独立且完全穷尽的论证、每个数据都带比较。适合决策、分析、战略、汇报。",
-      "desc_zh_tw": "結論先行、相互獨立且完全窮盡的論證、每個數據都帶比較。適合決策、分析、戰略、報告。",
+      "desc_zh_tw": "結論先行、相互獨立且完全窮盡的論證、每個數據都帶比較。適合決策、分析、策略、報告。",
       "desc_en": "Lead with the answer, use MECE reasoning, and compare every key data point. Best for decisions, analysis, strategy, and reporting.",
       "desc_ja": "結論を先に示し、元資料が裏付ける範囲でMECEな論理構成をとり、根拠のある比較で数値の意味を示す。意思決定・分析・戦略・報告に最適。"
     },
@@ -1021,7 +1021,7 @@
       "label_en": "narrative",
       "label_ja": "ナラティブ",
       "desc_zh": "情境、张力、解决方案形成故事弧线，保留悬念与转折。适合路演、案例、品牌、融资。",
-      "desc_zh_tw": "情境、張力、解決方案形成故事弧線，保留懸念與轉折。適合路演、案例、品牌、融資。",
+      "desc_zh_tw": "情境、張力、解決方案形成故事弧線，保留懸念與轉折。適合路演、案例、品牌、募資。",
       "desc_en": "Build a story arc from context to tension to resolution, with suspense and turns. Best for roadshows, cases, brand stories, and fundraising.",
       "desc_ja": "状況設定から緊張、解決へと物語の流れを組み立て、先が気になる展開や転換を残す。説明会・事例紹介・ブランドストーリー・資金調達向け。"
     },
@@ -1033,7 +1033,7 @@
       "label_en": "instructional",
       "label_ja": "教育・解説",
       "desc_zh": "概念拆解、分步推进、并列讲解。适合培训、教程、科普、知识分享。",
-      "desc_zh_tw": "概念拆解、分步推進、並列講解。適合培訓、教程、科普、知識分享。",
+      "desc_zh_tw": "概念拆解、分步推進、並列講解。適合培訓、教學、科普、知識分享。",
       "desc_en": "Break concepts down, advance step by step, and explain parallel ideas clearly. Best for training, tutorials, popular science, and knowledge sharing.",
       "desc_ja": "概念を分解し、段階的に進め、並列する要素を明確に説明する。研修・チュートリアル・科学解説・知識共有に最適。"
     },
@@ -1057,7 +1057,7 @@
       "label_en": "briefing",
       "label_ja": "ブリーフィング",
       "desc_zh": "中性完整、便于速览，采用主题式标题和均匀权重。适合周报、参考材料、常见问题、会议包。",
-      "desc_zh_tw": "中性完整、便於速覽，採用主題式標題和均勻權重。適合週報、參考材料、常見問題、會議包。",
+      "desc_zh_tw": "中性完整、便於速覽，採用主題式標題和均勻權重。適合週報、參考資料、常見問題、會議簡報。",
       "desc_en": "Stay neutral, complete, and scannable with topical headings and balanced weight. Best for weekly reports, reference packs, FAQs, and meeting decks.",
       "desc_ja": "中立的で漏れがなく、ざっと目を通しやすい構成。話題ごとに見出しを立て、各項目を均等な比重で扱う。週次報告・参考資料・FAQ・会議資料に最適。"
     }
@@ -1102,7 +1102,7 @@
           "label_en": "glassmorphism",
           "label_ja": "グラスモーフィズム",
           "desc_zh": "半透明玻璃面板、渐变光感、漂浮层次。",
-          "desc_zh_tw": "半透明玻璃面板、漸變光感、漂浮層次。",
+          "desc_zh_tw": "半透明玻璃面板、漸層光感、漂浮層次。",
           "desc_en": "Translucent glass panels, gradient light, and floating depth.",
           "desc_ja": "半透明のガラスパネル、グラデーションの光、浮遊感のある奥行き。"
         },
@@ -1358,7 +1358,7 @@
       "label_en": "tabler-outline",
       "label_ja": "線画（アウトライン）アイコン",
       "desc_zh": "线性描边，轻盈精致，适合屏幕阅读和编辑型图标。",
-      "desc_zh_tw": "線性描邊，輕盈精緻，適合螢幕閱讀和編輯型圖示。",
+      "desc_zh_tw": "線性描邊，輕盈精緻，適合螢幕閱讀與可編輯圖示。",
       "desc_en": "Linear stroke, light and refined. Good for screen reading and editable icons.",
       "desc_ja": "細い線のストロークで、軽やかで洗練された印象。画面での閲覧や、編集しやすいアイコンに適する。"
     },
@@ -1424,7 +1424,7 @@
       "id": "placeholder",
       "label": "占位符",
       "label_zh": "占位符",
-      "label_zh_tw": "佔位符",
+      "label_zh_tw": "預留位置",
       "label_en": "Placeholder",
       "label_ja": "プレースホルダー"
     },
@@ -1442,7 +1442,7 @@
       "id": "auto",
       "label": "Automatic Path A → Path B",
       "label_zh": "自动生成（接口 → 宿主工具）",
-      "label_zh_tw": "自動生成（API → 宿主工具）",
+      "label_zh_tw": "自動生成（API → 主機端工具）",
       "label_en": "Automatic Path A → Path B",
       "label_ja": "自動（Path A → Path B）",
       "desc_zh": "两条自动路径都不可用或失败时暂停，由你选择修复后重试、手动生成或取消受影响的 AI 图；不会自动转为手动。",
@@ -1458,7 +1458,7 @@
       "label_en": "Path A",
       "label_ja": "Path A",
       "desc_zh": "强制走接口后端，第 5 步运行 image_gen.py（需已配置 IMAGE_BACKEND）。",
-      "desc_zh_tw": "強制走 API 後端，第 5 步執行 image_gen.py（需已配置 IMAGE_BACKEND）。",
+      "desc_zh_tw": "強制走 API 後端，第 5 步執行 image_gen.py（需已設定 IMAGE_BACKEND）。",
       "desc_en": "Force the API backend — image_gen.py runs in Step 5 (requires IMAGE_BACKEND).",
       "desc_ja": "APIバックエンドに固定します。ステップ5で image_gen.py を実行します（IMAGE_BACKEND の設定が必要）。"
     },
@@ -1466,11 +1466,11 @@
       "id": "host-native",
       "label": "Path B",
       "label_zh": "宿主原生工具",
-      "label_zh_tw": "宿主原生工具",
+      "label_zh_tw": "主機端原生工具",
       "label_en": "Path B",
       "label_ja": "Path B",
       "desc_zh": "强制使用当前环境的原生图像工具生成（即使配置了 IMAGE_BACKEND 也跳过接口）；需宿主提供原生图像工具（Codex / Claude Code 等）。",
-      "desc_zh_tw": "強制使用目前環境的原生影像工具生成（即使配置了 IMAGE_BACKEND 也跳過 API）；需宿主提供原生影像工具（Codex / Claude Code 等）。",
+      "desc_zh_tw": "強制使用目前環境的原生圖片工具生成（即使設定了 IMAGE_BACKEND 也跳過 API）；需主機提供原生圖片工具（Codex / Claude Code 等）。",
       "desc_en": "Force the host's native image tool (skips the API even if IMAGE_BACKEND is set); requires a host with a native image tool (Codex / Claude Code / similar).",
       "desc_ja": "実行環境に内蔵の画像ツールに固定します（IMAGE_BACKEND が設定されていても API は使いません）。Codex／Claude Code など、画像ツールを内蔵した環境が必要です。"
     },
@@ -1482,7 +1482,7 @@
       "label_en": "Offline Manual",
       "label_ja": "オフライン手動",
       "desc_zh": "写入图片提示词；你在外部生成并放入项目图片目录。必需图片齐全并验证前不允许导出。",
-      "desc_zh_tw": "寫入圖片提示詞；你在外部生成並放入專案圖片目錄。必要圖片齊全並驗證前不允許匯出。",
+      "desc_zh_tw": "寫入圖片提示詞；你在外部生成並放入專案圖片資料夾。必要圖片齊全並驗證前不允許匯出。",
       "desc_en": "Prompts are written for external generation and placement in project/images/. Export stays blocked until every required file is present and validated.",
       "desc_ja": "外部生成用のプロンプトを書き出し、画像を project/images/ に配置します。必要な全ファイルの配置と検証が済むまでエクスポートできません。"
     }
@@ -1536,11 +1536,11 @@
       "id": "text",
       "label": "text",
       "label_zh": "文字型 · 近读",
-      "label_zh_tw": "文字型 · 近讀",
+      "label_zh_tw": "文字型 · 閱讀",
       "label_en": "text / read-close",
       "label_ja": "文書型・手元で読む",
       "desc_zh": "页面脱离讲者也能独立读懂：使用完整句、短段落、图注、表格和必要细节；bullet 只用于真正并列的项目。",
-      "desc_zh_tw": "頁面脫離講者也能獨立讀懂：使用完整句、短段落、圖說、表格和必要細節；bullet 只用於真正並列的項目。",
+      "desc_zh_tw": "即使沒有講者，頁面也能獨立讀懂：使用完整句、短段落、圖說、表格和必要細節；bullet 只用於真正並列的項目。",
       "desc_en": "The page stands alone without a presenter: use complete sentences, short prose, captions, tables, and necessary detail; reserve bullets for genuinely parallel items.",
       "desc_ja": "発表者がいなくてもページ単体で理解できる構成。完結した文、短い段落、キャプション、表、必要な細部を用い、箇条書きは本当に並列な項目だけに使う。"
     },
@@ -1564,7 +1564,7 @@
       "label_en": "presentation / keynote",
       "label_ja": "プレゼン型・講演",
       "desc_zh": "讲者与视觉承担主要表达：一页一意，以简短主张、关键词、大图或大数字为主，解释进入讲述或备注，避免段落堆积。",
-      "desc_zh_tw": "講者與視覺承擔主要表達：一頁一意，以簡短主張、關鍵字、大圖或大數字為主，解釋進入講述或備註，避免段落堆積。",
+      "desc_zh_tw": "講者與視覺承擔主要表達：一頁一意，以簡短主張、關鍵字、大圖或大數字為主，解釋進入講述或備忘稿，避免段落堆積。",
       "desc_en": "The presenter and visuals carry the explanation: use one idea per page, concise claims, keywords, large visuals, or hero numbers; move detail into speech or notes and avoid paragraph dumps.",
       "desc_ja": "発表者とビジュアルが説明を主に担う構成。1枚1メッセージで、短い主張、キーワード、大きな図や数値を中心にする。詳細は発表者の話やノートに回し、文章の詰め込みは避ける。"
     }
