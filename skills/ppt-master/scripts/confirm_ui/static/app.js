@@ -4407,6 +4407,7 @@
         document.getElementById("sections").style.display = "none";
         document.getElementById("actionbar").style.display = "none";
         var l = document.getElementById("loading");
+        l.setAttribute("data-i18n", "deriving");
         l.textContent = t("deriving");
         l.style.display = "block";
     }
@@ -4536,7 +4537,7 @@
         if (requested !== "zh" && requested !== "en" && requested !== "ja" &&
                 requested !== "zh-TW") return;
         var hasStored = false;
-        try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
+        try { hasStored = ["zh", "en", "ja", "zh-TW"].indexOf(window.localStorage.getItem("ppt_lang")) >= 0; } catch (e) { /* ignore */ }
         if (hasStored) return;
         LANG = requested;
         applyStaticTranslations();
@@ -4587,11 +4588,12 @@
             setMenuOpen(false);
             toggleBtn.focus();
             if (v !== "ja" && v !== "en" && v !== "zh" && v !== "zh-TW") return;
+            try { window.localStorage.setItem("ppt_lang", v); } catch (e2) { /* ignore */ }
             if (v === LANG) return;
             LANG = v;
-            try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }
             applyStaticTranslations();
             refreshLangToggle(toggleBtn);
+            document.getElementById("confirm-status").textContent = "";
             if (REC && CAT) {
                 renderAll();   // STATE persists → selections preserved
             }
