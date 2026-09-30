@@ -165,7 +165,7 @@ If the user selects chat after launch, apply `confirm-surface.md`'s in-run switc
 
 | Note | When | Content |
 |---|---|---|
-| Split-mode note | Only when the confirmed mode is `split` or the run is heavy (long page count, bulky sources, substantial research retained in this chat — an isolated `topic-research` worker's fetches do not count) | Recommend or confirm stopping after Step 5 and entering the execution session with `继续生成 projects/<project_name>` ([`resume-execute`](stages/resume-execute.md)); no response or "continue" means `continuous`, and the default path prints no reminder |
+| Split-mode note | Only when the confirmed mode is `split` or the run is heavy (long page count, bulky sources, substantial research retained in this chat — an isolated `topic-research` worker's fetches do not count) | Recommend or confirm stopping after Step 5 and entering the execution session with a resume request naming the project, in the user's language (e.g. `继续生成 projects/<project_name>`; [`resume-execute`](stages/resume-execute.md)); no response or "continue" means `continuous`, and the default path prints no reminder |
 | Spec-refinement note | Always | Offer review of the complete Design Spec before the lock (default OFF; only explicit opt-in or `refine_spec: true` runs `refine-spec`) |
 
 **Production fields**: resolve Speaker Notes, Custom Animations, and Narration Audio as latest explicit user instruction → final Stage-2 proactive value → default `true` / `false` / `false`. Enabled Narration Audio raises a non-explicitly-disabled Speaker Notes outcome and names that dependency. Persist the effective outcomes with provenance as the three rows in `design_spec.md §I`, keep the raw proactive fields as evidence only, and project neither into `spec_lock.md`. A later explicit request updates only its §I outcome and resumes the owning step without reopening Confirm UI. Disabling notes while audio stays enabled asks one question (disable audio too, or keep its required notes) before writing either row.
@@ -206,13 +206,13 @@ Load only the references the rows need; a mixed deck writes both `image_prompts.
 
 **Workflow**: run the procedure in [`image-base.md`](../references/image-base.md) §2 — separate derivative rows, group canonical rows by `Acquire Via`, finish each path, slice each generated sheet with its grid, `--names`, and the exact key HEX from its prompt, materialize derivatives only from terminal sources under their declared treatment. Then verify every row is terminal (no `Pending`, `Failed`, or `Needs-Selection`; an unresolved Default AI row waits at the gate above) and run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` so the CSV reflects every placeable image. Every Pending/Failed row reaches a terminal state before Executor starts.
 
-**✅ Internal checkpoint** — sidecars, slice outputs, terminal statuses, refreshed CSV. Do not print. Auto-proceed to Step 6; only `generation_mode: split` prints the handoff and stops this conversation:
+**✅ Internal checkpoint** — sidecars, slice outputs, terminal statuses, refreshed CSV. Do not print. Auto-proceed to Step 6; only `generation_mode: split` prints the handoff and stops this conversation (English template; translate to the user's chat language if different, including the resume request):
 
 ```markdown
 ## ✅ Planning Session Complete
 - [x] Spec: `design_spec.md`, `spec_lock.md`
 - [x] Resources: `sources/`, `images/`, `templates/`
-- [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](stages/resume-execute.md) stage.
+- [ ] **Next**: open a fresh chat window and send a resume request naming the project (e.g. `继续生成 projects/<project_name>`) to enter the execution session via the [`resume-execute`](stages/resume-execute.md) stage.
 ```
 
 ---

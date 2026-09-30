@@ -139,7 +139,7 @@ Skip analysis; Step 2 lists every Required item as `[decision]`. Create Brand ma
 
 ## Step 2: Fact-Based Brief Proposal
 
-Compose one concise natural-language proposal, in the user's language, describing the intended result with every material value labelled. Present one recommended creation plan — never a menu of modes, fidelity levels, or checklists; translate "原样还原" / "提取成可复用母版和版式" / "保留风格但重新设计" directly into the plan. Ask a follow-up only when a missing decision would materially change the artifact. Technical IDs appear only in a compact audit note.
+Compose one concise natural-language proposal, in the user's language, describing the intended result with every material value labelled. Present one recommended creation plan — never a menu of modes, fidelity levels, or checklists; map a request such as "restore it as-is", "extract a reusable master and layouts", or "keep the style but redesign it" (in any language) directly into the plan. Ask a follow-up only when a missing decision would materially change the artifact. Technical IDs appear only in a compact audit note.
 
 | Label | Meaning |
 |---|---|

@@ -9,7 +9,7 @@ description: Main-pipeline editor stage for starting live preview and applying s
 ## When to Run
 
 - **Step 1** — no preview service is running and the user wants to look at the deck or click an element (post-export re-entry in a fresh chat, or the user clicked **Exit preview** earlier).
-- **Step 2** — Step 7 has produced at least one PPTX and the user signals that annotations should be applied: quoting the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`) or saying `apply my annotations` / `apply my edits` / `应用注解` / `开始应用`.
+- **Step 2** — Step 7 has produced at least one PPTX and the user signals that annotations should be applied: quoting the browser prompt (`Changes saved to svg_output...` or its localized equivalent) or asking, in any language, to apply the staged annotations (e.g. `apply my annotations`).
 
 **When not to run**: the service is already running → give the URL; a precise chat edit ("change page 3 title to X") → edit the SVG directly; a full regeneration → main workflow; Step 7 has never run → finish the main pipeline first.
 

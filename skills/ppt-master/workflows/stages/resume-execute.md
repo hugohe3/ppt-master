@@ -10,7 +10,7 @@ Context-independent: persisted project artifacts replace the planning session's 
 
 ## When to Run
 
-The user opens a new chat naming a project path with continuation intent — "继续生成 projects/<name>", "resume execution projects/<name>", or a project path plus any 继续 / 恢复 / 接着做 semantic. **Prerequisite**: planning completed in that project, verified by file presence in Step 1; never auto-trigger planning on missing state.
+The user opens a new chat naming a project path with continuation intent — "继续生成 projects/<name>", "resume execution projects/<name>", or a project path plus any other request, in any language, to continue or resume. **Prerequisite**: planning completed in that project, verified by file presence in Step 1; never auto-trigger planning on missing state.
 
 ---
 

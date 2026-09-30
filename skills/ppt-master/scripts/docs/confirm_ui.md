@@ -430,30 +430,30 @@ persist it in a new receipt.
     "candidates": [
       {
         "id": "executive-clarity",
-        "name_zh": "稳妥专业",
-        "note_zh": "以瑞士极简为主，融合柔和圆角与编辑出版风格。",
+        "name": "稳妥专业",
+        "note": "以瑞士极简为主，融合柔和圆角与编辑出版风格。",
         "mode": "custom",
-        "mode_behavior_zh": "以 pyramid 作为唯一目录基底，为当前风险决策材料定制两次结论闸门；标题保持判断句，每章先给判断，再用证据展开并以可执行结论收束。",
+        "mode_behavior": "以 pyramid 作为唯一目录基底，为当前风险决策材料定制两次结论闸门；标题保持判断句，每章先给判断，再用证据展开并以可执行结论收束。",
         "visual_style": "custom",
-        "visual_style_behavior_zh": "由 swiss-minimal 负责精确栅格和大留白，soft-rounded 负责少量关键容器的轮廓与轻微抬升，editorial 负责细规则、边注与证据层级；标题锐利，正文中性，装饰只标记推理关系。",
+        "visual_style_behavior": "由 swiss-minimal 负责精确栅格和大留白，soft-rounded 负责少量关键容器的轮廓与轻微抬升，editorial 负责细规则、边注与证据层级；标题锐利，正文中性，装饰只标记推理关系。",
         "icons": "tabler-outline",
-        "color": { "name_zh": "冷静专业", "palette": {
+        "color": { "name": "冷静专业", "palette": {
           "background": "#FFFFFF", "secondary_bg": "#F4F6F8",
           "primary": "#1A3A6B", "accent": "#E8A317",
           "secondary_accent": "#4A7BB5", "body_text": "#1D2430"
         } },
         "typography": {
-          "name_zh": "微软雅黑 + Arial",
+          "name": "微软雅黑 + Arial",
           "heading": { "primary": "Microsoft YaHei", "english": "Arial", "css": "sans-serif" },
           "body": { "primary": "Microsoft YaHei", "english": "Arial", "css": "sans-serif" },
           "body_size": 24
         },
         "image_strategy": {
-          "name_zh": "编辑式证据图",
+          "name": "编辑式证据图",
           "rendering": "custom",
-          "visual_zh": "简化矢量主体配合编辑式注释与局部材质对比",
-          "mood_zh": "审慎、可信，像调查报道中的证据插图",
-          "behavior_zh": "由 vector-illustration 负责清晰轮廓，minimalist-swiss 负责留白构图，screen-print 负责克制的半调纹理，warm-scene 负责暖光与可信氛围；四者服从同一平面主体和当前演示文稿颜色角色，避免写实景深与装饰性渐变。"
+          "visual": "简化矢量主体配合编辑式注释与局部材质对比",
+          "mood": "审慎、可信，像调查报道中的证据插图",
+          "behavior": "由 vector-illustration 负责清晰轮廓，minimalist-swiss 负责留白构图，screen-print 负责克制的半调纹理，warm-scene 负责暖光与可信氛围；四者服从同一平面主体和当前演示文稿颜色角色，避免写实景深与装饰性渐变。"
         }
       }
     ]
@@ -484,7 +484,7 @@ Template-mode-only Stage-2 fragment:
 - `image_notes` is the initial strategy note shown under the image source chips. Use it for page-role guidance and constraints: which source applies where, what to avoid, which user assets are authoritative, how realistic / abstract the imagery should be, and what can remain as placeholders. It is intent guidance, not a separate finite option.
 - Final Stage 2 shows and submits `recommend.image_ai_path` as one of `auto` / `api` / `host-native` / `manual` only while its current `image_usage` includes `ai`; changing sources refreshes that production control on the same page.
 - **Color candidates carry the user-facing core `palette`**: `background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, and `body_text`. The page renders every role as a labelled swatch with its HEX value visible, and offers per-role override inputs for precise single-role edits, plus a **Custom color card with a free-text box** — the user can describe the palette in words or paste HEX values instead of filling each role; this writes `color: { "name": "custom", "custom": "<text>" }` to `result.json` for the AI to interpret. Legacy `text` is accepted as an alias for `body_text`, but new files should write `body_text`. Strategist derives secondary text, borders, state colors, and visual-style neutral tiers while writing `design_spec.md`, then projects the machine values to `spec_lock.md`; those are not user-facing confirmation choices.
-- **Candidate display text is written once, in the confirmed UI language**: use the plain keys (`name`, `note`, `mode_behavior`, `visual_style_behavior`, `visual`, `mood`, `behavior`). The server accepts the plain key or any one of the `_zh` / `_zh_tw` / `_en` / `_ja` suffixed variants, and the page falls back across them, so authoring the same text in several languages only adds output.
+- **Candidate display text is written once, in the confirmed UI language**: use the plain keys (`name`, `note`, `mode_behavior`, `visual_style_behavior`, `visual`, `mood`, `behavior`). The server accepts the plain key or, as legacy fallbacks, any one of the `_zh` / `_zh_tw` / `_en` / `_ja` suffixed variants, and the page falls back across them, so authoring the same text in several languages only adds output.
 - **Typography candidates** use concrete heading/body `primary`; non-English decks also use `english`, while English-primary decks omit it. `cjk` / `latin` remain legacy aliases. Localized `name` labels the pair and `css` only previews. Bundles differ overall; font pairs may repeat without blocking. Fixed pairs require `fixed: true`. Catalog `fonts` supplies language-filtered dropdowns plus Other without limiting recommendations; edits mark Custom and refresh the preview. Include topic samples. [`canvas-formats.md`](../../references/canvas-formats.md) § "Typography Scale Start" is the single owner of initial body anchors and sanity bands; the browser mirrors that rule, and submitted values remain px.
 - **Per-role size override** (parallel to color's per-role HEX override): besides `body_size`, the page exposes editable inputs for `title` / `subtitle` / `annotation`. The browser applies one documented deterministic dependency chain: PPT uses `reading mode → body baseline`, non-PPT uses `canvas → body baseline`, then every canvas uses `body baseline → unpinned role sizes` (role ramp: `body ×` the §g ratios). Changing reading mode updates a PPT body and all unpinned roles locally; changing body updates unpinned roles locally. Editing body or a role pins that value, so later reading-mode changes do not overwrite it. A font-only selection preserves current sizes; applying a different complete direction, or using the active card's explicit restore action, restores that direction's typography baseline and derived unpinned sizes. This is a browser-only state update: it performs no fetch and asks the backend to author no new recommendations. Each role input is labelled as px and shows an approximate pt equivalent (`1px = 0.75pt`) for orientation. The final values are written to `result.json` as `typography.sizes: { "title", "subtitle", "annotation" }` in **px** — every canvas, no pt and no `sizes_pt` provenance. These confirmed values are Strategist input anchors: the completed page plan may add recurring roles, and downstream execution owns bounded per-occurrence treatment. Candidate `sizes` remain accepted for compatibility; fresh Stage 2 preserves a candidate `body_size` as its baseline and derives only missing or unpinned role sizes from the same local ramp before first render.
 - **`delivery_purpose` compatibility key / Reading mode** (enumerable, PPT only) decides where meaning is carried, not merely how large type is: `text` makes pages self-contained with complete sentences, short prose, captions, tables, and necessary detail; `balanced` shares explanation between page and presenter; `presentation` uses one idea, concise claims, and visual evidence while speech / notes carry the detail. It therefore governs page grammar, granularity, density / rhythm, and note burden. Reading-mode cards intentionally show **no px value**; the typography section owns the separately visible body / role sizes and applies any local default. It is surfaced in Stage 2 beside the visual system, separate from communication intent. `recommend.delivery_purpose` pre-selects one; `result.json` retains the key, while `spec_lock.md` uses canonical `consumption_mode`. Non-PPT canvases omit it.
