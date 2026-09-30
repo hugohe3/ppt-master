@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PPT Master · Spec Review</title>
+  <title data-label="pageTitle">PPT Master · Spec Review</title>
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/app.js" defer></script>
 </head>
 <body>
-  <header><strong>PPT Master · Spec Review</strong><span id="fingerprint"></span>
-    <select id="language" aria-label="Language">
+  <header><strong data-label="pageTitle">PPT Master · Spec Review</strong><span id="fingerprint"></span>
+    <select id="language" aria-label="Language" data-aria="languageLabel">
       <option value="zh">中文</option><option value="zh-TW">繁體中文</option>
       <option value="en">English</option><option value="ja">日本語</option>
     </select>
@@ -25,7 +25,7 @@
         <button id="first" data-label="first"></button><button id="prev" data-label="prev"></button>
         <button id="next" data-label="next"></button><button id="last" data-label="last"></button>
       </div>
-      <div id="position"></div><nav id="blocks" aria-label="Spec blocks"></nav>
+      <div id="position"></div><nav id="blocks" aria-label="Spec blocks" data-aria="blocksLabel"></nav>
     </aside>
     <main>
       <div class="toolbar"><h1 id="title"></h1>
@@ -47,7 +47,7 @@
     </main>
     <aside class="annotations">
       <h2 data-label="annotations"></h2>
-      <select id="scope" aria-label="Annotation scope"><option value="block" data-label="thisBlock"></option>
+      <select id="scope" aria-label="Annotation scope" data-aria="scopeLabel"><option value="block" data-label="thisBlock"></option>
         <option value="global" data-label="global"></option></select>
       <div id="comments"></div>
       <label for="annotation" data-label="newAnnotation"></label>

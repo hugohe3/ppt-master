@@ -17,6 +17,7 @@ const strings = {
     blockUnknown: 'Block baseline unknown', blockMissing: 'This block no longer exists',
     exit: 'Exit review', exitConfirm: 'There are unapplied drafts or unsaved comments. Stop review and discard pending work?',
     stopped: 'Spec review has stopped. You can close this tab.',
+    pageTitle: 'PPT Master · Spec Review', languageLabel: 'Language', blocksLabel: 'Spec blocks', scopeLabel: 'Annotation scope',
     disconnected: 'Cannot reach spec review. Local edits are retained.', rebaseConfirm: 'Stage this text against the current disk version, replacing any current staged draft? Review the source first; Apply will replace this block.',
   },
   zh: {
@@ -34,6 +35,7 @@ const strings = {
     blockUnknown: '该块的意见基准未知', blockMissing: '该块已不存在',
     exit: '退出评审', exitConfirm: '存在未应用草稿或未保存意见。是否停止评审并放弃待保存内容？',
     stopped: '评审服务已停止，可以关闭此标签页。',
+    pageTitle: 'PPT Master · 设计规范评审', languageLabel: '语言', blocksLabel: '设计规范块', scopeLabel: '意见范围',
     disconnected: '无法连接评审服务，本地编辑已保留。', rebaseConfirm: '以当前磁盘版本为基准暂存此内容，替换服务端的当前草稿？请先核对最新原文；应用时将替换该块。',
   },
   'zh-TW': {
@@ -51,6 +53,7 @@ const strings = {
     blockUnknown: '該區塊的意見基準未知', blockMissing: '該區塊已不存在',
     exit: '退出評審', exitConfirm: '存在未套用草稿或未儲存意見。是否停止評審並放棄待儲存內容？',
     stopped: '評審服務已停止，可以關閉此分頁。',
+    pageTitle: 'PPT Master · 設計規範審閱', languageLabel: '語言', blocksLabel: '設計規範區塊', scopeLabel: '意見範圍',
     disconnected: '無法連線評審服務，本機編輯已保留。', rebaseConfirm: '以目前磁碟版本為基準暫存此內容，取代伺服器上的目前草稿？請先核對最新原文；套用時將取代該區塊。',
   },
   ja: {
@@ -69,6 +72,7 @@ const strings = {
     blockUnknown: 'ブロックの基準は不明です', blockMissing: 'このブロックは存在しません',
     exit: 'レビューを終了', exitConfirm: '未適用の下書きまたは未保存のコメントがあります。レビューを終了して未保存の内容を破棄しますか？',
     stopped: 'レビューサービスは停止しました。このタブを閉じてください。',
+    pageTitle: 'PPT Master · 設計仕様レビュー', languageLabel: '言語', blocksLabel: '設計仕様のブロック', scopeLabel: 'コメントの対象',
     disconnected: 'サービスに接続できません。編集内容は保持されています。', rebaseConfirm: '現在の原文を基準にこの内容を一時保存し、サーバーの下書きを置き換えますか？原文を先に確認してください。適用でこのブロックを置き換えます。',
   },
 };
@@ -79,10 +83,15 @@ const node = (tag, text) => {
   return result;
 };
 const detected = navigator.language.toLowerCase();
-let lang = detected.startsWith('zh') ? (/tw|hk|hant/.test(detected) ? 'zh-TW' : 'zh') :
+let lang = detected.startsWith('zh') ? (/\b(tw|hk|mo|hant)\b/.test(detected) && !/\bhans\b/.test(detected) ? 'zh-TW' : 'zh') :
   (detected.startsWith('ja') ? 'ja' : 'en');
-try { lang = localStorage.getItem('spec-review-language') || lang; } catch (_) { /* Optional browser storage. */ }
-if (!strings[lang]) lang = 'en';
+// `ppt_lang` is the key the other local UIs use; the old key is a read-only fallback.
+// Each key is validated on its own so an invalid new value cannot hide a valid old one.
+try {
+  const stored = ['ppt_lang', 'spec-review-language'].map(key => localStorage.getItem(key))
+    .find(value => Object.hasOwn(strings, value));
+  if (stored) lang = stored;
+} catch (_) { /* Optional browser storage. */ }
 const t = key => strings[lang][key];
 
 // User Markdown never crosses an HTML parser boundary. Unsupported constructs
@@ -304,7 +313,7 @@ function renderComments() {
   $('comments').replaceChildren();
   for (const item of comments.filter(item => item.key === annotationKey())) {
     const card = node('div'); card.className = 'comment';
-    card.append(node('small', `${item.id} · ${item.title}`));
+    card.append(node('small', `${item.id} · ${item.key === 'global' ? t('global') : item.title}`));
     const status = item.key === 'global' ? (item.base_current ? 'current' : 'stale') :
       (item.block_missing ? 'blockMissing' : (item.block_changed === true ? 'blockChanged' :
         (item.block_changed === false ? 'blockUnchanged' : 'blockUnknown')));
@@ -372,16 +381,17 @@ async function reload() {
   if ([...drafts.values()].some(draft => draft.sha256 !== metadata.sha256)) showConflict(true);
 }
 function localize() {
-  document.documentElement.lang = lang; $('language').value = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; $('language').value = lang;
   document.querySelectorAll('[data-label]').forEach(element => { element.textContent = t(element.dataset.label); });
+  document.querySelectorAll('[data-aria]').forEach(element => { element.setAttribute('aria-label', t(element.dataset.aria)); });
   if (stopped) { $('stopped').textContent = t('stopped'); return; }
   renderStatus(); renderNavigation(); renderPreview(); renderComments();
-  if (!$('conflict').hidden) showConflict();
+  if (!$('conflict').hidden) { if (current?.missing) $('conflict').textContent = t('missing'); else showConflict(); }
 }
 
 $('language').addEventListener('change', () => {
   lang = $('language').value;
-  try { localStorage.setItem('spec-review-language', lang); } catch (_) { /* Optional browser storage. */ }
+  try { localStorage.setItem('ppt_lang', lang); } catch (_) { /* Optional browser storage. */ }
   localize();
 });
 $('source').addEventListener('click', () => { source = !source; renderPreview(); });
