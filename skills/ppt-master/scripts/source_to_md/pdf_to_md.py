@@ -46,6 +46,7 @@ FONT_H2_SIZE = 18
 FONT_H3_SIZE = 14
 HEADER_FOOTER_SAMPLE_LIMIT = 40
 HEADER_FOOTER_EDGE_SAMPLE_SIZE = 20
+HEADER_FOOTER_BAND_RATIO = 0.15
 CONTROL_CHARS_RE = re.compile(r'[\x00-\x08\x0b\x0c\x0e-\x1f]')
 
 
@@ -299,16 +300,29 @@ def remove_page_footer(text: str) -> str:
     return text.rstrip()
 
 
-def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> set[str]:
+def _header_footer_band(bbox: fitz.Rect, page_rect: fitz.Rect) -> str | None:
+    """Classify fully contained edge text; keep text crossing a band boundary."""
+    band_height = page_rect.height * HEADER_FOOTER_BAND_RATIO
+    if page_rect.y0 <= bbox.y0 and bbox.y1 <= page_rect.y0 + band_height:
+        return "header"
+    if page_rect.y1 - band_height <= bbox.y0 and bbox.y1 <= page_rect.y1:
+        return "footer"
+    return None
+
+
+def detect_headers_footers(
+    doc: fitz.Document, threshold_ratio: float = 0.6,
+) -> tuple[set[str], set[str]]:
     """
     Detect headers and footers statistically.
 
     Principle: Headers and footers typically appear at fixed positions (top or bottom)
     on each page with the same content. We collect top and bottom text from all pages,
     and if certain text appears more frequently than the threshold, it is treated as noise.
+    Return header and footer noise separately so filtering stays in the matching band.
     """
     if len(doc) < 3:
-        return set()
+        return set(), set()
 
     headers = []
     footers = []
@@ -323,12 +337,6 @@ def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> 
 
     for i in pages_to_scan:
         page = doc[i]
-        rect = page.rect
-        h = rect.height
-
-        # Define top and bottom regions (15% each)
-        top_rect = fitz.Rect(0, 0, rect.width, h * 0.15)
-        bottom_rect = fitz.Rect(0, h * 0.85, rect.width, h)
 
         # Extract text blocks
         blocks = page.get_text("blocks")
@@ -338,24 +346,25 @@ def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> 
             if not text:
                 continue
 
-            # Simple spatial determination
-            if b_rect.intersects(top_rect):
+            band = _header_footer_band(b_rect, page.rect)
+            if band == "header":
                 headers.append(text)
-            elif b_rect.intersects(bottom_rect):
+            elif band == "footer":
                 footers.append(text)
 
     # Count frequencies
-    noise_texts = set()
+    header_noise = set()
+    footer_noise = set()
     total_scanned = len(pages_to_scan)
 
-    for collection in [headers, footers]:
+    for collection, noise_texts in [(headers, header_noise), (footers, footer_noise)]:
         counter = Counter(collection)
         for text, count in counter.items():
             # if text appears in > 60% of scanned pages, mark as noise
             if count / total_scanned > threshold_ratio:
                 noise_texts.add(text)
 
-    return noise_texts
+    return header_noise, footer_noise
 
 
 def _is_hangul(char: str) -> bool:
@@ -415,6 +424,8 @@ def merge_adjacent_headings(elements: list) -> list:
         while j < len(elements) and len(title_text) < 60:
             next_el = elements[j]
             if next_el.get("type") != 0 or not next_el.get("is_heading"):
+                break
+            if el.get("is_footer") or next_el.get("is_footer"):
                 break
 
             next_match = re.match(r'^(#{1,6})\s+(.+)$', next_el["content"])
@@ -1570,10 +1581,12 @@ def extract_pdf_to_markdown(
           f"H1={size_map.get('h1', 'N/A')}, H2={size_map.get('h2', 'N/A')}, H3={size_map.get('h3', 'N/A')}")
 
     print(f"[INFO] Detecting repeated headers/footers...")
-    noise_texts = detect_headers_footers(doc)
-    if noise_texts:
-        print(f"   Found {len(noise_texts)} repeated noise texts (will be removed):")
-        for t in list(noise_texts)[:3]:
+    header_noise, footer_noise = detect_headers_footers(doc)
+    noise_by_band = {"header": header_noise, "footer": footer_noise, None: set()}
+    repeated_texts = header_noise | footer_noise
+    if repeated_texts:
+        print(f"   Found {len(repeated_texts)} repeated noise texts (will be removed):")
+        for t in list(repeated_texts)[:3]:
             print(f"     - {t[:30]}...")
 
     markdown_content = f"# {title}\n\n"
@@ -1646,7 +1659,8 @@ def extract_pdf_to_markdown(
             if block["type"] == 0:
                 # Check if this is noise text to be filtered (whole block match)
                 block_text_full = "".join([span["text"] for line in block["lines"] for span in line["spans"]]).strip()
-                if block_text_full in noise_texts:
+                block_band = _header_footer_band(block_rect, page.rect)
+                if block_text_full in noise_by_band[block_band]:
                     continue
 
                 for line in block["lines"]:
@@ -1694,8 +1708,14 @@ def extract_pdf_to_markdown(
                         continue
 
                     # Secondary check: line-level noise match (sometimes blocks are split)
-                    if line_text in noise_texts:
+                    band = _header_footer_band(fitz.Rect(line["bbox"]), page.rect)
+                    if line_text in noise_by_band[band]:
                         continue
+
+                    if band == "footer":
+                        line_text = remove_page_footer(line_text)
+                        if not line_text:
+                            continue
 
                     line_text = merge_adjacent_formatting(line_text)
 
@@ -1720,7 +1740,8 @@ def extract_pdf_to_markdown(
                         "content": final_text,
                         "is_heading": heading_level > 0,
                         "is_list": is_list,
-                        "is_code": is_code_line
+                        "is_code": is_code_line,
+                        "is_footer": band == "footer",
                     })
 
             elif block["type"] == 1:
@@ -1752,13 +1773,15 @@ def extract_pdf_to_markdown(
                     next_el = page_elements[j]
                     if next_el["type"] != 0:
                         break
+                    if el.get("is_footer") or next_el.get("is_footer"):
+                        break
                     if not should_merge_lines({"content": merged_content, "is_heading": False, "is_list": False}, next_el):
                         break
                     merged_content = join_wrapped_text(merged_content, next_el["content"])
                     j += 1
                 merged_elements.append({
                     "type": 0,
-                    "content": remove_page_footer(merged_content),
+                    "content": merged_content,
                     "is_heading": False,
                     "is_list": False
                 })
