@@ -539,13 +539,13 @@ def fetch_url(url: str) -> tuple[str, str]:
     return _decode_response_text(response), response.url
 
 
-def clean_title(title: str) -> str:
-    """Remove common site suffixes from a title."""
+def clean_title(title: str, site_name: str = "") -> str:
+    """Remove only a trailing site name verified by page metadata."""
     if not title:
         return ""
-    # Remove site name suffixes often found in Chinese titles
-    clean = re.sub(r"[-_|].*?(政府|门户|网站|委员会).*$", "", title)
-    return clean.strip()
+    if site_name.strip():
+        title = re.sub(r"\s*[-_|]\s*" + re.escape(site_name.strip()) + r"\s*$", "", title)
+    return title.strip()
 
 
 _FILENAME_TRANSLITERATIONS = str.maketrans({
@@ -798,7 +798,7 @@ def extract_metadata(soup: BeautifulSoup, url: str) -> dict[str, str]:
 
     # 1. Title
     title_tag = soup.title
-    title = clean_title(title_tag.string if title_tag else "")
+    title = title_tag.get_text() if title_tag else ""
 
     # 2. Meta tags
     metas = {}
@@ -807,6 +807,7 @@ def extract_metadata(soup: BeautifulSoup, url: str) -> dict[str, str]:
         content = meta.get("content")
         if name and content:
             metas[name.lower()] = content.strip()
+    title = clean_title(title, metas.get("og:site_name", ""))
 
     # 3. Date Extraction Strategies
     date = (
@@ -878,37 +879,46 @@ def extract_metadata(soup: BeautifulSoup, url: str) -> dict[str, str]:
 
 def find_main_content(soup: BeautifulSoup) -> Tag | None:
     """Find the most likely main content container in a page."""
-    # 1. Clean up first (remove known clutter)
-    for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript", "iframe"]):
+    # Identify explicit body containers before removing page-shell semantics.
+    candidates = []
+    for selector in CONFIG["content_selectors"]:
+        elements = soup.find_all(selector["name"]) if "name" in selector else soup.find_all(**selector)
+        for element in elements:
+            if not any(element is existing for existing in candidates):
+                candidates.append(element)
+    for tag in soup(["script", "style", "nav", "noscript", "iframe"]):
         tag.decompose()
+    for tag in soup(["header", "footer", "aside"]):
+        if not any(tag is body or body in tag.parents for body in candidates):
+            tag.decompose()
+
+    # Keep the original length/score gates: selector matches can be breadcrumbs
+    # or related-story cards. Merge only independently qualified body roots.
+    qualified = []
+    for element in candidates:
+        if element.parent is None:
+            continue
+        text = element.get_text(strip=True)
+        score = len(text) + 2 * len(re.findall(r'[\u4e00-\u9fa5]', text))
+        if len(text) >= 100 and score >= 200:
+            qualified.append(element)
+    candidates = qualified
+    roots = [element for element in candidates if element.parent is not None
+             and not any(parent is other for parent in element.parents for other in candidates)]
+    if roots:
+        if len(roots) == 1:
+            return roots[0]
+        combined = soup.new_tag("div")
+        # find_all gives document order, regardless of selector priority.
+        for element in list(soup.find_all(True)):
+            if any(element is root for root in roots):
+                combined.append(element.extract())
+        return combined
 
     best_element = None
     max_score = 0
 
-    # 2. Strategy A: Check specific classes/ids
-    for selector in CONFIG["content_selectors"]:
-        if "name" in selector:
-            # Tag name match (article, main)
-            elements = soup.find_all(selector["name"])
-        else:
-            # Class or ID match
-            elements = soup.find_all(attrs=selector)
-
-        for el in elements:
-            # Score based on text length and chinese character count
-            text = el.get_text(strip=True)
-            length = len(text)
-            if length < 100:
-                continue
-
-            chinese_count = len(re.findall(r'[\u4e00-\u9fa5]', text))
-            score = length + (chinese_count * 2)
-
-            if score > max_score:
-                max_score = score
-                best_element = el
-
-    # 3. Strategy B: If no specific container found, look for dense text areas with paragraphs
+    # Without explicit containers, retain the existing dense-text fallback.
     if not best_element or max_score < 200:
         for div in soup.find_all("div"):
             p_count = len(div.find_all("p", recursive=False))
@@ -1089,6 +1099,43 @@ def simple_html_to_markdown_traversal(
 
         if node.name in ['script', 'style', 'comment', 'meta', 'link']:
             return ""
+
+        if node.name in {'ol', 'ul'}:
+            items = node.find_all('li', recursive=False)
+            ordered = node.name == 'ol'
+            reversed_list = ordered and node.has_attr('reversed')
+            try:
+                counter = int(node.get('start', len(items) if reversed_list else 1))
+            except (ValueError, TypeError):
+                counter = 1
+            step = -1 if reversed_list else 1
+            numbers = []
+            for item in items:
+                try:
+                    counter = int(item.get('value', counter))
+                except (ValueError, TypeError):
+                    pass
+                numbers.append(counter)
+                counter += step
+            if ordered and (reversed_list or node.get('type', '1') != '1'
+                            or any(b != a + 1 for a, b in zip(numbers, numbers[1:]))):
+                # Markdown cannot represent jumps, reversal, or letter styles.
+                # Resolve links/images first, then retain HTML list semantics.
+                for link in node.find_all('a', href=True):
+                    href = link['href']
+                    if href.lower().startswith('javascript:'):
+                        del link['href']
+                    elif not href.startswith('#') and urlparse(href).scheme.lower() not in {'mailto', 'tel'}:
+                        link['href'] = urljoin(page_url, href)
+                return '\n\n' + str(node) + '\n\n'
+            rendered = []
+            for number, item in zip(numbers, items):
+                body = ''.join(traverse(child) for child in item.children).strip()
+                body_lines = body.splitlines()
+                marker = f'{number}. ' if ordered else '- '
+                indent = ' ' * len(marker)
+                rendered.append(marker + ('\n' + indent).join(body_lines))
+            return '\n\n' + '\n'.join(rendered) + '\n\n'
 
         # Handle Block Elements
         is_block = node.name in ['p', 'div', 'h1', 'h2', 'h3', 'h4',

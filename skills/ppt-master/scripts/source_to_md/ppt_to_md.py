@@ -168,7 +168,7 @@ def escape_table_cell(value: str) -> str:
     """Escape Markdown table syntax inside a cell."""
     normalized = value.replace("\r\n", "\n").replace("\r", "\n")
     lines = [re.sub(r"\s+", " ", line).strip() for line in normalized.split("\n")]
-    with_breaks = "<br>".join(lines)
+    with_breaks = "<br>".join(line for line in lines if line)
     return with_breaks.replace("|", r"\|") or " "
 
 
@@ -309,7 +309,7 @@ def _paragraph_to_markdown(
             # A soft line break inside the paragraph; python-pptx's runs skip it.
             current_text += "\n"
             continue
-        if tag != "r":
+        if tag not in {"r", "fld"}:
             continue
         run = _Run(child, paragraph)
         url = _run_url(run, shape)
@@ -319,7 +319,7 @@ def _paragraph_to_markdown(
             flush()
             current_text = ""
             current_url = url
-        current_text += run.text or ""
+        current_text += (child.findtext(qn("a:t")) or "") if tag == "fld" else (run.text or "")
     flush()
 
     text = normalize_text("".join(parts))
@@ -363,7 +363,10 @@ def _shape_click_target(shape: object) -> str | None:
 
 def _paragraph_has_hyperlink(paragraph: object) -> bool:
     """True if any run carries an external URL or an internal slide jump."""
-    for run in paragraph.runs:
+    for child in paragraph._p:
+        if child.tag not in {qn("a:r"), qn("a:fld")}:
+            continue
+        run = _Run(child, paragraph)
         try:
             if run.hyperlink.address:
                 return True
@@ -376,6 +379,95 @@ def _paragraph_has_hyperlink(paragraph: object) -> bool:
         except AttributeError:
             continue
     return False
+
+
+def _paragraph_bullet(paragraph: object, shape: object) -> tuple[object | None, bool]:
+    """Resolve bullet declarations from paragraph, shape, layout, and master."""
+    level = f"a:lvl{paragraph.level + 1}pPr"
+    properties = [(paragraph._p.find(qn("a:pPr")), True)]
+
+    def add_shape_styles(source):
+        if source is None or not getattr(source, "has_text_frame", False):
+            return
+        body = source.text_frame._txBody
+        style = body.find(qn("a:lstStyle"))
+        if style is not None:
+            properties.extend((style.find(qn(name)), False) for name in (level, "a:defPPr"))
+
+    add_shape_styles(shape)
+    if shape is not None and hasattr(shape.part, "slide"):
+        slide = shape.part.slide
+        master = slide.slide_layout.slide_master
+        if getattr(shape, "is_placeholder", False):
+            idx = shape.placeholder_format.idx
+            layout_shape = slide.slide_layout.placeholders.get(idx)
+            if layout_shape is not None and layout_shape.has_text_frame:
+                inherited_paragraph = layout_shape.text_frame.paragraphs[0]
+                if inherited_paragraph.level == paragraph.level:
+                    properties.append((inherited_paragraph._p.find(qn("a:pPr")), False))
+                add_shape_styles(layout_shape)
+                # Master placeholders inherit by type, not by layout idx.
+                master_shape = next((p for p in master.placeholders
+                                     if p.placeholder_format.type == layout_shape.placeholder_format.type), None)
+                if master_shape is not None and master_shape.has_text_frame:
+                    inherited_paragraph = master_shape.text_frame.paragraphs[0]
+                    if inherited_paragraph.level == paragraph.level:
+                        properties.append((inherited_paragraph._p.find(qn("a:pPr")), False))
+                    add_shape_styles(master_shape)
+            placeholder_type = str(shape.placeholder_format.type).split()[0]
+            style_name = "titleStyle" if placeholder_type in {"TITLE", "CENTER_TITLE"} else "bodyStyle"
+        else:
+            style_name = "otherStyle"
+        styles = master._element.find(qn("p:txStyles"))
+        if styles is not None:
+            style = styles.find(qn(f"p:{style_name}"))
+            if style is not None:
+                properties.extend((style.find(qn(name)), False) for name in (level, "a:defPPr"))
+        presentation = shape.part.package.presentation_part._element
+        style = presentation.find(qn("p:defaultTextStyle"))
+        if style is not None:
+            properties.extend((style.find(qn(name)), False) for name in (level, "a:defPPr"))
+
+    for props, direct in properties:
+        if props is None:
+            continue
+        for name in ("buNone", "buAutoNum", "buChar", "buBlip"):
+            bullet = props.find(qn(f"a:{name}"))
+            if bullet is not None:
+                return bullet, direct
+    return None, False
+
+
+def _numbered_marker(number: int, scheme: str) -> str:
+    """Keep the source numbering style; unfamiliar schemes carry their id."""
+    label = str(number)
+    if scheme.startswith("alpha") and number > 0:
+        label = ""
+        remaining = number
+        while remaining:
+            remaining, digit = divmod(remaining - 1, 26)
+            label = chr(ord("a") + digit) + label
+        if scheme.startswith("alphaUc"):
+            label = label.upper()
+    elif scheme.startswith("roman") and 0 < number < 4000:
+        label = ""
+        remaining = number
+        for value, digits in ((1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
+                              (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+                              (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")):
+            count, remaining = divmod(remaining, value)
+            label += digits * count
+        if scheme.startswith("romanLc"):
+            label = label.lower()
+    elif scheme not in {"arabicPeriod", "arabicPlain", "arabicParenR", "arabicParenBoth"}:
+        return f"{number}. [numbering: {scheme}]"
+    if scheme.endswith("ParenBoth"):
+        return f"({label})"
+    if scheme.endswith("ParenR"):
+        return f"{label})"
+    if scheme.endswith("Plain"):
+        return label
+    return f"{label}."
 
 
 def text_frame_to_markdown(
@@ -399,11 +491,11 @@ def text_frame_to_markdown(
     if not visible_paragraphs:
         return ""
 
-    list_like = any(paragraph.level > 0 for paragraph in visible_paragraphs)
-    if not list_like:
-        list_like = len(visible_paragraphs) > 1
-
     paragraphs = []
+    counters = {}
+    previous_list = False
+    number_jump = False
+    style_shape = shape if shape is not None else getattr(text_frame, "_parent", None)
     for paragraph in visible_paragraphs:
         text = _escape_readback_control_lines(
             _paragraph_to_markdown(
@@ -414,15 +506,47 @@ def text_frame_to_markdown(
         )
         if not text:
             continue
+        bullet, direct = _paragraph_bullet(paragraph, style_shape)
+        kind = bullet.tag.rsplit("}", 1)[-1] if bullet is not None else "buNone"
+        list_like = kind != "buNone"
+        if kind == "buAutoNum":
+            scheme = bullet.get("type", "arabicPeriod")
+            level = paragraph.level
+            for deeper in list(counters):
+                if deeper > level:
+                    del counters[deeper]
+            previous = counters.get(level)
+            start = bullet.get("startAt")
+            if start is not None and (direct or previous is None or previous[0] != scheme):
+                number = int(start)
+            else:
+                number = previous[1] + 1 if previous and previous[0] == scheme else 1
+            if previous and previous[0] == scheme and number != previous[1] + 1:
+                number_jump = True
+            counters[level] = (scheme, number)
+            marker = _numbered_marker(number, scheme)
+        else:
+            marker = "-"
+            if kind == "buNone":
+                counters.clear()
+        if paragraphs:
+            literal_numbered = bool(re.match(r"^\d+[.)]\s", text))
+            previous_numbered = bool(re.match(r"^\d+[.)]\s", paragraphs[-1]))
+            paragraphs.append("\n" if (list_like and previous_list) or
+                              (literal_numbered and previous_numbered) else "\n\n")
         if list_like:
             indent = "  " * max(paragraph.level, 0)
-            paragraphs.append(f"{indent}- {text}")
+            paragraphs.append(f"{indent}{marker} {text}")
         else:
             paragraphs.append(text)
+        previous_list = list_like
 
-    if list_like:
-        return "\n".join(paragraphs)
-    return "\n\n".join(paragraphs)
+    markdown = "".join(paragraphs)
+    if number_jump:
+        # Markdown renderers renumber jumps/restarts. Literal labels retain
+        # each source number even when native list semantics cannot map.
+        markdown = re.sub(r"^(\s*)(\d+)\. ", r"\1\2\\. ", markdown, flags=re.M)
+    return markdown
 
 
 def table_to_markdown(table: object, shape: object = None) -> str:

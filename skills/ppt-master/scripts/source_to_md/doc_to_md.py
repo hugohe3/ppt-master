@@ -583,7 +583,12 @@ def _omml_to_latex(elem: ET.Element) -> str:
         end = _m_pr_val(elem, "endChr")
         beg = "(" if beg is None else (beg or ".")
         end = ")" if end is None else (end or ".")
-        inner = "".join(_omml_to_latex(c) for c in elem if _local_name(c) == "e")
+        separator = _m_pr_val(elem, "sepChr")
+        separator = "|" if separator is None else separator
+        separator = _latex_literal(separator)
+        beg = {"{": r"\{", "}": r"\}"}.get(beg, beg)
+        end = {"{": r"\{", "}": r"\}"}.get(end, end)
+        inner = separator.join(_omml_to_latex(c) for c in elem if _local_name(c) == "e")
         return rf"\left{beg}{inner}\right{end}"
     if local == "nary":
         chr_ = _m_pr_val(elem, "chr") or "∫"
@@ -608,13 +613,28 @@ def _omml_to_latex(elem: ET.Element) -> str:
         cmd = ACCENT_CMDS.get(_m_pr_val(elem, "chr") or "̂", r"\hat")
         return cmd + "{" + _omml_part(elem, "e") + "}"
     if local == "groupChr":
-        return _omml_part(elem, "e")
+        char = _m_pr_val(elem, "chr")
+        char = "⏟" if char is None else char
+        pos = _m_pr_val(elem, "pos") or "bot"
+        body = _omml_part(elem, "e")
+        if (char, pos) in {("⏞", "top"), ("⏟", "bot")}:
+            cmd = r"\overbrace" if pos == "top" else r"\underbrace"
+            return cmd + "{" + body + "}"
+        cmd = r"\overset" if pos == "top" else r"\underset"
+        return cmd + r"{\text{" + _latex_literal(char) + "}}{" + body + "}"
     if local == "m":
         return _omml_matrix(elem, environment="matrix")
     if local == "eqArr":
         return _omml_matrix(elem, environment="aligned")
 
     return _omml_children(elem)
+
+
+def _latex_literal(text: str) -> str:
+    """Escape literal characters that would otherwise change LaTeX syntax."""
+    escapes = {"\\": r"\backslash{}", "{": r"\{", "}": r"\}", "%": r"\%",
+               "&": r"\&", "#": r"\#", "_": r"\_", "$": r"\$"}
+    return "".join(escapes.get(char, char) for char in text)
 
 
 def _make_text_run(text: str) -> ET.Element:
@@ -635,6 +655,7 @@ def _make_text_paragraph(text: str) -> ET.Element:
 
 def _docx_inject_math_latex(
     input_file: Path,
+    warnings: list[str] | None = None,
 ) -> tuple[Path, dict[str, str]] | None:
     """Replace OMML equations with alphanumeric placeholders in a temp DOCX.
 
@@ -672,6 +693,16 @@ def _docx_inject_math_latex(
         parent = parent_map.get(elem)
         if parent is None:
             continue
+        for group in elem.iter(f"{{{MATH_NS}}}groupChr"):
+            char = _m_pr_val(group, "chr")
+            char = "⏟" if char is None else char
+            pos = _m_pr_val(group, "pos") or "bot"
+            if (char, pos) not in {("⏞", "top"), ("⏟", "bot")}:
+                warning = (f"OMML group character {char!r} at {pos}: retained as positioned text; "
+                           "review the original equation.")
+                print(f"[WARN] {warning}", file=sys.stderr)
+                if warnings is not None:
+                    warnings.append(warning)
         latex = _omml_to_latex(elem).strip()
         position = list(parent).index(elem)
         parent.remove(elem)
@@ -703,51 +734,68 @@ def _docx_inject_math_latex(
 # DOCX tables → pipe Markdown
 # ─────────────────────────────────────────────────────────────
 
-def _docx_paragraph_text(paragraph: ET.Element) -> str:
+def _docx_paragraph_text(paragraph: ET.Element, links: dict[str, str] | None = None) -> str:
     """Extract readable text from one Word paragraph."""
     parts: list[str] = []
-    for elem in paragraph.iter():
+    def visit(elem):
         local = _local_name(elem)
-        if local == "t":
+        if local == "hyperlink" and links is not None:
+            label = _docx_paragraph_text(elem)
+            target = links.get(elem.get(f"{{{DOCX_NS['r']}}}id", ""), "")
+            anchor = elem.get(f"{{{W_NS}}}anchor", "")
+            if anchor:
+                target += "#" + anchor
+            target = target.replace(" ", "%20").replace("(", "%28").replace(")", "%29")
+            label = label.replace("[", r"\[").replace("]", r"\]")
+            parts.append(f"[{label}]({target})" if target else label)
+        elif local == "t":
             parts.append(elem.text or "")
         elif local == "tab":
             parts.append("\t")
         elif local in {"br", "cr"}:
             parts.append(" ")
-        elif local == "footnoteReference":
-            parts.append(f"[^{elem.get(f'{{{W_NS}}}id')}]")
+        elif local in {"footnoteReference", "endnoteReference"}:
+            prefix = "endnote-" if local == "endnoteReference" else ""
+            parts.append(f"[^{prefix}{elem.get(f'{{{W_NS}}}id')}]")
+        else:
+            for child in elem:
+                visit(child)
+    visit(paragraph)
     return "".join(parts).strip()
 
 
-def _docx_footnote_texts(docx: zipfile.ZipFile) -> dict[str, str]:
-    """Return footnote id → plain text from ``word/footnotes.xml``."""
+def _docx_note_texts(docx: zipfile.ZipFile, kind: str) -> dict[str, str | None]:
+    """Return footnote/endnote ids and readable text from their package part."""
     try:
-        root = ET.fromstring(docx.read("word/footnotes.xml"))
+        root = ET.fromstring(docx.read(f"word/{kind}s.xml"))
     except (KeyError, ET.ParseError):
         return {}
     return {
-        note.get(f"{{{W_NS}}}id", ""): " ".join(
-            _docx_paragraph_text(paragraph)
-            for paragraph in note.findall("w:p", DOCX_NS)
-        ).strip()
-        for note in root.findall("w:footnote", DOCX_NS)
-        if note.get(f"{{{W_NS}}}type") not in {
+        note.get(f"{{{W_NS}}}id", ""): None if note.get(f"{{{W_NS}}}type") in {
             "separator", "continuationSeparator", "continuationNotice",
-        }
+        } else " ".join(
+            _docx_paragraph_text(paragraph)
+            for paragraph in note.findall(".//w:p", DOCX_NS)
+        ).strip()
+        for note in root.findall(f"w:{kind}", DOCX_NS)
     }
 
 
-def _docx_table_has_media(table: ET.Element) -> bool:
-    """Return whether a table contains image-bearing nodes."""
-    return any(_local_name(elem) in {"drawing", "imagedata"} for elem in table.iter())
+def _docx_table_needs_mammoth(table: ET.Element) -> bool:
+    """Keep media and nested tables out of the pipe-table projection."""
+    return any(
+        _local_name(elem) in {"drawing", "imagedata"}
+        or (elem is not table and _local_name(elem) == "tbl")
+        for elem in table.iter()
+    )
 
 
-def _docx_table_cell_text(cell: ET.Element) -> str:
+def _docx_table_cell_text(cell: ET.Element, links: dict[str, str] | None = None) -> str:
     """Extract table-cell text, preserving paragraph breaks as Markdown breaks."""
     paragraphs: list[str] = []
     for child in cell:
         if _local_name(child) == "p":
-            text = _docx_paragraph_text(child)
+            text = _docx_paragraph_text(child, links)
             if text:
                 paragraphs.append(text)
     return "<br>".join(paragraphs)
@@ -759,12 +807,12 @@ def _markdown_table_cell(text: str) -> str:
     return text.replace("|", r"\|")
 
 
-def _docx_table_to_markdown(table: ET.Element) -> str:
+def _docx_table_to_markdown(table: ET.Element, links: dict[str, str] | None = None) -> str:
     """Convert a Word table XML node to a pipe Markdown table."""
     rows: list[list[str]] = []
     for row in table.findall("w:tr", DOCX_NS):
         cells = [
-            _markdown_table_cell(_docx_table_cell_text(cell))
+            _markdown_table_cell(_docx_table_cell_text(cell, links))
             for cell in row.findall("w:tc", DOCX_NS)
         ]
         if cells:
@@ -785,12 +833,22 @@ def _docx_table_to_markdown(table: ET.Element) -> str:
 
 def _docx_inject_tables_markdown(
     input_file: Path,
+    warnings: list[str] | None = None,
 ) -> tuple[Path, dict[str, str]] | None:
     """Replace text-only DOCX tables with Markdown placeholders in a temp DOCX."""
     try:
         with zipfile.ZipFile(input_file) as docx:
             document_xml = docx.read("word/document.xml")
-            footnotes = _docx_footnote_texts(docx)
+            notes = {kind: _docx_note_texts(docx, kind) for kind in ("footnote", "endnote")}
+            try:
+                rels = ET.fromstring(docx.read("word/_rels/document.xml.rels"))
+            except (KeyError, ET.ParseError):
+                rels = ET.Element("relationships")
+            links = {
+                rel.get("Id", ""): rel.get("Target", "")
+                for rel in rels
+                if rel.get("Type", "").endswith("/hyperlink")
+            }
     except (KeyError, zipfile.BadZipFile, OSError):
         return None
     try:
@@ -799,20 +857,48 @@ def _docx_inject_tables_markdown(
         return None
 
     parent_map = {child: parent for parent in root.iter() for child in parent}
+    controls = list(root.iter(f"{{{W_NS}}}sdt"))
+    # Mammoth skips content controls. Unwrap only their displayed content,
+    # including nested controls, while leaving runs, tables, and links intact.
+    for control in reversed(controls):
+        parent = parent_map.get(control)
+        content = control.find("w:sdtContent", DOCX_NS)
+        if parent is None or content is None:
+            continue
+        position = list(parent).index(control)
+        parent.remove(control)
+        for offset, child in enumerate(content):
+            parent.insert(position + offset, child)
+    if controls:
+        warning = (f"DOCX content controls: {len(controls)} flattened to displayed content; "
+                   "interactive properties omitted.")
+        print(f"[WARN] {warning}", file=sys.stderr)
+        if warnings is not None:
+            warnings.append(warning)
+    parent_map = {child: parent for parent in root.iter() for child in parent}
     token_base = uuid.uuid4().hex
     replacements: dict[str, str] = {}
     for index, table in enumerate(root.findall(".//w:tbl", DOCX_NS)):
-        if _docx_table_has_media(table):
+        if _docx_table_needs_mammoth(table):
             continue
-        markdown = _docx_table_to_markdown(table)
+        markdown = _docx_table_to_markdown(table, links)
         if not markdown:
             continue
-        # The table never reaches mammoth, so its footnotes would lose both
-        # the reference and the note text; keep them under the table.
-        for reference in table.iter(f"{{{W_NS}}}footnoteReference"):
-            note_id = reference.get(f"{{{W_NS}}}id", "")
-            if footnotes.get(note_id):
-                markdown += f"\n\n[^{note_id}]: {footnotes[note_id]}"
+        # Projected tables never reach Mammoth; retain their notes here.
+        for kind, texts in notes.items():
+            prefix = "endnote-" if kind == "endnote" else ""
+            for reference in table.iter(f"{{{W_NS}}}{kind}Reference"):
+                note_id = reference.get(f"{{{W_NS}}}id", "")
+                if note_id in texts and texts[note_id] is None:
+                    continue  # Structural separators are not missing note bodies.
+                if texts.get(note_id):
+                    markdown += f"\n\n[^{prefix}{note_id}]: {texts[note_id]}"
+                else:
+                    warning = f"DOCX {kind} {note_id}: note body unavailable; retain the original DOCX."
+                    markdown += f"\n\n> {warning}"
+                    print(f"[WARN] {warning}", file=sys.stderr)
+                    if warnings is not None:
+                        warnings.append(warning)
         parent = parent_map.get(table)
         if parent is None:
             continue
@@ -821,7 +907,7 @@ def _docx_inject_tables_markdown(
         parent.remove(table)
         parent.insert(position, _make_text_paragraph(token))
         replacements[token] = markdown
-    if not replacements:
+    if not replacements and not controls:
         return None
 
     for prefix, uri in DOCX_NS.items():
@@ -1001,7 +1087,7 @@ def _convert_docx(
 
     # Rewrite OMML equations to LaTeX placeholders before mammoth (which would
     # otherwise drop them); the placeholders are swapped back below.
-    math_injection = _docx_inject_math_latex(input_file)
+    math_injection = _docx_inject_math_latex(input_file, warnings)
     if math_injection is not None:
         math_file, math_replacements = math_injection
     else:
@@ -1009,7 +1095,7 @@ def _convert_docx(
     table_file = None
     table_replacements: dict[str, str] = {}
     mammoth_source = math_file or input_file
-    table_injection = _docx_inject_tables_markdown(mammoth_source)
+    table_injection = _docx_inject_tables_markdown(mammoth_source, warnings)
     if table_injection is not None:
         table_file, table_replacements = table_injection
         mammoth_source = table_file
@@ -1072,7 +1158,7 @@ def _convert_docx(
         print(f"   Charts: {len(chart_replacements)} rendered from their cached data")
     for msg in result.messages:
         if msg.type == "warning":
-            print(f"   [warn] {msg.message}")
+            print(f"   [warn] {msg.message}", file=sys.stderr)
             if warnings is not None:
                 warnings.append(msg.message)
 

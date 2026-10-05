@@ -17,6 +17,7 @@ import argparse
 import re
 import sys
 from datetime import date, datetime, time
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -67,17 +68,61 @@ def _markdown_escape(value: str) -> str:
     return re.sub(r"\s*\n\s*", "<br>", value).strip()
 
 
-def _format_cell_value(value: Any) -> str:
+def _format_number(value: int | float, number_format: str) -> str | None:
+    """Add percentage/identifier meaning without rounding the stored value."""
+    sections = re.split(r';(?=(?:[^"]*"[^"]*")*[^"]*$)', number_format)
+    section = sections[1] if value < 0 and len(sections) > 1 else sections[0]
+    section = _strip_display_tokens(section)
+    if re.fullmatch(r"[+\-()]?(?:0+|#,##0)(?:\.[0#]+)?%\)?", section):
+        # Match the plain-number path: Excel holds 15 significant digits, so
+        # scale that value rather than the 17-digit binary repr.
+        number = Decimal(f"{value:.15g}") * 100
+        if number.is_finite():
+            rendered = format(number, "f")
+            if "." in rendered:
+                rendered = rendered.rstrip("0").rstrip(".")
+            return rendered + "%"
+    if re.fullmatch(r"0+", section) and value == int(value):
+        return ("-" if value < 0 else "") + str(abs(int(value))).zfill(len(section))
+    return None
+
+
+def _strip_display_tokens(number_format: str) -> str:
+    """Remove accounting decoration while retaining units and scale tokens."""
+    # Accounting spacing, colors, currency locales, and currency labels do not
+    # change a raw number's meaning. Other literal units or scaling can do so.
+    cleaned = re.sub(r"_.?|\*.", "", number_format)
+    cleaned = re.sub(r"\[(?:Black|Blue|Cyan|Green|Magenta|Red|White|Yellow|Color\d+|\$[^\]]*)\]",
+                     "", cleaned, flags=re.I)
+    cleaned = re.sub(r'"(?:USD|EUR|GBP|CNY|RMB|JPY|HKD|[$€£¥￥\s-])*"', "", cleaned)
+    cleaned = re.sub(r"\\([$€£¥￥ ()+-])", r"\1", cleaned)
+    return cleaned.strip()
+
+
+def _format_needs_warning(number_format: str) -> bool:
+    """Identify unhandled semantic formats, excluding ordinary display styling."""
+    if number_format in {"General", "@"}:
+        return False
+    cleaned = _strip_display_tokens(number_format)
+    return (not re.fullmatch(r"[0-9#?.,Ee+\-;/()@$€£¥￥\s]*", cleaned)
+            or bool(re.search(r",\s*(?:;|$)", cleaned)))
+
+
+def _format_cell_value(value: Any, number_format: str = "General") -> str:
     if _is_empty(value):
         return ""
     if isinstance(value, bool):
         return "TRUE" if value else "FALSE"
     if isinstance(value, datetime):
-        return value.isoformat(sep=" ", timespec="seconds")
+        return value.isoformat(sep=" ")
     if isinstance(value, date):
         return value.isoformat()
     if isinstance(value, time):
-        return value.isoformat(timespec="seconds")
+        return value.isoformat()
+    if _is_numeric_value(value):
+        formatted = _format_number(value, number_format)
+        if formatted is not None:
+            return formatted
     if isinstance(value, float):
         # Excel shows 15 significant digits; that keeps 1234567.89 exact while
         # 0.1 + 0.2 reads as 0.3 rather than its binary expansion.
@@ -246,11 +291,17 @@ def _column_alignments(rows: list[list[Any]]) -> list[str]:
     return alignments
 
 
-def _rows_to_markdown_table(rows: list[list[Any]]) -> str:
+def _rows_to_markdown_table(
+    rows: list[list[Any]], number_formats: list[list[str]] | None = None,
+) -> str:
     if not rows:
         return "_No tabular content found._"
 
-    formatted_rows = [[_format_cell_value(value) for value in row] for row in rows]
+    formatted_rows = [
+        [_format_cell_value(value, number_formats[i][j] if number_formats else "General")
+         for j, value in enumerate(row)]
+        for i, row in enumerate(rows)
+    ]
     width = len(formatted_rows[0])
     separator = _column_alignments(rows)
     lines = [
@@ -268,7 +319,10 @@ def _rows_to_markdown_table(rows: list[list[Any]]) -> str:
 # Excel → Markdown
 # ─────────────────────────────────────────────────────────────
 
-def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: int) -> str:
+def _convert_excel(
+    input_file: Path, out_file: Path, max_rows: int, max_cols: int,
+    include_hidden: bool = False, warnings: list[str] | None = None,
+) -> str:
     try:
         from openpyxl import load_workbook
         from openpyxl.utils import get_column_letter
@@ -278,6 +332,8 @@ def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: in
 
     workbook = load_workbook(input_file, data_only=True, read_only=False)
     visible_sheets = [sheet for sheet in workbook.worksheets if sheet.sheet_state == "visible"]
+    hidden_sheets = [sheet for sheet in workbook.worksheets if sheet.sheet_state != "visible"]
+    selected_sheets = workbook.worksheets if include_hidden else visible_sheets
 
     lines: list[str] = [
         f"# Spreadsheet Source: {input_file.name}",
@@ -291,15 +347,23 @@ def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: in
         "",
     ]
 
-    if not visible_sheets:
+    if hidden_sheets and not include_hidden:
+        warning = "Skipped hidden sheets: " + ", ".join(sheet.title for sheet in hidden_sheets)
+        warning += ". Use --include-hidden to export them."
+        lines.extend([f"> Warning: {warning}", ""])
+        print(f"[WARN] {warning}", file=sys.stderr)
+        if warnings is not None:
+            warnings.append(warning)
+
+    if not selected_sheets:
         lines.extend(["_No visible sheets found._", ""])
 
-    for worksheet in visible_sheets:
+    for worksheet in selected_sheets:
         merged_values = _merged_value_map(worksheet)
         bounds = _content_bounds(worksheet, merged_values)
 
         lines.extend([
-            f"## Sheet: {worksheet.title}",
+            f"## Sheet: {worksheet.title}" + (" (hidden)" if worksheet.sheet_state != "visible" else ""),
             "",
             f"- State: {_sheet_state_label(worksheet.sheet_state)}",
         ])
@@ -328,7 +392,34 @@ def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: in
             "",
         ])
 
+        # Propagated merged values must use the anchor's display format too.
+        format_anchors = {
+            (row, col): (region.min_row, region.min_col)
+            for region in worksheet.merged_cells.ranges
+            for row in range(region.min_row, region.max_row + 1)
+            for col in range(region.min_col, region.max_col + 1)
+            if (row, col) in merged_values
+        }
+        number_formats = []
+        unsupported_formats: dict[str, int] = {}
+        for i, row in enumerate(rows, min_row):
+            formats = []
+            for j, value in enumerate(row, min_col):
+                anchor = format_anchors.get((i, j), (i, j))
+                cell = worksheet.cell(*anchor)
+                fmt = cell.number_format
+                formats.append(fmt)
+                if (_is_numeric_value(value) and anchor == (i, j)
+                        and _format_number(value, fmt) is None and _format_needs_warning(fmt)):
+                    unsupported_formats[fmt] = unsupported_formats.get(fmt, 0) + 1
+            number_formats.append(formats)
+
+        original_rows = rows
         captions, rows = _split_caption_rows(rows, min_row, min_col, merged_values)
+        for i in range(len(captions)):
+            j = next(j for j, value in enumerate(original_rows[i]) if not _is_empty(value))
+            captions[i] = _format_cell_value(original_rows[i][j], number_formats[i][j])
+        number_formats = number_formats[len(captions):]
         for caption in captions:
             lines.extend([f"> {caption}", ""])
 
@@ -340,8 +431,20 @@ def _convert_excel(input_file: Path, out_file: Path, max_rows: int, max_cols: in
                 limit_notes.append(f"columns limited to {max_cols}")
             lines.extend([f"> Truncated: {', '.join(limit_notes)}.", ""])
 
-        lines.extend([_rows_to_markdown_table(rows), ""])
+        lines.extend([_rows_to_markdown_table(rows, number_formats), ""])
+        for region in sorted(worksheet.merged_cells.ranges, key=lambda r: (r.min_row, r.min_col)):
+            value = worksheet.cell(region.min_row, region.min_col).value
+            if _is_numeric_value(value):
+                lines.extend([f"> Merged cells: {region} (shared value)", ""])
+        if unsupported_formats:
+            formats = "; ".join(f"{fmt!r} ({count} cells)" for fmt, count in unsupported_formats.items())
+            warning = f"{worksheet.title}: unsupported number formats: {formats}; raw values retained."
+            print(f"[WARN] {warning}", file=sys.stderr)
+            if warnings is not None:
+                warnings.append(warning)
+            lines.extend([f"> {_markdown_escape(warning)}", ""])
 
+    workbook.close()
     markdown = "\n".join(lines).rstrip() + "\n"
     out_file.write_text(markdown, encoding="utf-8")
     _report_result(out_file)
@@ -357,6 +460,7 @@ def convert_to_markdown(
     output_path: str | None = None,
     max_rows: int = 0,
     max_cols: int = 0,
+    include_hidden: bool = False,
 ) -> str:
     input_file = Path(input_path)
     if not input_file.exists():
@@ -382,13 +486,18 @@ def convert_to_markdown(
     out_file.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"[INFO] Converting Excel workbook: {input_file.name}")
-    markdown = _convert_excel(input_file, out_file, max_rows=max_rows, max_cols=max_cols)
+    warnings: list[str] = []
+    markdown = _convert_excel(
+        input_file, out_file, max_rows=max_rows, max_cols=max_cols,
+        include_hidden=include_hidden, warnings=warnings,
+    )
     if markdown:
         profile_path = write_conversion_profile_best_effort(
             input_path=str(input_file),
             markdown_path=out_file,
             converter="excel_to_md.py",
             conversion_type=suffix.lstrip("."),
+            warnings=warnings,
         )
         if profile_path:
             print(f"   Wrote conversion profile -> {profile_path}")
@@ -432,6 +541,7 @@ Unsupported by default:
         default=0,
         help="Maximum columns per sheet to export (0 = no limit)",
     )
+    parser.add_argument("--include-hidden", action="store_true", help="Export hidden worksheets as well")
     args = parser.parse_args()
 
     return run_path_batch(
@@ -444,6 +554,7 @@ Unsupported by default:
                 str(output),
                 max_rows=args.max_rows,
                 max_cols=args.max_cols,
+                include_hidden=args.include_hidden,
             )
         ),
     )
