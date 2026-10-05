@@ -478,6 +478,9 @@ NUMBER_RE = re.compile(r'[-+]?\d+(?:\.\d+)?')
 MODEL_COLUMN_RE = re.compile(r'^[（(]\d+[）)]$')
 TABLE_NOTE_PREFIX = '\u6ce8'
 TABLE_CONTINUATION_Y_RATIO = 0.88
+# A printed page number left between split table parts; trusted only next to a
+# ``<!-- Page N -->`` marker, never on its own.
+PRINTED_PAGE_NUMBER_RE = re.compile(r'\d{1,4}')
 TABLE_SCAN_BOTTOM_RATIO = 0.92
 
 
@@ -914,14 +917,6 @@ def _looks_like_outcome_row(row: list[str]) -> bool:
     return len(short_values) == len(values)
 
 
-def _regression_group_labels(row: list[str], data_cols: int) -> list[str]:
-    """Infer repeated group labels for common regression-table headings."""
-    compact = "".join(row)
-    if "总样本" in compact and "国有" in compact and "非国有" in compact and data_cols == 7:
-        return ["总样本"] * 3 + ["国有企业"] * 2 + ["非国有企业"] * 2
-    return [""] * data_cols
-
-
 def _flatten_regression_header(rows: list[list[str]]) -> list[list[str]]:
     """Flatten multi-line regression headings into one Markdown header row."""
     if len(rows) < 3:
@@ -942,10 +937,8 @@ def _flatten_regression_header(rows: list[list[str]]) -> list[list[str]]:
         return [header] + rows[2:]
 
     header_offset = 0
-    groups = [""] * (len(rows[0]) - 1)
     if not _looks_like_model_row(rows[0]) and _looks_like_model_row(rows[1]):
         header_offset = 1
-        groups = _regression_group_labels(rows[0], len(rows[1]) - 1)
 
     if not _looks_like_model_row(rows[header_offset]):
         return rows
@@ -957,8 +950,6 @@ def _flatten_regression_header(rows: list[list[str]]) -> list[list[str]]:
     header = ["变量"]
     for idx, model in enumerate(model_row[1:]):
         pieces = []
-        if idx < len(groups) and groups[idx]:
-            pieces.append(groups[idx])
         if model:
             pieces.append(model)
         if idx + 1 < len(outcome_row) and outcome_row[idx + 1]:
@@ -1439,24 +1430,24 @@ def _compatible_table_headers(first: list[str], second: list[str]) -> bool:
     return first[0] == second[0] and _markdown_col_count(first[0]) > 2
 
 
-def _is_table_continuation_noise(line: str) -> bool:
-    """Allow only page/header noise between split table parts."""
-    text = line.strip()
-    if not text:
-        return True
-    if text.startswith("<!-- Page ") and text.endswith("-->"):
-        return True
-    if re.fullmatch(r'\d+', text):
-        return True
-    if "重庆大学硕士学位论文" in text:
-        return True
-    continuation_labels = [
-        "营改增",
-        "深化增值税改革",
-        "国有企业",
-        "非国有企业",
-    ]
-    return any(label in text for label in continuation_labels)
+def _is_page_marker(text: str) -> bool:
+    """Return whether a stripped line is the converter's page-break marker."""
+    return text.startswith("<!-- Page ") and text.endswith("-->")
+
+
+def _is_table_continuation_gap(lines: list[str]) -> bool:
+    """Return whether only page-break furniture separates two table parts.
+
+    A bare number is a printed page number only when the gap crosses a
+    ``<!-- Page N -->`` marker; anywhere else it is content (a quantity, a year).
+    """
+    texts = [line.strip() for line in lines if line.strip()]
+    if not any(_is_page_marker(text) for text in texts):
+        return not texts
+    return all(
+        _is_page_marker(text) or PRINTED_PAGE_NUMBER_RE.fullmatch(text)
+        for text in texts
+    )
 
 
 def _read_markdown_table_block(lines: list[str], start: int) -> tuple[list[str], int]:
@@ -1479,32 +1470,22 @@ def merge_markdown_continuation_tables(markdown: str) -> str:
             index += 1
             continue
 
-        table, table_end = _read_markdown_table_block(lines, index)
-        search = table_end
+        table, index = _read_markdown_table_block(lines, index)
         while True:
-            between_start = search
-            while search < len(lines) and not _is_markdown_table_line(lines[search]):
-                if not _is_table_continuation_noise(lines[search]):
-                    break
-                search += 1
-
-            if search >= len(lines) or not _is_markdown_table_line(lines[search]):
-                break
-            if any(
-                not _is_table_continuation_noise(line)
-                for line in lines[between_start:search]
-            ):
+            next_start = index
+            while next_start < len(lines) and not _is_markdown_table_line(lines[next_start]):
+                next_start += 1
+            if next_start >= len(lines) or not _is_table_continuation_gap(lines[index:next_start]):
                 break
 
-            next_table, next_end = _read_markdown_table_block(lines, search)
+            next_table, next_end = _read_markdown_table_block(lines, next_start)
             if not _compatible_table_headers(table, next_table):
                 break
 
             table.extend(next_table[2:])
-            search = next_end
+            index = next_end
 
         result.extend(table)
-        index = search if search != table_end else table_end
 
     return "\n".join(result)
 
