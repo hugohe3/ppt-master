@@ -1046,7 +1046,7 @@
         var value = String(id || "").trim();
         if (!value || value === "custom") return "";
         if (!/^[A-Za-z0-9_.-]+$/.test(value)) return "";
-        return "/ai-image-comparison/" + kind + "/" + encodeURIComponent(value) + ".png";
+        return "/ai-image-comparison/" + kind + "/" + encodeURIComponent(value) + ".webp";
     }
 
     function appendImageStrategyPreviews(card, candidate) {

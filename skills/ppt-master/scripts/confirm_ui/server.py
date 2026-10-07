@@ -2279,9 +2279,11 @@ def _ai_comparison_items(kind: str) -> list[dict[str, str]]:
             continue
         if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', filename):
             continue
+        # The manifest names the generated PNG; the committed copy is WebP.
+        item_id = Path(filename).stem
+        filename = f'{item_id}.webp'
         if not (_AI_IMAGE_COMPARISON_DIR / kind / filename).exists():
             continue
-        item_id = Path(filename).stem
         items.append({
             'id': item_id,
             'label': item.get('type') or item_id,
@@ -2451,7 +2453,7 @@ def create_app(
         """Serve rendering images for generated-image strategy candidates."""
         if kind != 'rendering':
             return jsonify({'error': 'invalid comparison kind'}), 404
-        if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', filename or ''):
+        if not re.fullmatch(r'[A-Za-z0-9_.-]+\.webp', filename or ''):
             return jsonify({'error': 'invalid comparison filename'}), 404
         return send_from_directory(_AI_IMAGE_COMPARISON_DIR / kind, filename)
 

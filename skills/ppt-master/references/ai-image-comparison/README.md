@@ -17,7 +17,7 @@ Each subdirectory contains:
 
 - `_subject.md` — the controlled variables and the subject used for this set
 - `_manifest.json` — generation manifest (status=Pending), runnable via `image_gen.py --manifest`
-- `<dimension>.png` — the generated image for each rendering / palette / type
+- `<dimension>.webp` — the generated image for each rendering / palette / type, re-encoded from the generated PNG
 
 > `page_role: hero_page` images don't pick an `image_type` — they use the four composition primitives in [`image-generator.md`](../image-generator.md) §4.1 directly (single-subject / portrait / typographic / atmospheric). The 11 types in `type/` are for local infographic blocks only.
 
@@ -52,7 +52,7 @@ python3 skills/ppt-master/scripts/image_gen.py \
     --backend openai
 ```
 
-Generated images land in the corresponding subdirectory. Each item's `status` in the manifest is updated in place to `Generated` / `Failed` / `Needs-Manual`. Re-running only retries `Pending` and `Failed` items — `Generated` items are skipped.
+Generated images land in the corresponding subdirectory as PNG; re-encode each to WebP at quality 85 under the same stem and delete the PNG before committing — the Confirm UI serves `rendering/<id>.webp`. Each item's `status` in the manifest is updated in place to `Generated` / `Failed` / `Needs-Manual`. Re-running only retries `Pending` and `Failed` items — `Generated` items are skipped.
 
 ## How to use
 
