@@ -58,11 +58,10 @@ VALID_ASPECT_RATIOS = [
 
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
-DEFAULT_MODEL = "gemini-3.1-flash-image"
+DEFAULT_MODEL = "gemini-nano-banana-2.1"
 
 GEMINI_2_5_FLASH_IMAGE_MODELS = {
     "gemini-2.5-flash-image",
-    "gemini-2.5-flash-image-preview",
 }
 GEMINI_2_5_VALID_ASPECT_RATIOS = [
     "1:1", "2:3", "3:2", "3:4", "4:3",
@@ -71,8 +70,8 @@ GEMINI_2_5_VALID_ASPECT_RATIOS = [
 GEMINI_2_5_VALID_IMAGE_SIZES = ["1K"]
 
 MINIMAL_THINKING_MODELS = {
+    "gemini-nano-banana-2.1",
     "gemini-3.1-flash-image",
-    "gemini-3.1-flash-image-preview",
 }
 
 REFERENCE_IMAGE_MIME_TYPES = {
@@ -101,6 +100,10 @@ def _request_image_size(image_size: str) -> str:
 
 def _validate_model_options(model: str, aspect_ratio: str, image_size: str) -> None:
     """Enforce limits only for Gemini models with a known narrower contract."""
+    if _model_id(model) == "gemini-nano-banana-2.1" and image_size == "512px":
+        raise ValueError(
+            f"Invalid image size '{image_size}' for {model}. Valid: 1K, 2K, 4K."
+        )
     if _model_id(model) not in GEMINI_2_5_FLASH_IMAGE_MODELS:
         return
     if aspect_ratio not in GEMINI_2_5_VALID_ASPECT_RATIOS:
@@ -277,7 +280,7 @@ def generate(prompt: str,
         image_size: Image size ("512px", "1K", "2K", "4K", case-insensitive)
         output_dir: Output directory
         filename: Output filename (without extension)
-        model: Model name (default: gemini-3.1-flash-image)
+        model: Model name (default: gemini-nano-banana-2.1)
         max_retries: Maximum number of retries
         reference_image: Optional source image path. When set, the image and
             edit instruction are sent together as multimodal input.

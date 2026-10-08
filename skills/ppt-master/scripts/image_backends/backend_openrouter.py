@@ -55,7 +55,7 @@ VALID_ASPECT_RATIOS = [
 
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
-DEFAULT_MODEL = "google/gemini-3.1-flash-image"
+DEFAULT_MODEL = "google/gemini-nano-banana-2.1"
 DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1"
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -194,6 +194,11 @@ def generate(prompt: str,
 
     if image_size not in VALID_IMAGE_SIZES:
         raise ValueError(f"Invalid image size '{image_size}'. Valid: {VALID_IMAGE_SIZES}")
+
+    if model.strip().lower() == "google/gemini-nano-banana-2.1" and image_size == "512px":
+        raise ValueError(
+            f"Invalid image size '{image_size}' for {model}. Valid: 1K, 2K, 4K."
+        )
 
     last_error = None
     for attempt in range(max_retries + 1):

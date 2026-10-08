@@ -8,7 +8,7 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 ## 当前模型推荐
 
-追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图模型 **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。如果模型能力正在拖累产出质量，应先升级驱动模型，而不是削弱工作流或质量要求。
+追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图模型 **`gpt-image-2`**（OpenAI）或 **`gemini-nano-banana-2.1`**（Google）。如果模型能力正在拖累产出质量，应先升级驱动模型，而不是削弱工作流或质量要求。
 
 ## Kimi
 

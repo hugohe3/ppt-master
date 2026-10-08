@@ -49,7 +49,7 @@ python3 scripts/image_gen.py --list-backends
 
 Backends are grouped into Core / Extended / Experimental tiers. Run `python3 scripts/image_gen.py --list-backends` for the current list.
 
-Each backend accepts its own subset of `--aspect_ratio` values; the authority is the `VALID_ASPECT_RATIOS` constant in its `scripts/image_backends/backend_<name>.py`, and `--manifest` rejects an unsupported ratio before any request. Gemini 3.1 image models take `1:1 1:4 1:8 2:3 3:2 3:4 4:1 4:3 4:5 5:4 8:1 9:16 16:9 21:9` (no `3:1`); the `gemini-2.5-flash-image` models take only `1:1 2:3 3:2 3:4 4:3 4:5 5:4 9:16 16:9 21:9` at `1K`.
+Each backend accepts its own subset of `--aspect_ratio` values; the authority is the `VALID_ASPECT_RATIOS` constant in its `scripts/image_backends/backend_<name>.py`, and `--manifest` rejects an unsupported ratio before any request. The default Gemini model, `gemini-nano-banana-2.1`, takes `1:1 1:4 1:8 2:3 3:2 3:4 4:1 4:3 4:5 5:4 8:1 9:16 16:9 21:9` (including extreme ratios, no `3:1`) at `1K/2K/4K`, but not `512px`. `gemini-3.1-flash-image` retains the same ratios and also supports `512px`; `gemini-2.5-flash-image` takes only `1:1 2:3 3:2 3:4 4:3 4:5 5:4 9:16 16:9 21:9` at `1K`.
 
 Backend selection:
 
@@ -84,12 +84,13 @@ OPENAI_MODEL=gpt-image-2
 # OpenAI-compatible provider knobs:
 # OPENAI_SIZE_PRESET=auto
 # OPENAI_RESPONSE_FORMAT=auto
+# GPT Image: auto / omit / low / medium / high; xhigh / max only for the two 2.5 models
 # OPENAI_QUALITY=auto
 # Allowed values: png / jpeg / webp
 # OPENAI_OUTPUT_FORMAT=png
 # jpeg/webp only, 0-100
 # OPENAI_OUTPUT_COMPRESSION=80
-# gpt-image-2: auto / opaque
+# GPT Image: auto / opaque / transparent (png/webp only; gpt-image-2 support is in preview)
 # OPENAI_BACKGROUND=auto
 # auto / low
 # OPENAI_MODERATION=auto
@@ -111,7 +112,10 @@ OpenAI backend notes:
 - Requests are sent with plain `requests.post()` to improve compatibility with
   OpenAI-compatible proxies that block the OpenAI SDK's `httpx` transport.
 - For `gpt-image-2`, `image_size=512px` means a low-quality draft preset, not a literal 512px edge. The model requires both edges to be multiples of 16px, a long:short ratio no greater than 3:1, and total pixels between 655,360 and 8,294,400.
-- `OPENAI_BACKGROUND=transparent` is not supported by `gpt-image-2`; use `auto` or `opaque`.
+- `OPENAI_BACKGROUND=transparent` is supported by `gpt-image-2` (in preview), `gpt-image-2.5-sunburst`, and `gpt-image-2.5-flare`, including their published snapshots; use PNG (the default) or WebP, not JPEG.
+- `OPENAI_QUALITY=xhigh` and `max` are accepted only for `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their published snapshots; older GPT Image models retain `auto/omit/low/medium/high`. See the [Images API parameters](https://developers.openai.com/api/reference/resources/images/methods/generate).
+- For reference edits, `OPENAI_INPUT_FIDELITY` accepts `high/low` on `gpt-image-1` and `gpt-image-1.5`, but only `low` on `gpt-image-1-mini`. Leave it unset for `gpt-image-2` and the two 2.5 models (including snapshots); this backend keeps the existing omission requirement for 2.5 because its support is not explicitly documented in the [edit API parameters](https://developers.openai.com/api/reference/resources/images/methods/edit).
+- OpenAI schedules `gpt-image-1` shutdown for 2026-10-23 and `gpt-image-1-mini` / `gpt-image-1.5` for 2026-12-01; see [deprecations](https://developers.openai.com/api/docs/deprecations).
 - If `OPENAI_OUTPUT_FORMAT=jpeg` or `webp`, generated files use `.jpg` or `.webp` extensions instead of `.png`.
 - OpenAI-compatible providers that reject OpenAI-specific fields can use `OPENAI_RESPONSE_FORMAT=omit`, `OPENAI_QUALITY=omit`, and `OPENAI_SIZE_PRESET=<preset>`. Valid response formats are `auto`, `b64_json`, `url`, and `omit`; valid size presets are `auto`, `legacy`, `gpt-image`, `gpt-image-2`, and `dall-e-2`.
 
@@ -151,7 +155,7 @@ MINIMAX_API_KEY=your-api-key
 
 ## `image_gen.py --manifest` runner and legacy manifest spellings
 
-Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded adaptive concurrency, and writes each status atomically; a missing or corrupt file returns to `Failed`, and persistent rate limits end the run as retryable `Failed`. Options: `--concurrency` (default `IMAGE_CONCURRENCY` or 3; halves on rate limit, min 1), `--image_size`, `--output`/`-o`, `--backend`/`-b`, `--model`/`-m`, `--list-backends`. Interrupting is safe (completed items stay `Generated`); the Markdown sidecar re-renders on completion, or run `--render-md` after an interruption. Configuration: process environment first, then the first `.env` in cwd, the skill directory, the clone root, `~/.ppt-master/.env` — `IMAGE_BACKEND` (required; `--list-backends` shows the set and support tiers), `IMAGE_CONCURRENCY`, provider-specific `{PROVIDER}_API_KEY` / `_BASE_URL` / `_MODEL` (never `IMAGE_API_KEY` / `IMAGE_MODEL` / `IMAGE_BASE_URL`), and for OpenAI-compatible platforms `OPENAI_SIZE_PRESET` (`auto|legacy|gpt-image|gpt-image-2|dall-e-2`), `OPENAI_RESPONSE_FORMAT` (`auto|b64_json|url|omit`), `OPENAI_QUALITY` (`auto|omit|low|medium|high|standard|hd`) under `IMAGE_BACKEND=openai`; see `.env.example`. The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
+Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded adaptive concurrency, and writes each status atomically; a missing or corrupt file returns to `Failed`, and persistent rate limits end the run as retryable `Failed`. Options: `--concurrency` (default `IMAGE_CONCURRENCY` or 3; halves on rate limit, min 1), `--image_size`, `--output`/`-o`, `--backend`/`-b`, `--model`/`-m`, `--list-backends`. Interrupting is safe (completed items stay `Generated`); the Markdown sidecar re-renders on completion, or run `--render-md` after an interruption. Configuration: process environment first, then the first `.env` in cwd, the skill directory, the clone root, `~/.ppt-master/.env` — `IMAGE_BACKEND` (required; `--list-backends` shows the set and support tiers), `IMAGE_CONCURRENCY`, provider-specific `{PROVIDER}_API_KEY` / `_BASE_URL` / `_MODEL` (never `IMAGE_API_KEY` / `IMAGE_MODEL` / `IMAGE_BASE_URL`), and for OpenAI-compatible platforms `OPENAI_SIZE_PRESET` (`auto|legacy|gpt-image|gpt-image-2|dall-e-2`), `OPENAI_RESPONSE_FORMAT` (`auto|b64_json|url|omit`), `OPENAI_QUALITY` (`auto|omit|low|medium|high|xhigh|max|standard|hd`; `xhigh/max` only for the two 2.5 models and their snapshots) under `IMAGE_BACKEND=openai`; see `.env.example`. The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls.
 
 **Compatibility**: legacy `type` values read as `background` → `hero_page` + no type, `hero` → `hero_page` + Primitive A, `portrait` → `local` + Primitive B, `typography` → `hero_page` + `embedded` + Primitive C; a missing `page_role` is `local`, a missing `text_policy` is `none` (one aggregate warning per manifest); an existing manifest lacking `deck_rendering` or an item lacking `type` replays its assembled `prompt` verbatim without reconstruction; a legacy `deck_style_anchor` or `deck_palette` never overrides `deck_rendering` / `color_scheme`; legacy `page_role: full_page` reads as `hero_page`.
 

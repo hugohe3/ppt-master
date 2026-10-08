@@ -8,7 +8,7 @@ Want to support the project or discuss a partnership? See the [sponsorship guide
 
 ## Current Model Recommendation
 
-For the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the workflow, paired with **`gpt-image-2`** (OpenAI) or **`gemini-3.1-flash-image`** (Google) for AI image generation. If model capability is limiting output quality, upgrade the driving model before weakening the workflow or its quality requirements.
+For the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the workflow, paired with **`gpt-image-2`** (OpenAI) or **`gemini-nano-banana-2.1`** (Google) for AI image generation. If model capability is limiting output quality, upgrade the driving model before weakening the workflow or its quality requirements.
 
 ## Kimi
 
