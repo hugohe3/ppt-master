@@ -43,7 +43,7 @@ from image_backends.backend_common import (
 )
 
 
-VALID_ASPECT_RATIOS = ["1:1", "16:9", "9:16", "3:4", "4:3", "3:2", "2:3", "4:5", "5:4", "21:9"]
+VALID_ASPECT_RATIOS = ["1:1", "16:9", "9:16", "3:4", "4:3", "3:2", "2:3", "4:5", "5:4"]
 DEFAULT_BASE_URL = "https://api.replicate.com/v1"
 DEFAULT_MODEL = "black-forest-labs/flux-1.1-pro"
 SUPPORTED_MODELS = {DEFAULT_MODEL}

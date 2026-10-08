@@ -86,7 +86,7 @@ def _resolve_url(base_url: str) -> str:
     base = base_url.rstrip("/")
     if base.endswith("/images/generations"):
         return base
-    if base.endswith("/api/v1"):
+    if base.endswith(("/api/v1", "/api/v3")):
         return base + "/images/generations"
     return base + "/api/v1/images/generations"
 
