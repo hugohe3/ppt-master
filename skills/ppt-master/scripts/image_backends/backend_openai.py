@@ -11,10 +11,10 @@ Configuration keys:
   OPENAI_MODEL     (optional) Model name (default: gpt-image-2)
   OPENAI_SIZE_PRESET         (optional) auto, legacy, gpt-image, gpt-image-2, or dall-e-2
   OPENAI_RESPONSE_FORMAT     (optional) auto, b64_json, url, or omit
-  OPENAI_QUALITY             (optional) auto, omit, low, medium, high, standard, or hd
+  OPENAI_QUALITY             (optional) auto, omit, low, medium, high, xhigh, max, standard, or hd
   OPENAI_OUTPUT_FORMAT       (optional) png, jpeg, or webp for GPT image models
   OPENAI_OUTPUT_COMPRESSION  (optional) 0-100, only for jpeg/webp GPT image output
-  OPENAI_BACKGROUND          (optional) auto or opaque for gpt-image-2
+  OPENAI_BACKGROUND          (optional) auto, opaque, or transparent for GPT image models
   OPENAI_MODERATION          (optional) auto or low for GPT image models
   OPENAI_INPUT_FIDELITY      (optional) high or low for supported GPT image edits
 
@@ -173,6 +173,8 @@ OPENAI_QUALITY_VALUES = {
     "low",
     "medium",
     "high",
+    "xhigh",
+    "max",
     "standard",
     "hd",
 }
@@ -206,7 +208,12 @@ def _is_gpt_image_model(model: str) -> bool:
 
 
 def _is_gpt_image_2(model: str) -> bool:
-    return _normalized_model(model).startswith("gpt-image-2")
+    normalized = _normalized_model(model)
+    return normalized.startswith("gpt-image-2") and not normalized.startswith("gpt-image-2.")
+
+
+def _is_gpt_image_2_5(model: str) -> bool:
+    return _normalized_model(model).startswith("gpt-image-2.5-")
 
 
 def _is_dall_e_2(model: str) -> bool:
@@ -251,7 +258,9 @@ def _select_size(
 ) -> str:
     """Select a model-compatible size while preserving legacy fallbacks."""
     preset = size_preset or "auto"
-    if preset in {"gpt-image-2"} or (preset == "auto" and _is_gpt_image_2(model)):
+    if preset in {"gpt-image-2"} or (
+        preset == "auto" and (_is_gpt_image_2(model) or _is_gpt_image_2_5(model))
+    ):
         size = GPT_IMAGE_2_SIZES[image_size][aspect_ratio]
         _validate_gpt_image_2_size(size)
         return size
@@ -312,8 +321,10 @@ def _gpt_image_options(model: str) -> tuple[dict, str]:
 
     background = _read_env_choice("OPENAI_BACKGROUND", GPT_IMAGE_BACKGROUNDS)
     if background:
-        if _is_gpt_image_2(model) and background == "transparent":
-            raise ValueError("gpt-image-2 does not support OPENAI_BACKGROUND=transparent.")
+        if background == "transparent" and output_format == "jpeg":
+            raise ValueError(
+                "OPENAI_BACKGROUND=transparent requires OPENAI_OUTPUT_FORMAT=png or webp, not jpeg."
+            )
         options["background"] = background
 
     moderation = _read_env_choice("OPENAI_MODERATION", GPT_IMAGE_MODERATION_VALUES)
@@ -331,15 +342,16 @@ def _read_input_fidelity(model: str) -> str | None:
     )
     if input_fidelity is None:
         return None
-    if _is_gpt_image_2(model):
+    if _is_gpt_image_2(model) or _is_gpt_image_2_5(model):
         raise ValueError(
-            "gpt-image-2 always uses high input fidelity and does not accept "
-            "OPENAI_INPUT_FIDELITY. Remove this setting."
+            f"{model} does not accept OPENAI_INPUT_FIDELITY in this backend. Remove this setting."
         )
     if not _is_gpt_image_model(model):
         raise ValueError(
             f"{model} does not support OPENAI_INPUT_FIDELITY in this backend."
         )
+    if _normalized_model(model) == "gpt-image-1-mini" and input_fidelity != "low":
+        raise ValueError(f"{model} only supports OPENAI_INPUT_FIDELITY=low.")
     return input_fidelity
 
 
@@ -375,6 +387,12 @@ def _read_quality(image_size: str, model: str) -> str | None:
     quality = _read_env_choice("OPENAI_QUALITY", OPENAI_QUALITY_VALUES)
     if quality == "omit":
         return None
+    if quality in {"xhigh", "max"} and not _is_gpt_image_2_5(model):
+        raise ValueError(
+            f"{model} does not support OPENAI_QUALITY={quality}. "
+            "Only gpt-image-2.5-sunburst and gpt-image-2.5-flare (including snapshots) "
+            "support xhigh and max."
+        )
     if quality and quality != "auto":
         if _is_gpt_image_model(model) and quality in {"standard", "hd"}:
             raise ValueError(
