@@ -271,6 +271,73 @@ class SourceCollisionTests(unittest.TestCase):
             for line in result.stdout.splitlines() if line.startswith("{")
         ]
 
+    def test_direct_pdf_batch_preserves_inputs_and_reports_renames(self) -> None:
+        try:
+            import fitz
+        except ImportError:
+            self.skipTest("PyMuPDF unavailable")
+        for reverse in (False, True):
+            for separate_output in (False, True):
+                with self.subTest(reverse=reverse, output=separate_output):
+                    root = self.root / f"pdf_{reverse}_{separate_output}"
+                    root.mkdir()
+                    sources = [root / "same.pdf", root / "same.md", root / "same_2.md"]
+                    originals = {}
+                    for index, source in enumerate(sources):
+                        with fitz.open() as document:
+                            page = document.new_page()
+                            page.insert_text((72, 150), f"PDF-SOURCE-{index}")
+                            originals[source] = document.tobytes()
+                        source.write_bytes(originals[source])
+                    if reverse:
+                        sources.reverse()
+                    arguments = [str(path) for path in sources]
+                    if separate_output:
+                        arguments += ["-o", str(root)]
+                    result = subprocess.run(
+                        [sys.executable, str(WEB_BACKEND_DIR / "pdf_to_md.py"),
+                         *arguments, "--images", "none"],
+                        capture_output=True, text=True, encoding="utf-8", check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    for source, content in originals.items():
+                        self.assertEqual(source.read_bytes(), content)
+                    profiles = sorted(root.glob("*.conversion_profile.json"))
+                    self.assertEqual(len(profiles), 3)
+                    for path in profiles:
+                        profile = json.loads(path.read_text(encoding="utf-8"))
+                        source = root / profile["source"]["name"]
+                        output = root / profile["outputs"]["markdown"]
+                        self.assertNotIn(output, sources)
+                        self.assertIn(
+                            f"[INFO] Renamed output for {source}: {source.with_suffix('.md')} "
+                            f"-> {output} (input/output collision)", result.stderr,
+                        )
+
+    def test_direct_batch_keeps_outputs_in_each_source_directory(self) -> None:
+        from openpyxl import Workbook
+
+        sources = []
+        for name in ("first", "second"):
+            directory = self.root / name
+            directory.mkdir()
+            source = directory / "same.xlsx"
+            workbook = Workbook()
+            workbook.active.append([name])
+            workbook.save(source)
+            workbook.close()
+            sources.append(source)
+        for _ in range(2):
+            result = subprocess.run(
+                [sys.executable, str(WEB_BACKEND_DIR / "excel_to_md.py"), *map(str, sources)],
+                capture_output=True, text=True, encoding="utf-8", check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertNotIn("Renamed output", result.stderr)
+        for source in sources:
+            self.assertEqual(list(source.parent.glob("*.md")), [source.with_suffix(".md")])
+            self.assertIn(source.parent.name, source.with_suffix(".md").read_text(encoding="utf-8"))
+
     def test_same_stem_batch_preserves_markdown_in_both_orders(self) -> None:
         for reverse in (False, True):
             for output_directory in (False, True):

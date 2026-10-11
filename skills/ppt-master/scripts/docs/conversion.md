@@ -24,6 +24,14 @@ unified `source_to_md.py` dispatcher writes a missing profile before success.
 | Image manifest | `<stem>_files/image_manifest.json` when image metadata is available |
 | Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output when written |
 
+For multi-file or directory inputs, the unified entry and direct PDF, document,
+Excel, and PowerPoint backends allocate distinct Markdown paths within the run.
+Without `-o`, each output stays in its source's directory; with `-o`, outputs
+share that directory. Collisions with inputs or other planned outputs gain
+`_2`, `_3`, etc., reported as `[INFO] Renamed output ...` on stderr. Assets and
+profiles follow the chosen Markdown stem. Separate runs retain the existing
+overwrite behavior for unrelated outputs.
+
 When present, the conversion profile is metadata only: converter, source path,
 Markdown structure counts, asset directory, image manifest path, and image
 count. Downstream PPT workflows still use Markdown and the image manifest as
@@ -155,9 +163,10 @@ pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
 # Windows: https://pandoc.org/installing.html
 ```
 
-All paths produce `<input>.md`. Extracted assets use a sibling `<input>_files/`
+By default, each input produces `<input-stem>.md`, subject to batch collision
+renaming. Extracted assets use a sibling `<output-stem>_files/`
 directory with relative references. Without assets, that directory need not remain.
-The direct backend then attempts `<input>.conversion_profile.json` under the
+The direct backend then attempts `<output-stem>.conversion_profile.json` under the
 shared best-effort sidecar contract.
 
 ## `source_to_md/excel_to_md.py`

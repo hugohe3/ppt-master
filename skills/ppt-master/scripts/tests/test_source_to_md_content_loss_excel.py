@@ -24,6 +24,49 @@ import excel_to_md  # noqa: E402
 
 
 class ExcelContentLossTests(unittest.TestCase):
+    def test_same_stem_batch_preserves_each_workbook_and_profile(self) -> None:
+        for directory_input in (False, True):
+            for separate_output in (False, True):
+                with self.subTest(directory=directory_input, output=separate_output):
+                    with tempfile.TemporaryDirectory() as tmp:
+                        root = Path(tmp)
+                        sources = []
+                        totals = {"budget.xlsx": 20000, "budget.xlsm": 22500}
+                        for name, total in totals.items():
+                            workbook = Workbook()
+                            workbook.active.append(["Category", "Amount"])
+                            workbook.active.append(["Total", total])
+                            source = root / name
+                            workbook.save(source)
+                            workbook.close()
+                            sources.append(source)
+                        output = root / "output" if separate_output else root
+                        arguments = [root] if directory_input else sources
+                        if separate_output:
+                            arguments += ["-o", output]
+                        result = subprocess.run(
+                            [sys.executable, str(SCRIPTS_DIR / "source_to_md/excel_to_md.py"),
+                             *map(str, arguments)],
+                            capture_output=True, text=True, encoding="utf-8", check=False,
+                        )
+                        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                        self.assertIn("Success: 2/2, Failed: 0", result.stderr)
+                        self.assertIn("[INFO] Renamed output for", result.stderr)
+                        self.assertEqual(sorted(p.name for p in output.glob("*.md")),
+                                         ["budget.md", "budget_2.md"])
+                        profiles = sorted(output.glob("*.conversion_profile.json"))
+                        self.assertEqual(len(profiles), 2)
+                        seen = set()
+                        for path in profiles:
+                            profile = json.loads(path.read_text(encoding="utf-8"))
+                            source_name = profile["source"]["name"]
+                            seen.add(source_name)
+                            markdown = output / profile["outputs"]["markdown"]
+                            self.assertIn(f"| Total | {totals[source_name]} |",
+                                          markdown.read_text(encoding="utf-8"))
+                            self.assertEqual(path, markdown.with_suffix(".conversion_profile.json"))
+                        self.assertEqual(seen, set(totals))
+
     def _convert(self, workbook, **options):
         with tempfile.TemporaryDirectory() as tmp:
             source = Path(tmp) / "book.xlsx"
