@@ -5,8 +5,11 @@ Usage: python3 -m unittest tests.test_source_to_md_content_loss_docx
 Dependencies: python-docx, mammoth
 """
 
+import base64
 import io
 import json
+import re
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -24,6 +27,128 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS_DIR))
 sys.path.insert(0, str(SCRIPTS_DIR / "source_to_md"))
 import doc_to_md  # noqa: E402
+
+
+class NotebookContentLossTests(unittest.TestCase):
+    def test_attachments_do_not_overwrite_named_outputs_or_each_other(self) -> None:
+        try:
+            import nbconvert  # noqa: F401
+            import nbformat
+        except ImportError:
+            self.skipTest("optional nbconvert/nbformat unavailable")
+        from PIL import Image
+
+        for filename in ("attachment_001", "attachment_001.png"):
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                expected = []
+                encoded = []
+                for color in ("red", "blue", "green"):
+                    buffer = io.BytesIO()
+                    Image.new("RGB", (8, 8), color).save(buffer, format="PNG")
+                    expected.append(buffer.getvalue())
+                    encoded.append(base64.b64encode(buffer.getvalue()).decode("ascii"))
+                notebook = nbformat.v4.new_notebook(cells=[
+                    nbformat.v4.new_code_cell("# Named output", outputs=[
+                        nbformat.v4.new_output(
+                            "display_data", data={"image/png": encoded[0]},
+                            metadata={"filename": filename},
+                        ),
+                    ]),
+                    *[
+                        nbformat.v4.new_markdown_cell(
+                            "![attachment](attachment:picture.png)",
+                            attachments={"picture.png": {"image/png": data}},
+                        )
+                        for data in encoded[1:]
+                    ],
+                ])
+                source = root / "book.ipynb"
+                nbformat.write(notebook, source)
+                with redirect_stdout(io.StringIO()):
+                    markdown = doc_to_md.convert_to_markdown(str(source))
+                refs = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", markdown)
+                self.assertEqual(len(refs), 3)
+                self.assertEqual(len(set(refs)), 3)
+                for ref, raw in zip(refs, expected):
+                    self.assertEqual(Path(ref).parent, Path("book_files"))
+                    self.assertEqual((root / ref).read_bytes(), raw)
+                manifest = json.loads((root / "book_files/image_manifest.json").read_text(encoding="utf-8"))
+                self.assertEqual({row["filename"] for row in manifest}, {Path(ref).name for ref in refs})
+                self.assertTrue(all(len(row["occurrences"]) == 1 for row in manifest))
+
+    def test_batch_images_and_attachments_remain_independent_after_import(self) -> None:
+        try:
+            import nbconvert  # noqa: F401
+            import nbformat
+        except ImportError:
+            self.skipTest("optional nbconvert/nbformat unavailable")
+        from PIL import Image
+        from project_management.cli import ProjectManager
+
+        for same_stem in (False, True):
+            with self.subTest(same_stem=same_stem), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                sources = []
+                expected = []
+                for index, color in enumerate(("red", "blue")):
+                    source_dir = root / str(index)
+                    source_dir.mkdir()
+                    source = source_dir / ("book.ipynb" if same_stem else f"book{index}.ipynb")
+                    buffer = io.BytesIO()
+                    Image.new("RGB", (8, 8), color).save(buffer, format="PNG")
+                    raw = buffer.getvalue()
+                    encoded = base64.b64encode(raw).decode("ascii")
+                    output = nbformat.v4.new_output(
+                        "display_data", data={"image/png": encoded},
+                        metadata={"filename": "figure"} if same_stem else {},
+                    )
+                    notebook = nbformat.v4.new_notebook(cells=[
+                        nbformat.v4.new_code_cell(f"# Notebook {index}", outputs=[output]),
+                        nbformat.v4.new_markdown_cell(
+                            "![attachment](attachment:picture.png)",
+                            attachments={"picture.png": {"image/png": encoded}},
+                        ),
+                    ])
+                    nbformat.write(notebook, source)
+                    sources.append(source)
+                    expected.append(raw)
+                output_dir = root / "converted"
+                result = subprocess.run(
+                    [sys.executable, str(SCRIPTS_DIR / "source_to_md/doc_to_md.py"),
+                     *map(str, sources), "-o", str(output_dir)],
+                    capture_output=True, text=True, encoding="utf-8", check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                markdown_paths = sorted(output_dir.glob("*.md"))
+                self.assertEqual(len(markdown_paths), 2)
+                self.assertEqual(list(output_dir.glob("*.png")), [])
+                for markdown, raw in zip(markdown_paths, expected):
+                    refs = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", markdown.read_text(encoding="utf-8"))
+                    self.assertEqual(len(refs), 2)
+                    for ref in refs:
+                        self.assertEqual(Path(ref).parent, Path(f"{markdown.stem}_files"))
+                        self.assertEqual((output_dir / ref).read_bytes(), raw)
+                    profile = json.loads(markdown.with_suffix(".conversion_profile.json").read_text())
+                    self.assertEqual(profile["outputs"]["image_count"], 2)
+                    manifest = json.loads((output_dir / profile["outputs"]["image_manifest"]).read_text())
+                    self.assertEqual(len(manifest), 2)
+                manager = ProjectManager(base_dir=root / "projects")
+                with redirect_stdout(io.StringIO()):
+                    project = Path(manager.init_project("notebooks", quick_generate=True))
+                    summary = manager.import_sources(str(project), list(map(str, markdown_paths)), copy=True)
+                self.assertEqual(summary["skipped"], [])
+                self.assertEqual(len(summary["assets"]), 2)
+                for path, raw in zip(summary["markdown"], expected):
+                    markdown = Path(path)
+                    refs = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", markdown.read_text(encoding="utf-8"))
+                    for ref in refs:
+                        self.assertEqual((markdown.parent / ref).read_bytes(), raw)
+                manifest = json.loads((project / "images/image_manifest.json").read_text())
+                self.assertEqual({row["source_namespace"] for row in manifest},
+                                 {path.stem for path in markdown_paths})
+                self.assertEqual({(project / "images" / row["filename"]).read_bytes() for row in manifest},
+                                 set(expected))
 
 
 class DocxContentLossTests(unittest.TestCase):

@@ -1498,18 +1498,23 @@ def _convert_ipynb(input_file: Path, out_file: Path) -> str:
         print("[ERROR] nbconvert not installed. Run: pip install nbconvert")
         return ""
 
-    # Pre-process cell-level markdown attachments: nbconvert leaves
-    # `attachment:<name>` references intact but doesn't write the files.
-    # Extract them into our outputs dict so FilesWriter picks them up.
+    # Extract attachments once with notebook-wide names; nbconvert's own
+    # attachment extractor can reuse names from different Markdown cells.
     nb = nbformat.read(str(input_file), as_version=4)
     extra_outputs: dict[str, bytes] = {}
     rel_media_dir = f"{out_file.stem}_files"
+    output_stems = {
+        Path(output.metadata["filename"]).stem.casefold()
+        for cell in nb.cells
+        for output in cell.get("outputs", [])
+        if output.get("metadata", {}).get("filename")
+    }
 
     attach_counter = 0
     for cell in nb.cells:
         if cell.cell_type != "markdown":
             continue
-        attachments = getattr(cell, "attachments", None) or {}
+        attachments = cell.pop("attachments", None) or {}
         if not attachments:
             continue
         for att_name, mime_data in attachments.items():
@@ -1519,6 +1524,9 @@ def _convert_ipynb(input_file: Path, out_file: Path) -> str:
                 if ext == ".jpe":
                     ext = ".jpg"
                 filename = f"attachment_{attach_counter:03d}{ext}"
+                while Path(filename).stem.casefold() in output_stems:
+                    attach_counter += 1
+                    filename = f"attachment_{attach_counter:03d}{ext}"
                 out_path = f"{rel_media_dir}/{filename}"
                 try:
                     extra_outputs[out_path] = base64.b64decode(b64)
@@ -1530,7 +1538,9 @@ def _convert_ipynb(input_file: Path, out_file: Path) -> str:
                 cell.source = src
 
     exporter = MarkdownExporter()
-    body, resources = exporter.from_notebook_node(nb)
+    body, resources = exporter.from_notebook_node(
+        nb, resources={"output_files_dir": rel_media_dir},
+    )
 
     # Merge attachment outputs with whatever nbconvert collected
     resources.setdefault("outputs", {}).update(extra_outputs)

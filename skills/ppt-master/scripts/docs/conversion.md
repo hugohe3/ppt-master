@@ -132,7 +132,8 @@ Native path (no external binary required):
 - `.docx` — via `mammoth`; text-only tables (with footnotes) and chart data become pipe Markdown, and OMML / Office Math equations (Word-native or MathType "Convert to Office Math") are rewritten to inline LaTeX. Classic MathType OLE objects carry no OMML and are kept only as their preview image.
 - `.html` / `.htm` — via `markdownify` + `beautifulsoup4`
 - `.epub` — via `ebooklib` + `markdownify`
-- `.ipynb` — via `nbconvert`
+- `.ipynb` — via `nbconvert`; code-cell output images and Markdown attachments
+  use `<output-stem>_files/` with relative Markdown references
 
 Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
