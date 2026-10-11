@@ -13,6 +13,7 @@ Dependencies:
 from __future__ import annotations
 
 import contextlib
+import base64
 import io
 import json
 import socket
@@ -410,6 +411,226 @@ class ArchivedProjectImportTests(unittest.TestCase):
                     self._assert_import_behavior(
                         relative, initialized=False, preserved=copy, copy=copy,
                     )
+
+
+class SameStemProjectImportTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.manager = project_cli.ProjectManager(base_dir=self.root / "projects")
+
+    def _project(self, name="target") -> Path:
+        with contextlib.redirect_stdout(io.StringIO()):
+            return Path(self.manager.init_project(name, quick_generate=True))
+
+    def _workbooks(self, root: Path) -> list[Path]:
+        from openpyxl import Workbook
+
+        root.mkdir(parents=True)
+        sources = []
+        for suffix, total in ((".xlsx", 20000), (".xlsm", 22500)):
+            workbook = Workbook()
+            workbook.active.append(["Category", "Amount"])
+            workbook.active.append(["Total", total])
+            source = root / f"budget{suffix}"
+            workbook.save(source)
+            workbook.close()
+            sources.append(source)
+        return sources
+
+    def _import(self, project: Path, sources: list[Path]) -> dict:
+        with contextlib.redirect_stdout(io.StringIO()):
+            return self.manager.import_sources(str(project), list(map(str, sources)), copy=True)
+
+    def _assert_conversions(self, project: Path, summary: dict, labels: list[str]) -> None:
+        self.assertEqual(summary["skipped"], [])
+        self.assertEqual(len(summary["markdown"]), len(labels))
+        self.assertEqual(len(set(summary["markdown"])), len(labels))
+        for raw_path, markdown_path, label in zip(summary["archived"], summary["markdown"], labels):
+            source = Path(raw_path)
+            markdown = Path(markdown_path)
+            self.assertEqual(source.stem, markdown.stem)
+            content = markdown.read_text(encoding="utf-8").replace(r"\-", "-")
+            self.assertIn(label, content)
+            for other_label in labels:
+                if other_label != label:
+                    self.assertNotIn(other_label, content)
+            profile = json.loads(profile_path_for(markdown).read_text(encoding="utf-8"))
+            self.assertEqual(profile["source"]["name"], source.name)
+            self.assertEqual(profile["outputs"]["markdown"], markdown.name)
+
+    def test_same_stem_workbooks_each_convert_with_matching_archived_names(self) -> None:
+        for reverse in (False, True):
+            with self.subTest(reverse=reverse):
+                sources = self._workbooks(self.root / f"inputs_{reverse}")
+                labels = ["20000", "22500"]
+                if reverse:
+                    sources.reverse()
+                    labels.reverse()
+                originals = {source: source.read_bytes() for source in sources}
+                project = self._project(f"target_{reverse}")
+                summary = self._import(project, sources)
+                self._assert_conversions(project, summary, labels)
+                self.assertEqual([Path(path).name for path in summary["markdown"]],
+                                 ["budget.md", "budget_2.md"])
+                for source, archived in zip(sources, summary["archived"]):
+                    self.assertEqual(Path(archived).read_bytes(), originals[source])
+                    self.assertEqual(source.read_bytes(), originals[source])
+
+    def test_document_and_presentation_assets_and_intake_keep_each_source(self) -> None:
+        from docx import Document
+        from PIL import Image
+        from pptx import Presentation
+        from pptx.util import Inches
+
+        for kind in ("document", "presentation"):
+            with self.subTest(kind=kind):
+                inputs = self.root / kind
+                inputs.mkdir()
+                sources = []
+                expected_images = []
+                labels = ["FIRST-SOURCE-20000", "SECOND-SOURCE-22500"]
+                for index, color in enumerate(("red", "blue")):
+                    buffer = io.BytesIO()
+                    Image.new("RGB", (16, 16), color).save(buffer, format="PNG")
+                    raw = buffer.getvalue()
+                    expected_images.append(raw)
+                    if kind == "document":
+                        source = inputs / ("report.docx" if index == 0 else "report.html")
+                        if index == 0:
+                            document = Document()
+                            document.add_paragraph(labels[index])
+                            document.add_picture(io.BytesIO(raw))
+                            document.save(source)
+                        else:
+                            encoded = base64.b64encode(raw).decode("ascii")
+                            source.write_text(
+                                f'<p>{labels[index]}</p><img src="data:image/png;base64,{encoded}">',
+                                encoding="utf-8",
+                            )
+                    else:
+                        source = inputs / ("deck.pptx" if index == 0 else "deck.potx")
+                        presentation = Presentation()
+                        slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+                        slide.shapes.add_textbox(Inches(1), Inches(1), Inches(5), Inches(1)).text = labels[index]
+                        slide.shapes.add_picture(io.BytesIO(raw), Inches(1), Inches(2))
+                        presentation.save(source)
+                    sources.append(source)
+                project = self._project(kind)
+                summary = self._import(project, sources)
+                self._assert_conversions(project, summary, labels)
+                stems = {Path(path).stem for path in summary["archived"]}
+                manifest = json.loads((project / "images/image_manifest.json").read_text(encoding="utf-8"))
+                self.assertEqual({row["source_namespace"] for row in manifest}, stems)
+                self.assertEqual({(project / "images" / row["filename"]).read_bytes() for row in manifest},
+                                 set(expected_images))
+                for source, raw in zip(summary["archived"], expected_images):
+                    assets = project / "sources" / f"{Path(source).stem}_files"
+                    self.assertEqual(len(list(assets.glob("*.png"))), 1)
+                    self.assertEqual(next(assets.glob("*.png")).read_bytes(), raw)
+                if kind == "presentation":
+                    index = json.loads((project / "analysis/source_profile.json").read_text(encoding="utf-8"))
+                    self.assertEqual(index["deck_count"], 2)
+                    self.assertEqual({deck["stem"] for deck in index["decks"]}, stems)
+                    self.assertEqual({deck["source_pptx"] for deck in index["decks"]}, set(summary["archived"]))
+                    for stem, label in zip(("deck", "deck_2"), labels):
+                        self.assertTrue((project / "analysis" / f"{stem}.identity.json").is_file())
+                        library = project / "analysis" / f"{stem}.slide_library.json"
+                        self.assertIn(label, library.read_text(encoding="utf-8"))
+
+    def test_reused_markdown_does_not_merge_same_stem_presentation_intake(self) -> None:
+        from pptx import Presentation
+        from pptx.util import Inches
+
+        for explicit in (False, True):
+            with self.subTest(explicit=explicit):
+                inputs = self.root / f"companion_{explicit}"
+                inputs.mkdir()
+                sources = []
+                labels = ["FIRST-SOURCE-20000", "SECOND-SOURCE-22500"]
+                for suffix, label in zip((".pptx", ".potx"), labels):
+                    presentation = Presentation()
+                    slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+                    slide.shapes.add_textbox(Inches(1), Inches(1), Inches(5), Inches(1)).text = label
+                    source = inputs / f"deck{suffix}"
+                    presentation.save(source)
+                    sources.append(source)
+                project = self._project(f"companion_{explicit}")
+                (project / "sources").mkdir()
+                markdown = (inputs if explicit else project / "sources") / "deck.md"
+                markdown.write_text("# Authoritative Markdown\n", encoding="utf-8")
+                summary = self._import(project, [*sources, markdown] if explicit else sources)
+                self.assertEqual(summary["skipped"], [])
+                self.assertEqual([Path(path).name for path in summary["archived"][:2]],
+                                 ["deck.pptx", "deck_2.potx"])
+                self.assertEqual((project / "sources/deck.md").read_text(encoding="utf-8"),
+                                 "# Authoritative Markdown\n")
+                self.assertEqual(list((project / "sources").glob("*.conversion_profile.json")), [])
+                self.assertEqual(sum("skipped presentation auto-conversion" in note
+                                     for note in summary["notes"]), 2)
+                index = json.loads((project / "analysis/source_profile.json").read_text(encoding="utf-8"))
+                self.assertEqual(index["deck_count"], 2)
+                self.assertEqual({deck["stem"] for deck in index["decks"]}, {"deck", "deck_2"})
+                self.assertEqual({deck["source_pptx"] for deck in index["decks"]},
+                                 set(summary["archived"][:2]))
+                for stem, label, other_label in zip(("deck", "deck_2"), labels, reversed(labels)):
+                    self.assertTrue((project / "analysis" / f"{stem}.identity.json").is_file())
+                    library = (project / "analysis" / f"{stem}.slide_library.json").read_text(encoding="utf-8")
+                    self.assertIn(label, library)
+                    self.assertNotIn(other_label, library)
+
+    def test_explicit_markdown_still_suppresses_both_conversions(self) -> None:
+        for markdown_first in (False, True):
+            with self.subTest(markdown_first=markdown_first):
+                sources = self._workbooks(self.root / f"explicit_{markdown_first}")
+                markdown = sources[0].with_suffix(".md")
+                markdown.write_text("# Authoritative Markdown\n", encoding="utf-8")
+                inputs = [markdown, *sources] if markdown_first else [*sources, markdown]
+                project = self._project(f"explicit_{markdown_first}")
+                summary = self._import(project, inputs)
+                self.assertEqual(summary["skipped"], [])
+                self.assertEqual((project / "sources/budget.md").read_text(encoding="utf-8"),
+                                 "# Authoritative Markdown\n")
+                self.assertEqual(list((project / "sources").glob("*.conversion_profile.json")), [])
+                self.assertEqual(sum("same-stem Markdown source was provided" in note
+                                     for note in summary["notes"]), 2)
+
+    def test_markdown_existing_before_import_is_reused(self) -> None:
+        sources = self._workbooks(self.root / "existing")
+        project = self._project()
+        (project / "sources").mkdir()
+        markdown = project / "sources/budget.md"
+        markdown.write_text("# Previous conversion\n", encoding="utf-8")
+        summary = self._import(project, sources)
+        self.assertEqual(summary["markdown"], [str(markdown), str(markdown)])
+        self.assertEqual(markdown.read_text(encoding="utf-8"), "# Previous conversion\n")
+        self.assertEqual(sum("budget.md already exists" in note for note in summary["notes"]), 2)
+        self.assertEqual(list((project / "sources").glob("*.conversion_profile.json")), [])
+
+    def test_generated_suffix_avoids_existing_markdown_and_source_names(self) -> None:
+        sources = self._workbooks(self.root / "suffixes")
+        project = self._project()
+        (project / "sources").mkdir()
+        existing = project / "sources/budget_2.md"
+        existing.write_text("# Unrelated existing source\n", encoding="utf-8")
+        occupied = project / "sources/budget_3.xlsm"
+        occupied.write_bytes(b"archived original")
+        summary = self._import(project, sources)
+        self._assert_conversions(project, summary, ["20000", "22500"])
+        self.assertEqual([Path(path).name for path in summary["markdown"]],
+                         ["budget.md", "budget_4.md"])
+        self.assertEqual(existing.read_text(encoding="utf-8"), "# Unrelated existing source\n")
+        self.assertEqual(occupied.read_bytes(), b"archived original")
+
+    def test_failed_conversion_still_reserves_its_source_stem(self) -> None:
+        sources = self._workbooks(self.root / "failure")
+        sources[0].write_bytes(b"invalid workbook")
+        project = self._project()
+        summary = self._import(project, sources)
+        self.assertEqual(len(summary["skipped"]), 1)
+        self.assertEqual([Path(path).name for path in summary["markdown"]], ["budget_2.md"])
+        self.assertIn("22500", Path(summary["markdown"][0]).read_text(encoding="utf-8"))
 
 
 class _CurlHeaders(dict):

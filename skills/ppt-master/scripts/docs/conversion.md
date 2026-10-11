@@ -84,8 +84,13 @@ Useful options:
   refuses an existing file except its own Markdown/text passthrough.
 
 For multi-source project intake, use `project_manager.py import-sources` with
-all source paths / URLs. For local files, the default is to keep generated
-Markdown and profile outputs beside the original source.
+all source paths / URLs. Same-stem convertible sources receive distinct
+archive names such as `budget_2.xlsm`, so their Markdown, profiles, assets, and
+PPTX intake artifacts stay separate. Pre-existing Markdown and explicitly
+supplied same-stem Markdown still suppress automatic conversion; PPTX intake
+remains separate for each archived deck. See
+[`project.md`](project.md). For standalone local conversion, the default is to
+keep generated Markdown and profiles beside the original source.
 `source_to_md.py` and the backend converters support single files, explicit
 multi-file inputs, and non-recursive directory inputs.
 
@@ -260,7 +265,7 @@ Outputs (per source deck, prefixed by file stem):
 - `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches, and SmartArt nodes/connections
 - `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, SmartArt, and page types) under `decks[]`, with prefixed artifact pointers
 
-`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: importing several PPTX files gives each its own `<stem>.*` artifacts and a `decks[]` entry in the shared `source_profile.json` index (re-importing the same stem replaces its entry). The beautify profile stays single-deck and reads one chosen deck's `<stem>.*` artifacts.
+`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: each deck uses its archived stem, including any collision suffix, for `<stem>.*` artifacts and its `decks[]` entry in the shared `source_profile.json` index. Re-running intake for an existing archived stem replaces its entry. The beautify profile stays single-deck and reads one chosen deck's `<stem>.*` artifacts.
 
 Usage boundary:
 - Standard generation uses these fields as facts and recommendation candidates; it does not inherit source slide coordinates or page order by default.

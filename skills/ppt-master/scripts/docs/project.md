@@ -58,6 +58,11 @@ Notes:
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
   the original source path/directory and the Markdown output path/directory.
+- Distinct same-stem convertible sources in one `import-sources` call
+  receive archive suffixes (`budget.xlsm` → `budget_2.xlsm`). Markdown, conversion
+  profiles, `_files/` assets, and PPTX analysis follow the archived stem.
+  Pre-existing Markdown and explicitly supplied same-stem Markdown still
+  suppress automatic conversion; PPTX intake still keeps each deck separate.
 - A projects-local supplied source directory left strictly empty after import
   (or empty from the start) is removed; every directory outside `projects/`
   remains untouched. `--copy` never removes directories.
@@ -101,8 +106,9 @@ Notes:
 - PPTX-family inputs are enriched automatically under `analysis/` with
   per-deck `<stem>.identity.json` / `<stem>.slide_library.json` plus the shared
   multi-deck index `source_profile.json` (`decks[]`).
-  Multi-deck per project: several PPTX imports each get their own `<stem>.*`
-  artifacts and a `decks[]` entry; re-importing the same stem replaces its entry.
+  Multi-deck per project: `<stem>` is the archived stem, including any collision
+  suffix. Each deck gets its own artifacts and `decks[]` entry; re-running
+  intake for an existing archived stem replaces its entry.
 
 ### On-demand page execution view
 

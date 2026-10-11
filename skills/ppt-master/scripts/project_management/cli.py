@@ -820,6 +820,8 @@ class ProjectManager:
             raise ValueError("At least one source path or URL is required")
 
         sources_dir = self._source_dir(project_dir)
+        existing_markdown = {path.resolve() for path in sources_dir.glob("*.md")}
+        reserved_markdown: set[Path] = set()
         summary: dict[str, list[str]] = {
             "archived": [],
             "url_records": [],
@@ -998,12 +1000,48 @@ class ProjectManager:
                     summary["notes"].append(note)
                 continue
 
+            archive_target = sources_dir / source_path.name
+            if source_path.resolve() != archive_target.resolve():
+                archive_target = self._ensure_unique_path(archive_target)
+            canonical_markdown_path = archive_target.with_suffix(".md")
+            has_explicit_markdown = archive_target.stem in explicit_markdown_stems
+            if suffix in PDF_SUFFIXES | PRESENTATION_SUFFIXES | EXCEL_SUFFIXES | DOC_SUFFIXES:
+                markdown_target = canonical_markdown_path
+                keep_markdown = (
+                    has_explicit_markdown or markdown_target.resolve() in existing_markdown
+                )
+                if not keep_markdown or markdown_target.resolve() in reserved_markdown:
+                    # Reserve the source stem before conversion, including failed
+                    # conversions that may already have written intake or assets.
+                    stem = archive_target.stem
+                    counter = 2
+                    while (
+                        markdown_target.resolve() in reserved_markdown
+                        or markdown_target.exists()
+                        or archive_target.stem in explicit_markdown_stems
+                        or (archive_target.exists() and archive_target.resolve() != source_path.resolve())
+                        or markdown_target.with_suffix(".conversion_profile.json").exists()
+                        or (sources_dir / f"{archive_target.stem}_files").exists()
+                        or (project_dir / "analysis" / f"{archive_target.stem}.identity.json").exists()
+                        or (project_dir / "analysis" / f"{archive_target.stem}.slide_library.json").exists()
+                    ):
+                        archive_target = archive_target.with_name(f"{stem}_{counter}{source_path.suffix}")
+                        markdown_target = archive_target.with_suffix(".md")
+                        counter += 1
+                # PPTX intake still writes analysis when Markdown is reused.
+                reserved_markdown.add(markdown_target.resolve())
+                if not keep_markdown:
+                    canonical_markdown_path = markdown_target
             archived_path = self._copy_or_move_file(
                 source_path,
-                sources_dir / source_path.name,
+                archive_target,
                 move=effective_move,
             )
             summary["archived"].append(str(archived_path))
+            if archived_path.name != source_path.name:
+                summary["notes"].append(
+                    f"{item}: archived as {archived_path.name} to avoid a filename or source-stem collision"
+                )
 
             if suffix in BITMAP_IMAGE_SUFFIXES:
                 images_dir = project_dir / "images"
@@ -1017,8 +1055,7 @@ class ProjectManager:
                         "to avoid a filename collision"
                     )
             elif suffix in PDF_SUFFIXES:
-                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
-                if archived_path.stem in explicit_markdown_stems:
+                if has_explicit_markdown:
                     summary["notes"].append(
                         f"{item}: skipped PDF auto-conversion because a same-stem Markdown source was provided"
                     )
@@ -1040,7 +1077,6 @@ class ProjectManager:
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
             elif suffix in PRESENTATION_SUFFIXES:
-                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 try:
                     intake_dir = self._import_pptx_intake(archived_path, project_dir)
                     intake_str = str(intake_dir)
@@ -1048,7 +1084,7 @@ class ProjectManager:
                         summary["analysis"].append(intake_str)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["notes"].append(f"{item}: PPTX intake analysis failed ({exc})")
-                if archived_path.stem in explicit_markdown_stems:
+                if has_explicit_markdown:
                     summary["notes"].append(
                         f"{item}: skipped presentation auto-conversion because a same-stem Markdown source was provided"
                     )
@@ -1070,8 +1106,7 @@ class ProjectManager:
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: presentation conversion failed ({exc})")
             elif suffix in EXCEL_SUFFIXES:
-                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
-                if archived_path.stem in explicit_markdown_stems:
+                if has_explicit_markdown:
                     summary["notes"].append(
                         f"{item}: skipped Excel auto-conversion because a same-stem Markdown source was provided"
                     )
@@ -1102,8 +1137,7 @@ class ProjectManager:
                     f"{item}: archived as a plain-text table source; no Markdown conversion needed"
                 )
             elif suffix in DOC_SUFFIXES:
-                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
-                if archived_path.stem in explicit_markdown_stems:
+                if has_explicit_markdown:
                     summary["notes"].append(
                         f"{item}: skipped document auto-conversion because a same-stem Markdown source was provided"
                     )
