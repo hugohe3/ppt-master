@@ -13,6 +13,8 @@
 
 English | [中文](./README_CN.md)
 
+> 🆕 **As a finance professional (CPA · CPV · Consulting Engineer (Investment)), I drew on my expertise and project experience to build a tool website: [Construction Project Economic Evaluation](https://cs.hehugo.com/)** (in Chinese) — enter your project data and get a full financial evaluation online: investment, revenue, cost, debt service, profit, cash flow and balance sheet statements, plus IRR, NPV, sensitivity and break-even analysis, exportable to Excel / Word. Built for energy projects such as wind, solar and storage, with a general-purpose mode for other projects. The site is in an early trial phase; new accounts get 3 free runs.
+
 ## ❤️ Sponsors
 
 This project is kept free and open source with the support of <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>, <a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>, <a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>, <a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> and other sponsors.
@@ -427,6 +429,8 @@ If PPT Master has been helpful to you, individual support of any amount helps ke
 <a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
 
 <img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="220" />
+
+> 🎁 Sponsor ¥100 or more (in multiples of ¥100) via Alipay and put the email you registered on [Construction Project Economic Evaluation](https://cs.hehugo.com/) in the payment note to receive compute credits on that site. During the early trial phase, every ¥100 earns 50 credits.
 
 ---
 

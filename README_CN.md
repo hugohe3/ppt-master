@@ -13,6 +13,8 @@
 
 [English](./README.md) | 中文
 
+> 🆕 **作为投融资领域从业者（注册会计师 · 资产评估师 · 咨询工程师（投资）），我结合自己的专业知识和项目经验，制作了一个工具网站：[建设项目经济评价](https://cs.hehugo.com/)**——输入项目数据，在线完成全套财务测算：投资、收入、成本、还本付息、利润、现金流量、资产负债等报表，以及内部收益率、净现值、敏感性和盈亏平衡分析，可导出 Excel / Word 报表。适用于风电、光伏、储能等能源类建设项目，其他项目可用通用型评价。网站目前处于初步试用阶段，注册即送 3 次运算。
+
 ## ❤️ 赞助
 
 本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fan/register?aff=PPT-MASTER">APIKEY.FAN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://go.apimart.ai/gh-ppt-master1">APIMart</a> 等赞助方支持，得以持续免费开源。
@@ -432,6 +434,8 @@ PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文�
 <a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
 
 <img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="220" />
+
+> 🎁 支付宝赞助 100 元起（100 元的整数倍），付款时备注 [建设项目经济评价](https://cs.hehugo.com/) 网站的注册邮箱，即可获得该网站的计算点数。初步试用阶段每 100 元对应 50 点。
 
 ---
 
