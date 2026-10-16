@@ -19,6 +19,8 @@ Dependencies:
 
 import argparse
 import atexit
+import functools
+import hashlib
 import html
 import json
 import logging
@@ -44,6 +46,9 @@ logger = logging.getLogger('svg_editor')
 LIVE_PREVIEW_DIR_NAME = 'live_preview'
 LOCK_FILE_NAME = 'lock.json'
 LEGACY_LOCK_FILE_NAME = '.live_preview.lock'
+# Unapplied staged work, rewritten after every staging change (issue #319).
+DRAFT_FILE_NAME = 'draft.json'
+DRAFT_VERSION = 1
 
 # Local — sys.path injection for sibling module (code-style.md §3)
 _SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -341,6 +346,25 @@ def _append_annotation_log(project_path: Path, record: dict) -> None:
     _append_live_preview_log(project_path, ANNOTATION_LOG_NAME, record)
 
 
+def _file_digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _atomic_replace(path: Path, write) -> None:
+    """Write through ``write(tmp_path)`` and swap the result into ``path``.
+
+    A crash mid-write leaves the original file intact instead of a truncated
+    SVG or draft.
+    """
+    tmp = path.with_name(f'.{path.name}.{os.getpid()}.tmp')
+    try:
+        write(tmp)
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
+
+
 def _find_by_id(root: ET.Element, element_id: str) -> Optional[ET.Element]:
     for elem in root.iter():
         if elem.get('id') == element_id:
@@ -452,8 +476,160 @@ def create_app(
     # but are written to svg_output/ only by /api/save-all.
     app.config['PENDING_EDITS'] = {}
 
-    # Idle timeout: auto-shutdown if no one connects within idle_timeout seconds
-    app.config['LAST_REQUEST_TIME'] = time.time()
+    # Per-file staging baseline: {filename: {'digest': sha256 of the SVG the
+    # staged work was built on, 'annotations': its on-disk annotation map}}.
+    # The digest keeps a restored draft from replaying onto a changed SVG,
+    # where renumbered _edit_N ids would point at different elements.
+    app.config['DRAFT_BASES'] = {}
+
+    # Serializes every read-modify-write of the staged state and its draft.
+    state_lock = threading.RLock()
+
+    def _with_state_lock(view):
+        @functools.wraps(view)
+        def wrapper(*args, **kwargs):
+            with state_lock:
+                return view(*args, **kwargs)
+        return wrapper
+
+    def _note_base(name: str, svg_file: Path, disk_annotations: Optional[dict] = None) -> None:
+        base = app.config['DRAFT_BASES'].setdefault(name, {'digest': None, 'annotations': None})
+        if base['digest'] is None:
+            base['digest'] = _file_digest(svg_file)
+        if disk_annotations is not None and base['annotations'] is None:
+            base['annotations'] = dict(disk_annotations)
+
+    def _draft_pages() -> dict:
+        """Pages whose staged state differs from what is on disk."""
+        annotations = app.config['ANNOTATIONS']
+        pending_edits = app.config['PENDING_EDITS']
+        pages = {}
+        for name in sorted(set(annotations) | set(pending_edits)):
+            base = app.config['DRAFT_BASES'].get(name) or {}
+            entry: dict = {}
+            if name in annotations and annotations[name] != base.get('annotations'):
+                entry['annotations'] = annotations[name]
+            if pending_edits.get(name):
+                entry['edits'] = pending_edits[name]
+            if entry:
+                entry['digest'] = base.get('digest')
+                pages[name] = entry
+        return pages
+
+    def _persist_draft() -> bool:
+        """Mirror the staged state to live_preview/draft.json; False on failure."""
+        draft_file = _draft_file(project_path)
+        pages = _draft_pages()
+        try:
+            if not pages:
+                draft_file.unlink(missing_ok=True)
+                return True
+            payload = json.dumps(
+                {'version': DRAFT_VERSION, 'pages': pages},
+                ensure_ascii=False, indent=2,
+            ).encode('utf-8')
+            draft_file.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_replace(draft_file, lambda tmp: tmp.write_bytes(payload))
+        except OSError as exc:
+            logger.warning('draft save failed: %s', exc)
+            return False
+        return True
+
+    def _restore_page(name: str, entry) -> Optional[dict]:
+        """Load one draft page into memory; None when it no longer applies."""
+        if not isinstance(entry, dict) or not isinstance(entry.get('digest'), str):
+            return None
+        anns = entry.get('annotations')
+        edits = entry.get('edits') or []
+        if anns is not None and not (
+            isinstance(anns, dict)
+            and all(isinstance(k, str) and isinstance(v, str) for k, v in anns.items())
+        ):
+            return None
+        if not isinstance(edits, list) or not all(isinstance(e, dict) for e in edits):
+            return None
+        svg_file = _safe_svg_path(name)
+        if svg_file is None or not svg_file.exists():
+            return None
+        try:
+            if _file_digest(svg_file) != entry['digest']:
+                return None
+            root = ET.parse(str(svg_file)).getroot()
+            materialize_inline_geometry_properties(root)
+        except (OSError, ET.ParseError, GeometryStyleError):
+            return None
+        assign_temp_ids(root)
+        disk_annotations = {
+            item['element_id']: item['annotation']
+            for item in parse_annotations(root)
+        }
+        ok, _reason = _apply_edit_records(root, edits)
+        if not ok:
+            return None
+        app.config['DRAFT_BASES'][name] = {
+            'digest': entry['digest'],
+            'annotations': disk_annotations,
+        }
+        if anns is not None:
+            app.config['ANNOTATIONS'][name] = dict(anns)
+        if edits:
+            app.config['PENDING_EDITS'][name] = edits
+        return {'annotations': anns is not None, 'edits': len(edits)}
+
+    def _restore_draft() -> dict:
+        """Reload a draft left by a previous server; set aside what no longer fits."""
+        status = {'restored': {}, 'conflicts': [], 'conflict_file': None, 'unreadable': False}
+        draft_file = _draft_file(project_path)
+        if not draft_file.exists():
+            return status
+        aside = draft_file.with_name(f'draft_conflict_{time.strftime("%Y%m%d-%H%M%S")}.json')
+        try:
+            data = json.loads(draft_file.read_text(encoding='utf-8'))
+            pages = data.get('pages') if isinstance(data, dict) else None
+            if data.get('version') != DRAFT_VERSION or not isinstance(pages, dict):
+                raise ValueError('unrecognized draft format')
+        except (OSError, ValueError, AttributeError) as exc:
+            logger.warning('draft unreadable, set aside as %s: %s', aside.name, exc)
+            try:
+                os.replace(draft_file, aside)
+                status['conflict_file'] = aside.name
+            except OSError as move_exc:
+                logger.warning('draft set-aside failed: %s', move_exc)
+            status['unreadable'] = True
+            return status
+
+        conflicts = {}
+        for name, entry in pages.items():
+            restored = _restore_page(name, entry) if isinstance(name, str) else None
+            if restored is None:
+                conflicts[name] = entry
+            else:
+                status['restored'][name] = restored
+        if conflicts:
+            status['conflicts'] = sorted(str(name) for name in conflicts)
+            try:
+                payload = json.dumps(
+                    {'version': DRAFT_VERSION, 'pages': conflicts},
+                    ensure_ascii=False, indent=2,
+                ).encode('utf-8')
+                _atomic_replace(aside, lambda tmp: tmp.write_bytes(payload))
+                status['conflict_file'] = aside.name
+            except OSError as exc:
+                # Leave draft.json untouched so the conflicting pages survive.
+                logger.warning('draft conflict set-aside failed: %s', exc)
+                return status
+        if status['restored'] or conflicts:
+            logger.info(
+                'draft: restored %d page(s), set aside %d',
+                len(status['restored']), len(conflicts),
+            )
+        _persist_draft()
+        return status
+
+    # Idle timeout: auto-shutdown if no one connects within idle_timeout seconds.
+    # Monotonic time keeps a wall-clock jump (resume from sleep, NTP step) from
+    # counting as idleness on platforms whose monotonic clock pauses in suspend.
+    app.config['LAST_REQUEST_TIME'] = time.monotonic()
 
     @app.before_request
     def _update_activity():
@@ -471,7 +647,7 @@ def create_app(
                 origin_host = None
             if origin_host not in allowed_hosts:
                 return jsonify({'error': 'Forbidden Origin header'}), 403
-        app.config['LAST_REQUEST_TIME'] = time.time()
+        app.config['LAST_REQUEST_TIME'] = time.monotonic()
 
     def _exit_with_lock_release(code: int = 0) -> None:
         lf = app.config.get('LOCK_FILE')
@@ -486,11 +662,12 @@ def create_app(
             return
         while True:
             time.sleep(10)
-            elapsed = time.time() - app.config['LAST_REQUEST_TIME']
+            elapsed = time.monotonic() - app.config['LAST_REQUEST_TIME']
             if elapsed > idle_timeout:
                 logger.info('idle for %ds, shutting down', idle_timeout)
-                # Flask dev server has no clean shutdown; data is safe
-                # because idle timeout only fires when no requests are in flight.
+                # Flask dev server has no clean shutdown. Every acknowledged
+                # staging change is already mirrored to draft.json, so the next
+                # start restores it.
                 _exit_with_lock_release(0)
 
     watchdog = threading.Thread(target=_idle_watchdog, daemon=True)
@@ -504,7 +681,8 @@ def create_app(
         def _stop():
             time.sleep(0.5)  # Let HTTP response flush before killing the process
             logger.info('shutting down (%s)', reason)
-            # os._exit: save-all already wrote to disk; 0.5s delay ensures response is sent.
+            # os._exit: unapplied work stays in draft.json for the next start;
+            # the 0.5s delay ensures the response is sent.
             _exit_with_lock_release(0)
         threading.Thread(target=_stop, daemon=True).start()
         return jsonify({'status': 'ok'})
@@ -515,8 +693,16 @@ def create_app(
 
     @app.route('/api/config')
     def get_config():
+        with state_lock:
+            pending = {
+                name: {'annotations': 'annotations' in entry, 'edits': len(entry.get('edits') or [])}
+                for name, entry in _draft_pages().items()
+            }
+            # The startup restore report is shown once, not on every reload.
+            startup = app.config.pop('DRAFT_STARTUP', None)
         return jsonify({
             'live': app.config['LIVE_MODE'],
+            'draft': {'pending': pending, 'startup': startup},
         })
 
     @app.route('/api/health')
@@ -642,6 +828,7 @@ def create_app(
             item['element_id']: item['annotation']
             for item in parse_annotations(root)
         }
+        _note_base(name, svg_file, annotations[name])
         return annotations[name], None
 
     @app.route('/api/slide/<name>')
@@ -659,7 +846,11 @@ def create_app(
             logger.warning('stat failed: %s: %s', path_str, exc)
             return jsonify({'error': f'Failed to stat SVG: {exc}'}), 500
 
-        pending_edits = app.config['PENDING_EDITS'].get(name) or []
+        with state_lock:
+            pending_edits = [dict(r) for r in app.config['PENDING_EDITS'].get(name) or []]
+            staged_annotations = app.config['ANNOTATIONS'].get(name)
+            if staged_annotations is not None:
+                staged_annotations = dict(staged_annotations)
         cached = None if pending_edits else _cache_get(
             _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
         )
@@ -706,8 +897,8 @@ def create_app(
                     (content, warnings, disk_annotations, id_to_tag),
                 )
 
-        if name in app.config['ANNOTATIONS']:
-            merged = dict(app.config['ANNOTATIONS'][name])
+        if staged_annotations is not None:
+            merged = staged_annotations
         else:
             merged = {
                 ann['element_id']: ann['annotation']
@@ -733,6 +924,7 @@ def create_app(
         })
 
     @app.route('/api/slide/<name>/annotate', methods=['POST'])
+    @_with_state_lock
     def post_annotate(name: str):
         data = request.get_json()
         if not data or 'element_id' not in data or 'annotation' not in data:
@@ -759,9 +951,11 @@ def create_app(
         return jsonify({
             'status': 'ok',
             'annotations_count': len(annotations),
+            'draft_saved': _persist_draft(),
         })
 
     @app.route('/api/slide/<name>/annotate/<element_id>', methods=['DELETE'])
+    @_with_state_lock
     def delete_annotate(name: str, element_id: str):
         annotations, error = _get_annotation_snapshot(name)
         if error is not None:
@@ -772,9 +966,11 @@ def create_app(
         return jsonify({
             'status': 'ok',
             'annotations_count': len(annotations),
+            'draft_saved': _persist_draft(),
         })
 
     @app.route('/api/slide/<name>/edit', methods=['POST'])
+    @_with_state_lock
     def post_edit(name: str):
         """Stage a direct (AI-free) edit to one element.
 
@@ -885,6 +1081,7 @@ def create_app(
             staged['promote_tspan'] = promote
 
         staged['changes'] = changes
+        _note_base(name, svg_file)
         pending = app.config['PENDING_EDITS'].setdefault(name, [])
         # Coalesce a run of edits to the same element+fields into one undo step
         # so repeated nudges/color tries don't pile up replay work or log noise.
@@ -892,9 +1089,14 @@ def create_app(
             _coalesce_into(pending[-1], staged)
         else:
             pending.append(staged)
-        return jsonify({'status': 'ok', 'undo_depth': len(pending)})
+        return jsonify({
+            'status': 'ok',
+            'undo_depth': len(pending),
+            'draft_saved': _persist_draft(),
+        })
 
     @app.route('/api/slide/<name>/undo', methods=['POST'])
+    @_with_state_lock
     def post_undo(name: str):
         """Drop the most recent staged direct edit on this slide (LIFO)."""
         svg_file = _safe_svg_path(name)
@@ -907,9 +1109,14 @@ def create_app(
         if not stack:
             return jsonify({'status': 'empty', 'undo_depth': 0})
         stack.pop()
-        return jsonify({'status': 'ok', 'undo_depth': len(stack)})
+        return jsonify({
+            'status': 'ok',
+            'undo_depth': len(stack),
+            'draft_saved': _persist_draft(),
+        })
 
     @app.route('/api/save-all', methods=['POST'])
+    @_with_state_lock
     def save_all():
         annotations = app.config['ANNOTATIONS']
         pending_edits = app.config['PENDING_EDITS']
@@ -961,8 +1168,18 @@ def create_app(
                 elem.attrib.pop('data-edit-target', None)
                 elem.attrib.pop('data-edit-annotation', None)
 
-            for element_id, annotation_text in anns.items():
-                set_annotation(root, element_id, annotation_text)
+            missing = [
+                element_id
+                for element_id, annotation_text in anns.items()
+                if not set_annotation(root, element_id, annotation_text)
+            ]
+            if missing:
+                # Keep the page staged (and in the draft) instead of dropping
+                # annotations whose target element no longer exists.
+                failures.append(
+                    f'{filename}: Annotation target not found: {", ".join(missing)}'
+                )
+                continue
 
             # Strip transient _edit_N ids from elements that are NOT user-annotated.
             # Only annotated elements need to keep their id so the AI can locate them
@@ -971,7 +1188,9 @@ def create_app(
             strip_unused_temp_ids(root, annotated_ids)
 
             try:
-                tree.write(str(svg_file), encoding='UTF-8', xml_declaration=True)
+                _atomic_replace(svg_file, lambda tmp: tree.write(
+                    str(tmp), encoding='UTF-8', xml_declaration=True,
+                ))
             except OSError as exc:
                 failures.append(f'{filename}: Failed to write SVG: {exc}')
                 continue
@@ -1001,14 +1220,20 @@ def create_app(
             modified.append(filename)
             annotations.pop(filename, None)
             pending_edits.pop(filename, None)
+            app.config['DRAFT_BASES'].pop(filename, None)
 
+        draft_saved = _persist_draft()
         if failures:
             return jsonify({
                 'error': 'Failed to save: ' + '; '.join(failures),
                 'files_modified': modified,
+                'draft_saved': draft_saved,
             }), 500
 
-        return jsonify({'status': 'ok', 'files_modified': modified})
+        return jsonify({'status': 'ok', 'files_modified': modified, 'draft_saved': draft_saved})
+
+    # Route helpers above (_safe_svg_path) must exist before the restore runs.
+    app.config['DRAFT_STARTUP'] = _restore_draft()
 
     return app
 
@@ -1019,6 +1244,10 @@ def _runtime_dir(project_path: Path) -> Path:
 
 def _lock_file(project_path: Path) -> Path:
     return _runtime_dir(project_path) / LOCK_FILE_NAME
+
+
+def _draft_file(project_path: Path) -> Path:
+    return _runtime_dir(project_path) / DRAFT_FILE_NAME
 
 
 def _legacy_live_lock(project_path: Path) -> Optional[dict]:

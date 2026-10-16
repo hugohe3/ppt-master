@@ -70,7 +70,12 @@
             modal_success_direct_only: "Changes saved to svg_output.\n\nDirect edits are now in the SVG source. Return to the chat and ask to re-export when you want a refreshed PPTX. The preview service is still running.",
             modal_success_annotations_only: "Annotations saved to svg_output.\n\nReturn to the chat and ask to apply annotations when you want AI to interpret them. The preview service is still running.",
             modal_success_mixed: "Direct edits and annotations saved to svg_output.\n\nReturn to the chat to apply AI-needed annotations, then re-export the PPTX when ready. The preview service is still running.",
-            modal_confirm_exit: "Exit preview and stop the local server?\n\nUnapplied edits and annotations will be discarded.",
+            modal_confirm_exit: "Exit preview and stop the local server?\n\nUnapplied edits and annotations are kept as a draft and restored the next time the preview opens.",
+            modal_nothing_applied: "The server had no pending changes, so nothing was written. It may have restarted since these changes were made; re-check the edits and annotations on each slide.",
+            warn_draft_unsaved: "Could not save the draft to disk. This change is staged in memory only and is lost if the server stops before Apply changes.",
+            notice_draft_restored: "Restored the unapplied draft for {count} slide(s): {pages}. Click Apply changes when ready.",
+            warn_draft_conflict: "{pages} changed on disk after the draft was saved, so that draft was not restored. It is kept in live_preview/{file}.",
+            warn_draft_unreadable: "The draft file could not be read. It is kept as live_preview/{file}.",
             modal_success_exit: "Preview stopped.\n\nYou can close this tab and return to the chat.",
             modal_stopping: "Stopping preview server...",
             lang_toggle_title: "Switch language",
@@ -144,7 +149,12 @@
             modal_success_direct_only: "変更を svg_output に保存しました。\n\n直接編集はSVGソースに反映済みです。PPTXを更新したいときは、チャットに戻って再エクスポートを依頼してください。プレビューサーバーは引き続き動作しています。",
             modal_success_annotations_only: "コメントを svg_output に保存しました。\n\nAIにコメントを解釈・反映させたいときは、チャットに戻ってコメントの適用を依頼してください。プレビューサーバーは引き続き動作しています。",
             modal_success_mixed: "直接編集とコメントを svg_output に保存しました。\n\nチャットに戻ってAIの判断が必要なコメントの適用を先に依頼し、確認できたらPPTXを再エクスポートしてください。プレビューサーバーは引き続き動作しています。",
-            modal_confirm_exit: "プレビューを終了してローカルサーバーを停止しますか？\n\n未適用の編集とコメントは破棄されます。",
+            modal_confirm_exit: "プレビューを終了してローカルサーバーを停止しますか？\n\n未適用の編集とコメントは下書きとして保持され、次にプレビューを開いたときに復元されます。",
+            modal_nothing_applied: "サーバーに未適用の変更がなかったため、何も書き込まれませんでした。変更後にサーバーが再起動した可能性があります。各スライドの編集とコメントを確認してください。",
+            warn_draft_unsaved: "下書きをディスクに保存できませんでした。この変更はメモリ上にのみあり、「変更を適用」の前にサーバーが停止すると失われます。",
+            notice_draft_restored: "{count} 枚のスライドの未適用の下書きを復元しました：{pages}。準備ができたら「変更を適用」をクリックしてください。",
+            warn_draft_conflict: "{pages} は下書きの保存後にディスク上で変更されたため、その下書きは復元されませんでした。live_preview/{file} に保持されています。",
+            warn_draft_unreadable: "下書きファイルを読み込めませんでした。live_preview/{file} として保持されています。",
             modal_success_exit: "プレビューを停止しました。\n\nこのタブを閉じてチャットに戻れます。",
             modal_stopping: "プレビューサーバーを停止しています…",
             lang_toggle_title: "言語を切り替え",
@@ -218,7 +228,12 @@
             modal_success_direct_only: "修改已保存到 svg_output。\n\n直接修改已经写入 SVG 源文件；需要刷新 PPTX 时，请回到对话窗口要求重新导出。预览服务仍在运行。",
             modal_success_annotations_only: "标注已保存到 svg_output。\n\n需要 AI 理解并执行这些标注时，请回到对话窗口要求应用标注。预览服务仍在运行。",
             modal_success_mixed: "直接修改和标注已保存到 svg_output。\n\n请回到对话窗口先应用需要 AI 判断的标注，确认后再重新导出 PPTX。预览服务仍在运行。",
-            modal_confirm_exit: "退出预览并停止本地服务？\n\n未应用的修改和标注将被丢弃。",
+            modal_confirm_exit: "退出预览并停止本地服务？\n\n未应用的修改和标注会保留为草稿，下次打开预览时自动恢复。",
+            modal_nothing_applied: "服务器上没有待应用的修改，本次没有写入任何文件。服务可能在这些修改之后重启过，请逐页检查修改和标注。",
+            warn_draft_unsaved: "草稿未能写入磁盘。这次修改只暂存在内存里，点击“应用修改”前服务停止就会丢失。",
+            notice_draft_restored: "已恢复 {count} 页未应用的草稿：{pages}。确认后点击“应用修改”。",
+            warn_draft_conflict: "{pages} 在草稿保存后已在磁盘上变动，这部分草稿未恢复，已保留在 live_preview/{file}。",
+            warn_draft_unreadable: "草稿文件无法读取，已保留为 live_preview/{file}。",
             modal_success_exit: "预览已停止。\n\n可以关闭本标签页并回到对话窗口。",
             modal_stopping: "正在停止预览服务……",
             lang_toggle_title: "切换语言",
@@ -292,7 +307,12 @@
             modal_success_direct_only: "修改已儲存到 svg_output。\n\n直接修改已經寫入 SVG 原始檔；需要更新 PPTX 時，請回到對話視窗要求重新匯出。預覽服務仍在執行。",
             modal_success_annotations_only: "標註已儲存到 svg_output。\n\n需要 AI 理解並執行這些標註時，請回到對話視窗要求套用標註。預覽服務仍在執行。",
             modal_success_mixed: "直接修改和標註已儲存到 svg_output。\n\n請回到對話視窗先套用需要 AI 判斷的標註，確認後再重新匯出 PPTX。預覽服務仍在執行。",
-            modal_confirm_exit: "結束預覽並停止本機服務？\n\n未套用的修改和標註將被捨棄。",
+            modal_confirm_exit: "結束預覽並停止本機服務？\n\n未套用的修改和標註會保留為草稿，下次開啟預覽時自動恢復。",
+            modal_nothing_applied: "伺服器上沒有待套用的修改，本次沒有寫入任何檔案。服務可能在這些修改之後重新啟動過，請逐頁檢查修改和標註。",
+            warn_draft_unsaved: "草稿未能寫入磁碟。這次修改只暫存在記憶體中，點選「套用修改」前服務停止就會遺失。",
+            notice_draft_restored: "已恢復 {count} 頁未套用的草稿：{pages}。確認後點選「套用修改」。",
+            warn_draft_conflict: "{pages} 在草稿儲存後已在磁碟上變動，這部分草稿未恢復，已保留在 live_preview/{file}。",
+            warn_draft_unreadable: "草稿檔案無法讀取，已保留為 live_preview/{file}。",
             modal_success_exit: "預覽已停止。\n\n可以關閉本分頁並回到對話視窗。",
             modal_stopping: "正在停止預覽服務……",
             lang_toggle_title: "切換語言",
@@ -514,9 +534,9 @@
         });
     }
 
-    // Staged edits live in server memory until "Apply changes"; the server can
-    // still idle-timeout or be killed and drop them. Warn before the tab leaves
-    // so the user remembers to apply (browsers show their own generic prompt).
+    // Staged edits stay unapplied until "Apply changes" (the server mirrors them
+    // to live_preview/draft.json). Warn before the tab leaves so the user
+    // remembers to apply (browsers show their own generic prompt).
     function hasUnsavedWork() {
         if (annotationsDirty) return true;
         return Object.keys(editStackCount).some(function (k) {
@@ -1658,7 +1678,7 @@
         fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate/" + encodeURIComponent(elementId), {
             method: "DELETE"
         })
-            .then(function (res) { return res.json(); })
+            .then(jsonOrThrow)
             .then(function () {
                 delete slideAnnotations[elementId];
                 markAnnotationChanged(currentSlide);
@@ -1801,7 +1821,11 @@
                 if (data.error) {
                     modalMessage.textContent = t("err_save") + data.error;
                 } else {
-                    if (hadDirectEdits && hadAnnotationChanges) {
+                    var nothingApplied = (hadDirectEdits || hadAnnotationChanges) &&
+                        !(data.files_modified || []).length;
+                    if (nothingApplied) {
+                        modalMessage.textContent = t("modal_nothing_applied");
+                    } else if (hadDirectEdits && hadAnnotationChanges) {
                         modalMessage.textContent = t("modal_success_mixed");
                     } else if (hadDirectEdits) {
                         modalMessage.textContent = t("modal_success_direct_only");
@@ -1955,8 +1979,41 @@
             if (!res.ok || data.error) {
                 throw new Error(data.error || ("Request failed with status " + res.status));
             }
+            if (data.draft_saved === false) showWarning(t("warn_draft_unsaved"));
             return data;
         });
+    }
+
+    // Mirror the server's unapplied state (including a draft restored at
+    // startup) into the pending-state trackers, so Apply changes, the pending
+    // strip and the leave guard see it after a reload or server restart.
+    function applyDraftStatus(draft) {
+        if (!draft) return;
+        var pending = draft.pending || {};
+        Object.keys(pending).forEach(function (name) {
+            if (pending[name].annotations) {
+                annotationEditSlides[name] = true;
+                annotationsDirty = true;
+            }
+            editStackCount[name] = pending[name].edits || 0;
+        });
+        updatePendingStatus();
+        var startup = draft.startup;
+        if (!startup) return;
+        var names = Object.keys(startup.restored || {}).sort();
+        var messages = [];
+        if (names.length) {
+            messages.push(t("notice_draft_restored", { count: names.length, pages: names.join(", ") }));
+        }
+        if (startup.unreadable && startup.conflict_file) {
+            messages.push(t("warn_draft_unreadable", { file: startup.conflict_file }));
+        } else if ((startup.conflicts || []).length && startup.conflict_file) {
+            messages.push(t("warn_draft_conflict", {
+                pages: startup.conflicts.join(", "),
+                file: startup.conflict_file,
+            }));
+        }
+        if (messages.length) showWarning(messages.join(" "));
     }
 
     function loadConfig() {
@@ -1964,6 +2021,7 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 liveMode = !!data.live;
+                applyDraftStatus(data.draft);
             })
             .catch(function () {
                 liveMode = false;
