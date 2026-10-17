@@ -447,6 +447,14 @@ def compute_relevance(candidate: AssetCandidate, query: str) -> float:
     return hits / len(tokens)
 
 
+# Whole words only: a bare substring test penalized "business", "trail", and
+# "网站", and the text includes author names and source URLs.
+_INFRA_TERMS_RE = re.compile(
+    r"(?<![a-z])(?:stations?|subways?|metro|rail(?:way|road)?s?|transit"
+    r"|airports?|bus(?:es)?)(?![a-z])|地铁|车站|轨道"
+)
+
+
 def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> float:
     """Score a candidate against a request. Higher is better; -inf rejects.
 
@@ -485,14 +493,8 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
     # This prevents high-res subway station photos from outranking actual tourist landmarks.
     text = _candidate_text(candidate)
     query_lower = request.query.lower()
-    infra_terms = [
-        "station", "subway", "metro", "rail", "transit", "airport", "bus",
-        "地铁", "站", "轨道",
-    ]
-
-    if not any(t in query_lower for t in infra_terms):
-        if any(t in text for t in infra_terms):
-            score -= 5000.0
+    if not _INFRA_TERMS_RE.search(query_lower) and _INFRA_TERMS_RE.search(text):
+        score -= 5000.0
 
     candidate_orientation = normalize_orientation(candidate.width, candidate.height)
     requested = (request.orientation or "").strip().lower()

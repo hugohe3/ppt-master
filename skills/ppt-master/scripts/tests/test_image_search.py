@@ -225,3 +225,35 @@ class CandidatePoolContinuationTests(unittest.TestCase):
                 self.assertEqual(image.format, "JPEG")
                 self.assertEqual(image.size, (48, 64))
                 self.assertNotIn(274, image.getexif())
+
+
+class InfrastructurePenaltyTests(unittest.TestCase):
+    def _score(self, query: str, title: str) -> float:
+        from image_sources.provider_common import (
+            LICENSE_TIER_NO_ATTRIBUTION,
+            AssetCandidate,
+            ImageSearchRequest,
+            score_candidate,
+        )
+
+        candidate = AssetCandidate(
+            provider="test",
+            title=title,
+            license_tier=LICENSE_TIER_NO_ATTRIBUTION,
+            width=1600,
+            height=900,
+        )
+        return score_candidate(candidate, ImageSearchRequest(query=query))
+
+    def test_words_containing_transit_terms_are_not_penalized(self) -> None:
+        baseline = self._score("team", "team office")
+        for title in ("team business", "team trail", "team 网站"):
+            with self.subTest(title=title):
+                self.assertEqual(self._score("team", title), baseline)
+
+    def test_transit_photo_is_penalized_unless_requested(self) -> None:
+        self.assertLess(
+            self._score("team", "team bus station"),
+            self._score("team", "team office"),
+        )
+        self.assertGreater(self._score("bus station", "team bus station"), 0)
