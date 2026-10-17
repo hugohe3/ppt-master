@@ -28,6 +28,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
+# Latin keywords match whole words ("qa" must not fire on "Qatar").
+from pptx_ooxml.analyzer import _has_keyword
 from pptx_to_svg.ooxml_loader import (
     blip_embed_relationship_ids,
     parse_ooxml_boolean,
@@ -404,11 +406,11 @@ def count_slide_shapes(root: ET.Element | None) -> int:
 
 def classify_slide(index: int, total: int, texts: list[str], image_count: int, shape_count: int) -> str:
     joined = " ".join(texts).lower()
-    if any(keyword in joined for keyword in THANKS_KEYWORDS):
+    if _has_keyword(joined, THANKS_KEYWORDS):
         return "ending_candidate"
-    if any(keyword in joined for keyword in TOC_KEYWORDS):
+    if _has_keyword(joined, TOC_KEYWORDS):
         return "toc_candidate"
-    if any(keyword in joined for keyword in CHAPTER_KEYWORDS):
+    if _has_keyword(joined, CHAPTER_KEYWORDS):
         return "chapter_candidate"
     if index == 1 and image_count <= 3:
         return "cover_candidate"

@@ -205,3 +205,14 @@ class TemplateFlowBatch4Tests(unittest.TestCase):
                 result = SVGQualityChecker().check_file(str(path))
                 recurrence = [issue for issue in result['errors'] if 'typography-size recurrence:' in issue]
                 self.assertEqual(bool(recurrence), layer is None, result)
+
+
+class SlideClassificationKeywordTests(unittest.TestCase):
+    def test_latin_keywords_do_not_fire_inside_other_words(self) -> None:
+        from template_import.manifest import classify_slide
+
+        body = ["Revenue", "Costs", "Profit"]
+        for title in ("Qatar economy", "Discontent among workers", "Department results"):
+            with self.subTest(title=title):
+                self.assertEqual(classify_slide(2, 8, [title, *body], 0, 20), "content_candidate")
+        self.assertEqual(classify_slide(2, 8, ["Q&A", *body], 0, 20), "ending_candidate")
