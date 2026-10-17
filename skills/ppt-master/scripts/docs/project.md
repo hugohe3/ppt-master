@@ -35,6 +35,9 @@ Notes:
 - Local sources under `projects/` are moved into the target project unless
   `--copy` is passed; a file inside another project's tree is copied unless
   `--move` is explicit, so borrowing a finished project's slices never empties it.
+- Without `--dir`, `init` creates the project under the repository's
+  `projects/` when run inside the repository checkout, and under
+  `<working folder>/projects/` otherwise (skill-only installations).
 - `--format` is optional and accepts registered canvas keys only. Pass it only
   when the actual canvas exactly matches a registered format.
 - Without `--format`, `init` creates `<name>_<YYYYMMDD>`; a name that already

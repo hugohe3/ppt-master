@@ -258,13 +258,26 @@ def _has_usable_import(summary: dict[str, list[str]]) -> bool:
     )
 
 
+def default_projects_root() -> Path:
+    """Return where `init` creates projects when `--dir` is omitted.
+
+    Inside the repository checkout this is the repository's `projects/`, so a
+    command run from within `projects/` never nests `projects/projects/`. A
+    skill-only installation (npx skills, plugin cache) has no repository, so
+    projects go under the caller's working folder instead of the install tree.
+    """
+    if is_within_path(Path.cwd(), REPO_ROOT):
+        return PROJECTS_ROOT
+    return Path.cwd() / "projects"
+
+
 class ProjectManager:
     """Create, inspect, validate, and populate project folders."""
 
     CANVAS_FORMATS = CANVAS_FORMATS
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
-        self.base_dir = Path(base_dir) if base_dir is not None else PROJECTS_ROOT
+        self.base_dir = Path(base_dir) if base_dir is not None else default_projects_root()
 
     def scaffold_artifact(self, project_path: str, artifact: str) -> str:
         """Delegate deterministic Markdown scaffold rendering."""
