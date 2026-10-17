@@ -229,7 +229,12 @@ def check_forbidden_elements(
         result['errors'].append("Detected forbidden xml-stylesheet (external CSS references forbidden)")
     if re.search(r'<link[^>]*rel\s*=\s*["\']stylesheet["\']', content_lower):
         result['errors'].append("Detected forbidden <link rel=\"stylesheet\"> (external CSS references forbidden)")
-    if re.search(r'@import\s+', content_lower):
+    # CSS only: a code slide whose visible text shows "@import url(...)" is fine.
+    css_text = " ".join(
+        "".join(elem.itertext()) if _local_name(elem).lower() == "style" else elem.get("style", "")
+        for elem in elems
+    )
+    if re.search(r'@import\s+', css_text.lower()):
         result['errors'].append("Detected forbidden @import (external CSS references forbidden)")
     if _validate_inline_geometry_properties is None:
         result['warnings'].append(

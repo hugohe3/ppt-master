@@ -501,10 +501,11 @@ class ForbiddenAttributeTests(unittest.TestCase):
 
     def test_text_and_data_attributes_are_not_forbidden_attributes(self) -> None:
         for body in ('<g data-class="content"/>', "<text>class=Customer</text>",
-                     "<text>onload=initialize</text>"):
+                     "<text>onload=initialize</text>", "<text>@import url(theme.css);</text>"):
             with self.subTest(body=body):
                 self.assertEqual(self._errors(body), [])
 
     def test_real_class_and_event_attributes_still_fail(self) -> None:
         self.assertTrue(self._errors('<g class="a"/>'))
         self.assertTrue(self._errors('<rect onclick="x()"/>'))
+        self.assertTrue(self._errors("<style>@import url(theme.css);</style>"))
