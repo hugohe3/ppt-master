@@ -94,3 +94,19 @@ class FrozenTranscriptTests(unittest.TestCase):
                     "then iterate.",
                 ],
             )
+
+
+class PageSubtitleOrderTests(unittest.TestCase):
+    def test_page_srts_follow_numeric_slide_order(self) -> None:
+        import narration_sync
+
+        with tempfile.TemporaryDirectory() as tmp:
+            for stem in ("slide_9", "slide_10", "slide_100", "slide_11", "total"):
+                Path(tmp, f"{stem}.srt").write_text(
+                    "1\n00:00:00,000 --> 00:00:01,000\nx\n", encoding="utf-8"
+                )
+            expected = ["slide_9", "slide_10", "slide_11", "slide_100"]
+            self.assertEqual(
+                [path.stem for path in video_subtitles._page_subtitle_paths(Path(tmp))], expected
+            )
+            self.assertEqual(narration_sync._page_subtitle_names(Path(tmp)), expected)
