@@ -1138,6 +1138,20 @@ def create_app(
             if not svg_file.exists():
                 failures.append(f'{filename}: Slide not found')
                 continue
+            # Staged edits and annotations address positional _edit_N ids; if
+            # the SVG changed since staging they would land on other elements.
+            staged_digest = (app.config['DRAFT_BASES'].get(filename) or {}).get('digest')
+            try:
+                changed_on_disk = bool(staged_digest) and _file_digest(svg_file) != staged_digest
+            except OSError as exc:
+                failures.append(f'{filename}: Failed to read SVG: {exc}')
+                continue
+            if changed_on_disk:
+                failures.append(
+                    f'{filename}: SVG changed on disk after these changes were staged; '
+                    'reload the slide and redo them'
+                )
+                continue
 
             try:
                 tree = ET.parse(str(svg_file))

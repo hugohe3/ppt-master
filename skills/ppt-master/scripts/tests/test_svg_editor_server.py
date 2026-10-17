@@ -148,6 +148,18 @@ class StagingDraftTests(unittest.TestCase):
         self.assertFalse(self.draft.exists())
         self.assertEqual(client.get('/api/slide/01.svg').get_json()['undo_depth'], 0)
 
+    def test_save_refuses_staged_work_when_svg_changed_on_disk(self) -> None:
+        client = self._client()
+        self._stage(client)
+        changed = SLIDE_SVG.replace('width="10"', 'width="20"')
+        self.svg_path.write_text(changed, encoding='utf-8')
+
+        response = client.post('/api/save-all')
+        self.assertIn('changed on disk', response.get_json()['error'])
+        self.assertEqual(response.get_json()['files_modified'], [])
+        self.assertEqual(self.svg_path.read_text(encoding='utf-8'), changed)
+        self.assertTrue(self.draft.exists())
+
     def test_unreadable_draft_is_set_aside(self) -> None:
         self.draft.parent.mkdir()
         self.draft.write_text('{not json', encoding='utf-8')
