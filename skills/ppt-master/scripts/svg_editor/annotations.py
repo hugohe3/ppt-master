@@ -26,6 +26,10 @@ ET.register_namespace('', SVG_NS)
 ET.register_namespace('xlink', XLINK_NS)
 
 
+# Only ids this tool generates; a user id like "_edit_gradient" is not transient.
+_TEMP_ID_RE = re.compile(r'_edit_\d+')
+
+
 def assign_temp_ids(root: ET.Element) -> None:
     """Assign deterministic temp ids (_edit_0, _edit_1, ...) to elements without one.
 
@@ -34,7 +38,7 @@ def assign_temp_ids(root: ET.Element) -> None:
     """
     for elem in root.iter():
         eid = elem.get('id', '')
-        if eid.startswith('_edit_'):
+        if _TEMP_ID_RE.fullmatch(eid):
             elem.attrib.pop('id', None)
 
     counter = 0
@@ -72,7 +76,7 @@ def _local_name(elem: ET.Element) -> str:
 def _first_number(value: Optional[str]) -> Optional[float]:
     if value is None:
         return None
-    match = re.search(r'-?\d+(?:\.\d+)?', value)
+    match = re.search(r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?', value)
     return float(match.group(0)) if match else None
 
 
@@ -336,5 +340,5 @@ def strip_unused_temp_ids(root: ET.Element, keep_ids: set) -> None:
                 protected.add(eid)
     for elem in root.iter():
         eid = elem.get('id', '')
-        if eid.startswith('_edit_') and eid not in protected:
+        if _TEMP_ID_RE.fullmatch(eid) and eid not in protected:
             elem.attrib.pop('id', None)

@@ -194,3 +194,31 @@ class StagingDraftTests(unittest.TestCase):
         body = self._client().post('/api/save-all').get_json()
         self.assertEqual(body, {'status': 'ok', 'files_modified': [], 'draft_saved': True})
         self.assertFalse(self.draft.exists())
+
+
+class AnnotationHelperTests(unittest.TestCase):
+    def test_user_ids_with_the_temp_prefix_are_kept(self) -> None:
+        from xml.etree import ElementTree as ET
+        from svg_editor.annotations import assign_temp_ids, strip_unused_temp_ids
+
+        root = ET.fromstring(
+            '<svg><defs><linearGradient id="_edit_gradient"/></defs>'
+            '<rect fill="url(#_edit_gradient)"/><text id="_edit_7">T</text></svg>'
+        )
+        assign_temp_ids(root)
+        strip_unused_temp_ids(root, set())
+        ids = {elem.get('id') for elem in root.iter()}
+        self.assertIn('_edit_gradient', ids)
+        self.assertNotIn('_edit_7', ids)
+
+    def test_leading_dot_numbers_keep_following_line_in_place(self) -> None:
+        from xml.etree import ElementTree as ET
+        from svg_editor.annotations import promote_tspan_to_text
+
+        root = ET.fromstring(
+            '<svg><text y="100" x="0"><tspan id="a" dy=".5">A</tspan>'
+            '<tspan id="b" dy=".5">B</tspan></text></svg>'
+        )
+        self.assertEqual(promote_tspan_to_text(root, 'a', '20', '30'), (True, None))
+        following = next(elem for elem in root.iter() if elem.get('id') == 'b')
+        self.assertEqual(float(following.get('dy')), 1.0)
