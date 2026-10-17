@@ -648,6 +648,32 @@ class TextSourceEncodingTests(unittest.TestCase):
         self.assertIn("收入增长和利润说明", text)
 
 
+class MarkdownDuplicateAssetTests(unittest.TestCase):
+    def test_same_text_with_different_companion_assets_is_not_a_duplicate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manager = project_cli.ProjectManager(base_dir=root / "projects")
+            with contextlib.redirect_stdout(io.StringIO()):
+                project = Path(manager.init_project("deck", quick_generate=True))
+
+            def export(folder: str, stem: str, revenue: int) -> Path:
+                directory = root / folder
+                (directory / f"{stem}_files").mkdir(parents=True)
+                (directory / f"{stem}_files" / "chart.svg").write_text(
+                    f"<svg><text>Revenue {revenue}</text></svg>", encoding="utf-8")
+                source = directory / f"{stem}.md"
+                source.write_text(f"# R\n\n![chart]({stem}_files/chart.svg)\n", encoding="utf-8")
+                return source
+
+            imports = [export("a", "old", 10), export("b", "new", 20), export("c", "same", 10)]
+            results = []
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                for source in imports:
+                    results.append(manager.import_sources(str(project), [str(source)], copy=True))
+        self.assertEqual([Path(item).name for item in results[1]["markdown"]], ["new.md"])
+        self.assertEqual([Path(item).name for item in results[2]["markdown"]], ["old.md"])
+
+
 class _CurlHeaders(dict):
     """Represent repeated curl headers without importing optional curl_cffi."""
 

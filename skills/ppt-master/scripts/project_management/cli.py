@@ -596,10 +596,31 @@ class ProjectManager:
                 pass
 
             existing_content = existing.read_text(encoding="utf-8", errors="replace")
-            if self._canonicalize_markdown_content(existing_content) == canonical_source:
+            if (
+                self._canonicalize_markdown_content(existing_content) == canonical_source
+                and self._companion_assets_match(source_path, existing)
+            ):
                 return existing
 
         return None
+
+    def _companion_assets_match(self, first: Path, second: Path) -> bool:
+        """Same-text Markdown is a duplicate only if its <stem>_files/ bytes match too.
+
+        Canonical text ignores the asset folder name, so two exports with
+        different charts behind the same references used to collapse into one.
+        """
+        def snapshot(markdown: Path) -> dict[str, bytes] | None:
+            assets = self._companion_asset_dir(markdown)
+            if assets is None:
+                return None
+            return {
+                path.relative_to(assets).as_posix(): path.read_bytes()
+                for path in assets.rglob("*")
+                if path.is_file()
+            }
+
+        return snapshot(first) == snapshot(second)
 
     def _companion_asset_dir(self, source_path: Path) -> Path | None:
         candidate = source_path.with_name(f"{source_path.stem}_files")
