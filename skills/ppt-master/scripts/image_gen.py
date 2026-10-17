@@ -998,7 +998,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                 aspect_ratio=item["aspect_ratio"],
                 image_size=item.get("image_size", image_size),
                 output_dir=output_dir,
-                filename=Path(item["filename"]).stem,
+                filename=item["filename"],  # the backend strips the extension once
                 model=item.get("model", model),
             )
             saved_path = _materialize_manifest_image(
