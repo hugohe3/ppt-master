@@ -138,3 +138,10 @@ class PreserveColorMarkerTests(unittest.TestCase):
             self.assertEqual(style, "preserve")
             self.assertIn("#ff0000", "".join(parts))
             self.assertIn("<text>", "".join(parts))
+
+    def test_single_quoted_stroke_icon_is_detected_as_stroke(self) -> None:
+        icon = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor'><path d='M4 12h16'/></svg>"
+        with patch.object(Path, "exists", return_value=True), \
+                patch.object(Path, "read_text", return_value=icon):
+            _, style, _ = extract_paths_from_icon(Path("arrow.svg"))
+        self.assertEqual(style, "stroke")

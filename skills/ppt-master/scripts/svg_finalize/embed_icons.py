@@ -160,8 +160,11 @@ def _is_preserve_color_asset(content: str) -> bool:
 
 def _detect_icon_style(content: str) -> str:
     """Detect whether an icon is fill-based or stroke-based."""
-    # stroke="currentColor" with fill="none" → stroke style
-    if 'stroke="currentColor"' in content and 'fill="none"' in content:
+    # stroke="currentColor" with fill="none" → stroke style (either quote)
+    if (
+        re.search(r'stroke\s*=\s*["\']currentColor["\']', content)
+        and re.search(r'fill\s*=\s*["\']none["\']', content)
+    ):
         return 'stroke'
     return 'fill'
 
