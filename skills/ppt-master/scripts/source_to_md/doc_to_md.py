@@ -21,6 +21,7 @@ All paths produce the same output convention:
 
 import argparse
 import base64
+import codecs
 import hashlib
 import json
 import mimetypes
@@ -1260,13 +1261,31 @@ def _convert_html(input_file: Path, out_file: Path) -> str:
         return ""
 
     try:
-        from bs4 import BeautifulSoup
+        from bs4 import BeautifulSoup, UnicodeDammit
     except ImportError:
         print("[ERROR] beautifulsoup4 not installed. Run: pip install beautifulsoup4")
         return ""
 
     media_dir, rel_media_dir = _ensure_media_dir(out_file)
-    raw_html = input_file.read_text(encoding="utf-8", errors="replace")
+    # BOM, then the page's own charset declaration, then UTF-8; a forced UTF-8
+    # read with errors="replace" turned GBK pages into U+FFFD without a word.
+    raw_bytes = input_file.read_bytes()
+    dammit = UnicodeDammit(raw_bytes, user_encodings=["utf-8"], is_html=True)
+    raw_html = dammit.unicode_markup or ""
+    has_bom = raw_bytes.startswith((codecs.BOM_UTF8, codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE))
+    if (
+        dammit.contains_replacement_characters
+        or (
+            not has_bom
+            and not dammit.declared_html_encoding
+            and dammit.original_encoding not in ("utf-8", "ascii")
+        )
+    ):
+        print(
+            f"[WARN] {input_file.name}: no charset declaration and not UTF-8; "
+            f"decoded as {dammit.original_encoding} — check the converted text",
+            file=sys.stderr,
+        )
 
     # Strip non-content elements (head/style/script) so metadata doesn't leak into MD
     soup = BeautifulSoup(raw_html, "html.parser")

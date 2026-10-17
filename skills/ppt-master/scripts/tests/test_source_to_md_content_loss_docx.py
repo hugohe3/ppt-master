@@ -29,6 +29,20 @@ sys.path.insert(0, str(SCRIPTS_DIR / "source_to_md"))
 import doc_to_md  # noqa: E402
 
 
+class HtmlCharsetTests(unittest.TestCase):
+    def test_declared_gbk_page_is_decoded_not_replaced(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "page.html"
+            source.write_bytes(
+                '<html><head><meta charset="gbk"></head><body><p>中文收入</p></body></html>'
+                .encode("gbk")
+            )
+            with redirect_stdout(io.StringIO()):
+                markdown = doc_to_md.convert_to_markdown(str(source))
+        self.assertIn("中文收入", markdown)
+        self.assertNotIn("\ufffd", markdown)
+
+
 class NotebookContentLossTests(unittest.TestCase):
     def test_attachments_do_not_overwrite_named_outputs_or_each_other(self) -> None:
         try:
