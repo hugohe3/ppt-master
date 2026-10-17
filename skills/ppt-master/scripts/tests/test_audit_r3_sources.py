@@ -633,6 +633,21 @@ class SameStemProjectImportTests(unittest.TestCase):
         self.assertIn("22500", Path(summary["markdown"][0]).read_text(encoding="utf-8"))
 
 
+class TextSourceEncodingTests(unittest.TestCase):
+    def test_gb18030_text_source_is_decoded_not_replaced(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manager = project_cli.ProjectManager(base_dir=root / "projects")
+            with contextlib.redirect_stdout(io.StringIO()):
+                project = Path(manager.init_project("target", quick_generate=True))
+            source = root / "report.txt"
+            source.write_bytes("收入增长和利润说明".encode("gb18030"))
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                result = manager.import_sources(str(project), [str(source)], copy=True)
+            text = Path(result["markdown"][0]).read_text(encoding="utf-8")
+        self.assertIn("收入增长和利润说明", text)
+
+
 class _CurlHeaders(dict):
     """Represent repeated curl headers without importing optional curl_cffi."""
 

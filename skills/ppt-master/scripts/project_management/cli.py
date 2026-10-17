@@ -553,8 +553,25 @@ class ProjectManager:
         return file_path
 
     def _normalize_text_source(self, source_path: Path, sources_dir: Path) -> Path:
+        from bs4 import UnicodeDammit
+
         target = self._ensure_unique_path(sources_dir / f"{source_path.stem}.md")
-        content = source_path.read_text(encoding="utf-8", errors="replace")
+        # UTF-8 first; a GB18030 / Shift-JIS note used to become U+FFFD silently.
+        raw = source_path.read_bytes()
+        dammit = UnicodeDammit(raw, user_encodings=["utf-8"])
+        content = dammit.unicode_markup
+        if content is None:
+            content = raw.decode("utf-8", errors="replace")
+        if (
+            dammit.unicode_markup is None
+            or dammit.contains_replacement_characters
+            or dammit.original_encoding not in ("utf-8", "ascii")
+        ):
+            print(
+                f"note: {source_path.name} decoded as {dammit.original_encoding or 'utf-8 (lossy)'}; "
+                "check the converted text",
+                file=sys.stderr,
+            )
         target.write_text(content, encoding="utf-8")
         return target
 
