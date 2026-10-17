@@ -199,7 +199,7 @@ PPT Master 没有文档化的 `wireframe` 运行模式，也没有跨版本视�
 
 ## Q: 生成的图表可以编辑数据吗？
 
-默认情况下，图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——形状级别完全可编辑（移动、改色、改文字、调样式）。默认不用 Excel 驱动的图表对象是有意为之：PowerPoint 默认图表样式陈旧、视觉受限于固定模板。SVG 图表则提供出版物级的视觉质量，可以在 PowerPoint 中直接精修，且在 PowerPoint / Keynote / LibreOffice / WPS 间像素一致。
+默认情况下，图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——形状级别完全可编辑（移动、改色、改文字、调样式）。默认不用 Excel 驱动的图表对象是有意为之：PowerPoint 默认图表样式陈旧、视觉受限于固定模板。SVG 图表则提供出版物级的视觉质量，可以在 PowerPoint 中直接精修。验证目标是 Microsoft PowerPoint，其他软件的显示可能有差异。
 
 如果你的工作流明确需要 Excel 驱动的数据编辑或 PowerPoint 的图表/表格专属控制，导出时加 `--native-charts-and-tables`：受支持的数据图表和纯文本表格会以**带数据源的 PowerPoint 原生 Chart / Table 对象**形式导出（保存为 `<活动项目>/exports/<name>_<timestamp>_native_charts_tables.pptx`，并保留这份 deck 自己的配色，而不是套用 PowerPoint 默认主题）。默认 SVG fallback 同样会转换成可编辑 DrawingML shape，但不具备图表数据工作簿或图表/表格对象模型。原生对象在 PowerPoint / Keynote / LibreOffice / WPS 间可能略有差异，因此形状路线仍是视觉稳定性的默认选择。
 
