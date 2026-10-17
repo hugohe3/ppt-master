@@ -197,3 +197,17 @@ class TextOverflowImportTests(unittest.TestCase):
                 table.find('a:tr/a:tc', NS).insert(0, body)
                 result = convert_tbl(table, Xfrm(x=80, y=100, w=600, h=32), None)
                 self.assertEqual(_visible_text(_svg_root(result.svg)), expected)
+
+
+class RunEmphasisImportTests(unittest.TestCase):
+    def test_true_and_one_both_import_bold_and_italic(self) -> None:
+        for value in ('1', 'true'):
+            with self.subTest(value=value):
+                body = ET.fromstring(
+                    f'<p:txBody xmlns:p="{P}" xmlns:a="{A}"><a:bodyPr/><a:lstStyle/>'
+                    f'<a:p><a:r><a:rPr b="{value}" i="{value}"/><a:t>Key</a:t></a:r></a:p>'
+                    '</p:txBody>'
+                )
+                svg = convert_txbody(body, Xfrm(x=0, y=0, w=300, h=100), None).svg
+                self.assertIn('font-weight="bold"', svg)
+                self.assertIn('font-style="italic"', svg)

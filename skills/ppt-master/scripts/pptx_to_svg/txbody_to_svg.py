@@ -34,7 +34,7 @@ from svg_to_pptx.drawingml.utils import detect_text_lang, is_cjk_char
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
     NS, Xfrm, fmt_num, emu_to_px, format_ooxml_alpha,
-    hundredths_pt_to_px,
+    hundredths_pt_to_px, ooxml_bool,
 )
 from .fill_to_svg import resolve_fill
 
@@ -860,8 +860,8 @@ def _build_run(
     # font-size: rPr > pPr/defRPr > lstStyle/lvlNpPr/defRPr > endParaRPr > default
     font_size_px = _font_size_px(style_chain, default_font_size_px)
     # Bold / italic
-    bold = _attr_chain(style_chain, "b") == "1"
-    italic = _attr_chain(style_chain, "i") == "1"
+    bold = ooxml_bool(_attr_chain(style_chain, "b"))
+    italic = ooxml_bool(_attr_chain(style_chain, "i"))
     # Underline / strike
     u_val = _attr_chain(style_chain, "u")
     underline = u_val not in (None, "", "none")
