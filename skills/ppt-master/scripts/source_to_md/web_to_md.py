@@ -57,6 +57,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import unique_output_path  # noqa: E402
 from _dispatcher import (  # noqa: E402
     DOC_SUFFIXES,
     EXCEL_SUFFIXES,
@@ -1383,6 +1384,10 @@ def _meta_refresh_target(soup: BeautifulSoup, base_url: str) -> str | None:
     return target if urlparse(target).scheme in {"http", "https"} else None
 
 
+# Auto-named outputs claimed in this run; explicit -o paths are not tracked.
+_AUTO_NAMED_OUTPUTS: set[Path] = set()
+
+
 def process_url(
     url: str,
     output_file: str | None = None,
@@ -1431,8 +1436,14 @@ def process_url(
             output_path = output_file
         else:
             base_name = derive_base_name(metadata['title'], url)
-            filename = f"{base_name}.md"
-            output_path = os.path.join(CONFIG["output_dir"], filename)
+            default_path = os.path.join(CONFIG["output_dir"], f"{base_name}.md")
+            # Two pages titled "Report" in one batch used to share Report.md.
+            output_path = str(unique_output_path(
+                Path(CONFIG["output_dir"]), base_name, _AUTO_NAMED_OUTPUTS,
+            ))
+            if output_path != default_path:
+                print(f"   [INFO] Renamed output for {url}: {default_path} -> {output_path} "
+                      "(title collision)")
 
         output_dirname = os.path.dirname(output_path) or "."
         os.makedirs(output_dirname, exist_ok=True)
