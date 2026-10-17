@@ -1261,14 +1261,16 @@ def is_plain_text_document(url: str, body: str) -> bool:
 
     A raw file such as ``.../CHANGELOG.md`` on raw.githubusercontent.com is
     already Markdown; running it through the HTML extractor loses the file or
-    fails on a missing body. The URL suffix decides, guarded by the absence of
-    an HTML document tag near the top of the body.
+    fails on a missing body. The URL suffix decides, unless the body itself
+    opens as an HTML document.
     """
     path = urlparse(url).path.lower()
     if not path.endswith(PLAIN_TEXT_SUFFIXES):
         return False
-    head = body[:4096].lower()
-    return "<html" not in head and "<body" not in head and "<!doctype html" not in head
+    # An HTML page starts as one; a README whose code fence shows "<body>" or
+    # "<html>" further down is still Markdown.
+    start = body[:4096].lstrip("\ufeff \t\r\n").lower()
+    return not start.startswith(("<!doctype html", "<html", "<head", "<body"))
 
 
 def _save_plain_text_document(
