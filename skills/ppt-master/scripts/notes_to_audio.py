@@ -93,11 +93,15 @@ def _load_tts_env_file() -> None:
     ))
 
 
+# A Markdown heading needs a space after the hashes; "#1 revenue grew" is speech.
+_ATX_HEADING_RE = re.compile(r" {0,3}#{1,6}(?:[ \t]|$)")
+
+
 def spoken_text(markdown: str) -> str:
     """Return narration text exactly from notes, except Markdown headings."""
     lines: list[str] = []
     for raw in markdown.splitlines():
-        if raw.lstrip().startswith("#"):
+        if _ATX_HEADING_RE.match(raw):
             continue
         line = raw.rstrip()
         if not line.strip():

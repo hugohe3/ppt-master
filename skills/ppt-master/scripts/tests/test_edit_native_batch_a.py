@@ -392,3 +392,11 @@ class EditNativeBatchATests(unittest.TestCase):
         with patch.object(sys, 'argv', ['notes_to_audio.py', '--list-common-voices', '--rate', '-5%']):
             with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
                 self.assertEqual(notes_to_audio.main(), 0)
+
+
+class SpokenTextHeadingTests(unittest.TestCase):
+    def test_only_real_markdown_headings_are_silent(self) -> None:
+        notes = "# Slide 1\n#1 产品收入增长 20%。\n## 小节\n其次是服务收入。"
+        self.assertEqual(
+            notes_to_audio.spoken_text(notes), "#1 产品收入增长 20%。\n其次是服务收入。"
+        )
