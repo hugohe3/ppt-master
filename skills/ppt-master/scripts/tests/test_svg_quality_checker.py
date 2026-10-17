@@ -488,3 +488,23 @@ class NoCropStretchMeasurementTests(unittest.TestCase):
             SVGQualityChecker._stretch_deviation(plain, (900, 1600)), 0.0
         )
         self.assertIsNone(SVGQualityChecker._stretch_deviation(nested, None))
+
+
+class ForbiddenAttributeTests(unittest.TestCase):
+    def _errors(self, body: str) -> list[str]:
+        from svg_quality.svg_contracts import check_forbidden_elements
+
+        svg = f'<svg xmlns="http://www.w3.org/2000/svg">{body}</svg>'
+        result = {"errors": [], "warnings": []}
+        check_forbidden_elements(svg, ET.fromstring(svg), result)
+        return result["errors"]
+
+    def test_text_and_data_attributes_are_not_forbidden_attributes(self) -> None:
+        for body in ('<g data-class="content"/>', "<text>class=Customer</text>",
+                     "<text>onload=initialize</text>"):
+            with self.subTest(body=body):
+                self.assertEqual(self._errors(body), [])
+
+    def test_real_class_and_event_attributes_still_fail(self) -> None:
+        self.assertTrue(self._errors('<g class="a"/>'))
+        self.assertTrue(self._errors('<rect onclick="x()"/>'))

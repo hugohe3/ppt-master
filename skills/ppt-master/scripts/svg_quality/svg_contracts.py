@@ -203,6 +203,11 @@ def check_forbidden_elements(
     content_lower = content.lower()
     elems = list(root.iter())
     local_names = {_local_name(elem).lower() for elem in elems}
+    # Parsed attribute names, not raw text: "data-class" or a <text> reading
+    # "class=Customer" / "onload=init" is not an attribute.
+    attr_names = {
+        name.rsplit("}", 1)[-1].lower() for elem in elems for name in elem.attrib
+    }
 
     # ============================================================
     # Forbidden elements blocklist - PPT incompatible
@@ -211,12 +216,12 @@ def check_forbidden_elements(
     # Style system
     if 'style' in local_names:
         result['errors'].append("Detected forbidden <style> element (use inline attributes instead)")
-    if re.search(r'\bclass\s*=', content):
+    if 'class' in attr_names:
         result['errors'].append("Detected forbidden class attribute (use inline styles instead)")
     # id attribute: only report error when <style> also exists (id is harmful only with CSS selectors)
     # id inside <defs> for linearGradient/filter etc. is required, Inkscape also auto-adds id to elements,
     # standalone id attributes have no impact on PPT export
-    if 'style' in local_names and re.search(r'\bid\s*=', content):
+    if 'style' in local_names and 'id' in attr_names:
         result['errors'].append(
             "Detected id attribute used with <style> (CSS selectors forbidden, use inline styles instead)"
         )
@@ -271,7 +276,7 @@ def check_forbidden_elements(
         result['errors'].append("Detected forbidden SMIL animation element <set> (SVG animations are not exported)")
     if 'script' in local_names:
         result['errors'].append("Detected forbidden <script> element (scripts and event handlers forbidden)")
-    if re.search(r'\bon\w+\s*=', content):  # onclick, onload etc.
+    if any(re.fullmatch(r'on\w+', name) for name in attr_names):  # onclick, onload etc.
         result['errors'].append("Detected forbidden event attributes (e.g., onclick, onload)")
 
     # Other discouraged elements
