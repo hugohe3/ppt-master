@@ -257,3 +257,16 @@ class InfrastructurePenaltyTests(unittest.TestCase):
             self._score("team", "team office"),
         )
         self.assertGreater(self._score("bus station", "team bus station"), 0)
+
+
+class RequiredTermsGateTests(unittest.TestCase):
+    def test_latin_terms_match_whole_words_and_cjk_ignores_spacing(self) -> None:
+        from image_sources.provider_common import AssetCandidate, missing_required_terms
+
+        def missing(title: str, terms: tuple[str, ...]) -> list[str]:
+            return missing_required_terms(AssetCandidate(provider="test", title=title), terms)
+
+        self.assertEqual(missing("Tirana, Albania", ("Iran",)), ["Iran"])
+        self.assertEqual(missing("Tehran, Iran", ("Iran",)), [])
+        self.assertEqual(missing("LiberationMonument at night", ("Liberation Monument",)), [])
+        self.assertEqual(missing("重庆 解放 碑", ("解放碑",)), [])
