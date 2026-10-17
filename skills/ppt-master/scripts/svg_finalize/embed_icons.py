@@ -143,6 +143,11 @@ def _base_geometry(base_size: BaseGeometry) -> tuple[float, float, float, float]
     return 0.0, 0.0, float(base_size), float(base_size)
 
 
+# Either quote style: a single-quoted marker silently fell back to a recolored
+# monochrome icon, dropping the asset's text, colors, and group transforms.
+_PRESERVE_COLOR_RE = re.compile(r'data-icon-style\s*=\s*["\']preserve-color["\']')
+
+
 def _is_preserve_color_asset(content: str) -> bool:
     """Project illustrations are vector assets, not recolorable monochrome icons.
 
@@ -150,7 +155,7 @@ def _is_preserve_color_asset(content: str) -> bool:
     extract_svg_assets.py and is the single source of truth — hand-authored
     multi-color assets must carry it to keep their colors and aspect ratio.
     """
-    return 'data-icon-style="preserve-color"' in content
+    return _PRESERVE_COLOR_RE.search(content) is not None
 
 
 def _detect_icon_style(content: str) -> str:

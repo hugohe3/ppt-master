@@ -13,6 +13,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from svg_finalize.embed_icons import (  # noqa: E402
+    extract_paths_from_icon,
     generate_icon_group,
     parse_use_element,
     process_svg_file,
@@ -120,3 +121,20 @@ class IconAttributeSecurityTests(unittest.TestCase):
                         resolve_icon_color(attrs, style)
                     with self.assertRaisesRegex(ValueError, f'Invalid icon {attribute}'):
                         generate_icon_group(attrs, ['<path d="M0 0h1"/>'], style, 16)
+
+
+class PreserveColorMarkerTests(unittest.TestCase):
+    def test_single_and_double_quoted_markers_both_preserve_the_asset(self) -> None:
+        asset = (
+            '<svg viewBox="0 0 48 24" data-icon-style={q}preserve-color{q}>'
+            '<g transform="translate(8 0)"><rect width="20" height="20" fill="#ff0000"/>'
+            '<text>A</text></g></svg>'
+        )
+        for quote in ("'", '"'):
+            with self.subTest(quote=quote), \
+                    patch.object(Path, "exists", return_value=True), \
+                    patch.object(Path, "read_text", return_value=asset.format(q=quote)):
+                parts, style, _ = extract_paths_from_icon(Path("logo.svg"))
+            self.assertEqual(style, "preserve")
+            self.assertIn("#ff0000", "".join(parts))
+            self.assertIn("<text>", "".join(parts))
