@@ -2282,7 +2282,8 @@ def _run_primary_family(run: dict[str, Any]) -> str:
 # Fixed-pitch faces outside the table almost always say so in their name
 # (Cascadia Mono, Fira Code, Victor Mono, Noto Sans Mono CJK); 0.60 em is the
 # common advance of the Courier-derived and modern coding families alike.
-_MONOSPACE_NAME_HINTS = ('mono', 'code', 'courier', 'consol', 'typewriter')
+# "Arial Unicode MS" and "Monotype Corsiva" are proportional despite the letters.
+_MONOSPACE_NAME_HINT_RE = re.compile(r'mono(?!type)|(?<!uni)code|courier|consol|typewriter')
 _MONOSPACE_DEFAULT_ADVANCE_EM = 0.60
 
 
@@ -2294,7 +2295,7 @@ def _monospace_advance_em(run: dict[str, Any]) -> float | None:
     advance = _MONOSPACE_ADVANCE_EM.get(family)
     if advance is not None:
         return advance
-    if any(hint in family for hint in _MONOSPACE_NAME_HINTS):
+    if _MONOSPACE_NAME_HINT_RE.search(family):
         return _MONOSPACE_DEFAULT_ADVANCE_EM
     return None
 

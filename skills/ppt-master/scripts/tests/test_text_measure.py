@@ -459,5 +459,18 @@ class TextMeasureTests(unittest.TestCase):
         )
 
 
+
+class MonospaceFamilyHintTests(unittest.TestCase):
+    def test_proportional_families_with_mono_or_code_letters_stay_proportional(self) -> None:
+        from svg_to_pptx.drawingml.elements import _monospace_advance_em
+
+        for family in ('Arial Unicode MS', 'Lucida Sans Unicode', 'Monotype Corsiva'):
+            with self.subTest(family=family):
+                self.assertIsNone(_monospace_advance_em({'font_family': family}))
+        for family in ('Victor Mono', 'Source Code Pro'):
+            with self.subTest(family=family):
+                self.assertIsNotNone(_monospace_advance_em({'font_family': family}))
+
+
 if __name__ == '__main__':
     unittest.main()
