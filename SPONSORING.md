@@ -9,7 +9,7 @@ Sponsorship is considered selectively. A partnership must be useful to PPT Maste
 ## Audience
 
 - **49,000+ GitHub stars** and **3,900+ forks** (August 2026), with the project still in active growth.
-- **Five corporate sponsors are currently on renewal.**
+- **Four corporate sponsors are currently on renewal.**
 - Readers are developers and AI power users working in agent-capable tools such as Claude Code, Codex, Cursor, and VS Code.
 
 ## Partnership Placements
@@ -52,13 +52,19 @@ A compact logo and link placement for organizations that support ongoing mainten
 
 **From $200/month.**
 
-## Minimum Term
+## Term
 
-Corporate sponsorship starts at **one quarter (three consecutive months)**, across every placement above. Rates are quoted per month as a pricing unit only; single-month placements are not accepted.
+Corporate sponsorship runs in **quarterly terms (three consecutive months)** across every placement above. Rates are quoted per month as a pricing unit only.
 
-A sponsor placement is a standing recommendation to users, not a short-run ad slot. A partner that appears for one month and then leaves churns the sponsor surfaces and makes users doubt what they are shown there — which hurts the project and its other partners alike.
+**First-time partners may start with a one-month trial**: a partner that has not sponsored PPT Master before can run one month at the monthly rate, then decide whether to continue based on results; continuing partners move to quarterly prepaid terms. One trial per partner.
 
-Individual support is not subject to this minimum.
+> Please note: sponsorship results build over time. Users often take weeks to go from first seeing a placement to signing up and paying, so **results within a single month are usually limited** and do not reflect real conversion. A long-term sponsorship is recommended for better results.
+
+- Each period is paid in advance; the placement goes live once payment is received.
+- Placements do not auto-renew and are removed when a period ends unpaid.
+- Placements of the same type are ordered by start date, with new partners listed after existing sponsors.
+
+Individual support is not subject to these terms.
 
 ## Partnership Requirements
 
@@ -101,7 +107,7 @@ To discuss sponsorship, email **heyug3@gmail.com** with:
 - Requested placement and sponsorship period.
 - Brand assets and approved description.
 
-Rates above are starting points. Final terms, placement, and duration (one quarter or longer) are agreed individually. Please do not open a public bug report for sponsorship discussions.
+Rates above are starting points. Final terms, placement, and duration (quarterly, with an optional first-month trial for new partners) are agreed individually. Please do not open a public bug report for sponsorship discussions.
 
 ## Individual Support
 
