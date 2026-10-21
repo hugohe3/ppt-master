@@ -604,7 +604,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             )
             if carrier_error is not None:
                 raise FormulaImportError(carrier_error)
-            imported_formula = import_formula(block_formula, display=True)
+            imported_formula = import_formula(block_formula, display=True, palette=ctx.palette)
         except FormulaImportError as exc:
             _diagnose_formula_fallback(ctx, exc)
             block_formula_failed = True
@@ -1036,18 +1036,18 @@ def _prepare_inline_formula_resolver(
     elif not force_opaque:
         for zone in zones:
             try:
-                imported[id(zone)] = import_formula(zone, display=False)
+                imported[id(zone)] = import_formula(zone, display=False, palette=ctx.palette)
             except FormulaImportError as exc:
                 failed = True
                 _diagnose_formula_fallback(ctx, exc)
 
-    def _resolve(zone: ET.Element) -> tuple[str | None, str]:
+    def _resolve(zone: ET.Element) -> tuple[FormulaImport | None, str]:
         if failed:
             return None, opaque_formula_preview(zone)
         item = imported.get(id(zone))
         if item is None:
             return None, opaque_formula_preview(zone)
-        return item.latex, item.preview
+        return item, item.preview
 
     return _resolve
 

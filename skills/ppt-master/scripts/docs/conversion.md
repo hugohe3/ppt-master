@@ -376,9 +376,10 @@ replacement timing tree.
 
 ### Native formula reverse import
 
-The importer reconstructs formulas only from the closed OMML vocabulary owned
-by the native formula compiler. One formula-only `a14:m > m:oMathPara` text
-shape becomes a bounded `<g data-pptx-replace-with="formula">` with canonical
+The importer reconstructs formulas from the native compiler's closed OMML
+vocabulary after the import-only color normalization below. One formula-only
+`a14:m > m:oMathPara` text shape becomes a bounded
+`<g data-pptx-replace-with="formula">` with canonical
 LaTeX JSON and a visible linear SVG preview when its carrier is an ungrouped,
 unstyled, unrotated rectangular formula shape. Carrier styling, effects,
 hyperlinks, or placeholder ownership force diagnosed fallback rather than
@@ -388,8 +389,43 @@ Supported `a14:m > m:oMath` zones inside an ordinary paragraph become leaf
 their surrounding text runs. The generated markers pass the same native-object
 and inline-formula validators used by SVG-to-PPTX export.
 
+**Color normalization** applies only to `a:solidFill` directly inside
+`m:r/a:rPr` or `m:ctrlPr/a:rPr`. Each fill must contain exactly one correctly
+namespaced `a:srgbClr` or `a:schemeClr`. The shared color resolver uses the
+caller's effective palette and color map, never a fixed `theme1.xml`, and
+strictly validates color attributes and the supported `alpha`, `alphaMod`,
+and `alphaOff` modifiers even during tolerant import. The importer validates
+resource limits before normalization and changes a copy of the OMML only.
+Resolved RGB replaces the color node before the unchanged compiler validator
+runs. The resolved marker color is the formula's base: block JSON `color` or
+inline run `fill`. Serialization omits run and control colors already supplied
+by that base or an enclosing local color scope. Only changes to the effective
+color become LaTeX `\textcolor` scopes; nested scopes can explicitly restore
+the base color when needed. Theme tokens become current RGB values and lose
+their original theme-token linkage. Re-export applies the exporter's existing anchor mapping
+to marker defaults; local LaTeX color scopes remain explicit RGB overrides.
+
+**Transparency** must remain representable by the destination marker and its
+existing exporter. Inline formulas retain one uniform effective alpha across
+their runs and controls through the marker's `fill` / `fill-opacity` style;
+surrounding runs retain their own opacity. This includes the uniform alpha
+emitted by PPT Master's inline exporter with local color overrides. Alpha
+must fit DrawingML's 1/100000 precision. Mixed alpha, including an opaque run
+or control among translucent ones, is not reconstructed. Block markers keep
+RGB in JSON `color`; their existing exporter emits opaque RGB only, so a
+translucent block formula also takes the diagnosed opaque-`txBody` path.
+Alpha is never discarded to make a formula pass validation.
+
+Canonical read-back uses explicit braces for script bases and argument bodies,
+`\left` / `\right` for delimiter nodes, Unicode glyphs for symbols, `\mathrm`
+for upright math runs, and `\mathop` for function nodes. Insignificant source
+whitespace is not recovered. Recompilation may split or join adjacent runs
+with identical effective styling without changing their text or appearance.
+
 This is normalized semantic read-back, not recovery of the author's original
-LaTeX spelling and not a general Office Math converter. Every OMML root must
+LaTeX spelling and not a general Office Math converter. Multiple color
+children, incorrect namespaces, unresolved theme colors, unsupported modifiers,
+and unknown OMML remain outside the reversible subset. Every normalized root must
 pass the compiler's namespace, element, attribute, structure, size, and depth
 gates, and the reconstructed LaTeX must compile again under the same profile.
 If any formula in one text body falls outside that boundary, tolerant import

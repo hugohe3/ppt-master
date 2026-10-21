@@ -37,6 +37,7 @@ from .emu_units import (
     hundredths_pt_to_px, ooxml_bool,
 )
 from .fill_to_svg import resolve_fill
+from .formula_import import FormulaImport
 
 
 # ---------------------------------------------------------------------------
@@ -75,7 +76,7 @@ class TextRun:
 
 
 HyperlinkResolver = Callable[[str, str], str | None]
-InlineFormulaResolver = Callable[[ET.Element], tuple[str | None, str]]
+InlineFormulaResolver = Callable[[ET.Element], tuple[FormulaImport | None, str]]
 TextDiagnosticSink = Callable[[str, str, str], None]
 
 
@@ -782,14 +783,17 @@ def _parse_paragraph(
             == "{http://schemas.microsoft.com/office/drawing/2010/main}m"
             and inline_formula_resolver is not None
         ):
-            latex, preview = inline_formula_resolver(child)
+            formula, preview = inline_formula_resolver(child)
             if preview:
                 formula_rpr = next(
                     child.iter(f"{{{NS['a']}}}rPr"),
                     None,
                 )
                 run = resolved_run(preview, formula_rpr)
-                run.formula_latex = latex
+                if formula is not None:
+                    run.formula_latex = formula.latex
+                    run.fill = formula.color
+                    run.fill_opacity = formula.opacity
                 para.runs.append(run)
 
     return para
@@ -1700,14 +1704,19 @@ def _emit_paragraph(
             else:
                 spans.append(_run_tspan_markup(run))
 
-    base_attrs = _text_base_attrs(first_run, anchor_x, first_baseline, text_anchor)
+    # Formula paragraphs carry alpha per run, so a translucent first run must
+    # not make opaque formulas or surrounding text inherit that alpha.
+    base_attrs = _text_base_attrs(
+        first_run, anchor_x, first_baseline, text_anchor,
+        inherit_opacity=not any(run.formula_latex is not None for line in visible_lines for run in line),
+    )
     if metrics_baseline:
         base_attrs += ' data-pptx-text-baseline="metrics-v1"'
     return f"<text{base_attrs}>{''.join(spans)}</text>"
 
 
 def _text_base_attrs(run: TextRun | None, x: float, y: float,
-                     text_anchor: str) -> str:
+                     text_anchor: str, *, inherit_opacity: bool = True) -> str:
     parts = [
         f'x="{fmt_num(x)}"',
         f'y="{fmt_num(y, 8)}"',
@@ -1719,7 +1728,7 @@ def _text_base_attrs(run: TextRun | None, x: float, y: float,
     parts.append(f'font-family="{run.font_family}"')
     parts.append(f'font-size="{fmt_num(run.font_size_px)}"')
     parts.append(f'fill="{run.fill}"')
-    if run.fill_opacity < 1.0:
+    if inherit_opacity and run.fill_opacity < 1.0:
         parts.append(
             f'fill-opacity="{format_ooxml_alpha(run.fill_opacity)}"'
         )

@@ -1038,6 +1038,13 @@ Behind [`native-formula.md`](../../references/native-formula.md) §3. The compil
 
 **Normalization**: `\dfrac` / `\tfrac`, `\dbinom` / `\tbinom`, and continued-fraction alignment normalize to the corresponding OMML structure; explicit big-delimiter grades become auto-sizing delimiters; `\mathscr` → `\mathcal`; `smallmatrix` → `matrix`; array columns become centered; style/size commands and equation tags are accepted but not stored. Color is stored in generated formula runs and structural control properties; `\boldsymbol` / `\bm` applies bold-italic to structural control glyphs.
 
+The compiler validates its output against the closed OMML grammar before
+marker-level defaults are applied.
+The block and inline builders then merge marker-level run/control styles;
+the inline exporter can emit theme colors and alpha in that styled OMML.
+The import-only normalization and transparency boundary are owned by
+[`conversion.md`, Native formula reverse import](conversion.md#native-formula-reverse-import).
+
 **Fail-closed**: unknown commands or environments, Microsoft's explicitly unsupported commands, unsupported mhchem arrows, unescaped `%` comments, invalid macros, and resource-limit overflow block conversion — stricter than Microsoft 365's literal-text passthrough and macro-limit behavior.
 
 **Compatibility**: the package uses standard editable Office Math and keeps the PowerPoint 2010+ target; the executable profile is pinned to the documentation versions above. Repository verification covers compilation, OMML structure, and PPTX packaging, not a Microsoft 365 UI rendering/editability certification. Earlier PowerPoint versions are not the source-profile baseline; WPS, Keynote, LibreOffice, and other clients receive only the native-shape preview fallback. Reverse import is described in [`conversion.md`](conversion.md#native-formula-reverse-import).

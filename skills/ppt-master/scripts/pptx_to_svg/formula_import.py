@@ -1,9 +1,10 @@
 """Import PPT Master-owned Office Math into canonical SVG formula markers.
 
-The reverse contract is deliberately narrow: accept only the closed OMML
-vocabulary already validated by the native formula compiler, serialize that
-structure to compiler-accepted LaTeX, and build a plain-text SVG preview.
+The reverse contract is deliberately narrow: normalize supported DrawingML
+colors, validate the compiler's closed OMML vocabulary, serialize that structure
+to compiler-accepted LaTeX, and build a plain-text SVG preview.
 Unknown third-party OMML remains outside this module's reconstruction claim.
+See scripts/docs/conversion.md, Native formula reverse import, for the boundary.
 """
 
 from __future__ import annotations
@@ -22,6 +23,10 @@ from svg_to_pptx.native_objects.formula_profile import (
     ACCENT_COMMANDS,
     NARY_COMMANDS,
 )
+from svg_to_pptx.native_objects.formula_omml import validate_omml_resource_limits
+
+from .color_resolver import ColorPalette, resolve_color
+from .emu_units import format_ooxml_alpha
 
 
 MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
@@ -89,9 +94,15 @@ class FormulaImport:
     color: str
     align: str
     language: str
+    opacity: float
 
 
-def import_formula(math_zone: ET.Element, *, display: bool) -> FormulaImport:
+def import_formula(
+    math_zone: ET.Element,
+    *,
+    display: bool,
+    palette: ColorPalette | None = None,
+) -> FormulaImport:
     """Validate and reconstruct one ``a14:m`` formula zone."""
     if math_zone.tag != _A14_M:
         raise FormulaImportError("formula carrier must be one a14:m element")
@@ -107,10 +118,17 @@ def import_formula(math_zone: ET.Element, *, display: bool) -> FormulaImport:
         )
 
     try:
-        canonical = validate_omml_fragment(
+        bounded = validate_omml_resource_limits(
             ET.tostring(root, encoding="unicode", short_empty_elements=True)
         )
+        normalized_root = ET.fromstring(bounded)
+        opacity = _normalize_colors(normalized_root, palette)
+        if display and opacity != 1.0:
+            raise FormulaImportError("block formula metadata color cannot retain transparency")
+        canonical = validate_omml_fragment(ET.tostring(normalized_root, encoding="unicode"))
         validated_root = ET.fromstring(canonical)
+        font_size_px, color, language = _dominant_run_style(validated_root)
+        _omit_inherited_colors(validated_root, color[1:])
         latex = _serialize_root(validated_root)
         if display:
             compile_latex_to_omml(latex)
@@ -122,7 +140,6 @@ def import_formula(math_zone: ET.Element, *, display: bool) -> FormulaImport:
     preview = _preview_root(validated_root).strip()
     if not latex.strip() or not preview:
         raise FormulaImportError("formula reconstruction produced empty content")
-    font_size_px, color, language = _dominant_run_style(validated_root)
     return FormulaImport(
         latex=latex,
         preview=preview,
@@ -130,7 +147,45 @@ def import_formula(math_zone: ET.Element, *, display: bool) -> FormulaImport:
         color=color,
         align=_formula_alignment(validated_root),
         language=language,
+        opacity=opacity,
     )
+
+
+def _normalize_colors(root: ET.Element, palette: ColorPalette | None) -> float:
+    """Normalize only run/control fills on a copy, retaining one uniform alpha."""
+    opacities: set[float] = set()
+    for owner in root.iter():
+        if owner.tag not in {f"{_M}r", f"{_M}ctrlPr"}:
+            continue
+        fills = owner.findall(f"{_A}rPr/{_A}solidFill")
+        if not fills:
+            opacities.add(1.0)
+        for fill in fills:
+            colors = list(fill)
+            if (
+                fill.attrib or (fill.text or "").strip()
+                or len(colors) != 1
+                or colors[0].tag not in {f"{_A}srgbClr", f"{_A}schemeClr"}
+                or (colors[0].tail or "").strip()
+            ):
+                raise FormulaImportError("formula solidFill requires one a:srgbClr or a:schemeClr")
+            color = colors[0]
+            if any(child.tag not in {f"{_A}alpha", f"{_A}alphaMod", f"{_A}alphaOff"} for child in color):
+                raise FormulaImportError("unsupported formula color modifier")
+            try:
+                rgb, alpha = resolve_color(color, palette, strict=True)
+            except ValueError as exc:
+                raise FormulaImportError(str(exc)) from exc
+            if rgb is None:
+                raise FormulaImportError("formula color cannot be resolved in the current palette")
+            if alpha != float(format_ooxml_alpha(alpha)):
+                raise FormulaImportError("formula alpha cannot be retained at DrawingML precision")
+            opacities.add(alpha)
+            fill.remove(color)
+            ET.SubElement(fill, f"{_A}srgbClr", {"val": rgb[1:]})
+    if len(opacities) > 1:
+        raise FormulaImportError("mixed formula transparency cannot be represented by one marker")
+    return next(iter(opacities), 1.0)
 
 
 def opaque_formula_preview(math_zone: ET.Element) -> str:
@@ -140,6 +195,23 @@ def opaque_formula_preview(math_zone: ET.Element) -> str:
         for item in math_zone.iter(f"{_M}t")
     ).strip()
     return text or "[unsupported formula]"
+
+
+def _omit_inherited_colors(element: ET.Element, inherited_color: str) -> None:
+    """Keep only color changes in the validated serialization copy."""
+    if element.tag == f"{_M}r":
+        properties = element.find(f"{_A}rPr")
+    else:
+        name = _local_name(element)
+        properties = element.find(f"{_M}{name}Pr/{_M}ctrlPr/{_A}rPr")
+    color = _drawing_color(properties)
+    if color == inherited_color:
+        properties.remove(properties.find(f"{_A}solidFill"))
+    # A retained structural scope supplies its color to the whole subexpression.
+    # A descendant may still need an explicit scope to restore the marker base.
+    for child in element:
+        if not _local_name(child).endswith(_PROPERTY_SUFFIX):
+            _omit_inherited_colors(child, color or inherited_color)
 
 
 def _serialize_root(root: ET.Element) -> str:
@@ -172,6 +244,15 @@ def _serialize_argument(owner: ET.Element, name: str, *, alignment: bool = False
 
 
 def _serialize_node(element: ET.Element, *, alignment: bool = False) -> str:
+    source = _serialize_node_content(element, alignment=alignment)
+    # A scoped color must cover structural glyphs as well as selectable runs.
+    name = _local_name(element)
+    control = element.find(f"{_M}{name}Pr/{_M}ctrlPr/{_A}rPr")
+    color = _drawing_color(control)
+    return f"\\textcolor{{#{color}}}{{{source}}}" if color is not None else source
+
+
+def _serialize_node_content(element: ET.Element, *, alignment: bool = False) -> str:
     name = _local_name(element)
     if name == "r":
         return _serialize_run(element, alignment=alignment)
