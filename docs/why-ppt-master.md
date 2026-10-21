@@ -58,9 +58,9 @@ Either way, PPT Master adds no layer of its own on top of your AI spend: no PPT-
 
 ---
 
-## 4. Data Privacy — 100% Local
+## 4. Data Privacy — Local Pipeline
 
-Your files never leave your machine. Source documents are converted locally, SVGs are generated locally, PPTX is exported locally. The only external communication is between you and your AI editor — no different from how you normally use it.
+Your files stay on your machine. Source documents are converted locally, SVGs are generated locally, PPTX is exported locally. Outside traffic is limited to your conversation with the AI model — no different from how you normally use your editor — plus the optional services you enable: AI image generation receives image prompts, web image search receives keywords, URL import fetches the pages you name, and online narration receives speaker-notes text. Skip those services for sensitive material.
 
 No third-party server stores your source documents or output. This matters for finance, government, and any organization with data residency requirements.
 

@@ -97,7 +97,7 @@ Generating a new deck from source documents is the main pipeline, but not the on
 On top of that native depth, this form comes with three promises:
 
 - **Transparent, predictable cost** — free and open source; the only cost is your AI model usage, with no PPT subscription on top
-- **Data stays local** — apart from AI model communication, the entire pipeline runs on your machine
+- **Data stays local** — apart from AI model calls and the search, image, and speech services you choose to enable, the entire pipeline runs on your machine
 - **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work
 
 Why you'd choose it, and where it isn't the right fit → [Why PPT Master](./docs/why-ppt-master.md); the long-term capability boundaries behind these promises → [Project Positioning](./docs/project-positioning.md).
