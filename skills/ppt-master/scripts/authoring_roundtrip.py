@@ -16,11 +16,15 @@ Dependencies:
 
 from __future__ import annotations
 
+import base64
+import binascii
 import copy
 import hashlib
 import json
+import math
 import os
 import re
+import sys
 import tempfile
 from collections import Counter
 from dataclasses import dataclass
@@ -52,12 +56,13 @@ from svg_authoring_view import (
     SOURCE_PROXY_ATTRIBUTE,
     SOURCE_PROXY_KIND,
     _element_chain,
+    _format_transform_number,
     _materialize_adopted_context,
     project_svg_batch,
     semantic_subtree_sha256,
 )
 from svg_compatibility import normalize_single_child_group_filters
-from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS
+from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS, parse_transform_matrix
 
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -1538,25 +1543,109 @@ def _restore_preserved_effect_metadata(
                 item.set(name, value)
 
 
+def _text_body_frame(element: ET.Element) -> tuple[float, ...] | None:
+    """Read a finite carrier frame for geometry and relative text comparisons."""
+    try:
+        frame = tuple(float(value) for value in re.split(
+            r"[\s,]+", (element.get("data-pptx-frame") or "").strip(),
+        ))
+    except ValueError:
+        return None
+    if len(frame) != 4 or not all(math.isfinite(value) for value in frame):
+        return None
+    return frame
+
+
+def _text_body_geometry(occurrence: RefOccurrence) -> tuple | None:
+    """Compare carrier size and effective axes, allowing only position changes."""
+    frame = _text_body_frame(occurrence.element)
+    if frame is None:
+        return None
+    contextual = _contextual_authoring_element(occurrence.element, occurrence.root)
+    # Match the precision used when the shared context helper composes ancestry.
+    axes = tuple(f"{value:.12g}" for value in parse_transform_matrix(contextual.get("transform", ""))[:4])
+    return frame[2:], axes
+
+
+def _text_body_state(occurrence: RefOccurrence, *, frame_relative: bool = False) -> list[str] | None:
+    """Fingerprint text with carrier translations removed, retaining local edits."""
+    carrier = copy.deepcopy(occurrence.element)
+    root = carrier
+    context = [carrier]
+    for ancestor in reversed(_element_chain(occurrence.root, occurrence.element)[:-1]):
+        wrapper = ET.Element(ancestor.tag, ancestor.attrib)
+        wrapper.append(root)
+        root = wrapper
+        context.append(wrapper)
+    # Normalize only the carrier and its ancestors. Text-local coordinates and
+    # transforms (including those on wrappers inside the carrier) still count.
+    for node in context:
+        axes = parse_transform_matrix(node.get("transform", ""))[:4]
+        node.attrib.pop("transform", None)
+        if axes != (1.0, 0.0, 0.0, 1.0):
+            node.set("transform", "matrix(" + " ".join(
+                f"{value:.12g}" for value in (*axes, 0.0, 0.0)
+            ) + ")")
+    if frame_relative:
+        frame = _text_body_frame(carrier)
+        if frame is None:
+            return None
+        for text in carrier.iter(f"{{{SVG_NS}}}text"):
+            for node in text.iter():
+                if node.tag not in {f"{{{SVG_NS}}}text", f"{{{SVG_NS}}}tspan"}:
+                    continue
+                for axis, origin in zip(("x", "y"), frame[:2]):
+                    raw = node.get(axis)
+                    if raw is None:
+                        continue
+                    try:
+                        values = [float(value) - origin for value in re.split(r"[\s,]+", raw.strip())]
+                    except ValueError:
+                        return None
+                    if not all(math.isfinite(value) for value in values):
+                        return None
+                    node.set(axis, " ".join(_format_transform_number(value) for value in values))
+    return [
+        semantic_subtree_sha256(_contextual_authoring_element(text, root))
+        for text in carrier.iter(f"{{{SVG_NS}}}text")
+    ]
+
+
+def _text_body_formula_loss_warning(metadata: ET.Element, target: ET.Element, reason: str) -> str | None:
+    """Diagnose lost native math without taking over payload validation."""
+    try:
+        body = ET.fromstring(base64.b64decode((metadata.text or "").strip(), validate=True))
+    except (ValueError, binascii.Error, UnicodeDecodeError, ET.ParseError):
+        # An unreadable payload has an unknown formula count. Keep validation
+        # with the converter when the original restoration path consumes it.
+        return None
+    math_count = sum(1 for _ in body.iter("{http://schemas.microsoft.com/office/drawing/2010/main}m"))
+    marker_count = sum(
+        1 for node in target.iter()
+        if node.get("data-pptx-inline-formula") or node.get("data-pptx-replace-with") == "formula"
+    )
+    if math_count > marker_count:
+        return f"native formulas will become plain text; reason={reason}; source txBody cannot be restored"
+    return None
+
+
 def _restore_unchanged_text_body(
     target: ET.Element,
     source: ET.Element,
     current: RefOccurrence,
     baseline: RefOccurrence,
-) -> None:
-    """Recover native text only while its projected text and context agree."""
+) -> str | None:
+    """Recover unchanged native text after translation, or diagnose lost math."""
     metadata = next((child for child in source if child.get("data-pptx-part") == "txbody"), None)
-    if metadata is None or current.element.get("data-pptx-frame") != baseline.element.get("data-pptx-frame"):
+    if metadata is None:
         return
-
-    def text_state(occurrence: RefOccurrence) -> list[str]:
-        return [
-            semantic_subtree_sha256(_contextual_authoring_element(text, occurrence.root))
-            for text in occurrence.element.iter(f"{{{SVG_NS}}}text")
-        ]
-
-    if text_state(current) != text_state(baseline):
-        return
+    geometry = _text_body_geometry(current)
+    if geometry is None or geometry != _text_body_geometry(baseline):
+        return _text_body_formula_loss_warning(metadata, target, "size/transform-changed")
+    if _text_body_state(current) != _text_body_state(baseline):
+        relative_state = _text_body_state(current, frame_relative=True)
+        if relative_state is None or relative_state != _text_body_state(baseline, frame_relative=True):
+            return _text_body_formula_loss_warning(metadata, target, "text-edited")
     restored = copy.deepcopy(metadata)
     # Projection compacts text runs and paragraphs. Validate that projection
     # above, then let the existing decoder validate the recovered payload.
@@ -1798,6 +1887,8 @@ def _materialize_document(
             "picture relationship"
         )
 
+    warnings: list[dict[str, Any]] = []
+
     def restore_nodes(
         element: ET.Element,
         source_dir: Path | None = None,
@@ -1872,9 +1963,25 @@ def _materialize_document(
                         if clone.get(name) is None and source.get(name) is not None:
                             clone.set(name, str(source.get(name)))
                 _restore_preserved_effect_metadata(clone, source)
-                _restore_unchanged_text_body(
+                warning = _restore_unchanged_text_body(
                     clone, source, current_occurrences[source_ref][0], baseline_occurrences[source_ref][0],
                 )
+                if warning:
+                    object_id = element.get("id") or source_ref
+                    output_index = page.output_index if page else document.source_slide
+                    warnings.append({
+                        "code": "native-formula-to-text",
+                        "output_page": output_index,
+                        "source_slide": document.source_slide,
+                        "object_id": object_id,
+                        "source_ref": source_ref,
+                        "message": warning,
+                    })
+                    print(
+                        f"[ROUNDTRIP][WARNING] page={output_index} ({document.name}) "
+                        f"object={object_id} source_ref={source_ref}: {warning}",
+                        file=sys.stderr,
+                    )
         if (
             _local_name(clone.tag) == "g" and source_ref is None
             and set(clone.attrib) <= {*INHERITABLE_ATTRS, "style", "opacity", "transform"}
@@ -2022,6 +2129,7 @@ def _materialize_document(
         "authored_unreferenced": authored_unreferenced,
         "expanded_vector_uses": expanded_vector_uses,
         "defs_changed": defs_changed,
+        "warnings": warnings,
     }
 
 

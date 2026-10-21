@@ -93,10 +93,34 @@ vector edit units from `icons/imported/`, and retains edits/deletions/new
 content without rewriting the bundle. Unchanged slides and resources pass
 through byte-for-byte. Object comparison includes effective ancestor transforms,
 opacity, inherited styles, and enclosing links; changing a proxy's context also
-fails. When an edited shape's text and text context still match the baseline,
-the materializer restores its relationship-free source `txBody` through the
-existing fingerprint/relationship checks, preserving fields, numbering,
-autofit, language, and text effects. Edited text follows normal conversion.
+fails. When an edited shape's text and effective text style still match the
+baseline, unchanged geometry or a pure translation retains its relationship-free
+source `txBody` through the existing fingerprint/relationship checks. This
+preserves the complete text body, including native Office Math, fields,
+numbering, autofit, language, and text effects. Translation may change frame
+x/y without changing width/height, or move the object or its ancestors with
+unchanged effective rotation, flip, and scale. Moving frame, geometry, and
+text coordinates together is also supported: when absolute text positions
+differ, the materializer compares every numeric `text`/`tspan` x/y coordinate
+relative to the frame origin. Relative text positions, text-local transforms,
+and styles remain part of the fingerprint; moving only one line or editing
+text/style never restores stale text over the edit.
+
+Width/height or non-translation transform changes continue to rebuild from
+SVG. Whenever a source `txBody` is not restored and its `a14:m` count exceeds
+the remaining formula marker count, including after text or style edits, the
+materializer emits a non-blocking `[ROUNDTRIP][WARNING]` to stderr with the
+output page, SVG filename, object id, and source ref, stating that native
+formulas will become plain text. Its reason is `size/transform-changed` or
+`text-edited`. An unreadable payload has an unknown formula count, produces
+no formula-loss warning, and remains subject to the converter's existing
+payload validation when consumed. The same `native-formula-to-text` diagnostic
+is recorded under each document's `warnings` in the postflight report's
+`source.authoring_roundtrip`; ordinary text and formulas rebuilt from native
+markers do not receive this warning. This does not expand the formula reverse
+import boundary, certify resized text layout/autofit, or change the existing
+POSTFLIGHT quality-gate status.
+
 A page edit rebuilds that output page; a changed
 materialized or derived resource rebuilds every output page that references it.
 Changed materialized bytes must still match the source package part's extension
