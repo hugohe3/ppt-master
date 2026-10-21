@@ -87,6 +87,8 @@ The reference-image CLI does not inherit source dimensions: pass an explicit mat
 
 Before deciding layers, write `<project_path>/analysis/reconstruction_inventory.json` recording only what is visibly present: original file and normalized page path; page order, source-frame bbox, SHA-256, pixel dimensions; visible regions with stable ids, bboxes, observed family (`text` / `graphic` / `image` / `unknown`), verbatim text where applicable, and confidence; observed sufficiency, boundary completeness, occlusion/contamination, and identity/data verifiability; overlap/z-order observations and unresolved evidence. No final layer choices, prompts, output filenames, or SVG bindings — those stay in active context plus required operational image evidence; context loss restarts the run. Low-confidence text, an uncertain boundary, or an unidentified branded/data graphic is unresolved evidence and blocks delivery.
 
+**Coordinate mapping**: source-frame bboxes use original-file pixels; region bboxes use normalized-page pixels. Map page-derived geometry and text metrics into canvas units with the same uniform scale and placement offset as the registered layers; for matching aspect ratios, `s = canvas width / page width` and the offset is zero. Apply the scale once to source-derived lengths, including font size, stroke width, and radii.
+
 ---
 
 ## 6. Image Preparation
