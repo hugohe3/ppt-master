@@ -55,6 +55,7 @@
 
 <p align="center">
   <a href="#快速开始"><strong>快速开始</strong></a> ·
+  <a href="./docs/zh/tutorials.md"><strong>社区教程</strong></a> ·
   <a href="https://hugohe3.github.io/ppt-master-examples/"><strong>在线预览</strong></a> ·
   <a href="https://github.com/hugohe3/ppt-master-examples"><strong>示例下载</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·

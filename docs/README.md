@@ -12,6 +12,7 @@ User-facing documentation lives in this directory: English files are the canonic
 |---|---|
 | [Getting Started](./getting-started.md) | First deck in 3 steps, plus templates, live preview, animations, narration, voice cloning |
 | [Windows Installation](./windows-installation.md) | Step-by-step setup guide for Windows users |
+| [Community Tutorials](./tutorials.md) | Community video and written guides, with instructions for suggesting additions |
 | [FAQ](./faq.md) | Model selection, cost, layout troubleshooting, custom templates — updated from real user reports |
 
 ## Capabilities in Depth

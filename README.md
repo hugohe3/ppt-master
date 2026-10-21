@@ -55,6 +55,7 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 <p align="center">
   <a href="#quick-start"><strong>Quick Start</strong></a> ·
+  <a href="./docs/tutorials.md"><strong>Tutorials</strong></a> ·
   <a href="https://hugohe3.github.io/ppt-master-examples/"><strong>Live Demo</strong></a> ·
   <a href="https://github.com/hugohe3/ppt-master-examples"><strong>Examples</strong></a> ·
   <a href="./docs/faq.md"><strong>FAQ</strong></a> ·
