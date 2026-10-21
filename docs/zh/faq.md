@@ -210,7 +210,8 @@ PPT Master 没有文档化的 `wireframe` 运行模式，也没有跨版本视�
 group；行内公式使用夹在普通文本 run 中的叶子
 `<tspan data-pptx-inline-formula="...">preview</tspan>`。矩阵、多行推导等
 高结构表达仍使用块级形式。原始 LaTeX 不能直接在 SVG 中显示，因此每个
-marker 都携带普通可见预览；原生导出会替换该预览，不增加图片兜底。
+marker 都携带普通可见预览；原生导出把它保留为原生形状兜底，供不支持 Office Math
+的客户端显示，不使用图片。
 
 前向编译覆盖 Microsoft 文档中 Microsoft 365 2606 / Mac 16.110 LaTeX
 档位与 2605 / 16.109 mhchem 档位明确点名的全部输入，包括符号、结构、环境、
@@ -224,8 +225,8 @@ fallback 保留。
 生成的 OMML 仍以 PowerPoint 2010+ 包为目标，可执行输入档位锁定到上述
 Microsoft 文档版本。仓库验证覆盖编译器行为、OMML 结构与 PPTX 打包，不等同于
 完整的 Microsoft 365 UI 显示 / 编辑认证。Keynote、WPS、LibreOffice 等非
-PowerPoint 客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些
-客户端附加公式图片兜底。
+PowerPoint 客户端中的公式显示与编辑能力不在支持范围内；这些客户端显示以普通
+形状和文字写入的 SVG 预览兜底，而不是可编辑公式。
 
 ## Q: 生成的页面可以带可点击链接吗？
 

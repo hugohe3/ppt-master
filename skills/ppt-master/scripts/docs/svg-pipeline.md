@@ -820,9 +820,14 @@ python3 -c "import sys; sys.path.insert(0, 'skills/ppt-master/scripts'); from sv
 Matrices, multiline derivations, and other high-structure expressions remain
 blocks. Formula replacement is always active, independent of
 `--native-charts-and-tables`: export replaces only the registered SVG preview
-and writes editable PowerPoint 2010+ Office Math. It emits no formula PNG, media
-relationship, or compatibility fallback, and makes no rendering/editability
-promise for Keynote, WPS, LibreOffice, or another non-PowerPoint client.
+and writes editable PowerPoint 2010+ Office Math in `mc:Choice Requires="a14"`.
+The same `mc:AlternateContent` carries an `mc:Fallback` built from the SVG
+preview as ordinary native shapes (block) or the same text box with the preview
+run in place of the math (inline), with fresh shape ids; no formula PNG or media
+relationship is created. A round-trip shape that restores source Office Math
+from its unchanged txBody gets the same branch from its visible SVG text. Clients without a14 math, such as LibreOffice, show
+that fallback; no rendering/editability promise is made for Keynote, WPS,
+LibreOffice, or another non-PowerPoint client.
 
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
@@ -1035,7 +1040,7 @@ Behind [`native-formula.md`](../../references/native-formula.md) §3. The compil
 
 **Fail-closed**: unknown commands or environments, Microsoft's explicitly unsupported commands, unsupported mhchem arrows, unescaped `%` comments, invalid macros, and resource-limit overflow block conversion — stricter than Microsoft 365's literal-text passthrough and macro-limit behavior.
 
-**Compatibility**: the package uses standard editable Office Math and keeps the PowerPoint 2010+ target; the executable profile is pinned to the documentation versions above. Repository verification covers compilation, OMML structure, and PPTX packaging, not a Microsoft 365 UI rendering/editability certification. Earlier PowerPoint versions are not the source-profile baseline; WPS, Keynote, LibreOffice, and other clients receive no embedded fallback. Reverse import is described in [`conversion.md`](conversion.md#native-formula-reverse-import).
+**Compatibility**: the package uses standard editable Office Math and keeps the PowerPoint 2010+ target; the executable profile is pinned to the documentation versions above. Repository verification covers compilation, OMML structure, and PPTX packaging, not a Microsoft 365 UI rendering/editability certification. Earlier PowerPoint versions are not the source-profile baseline; WPS, Keynote, LibreOffice, and other clients receive only the native-shape preview fallback. Reverse import is described in [`conversion.md`](conversion.md#native-formula-reverse-import).
 
 ## `visual_review.py`
 

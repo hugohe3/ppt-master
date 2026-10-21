@@ -212,8 +212,8 @@ assets. A block uses a formula group; inline math uses a leaf
 `<tspan data-pptx-inline-formula="...">preview</tspan>` among ordinary text
 runs. Matrices, multiline derivations, and other high-structure expressions
 remain blocks. Raw LaTeX does not render in SVG, so each marker carries an
-ordinary visible preview that native export replaces without adding an image
-fallback.
+ordinary visible preview; native export keeps it as a native-shape fallback
+for clients without Office Math, never an image.
 
 Forward compilation covers every explicitly named input in Microsoft's
 documented Microsoft 365 2606 / Mac 16.110 LaTeX profile and 2605 / 16.109
@@ -231,8 +231,8 @@ executable source profile is pinned to the Microsoft documentation versions
 above. Repository verification covers compiler behavior, OMML structure, and
 PPTX packaging rather than complete Microsoft 365 UI rendering/editability
 certification. Formula display and editability in Keynote, WPS, LibreOffice,
-and other non-PowerPoint clients are not supported; PPT Master does not add an
-image fallback for them.
+and other non-PowerPoint clients are not supported; those clients show the
+SVG preview fallback as ordinary shapes and text, not editable math.
 
 ## Q: Can generated slides contain clickable links?
 

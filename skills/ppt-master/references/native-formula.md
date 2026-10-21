@@ -57,7 +57,7 @@ Formula handling is not a user-confirmed policy, image resource, manifest, or `s
 
 **Hard rule — block metadata is truth**: one direct `<metadata type="application/json">` child with non-empty `latex`, `display: block`, `font_size` in `(0, 400]`, a visible `color`, and `align: left|center|right`; finite `data-pptx-x/y`, positive `data-pptx-width/height`, and matching root-coordinate `data-pptx-bounds`. Export replaces the whole group with `a14:m > m:oMathPara > m:oMath`.
 
-**Hard rule — preview is SVG, never fallback**: every preview is semantically equivalent ordinary SVG text/shapes/lines/paths — no `<image>`, `<foreignObject>`, visible raw LaTeX, or runtime renderer. The exporter discards the preview and emits no picture branch.
+**Hard rule — preview is ordinary SVG**: every preview is semantically equivalent ordinary SVG text/shapes/lines/paths — no `<image>`, `<foreignObject>`, visible raw LaTeX, or runtime renderer. Export keeps it as the native-shape fallback that non-PowerPoint clients show in place of the math.
 
 ---
 
@@ -67,4 +67,4 @@ Formula handling is not a user-confirmed policy, image resource, manifest, or `s
 
 **Hard rule — repair LaTeX upstream**: unsupported source or an invalid marker blocks the page. Rewrite within the profile without changing the planned mathematics, or return it to the content owner. Never substitute a PNG, flatten structural math into ordinary text, hand-write OMML, or leave raw LaTeX visible.
 
-**Validation**: planned LaTeX can be compile-checked before authoring ([`svg-pipeline.md`](../scripts/docs/svg-pipeline.md) § svg_to_pptx); the early/final SVG checker validates every marker, compiles its LaTeX, and applies the shared native-height envelope to page/module text bounds; native export repeats validation and uses that envelope for the generated text frame. Output is standard editable Office Math for PowerPoint 2010+; WPS, Keynote, and LibreOffice receive no embedded fallback and are outside the rendering/editability contract.
+**Validation**: planned LaTeX can be compile-checked before authoring ([`svg-pipeline.md`](../scripts/docs/svg-pipeline.md) § svg_to_pptx); the early/final SVG checker validates every marker, compiles its LaTeX, and applies the shared native-height envelope to page/module text bounds; native export repeats validation and uses that envelope for the generated text frame. Output is standard editable Office Math for PowerPoint 2010+; WPS, Keynote, and LibreOffice show the preview fallback and remain outside the rendering/editability contract.
