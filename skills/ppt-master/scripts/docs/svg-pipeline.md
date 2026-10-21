@@ -121,6 +121,17 @@ markers do not receive this warning. This does not expand the formula reverse
 import boundary, certify resized text layout/autofit, or change the existing
 POSTFLIGHT quality-gate status.
 
+Native charts rebuilt from edited JSON retain the marker's scoped source shape
+id on the chart `graphicFrame`, just like restored source chart packages.
+For a rebuilt imported frame, `data-pptx-shape-name` takes precedence over the
+payload name. Source animation targets and forced-Morph `!!` names survive.
+Synthesized companion text receives fresh ids and follows the frame as sibling
+shapes without a new wrapper or inherited source name. The frame retains its
+original hierarchy level and `graphicFrame` type. Markers without a source id
+keep generated chart grouping, id allocation, and naming unchanged. Rebuilt
+chart relationships point to the newly generated chart/workbook parts;
+restored packages keep their source parts.
+
 A page edit rebuilds that output page; a changed
 materialized or derived resource rebuilds every output page that references it.
 Changed materialized bytes must still match the source package part's extension

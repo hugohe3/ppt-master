@@ -349,13 +349,10 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         axis_font_px=text_sizes["axis"] / 75,
     )
 
-    shape_id = (
-        ctx.claim_shape_id(
-            elem.get("data-pptx-shape-id"),
-            elem.get("data-pptx-shape-scope"),
-        )
-        if source_package is not None
-        else ctx.next_id()
+    source_id = elem.get("data-pptx-shape-id")
+    shape_id = ctx.claim_shape_id(
+        source_id,
+        elem.get("data-pptx-shape-scope"),
     )
     rel_id = ctx.next_rel_id()
     local_index = 1 + sum(1 for part in ctx.package_files if part.startswith("ppt/charts/chart"))
@@ -442,7 +439,8 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             ctx.package_files[workbook_part] = _minimal_category_chart_workbook(chart_data)
         ctx.content_type_overrides[chart_part] = CHART_CONTENT_TYPE
 
-    name = _xml_escape(str(payload.get("name") or elem.get("id") or f"Native Chart {shape_id}"))
+    source_name = elem.get("data-pptx-shape-name") if source_id is not None else None
+    name = _xml_escape(str(source_name or payload.get("name") or elem.get("id") or f"Native Chart {shape_id}"))
     chart_frame_xml = (
         _source_chart_frame_xml(
             source_frame,
@@ -494,10 +492,18 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         x0, y0, x1, y1 = companion.bounds_emu
         min_x, min_y = min(min_x, x0), min(min_y, y0)
         max_x, max_y = max(max_x, x1), max(max_y, y1)
+    companion_xml = "".join(companion.xml for companion in companions)
+    if source_id is not None:
+        # Preserve the imported frame's hierarchy and Morph object type.
+        # Frame-first output keeps animation and trace consumers on its id.
+        return ShapeResult(
+            xml=chart_frame_xml + companion_xml,
+            bounds_emu=(min_x, min_y, max_x, max_y),
+        )
+
     group_w, group_h = max_x - min_x, max_y - min_y
     validate_ooxml_xfrm(min_x, min_y, group_w, group_h)
     group_id = ctx.next_id()
-    companion_xml = "".join(companion.xml for companion in companions)
     # The marker owns one selectable/animatable unit. Identity mapping keeps
     # the chart and labels at their already resolved slide coordinates.
     xml = f'''<p:grpSp>
