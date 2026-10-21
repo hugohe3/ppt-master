@@ -73,6 +73,7 @@ EMU_PER_INCH = 914400
 DRAWINGML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 PRESENTATIONML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 RELATIONSHIP_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+MARKUP_COMPATIBILITY_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 CHARTEX_URI = "http://schemas.microsoft.com/office/drawing/2014/chartex"
 OFFICE_VECTOR_EXTENSIONS = {"emf", "wmf"}
 IMAGE_EXT_BY_CONTENT_TYPE = {
@@ -184,6 +185,34 @@ def _safe_position(shape: object, attr: str) -> int:
         return int(getattr(shape, attr, 0) or 0)
     except Exception:
         return 0
+
+
+def _expose_math_choice_shapes(slide: object) -> None:
+    """Unwrap a14 Office Math Choice shapes so ``slide.shapes`` sees them.
+
+    python-pptx skips every ``mc:AlternateContent`` in the shape tree, which
+    hides formula text boxes and the ordinary text around their math. Only the
+    in-memory read view changes; the source file is never written.
+    """
+    alternate_tag = f"{{{MARKUP_COMPATIBILITY_NS}}}AlternateContent"
+    choice_tag = f"{{{MARKUP_COMPATIBILITY_NS}}}Choice"
+    shape_tags = {f"{{{PRESENTATIONML_NS}}}sp", f"{{{PRESENTATIONML_NS}}}grpSp"}
+    for wrapper in list(slide.element.iter(alternate_tag)):
+        choice = wrapper.find(choice_tag)
+        parent = wrapper.getparent()
+        if (
+            choice is None
+            or parent is None
+            or "a14" not in (choice.get("Requires") or "").split()
+        ):
+            continue
+        shapes = list(choice)
+        if not shapes or any(shape.tag not in shape_tags for shape in shapes):
+            continue
+        index = parent.index(wrapper)
+        parent.remove(wrapper)
+        for offset, shape in enumerate(shapes):
+            parent.insert(index + offset, shape)
 
 
 def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
@@ -1278,6 +1307,7 @@ def convert_presentation_to_markdown(
         }
         emitted_diagram_ids: set[str] = set()
         emitted_chart_relationship_ids: set[str] = set()
+        _expose_math_choice_shapes(slide)
         for item in iter_leaf_shapes(slide.shapes):
             shape = item.shape
 

@@ -12,6 +12,7 @@ import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
+from lxml import etree
 from pptx import Presentation
 from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Inches
@@ -169,3 +170,17 @@ class PptxContentLossTests(unittest.TestCase):
         md = self._convert(prs)
         self.assertIn('| First<br>Second |', md)
         self.assertNotIn('<br><br>', md)
+
+    def test_text_beside_office_math_survives_alternate_content(self) -> None:
+        prs, shape = self._presentation()
+        shape.text = 'ratio holds'
+        sp = shape._element
+        mc = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+        wrapper = etree.Element(f'{{{mc}}}AlternateContent', nsmap={'mc': mc})
+        choice = etree.SubElement(wrapper, f'{{{mc}}}Choice', Requires='a14')
+        etree.SubElement(wrapper, f'{{{mc}}}Fallback')
+        parent = sp.getparent()
+        parent.replace(sp, wrapper)
+        choice.append(sp)
+        md = self._convert(prs)
+        self.assertIn('ratio holds', md)

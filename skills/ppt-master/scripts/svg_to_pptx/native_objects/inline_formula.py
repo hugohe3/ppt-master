@@ -292,13 +292,14 @@ def build_inline_formula_xml(latex: str, run_properties_xml: str) -> str:
     return f"<a14:m>{styled}</a14:m>"
 
 
-def wrap_inline_formula_shape(shape_xml: str) -> str:
-    """Wrap a text shape containing ``a14:m`` in its required MCE Choice."""
+def wrap_inline_formula_shape(shape_xml: str, fallback_xml: str) -> str:
+    """Wrap an ``a14:m`` text shape in its MCE Choice plus preview-text Fallback."""
     return (
         f'<mc:AlternateContent xmlns:mc="{MC_NS}">'
         f'<mc:Choice xmlns:a14="{A14_NS}" Requires="a14">'
         f"{shape_xml}"
         "</mc:Choice>"
+        f"<mc:Fallback>{fallback_xml}</mc:Fallback>"
         "</mc:AlternateContent>"
     )
 

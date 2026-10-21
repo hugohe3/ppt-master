@@ -3085,6 +3085,15 @@ def _text_axis_transform(ctx: ConvertContext) -> tuple[bool, bool, bool]:
     return True, a < 0, d < 0
 
 
+def _inline_formula_preview_run(run: dict[str, Any]) -> dict[str, Any]:
+    """Return an inline formula run as its ordinary SVG preview-text run."""
+    if run.get(_INLINE_FORMULA_KEY) is None:
+        return run
+    preview = dict(run)
+    del preview[_INLINE_FORMULA_KEY]
+    return preview
+
+
 def _build_run_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
@@ -3590,47 +3599,61 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shape_id = _claim_element_shape_id(elem, ctx)
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
 
-    if paragraph_runs is not None:
-        # SVG dy(px) -> hundredths-of-a-point: dy_pt = dy_px * 0.75, then x100.
-        line_spc_val = round(line_height_px * FONT_PX_TO_HUNDREDTHS_PT)
-        ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
-        paragraph_xml_chunks = []
-        for line, extra_px, bullet in zip(paragraph_runs, paragraph_space_before, paragraph_bullets):
-            spc_bef_xml = ''
-            if extra_px > 0:
-                spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
-                spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
-            runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
-            first_text_run = next(
-                (run for run in line if not run.get('_line_break')),
-                None,
+    def _paragraphs_xml(formula_previews: bool) -> str:
+        # The MCE Fallback copy writes each inline formula as its SVG preview
+        # text so a reader without a14 math still shows the formula.
+        def _runs_xml(line_runs: list[dict[str, Any]]) -> str:
+            return '\n'.join(
+                _build_run_xml(
+                    _inline_formula_preview_run(r) if formula_previews else r,
+                    fonts,
+                    ctx,
+                    text_effect_xml,
+                )
+                for r in line_runs
             )
-            effective_line_spacing = (
-                ''
-                if any(run.get(_INLINE_FORMULA_KEY) is not None for run in line)
-                else ln_spc_xml
-            )
-            p_pr_xml = _paragraph_pr_xml(
-                algn=algn,
-                font_size=(
-                    float(first_text_run.get('font_size', font_size))
-                    if first_text_run is not None
-                    else font_size
-                ),
-                body_xml=f'{effective_line_spacing}{spc_bef_xml}',
-                bullet=bullet,
-                ctx=ctx,
-                rtl=text_uses_rtl(
-                    ''.join(str(run.get('text', '')) for run in line),
-                    ctx.primary_language,
-                ),
-            )
-            paragraph_xml_chunks.append(
-                f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
-            )
-        paragraphs_xml = '\n'.join(paragraph_xml_chunks)
-    else:
-        runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+
+        if paragraph_runs is not None:
+            # SVG dy(px) -> hundredths-of-a-point: dy_pt = dy_px * 0.75, then x100.
+            line_spc_val = round(line_height_px * FONT_PX_TO_HUNDREDTHS_PT)
+            ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
+            paragraph_xml_chunks = []
+            for line, extra_px, bullet in zip(paragraph_runs, paragraph_space_before, paragraph_bullets):
+                spc_bef_xml = ''
+                if extra_px > 0:
+                    spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
+                    spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
+                runs_inner = _runs_xml(line)
+                first_text_run = next(
+                    (run for run in line if not run.get('_line_break')),
+                    None,
+                )
+                effective_line_spacing = (
+                    ''
+                    if any(run.get(_INLINE_FORMULA_KEY) is not None for run in line)
+                    else ln_spc_xml
+                )
+                p_pr_xml = _paragraph_pr_xml(
+                    algn=algn,
+                    font_size=(
+                        float(first_text_run.get('font_size', font_size))
+                        if first_text_run is not None
+                        else font_size
+                    ),
+                    body_xml=f'{effective_line_spacing}{spc_bef_xml}',
+                    bullet=bullet,
+                    ctx=ctx,
+                    rtl=text_uses_rtl(
+                        ''.join(str(run.get('text', '')) for run in line),
+                        ctx.primary_language,
+                    ),
+                )
+                paragraph_xml_chunks.append(
+                    f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
+                )
+            return '\n'.join(paragraph_xml_chunks)
+
+        runs_xml = _runs_xml(runs)
         p_pr_xml = _paragraph_pr_xml(
             algn=algn,
             font_size=float(runs[0].get('font_size', font_size)) if runs else font_size,
@@ -3638,7 +3661,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             ctx=ctx,
             rtl=text_uses_rtl(full_text, ctx.primary_language),
         )
-        paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
+        return f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
+
+    paragraphs_xml = _paragraphs_xml(False)
 
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
@@ -3702,9 +3727,10 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             'anchor="t" anchorCtr="0">\n<a:spAutoFit/>\n</a:bodyPr>'
         )
 
-    shape_xml = f'''<p:sp>
+    def _shape_xml(sp_id: int, sp_paragraphs_xml: str) -> str:
+        return f'''<p:sp>
 <p:nvSpPr>
-<p:cNvPr id="{shape_id}" name="{_xml_escape(shape_display_name(elem, f'TextBox {shape_id}'))}"/>
+<p:cNvPr id="{sp_id}" name="{_xml_escape(shape_display_name(elem, f'TextBox {sp_id}'))}"/>
 <p:cNvSpPr txBox="1"/><p:nvPr/>
 </p:nvSpPr>
 <p:spPr>
@@ -3718,12 +3744,17 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <p:txBody>
 {body_pr_xml}
 <a:lstStyle/>
-{paragraphs_xml}
+{sp_paragraphs_xml}
 </p:txBody>
 </p:sp>'''
+
+    shape_xml = _shape_xml(shape_id, paragraphs_xml)
     if any(run.get(_INLINE_FORMULA_KEY) is not None for run in runs):
         from ..native_objects.inline_formula import wrap_inline_formula_shape
-        shape_xml = wrap_inline_formula_shape(shape_xml)
+        shape_xml = wrap_inline_formula_shape(
+            shape_xml,
+            _shape_xml(ctx.next_id(), _paragraphs_xml(True)),
+        )
     return ShapeResult(
         xml=shape_xml,
         bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),

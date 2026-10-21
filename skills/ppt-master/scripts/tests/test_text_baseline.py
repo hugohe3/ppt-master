@@ -34,6 +34,7 @@ from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa:
 NS = {
     'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
     'm': 'http://schemas.openxmlformats.org/officeDocument/2006/math',
+    'mc': 'http://schemas.openxmlformats.org/markup-compatibility/2006',
     'p': 'http://schemas.openxmlformats.org/presentationml/2006/main',
 }
 EMU_PER_PX = 9525
@@ -333,6 +334,8 @@ class TextBaselineTests(unittest.TestCase):
             '<text x="100" y="200" font-size="40" font-family="Microsoft YaHei">'
             'Hg<tspan data-pptx-inline-formula="x">x</tspan>pq</text>'
         )
-        shape = self._single_shape(slide)
+        shapes = slide.findall('.//mc:Choice/p:sp', NS)
+        self.assertEqual(len(shapes), 1)
+        shape = shapes[0]
         self._assert_top(shape, 166)
         self.assertIsNotNone(shape.find('.//m:oMath', NS))

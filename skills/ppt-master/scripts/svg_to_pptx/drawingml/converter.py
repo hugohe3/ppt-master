@@ -127,6 +127,8 @@ from ..native_objects import (
     require_fresh_native_fallback,
     snapshot_native_fallback_freshness,
 )
+from ..native_objects.formula import formula_fallback_xml
+from ..native_objects.inline_formula import wrap_inline_formula_shape
 from ..native_objects.marker_status import native_marker_status_errors
 from ..semantic_markers import is_static_page_frame
 
@@ -724,6 +726,60 @@ def _append_shape_text(
     )
 
 
+_A14_NS = 'http://schemas.microsoft.com/office/drawing/2010/main'
+_A14_MATH_TAG = f'{{{_A14_NS}}}m'
+# Generated txBody fragments rely on the slide's prefixes; bind them to parse.
+_TXBODY_PREFIXES = (
+    'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+    f'xmlns:a="{DRAWINGML_NS}" xmlns:a14="{_A14_NS}" '
+    'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'
+)
+
+
+def _txbody_has_office_math(txbody_xml: str) -> bool:
+    try:
+        body = re.sub(r'^\s*<\?xml[^>]*\?>', '', txbody_xml)
+        root = ET.fromstring(f'<root {_TXBODY_PREFIXES}>{body}</root>')
+    except ET.ParseError:
+        return False
+    return any(node.tag == _A14_MATH_TAG for node in root.iter())
+
+
+def _with_office_math_fallback(
+    elem: ET.Element,
+    restored: ShapeResult,
+    geometry: ShapeResult,
+    ctx: ConvertContext,
+) -> ShapeResult:
+    """Give a shape's Office Math text its visible SVG text as MCE Fallback."""
+    # The copy is a plain picture of the shape: fresh id, no placeholder role.
+    carrier_xml = re.sub(
+        r'<p:cNvPr id="\d+"',
+        f'<p:cNvPr id="{ctx.next_id()}"',
+        geometry.xml,
+        count=1,
+    )
+    carrier_xml = re.sub(r'<p:ph\b[^>]*/>', '', carrier_xml)
+    results = [ShapeResult(xml=carrier_xml, bounds_emu=geometry.bounds_emu)]
+    for child in elem:
+        if (
+            child.get('data-pptx-part') is None
+            and child.tag.replace(f'{{{SVG_NS}}}', '') in {'text', 'g'}
+        ):
+            result = convert_element(child, ctx)
+            if result:
+                results.append(result)
+    fallback_xml = formula_fallback_xml(
+        results,
+        ctx,
+        _xml_escape(shape_display_name(elem, 'Formula')),
+    )
+    return ShapeResult(
+        xml=wrap_inline_formula_shape(restored.xml, fallback_xml),
+        bounds_emu=restored.bounds_emu,
+    )
+
+
 def _make_semantic_geometry_carrier_visible(element: ET.Element) -> None:
     """Remove authoring-only hiding from a semantic geometry carrier clone."""
     for name in ('visibility', 'display', 'pointer-events'):
@@ -847,7 +903,12 @@ def _convert_semantic_shape(
             'Semantic shape geometry carrier produced no native shape'
         )
     text_body = _semantic_shape_text_body(shape, ctx)
-    return _append_shape_text(geometry, text_body) if text_body else geometry
+    if not text_body:
+        return geometry
+    restored = _append_shape_text(geometry, text_body)
+    if _txbody_has_office_math(text_body):
+        return _with_office_math_fallback(shape, restored, geometry, ctx)
+    return restored
 
 
 def _restore_placeholder_sp_pr(
@@ -1313,6 +1374,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             native_text,
         )
         restored = _restore_placeholder_sp_pr(restored, elem)
+        if _txbody_has_office_math(native_text):
+            restored = _with_office_math_fallback(
+                elem, restored, geometry_result, geometry_ctx,
+            )
+            ctx.sync_from_child(geometry_ctx)
         if should_animate_group and elem_id:
             shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
             if shape_match:

@@ -196,13 +196,59 @@ def _styled_omml(spec: FormulaSpec) -> str:
     return serialize_styled_formula_omml(root)
 
 
+def formula_fallback_xml(
+    results: list[ShapeResult],
+    ctx: ConvertContext,
+    name: str,
+) -> str:
+    """Join converted preview shapes into one MCE Fallback shape (or none)."""
+    if not results:
+        return ""
+    if len(results) == 1:
+        return results[0].xml
+    bounds = [result.bounds_emu for result in results if result.bounds_emu]
+    if not bounds:
+        return "\n".join(result.xml for result in results)
+    min_x = min(box[0] for box in bounds)
+    min_y = min(box[1] for box in bounds)
+    ext_cx = max(max(box[2] for box in bounds) - min_x, 1)
+    ext_cy = max(max(box[3] for box in bounds) - min_y, 1)
+    shapes_xml = "\n".join(result.xml for result in results)
+    return f'''<p:grpSp>
+<p:nvGrpSpPr>
+<p:cNvPr id="{ctx.next_id()}" name="{name}"/>
+<p:cNvGrpSpPr/>
+<p:nvPr/>
+</p:nvGrpSpPr>
+<p:grpSpPr>
+<a:xfrm><a:off x="{min_x}" y="{min_y}"/><a:ext cx="{ext_cx}" cy="{ext_cy}"/>
+<a:chOff x="{min_x}" y="{min_y}"/><a:chExt cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
+</p:grpSpPr>
+{shapes_xml}
+</p:grpSp>'''
+
+
+def _preview_fallback_xml(elem: ET.Element, ctx: ConvertContext, name: str) -> str:
+    """Convert the marker's SVG preview into native shapes for the MCE Fallback."""
+    # Deferred import: the drawingml converter imports this package.
+    from ..drawingml.converter import convert_element
+
+    results = [
+        result
+        for child in elem
+        if child.tag.rsplit("}", 1)[-1] != "metadata"
+        and (result := convert_element(child, ctx)) is not None
+    ]
+    return formula_fallback_xml(results, ctx, name)
+
+
 def build_native_formula(
     elem: ET.Element,
     ctx: ConvertContext,
     payload: dict[str, Any],
     spec: FormulaSpec | None = None,
 ) -> ShapeResult:
-    """Build one Choice-only editable formula with no image fallback."""
+    """Build one editable formula whose MCE Fallback is its SVG preview."""
     formula_spec = spec or validate_formula_payload(payload, ctx=ctx)
     off_x, off_y, ext_cx, ext_cy = _bounds(elem, payload, ctx)
     shape_id = ctx.next_id()
@@ -210,6 +256,8 @@ def build_native_formula(
         str(payload.get("name") or elem.get("id") or f"Formula {shape_id}")
     )
     omml = _styled_omml(formula_spec)
+    fallback_xml = _preview_fallback_xml(elem, ctx, name)
+    fallback = f"\n<mc:Fallback>\n{fallback_xml}\n</mc:Fallback>" if fallback_xml else ""
 
     xml = f'''<mc:AlternateContent xmlns:mc="{MC_NS}">
 <mc:Choice xmlns:a14="{A14_NS}" Requires="a14">
@@ -235,7 +283,7 @@ def build_native_formula(
 </a:p>
 </p:txBody>
 </p:sp>
-</mc:Choice>
+</mc:Choice>{fallback}
 </mc:AlternateContent>'''
     return ShapeResult(
         xml=xml,

@@ -254,9 +254,17 @@ def _container_geometry(
 
 
 def _text_containers(slide_root: ET.Element) -> list[ET.Element]:
+    # mc:Fallback repeats its Choice for other clients; it is not slide content.
+    fallback_nodes = {
+        node
+        for fallback in slide_root.iter(f"{{{MC_NS}}}Fallback")
+        for node in fallback.iter()
+    }
     containers: list[ET.Element] = []
     for tag in ("p:sp", "p:graphicFrame"):
         for element in slide_root.findall(f".//{tag}", NS):
+            if element in fallback_nodes:
+                continue
             if element.find(".//p:txBody", NS) is not None or element.findall(".//a:t", NS):
                 containers.append(element)
     return containers
