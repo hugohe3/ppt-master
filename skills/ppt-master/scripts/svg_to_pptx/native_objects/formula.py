@@ -251,7 +251,10 @@ def build_native_formula(
     """Build one editable formula whose MCE Fallback is its SVG preview."""
     formula_spec = spec or validate_formula_payload(payload, ctx=ctx)
     off_x, off_y, ext_cx, ext_cy = _bounds(elem, payload, ctx)
-    shape_id = ctx.next_id()
+    shape_id = ctx.claim_shape_id(
+        elem.get("data-pptx-shape-id"),
+        elem.get("data-pptx-shape-scope"),
+    )
     name = _xml_escape(
         str(payload.get("name") or elem.get("id") or f"Formula {shape_id}")
     )
