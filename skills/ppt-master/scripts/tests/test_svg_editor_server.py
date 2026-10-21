@@ -196,6 +196,34 @@ class StagingDraftTests(unittest.TestCase):
         self.assertFalse(self.draft.exists())
 
 
+class SvgNamespaceTests(unittest.TestCase):
+    """Preview and save keep `<svg xmlns=...>` (issue #323)."""
+
+    _client = StagingDraftTests._client
+    _stage = StagingDraftTests._stage
+
+    def setUp(self) -> None:
+        StagingDraftTests.setUp(self)
+        from xml.etree import ElementTree as ET
+        from pptx_ooxml.ooxml import REL_NS
+        # The state a running server is in: pptx_ooxml claims the default prefix at import.
+        ET.register_namespace('', REL_NS)
+        self.addCleanup(ET.register_namespace, '', 'http://www.w3.org/2000/svg')
+
+    def test_slide_content_keeps_default_svg_namespace(self) -> None:
+        content = self._client().get('/api/slide/01.svg').get_json()['content']
+        self.assertTrue(content.startswith('<svg xmlns="http://www.w3.org/2000/svg"'), content[:80])
+        self.assertNotIn('ns0:', content)
+
+    def test_saved_svg_keeps_default_svg_namespace(self) -> None:
+        client = self._client()
+        self._stage(client)
+        self.assertEqual(client.post('/api/save-all').get_json()['files_modified'], ['01.svg'])
+        on_disk = self.svg_path.read_text(encoding='utf-8')
+        self.assertIn('<svg xmlns="http://www.w3.org/2000/svg"', on_disk)
+        self.assertNotIn('ns0:', on_disk)
+
+
 class AnnotationHelperTests(unittest.TestCase):
     def test_user_ids_with_the_temp_prefix_are_kept(self) -> None:
         from xml.etree import ElementTree as ET

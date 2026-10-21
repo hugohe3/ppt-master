@@ -350,6 +350,21 @@ def _file_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+_SVG_NS = 'http://www.w3.org/2000/svg'
+_XLINK_NS = 'http://www.w3.org/1999/xlink'
+
+
+def _register_svg_namespaces() -> None:
+    """Bind the SVG namespace to the default prefix right before serializing.
+
+    The ElementTree prefix map is process-global and ``pptx_ooxml.ooxml``
+    (imported via ``svg_to_pptx``) claims the default prefix for its own
+    namespace at import, so without this the slide comes out as ``<ns0:svg>``.
+    """
+    ET.register_namespace('', _SVG_NS)
+    ET.register_namespace('xlink', _XLINK_NS)
+
+
 def _atomic_replace(path: Path, write) -> None:
     """Write through ``write(tmp_path)`` and swap the result into ``path``.
 
@@ -885,6 +900,7 @@ def create_app(
                         tag = tag.split('}', 1)[1]
                     id_to_tag[eid] = tag
             _normalize_preview_hrefs(root)
+            _register_svg_namespaces()
             content = ET.tostring(root, encoding='unicode', xml_declaration=False)
             content, warnings = _inline_icons(
                 content,
@@ -1201,6 +1217,7 @@ def create_app(
             annotated_ids = set(anns.keys())
             strip_unused_temp_ids(root, annotated_ids)
 
+            _register_svg_namespaces()
             try:
                 _atomic_replace(svg_file, lambda tmp: tree.write(
                     str(tmp), encoding='UTF-8', xml_declaration=True,
