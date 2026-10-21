@@ -13,6 +13,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from native_payloads import NativePayloadError, hydrate_native_payload_refs
+from pptx_ooxml.package import PackagePartRegistry
 from hyperlink_contract import (
     SHAPE_HYPERLINK_ATTR,
     project_hyperlink_errors,
@@ -125,6 +126,7 @@ from ..native_objects import (
     native_replacement_kind,
     native_marker_transform,
     require_fresh_native_fallback,
+    reserve_source_chart_parts,
     snapshot_native_fallback_freshness,
 )
 from ..native_objects.formula import formula_fallback_xml
@@ -2035,6 +2037,7 @@ def convert_svg_to_slide_shapes(
     promote_background: bool = True,
     text_flow: str | None = None,
     dangerous_nonconforming_export: bool = False,
+    package_parts: PackagePartRegistry | None = None,
 ) -> tuple[
     str,
     dict[str, bytes],
@@ -2083,6 +2086,8 @@ def convert_svg_to_slide_shapes(
             Parsing, resource, conversion, and package failures remain blocking.
         resource_root: Explicit project boundary for local images and icons.
             Omit only for direct library calls that require legacy inference.
+        package_parts: Shared native-part registry for the complete export,
+            including the template/source package and previously rebuilt slides.
 
     Returns:
         (slide_xml, media_files, rel_entries, anim_targets,
@@ -2441,12 +2446,15 @@ def convert_svg_to_slide_shapes(
         theme_font_spec=theme_font_spec,
         theme_color_spec=theme_color_spec,
         primary_language=primary_language,
+        package_parts=package_parts if package_parts is not None else PackagePartRegistry(),
         inherited_styles=_extract_inheritable_styles(root),
         opacity_multiplier=1.0 if root_opacity is None else root_opacity,
         parent_by_id={id(child): parent for parent in root.iter() for child in parent},
         text_font_sizes=text_font_sizes,
         text_letter_spacings=text_letter_spacings,
     )
+    if native_objects:
+        reserve_source_chart_parts(root, ctx)
     shapes: list[str] = []
     converted = 0
     skipped = 0

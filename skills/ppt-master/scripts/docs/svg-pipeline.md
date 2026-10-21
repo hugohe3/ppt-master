@@ -131,6 +131,10 @@ original hierarchy level and `graphicFrame` type. Markers without a source id
 keep generated chart grouping, id allocation, and naming unchanged. Rebuilt
 chart relationships point to the newly generated chart/workbook parts;
 restored packages keep their source parts.
+New chart part families reserve unused names across the complete export
+(including source/template parts, workbooks, relationships, and ChartEx
+styles/colors); conflicting writes or content types fail with the part path
+and both owners, while identical immutable source dependencies may be reused.
 
 A page edit rebuilds that output page; a changed
 materialized or derived resource rebuilds every output page that references it.

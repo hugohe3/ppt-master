@@ -1,14 +1,14 @@
-"""Write-side OOXML package plumbing for source-preserving slide cloning.
+"""Write-side OOXML package plumbing for slide cloning and native objects.
 
 Content-type override insertion, relationship-element construction / lookup, and
-part-number allocation used when cloning slides into a new package.
+part allocation, and collision checks for a complete export package.
 """
 
 from __future__ import annotations
 
 import posixpath
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -31,6 +31,79 @@ _EXPLICIT_SLIDE_REL_KINDS = frozenset({
     "oleObject", "package", "diagramData", "diagramLayout", "diagramQuickStyle",
     "diagramColors", "diagramDrawing", "control", "model3d",
 })
+
+
+class PackagePartRegistry:
+    """Reserve package names and reject conflicting native-object writes."""
+
+    def __init__(
+        self,
+        package_root: Path | None = None,
+        content_types: dict[str, str] | None = None,
+    ) -> None:
+        self.package_root = package_root
+        self.parts: dict[str, bytes] = {}
+        self.content_types = dict(content_types or {})
+        self.owners: dict[str, str] = {}
+        self.source_names: set[str] = set()
+        if package_root is not None:
+            self.reserve_source(
+                (path.relative_to(package_root).as_posix()
+                 for path in package_root.rglob("*") if path.is_file()),
+                "template/source package",
+            )
+        self.reserve_source(self.content_types, "template/source content types")
+
+    def reserve_source(self, names: Iterable[str], owner: str) -> None:
+        """Reserve immutable source names before visiting any new objects."""
+        for name in names:
+            if name not in self.owners:
+                self.owners[name] = owner
+                self.source_names.add(name)
+
+    def next_index(
+        self, patterns: tuple[str, ...], start: int, occupied: Iterable[str] = (),
+    ) -> int:
+        """Keep the preferred number unless any member of the part family exists."""
+        used = self.owners.keys() | set(occupied)
+        while any(pattern.format(start) in used for pattern in patterns):
+            start += 1
+        return start
+
+    def register(
+        self,
+        parts: dict[str, bytes],
+        content_types: dict[str, str],
+        owner: str,
+        *,
+        source: bool = False,
+    ) -> None:
+        """Register an entire object atomically; identical source parts may be reused."""
+        for name in parts.keys() | content_types.keys():
+            previous_owner = self.owners.get(name)
+            existing = self.parts.get(name)
+            if existing is None and self.package_root is not None:
+                path = self.package_root / name
+                if path.is_file():
+                    existing = path.read_bytes()
+            previous_type = self.content_types.get(name)
+            content_type = content_types.get(name)
+            collision = previous_owner is not None and (
+                not source or name not in self.source_names
+                or (existing is not None and existing != parts.get(name))
+            )
+            if collision or (previous_type and content_type and previous_type != content_type):
+                raise RuntimeError(
+                    f"OOXML part collision: {name!r} between {previous_owner!r} and {owner!r}; "
+                    "use a distinct part name for each new object"
+                )
+        for name in parts.keys() | content_types.keys():
+            if name not in self.parts:
+                self.owners[name] = owner
+            if source:
+                self.source_names.add(name)
+        self.parts.update(parts)
+        self.content_types.update(content_types)
 
 
 def unreferenced_slide_relationships(

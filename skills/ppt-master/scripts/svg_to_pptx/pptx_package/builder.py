@@ -71,7 +71,7 @@ from pptx_opc_validation import (
 )
 from pptx_workspace import WorkspaceResourceSpec
 from pptx_ooxml.clone import clone_presentation_slides
-from pptx_ooxml.package import prune_unreferenced_directory_parts
+from pptx_ooxml.package import PackagePartRegistry, prune_unreferenced_directory_parts
 from language_tags import language_uses_rtl, office_language_tag
 from hyperlink_contract import (
     HYPERLINK_REL_TYPE,
@@ -7223,6 +7223,7 @@ def create_pptx_with_native_svg(
         image_exts_used: set[str] = set()
         package_exts_used: set[str] = set()
         package_content_overrides: dict[str, str] = {}
+        package_parts = PackagePartRegistry(extract_dir, _content_type_overrides(extract_dir))
         notes_slides_created: set[int] = set()
         notes_master_parts_used: set[str] = set()
         notes_master_theme_parts_created: set[str] = set()
@@ -7595,6 +7596,7 @@ def create_pptx_with_native_svg(
                             image_scale=image_scale,
                             image_quality=image_quality,
                             native_objects=native_objects,
+                            package_parts=package_parts,
                             animation_group_overrides=converter_group_overrides,
                             theme_font_spec=active_theme_font_spec,
                             theme_color_spec=active_theme_color_spec,

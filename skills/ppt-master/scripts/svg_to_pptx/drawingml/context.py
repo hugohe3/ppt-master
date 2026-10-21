@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Any
 from xml.etree import ElementTree as ET
 from dataclasses import dataclass, field
 
+from pptx_ooxml.package import PackagePartRegistry
+
 if TYPE_CHECKING:
     from .theme_colors import ThemeColorSpec
     from .theme_fonts import ThemeFontSpec
@@ -84,6 +86,7 @@ class ConvertContext:
     rel_entries: list[dict[str, str]] = field(default_factory=list)
     package_files: dict[str, bytes] = field(default_factory=dict)
     content_type_overrides: dict[str, str] = field(default_factory=dict)
+    package_parts: PackagePartRegistry = field(default_factory=PackagePartRegistry)
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
     svg_dir: Path | None = None
     # Explicit project boundary for deterministic resource resolution. Public
@@ -266,6 +269,7 @@ class ConvertContext:
             rel_entries=self.rel_entries,
             package_files=self.package_files,
             content_type_overrides=self.content_type_overrides,
+            package_parts=self.package_parts,
             rel_id_counter=self.rel_id_counter,
             svg_dir=self.svg_dir,
             resource_root=self.resource_root,

@@ -339,6 +339,23 @@ def _grow_chart_frame_for_axis_labels(
     return off_x, off_y, ext_cx, ext_cy
 
 
+def reserve_source_chart_parts(root: ET.Element, ctx: ConvertContext) -> None:
+    """Reserve source chart packages even when they follow newly authored charts."""
+    for elem in root.iter():
+        if native_replacement_kind(elem) != "chart":
+            continue
+        source = _decode_source_chart_package(_load_payload(elem, "chart"))
+        if source is not None:
+            ctx.package_parts.reserve_source(source[2], _chart_part_owner(elem, ctx))
+
+
+def _chart_part_owner(elem: ET.Element, ctx: ConvertContext) -> str:
+    return (
+        f"slide {ctx.slide_num} chart {elem.get('id')!r} "
+        f"(source shape {elem.get('data-pptx-shape-id')!r})"
+    )
+
+
 def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     source_package = _decode_source_chart_package(payload)
     chart_data = None if source_package is not None else _chart_data(payload)
@@ -357,6 +374,21 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     rel_id = ctx.next_rel_id()
     local_index = 1 + sum(1 for part in ctx.package_files if part.startswith("ppt/charts/chart"))
     part_index = ctx.slide_num * 100 + local_index
+    if source_package is None:
+        is_chartex = chart_data is not None and chart_data["kind"] == "chartex"
+        chart_pattern = "chartEx{}.xml" if is_chartex else "chart{}.xml"
+        patterns = (
+            f"ppt/charts/{chart_pattern}",
+            f"ppt/charts/_rels/{chart_pattern}.rels",
+            "ppt/embeddings/Microsoft_Excel_Sheet{}.xlsx",
+        )
+        if is_chartex:
+            patterns += ("ppt/charts/style{}.xml", "ppt/charts/colors{}.xml")
+        part_index = ctx.package_parts.next_index(
+            patterns, part_index, ctx.package_files.keys() | ctx.content_type_overrides.keys(),
+        )
+    parts: dict[str, bytes] = {}
+    content_types: dict[str, str] = {}
     workbook_name = f"Microsoft_Excel_Sheet{part_index}.xlsx"
     workbook_part = f"ppt/embeddings/{workbook_name}"
     if source_package is not None:
@@ -369,14 +401,8 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             "type": CHART_REL_TYPE,
             "target": posixpath.relpath(chart_part, "ppt/slides"),
         })
-        for part_name, part_payload in source_parts.items():
-            existing = ctx.package_files.get(part_name)
-            if existing is not None and existing != part_payload:
-                raise RuntimeError(
-                    f"Native PPTX chart source package part collision: {part_name}"
-                )
-            ctx.package_files[part_name] = part_payload
-        ctx.content_type_overrides.update(source_content_types)
+        parts = source_parts
+        content_types = source_content_types
     elif chart_data is not None and chart_data["kind"] == "chartex":
         chart_name = f"chartEx{part_index}.xml"
         style_name = f"style{part_index}.xml"
@@ -396,18 +422,18 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             "type": CHARTEX_REL_TYPE,
             "target": f"../charts/{chart_name}",
         })
-        ctx.package_files[chart_part] = _chart_ex_xml(payload, chart_data, chart_rels_id="rId1")
-        ctx.package_files[chart_rels_part] = _chart_ex_rels_xml(
+        parts[chart_part] = _chart_ex_xml(payload, chart_data, chart_rels_id="rId1")
+        parts[chart_rels_part] = _chart_ex_rels_xml(
             f"../embeddings/{workbook_name}",
             style_name,
             colors_name,
         )
-        ctx.package_files[style_part] = _chart_ex_style_xml()
-        ctx.package_files[colors_part] = _chart_ex_colors_xml(payload)
-        ctx.package_files[workbook_part] = _minimal_chart_ex_workbook(chart_data)
-        ctx.content_type_overrides[chart_part] = CHARTEX_CONTENT_TYPE
-        ctx.content_type_overrides[style_part] = CHART_STYLE_CONTENT_TYPE
-        ctx.content_type_overrides[colors_part] = CHART_COLOR_STYLE_CONTENT_TYPE
+        parts[style_part] = _chart_ex_style_xml()
+        parts[colors_part] = _chart_ex_colors_xml(payload)
+        parts[workbook_part] = _minimal_chart_ex_workbook(chart_data)
+        content_types[chart_part] = CHARTEX_CONTENT_TYPE
+        content_types[style_part] = CHART_STYLE_CONTENT_TYPE
+        content_types[colors_part] = CHART_COLOR_STYLE_CONTENT_TYPE
     else:
         chart_name = f"chart{part_index}.xml"
         chart_part = f"ppt/charts/{chart_name}"
@@ -422,7 +448,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             "type": CHART_REL_TYPE,
             "target": f"../charts/{chart_name}",
         })
-        ctx.package_files[chart_part] = _chart_xml(
+        parts[chart_part] = _chart_xml(
             elem,
             payload,
             chart_rels_id="rId1",
@@ -431,13 +457,19 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             primary_language=ctx.primary_language,
             chart_bounds=(off_x, off_y, ext_cx, ext_cy),
         )
-        ctx.package_files[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
+        parts[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
         assert chart_data is not None
         if chart_data["kind"] == "xy":
-            ctx.package_files[workbook_part] = _minimal_xy_chart_workbook(chart_data)
+            parts[workbook_part] = _minimal_xy_chart_workbook(chart_data)
         else:
-            ctx.package_files[workbook_part] = _minimal_category_chart_workbook(chart_data)
-        ctx.content_type_overrides[chart_part] = CHART_CONTENT_TYPE
+            parts[workbook_part] = _minimal_category_chart_workbook(chart_data)
+        content_types[chart_part] = CHART_CONTENT_TYPE
+
+    ctx.package_parts.register(
+        parts, content_types, _chart_part_owner(elem, ctx), source=source_package is not None,
+    )
+    ctx.package_files.update(parts)
+    ctx.content_type_overrides.update(content_types)
 
     source_name = elem.get("data-pptx-shape-name") if source_id is not None else None
     name = _xml_escape(str(source_name or payload.get("name") or elem.get("id") or f"Native Chart {shape_id}"))
