@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 from xml.etree import ElementTree as ET
+from xml.parsers import expat
 from xml.sax.saxutils import escape, quoteattr
 
 from pptx import Presentation
@@ -606,11 +607,94 @@ def _set_shape_name(elem: ET.Element, name: str) -> None:
     )
 
 
+def _roundtrip_morph_shape_ids(svg_path: Path, group_ids: set[str]) -> dict[tuple[str, str], int]:
+    """Resolve preserved endpoints from imported identity, never SVG id spelling."""
+    if not group_ids:
+        return {}
+    root = ET.parse(svg_path).getroot()
+    result: dict[tuple[str, str], int] = {}
+    for group_id in sorted(group_ids):
+        groups = [node for node in root if node.tag == '{http://www.w3.org/2000/svg}g'
+                  and node.get('id') == group_id]
+        shape_id = groups[0].get('data-pptx-shape-id', '') if len(groups) == 1 else ''
+        if (not shape_id.isdecimal()
+                or groups[0].get('data-pptx-shape-scope') != 'slide'):
+            raise TemplateStructureError(
+                f'Morph target "{svg_path.stem}/{group_id}" has no unique imported '
+                'Slide-local shape identity; edit this endpoint page as well, or '
+                'pair groups on two edited pages'
+            )
+        result[(svg_path.stem, group_id)] = int(shape_id)
+    return result
+
+
+_XML_START_TAG_RE = re.compile(r'''<(?:"[^"]*"|'[^']*'|[^'">])*>''')
+_XML_ATTRIBUTE_RE = re.compile(r'''\s+([^\s=/>]+)\s*=\s*(["'])(.*?)\2''', re.DOTALL)
+
+
+def _patch_morph_name_bytes(
+    source: bytes,
+    assignments: dict[str, tuple[str, str]],
+    slide_number: int,
+) -> bytes:
+    """Replace only cNvPr name values, retaining all other source XML bytes."""
+    parser = expat.ParserCreate(namespace_separator='}')
+    offsets: dict[str, list[tuple[int, str | None]]] = {}
+    encoding = 'utf-8'
+
+    def declaration(_version: str, declared_encoding: str | None, _standalone: int) -> None:
+        nonlocal encoding
+        encoding = declared_encoding or encoding
+
+    def start(name: str, attributes: dict[str, str]) -> None:
+        shape_id = attributes.get('id')
+        if name == f'{PML_NS}}}cNvPr' and shape_id in assignments:
+            offsets.setdefault(shape_id, []).append((parser.CurrentByteIndex, attributes.get('name')))
+
+    parser.XmlDeclHandler = declaration
+    parser.StartElementHandler = start
+    parser.Parse(source, True)
+    # Byte offsets come from Expat; encode individual spans without a BOM.
+    if source.startswith((b'\xff\xfe', b'<\x00')):
+        encoding = 'utf-16-le'
+    elif source.startswith((b'\xfe\xff', b'\x00<')):
+        encoding = 'utf-16-be'
+    replacements: list[tuple[int, int, bytes]] = []
+    for shape_id, (name, group_id) in assignments.items():
+        locations = offsets.get(shape_id, [])
+        error = (
+            f'Morph target "{group_id}" on slide {slide_number} cannot patch '
+            f'cNvPr@name for source shape {shape_id} without rewriting XML; '
+            'edit this endpoint page as well, or pair groups on two edited pages'
+        )
+        if len(locations) != 1:
+            raise TemplateStructureError(error)
+        offset, existing_name = locations[0]
+        if existing_name == name:
+            continue
+        tag = _XML_START_TAG_RE.match(source[offset:].decode(encoding))
+        attribute = next(
+            (match for match in _XML_ATTRIBUTE_RE.finditer(tag.group()) if match[1] == 'name'),
+            None,
+        ) if tag is not None else None
+        if attribute is None:
+            raise TemplateStructureError(error)
+        start_offset = offset + len(tag.group()[:attribute.start(3)].encode(encoding))
+        end_offset = offset + len(tag.group()[:attribute.end(3)].encode(encoding))
+        escaped = escape(name, {'"': '&quot;', "'": '&apos;'})
+        replacements.append((start_offset, end_offset, escaped.encode(encoding, errors='xmlcharrefreplace')))
+    for start_offset, end_offset, value in sorted(replacements, reverse=True):
+        source = source[:start_offset] + value + source[end_offset:]
+    return source
+
+
 def _apply_morph_shape_names(
     extract_dir: Path,
     pairs: tuple[MorphPair, ...],
     slide_numbers: dict[str, int],
     shape_ids: dict[tuple[str, str], int],
+    *,
+    preserved_slides: set[int],
 ) -> dict[int, dict[str, str]]:
     """Write forced-Morph names after all structure transformations finish."""
     assignments: dict[int, dict[str, tuple[str, str]]] = {}
@@ -621,14 +705,21 @@ def _apply_morph_shape_names(
             (pair.destination_slide, pair.destination_group_id),
         ):
             slide_number = slide_numbers[slide_name]
-            shape_id = str(shape_ids[(slide_name, group_id)])
+            resolved_id = shape_ids.get((slide_name, group_id))
+            if resolved_id is None:
+                raise TemplateStructureError(
+                    f'Morph target "{slide_name}/{group_id}" has no exported '
+                    'Slide-local shape identity; edit this endpoint page as well, '
+                    'or pair groups on two edited pages'
+                )
+            shape_id = str(resolved_id)
             slide_assignments = assignments.setdefault(slide_number, {})
             previous = slide_assignments.setdefault(
                 shape_id,
                 (pair.shape_name, group_id),
             )
             if previous[0] != pair.shape_name:
-                raise RuntimeError(
+                raise TemplateStructureError(
                     f'Morph target "{slide_name}/{group_id}" resolves to shape '
                     f'{shape_id} with conflicting names "{previous[0]}" and '
                     f'"{pair.shape_name}"'
@@ -636,7 +727,7 @@ def _apply_morph_shape_names(
             slide_names = names_by_slide.setdefault(slide_number, {})
             previous_group = slide_names.setdefault(pair.shape_name, group_id)
             if previous_group != group_id:
-                raise RuntimeError(
+                raise TemplateStructureError(
                     f'Morph name "{pair.shape_name}" maps to multiple objects '
                     f'on slide "{slide_name}"'
                 )
@@ -661,7 +752,7 @@ def _apply_morph_shape_names(
                 c_nv_pr.get("name") if c_nv_pr is not None else None
             )
             if existing_name in desired_names:
-                raise RuntimeError(
+                raise TemplateStructureError(
                     f'Morph name "{existing_name}" already belongs to an '
                     f'unmapped object on slide {slide_number}'
                 )
@@ -669,13 +760,18 @@ def _apply_morph_shape_names(
         for shape_id, (shape_name, group_id) in slide_assignments.items():
             shape = top_level_shapes.get(shape_id)
             if shape is None:
-                raise RuntimeError(
+                raise TemplateStructureError(
                     f'Morph target "{group_id}" no longer resolves to a '
                     f'Slide-local shape on slide {slide_number}'
                 )
             _set_shape_name(shape, shape_name)
             trace_names.setdefault(slide_number, {})[group_id] = shape_name
-        _write_xml_tree(slide_path, tree)
+        if slide_number in preserved_slides:
+            slide_path.write_bytes(_patch_morph_name_bytes(
+                slide_path.read_bytes(), slide_assignments, slide_number,
+            ))
+        else:
+            _write_xml_tree(slide_path, tree)
     return trace_names
 
 
@@ -6892,6 +6988,7 @@ def create_pptx_with_native_svg(
             set(),
         ).add(pair.destination_group_id)
     morph_shape_ids: dict[tuple[str, str], int] = {}
+    morph_preserved_slides: set[int] = set()
     if definition_svg_files and pptx_structure != "structured":
         raise ValueError(
             "unselected Layout prototypes require pptx_structure='structured'"
@@ -7305,6 +7402,10 @@ def create_pptx_with_native_svg(
                         raise TemplateStructureError(
                             "Internal Layout definitions cannot use source-slide passthrough"
                         )
+                    morph_shape_ids.update(_roundtrip_morph_shape_ids(
+                        svg_path, morph_group_overrides_by_slide.get(svg_path.stem, set()),
+                    ))
+                    morph_preserved_slides.add(slide_num)
                     if verbose:
                         print(
                             f"  {progress_label} {svg_path.name} "
@@ -7422,21 +7523,25 @@ def create_pptx_with_native_svg(
                         continue
                 if (
                     slide_patch is not None
-                    and slide_patch.notes_changed
                     and not slide_patch.visual_changed
                     and not slide_patch.motion_changed
+                    and (slide_patch.notes_changed or morph_group_overrides_by_slide.get(svg_path.stem))
                 ):
-                    notes_content = (
-                        notes.get(svg_path.stem, '') if notes else ''
-                    )
-                    notes_master = _apply_slide_notes(
-                        extract_dir,
-                        rels_path,
-                        slide_num,
-                        notes_content,
-                        primary_language,
-                        enable_notes=enable_notes,
-                    )
+                    morph_shape_ids.update(_roundtrip_morph_shape_ids(
+                        svg_path, morph_group_overrides_by_slide.get(svg_path.stem, set()),
+                    ))
+                    morph_preserved_slides.add(slide_num)
+                    notes_master = None
+                    if slide_patch.notes_changed:
+                        notes_content = notes.get(svg_path.stem, '') if notes else ''
+                        notes_master = _apply_slide_notes(
+                            extract_dir,
+                            rels_path,
+                            slide_num,
+                            notes_content,
+                            primary_language,
+                            enable_notes=enable_notes,
+                        )
                     if notes_master is not None:
                         notes_slides_created.add(slide_num)
                         notes_master_parts_used.add(notes_master.package_part)
@@ -7447,7 +7552,7 @@ def create_pptx_with_native_svg(
                     if verbose:
                         print(
                             f"  {progress_label} {svg_path.name} "
-                            "(Source slide notes overlay)"
+                            "(Source slide notes / identity overlay)"
                         )
                     success_count += 1
                     continue
@@ -8339,6 +8444,7 @@ def create_pptx_with_native_svg(
             morph_pairs,
             public_slide_numbers,
             morph_shape_ids,
+            preserved_slides=morph_preserved_slides,
         )
         if template_shape_roster_expectations is not None:
             for slide_number in morph_trace_names:

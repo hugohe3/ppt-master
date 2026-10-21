@@ -134,6 +134,7 @@ from .template_structure import (
 from ..animation_config import (
     animation_group_effect_entries,
     load_animation_config,
+    resolve_morph_pairs,
     resolve_slide_animation_config,
     validate_animation_config,
     validate_animation_config_errors,
@@ -439,6 +440,18 @@ def _roundtrip_passthrough_candidates(
     expanded_animation_config = _roundtrip_animation_config_for_pages(
         current_animation_config,
         pages,
+    )
+    # Explicit identity edits also touch the source endpoint, whose own motion
+    # row may still match the import baseline. Classify both ends as patches.
+    morph_slides = {
+        stem
+        for pair in resolve_morph_pairs(
+            [page.svg_stem for page in pages], expanded_animation_config,
+        )
+        for stem in (pair.source_slide, pair.destination_slide)
+    }
+    candidates.difference_update(
+        page.output_index for page in pages if page.svg_stem in morph_slides
     )
     pages_by_output = {page.output_index: page for page in pages}
     for index in tuple(candidates):
@@ -2892,7 +2905,7 @@ Recorded narration:
                 authoring_report=authoring_roundtrip_report,
                 changed_resource_pages=changed_resource_pages,
             )
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
         if roundtrip_passthrough_slides:

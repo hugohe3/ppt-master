@@ -212,7 +212,7 @@ failure rather than a silent downgrade.
 
 ### 3.2 Deterministic Morph Identity
 
-The generated route may add an explicit `slides.<destination>.morph` block to
+Generate and Edit Native PPTX may add an explicit `slides.<destination>.morph` block to
 bind direct-root SVG groups across adjacent slides. The sidecar stable key is
 lowered to the same top-level `p:cNvPr@name="!!<key>"` on both final
 Slide-local objects. This does not create an Animation Pane row and does not
@@ -231,8 +231,14 @@ roster expectations are then refreshed. Package read-back requires:
   undeclared shared `!!` name on a Morph edge.
 
 Morph without an explicit pair block retains PowerPoint's automatic matching
-behavior. Explicit pairing is generated-route authoring; source-preserving
-round-trip export keeps existing object names and transition XML.
+behavior. Round-trip export preserves source names unless an explicit pair
+assigns a new identity. An endpoint on an unchanged page resolves through its
+imported Slide-local shape id and counts as `patched`, including planned copies.
+When only identity changes, export replaces only the `cNvPr@name` attribute
+value; every other slide XML byte and its relationships stay unchanged. Notes
+and requested motion remain separate overlays. An endpoint without a unique
+native identity fails with its page/object and instructions to edit that page
+as well or pair two edited pages.
 
 ---
 
