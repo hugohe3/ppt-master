@@ -84,6 +84,8 @@ from server_common import (  # noqa: E402
 configure_utf8_stdio()
 
 from annotations import (  # noqa: E402
+    SVG_NS,
+    XLINK_NS,
     assign_temp_ids,
     is_editable_attr,
     parse_annotations,
@@ -350,19 +352,17 @@ def _file_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-_SVG_NS = 'http://www.w3.org/2000/svg'
-_XLINK_NS = 'http://www.w3.org/1999/xlink'
-
-
 def _register_svg_namespaces() -> None:
     """Bind the SVG namespace to the default prefix right before serializing.
 
     The ElementTree prefix map is process-global and ``pptx_ooxml.ooxml``
     (imported via ``svg_to_pptx``) claims the default prefix for its own
     namespace at import, so without this the slide comes out as ``<ns0:svg>``.
+    Call it under ``state_lock``: registration briefly removes the mapping, so
+    a concurrent serialization could otherwise still emit ``ns0:``.
     """
-    ET.register_namespace('', _SVG_NS)
-    ET.register_namespace('xlink', _XLINK_NS)
+    ET.register_namespace('', SVG_NS)
+    ET.register_namespace('xlink', XLINK_NS)
 
 
 def _atomic_replace(path: Path, write) -> None:
@@ -900,8 +900,9 @@ def create_app(
                         tag = tag.split('}', 1)[1]
                     id_to_tag[eid] = tag
             _normalize_preview_hrefs(root)
-            _register_svg_namespaces()
-            content = ET.tostring(root, encoding='unicode', xml_declaration=False)
+            with state_lock:
+                _register_svg_namespaces()
+                content = ET.tostring(root, encoding='unicode', xml_declaration=False)
             content, warnings = _inline_icons(
                 content,
                 icons_dir,
