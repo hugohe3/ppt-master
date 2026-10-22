@@ -104,10 +104,13 @@ from svg_to_pptx.geometry_properties import (  # noqa: E402
     INLINE_GEOMETRY_PROPERTIES,
     materialize_inline_geometry_properties,
 )
+SVG_NS = "http://www.w3.org/2000/svg"
+XLINK_NS = "http://www.w3.org/1999/xlink"
+ET.register_namespace("", SVG_NS)
+ET.register_namespace("xlink", XLINK_NS)
 
 _USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
 _XLINK_HREF = '{http://www.w3.org/1999/xlink}href'
-
 # Per-path mtime caches: key = absolute path str, value = (mtime, payload).
 # Entry is evicted/replaced when the file's mtime changes, so stale data
 # cannot leak. Locks guard concurrent access under Flask's threaded server.

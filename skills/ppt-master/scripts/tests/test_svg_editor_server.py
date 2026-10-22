@@ -222,3 +222,68 @@ class AnnotationHelperTests(unittest.TestCase):
         self.assertEqual(promote_tspan_to_text(root, 'a', '20', '30'), (True, None))
         following = next(elem for elem in root.iter() if elem.get('id') == 'b')
         self.assertEqual(float(following.get('dy')), 1.0)
+class SVGNamespaceSerializationTests(unittest.TestCase):
+    """Regression test for issue #326: SVG preview shows 'corrupted or missing root <svg> element'.
+
+    The bug was that ElementTree serialized SVG elements with arbitrary namespace
+    prefixes (e.g., <ns0:svg>) because the SVG namespace wasn't registered with
+    an empty prefix. This caused:
+    1. Browser rendering issues (invalid SVG)
+    2. Icon inlining regex pattern not matching <ns0:use> elements
+    """
+
+    def test_svg_serialized_without_namespace_prefix(self) -> None:
+        """SVG content served by /api/slide/<name> should not have namespace prefixes."""
+        from xml.etree import ElementTree as ET
+
+        # Create an SVG with a use element (like icons use)
+        svg_content = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            '<use data-icon="test/icon" x="10" y="10"/>'
+            '<rect id="box" x="0" y="0" width="10" height="10" fill="#000000"/>'
+            '</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            svg_dir = root / 'svg_output'
+            svg_dir.mkdir()
+            svg_path = svg_dir / '01.svg'
+            svg_path.write_text(svg_content, encoding='utf-8')
+
+            # Clear caches
+            for cache in (server._LIST_CACHE, server._SLIDE_CACHE):
+                cache.clear()
+
+            with patch.object(server.threading.Thread, 'start'):
+                app = server.create_app(str(root), idle_timeout=0)
+            app.config['TESTING'] = True
+            client = app.test_client()
+
+            # Fetch the slide content
+            response = client.get('/api/slide/01.svg')
+            self.assertEqual(response.status_code, 200)
+            data = response.get_json()
+
+            # Verify the SVG content is returned
+            self.assertIn('content', data)
+            content = data['content']
+
+            # The fix: content should NOT have namespace prefixes like <ns0:svg>
+            self.assertNotIn('<ns0:svg', content, 'SVG should not have ns0: prefix')
+            self.assertNotIn('<ns0:use', content, 'use element should not have ns0: prefix')
+            self.assertNotIn('<ns0:rect', content, 'rect element should not have ns0: prefix')
+
+            # Content should start with proper <svg> tag
+            self.assertTrue(
+                content.lstrip().startswith('<svg'),
+                f'SVG should start with <svg>, got: {content[:50]}'
+            )
+
+            # The use element should be present for icon inlining to work
+            self.assertIn('<use', content)
+            self.assertIn('data-icon="test/icon"', content)
+
+            # Icons should be inlined (replaced with <g> element)
+            # Since the icon doesn't exist, we should get a warning but content should still be valid
+            self.assertIn('warnings', data)
