@@ -1823,15 +1823,22 @@ def _apply_roundtrip_slide_overlay(
             )
         else:
             selected_by_id[shape_id] = (source_shapes[shape_id], False)
-    extra_generated = [
-        generated_shapes[shape_id]
-        for shape_id in generated_order
-        if shape_id not in source_id_by_generated_top_id
-    ]
+    # New objects keep their SVG paint position: each one follows the nearest
+    # preceding authored object, and leading ones precede the first slot.
+    extra_generated: dict[str | None, list[ET.Element]] = {}
+    preceding_authored_id: str | None = None
+    for shape_id in generated_order:
+        if shape_id in source_id_by_generated_top_id:
+            preceding_authored_id = source_id_by_generated_top_id[shape_id]
+        else:
+            extra_generated.setdefault(preceding_authored_id, []).append(
+                generated_shapes[shape_id]
+            )
 
     authored_iterator = iter(authored_order)
     merged_children: list[tuple[ET.Element, bool]] = []
     final_authored_slot = 0
+    anchor_slots: dict[str | None, int] = {}
     for child in list(source_tree):
         shape_id = (
             source_key_by_element.get(id(child))
@@ -1841,16 +1848,18 @@ def _apply_roundtrip_slide_overlay(
         if shape_id not in authored_top_ids:
             merged_children.append((child, False))
             continue
+        anchor_slots.setdefault(None, len(merged_children))
         next_shape_id = next(authored_iterator, None)
         if next_shape_id is not None:
             merged_children.append(selected_by_id[next_shape_id])
+            anchor_slots[next_shape_id] = len(merged_children)
         final_authored_slot = len(merged_children)
     if next(authored_iterator, None) is not None:
         raise TemplateStructureError(
             "Generated authored shape roster exceeds the source overlay slots"
         )
     if not authored_top_ids:
-        final_authored_slot = next(
+        anchor_slots[None] = next(
             (
                 index
                 for index, (element, _generated) in enumerate(merged_children)
@@ -1858,10 +1867,16 @@ def _apply_roundtrip_slide_overlay(
             ),
             len(merged_children),
         )
-    merged_children[final_authored_slot:final_authored_slot] = [
-        (element, True)
-        for element in extra_generated
-    ]
+    if authored_order:
+        # Trailing additions stay after every source authored slot, so unlisted
+        # source shapes past the last filled slot keep painting below them.
+        anchor_slots[authored_order[-1]] = final_authored_slot
+    # Anchors ascend in authored order; splice from the back to keep indexes valid.
+    for anchor, elements in reversed(list(extra_generated.items())):
+        insert_at = anchor_slots[anchor]
+        merged_children[insert_at:insert_at] = [
+            (element, True) for element in elements
+        ]
 
     generated_nodes = [
         element for element, generated in merged_children if generated
