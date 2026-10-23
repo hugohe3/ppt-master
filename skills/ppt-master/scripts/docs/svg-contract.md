@@ -421,7 +421,9 @@ eligible visual layer may be a direct full-canvas `<rect>` or one inside a
 simple single-child group. Its fill must have a registered native mapping
 (solid, linear/radial gradient, or preset pattern), and it must have no
 transform, filter, clip, rounding, or visible stroke. Export writes the fill as
-Slide `p:bg`; image elements remain pictures. Structured routes use the
+Slide `p:bg`; image elements remain pictures. A rebuilt round-trip slide keeps
+its source `p:bg`, so a new full-canvas `<rect>` there stays a shape at its SVG
+paint position. Structured routes use the
 narrower explicit solid-background ownership contract in
 [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md).
 

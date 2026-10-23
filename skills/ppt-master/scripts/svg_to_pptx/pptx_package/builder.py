@@ -7721,7 +7721,12 @@ def create_pptx_with_native_svg(
                             theme_font_spec=active_theme_font_spec,
                             theme_color_spec=active_theme_color_spec,
                             primary_language=primary_language,
-                            promote_background=pptx_structure != "structured",
+                            # A round-trip overlay keeps the source p:bg, so a
+                            # new full-canvas rect must stay a shape to survive.
+                            promote_background=(
+                                pptx_structure != "structured"
+                                and slide_patch is None
+                            ),
                             dangerous_nonconforming_export=(
                                 dangerous_nonconforming_export
                             ),

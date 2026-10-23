@@ -139,3 +139,10 @@ class EditNativeBatchDTests(unittest.TestCase):
         self._author(project, 'base', 'mid', 'callout')
         names, _slide = self._export_roster(project)
         self.assertEqual(names, ['base', 'mid', 'tab', 'callout'])
+
+    def test_new_full_canvas_rect_stays_a_shape_under_the_source_background(self) -> None:
+        project = self._workspace()
+        self._author(project, 'full:new-under', 'base', 'tab', 'callout')
+        names, slide = self._export_roster(project)
+        self.assertEqual(names, ['new-under', 'base', 'tab', 'callout'])
+        self.assertIsNone(slide.find('p:cSld/p:bg', NS))
