@@ -13,7 +13,7 @@
 
 English | [中文](./README_CN.md)
 
-> 🆕 **As a finance professional (CPA · CPV · Consulting Engineer (Investment)), I drew on my expertise and project experience to build a tool website: [Construction Project Economic Evaluation](https://cs.hehugo.com/)** (in Chinese) — enter your project data and get a full financial evaluation online: investment, revenue, cost, debt service, profit, cash flow and balance sheet statements, plus IRR, NPV, sensitivity and break-even analysis, exportable to Excel / Word. Built for energy projects such as wind, solar and storage, with a general-purpose mode for other projects. The site is in an early trial phase; the first 100 accounts get 3 free runs, later accounts get 1.
+> 🆕 **As a finance professional (CPA · CPV · Consulting Engineer (Investment)), I drew on my expertise and project experience to build a tool website: [Construction Project Economic Evaluation](https://cs.hehugo.com/)** (in Chinese) — enter your project data and get a full financial evaluation online: investment, revenue, cost, debt service, profit, cash flow and balance sheet statements, plus IRR, NPV, sensitivity and break-even analysis, exportable to Excel / Word. **The wind, solar and storage project templates are now open to everyone — register and use them directly.** A comparable module in one commercial software package sells for ¥100,000. Other projects can use the general-purpose mode.
 
 ## ❤️ Sponsors
 
@@ -423,8 +423,6 @@ If PPT Master has been helpful to you, individual support of any amount helps ke
 <a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
 
 <img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="220" />
-
-> 🎁 Sponsor ¥100 or more (in multiples of ¥100) via Alipay and put the email you registered on [Construction Project Economic Evaluation](https://cs.hehugo.com/) in the payment note to receive compute credits on that site. Every ¥100 earns 20 credits (one run costs 1 credit).
 
 ---
 
