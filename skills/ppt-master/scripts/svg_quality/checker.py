@@ -2292,8 +2292,8 @@ class SVGQualityChecker:
                 detail = f': {frame_error}' if frame_error else ''
                 result['warnings'].append(
                     f'Cannot verify owning frame for edited {text_label}{detail}; '
-                    'keep data-pptx-frame on the logical object or place a '
-                    'rect frame beside the text'
+                    'set data-pptx-bounds on the authored text group or group '
+                    'the text with its containing rect; preserve existing imported frames'
                 )
                 continue
             metrics = self._bounds_overflow_metrics(estimated, frame)
@@ -2332,8 +2332,8 @@ class SVGQualityChecker:
             )
             if frame_is_inferred:
                 result['warnings'].append(
-                    f'{finding}; frame inferred from nearest rect sibling; '
-                    'add data-pptx-frame to make this blocking'
+                    f'{finding}; frame inferred from a containing rect sibling; '
+                    'set data-pptx-bounds on the authored text group to declare its bounds'
                 )
             else:
                 result['errors'].append(finding)
@@ -2348,6 +2348,8 @@ class SVGQualityChecker:
         while current is not None:
             if current.get('data-pptx-frame') is not None:
                 return current.get('data-pptx-source-ref')
+            if current.get('data-pptx-bounds') is not None:
+                return None
             current = parent_by_id.get(id(current))
         return None
 
@@ -2411,12 +2413,16 @@ class SVGQualityChecker:
         str | None,
         bool,
     ]:
-        """Resolve an explicit logical frame or the nearest rect sibling."""
+        """Resolve owning bounds or a containing rect in the text's own group."""
         current: ET.Element | None = text_element
         while current is not None:
-            raw_frame = current.get('data-pptx-frame')
+            attribute = (
+                'data-pptx-frame' if current.get('data-pptx-frame') is not None
+                else 'data-pptx-bounds'
+            )
+            raw_frame = current.get(attribute)
             if raw_frame is not None:
-                label = f'{_element_label(current)} data-pptx-frame'
+                label = f'{_element_label(current)} {attribute}'
                 try:
                     frame = _parse_positive_bounds(raw_frame)
                 except ValueError as exc:
@@ -2438,62 +2444,54 @@ class SVGQualityChecker:
 
         if _parse_project_geometry_length is None:
             return None, None, 'the SVG length parser is unavailable', False
-        current = text_element
+        parent = parent_by_id.get(id(text_element))
+        if parent is None or _local_name(parent) != 'g':
+            return None, None, None, False
+        try:
+            anchor_x = _parse_project_geometry_length(text_element.get('x') or '0', 'x')
+            anchor_y = _parse_project_geometry_length(text_element.get('y') or '0', 'y')
+        except (TypeError, ValueError):
+            return None, None, 'the text anchor cannot be resolved', False
+        anchor = cls._transformed_rect_bounds(
+            text_element, (anchor_x, anchor_y, 0, 0), parent_by_id,
+        )
+        if anchor is None:
+            return None, None, 'the text anchor has an unresolved transform', False
         rect_errors: List[str] = []
-        while current is not None:
-            parent = parent_by_id.get(id(current))
-            if parent is None:
-                break
-            siblings = list(parent)
+        siblings = list(parent)
+        current_index = siblings.index(text_element)
+        rects = sorted(
+            (
+                (abs(index - current_index), index, sibling)
+                for index, sibling in enumerate(siblings)
+                if _local_name(sibling) == 'rect'
+                and sibling.get('data-pptx-role') not in {'decoration', 'background'}
+            ),
+            key=lambda item: (item[0], item[1]),
+        )
+        for _distance, _index, rect in rects:
+            label = _element_label(rect)
             try:
-                current_index = siblings.index(current)
-            except ValueError:
-                current_index = 0
-            rects = sorted(
-                (
-                    (abs(index - current_index), index, sibling)
-                    for index, sibling in enumerate(siblings)
-                    if _local_name(sibling) == 'rect'
-                ),
-                key=lambda item: (item[0], item[1]),
-            )
-            for _distance, _index, rect in rects:
-                label = _element_label(rect)
-                try:
-                    x = _parse_project_geometry_length(
-                        rect.get('x') or '0',
-                        'x',
-                    )
-                    y = _parse_project_geometry_length(
-                        rect.get('y') or '0',
-                        'y',
-                    )
-                    width = _parse_project_geometry_length(
-                        rect.get('width'),
-                        'width',
-                    )
-                    height = _parse_project_geometry_length(
-                        rect.get('height'),
-                        'height',
-                    )
-                    if (
-                        not all(math.isfinite(value) for value in (x, y, width, height))
-                        or width <= 0
-                        or height <= 0
-                    ):
-                        raise ValueError('must use finite positive width and height')
-                except (TypeError, ValueError) as exc:
-                    rect_errors.append(f'{label} {exc}')
-                    continue
-                transformed = cls._transformed_rect_bounds(
-                    rect,
-                    (x, y, width, height),
-                    parent_by_id,
-                )
-                if transformed is not None:
-                    return label, transformed, None, True
+                x = _parse_project_geometry_length(rect.get('x') or '0', 'x')
+                y = _parse_project_geometry_length(rect.get('y') or '0', 'y')
+                width = _parse_project_geometry_length(rect.get('width'), 'width')
+                height = _parse_project_geometry_length(rect.get('height'), 'height')
+                if (
+                    not all(math.isfinite(value) for value in (x, y, width, height))
+                    or width <= 0 or height <= 0
+                ):
+                    raise ValueError('must use finite positive width and height')
+            except (TypeError, ValueError) as exc:
+                rect_errors.append(f'{label} {exc}')
+                continue
+            transformed = cls._transformed_rect_bounds(rect, (x, y, width, height), parent_by_id)
+            if transformed is None:
                 rect_errors.append(f'{label} has an unresolved transform')
-            current = parent
+            elif (
+                transformed[0] <= anchor[0] <= transformed[2]
+                and transformed[1] <= anchor[1] <= transformed[3]
+            ):
+                return label, transformed, None, True
         return (
             None,
             None,

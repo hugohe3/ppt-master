@@ -5,6 +5,8 @@ from __future__ import annotations
 import math
 from typing import Any
 
+from language_tags import LanguageTagError, normalize_language_tag
+
 from .marker_common import (
     _chart_bool,
     _clean_hex,
@@ -1628,8 +1630,19 @@ def _xy_chart_data(
     }
 
 
+def _chart_language(payload: dict[str, Any]) -> str | None:
+    if "lang" not in payload:
+        return None
+    try:
+        return normalize_language_tag(payload["lang"])
+    except LanguageTagError as exc:
+        raise RuntimeError(f"Native PPTX chart lang: {exc}") from exc
+
+
 def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     chart_type, alias_grouping, alias_style = _chart_kind(payload)
+    if _chart_language(payload) is not None and chart_type in _CHARTEX_CHART_TYPES:
+        raise RuntimeError("Native PPTX chart lang is supported for classic charts only")
     if payload.get("hole_size") is not None and chart_type != "doughnut":
         raise RuntimeError(
             "Native PPTX chart hole_size is supported for doughnut charts only"

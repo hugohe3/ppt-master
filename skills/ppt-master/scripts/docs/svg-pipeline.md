@@ -255,9 +255,11 @@ as the round-trip text-capacity gate. It resolves the output roster from
 font-family, font-size, text-width, and canvas metrics only to new text or
 changed source-ref objects. The gate asserts horizontal capacity: it estimates
 single-line width for each positioned line and does not model vertical
-wrapping. Width beyond an explicit ancestor `data-pptx-frame` is blocking;
-overflow against the nearest-rect-sibling fallback is advisory, while bounds
-leaving the page canvas remain blocking. Other advisories remain non-blocking.
+wrapping. Width beyond the nearest owning `data-pptx-frame` (imported) or
+`data-pptx-bounds` (authored) is blocking. Without explicit bounds, only a rect
+in the text's own group containing its anchor can supply an advisory frame;
+page-level decorations and rectangles beside ancestor groups are excluded.
+Bounds leaving the page canvas remain blocking. Other advisories remain non-blocking.
 Unchanged source refs, source proxies, and generated-project-only spec,
 template, canonical-authoring, and resource-manifest checks are excluded.
 
