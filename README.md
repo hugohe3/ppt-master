@@ -13,7 +13,9 @@
 
 English | [中文](./README_CN.md)
 
-> 🆕 **As a finance professional (CPA · CPV · Consulting Engineer (Investment)), I drew on my expertise and project experience to build a tool website: [Construction Project Economic Evaluation](https://cs.hehugo.com/)** (in Chinese) — enter your project data and get a full financial evaluation online: investment, revenue, cost, debt service, profit, cash flow and balance sheet statements, plus IRR, NPV, sensitivity and break-even analysis, exportable to Excel / Word. **The wind, solar and storage project templates are now open to everyone — register and use them directly.** A comparable module in one commercial software package sells for ¥100,000. Other projects can use the general-purpose mode.
+> 💼 **I'm open to new opportunities** — reach me at [heyug3@gmail.com](mailto:heyug3@gmail.com); more about me at [hehugo.com](https://www.hehugo.com/).
+
+> 🆕 **I built a construction project economic evaluation site: [cs.hehugo.com](https://cs.hehugo.com/)** (in Chinese) — the wind, solar and storage templates are now open to everyone; just register and use them (a comparable module in one commercial package sells for ¥100,000).
 
 ## ❤️ Sponsors
 
