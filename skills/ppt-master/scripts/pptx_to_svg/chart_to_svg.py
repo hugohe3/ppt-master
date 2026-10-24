@@ -885,8 +885,9 @@ def _series_visual_style(
     else:
         line_default = None
     stroke = _line_color(shape.line, line_default)
-    marker_fill = marker.shape.fill if marker.shape.fill_explicit else auto_color
-    marker_stroke = _line_color(marker.shape.line, auto_color)
+    marker_default = (stroke or auto_color) if chart_type in {"line", "scatter"} else auto_color
+    marker_fill = marker.shape.fill if marker.shape.fill_explicit else marker_default
+    marker_stroke = _line_color(marker.shape.line, marker_default)
     line = shape.line
     marker_line = marker.shape.line
     return SeriesVisualStyle(
@@ -982,7 +983,8 @@ def _chart_visual_styles(
             raise _UnsupportedChart("unsupported-chart-series-style")
         styles = []
         for index, series in enumerate(series_nodes):
-            auto = _automatic_color(palette, index)
+            source_index = _element_val(series.find("c:idx", C_NS))
+            auto = _automatic_color(palette, int(source_index) if source_index and source_index.isdigit() else index)
             shape = _resolved_shape_paint(series.find("c:spPr", C_NS), palette)
             marker = _resolved_marker(series.find("c:marker", C_NS), palette)
             styles.append(
@@ -1195,7 +1197,9 @@ def _normalized_chart_visual_styles(
                         palette,
                     ),
                     chart_type=chart_type,
-                    auto_color=_automatic_color(palette, index),
+                    auto_color=_automatic_color(
+                        palette, int(_element_val(series.find("c:idx", C_NS)) or index),
+                    ),
                 )
             )
     colors = [
@@ -2025,9 +2029,9 @@ def _apply_series_formatting(
         if chart_type == "line" and series.find("c:marker/c:size", C_NS) is not None:
             item["marker_size"] = _round_payload_number(visual.marker_size / 0.75)
 
-        base_color = visual.stroke if chart_type == "line" else visual.fill
-        if chart_type == "line" and series.find("c:marker/c:spPr/a:solidFill", C_NS) is not None:
-            base_color = visual.marker_fill or base_color
+        base_color = visual.fill
+        if chart_type == "line":
+            base_color = visual.marker_fill or visual.stroke
             if payload.get("line_style") == "lineMarker" and base_color != visual.stroke:
                 item["point_colors"] = [base_color] * len(item["values"])
         points = series.findall("c:dPt", C_NS)
@@ -2057,9 +2061,12 @@ def _apply_series_formatting(
                 if marker.symbol == "none":
                     colors[index] = None
                     sizes[index] = None
-                elif marker.symbol == "circle":
+                elif marker.symbol == "circle" or (
+                    marker.symbol is None and payload.get("line_style") == "lineMarker"
+                ):
                     colors[index] = marker.shape.fill or base_color
-                    sizes[index] = marker.size
+                    if marker_node is not None and marker_node.find("c:size", C_NS) is not None:
+                        sizes[index] = marker.size
             else:
                 shape = point.find("c:spPr", C_NS)
                 paint = (
@@ -2068,8 +2075,12 @@ def _apply_series_formatting(
                     else _resolved_shape_paint(shape, palette)
                 )
                 colors[index] = paint.fill or base_color
-        if chart_type == "line" or all(colors):
+        vary_colors = ooxml_bool(_element_val(plot.find("c:varyColors", C_NS)), False)
+        series_color = visual.stroke if chart_type == "line" else visual.fill
+        if (chart_type == "line" or all(colors)) and (vary_colors or any(color != series_color for color in colors)):
             item["point_colors"] = colors
+        else:
+            item.pop("point_colors", None)
         if chart_type == "line":
             visible_sizes = {size for size in sizes if size is not None}
             if len(visible_sizes) == 1:
@@ -2197,6 +2208,15 @@ def _apply_chart_metadata(
             legend_style = _source_chart_text_style(legend.find("c:txPr", C_NS), palette)
             if "font_size" in legend_style:
                 payload["legend_font_size"] = legend_style["font_size"]
+            if palette is not None and any(
+                "font_size" in _source_chart_text_style(entry.find("c:txPr", C_NS), palette)
+                for entry in legend.findall("c:legendEntry", C_NS)
+            ):
+                palette._diagnose(
+                    "chart-legend-entry-font-size-omitted",
+                    "Legend entry font-size overrides are outside the native chart JSON contract",
+                    "keep source entry typography on unchanged or data-only round-trip edits",
+                )
 
     if include_plot_labels:
         _apply_plot_data_labels(payload, plot, palette=palette)

@@ -156,6 +156,75 @@ class ChartImportFormattingTests(unittest.TestCase):
         self.assertEqual(payload.get("axes", {}).get("category", {}).get("font_size"), 14)
         self.assertEqual(payload.get("axes", {}).get("value", {}).get("font_size"), 16)
 
+    def test_identical_point_fills_do_not_enable_vary_colors(self) -> None:
+        source = _source_chart()
+        plot = source.find(".//c:barChart", NS)
+        ET.SubElement(plot, f'{{{NS["c"]}}}varyColors', {"val": "0"})
+        series = plot.find("c:ser", NS)
+        paint = ET.fromstring(
+            f'<c:spPr xmlns:c="{NS["c"]}" xmlns:a="{NS["a"]}">'
+            '<a:solidFill><a:srgbClr val="123456"/></a:solidFill></c:spPr>'
+        )
+        series.append(paint)
+        for index in range(2):
+            point = ET.SubElement(series, f'{{{NS["c"]}}}dPt')
+            ET.SubElement(point, f'{{{NS["c"]}}}idx', {"val": str(index)})
+            point.append(ET.fromstring(ET.tostring(paint)))
+        payload = self._import(source)
+        self.assertNotIn("point_colors", payload["series"][0])
+        self.assertEqual(self._export(payload).find(".//c:varyColors", NS).get("val"), "0")
+
+    def test_line_and_marker_colors_keep_distinct_source_paints(self) -> None:
+        source = self._export({
+            "type": "line", "line_style": "lineMarker", "x": 100, "y": 80, "width": 600, "height": 400,
+            "categories": ["A", "B"], "series": [{"name": "Line", "values": [1, 2]}],
+            "style": {"colors": ["#112233"]},
+        })
+        series = source.find(".//c:ser", NS)
+        series.find("c:marker/c:spPr/a:solidFill/a:srgbClr", NS).set("val", "FFAA00")
+        series.append(ET.fromstring(
+            f'<c:dPt xmlns:c="{NS["c"]}" xmlns:a="{NS["a"]}"><c:idx val="0"/>'
+            '<c:marker><c:spPr><a:solidFill><a:srgbClr val="00AAFF"/></a:solidFill>'
+            '</c:spPr></c:marker></c:dPt>'
+        ))
+        payload = self._import(source)
+        self.assertEqual(payload["style"]["colors"], ["#112233"])
+        self.assertEqual(payload["series"][0]["point_colors"], ["#00AAFF", "#FFAA00"])
+        rebuilt = self._export(payload).find(".//c:ser", NS)
+        self.assertEqual(rebuilt.find("c:spPr/a:ln/a:solidFill/a:srgbClr", NS).get("val"), "112233")
+        self.assertEqual([node.get("val") for node in rebuilt.findall(
+            "c:dPt/c:marker/c:spPr/a:solidFill/a:srgbClr", NS,
+        )], ["00AAFF", "FFAA00"])
+
+    def test_implicit_markers_follow_source_line_color(self) -> None:
+        source = self._export({
+            "type": "line", "line_style": "lineMarker", "x": 100, "y": 80, "width": 600, "height": 400,
+            "categories": ["A", "B"], "series": [{"name": "Line", "values": [1, 2]}],
+            "style": {"colors": ["#112233"]},
+        })
+        marker = source.find(".//c:ser/c:marker", NS)
+        marker.remove(marker.find("c:spPr", NS))
+        payload = self._import(source)
+        self.assertEqual(payload["style"]["colors"], ["#112233"])
+        self.assertNotIn("point_colors", payload["series"][0])
+
+    def test_combo_colors_follow_plot_order(self) -> None:
+        source = self._export({
+            "type": "combo", "x": 100, "y": 80, "width": 600, "height": 400,
+            "categories": ["A", "B"], "style": {"colors": ["#112233", "#445566"]},
+            "plots": [
+                {"type": "column", "series_indices": [1], "series": [{"name": "Bars", "values": [1, 2]}]},
+                {"type": "line", "series_indices": [0], "line_style": "lineMarker",
+                 "series": [{"name": "Line", "values": [2, 3]}]},
+            ],
+        })
+        payload = self._import(source)
+        self.assertEqual(payload["style"]["colors"], ["#112233", "#445566"])
+        rebuilt = self._export(payload)
+        for plot in ("barChart", "lineChart"):
+            path = f".//c:{plot}/c:ser/c:spPr/a:solidFill/a:srgbClr"
+            self.assertEqual(rebuilt.find(path, NS).get("val"), source.find(path, NS).get("val"))
+
     def test_chart_fill_title_and_inherited_axis_style(self) -> None:
         source = _source_chart()
         for axis in source.findall(".//c:catAx", NS) + source.findall(".//c:valAx", NS):
