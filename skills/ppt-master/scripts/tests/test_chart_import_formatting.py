@@ -343,3 +343,27 @@ class RoundtripFrameInferenceTests(unittest.TestCase):
         self.assertFalse(result["errors"], result)
         self.assertTrue(any('exceeds owning frame <rect id="frame">' in item for item in result["warnings"]), result)
         self.assertFalse(any("add data-pptx-frame" in item for item in result["warnings"]), result)
+
+
+class ChartThemeFontTokenTests(unittest.TestCase):
+    def test_theme_tokens_keep_their_own_slots(self) -> None:
+        from svg_to_pptx.native_objects.chart_style import _font_face_xml
+
+        self.assertEqual(
+            _font_face_xml("+mn-lt, +mn-ea"),
+            '<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>',
+        )
+        self.assertEqual(
+            _font_face_xml("+mn-ea"),
+            '<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>',
+        )
+        self.assertIn('<a:ea typeface="+mj-ea"/>', _font_face_xml("Arial, +mj-ea"))
+        self.assertIn('<a:latin typeface="Arial"/>', _font_face_xml("Arial, +mj-ea"))
+
+    def test_named_stacks_are_unchanged(self) -> None:
+        from svg_to_pptx.native_objects.chart_style import _font_face_xml
+
+        self.assertEqual(
+            _font_face_xml("Arial, Microsoft YaHei"),
+            '<a:latin typeface="Arial"/><a:ea typeface="Microsoft YaHei"/><a:cs typeface="Arial"/>',
+        )

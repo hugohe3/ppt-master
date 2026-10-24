@@ -347,16 +347,37 @@ def _major_gridlines_xml(color: str | None) -> str:
     return f'<c:majorGridlines>{_chart_line_sp_pr_xml(color, width=6350)}</c:majorGridlines>'
 
 
+_THEME_FONT_TOKEN = re.compile(r"^\+(mn|mj)-(lt|ea|cs)$")
+
+
 def _font_face_xml(font_face: str | None, language: str | None = None) -> str:
     if not font_face:
         return ""
-    fonts = parse_font_family(font_face, language)
-    latin_font = _xml_escape(fonts["latin"])
-    ea_font = _xml_escape(fonts["ea"])
+    # Imported charts keep theme font tokens such as ``+mn-lt, +mn-ea``;
+    # each token owns its own slot and named faces fill the rest.
+    tokens: dict[str, str] = {}
+    named: list[str] = []
+    for entry in font_face.split(","):
+        face = entry.strip().strip("'\"")
+        match = _THEME_FONT_TOKEN.match(face)
+        if match:
+            tokens.setdefault(match.group(2), face)
+        elif face:
+            named.append(face)
+    fonts = parse_font_family(", ".join(named), language) if named or not tokens else {}
+    latin_font = tokens.get("lt") or fonts.get("latin")
+    if latin_font is None:
+        latin_font = tokens.get("ea", "").replace("-ea", "-lt") or "Segoe UI"
+    ea_font = tokens.get("ea") or fonts.get("ea")
+    if ea_font is None:
+        ea_font = latin_font.replace("-lt", "-ea")
+    cs_font = tokens.get("cs") or (
+        latin_font.replace("-lt", "-cs") if _THEME_FONT_TOKEN.match(latin_font) else latin_font
+    )
     return (
-        f'<a:latin typeface="{latin_font}"/>'
-        f'<a:ea typeface="{ea_font}"/>'
-        f'<a:cs typeface="{latin_font}"/>'
+        f'<a:latin typeface="{_xml_escape(latin_font)}"/>'
+        f'<a:ea typeface="{_xml_escape(ea_font)}"/>'
+        f'<a:cs typeface="{_xml_escape(cs_font)}"/>'
     )
 
 
