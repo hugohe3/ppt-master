@@ -13,7 +13,7 @@
 
 [English](./README.md) | 中文
 
-> 💼 **我正在寻找新的发展机会**，欢迎联系：[heyug3@gmail.com](mailto:heyug3@gmail.com)。个人简介见 [hehugo.com](https://www.hehugo.com/)。
+> 💼 **我正在寻找新的发展机会。** 投融资背景（CPA · CPV · 咨询工程师），也做 AI 工具与开源产品，各类机会都欢迎交流：[heyug3@gmail.com](mailto:heyug3@gmail.com)，更多见 [hehugo.com](https://www.hehugo.com/)。
 
 > 🆕 **我做了一个建设项目经济评价网站：[cs.hehugo.com](https://cs.hehugo.com/)**——风光储模板现已向所有用户开放，注册即可使用（某商业软件同类模块售价 10 万元）。
 

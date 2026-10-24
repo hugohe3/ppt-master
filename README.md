@@ -13,7 +13,7 @@
 
 English | [中文](./README_CN.md)
 
-> 💼 **I'm open to new opportunities** — reach me at [heyug3@gmail.com](mailto:heyug3@gmail.com); more about me at [hehugo.com](https://www.hehugo.com/).
+> 💼 **I'm open to new opportunities.** Investment background (CPA · CPV · Consulting Engineer), also building AI tools and open source. Happy to talk about any opportunity: [heyug3@gmail.com](mailto:heyug3@gmail.com) · [hehugo.com](https://www.hehugo.com/).
 
 > 🆕 **I built a construction project economic evaluation site: [cs.hehugo.com](https://cs.hehugo.com/)** (in Chinese) — the wind, solar and storage templates are now open to everyone; just register and use them (a comparable module in one commercial package sells for ¥100,000).
 
