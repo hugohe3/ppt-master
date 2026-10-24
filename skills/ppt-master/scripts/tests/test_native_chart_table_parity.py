@@ -28,7 +28,7 @@ from svg_to_pptx.native_objects.table import (  # noqa: E402
 )
 from semantic_table import expand_semantic_table_payload  # noqa: E402
 from svg_to_pptx.pptx_package.cli import (  # noqa: E402
-    _native_object_projection_findings,
+    _native_object_preflight_findings,
 )
 from svg_quality.checker import SVGQualityChecker  # noqa: E402
 
@@ -111,6 +111,7 @@ class NativeTableMergeTests(unittest.TestCase):
             {},
             {"text": ""},
             {"merge_continuation": True},
+            {"fill": "#F1F4F8"},
         ):
             with self.subTest(covered_cell=covered_cell):
                 _payload, rows, col_count, merge_layout = (
@@ -122,7 +123,6 @@ class NativeTableMergeTests(unittest.TestCase):
         for covered_cell in (
             {"text": "authored"},
             {"paragraphs": [{"text": ""}]},
-            {"fill": "#F1F4F8"},
         ):
             with self.subTest(covered_cell=covered_cell):
                 with self.assertRaisesRegex(RuntimeError, "must be blank"):
@@ -357,7 +357,8 @@ class NativeProjectionCheckerTests(unittest.TestCase):
             for filename in self.EXPECTED_FINDINGS
         ]
 
-        findings = _native_object_projection_findings(fixture_paths)
+        payload_findings, findings = _native_object_preflight_findings(fixture_paths)
+        self.assertFalse(payload_findings)
         findings_by_page: dict[str, str] = {}
         for filename, _marker_id, warning in findings:
             findings_by_page.setdefault(filename, "")

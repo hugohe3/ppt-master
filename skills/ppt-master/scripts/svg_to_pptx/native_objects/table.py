@@ -442,14 +442,16 @@ def _merge_covered_cell_is_blank(value: Any) -> bool:
         return True
     if not isinstance(value, dict):
         return False
-    if set(value) - {"merge_continuation", "text"}:
+    # The semantic-table schema has already validated formatting fields.
+    # Covered cells may retain them, but cannot carry a text body.
+    if "paragraphs" in value:
         return False
     if (
         "merge_continuation" in value
         and value["merge_continuation"] is not True
     ):
         return False
-    return value.get("text") in {None, ""}
+    return value.get("text") in (None, "")
 
 
 def _resolve_table_merge_layout(
@@ -1840,52 +1842,11 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             cell_data = _cell_payload(cell)
             merge_region = merge_layout.get((row_idx, col_idx))
             merge_attrs = _table_merge_attrs(merge_region, row_idx, col_idx)
-            if merge_region is not None and (
-                row_idx != merge_region.row or col_idx != merge_region.col
-            ):
-                continuation_attrs = ""
-                continuation_border_xml = ""
-                continuation_fill_xml = ""
-                if cell_data.get("merge_continuation") is True:
-                    continuation_attrs = (
-                        _table_padding_attrs(cell_data, style)
-                        + _table_cell_extra_attrs(cell_data)
-                    )
-                    continuation_border_xml = _table_border_xml(
-                        cell_data,
-                        style,
-                        ctx.theme_color_spec,
-                    )
-                    continuation_fill = (
-                        _clean_hex(cell_data.get("fill"), "#FFFFFF")
-                        if cell_data.get("fill") is not None
-                        else None
-                    )
-                    continuation_fill_xml = _table_fill_xml(
-                        continuation_fill,
-                        _table_fill_opacity(cell_data),
-                        ctx.theme_color_spec,
-                    )
-                cells_xml.append(
-                    f'<a:tc{merge_attrs}>'
-                    '<a:txBody><a:bodyPr/><a:lstStyle/><a:p/></a:txBody>'
-                    f'<a:tcPr{continuation_attrs}>'
-                    f'{continuation_border_xml}{continuation_fill_xml}'
-                    '</a:tcPr>'
-                    '</a:tc>'
-                )
-                continue
-
             if preserve_source_style:
                 fill = (
                     _clean_hex(cell_data.get("fill"), "#FFFFFF")
                     if cell_data.get("fill") is not None else None
                 )
-                color = (
-                    _clean_hex(cell_data.get("color"), "#000000")
-                    if cell_data.get("color") is not None else None
-                )
-                align = str(cell_data.get("align") or "l")
             else:
                 fill = _hex_or_none(cell_data.get("fill"))
                 if fill is None:
@@ -1898,6 +1859,40 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                     fill = header_fill if is_header else (
                         band_fill if banded else body_fill
                     )
+            border_xml = _table_border_xml(cell_data, style, ctx.theme_color_spec)
+            fill_xml = (
+                "<a:noFill/>"
+                if fill is None and not preserve_source_style
+                else _table_fill_xml(fill, _table_fill_opacity(cell_data), ctx.theme_color_spec)
+            )
+            anchor_attr = ""
+            if not preserve_source_style or "valign" in cell_data or "valign" in style:
+                anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
+            if merge_region is not None and (
+                row_idx != merge_region.row or col_idx != merge_region.col
+            ):
+                continuation_attrs = (
+                    anchor_attr
+                    + _table_padding_attrs(cell_data, style)
+                    + _table_cell_extra_attrs(cell_data)
+                )
+                cells_xml.append(
+                    f'<a:tc{merge_attrs}>'
+                    '<a:txBody><a:bodyPr/><a:lstStyle/><a:p/></a:txBody>'
+                    f'<a:tcPr{continuation_attrs}>'
+                    f'{border_xml}{fill_xml}'
+                    '</a:tcPr>'
+                    '</a:tc>'
+                )
+                continue
+
+            if preserve_source_style:
+                color = (
+                    _clean_hex(cell_data.get("color"), "#000000")
+                    if cell_data.get("color") is not None else None
+                )
+                align = str(cell_data.get("align") or "l")
+            else:
                 color = _clean_hex(
                     cell_data.get("color"),
                     header_text if is_header else body_text,
@@ -2012,28 +2007,11 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                         f"<a:p>{paragraph_props}{text_run_xml}</a:p>"
                     )
                 paragraphs_xml = "".join(paragraph_parts)
-            anchor_keys = {"valign"}
-            anchor_attr = ""
-            if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
-                anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
             tc_pr_attrs = (
                 f'{anchor_attr}'
                 f'{_table_padding_attrs(cell_data, style, row_height=row_heights[row_idx], paragraphs_xml=paragraphs_xml)}'
                 f'{_table_cell_extra_attrs(cell_data)}'
             )
-            border_xml = _table_border_xml(
-                cell_data,
-                style,
-                ctx.theme_color_spec,
-            )
-            if fill is None and not preserve_source_style:
-                fill_xml = "<a:noFill/>"
-            else:
-                fill_xml = _table_fill_xml(
-                    fill,
-                    _table_fill_opacity(cell_data),
-                    ctx.theme_color_spec,
-                )
             cells_xml.append(
                 f"<a:tc{merge_attrs}>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"

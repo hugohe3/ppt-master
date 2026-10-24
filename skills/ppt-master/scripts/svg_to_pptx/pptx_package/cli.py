@@ -91,6 +91,7 @@ from ..native_objects import (
     native_replacement_kind,
     native_replacement_status,
 )
+from ..native_objects.marker_attributes import native_json_is_authoritative
 from ..native_objects.marker_status import native_marker_release_block_reason
 from ..drawingml.theme_colors import (
     ThemeColorError,
@@ -1769,11 +1770,12 @@ def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]
     return fallbacks
 
 
-def _native_object_projection_findings(
+def _native_object_preflight_findings(
     svg_files: list[Path],
-) -> list[tuple[str, str, str]]:
-    """Return SVG-first Chart/Table details that native metadata would discard."""
-    findings: list[tuple[str, str, str]] = []
+) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
+    """Separate JSON-first payload failures from SVG-first projection findings."""
+    payload_findings: list[tuple[str, str, str]] = []
+    projection_findings: list[tuple[str, str, str]] = []
     for svg_path in svg_files:
         try:
             root = ET.parse(svg_path).getroot()
@@ -1803,12 +1805,15 @@ def _native_object_projection_findings(
                     document_root=root,
                 )
             except RuntimeError as exc:
+                if native_json_is_authoritative(elem):
+                    payload_findings.append((svg_path.name, marker_id, str(exc)))
+                    continue
                 warnings = [f"projection validation failed: {exc}"]
-            findings.extend(
+            projection_findings.extend(
                 (svg_path.name, marker_id, warning)
                 for warning in warnings
             )
-    return findings
+    return payload_findings, projection_findings
 
 
 def _release_blocked_graphics(
@@ -3229,7 +3234,20 @@ Recorded narration:
             )
 
     if args.native_objects:
-        projection_findings = _native_object_projection_findings(native_files)
+        payload_findings, projection_findings = _native_object_preflight_findings(native_files)
+        if payload_findings:
+            print(
+                "Error: --native-charts-and-tables stopped because JSON-first "
+                "native payload validation failed:",
+                file=sys.stderr,
+            )
+            for filename, marker_id, finding in payload_findings:
+                print(f"  {filename}: {marker_id}: {finding}", file=sys.stderr)
+            print(
+                "Correct the reported JSON payload fields in the object's "
+                "metadata and retry the native export.",
+                file=sys.stderr,
+            )
         if projection_findings:
             print(
                 "Error: --native-charts-and-tables stopped because visible "
@@ -3247,6 +3265,7 @@ Recorded narration:
                 "Native-ready=no.",
                 file=sys.stderr,
             )
+        if payload_findings or projection_findings:
             return 1
         print(
             "Warning: --native-charts-and-tables replaces shape-based SVG fallbacks "
