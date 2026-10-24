@@ -1732,11 +1732,48 @@ class SVGQualityChecker:
                     result,
                     included_text_ids,
                 )
+                self._check_roundtrip_chart_edits(root, baseline_root, source_document, result)
             result['passed'] = len(result['errors']) == 0
         except Exception as exc:
             result['errors'].append(f"Failed to read file: {exc}")
             result['passed'] = False
         return self._record_result(result)
+
+    @staticmethod
+    def _check_roundtrip_chart_edits(root, baseline_root, source_document, result: Dict) -> None:
+        """Surface source-only chart losses before the round-trip export."""
+        from authoring_roundtrip import (
+            _layered_ref_index,
+            _parse_svg,
+            chart_rebuild_warning,
+            prepare_imported_chart_edit,
+        )
+        baseline_by_ref = {node.get('data-pptx-source-ref'): node for node in baseline_root.iter()
+                           if node.get('data-pptx-source-ref')}
+        candidates = [node for node in root.iter() if node.get('data-pptx-replace-with') == 'chart'
+                      and node.get('data-pptx-source-ref') in baseline_by_ref]
+        if not candidates:
+            return
+        sources = _layered_ref_index(_parse_svg(source_document.layered_source_path))
+        project_path = source_document.authoring_path.parent.parent
+        for node in candidates:
+            source_ref = node.get('data-pptx-source-ref')
+            source = sources.get(source_ref)
+            if source is None:
+                continue
+            try:
+                _package, reason = prepare_imported_chart_edit(
+                    node, baseline_by_ref[source_ref], source,
+                    current_root=root, baseline_root=baseline_root,
+                )
+            except RuntimeError as exc:
+                result['errors'].append(f"{_element_label(node)}: {exc}")
+                continue
+            if reason:
+                result['warnings'].append(
+                    f"{_element_label(node)} source_ref={source_ref}: "
+                    + chart_rebuild_warning(project_path, source_document.source_slide, source_ref, reason)
+                )
 
     @staticmethod
     def _check_roundtrip_unsupported_table_edits(

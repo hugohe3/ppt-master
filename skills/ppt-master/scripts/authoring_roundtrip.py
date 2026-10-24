@@ -63,6 +63,8 @@ from svg_authoring_view import (
 )
 from svg_compatibility import normalize_single_child_group_filters
 from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS, parse_transform_matrix
+from svg_to_pptx.native_objects.chart_patch import chart_edit_is_data_only, patch_chart_package
+from svg_to_pptx.native_objects.marker_common import _load_payload
 
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -1711,6 +1713,61 @@ def _native_restore_placeholder(
     return placeholder
 
 
+def prepare_imported_chart_edit(
+    current: ET.Element,
+    baseline: ET.Element,
+    source: ET.Element,
+    *,
+    current_root: ET.Element | None = None,
+    baseline_root: ET.Element | None = None,
+) -> tuple[dict | None, str | None]:
+    """Reuse import-time JSON and source parts for a data-only chart change."""
+    if any(element.get("data-pptx-replace-with") != "chart"
+           or element.get("data-pptx-native-authority") != "json"
+           for element in (current, baseline)):
+        return None, None
+    edited = _load_payload(current, "chart")
+    original = _load_payload(baseline, "chart")
+    unchanged = edited == original
+    if not unchanged and not chart_edit_is_data_only(original, edited):
+        return None, "series/point topology or non-data JSON fields changed"
+    comparison = copy.deepcopy(_contextual_authoring_element(current, current_root))
+    reference = _contextual_authoring_element(baseline, baseline_root)
+    comparison.find(f'{{{SVG_NS}}}metadata[@type="application/json"]').text = (
+        reference.find(f'{{{SVG_NS}}}metadata[@type="application/json"]').text
+    )
+    ignored = frozenset({SOURCE_REF_ATTRIBUTE, "data-pptx-fallback-sha256"})
+    if semantic_subtree_sha256(comparison, ignored_attributes=ignored) != semantic_subtree_sha256(
+        reference, ignored_attributes=ignored,
+    ):
+        return None, "chart SVG geometry or presentation changed alongside its data"
+    package = _load_payload(source, "chart").get("source_package")
+    if unchanged:
+        return package, None
+    if package is None:
+        raise AuthoringRoundtripError("Data-only chart edit has no closed source package; reimport the source deck")
+    try:
+        return patch_chart_package(package, original, edited), None
+    except RuntimeError as exc:
+        raise AuthoringRoundtripError(f"Cannot preserve data-only chart edit: {exc}") from exc
+
+
+def chart_rebuild_warning(project_path: Path, source_slide: int, source_ref: str, reason: str) -> str:
+    """Report the object's recorded import losses when a chart must rebuild."""
+    report_path = project_path / "validation" / "conversion-report.json"
+    diagnostics = []
+    if report_path.is_file():
+        report = _load_json(report_path, context="import conversion report")
+        diagnostics = [item for item in report.get("diagnostics", [])
+                       if item.get("slide_index") == source_slide
+                       and str(item.get("shape_id")) == source_ref.split(":", 1)[-1]]
+    details = "; ".join(dict.fromkeys(
+        f"{item.get('code')}: {item.get('message')}" for item in diagnostics
+    )) or "no object-specific import diagnostics were recorded"
+    return (f"native-chart-rebuilt: {reason}; JSON rebuild may omit source-only formatting. "
+            f"Import diagnostics: {details}")
+
+
 def _materialize_document(
     project_path: Path,
     document: AuthoringDocument,
@@ -1963,6 +2020,28 @@ def _materialize_document(
                         if clone.get(name) is None and source.get(name) is not None:
                             clone.set(name, str(source.get(name)))
                 _restore_preserved_effect_metadata(clone, source)
+                package, reason = prepare_imported_chart_edit(
+                    element, baseline_occurrences[source_ref][0].element, source,
+                    current_root=current_occurrences[source_ref][0].root,
+                    baseline_root=baseline_occurrences[source_ref][0].root,
+                )
+                if package is not None:
+                    metadata = clone.find(f'{{{SVG_NS}}}metadata[@type="application/json"]')
+                    payload = _load_payload(clone, "chart")
+                    payload["source_package"] = package
+                    metadata.text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+                    clone.set("data-pptx-roundtrip-object", "source-chart-package")
+                if reason:
+                    message = chart_rebuild_warning(project_path, document.source_slide, source_ref, reason)
+                    object_id = element.get("id") or source_ref
+                    output_index = page.output_index if page else document.source_slide
+                    warnings.append({
+                        "code": "native-chart-rebuilt", "output_page": output_index,
+                        "source_slide": document.source_slide, "object_id": object_id,
+                        "source_ref": source_ref, "message": message,
+                    })
+                    print(f"[ROUNDTRIP][WARNING] page={output_index} object={object_id} "
+                          f"source_ref={source_ref}: {message}", file=sys.stderr)
                 warning = _restore_unchanged_text_body(
                     clone, source, current_occurrences[source_ref][0], baseline_occurrences[source_ref][0],
                 )
