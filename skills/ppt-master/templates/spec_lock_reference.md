@@ -20,7 +20,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only, including `secondary_text` and `divider`; contextual paints need no row; `image_rendering` only for AI images |
 | `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write `title_family` and `body_family`; sizes are unitless px |
-| `icons` | `library`, `inventory` | `library` is the primary bundled style or `none`; `simple-icons/*` may be prepared alone or alongside it; `inventory` indexes the curated synced pool, not page usage or every usable project icon; `stroke_width` conditional |
+| `icons` | `library`, `inventory` | `library` is the primary bundled style or `none`; `simple-icons/*` may be prepared alone or alongside it; `inventory` indexes the curated synced pool, not page usage or every usable project icon, and is `none` when no icon is prepared; `stroke_width` conditional |
 | `page_rhythm` | One `P<NN>` row per page | `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | `flat`, `structured` |
 | `forbidden` | Literal list items | The technical baseline rows stay untagged; every other row is a prohibition the user stated in their own words (request, chat, `image_notes`), quoted verbatim and ending with `(user)`; nothing else enters — general standards stay in their owning reference, a template's rules stay in its installed spec, and a confirmed `visual_style_behavior` binds as identity prose without becoming a lock row |
