@@ -494,6 +494,82 @@ def _make_text_paragraph(text: str) -> ET.Element:
     return paragraph
 
 
+DOCX_TEXT_PARTS = ("word/document.xml", "word/footnotes.xml", "word/endnotes.xml")
+
+
+def _docx_rewrite_parts(input_file: Path, patched: dict[str, bytes]) -> Path:
+    """Copy a DOCX to a temp file with the given package parts replaced."""
+    tmp = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
+    tmp.close()
+    out_path = Path(tmp.name)
+    with zipfile.ZipFile(input_file) as zin, \
+            zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            zout.writestr(item, patched.get(item.filename) or zin.read(item.filename))
+    return out_path
+
+
+def _docx_read_text_parts(input_file: Path) -> dict[str, ET.Element]:
+    """Parse the body, footnote and endnote parts that mammoth renders."""
+    roots: dict[str, ET.Element] = {}
+    try:
+        with zipfile.ZipFile(input_file) as docx:
+            for name in DOCX_TEXT_PARTS:
+                try:
+                    roots[name] = ET.fromstring(docx.read(name))
+                except (KeyError, ET.ParseError):
+                    continue
+    except (zipfile.BadZipFile, OSError):
+        return {}
+    return roots
+
+
+def _docx_serialize(root: ET.Element) -> bytes:
+    for prefix, uri in DOCX_NS.items():
+        if prefix != "rel":
+            ET.register_namespace(prefix, uri)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def _docx_show_visible_run_text(
+    input_file: Path,
+    warnings: list[str] | None = None,
+) -> Path | None:
+    """Make mammoth read text the way Word displays it, in a temp DOCX.
+
+    mammoth ignores ``w:fldSimple``, dropping its displayed result (caption
+    numbers, document properties), yet keeps runs Word hides with ``w:vanish``.
+    Unwrap simple fields to their result runs and drop directly hidden runs.
+    """
+    patched: dict[str, bytes] = {}
+    hidden_runs = 0
+    for name, root in _docx_read_text_parts(input_file).items():
+        changed = False
+        for parent in list(root.iter()):
+            for child in list(parent):
+                local = _local_name(child)
+                if local == "fldSimple":
+                    position = list(parent).index(child)
+                    parent.remove(child)
+                    for offset, run in enumerate(list(child)):
+                        parent.insert(position + offset, run)
+                    changed = True
+                elif local == "r":
+                    vanish = child.find("w:rPr/w:vanish", DOCX_NS)
+                    if vanish is not None and vanish.get(f"{{{W_NS}}}val") not in {"0", "false", "off"}:
+                        parent.remove(child)
+                        hidden_runs += 1
+                        changed = True
+        if changed:
+            patched[name] = _docx_serialize(root)
+    if hidden_runs:
+        warning = f"{hidden_runs} hidden-text run(s) omitted; Word does not display them."
+        print(f"[WARN] {warning}", file=sys.stderr)
+        if warnings is not None:
+            warnings.append(warning)
+    return _docx_rewrite_parts(input_file, patched) if patched else None
+
+
 def _docx_inject_math_latex(
     input_file: Path,
     warnings: list[str] | None = None,
@@ -501,20 +577,31 @@ def _docx_inject_math_latex(
     """Replace OMML equations with alphanumeric placeholders in a temp DOCX.
 
     Returns ``(temp_file, {placeholder: latex})`` or None when the document has
-    no OMML math. Placeholders are plain ``[A-Za-z0-9]`` tokens so mammoth never
-    markdown-escapes the LaTeX; the caller swaps each token for its `$...$` value
-    after mammoth has produced the Markdown.
+    no OMML math. Body, footnote and endnote math are all rewritten. Placeholders
+    are plain ``[A-Za-z0-9]`` tokens so mammoth never markdown-escapes the LaTeX;
+    the caller swaps each token for its `$...$` value after mammoth has produced
+    the Markdown.
     """
-    try:
-        with zipfile.ZipFile(input_file) as docx:
-            document_xml = docx.read("word/document.xml")
-    except (KeyError, zipfile.BadZipFile, OSError):
+    token_base = uuid.uuid4().hex
+    replacements: dict[str, str] = {}
+    patched: dict[str, bytes] = {}
+    for name, root in _docx_read_text_parts(input_file).items():
+        before = len(replacements)
+        _docx_replace_math(root, token_base, replacements, warnings)
+        if len(replacements) > before:
+            patched[name] = _docx_serialize(root)
+    if not replacements:
         return None
-    try:
-        root = ET.fromstring(document_xml)
-    except ET.ParseError:
-        return None
+    return _docx_rewrite_parts(input_file, patched), replacements
 
+
+def _docx_replace_math(
+    root: ET.Element,
+    token_base: str,
+    replacements: dict[str, str],
+    warnings: list[str] | None,
+) -> None:
+    """Swap each OMML zone in one part for a placeholder run."""
     parent_map = {child: parent for parent in root.iter() for child in parent}
     targets: list[tuple[ET.Element, bool]] = []
     for elem in root.iter():
@@ -525,12 +612,7 @@ def _docx_inject_math_latex(
             parent = parent_map.get(elem)
             if parent is None or _local_name(parent) != "oMathPara":
                 targets.append((elem, False))
-    if not targets:
-        return None
-
-    token_base = uuid.uuid4().hex
-    replacements: dict[str, str] = {}
-    for index, (elem, display) in enumerate(targets):
+    for elem, display in targets:
         parent = parent_map.get(elem)
         if parent is None:
             continue
@@ -548,27 +630,10 @@ def _docx_inject_math_latex(
         position = list(parent).index(elem)
         parent.remove(elem)
         if latex:
-            token = f"MATHEQ{token_base}{index:04d}"
+            token = f"MATHEQ{token_base}{len(replacements):04d}"
             delim = "$$" if display else "$"
             replacements[token] = f"{delim}{latex}{delim}"
             parent.insert(position, _make_text_run(token))
-    if not replacements:
-        return None
-
-    for prefix, uri in DOCX_NS.items():
-        if prefix != "rel":
-            ET.register_namespace(prefix, uri)
-    patched_xml = ET.tostring(root, encoding="utf-8", xml_declaration=True)
-
-    tmp = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
-    tmp.close()
-    out_path = Path(tmp.name)
-    with zipfile.ZipFile(input_file) as zin, \
-            zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as zout:
-        for item in zin.infolist():
-            data = patched_xml if item.filename == "word/document.xml" else zin.read(item.filename)
-            zout.writestr(item, data)
-    return out_path, replacements
 
 
 # ─────────────────────────────────────────────────────────────
@@ -928,14 +993,15 @@ def _convert_docx(
 
     # Rewrite OMML equations to LaTeX placeholders before mammoth (which would
     # otherwise drop them); the placeholders are swapped back below.
-    math_injection = _docx_inject_math_latex(input_file, warnings)
+    visible_file = _docx_show_visible_run_text(input_file, warnings)
+    math_injection = _docx_inject_math_latex(visible_file or input_file, warnings)
     if math_injection is not None:
         math_file, math_replacements = math_injection
     else:
         math_file, math_replacements = None, {}
     table_file = None
     table_replacements: dict[str, str] = {}
-    mammoth_source = math_file or input_file
+    mammoth_source = math_file or visible_file or input_file
     table_injection = _docx_inject_tables_markdown(mammoth_source, warnings)
     if table_injection is not None:
         table_file, table_replacements = table_injection
@@ -966,9 +1032,11 @@ def _convert_docx(
                 table_file.unlink()
             except OSError:
                 pass
-        if math_file is not None:
+        for temp_file in (math_file, visible_file):
+            if temp_file is None:
+                continue
             try:
-                math_file.unlink()
+                temp_file.unlink()
             except OSError:
                 pass
 

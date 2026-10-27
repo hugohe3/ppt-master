@@ -238,6 +238,53 @@ class DocxContentLossTests(unittest.TestCase):
         self.assertIn("| [Evidence](https://example.invalid/evidence) |", md)
         self.assertIn("| --- |", md)
 
+    def test_simple_field_keeps_its_displayed_result(self) -> None:
+        doc = Document()
+        paragraph = doc.add_paragraph('Figure ')
+        paragraph._p.append(parse_xml('<w:fldSimple ' + nsdecls('w') + ' w:instr=" SEQ Figure \\* ARABIC ">'
+                                      '<w:r><w:t>7</w:t></w:r></w:fldSimple>'))
+        paragraph.add_run(': Revenue by region')
+        md, _ = self._convert(doc)
+        self.assertIn('Figure 7: Revenue by region', md)
+
+    def test_hidden_text_is_omitted_with_a_warning(self) -> None:
+        doc = Document()
+        paragraph = doc.add_paragraph('Shown ')
+        paragraph._p.append(parse_xml('<w:r ' + nsdecls('w') + '><w:rPr><w:vanish/></w:rPr>'
+                                      '<w:t>HIDDEN_ANSWER</w:t></w:r>'))
+        paragraph._p.append(parse_xml('<w:r ' + nsdecls('w') + '><w:rPr><w:vanish w:val="0"/></w:rPr>'
+                                      '<w:t>after</w:t></w:r>'))
+        md, profile = self._convert(doc)
+        self.assertIn('Shown after', md)
+        self.assertNotIn('HIDDEN_ANSWER', md)
+        self.assertTrue(any('hidden-text' in w for w in profile['warnings']))
+
+    def test_footnote_math_is_rewritten_as_latex(self) -> None:
+        doc = Document()
+        doc.add_paragraph('Claim')._p.append(
+            parse_xml('<w:r ' + nsdecls('w') + '><w:footnoteReference w:id="1"/></w:r>'))
+
+        def add_footnote(buf, target):
+            with zipfile.ZipFile(buf) as zin, zipfile.ZipFile(target, 'w') as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if item.filename == '[Content_Types].xml':
+                        data = data.replace(b'</Types>', b'<Override PartName="/word/footnotes.xml" ContentType='
+                                            b'"application/vnd.openxmlformats-officedocument.wordprocessingml.'
+                                            b'footnotes+xml"/></Types>')
+                    if item.filename == 'word/_rels/document.xml.rels':
+                        data = data.replace(b'</Relationships>', b'<Relationship Id="rIdFn" Type="http://schemas.'
+                                            b'openxmlformats.org/officeDocument/2006/relationships/footnotes" '
+                                            b'Target="footnotes.xml"/></Relationships>')
+                    zout.writestr(item, data)
+                zout.writestr('word/footnotes.xml', '<w:footnotes ' + nsdecls('w', 'm') + '>'
+                              '<w:footnote w:id="1"><w:p><w:r><w:t xml:space="preserve">Since </w:t></w:r>'
+                              '<m:oMath><m:sSup><m:e><m:r><m:t>e</m:t></m:r></m:e><m:sup><m:r><m:t>x</m:t>'
+                              '</m:r></m:sup></m:sSup></m:oMath></w:p></w:footnote></w:footnotes>')
+
+        md, _ = self._convert(doc, add_footnote)
+        self.assertIn('Since $e^x$', md)
+
     def _math_document(self, xml):
         doc = Document()
         doc.add_paragraph()._p.append(parse_xml('<m:oMath ' + nsdecls('m') + '>' + xml + '</m:oMath>'))

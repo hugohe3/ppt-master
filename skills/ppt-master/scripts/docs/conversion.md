@@ -134,7 +134,7 @@ PyMuPDF is licensed under AGPL-3.0, with a commercial license available from Art
 Hybrid converter: pure-Python for the common formats, pandoc fallback for the rest.
 
 Native path (no external binary required):
-- `.docx` — via `mammoth`; text-only tables (with footnotes) and chart data become pipe Markdown, and OMML / Office Math equations (Word-native or MathType "Convert to Office Math") are rewritten to inline LaTeX. Classic MathType OLE objects carry no OMML and are kept only as their preview image.
+- `.docx` — via `mammoth`; text-only tables (with footnotes) and chart data become pipe Markdown, and OMML / Office Math equations (Word-native or MathType "Convert to Office Math") are rewritten to inline LaTeX, including footnote and endnote math. Classic MathType OLE objects carry no OMML and are kept only as their preview image. Simple fields (`w:fldSimple`, e.g. caption numbers) keep their displayed result, and directly hidden runs (`w:vanish`) are omitted with a warning, matching what Word displays.
 - `.html` / `.htm` — via `markdownify` + `beautifulsoup4`
 - `.epub` — via `ebooklib` + `markdownify`
 - `.ipynb` — via `nbconvert`; code-cell output images and Markdown attachments
