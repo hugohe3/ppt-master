@@ -2591,7 +2591,9 @@ def _compose_template(
                     if len(atoms) == 1:
                         atoms[0].set("id", item.get("id"))
                         item = atoms[0]
-                if _local_name(item.tag) == "g" and _visible_leaf(item):
+                if _local_name(item.tag) == "g" and (
+                    _frame(item) is not None or _visible_leaf(item)
+                ):
                     bounds = _root_group_bounds(item, width, height)
                     if bounds is None:
                         raise MirrorMaterializationError(

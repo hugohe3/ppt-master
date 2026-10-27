@@ -727,9 +727,13 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         )
         if not visible_text_svg:
             return shape_xml
+        text_frame_attr = ""
+        if text_result.frame is not None:
+            text_frame = " ".join(fmt_num(value, 8) for value in text_result.frame)
+            text_frame_attr = f' data-pptx-frame="{text_frame}"'
         text_group = (
             f'<g id="{ctx.group_id_prefix}shape-{node.spid or ctx.shape_seq[0]}-text"'
-            f' data-name="{_xml_escape(node.name)} text">\n'
+            f' data-name="{_xml_escape(node.name)} text"{text_frame_attr}>\n'
             f"{visible_text_svg}\n</g>"
         )
         return f"{shape_xml}\n{text_group}"

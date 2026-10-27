@@ -158,6 +158,18 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
                     'fill="none"/></g>'
                 )
 
+    def test_a_mirror_bounds_retained_unpainted_positive_frame(self) -> None:
+        result = self._compose_slide(
+            '<g id="text-outline" data-pptx-object="shape" '
+            'data-pptx-frame="120 180 80 320">'
+            '<path d="M 120 180 L 200 180 L 200 500 L 120 500 Z" fill="none"/></g>'
+            '<g id="vertical-text" data-pptx-frame="120 180 80 320">'
+            '<text x="160" y="205" fill="#000000" font-size="24">A</text></g>'
+        )
+        by_id = {element.get('id'): element for element in result.iter() if element.get('id')}
+        self.assertEqual(by_id['text-outline'].get('data-pptx-bounds'), '120 180 80 320')
+        self.assertEqual(by_id['vertical-text'].get('data-pptx-bounds'), '120 180 80 320')
+
     def test_a_export_accepts_native_group_with_one_zero_axis(self) -> None:
         from svg_to_pptx.drawingml.elements import (
             _parse_preset_geometry_metadata,

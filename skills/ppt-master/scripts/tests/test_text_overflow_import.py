@@ -18,7 +18,9 @@ Dependencies:
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -28,8 +30,10 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from pptx_to_svg.emu_units import Xfrm  # noqa: E402
+from pptx_to_svg.ooxml_loader import OoxmlPackage  # noqa: E402
+from pptx_to_svg.slide_to_svg import assemble_part_solo, assemble_slide  # noqa: E402
 from pptx_to_svg.tbl_to_svg import convert_tbl  # noqa: E402
-from pptx_to_svg.txbody_to_svg import convert_txbody  # noqa: E402
+from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody  # noqa: E402
 
 
 A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
@@ -211,3 +215,78 @@ class RunEmphasisImportTests(unittest.TestCase):
                 svg = convert_txbody(body, Xfrm(x=0, y=0, w=300, h=100), None).svg
                 self.assertIn('font-weight="bold"', svg)
                 self.assertIn('font-style="italic"', svg)
+
+
+def _vertical_body(mode: str | None, overflow: str | None = None) -> ET.Element:
+    mode_attr = f' vert="{mode}"' if mode is not None else ''
+    overflow_attr = f' vertOverflow="{overflow}"' if overflow is not None else ''
+    return ET.fromstring(
+        f'<p:txBody xmlns:p="{P}" xmlns:a="{A}">'
+        f'<a:bodyPr lIns="0" tIns="0" rIns="0" bIns="0"{mode_attr}{overflow_attr}/>'
+        '<a:lstStyle/><a:p><a:r><a:rPr sz="1800"><a:latin typeface="Arial"/>'
+        '<a:ea typeface="Microsoft YaHei"/></a:rPr><a:t>中文ABC测试</a:t></a:r></a:p>'
+        '</p:txBody>'
+    )
+
+
+class VerticalTextFrameImportTests(unittest.TestCase):
+    def _import_slide(self, body: ET.Element, frame: Xfrm, *, diagnostics=None) -> ET.Element:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'source.pptx'
+            with zipfile.ZipFile(path, 'w') as archive:
+                archive.writestr('ppt/presentation.xml', (
+                    f'<p:presentation xmlns:p="{P}" '
+                    'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+                    '<p:sldIdLst><p:sldId id="256" r:id="rId1"/></p:sldIdLst>'
+                    '<p:sldSz cx="12192000" cy="6858000"/></p:presentation>'
+                ))
+                archive.writestr('ppt/_rels/presentation.xml.rels', (
+                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                    '<Relationship Id="rId1" '
+                    'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" '
+                    'Target="slides/slide1.xml"/></Relationships>'
+                ))
+                archive.writestr('ppt/slides/slide1.xml', (
+                    f'<p:sld xmlns:p="{P}" xmlns:a="{A}"><p:cSld><p:spTree><p:sp>'
+                    '<p:nvSpPr><p:cNvPr id="2" name="Vertical"/><p:cNvSpPr txBox="1"/>'
+                    '<p:nvPr/></p:nvSpPr><p:spPr>'
+                    f'<a:xfrm rot="{int(frame.rot * 60000)}">'
+                    f'<a:off x="{int(frame.x * 9525)}" y="{int(frame.y * 9525)}"/>'
+                    f'<a:ext cx="{int(frame.w * 9525)}" cy="{int(frame.h * 9525)}"/>'
+                    '</a:xfrm><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>'
+                    f'{ET.tostring(body, encoding="unicode")}'
+                    '</p:sp></p:spTree></p:cSld></p:sld>'
+                ))
+            with OoxmlPackage(path) as package:
+                svg, _ = assemble_slide(
+                    package, next(package.iter_slides()), None, diagnostics=diagnostics,
+                )
+        return ET.fromstring(svg)
+
+    def test_vertical_root_groups_keep_positive_source_frame(self) -> None:
+        for mode in ('vert', 'eaVert', 'wordArtVert', 'wordArtVertRtl'):
+            with self.subTest(mode=mode):
+                root = self._import_slide(_vertical_body(mode), Xfrm(x=120, y=180, w=80, h=320))
+                group = root.find('s:g[@id="shape-2-text"]', NS)
+                self.assertIsNotNone(group)
+                self.assertEqual(group.get('data-pptx-frame'), '120 180 80 320')
+                self.assertIsNone(group.get('transform'))
+                self.assertEqual(_visible_text(group), '中文ABC测试')
+
+    def test_auto_stacked_cjk_root_keeps_its_narrow_source_frame(self) -> None:
+        body = _vertical_body(None)
+        body.find('a:p/a:r/a:t', NS).text = '中文窄框测试'
+        root = self._import_slide(body, Xfrm(x=120, y=180, w=20, h=320))
+        group = root.find('s:g[@id="shape-2-text"]', NS)
+        self.assertIsNotNone(group)
+        self.assertEqual(group.get('data-pptx-frame'), '120 180 20 320')
+        self.assertEqual(_visible_text(group), '中文窄框测试')
+
+    def test_rotated_vertical_text_frame_matches_its_positioned_glyphs(self) -> None:
+        root = self._import_slide(
+            _vertical_body('eaVert'), Xfrm(x=120, y=180, w=320, h=80, rot=90),
+        )
+        group = root.find('s:g[@id="shape-2-text"]', NS)
+        self.assertIsNotNone(group)
+        self.assertEqual(group.get('data-pptx-frame'), '240 60 80 320')
+        self.assertIsNone(group.get('transform'))

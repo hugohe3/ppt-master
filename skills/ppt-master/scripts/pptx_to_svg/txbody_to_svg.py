@@ -109,11 +109,13 @@ class TextResult:
 
     `svg` is one or more <text> elements, already absolutely positioned
     inside the slide coordinate system. `defs` holds text gradient fills.
+    `frame` carries the source box used by separately positioned vertical text.
     """
 
     svg: str = ""
     defs: list[str] = field(default_factory=list)
     contains_inline_formula: bool = False
+    frame: tuple[float, float, float, float] | None = None
 
 
 VERTICAL_TEXT_MODES = {"eaVert", "vert", "wordArtVert", "wordArtVertRtl"}
@@ -377,6 +379,7 @@ def convert_vertical_txbody(
         svg=f"<text{attrs}>{''.join(spans)}</text>",
         defs=_collect_text_defs(paragraphs),
         contains_inline_formula=False,
+        frame=(box_x, box_y, box_w, box_h),
     )
 
 
@@ -491,6 +494,7 @@ def _convert_east_asian_vertical(
         svg="\n".join(text_blocks),
         defs=_collect_text_defs(paragraphs),
         contains_inline_formula=False,
+        frame=(box_x, box_y, box_w, box_h),
     )
 
 
