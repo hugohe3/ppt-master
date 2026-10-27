@@ -297,9 +297,19 @@ def convert_tbl(
 
     col_widths_px = _column_widths_px(tbl)
     if not col_widths_px:
+        message = "Source table has no column grid; cell geometry cannot be recovered"
+        if strict:
+            raise ValueError(message)
+        if diagnostic_sink is not None:
+            diagnostic_sink("table-geometry-omitted", message, "retain the source table fallback without inventing columns")
         return TableResult()
     rows = tbl.findall("a:tr", NS)
     if not rows:
+        message = "Source table has no rows; cell geometry cannot be recovered"
+        if strict:
+            raise ValueError(message)
+        if diagnostic_sink is not None:
+            diagnostic_sink("table-geometry-omitted", message, "retain the source table fallback without inventing rows")
         return TableResult()
     table_style = _resolve_table_style(tbl, table_styles)
     row_heights_px = [_row_height_px(r) for r in rows]
@@ -314,6 +324,16 @@ def convert_tbl(
         or sum(col_widths_px) <= 0
         or sum(row_heights_px) <= 0
     )
+    if source_geometry_invalid:
+        message = "Source table has inconsistent cell counts or nonpositive row/column dimensions"
+        if strict:
+            raise ValueError(message)
+        if diagnostic_sink is not None:
+            diagnostic_sink(
+                "table-geometry-unsupported",
+                message,
+                "render recoverable cells at source coordinates; cells outside the source grid cannot be placed",
+            )
 
     # PowerPoint's tblGrid widths and tr heights together describe the
     # *intrinsic* table size. The graphicFrame xfrm width/height may differ;
