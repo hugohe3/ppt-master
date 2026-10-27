@@ -56,6 +56,7 @@ from native_payloads import (
     serialize_native_payload_store,
 )
 from pptx_shapes import (
+    CONNECTOR_PRESET_TYPES,
     NATIVE_FALLBACK_SHA256_ATTR,
     svg_native_fallback_fingerprint,
     svg_preset_preview_fingerprint,
@@ -68,6 +69,7 @@ from svg_authoring_view import (
     semantic_subtree_sha256,
 )
 from svg_finalize.flatten_tspan import flatten_text_with_tspans
+from svg_to_pptx.drawingml.utils import parse_transform_matrix, transform_point
 from svg_to_pptx.pptx_package.template_structure import (
     SOURCE_THEMES_FILENAME,
     SOURCE_THEMES_SCHEMA,
@@ -1642,6 +1644,93 @@ def _frame(element: ET.Element | None) -> tuple[float, float, float, float] | No
     return values
 
 
+def _source_bounds(
+    element: ET.Element,
+    stroke_width: float = 1.0,
+) -> tuple[float, float, float, float] | None:
+    """Bound a known source frame or native group's children without editing it."""
+    raw = (element.get("data-pptx-frame") or "").replace(",", " ").split()
+    if len(raw) != 4:
+        return None
+    try:
+        x, y, width, height = (float(value) for value in raw)
+    except ValueError:
+        return None
+    if (
+        not all(math.isfinite(value) for value in (x, y, width, height))
+        or width < 0 or height < 0
+        or (width == 0 and height == 0)
+    ):
+        return None
+
+    # Only the validation zone is padded; native frames and geometry stay exact.
+    for child in element.iter():
+        raw_stroke = _paint_value(child, "stroke-width")
+        if raw_stroke is not None:
+            try:
+                value = float(raw_stroke)
+            except ValueError:
+                continue
+            if math.isfinite(value):
+                stroke_width = max(stroke_width, value)
+    if width == 0:
+        x -= stroke_width / 2
+        width = stroke_width
+    if height == 0:
+        y -= stroke_width / 2
+        height = stroke_width
+    if element.get("data-pptx-object") == "group":
+        child_bounds = [
+            _source_bounds(child, stroke_width)
+            for child in element if _visible_leaf(child)
+        ]
+        if not child_bounds or any(bounds is None for bounds in child_bounds):
+            return None
+        x = min(bounds[0] for bounds in child_bounds)
+        y = min(bounds[1] for bounds in child_bounds)
+        width = max(bounds[0] + bounds[2] for bounds in child_bounds) - x
+        height = max(bounds[1] + bounds[3] for bounds in child_bounds) - y
+    matrix = parse_transform_matrix(element.get("transform", ""))
+    corners = [
+        transform_point(matrix, px, py)
+        for px in (x, x + width)
+        for py in (y, y + height)
+    ]
+    left = min(point[0] for point in corners)
+    top = min(point[1] for point in corners)
+    return (
+        left, top,
+        max(point[0] for point in corners) - left,
+        max(point[1] for point in corners) - top,
+    )
+
+
+def _root_group_bounds(
+    element: ET.Element,
+    canvas_width: float,
+    canvas_height: float,
+) -> tuple[float, float, float, float] | None:
+    bounds = _frame(element)
+    if bounds is not None:
+        return bounds
+    if (
+        element.get("data-pptx-object") not in {"connector", "group"}
+        and element.get("data-pptx-prst") not in CONNECTOR_PRESET_TYPES
+    ):
+        return None
+    bounds = _source_bounds(element)
+    if bounds is None:
+        return None
+    # The page clips edge strokes; bounds describe their on-canvas module zone.
+    x, y, width, height = bounds
+    left, top = max(0.0, x), max(0.0, y)
+    right = min(canvas_width, x + width)
+    bottom = min(canvas_height, y + height)
+    if right <= left or bottom <= top:
+        return None
+    return left, top, right - left, bottom - top
+
+
 def _element_by_ref(root: ET.Element, source_ref: str) -> ET.Element | None:
     matches = [
         element
@@ -2503,7 +2592,7 @@ def _compose_template(
                         atoms[0].set("id", item.get("id"))
                         item = atoms[0]
                 if _local_name(item.tag) == "g" and _visible_leaf(item):
-                    bounds = _frame(item)
+                    bounds = _root_group_bounds(item, width, height)
                     if bounds is None:
                         raise MirrorMaterializationError(
                             f"Slide {slide['index']} root group "

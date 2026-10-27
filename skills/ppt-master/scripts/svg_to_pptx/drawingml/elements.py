@@ -948,10 +948,15 @@ def _parse_preset_geometry_metadata(
             elem.get('data-pptx-object') == 'connector'
             or prst in CONNECTOR_PRESET_TYPES
         )
-        if is_connector:
+        is_native_group = (
+            elem.tag.rsplit('}', 1)[-1] == 'g'
+            and elem.get('data-pptx-object') == 'group'
+        )
+        if is_connector or is_native_group:
             if frame[2] < 0 or frame[3] < 0 or (frame[2] == 0 and frame[3] == 0):
+                kind = 'Connector' if is_connector else 'Group'
                 raise ValueError(
-                    'Connector data-pptx-frame dimensions must be non-negative '
+                    f'{kind} data-pptx-frame dimensions must be non-negative '
                     f'and not both zero, got {raw_frame!r}'
                 )
         elif frame[2] <= 0 or frame[3] <= 0:
