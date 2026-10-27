@@ -201,7 +201,7 @@ def resolve_first_rel(
     return None
 
 
-def parse_xfrm_record(sp: ET.Element) -> dict[str, int] | None:
+def parse_xfrm_record(sp: ET.Element) -> dict[str, float] | None:
     xfrm = sp.find("p:spPr/a:xfrm", NS)
     if xfrm is None:
         return None
@@ -217,10 +217,10 @@ def parse_xfrm_record(sp: ET.Element) -> dict[str, int] | None:
     except ValueError:
         return None
     return {
-        "x": emu_to_pixels(x),
-        "y": emu_to_pixels(y),
-        "width": emu_to_pixels(w),
-        "height": emu_to_pixels(h),
+        "x": x / EMU_PER_INCH * 96,
+        "y": y / EMU_PER_INCH * 96,
+        "width": w / EMU_PER_INCH * 96,
+        "height": h / EMU_PER_INCH * 96,
     }
 
 

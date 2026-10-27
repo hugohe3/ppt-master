@@ -69,9 +69,11 @@ from svg_authoring_view import (
     semantic_subtree_sha256,
 )
 from svg_finalize.flatten_tspan import flatten_text_with_tspans
+from svg_to_pptx.drawingml.context import ConvertContext
 from svg_to_pptx.drawingml.utils import (
     is_stroked_zero_axis_shape,
     parse_transform_matrix,
+    svg_hidden_reason,
     transform_point,
 )
 from svg_to_pptx.pptx_package.template_structure import (
@@ -1461,7 +1463,7 @@ def _paint_value(element: ET.Element, name: str) -> str | None:
     return _parse_style(element.get("style")).get(name)
 
 
-def _visible_leaf(element: ET.Element) -> bool:
+def _visible_leaf(element: ET.Element, *, check_dimensions: bool = True) -> bool:
     if _hidden(element):
         return False
     tag = _local_name(element.tag)
@@ -1469,8 +1471,8 @@ def _visible_leaf(element: ET.Element) -> bool:
         return False
     if tag in {"g", "svg", "a"}:
         return any(_visible_leaf(child) for child in element)
-    if tag in {"rect", "image", "foreignObject"}:
-        for dimension in ("width", "height"):
+    if tag in {"rect", "image", "foreignObject"} and (check_dimensions or tag != "rect"):
+        for dimension in ("width", "height") if check_dimensions else ():
             raw = element.get(dimension)
             if raw is not None:
                 try:
@@ -1482,7 +1484,7 @@ def _visible_leaf(element: ET.Element) -> bool:
     if tag in {"line", "polyline"}:
         stroke = _paint_value(element, "stroke")
         return stroke not in {None, "none", "transparent"}
-    if tag in {"path", "polygon", "circle", "ellipse"}:
+    if tag in {"rect", "path", "polygon", "circle", "ellipse"}:
         fill = _paint_value(element, "fill")
         stroke = _paint_value(element, "stroke")
         return not (
@@ -1568,7 +1570,10 @@ def _flatten_fixed_group(group: ET.Element, *, context: str) -> list[ET.Element]
             atoms.append(item)
     if len(atoms) == 1:
         atom = atoms[0]
-        for name in ("data-pptx-frame", "data-pptx-object", "data-pptx-prst"):
+        for name in (
+            "data-pptx-frame", "data-pptx-object", "data-pptx-prst",
+            "data-pptx-geometry-kind",
+        ):
             if group.get(name) is not None and atom.get(name) is None:
                 atom.set(name, group.get(name, ""))
     return atoms
@@ -1594,6 +1599,7 @@ def _fixed_atoms(
     scope: str,
     key: str,
     placeholder_source_refs: set[str] | None = None,
+    warnings: list[str] | None = None,
 ) -> list[ET.Element]:
     atoms: list[ET.Element] = []
     serial = 0
@@ -1605,6 +1611,13 @@ def _fixed_atoms(
             or child.get("data-ph-type") is not None
             or child.get(SOURCE_REF_ATTRIBUTE) in placeholder_source_refs
         ):
+            continue
+        if _invisible_degenerate_source(child):
+            if warnings is not None:
+                warnings.append(
+                    f"{scope.title()} {key} element {child.get('id') or '<' + tag + '>'!r}: "
+                    "omitted invisible content without a positive source frame"
+                )
             continue
         if not _visible_leaf(child):
             continue
@@ -1646,6 +1659,39 @@ def _frame(element: ET.Element | None) -> tuple[float, float, float, float] | No
     if not all(math.isfinite(item) for item in values) or values[2] <= 0 or values[3] <= 0:
         return None
     return values
+
+
+def _invisible_degenerate_source(element: ET.Element) -> bool:
+    """Omit only unbounded source content whose paint is known to be invisible."""
+    if _frame(element) is not None:
+        return False
+    preview = copy.deepcopy(element)
+    # Resolve local style precedence before propagating inherited paint on this
+    # disposable view. Source attributes and geometry remain unchanged.
+    for node in preview.iter():
+        node.attrib.update(_parse_style(node.get("style")))
+        node.attrib.pop("style", None)
+    if _hidden(preview) and _paint_value(preview, "visibility") not in {"hidden", "collapse"}:
+        return True
+    for parent in preview.iter():
+        for child in parent:
+            _merge_group_inheritance(parent, child)
+    parents = {id(child): parent for parent in preview.iter() for child in parent}
+    for leaf in preview.iter():
+        if _local_name(leaf.tag) in _NON_VISUAL_TAGS | {"g", "svg", "a"}:
+            continue
+        if svg_hidden_reason(leaf, parents):
+            continue
+        ancestor = parents.get(id(leaf))
+        while ancestor is not None and _local_name(ancestor.tag) not in _NON_VISUAL_TAGS:
+            ancestor = parents.get(id(ancestor))
+        if ancestor is not None:
+            continue
+        # Dimensions do not prove a source image or stroked shape is empty.
+        # Keep uncertain content for the existing geometry validation.
+        if _visible_leaf(leaf, check_dimensions=False):
+            return False
+    return True
 
 
 def _source_bounds(
@@ -1713,6 +1759,7 @@ def _root_group_bounds(
     element: ET.Element,
     canvas_width: float,
     canvas_height: float,
+    ctx: ConvertContext | None = None,
 ) -> tuple[float, float, float, float] | None:
     bounds = _frame(element)
     if bounds is not None:
@@ -1720,7 +1767,7 @@ def _root_group_bounds(
     if (
         element.get("data-pptx-object") not in {"connector", "group"}
         and element.get("data-pptx-prst") not in CONNECTOR_PRESET_TYPES
-        and not is_stroked_zero_axis_shape(element)
+        and not is_stroked_zero_axis_shape(element, ctx)
     ):
         return None
     bounds = _source_bounds(element)
@@ -1893,7 +1940,10 @@ def _slot_plans(
             raw.get("shapeId"),
             context=f"layout {layout.get('key')} placeholder shapeId",
         )
-        bounds = _frame(_element_by_ref(layout_root, f"layout:{shape_id}"))
+        bounds = (
+            _frame(_element_by_ref(layout_root, f"layout:{shape_id}"))
+            or _native_geometry(raw)
+        )
         if bounds is None:
             for slide in source_slides:
                 matching = next(
@@ -1928,7 +1978,6 @@ def _slot_plans(
                 bounds = _frame(
                     _placeholder_guide_by_semantic(master_root, _semantic_role(raw))
                 )
-        bounds = bounds or _native_geometry(raw)
         if bounds is None:
             raise MirrorMaterializationError(
                 f"Layout {layout.get('key')!r} placeholder {shape_id!r} has no "
@@ -1998,7 +2047,7 @@ def _copy_text_carrier(source: ET.Element | None) -> ET.Element | None:
     if source_frame is not None:
         carrier.set(
             "data-pptx-frame",
-            " ".join(format_coordinate(value) for value in source_frame),
+            _format_source_frame(source_frame),
         )
     carrier.set("data-pptx-carrier", "true")
     return carrier
@@ -2253,6 +2302,9 @@ def _blank_text_carrier(
     carrier = _copy_text_carrier(layout_guide)
     if carrier is None:
         carrier = _copy_text_carrier(master_guide)
+        if carrier is not None:
+            # The Master supplies typography here; the resolved slot owns its frame.
+            carrier.attrib.pop("data-pptx-frame", None)
     if carrier is None:
         x, y, _width, height = plan.bounds
         carrier = ET.Element(
@@ -2268,24 +2320,24 @@ def _blank_text_carrier(
     carrier.text = None
     for child in list(carrier):
         carrier.remove(child)
-    if carrier.get("data-pptx-frame") is None:
+    if _frame(carrier) is None:
         carrier.set(
             "data-pptx-frame",
-            " ".join(format_coordinate(value) for value in plan.bounds),
+            _format_source_frame(plan.bounds),
         )
     carrier.set("data-pptx-carrier", "true")
     return carrier
 
 
 def _blank_image_carrier(plan: SlotPlan) -> ET.Element:
-    x, y, width, height = plan.bounds
+    x, y, width, height = _format_source_frame(plan.bounds).split()
     return ET.Element(
         f"{{{SVG_NS}}}image",
         {
-            "x": format_coordinate(x),
-            "y": format_coordinate(y),
-            "width": format_coordinate(width),
-            "height": format_coordinate(height),
+            "x": x,
+            "y": y,
+            "width": width,
+            "height": height,
             "href": TRANSPARENT_PIXEL_DATA_URI,
             "preserveAspectRatio": "none",
             "data-pptx-carrier": "true",
@@ -2295,6 +2347,15 @@ def _blank_image_carrier(plan: SlotPlan) -> ET.Element:
 
 def _format_number(value: float) -> str:
     return f"{value:.8f}".rstrip("0").rstrip(".") or "0"
+
+
+def _format_source_frame(values: tuple[float, float, float, float]) -> str:
+    """Keep a positive source extent when page-coordinate rounding would erase it."""
+    compacted = [format_coordinate(value) for value in values]
+    for axis in (2, 3):
+        if values[axis] > 0 and compacted[axis] == "0":
+            compacted[axis] = _format_number(values[axis])
+    return " ".join(compacted)
 
 
 def _optional_float(value: str | None) -> float | None:
@@ -2319,9 +2380,7 @@ def _slot_wrapper(
         {
             "id": plan.slot_id,
             "data-pptx-placeholder": plan.semantic_role,
-            "data-pptx-bounds": " ".join(
-                format_coordinate(item) for item in plan.bounds
-            ),
+            "data-pptx-bounds": _format_source_frame(plan.bounds),
         },
     )
     if plan.idx is not None:
@@ -2493,6 +2552,7 @@ def _compose_template(
     slide: dict[str, Any] | None,
     slide_root: ET.Element | None,
     slot_plans: list[SlotPlan],
+    warnings: list[str] | None = None,
 ) -> ET.Element:
     width = float(native["slideSize"]["width_px"])
     height = float(native["slideSize"]["height_px"])
@@ -2544,8 +2604,14 @@ def _compose_template(
         root.append(defs)
     for style in styles:
         root.append(style)
+    geometry_context = ConvertContext(defs={
+        element.get("id"): element for element in root.iter() if element.get("id")
+    })
 
-    master_atoms = _fixed_atoms(master_root, scope="master", key=str(master["key"]))
+    omission_warnings: list[str] = []
+    master_atoms = _fixed_atoms(
+        master_root, scope="master", key=str(master["key"]), warnings=omission_warnings,
+    )
     layout_placeholder_refs = {
         f"layout:{item['shapeId']}"
         for item in layout.get("placeholders", [])
@@ -2556,6 +2622,7 @@ def _compose_template(
         scope="layout",
         key=str(layout["key"]),
         placeholder_source_refs=layout_placeholder_refs,
+        warnings=omission_warnings,
     )
     master_backgrounds = [
         atom for atom in master_atoms if _is_full_canvas_rect(atom, width, height)
@@ -2582,6 +2649,13 @@ def _compose_template(
                 continue
             item = copy.deepcopy(child)
             _merge_group_inheritance(slide_root, item)
+            if _invisible_degenerate_source(item):
+                element_id = item.get("id") or f"slide-{slide['index']}-node-{index + 1}"
+                omission_warnings.append(
+                    f"element {element_id!r}: "
+                    "omitted invisible content without a positive source frame"
+                )
+                continue
             if _is_full_canvas_rect(item, width, height):
                 item.set("id", item.get("id") or f"slide-{slide['index']}-background")
                 item.set("data-pptx-layer", "slide")
@@ -2599,9 +2673,9 @@ def _compose_template(
                 if _local_name(item.tag) == "g" and (
                     _frame(item) is not None
                     or _visible_leaf(item)
-                    or is_stroked_zero_axis_shape(item)
+                    or is_stroked_zero_axis_shape(item, geometry_context)
                 ):
-                    bounds = _root_group_bounds(item, width, height)
+                    bounds = _root_group_bounds(item, width, height, geometry_context)
                     if bounds is None:
                         raise MirrorMaterializationError(
                             f"Slide {slide['index']} root group "
@@ -2609,7 +2683,7 @@ def _compose_template(
                         )
                     item.set(
                         "data-pptx-bounds",
-                        " ".join(format_coordinate(value) for value in bounds),
+                        _format_source_frame(bounds),
                     )
                 slide_content.append(item)
         if len(slide_backgrounds) > 1:
@@ -2676,6 +2750,9 @@ def _compose_template(
         _strip_source_refs(element)
         root.append(element)
     _strip_source_refs(root)
+    if warnings is not None:
+        context = f"Slide {slide['index']}" if slide else f"Layout {layout['key']}"
+        warnings.extend(f"{context}: {warning}" for warning in omission_warnings)
     return root
 
 
@@ -3217,6 +3294,7 @@ def materialize_mirror_template(
         )
 
     materialized_roots: list[tuple[Path, ET.Element]] = []
+    warnings: list[str] = []
     for slide in slides:
         index = int(slide["index"])
         layout = layouts[str(slide["layoutKey"])]
@@ -3231,6 +3309,7 @@ def materialize_mirror_template(
             slide=slide,
             slide_root=prepared_slides[index],
             slot_plans=plans_by_layout[str(layout["key"])],
+            warnings=warnings,
         )
         materialized_roots.append((filename, root))
 
@@ -3440,6 +3519,7 @@ def materialize_mirror_template(
 
     return {
         "schema": "ppt-master.mirror-materialization-report.v2",
+        "warnings": warnings,
         "import_workspace": str(import_workspace),
         "template_workspace": str(template_workspace),
         "source_slide_indexes": [int(item["index"]) for item in slides],
