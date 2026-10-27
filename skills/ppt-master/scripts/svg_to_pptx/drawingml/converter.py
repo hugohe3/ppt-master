@@ -891,7 +891,12 @@ def _convert_semantic_shape(
         # The carrier path becomes the native object; keep the group's name.
         carrier.set('data-name', str(shape.get('id')))
 
-    if shape.get('data-pptx-geometry-kind') == 'custom':
+    # Imported carriers retain their hash-guarded source geometry. Only a
+    # semantic custom shape without a source payload compiles from SVG alone.
+    if (
+        shape.get('data-pptx-geometry-kind') == 'custom'
+        and carrier.get('data-pptx-custgeom') is None
+    ):
         for name in (
             'data-pptx-custgeom',
             'data-pptx-geometry-kind',

@@ -938,9 +938,23 @@ def _unwrap_preview(parent: ET.Element, wrapper: ET.Element) -> bool:
     return True
 
 
-def _strip_import_attributes(element: ET.Element, stats: ProjectionStats) -> None:
+def _strip_import_attributes(
+    element: ET.Element,
+    stats: ProjectionStats,
+    *,
+    geometry_owner: ET.Element | None = None,
+) -> None:
     for name in list(element.attrib):
         if name not in AUTHORING_OMITTED_SOURCE_ATTRIBUTES:
+            continue
+        if (
+            geometry_owner is not None
+            and geometry_owner.get("data-pptx-object") == "connector"
+            and element.get("data-pptx-part") == "geometry"
+            and name in {"data-pptx-custgeom", "data-pptx-geometry-sha256"}
+        ):
+            # Connectors need the source custom geometry when exported from
+            # the compact projection, which no longer rehydrates source refs.
             continue
         stats.source_attributes[name] += 1
         del element.attrib[name]
@@ -997,7 +1011,7 @@ def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
             continue
 
         _project_subtree(child, stats)
-        _strip_import_attributes(child, stats)
+        _strip_import_attributes(child, stats, geometry_owner=parent)
 
         if part == "geometry-preview":
             child.attrib.pop("data-pptx-part", None)
