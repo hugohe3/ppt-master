@@ -1333,11 +1333,11 @@ def _epub_image_candidates(src: str, document_name: str) -> list[str]:
     ).lstrip("/")
 
     candidates = [
+        relative_path,
         src,
         raw_path,
         decoded_path,
         normalized_path,
-        relative_path,
         Path(decoded_path).name,
         Path(normalized_path).name,
     ]
@@ -1378,15 +1378,36 @@ def _convert_epub(input_file: Path, out_file: Path) -> str:
         img_map[item.file_name] = filename
         img_map[Path(item.file_name).name] = filename
 
-    # Iterate document items in spine order
+    # Keep the reading order, then retain supplemental documents (e.g. linked
+    # footnotes) that an EPUB reader can open outside the linear spine.
     html_parts: list[str] = []
     spine_ids = [sid for sid, _ in book.spine]
     id_to_item = {it.get_id(): it for it in book.get_items_of_type(ebooklib.ITEM_DOCUMENT)}
-    for sid in spine_ids:
+    # The EPUB 3 navigation document is the book's table of contents, not text.
+    extra_ids = [
+        sid for sid, item in id_to_item.items()
+        if sid not in spine_ids and not isinstance(item, epub.EpubNav)
+    ]
+    if extra_ids:
+        print(
+            f"[WARN] EPUB: retaining {len(extra_ids)} document(s) outside the reading spine "
+            "after the main text.",
+            file=sys.stderr,
+        )
+    for sid in spine_ids + extra_ids:
         item = id_to_item.get(sid)
         if item is None:
             continue
         soup = BeautifulSoup(item.get_content(), "html.parser")
+        inert = soup.find_all(["script", "style", "template"])
+        if inert:
+            print(
+                f"[WARN] EPUB {item.file_name}: omitted {len(inert)} non-rendered "
+                "script/style/template element(s).",
+                file=sys.stderr,
+            )
+            for element in inert:
+                element.decompose()
         for img in soup.find_all("img"):
             src = img.get("src", "")
             if not src:
@@ -1492,6 +1513,95 @@ def _check_pandoc() -> bool:
     return shutil.which("pandoc") is not None
 
 
+def _prepare_odt_for_pandoc(input_file: Path) -> Path:
+    """Expose text containers skipped by Pandoc's ODT reader in a temporary copy."""
+    text_ns = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+    table_ns = "urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+    draw_ns = "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+    try:
+        with zipfile.ZipFile(input_file) as source:
+            root = ET.fromstring(source.read("content.xml"))
+            headers = textboxes = conditional = hidden = 0
+            for parent in list(root.iter()):
+                for child in list(parent):
+                    if child.tag == f"{{{table_ns}}}table-header-rows":
+                        index = list(parent).index(child)
+                        parent.remove(child)
+                        for row in reversed(list(child)):
+                            parent.insert(index, row)
+                        headers += 1
+                    elif child.tag == f"{{{draw_ns}}}frame":
+                        textbox = child.find(f"{{{draw_ns}}}text-box")
+                        if textbox is None:
+                            continue
+                        # Keep inline runs, links and line boundaries; geometry
+                        # has no Markdown representation. Other frame children
+                        # (for example images) remain available to Pandoc.
+                        span = ET.Element(f"{{{text_ns}}}span")
+                        span.text = textbox.text
+                        span.tail = child.tail
+                        child.tail = None
+                        for index, paragraph in enumerate(list(textbox)):
+                            if index:
+                                ET.SubElement(span, f"{{{text_ns}}}line-break")
+                            if paragraph.tag in {f"{{{text_ns}}}p", f"{{{text_ns}}}h"}:
+                                paragraph.tag = f"{{{text_ns}}}span"
+                            span.append(paragraph)
+                        parent.insert(list(parent).index(child) + 1, span)
+                        child.remove(textbox)
+                        textboxes += 1
+                    elif child.tag == f"{{{text_ns}}}hidden-text":
+                        if child.get(f"{{{text_ns}}}is-hidden") in {"true", "1"}:
+                            child.text = None
+                            child[:] = []
+                            hidden += 1
+                        child.tag = f"{{{text_ns}}}span"
+                        conditional += 1
+            if not (headers or textboxes or conditional):
+                return input_file
+            print(
+                f"[WARN] ODT: exposed {headers} table header container(s), flattened "
+                f"{textboxes} text box(es), and resolved {conditional} conditional-text "
+                f"field(s) for Pandoc; {hidden} author-hidden field(s) omitted. "
+                "Text-box geometry is retained only in the source ODT.",
+                file=sys.stderr,
+            )
+            with tempfile.NamedTemporaryFile(suffix=".odt", delete=False) as temporary:
+                prepared = Path(temporary.name)
+            with zipfile.ZipFile(prepared, "w") as destination:
+                for item in source.infolist():
+                    content = (
+                        ET.tostring(root, encoding="utf-8", xml_declaration=True)
+                        if item.filename == "content.xml" else source.read(item.filename)
+                    )
+                    destination.writestr(item, content)
+            return prepared
+    except (OSError, KeyError, zipfile.BadZipFile, ET.ParseError) as exc:
+        print(f"[WARN] ODT text preparation skipped: {exc}; using original file.", file=sys.stderr)
+        return input_file
+
+
+def _prepare_rtf_for_pandoc(input_file: Path) -> Path:
+    """Keep flat fields that Pandoc otherwise silently skips."""
+    content = input_file.read_text(encoding="latin-1")
+    if any(
+        re.fullmatch(r"\\v(?:-?[1-9]\d*)? ?", token.group())
+        for token in re.finditer(r"\\(?:[a-zA-Z]+-?\d* ?|[^a-zA-Z])", content)
+    ):
+        print("[WARN] RTF: author-hidden text is omitted by Pandoc.", file=sys.stderr)
+    normalized, count = re.subn(
+        r"(?<!\\)(\{(?:\\\*)?\\(?:fldrslt|fldinst)\s+)((?:\\[{}\\]|[^{}])+)(\})",
+        lambda match: match[1] + "{" + match[2] + "}" + match[3],
+        content,
+    )
+    if not count:
+        return input_file
+    print(f"[WARN] RTF: normalized {count} flat field container(s) for Pandoc.", file=sys.stderr)
+    with tempfile.NamedTemporaryFile(suffix=".rtf", delete=False) as temporary:
+        temporary.write(normalized.encode("latin-1"))
+        return Path(temporary.name)
+
+
 def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
     if not _check_pandoc():
         print(f"[ERROR] Format '{suffix}' requires pandoc. Install it:")
@@ -1504,11 +1614,16 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
     rel_media_dir = f"{out_file.stem}_files"
     media_dir = out_file.parent / rel_media_dir
 
+    prepared = input_file
+    if suffix == ".odt":
+        prepared = _prepare_odt_for_pandoc(input_file)
+    elif suffix == ".rtf":
+        prepared = _prepare_rtf_for_pandoc(input_file)
     cmd = [
         "pandoc",
         "-f", input_format,
         "-t", "gfm",
-        str(input_file.resolve()),
+        str(prepared.resolve()),
         "-o", str(out_file.resolve()),
         "--wrap", "none",
         "--strip-comments",
@@ -1516,9 +1631,13 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
     if suffix in PANDOC_MEDIA_FORMATS:
         cmd.extend(["--extract-media", rel_media_dir])
 
-    result = subprocess.run(cmd, capture_output=True, text=True,
-                            encoding="utf-8", errors="replace",
-                            cwd=str(out_file.parent))
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True,
+                                encoding="utf-8", errors="replace",
+                                cwd=str(out_file.parent))
+    finally:
+        if prepared != input_file:
+            prepared.unlink()
     if result.returncode != 0:
         print(f"[ERROR] Pandoc conversion failed:\n{result.stderr}")
         return ""
