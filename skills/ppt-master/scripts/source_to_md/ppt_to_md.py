@@ -670,6 +670,24 @@ def _format_chart_value(value: object) -> str:
     return str(value)
 
 
+def _chart_title_text(chart: object) -> str:
+    """Return the chart's own visible title text, if it has one."""
+    try:
+        if chart.has_title and chart.chart_title.has_text_frame:
+            return chart.chart_title.text_frame.text
+    except (ValueError, AttributeError, KeyError):
+        pass
+    return ""
+
+
+def _picture_alt_text(shape: object) -> str:
+    """Return the author's alt text (cNvPr/@descr) as a Markdown-safe label."""
+    element = getattr(shape, "_element", None)
+    names = element.xpath("./*/p:cNvPr") if element is not None else []
+    description = normalize_text(names[0].get("descr") or "") if names else ""
+    return _escape_md_link_text(description.replace("\n", " "))
+
+
 def _chart_header(chart: object, name: str) -> tuple[str, str]:
     """Return the Markdown chart header and its best-effort type label."""
     try:
@@ -677,7 +695,10 @@ def _chart_header(chart: object, name: str) -> tuple[str, str]:
     except (ValueError, AttributeError, KeyError):
         chart_type = ""
     raw_name = "" if name is None else str(name)
-    chart_name = normalize_text(raw_name).replace("\n", " ") or "Chart"
+    chart_name = (
+        normalize_text(_chart_title_text(chart) or raw_name).replace("\n", " ")
+        or "Chart"
+    )
     header = f"> [Chart] {chart_name}" + (f" — {chart_type}" if chart_type else "")
     return header, chart_type
 
@@ -1404,16 +1425,21 @@ def convert_presentation_to_markdown(
                 )
                 if saved_picture is None:
                     if is_picture_shape:
-                        blocks.append(f"> [Image] {getattr(shape, 'name', 'Picture')}")
+                        blocks.append(
+                            f"> [Image] {_picture_alt_text(shape) or getattr(shape, 'name', 'Picture')}"
+                        )
                         continue
                 else:
                     if saved_picture.is_new_asset:
                         image_count = next_image_index
                         image_manifest.append(saved_picture.manifest_entry)
                     asset_dir_used = True
+                    alt_text = (
+                        _picture_alt_text(shape)
+                        or f"Slide {slide_index} Image {image_ref_count}"
+                    )
                     image_markdown = (
-                        f"![Slide {slide_index} Image {image_ref_count}]"
-                        f"({asset_dir.name}/{saved_picture.filename})"
+                        f"![{alt_text}]({asset_dir.name}/{saved_picture.filename})"
                     )
                     image_link = _shape_click_target(shape)
                     if image_link is not None:

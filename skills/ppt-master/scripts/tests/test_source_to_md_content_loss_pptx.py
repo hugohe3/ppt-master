@@ -238,6 +238,34 @@ class PptxContentLossTests(unittest.TestCase):
         self.assertIn('caption', md)
         self.assertRegex(md, r'!\[[^\]]*\]\([^)]+\.png\)')
 
+    def test_chart_header_uses_the_visible_chart_title(self) -> None:
+        from pptx.chart.data import CategoryChartData
+        from pptx.enum.chart import XL_CHART_TYPE
+
+        prs, _ = self._presentation()
+        data = CategoryChartData()
+        data.categories = ['North']
+        data.add_series('Sales', (3,))
+        chart = prs.slides[0].shapes.add_chart(
+            XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(1), Inches(3), Inches(4), Inches(3), data,
+        ).chart
+        chart.has_title = True
+        chart.chart_title.text_frame.text = 'Revenue by region'
+        md = self._convert(prs)
+        self.assertIn('> [Chart] Revenue by region', md)
+
+    def test_picture_alt_text_becomes_markdown_alt(self) -> None:
+        from PIL import Image
+
+        prs, _ = self._presentation()
+        with tempfile.TemporaryDirectory() as tmp:
+            image = Path(tmp) / 'map.png'
+            Image.new('RGB', (40, 40), 'blue').save(image)
+            picture = prs.slides[0].shapes.add_picture(str(image), Inches(1), Inches(3))
+        picture._element.nvPicPr.cNvPr.set('descr', 'Map of [north] sites')
+        md = self._convert(prs)
+        self.assertIn(r'![Map of \[north\] sites](', md)
+
     def test_chartex_fallback_text_is_not_read_as_slide_text(self) -> None:
         prs, shape = self._presentation()
         shape.text = "This chart isn't available in your version of PowerPoint"

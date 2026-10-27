@@ -234,6 +234,7 @@ python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 Behavior:
 - extracts slide text in reading order
 - rewrites Office Math equations (`a14:m` OMML) as `$...$` inline or `$$...$$` display LaTeX, using the same converter as `.docx`
+- uses a chart's own visible title in its `> [Chart]` header, and a picture's alt text (`descr`) as its Markdown alt text
 - reads the `mc:Fallback` of other shape-tree `mc:AlternateContent` it cannot interpret (3D models, ink, zoom), so their preview pictures and text are kept; ChartEx stays reported as unsupported
 - converts PowerPoint tables to Markdown tables; cell-internal line breaks become `<br>` so they cannot break the pipe-table row structure
 - transcribes category charts as category × series tables and scatter/bubble charts as typed X/Y[/size] point tables
