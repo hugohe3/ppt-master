@@ -213,3 +213,41 @@ class PptxContentLossTests(unittest.TestCase):
         md = self._convert(prs)
         self.assertIn(r'ratio $\frac{a}{b}$ holds', md)
         self.assertIn('$$x^2$$', md)
+
+    def _wrap_in_alternate_content(self, element, requires: str, choice_child) -> None:
+        mc = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+        wrapper = etree.Element(f'{{{mc}}}AlternateContent', nsmap={'mc': mc})
+        choice = etree.SubElement(wrapper, f'{{{mc}}}Choice', Requires=requires)
+        choice.append(choice_child)
+        fallback = etree.SubElement(wrapper, f'{{{mc}}}Fallback')
+        element.getparent().replace(element, wrapper)
+        fallback.append(element)
+
+    def test_unreadable_alternate_content_keeps_its_fallback_picture(self) -> None:
+        from PIL import Image
+
+        prs, shape = self._presentation()
+        shape.text = 'caption'
+        with tempfile.TemporaryDirectory() as tmp:
+            image = Path(tmp) / 'model.png'
+            Image.new('RGB', (40, 40), 'red').save(image)
+            picture = prs.slides[0].shapes.add_picture(str(image), Inches(1), Inches(3))
+        frame = etree.Element('{http://schemas.openxmlformats.org/presentationml/2006/main}graphicFrame')
+        self._wrap_in_alternate_content(picture._element, 'am3d', frame)
+        md = self._convert(prs)
+        self.assertIn('caption', md)
+        self.assertRegex(md, r'!\[[^\]]*\]\([^)]+\.png\)')
+
+    def test_chartex_fallback_text_is_not_read_as_slide_text(self) -> None:
+        prs, shape = self._presentation()
+        shape.text = "This chart isn't available in your version of PowerPoint"
+        frame = etree.fromstring(
+            '<p:graphicFrame xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            '<a:graphic><a:graphicData uri="http://schemas.microsoft.com/office/drawing/2014/chartex"/>'
+            '</a:graphic></p:graphicFrame>'
+        )
+        self._wrap_in_alternate_content(shape._element, 'cx1', frame)
+        md = self._convert(prs)
+        self.assertNotIn("isn't available", md)
+        self.assertIn('ChartEx', md)

@@ -217,6 +217,37 @@ def _expose_math_choice_shapes(slide: object) -> None:
             parent.insert(index + offset, shape)
 
 
+def _expose_alternate_fallback_shapes(slide: object) -> None:
+    """Read the Fallback of shape-tree ``mc:AlternateContent`` this reader cannot use.
+
+    Office Math Choices are exposed by ``_expose_math_choice_shapes`` and ChartEx
+    is reported by ``_unexposed_chartex_markdown``. Any other Choice (3D models,
+    ink, zoom) is unreadable here, so its Fallback, which is what PowerPoint
+    without that feature shows, keeps pictures and text from vanishing.
+    """
+    alternate_tag = f"{{{MARKUP_COMPATIBILITY_NS}}}AlternateContent"
+    fallback_tag = f"{{{MARKUP_COMPATIBILITY_NS}}}Fallback"
+    shape_tags = {
+        f"{{{PRESENTATIONML_NS}}}{name}"
+        for name in ("sp", "grpSp", "pic", "graphicFrame", "cxnSp")
+    }
+    for wrapper in list(slide.element.iter(alternate_tag)):
+        fallback = wrapper.find(fallback_tag)
+        parent = wrapper.getparent()
+        if fallback is None or parent is None or any(
+            data.get("uri") == CHARTEX_URI
+            for data in wrapper.iter(f"{{{DRAWINGML_NS}}}graphicData")
+        ):
+            continue
+        shapes = list(fallback)
+        if not shapes or any(shape.tag not in shape_tags for shape in shapes):
+            continue
+        index = parent.index(wrapper)
+        parent.remove(wrapper)
+        for offset, shape in enumerate(shapes):
+            parent.insert(index + offset, shape)
+
+
 def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
     """Return a flattened, reading-order list of shapes."""
     items: list[LeafShape] = []
@@ -1326,6 +1357,7 @@ def convert_presentation_to_markdown(
         emitted_diagram_ids: set[str] = set()
         emitted_chart_relationship_ids: set[str] = set()
         _expose_math_choice_shapes(slide)
+        _expose_alternate_fallback_shapes(slide)
         for item in iter_leaf_shapes(slide.shapes):
             shape = item.shape
 
