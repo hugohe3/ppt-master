@@ -44,6 +44,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
+from _omml_latex import _m_pr_val, _omml_to_latex  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -97,17 +98,6 @@ MATH_NS = DOCX_NS["m"]
 W_NS = DOCX_NS["w"]
 XML_SPACE_ATTR = "{http://www.w3.org/XML/1998/namespace}space"
 
-# OMML n-ary operator chars (m:nary/m:naryPr/m:chr) → LaTeX command.
-NARY_OPS = {
-    "∑": r"\sum", "∏": r"\prod", "∐": r"\coprod",
-    "∫": r"\int", "∬": r"\iint", "∭": r"\iiint", "∮": r"\oint",
-    "⋃": r"\bigcup", "⋂": r"\bigcap", "⋁": r"\bigvee", "⋀": r"\bigwedge",
-}
-# OMML accent chars (m:acc/m:accPr/m:chr) → LaTeX command.
-ACCENT_CMDS = {
-    "̂": r"\hat", "̃": r"\tilde", "̄": r"\bar", "→": r"\vec", "⃗": r"\vec",
-    "̇": r"\dot", "̈": r"\ddot", "̌": r"\check", "́": r"\acute", "̀": r"\grave",
-}
 
 
 # ─────────────────────────────────────────────────────────────
@@ -480,162 +470,12 @@ def _manifest_entry(
 # mammoth drops all math content, so Word-native equations and MathType
 # formulas saved as Office Math (OMML) vanish from the output. This pure-Python
 # converter rewrites each <m:oMath> into inline `$...$` LaTeX before mammoth
-# runs, so formulas survive into the Markdown in document order.
+# runs, so formulas survive into the Markdown in document order. The OMML →
+# LaTeX conversion itself is shared with ppt_to_md in _omml_latex.py.
 #
 # Scope: OMML only. Classic MathType OLE objects (Equation.DSMT4 / MTEF binary)
 # carry no OMML — they expose only a WMF/EMF preview image, which mammoth still
 # emits as a picture. Decoding MTEF is out of scope.
-
-def _m_child(elem: ET.Element, name: str) -> ET.Element | None:
-    """Return the first OMML child with the given local name."""
-    for child in elem:
-        if _local_name(child) == name:
-            return child
-    return None
-
-
-def _m_pr_val(elem: ET.Element, prop: str) -> str | None:
-    """Return m:val of a property inside the element's *Pr block (e.g. chr)."""
-    for child in elem:
-        if not _local_name(child).endswith("Pr"):
-            continue
-        for sub in child:
-            if _local_name(sub) == prop:
-                return sub.get(f"{{{MATH_NS}}}val")
-    return None
-
-
-def _brace(latex: str) -> str:
-    """Wrap multi-char LaTeX in braces so it binds as one super/subscript arg."""
-    return latex if len(latex) <= 1 else "{" + latex + "}"
-
-
-def _omml_part(elem: ET.Element, name: str) -> str:
-    """Convert a named OMML child (e/num/den/sup/sub/...) to LaTeX."""
-    child = _m_child(elem, name)
-    return _omml_to_latex(child) if child is not None else ""
-
-
-def _omml_run(elem: ET.Element) -> str:
-    """Concatenate text from an OMML run, skipping property children."""
-    return "".join(
-        c.text or "" for c in elem if _local_name(c) == "t"
-    )
-
-
-def _omml_children(elem: ET.Element) -> str:
-    """Convert all non-property children in order (default/passthrough rule)."""
-    return "".join(
-        _omml_to_latex(c) for c in elem if not _local_name(c).endswith("Pr")
-    )
-
-
-def _omml_matrix(elem: ET.Element, *, environment: str) -> str:
-    """Convert a matrix (m:m) or equation array (m:eqArr) to a LaTeX env."""
-    rows: list[str] = []
-    for row in elem:
-        if _local_name(row) not in ("mr", "e"):
-            continue
-        if _local_name(row) == "e":  # eqArr stores rows as bare <m:e>
-            rows.append(_omml_to_latex(row))
-            continue
-        cells = [_omml_to_latex(cell) for cell in row if _local_name(cell) == "e"]
-        rows.append(" & ".join(cells))
-    body = r" \\ ".join(rows)
-    return rf"\begin{{{environment}}} {body} \end{{{environment}}}"
-
-
-def _omml_to_latex(elem: ET.Element) -> str:
-    """Recursively convert one OMML element subtree to a LaTeX string.
-
-    Unknown elements degrade to a concatenation of their children rather than
-    being dropped, so rare constructs lose markup but never lose content.
-    """
-    local = _local_name(elem)
-
-    if local == "t":
-        return elem.text or ""
-    if local == "r":
-        return _omml_run(elem)
-    if local in ("oMath", "oMathPara", "e", "num", "den", "sup", "sub",
-                 "deg", "fName", "lim", "box", "borderBox"):
-        return _omml_children(elem)
-    if local == "sSup":
-        return _brace(_omml_part(elem, "e")) + "^" + _brace(_omml_part(elem, "sup"))
-    if local == "sSub":
-        return _brace(_omml_part(elem, "e")) + "_" + _brace(_omml_part(elem, "sub"))
-    if local == "sSubSup":
-        return (_brace(_omml_part(elem, "e"))
-                + "_" + _brace(_omml_part(elem, "sub"))
-                + "^" + _brace(_omml_part(elem, "sup")))
-    if local == "sPre":
-        return ("{}_" + _brace(_omml_part(elem, "sub"))
-                + "^" + _brace(_omml_part(elem, "sup"))
-                + _brace(_omml_part(elem, "e")))
-    if local == "f":
-        return r"\frac{" + _omml_part(elem, "num") + "}{" + _omml_part(elem, "den") + "}"
-    if local == "rad":
-        deg = _m_child(elem, "deg")
-        body = _omml_part(elem, "e")
-        deg_latex = _omml_to_latex(deg) if deg is not None and len(deg) else ""
-        return rf"\sqrt[{deg_latex}]{{{body}}}" if deg_latex else rf"\sqrt{{{body}}}"
-    if local == "d":
-        beg = _m_pr_val(elem, "begChr")
-        end = _m_pr_val(elem, "endChr")
-        beg = "(" if beg is None else (beg or ".")
-        end = ")" if end is None else (end or ".")
-        separator = _m_pr_val(elem, "sepChr")
-        separator = "|" if separator is None else separator
-        separator = _latex_literal(separator)
-        beg = {"{": r"\{", "}": r"\}"}.get(beg, beg)
-        end = {"{": r"\{", "}": r"\}"}.get(end, end)
-        inner = separator.join(_omml_to_latex(c) for c in elem if _local_name(c) == "e")
-        return rf"\left{beg}{inner}\right{end}"
-    if local == "nary":
-        chr_ = _m_pr_val(elem, "chr") or "∫"
-        op = NARY_OPS.get(chr_, chr_)
-        sub, sup = _m_child(elem, "sub"), _m_child(elem, "sup")
-        out = op
-        if sub is not None and len(sub):
-            out += "_" + _brace(_omml_to_latex(sub))
-        if sup is not None and len(sup):
-            out += "^" + _brace(_omml_to_latex(sup))
-        return out + _brace(_omml_part(elem, "e"))
-    if local == "func":
-        return "\\" + _omml_part(elem, "fName").strip() + _brace(_omml_part(elem, "e"))
-    if local == "limLow":
-        return _brace(_omml_part(elem, "e")) + "_" + _brace(_omml_part(elem, "lim"))
-    if local == "limUpp":
-        return _brace(_omml_part(elem, "e")) + "^" + _brace(_omml_part(elem, "lim"))
-    if local == "bar":
-        cmd = r"\underline" if _m_pr_val(elem, "pos") == "bot" else r"\overline"
-        return cmd + "{" + _omml_part(elem, "e") + "}"
-    if local == "acc":
-        cmd = ACCENT_CMDS.get(_m_pr_val(elem, "chr") or "̂", r"\hat")
-        return cmd + "{" + _omml_part(elem, "e") + "}"
-    if local == "groupChr":
-        char = _m_pr_val(elem, "chr")
-        char = "⏟" if char is None else char
-        pos = _m_pr_val(elem, "pos") or "bot"
-        body = _omml_part(elem, "e")
-        if (char, pos) in {("⏞", "top"), ("⏟", "bot")}:
-            cmd = r"\overbrace" if pos == "top" else r"\underbrace"
-            return cmd + "{" + body + "}"
-        cmd = r"\overset" if pos == "top" else r"\underset"
-        return cmd + r"{\text{" + _latex_literal(char) + "}}{" + body + "}"
-    if local == "m":
-        return _omml_matrix(elem, environment="matrix")
-    if local == "eqArr":
-        return _omml_matrix(elem, environment="aligned")
-
-    return _omml_children(elem)
-
-
-def _latex_literal(text: str) -> str:
-    """Escape literal characters that would otherwise change LaTeX syntax."""
-    escapes = {"\\": r"\backslash{}", "{": r"\{", "}": r"\}", "%": r"\%",
-               "&": r"\&", "#": r"\#", "_": r"\_", "$": r"\$"}
-    return "".join(escapes.get(char, char) for char in text)
 
 
 def _make_text_run(text: str) -> ET.Element:

@@ -233,6 +233,7 @@ python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 
 Behavior:
 - extracts slide text in reading order
+- rewrites Office Math equations (`a14:m` OMML) as `$...$` inline or `$$...$$` display LaTeX, using the same converter as `.docx`
 - converts PowerPoint tables to Markdown tables; cell-internal line breaks become `<br>` so they cannot break the pipe-table row structure
 - transcribes category charts as category × series tables and scatter/bubble charts as typed X/Y[/size] point tables
 - preserves every readable chart dimension or series and emits `[Chart data warning: <reason>]` for missing caches/count mismatches; `[Chart data unavailable: <reason>]` is reserved for charts with no readable points (and unsupported ChartEx), so XY data is never flattened into a misleading category table

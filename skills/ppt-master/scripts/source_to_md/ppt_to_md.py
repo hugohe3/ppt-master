@@ -45,6 +45,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
+from _omml_latex import _local_name, _omml_to_latex  # noqa: E402
 from pptx_ooxml.diagram_read import (  # noqa: E402
     read_smartart_diagrams,
     smartart_to_markdown,
@@ -74,6 +75,7 @@ DRAWINGML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 PRESENTATIONML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 RELATIONSHIP_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 MARKUP_COMPATIBILITY_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+OFFICE_MATH_TAG = "{http://schemas.microsoft.com/office/drawing/2010/main}m"
 CHARTEX_URI = "http://schemas.microsoft.com/office/drawing/2014/chartex"
 OFFICE_VECTOR_EXTENSIONS = {"emf", "wmf"}
 IMAGE_EXT_BY_CONTENT_TYPE = {
@@ -301,6 +303,16 @@ def _run_url(run: object, shape: object) -> str | None:
     return None
 
 
+def _office_math_markdown(math: object) -> str:
+    """Render one a14:m zone as ``$...$``, or ``$$...$$`` for display math."""
+    zone = next((item for item in math if _local_name(item) in {"oMathPara", "oMath"}), None)
+    latex = _omml_to_latex(zone).strip() if zone is not None else ""
+    if not latex:
+        return ""
+    delimiter = "$$" if _local_name(zone) == "oMathPara" else "$"
+    return f"{delimiter}{latex}{delimiter}"
+
+
 def _paragraph_to_markdown(
     paragraph: object,
     shape: object,
@@ -337,6 +349,10 @@ def _paragraph_to_markdown(
         if tag == "br":
             # A soft line break inside the paragraph; python-pptx's runs skip it.
             current_text += "\n"
+            continue
+        if child.tag == OFFICE_MATH_TAG:
+            # python-pptx's runs also skip Office Math; keep it as LaTeX.
+            current_text += _office_math_markdown(child)
             continue
         if tag not in {"r", "fld"}:
             continue
@@ -515,7 +531,9 @@ def text_frame_to_markdown(
     """
     visible_paragraphs = [
         paragraph for paragraph in text_frame.paragraphs
-        if normalize_text(paragraph.text) or _paragraph_has_hyperlink(paragraph)
+        if normalize_text(paragraph.text)
+        or _paragraph_has_hyperlink(paragraph)
+        or paragraph._p.find(OFFICE_MATH_TAG) is not None
     ]
     if not visible_paragraphs:
         return ""
