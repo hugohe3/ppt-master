@@ -28,6 +28,21 @@ ET.register_namespace('xlink', XLINK_NS)
 
 # Only ids this tool generates; a user id like "_edit_gradient" is not transient.
 _TEMP_ID_RE = re.compile(r'_edit_\d+')
+_LOCAL_URL_RE = re.compile(r'''url\(\s*(['"]?)#([^)'"\s]+)\1\s*\)''', re.IGNORECASE)
+
+
+def _referenced_ids(root: ET.Element) -> set[str]:
+    """Keep fragment targets even when their authored ids look transient."""
+    referenced = set()
+    for elem in root.iter():
+        for name, value in elem.attrib.items():
+            referenced.update(match.group(2) for match in _LOCAL_URL_RE.finditer(value))
+            if name.rsplit('}', 1)[-1] == 'href' and value.startswith('#'):
+                referenced.add(value[1:])
+        if elem.tag.rsplit('}', 1)[-1] == 'style' and elem.text:
+            referenced.update(match.group(2) for match in _LOCAL_URL_RE.finditer(elem.text))
+            referenced.update(re.findall(r'#(_edit_\d+)\b', elem.text))
+    return referenced
 
 
 def assign_temp_ids(root: ET.Element) -> None:
@@ -36,16 +51,20 @@ def assign_temp_ids(root: ET.Element) -> None:
     Clears any leftover _edit_N ids from previous sessions first, to avoid
     shifted numbering when elements are added/removed between sessions.
     """
+    referenced = _referenced_ids(root)
     for elem in root.iter():
         eid = elem.get('id', '')
-        if _TEMP_ID_RE.fullmatch(eid):
+        if _TEMP_ID_RE.fullmatch(eid) and eid not in referenced:
             elem.attrib.pop('id', None)
 
+    retained_ids = {elem.get('id') for elem in root.iter() if elem.get('id')}
     counter = 0
     for elem in root.iter():
         if elem is root:
             continue
         if elem.get('id') is None:
+            while f'_edit_{counter}' in retained_ids:
+                counter += 1
             elem.set('id', f'_edit_{counter}')
             counter += 1
 
@@ -332,7 +351,7 @@ def strip_unused_temp_ids(root: ET.Element, keep_ids: set) -> None:
     Mirrors the cleanup in server.py's save-all so a direct edit never
     strips the id an unsaved/saved annotation depends on.
     """
-    protected = set(keep_ids)
+    protected = set(keep_ids) | _referenced_ids(root)
     for elem in root.iter():
         if elem.get('data-edit-target') == 'true':
             eid = elem.get('id')

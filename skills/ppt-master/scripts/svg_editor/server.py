@@ -212,10 +212,8 @@ def _inline_icons(
             warnings.append({'icon': icon_name, 'reason': 'no renderable paths in icon'})
             continue
         replacement = generate_icon_group(attrs, elements, style, base_size)
-        id_match = re.search(r'\bid="([^"]+)"', use_str)
-        if id_match:
+        if attrs.get('id'):
             preview_attrs = [
-                f'id="{_xml_attr(id_match.group(1))}"',
                 f'data-icon="{_xml_attr(icon_name)}"',
             ]
             for key in ('x', 'y', 'width', 'height'):
