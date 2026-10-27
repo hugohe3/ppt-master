@@ -266,7 +266,7 @@ python3 scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
 
 Outputs (per source deck, prefixed by file stem):
 - `<stem>.identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
-- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches, and SmartArt nodes/connections
+- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart titles/display caches, and SmartArt nodes/connections. Chart titles include rich text and linked-string caches; Beautify carries them into its frozen inventory and verifies their presence in the exported deck.
 - `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, SmartArt, and page types) under `decks[]`, with prefixed artifact pointers
 
 `project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: each deck uses its archived stem, including any collision suffix, for `<stem>.*` artifacts and its `decks[]` entry in the shared `source_profile.json` index. Re-running intake for an existing archived stem replaces its entry. The beautify profile stays single-deck and reads one chosen deck's `<stem>.*` artifacts.

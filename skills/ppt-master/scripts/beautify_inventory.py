@@ -113,6 +113,7 @@ def build_inventory(slide_library: dict, images_by_slide: dict[int, list[dict]])
             {
                 "chart_id": c.get("chart_id"),
                 "chart_type": c.get("chart_type"),
+                "title": c.get("title", ""),
                 "category_count": c.get("category_count"),
                 "series_count": c.get("series_count"),
                 "categories": c.get("categories", []),  # frozen data
@@ -240,6 +241,8 @@ def _frozen_strings(slide: dict) -> list[str]:
         for row in table.get("cells", []):
             strings.extend(cell for cell in row if cell and cell.strip())
     for chart in slide.get("charts", []):
+        if chart.get("title"):
+            strings.append(chart["title"])
         strings.extend(str(c) for c in chart.get("categories", []) if str(c).strip())
         strings.extend(str(series.get("name")) for series in chart.get("series", []) if series.get("name"))
     for diagram in slide.get("diagrams", []):
@@ -259,6 +262,7 @@ def _exported_text_by_slide(pptx_path: Path) -> dict[int, str]:
             for row in table.get("rows", []):
                 parts.extend(cell.get("text", "") for cell in row.get("cells", []))
         for chart in slide.get("charts", []):
+            parts.append(chart.get("title", ""))
             parts.extend(str(c) for c in chart.get("categories", []))
             parts.extend(str(series.get("name", "")) for series in chart.get("series", []))
         for diagram in slide.get("diagrams", []):
