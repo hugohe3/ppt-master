@@ -290,3 +290,85 @@ class VerticalTextFrameImportTests(unittest.TestCase):
         self.assertIsNotNone(group)
         self.assertEqual(group.get('data-pptx-frame'), '240 60 80 320')
         self.assertIsNone(group.get('transform'))
+
+    def test_degenerate_slide_text_keeps_its_frame_and_reports_its_source_identity(self) -> None:
+        for width, height in ((80, 0), (0, 0), (0, 320), (80, 320)):
+            for mode in ('vert', 'eaVert', 'wordArtVert', 'wordArtVertRtl'):
+                with self.subTest(width=width, height=height, mode=mode):
+                    diagnostics = []
+                    root = self._import_slide(
+                        _vertical_body(mode), Xfrm(x=120, y=180, w=width, h=height),
+                        diagnostics=diagnostics,
+                    )
+                    group = root.find('s:g[@id="shape-2-text"]', NS)
+                    self.assertIsNotNone(group)
+                    self.assertEqual(group.get('data-pptx-frame'), f'120 180 {width} {height}')
+                    self.assertEqual(_visible_text(group), '中文ABC测试')
+                    self.assertEqual(
+                        [row.code for row in diagnostics],
+                        ['degenerate-text-frame'] if width == 0 or height == 0 else [],
+                    )
+                    for diagnostic in diagnostics:
+                        self.assertEqual(diagnostic.shape_id, '2')
+                        self.assertEqual(diagnostic.part_path, 'ppt/slides/slide1.xml')
+
+    def test_layout_guide_without_local_frame_is_not_diagnosed_as_a_source_loss(self) -> None:
+        for explicit_frame in (False, True):
+            with self.subTest(explicit_frame=explicit_frame), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / 'source.pptx'
+                local_frame = (
+                    '<a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></a:xfrm>'
+                    if explicit_frame else ''
+                )
+                with zipfile.ZipFile(path, 'w') as archive:
+                    archive.writestr('ppt/presentation.xml', (
+                        f'<p:presentation xmlns:p="{P}">'
+                        '<p:sldSz cx="12192000" cy="6858000"/></p:presentation>'
+                    ))
+                    archive.writestr('ppt/slideLayouts/slideLayout1.xml', (
+                        f'<p:sldLayout xmlns:p="{P}" xmlns:a="{A}"><p:cSld><p:spTree><p:sp>'
+                        '<p:nvSpPr><p:cNvPr id="2" name="Vertical guide"/><p:cNvSpPr/>'
+                        '<p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>'
+                        f'<p:spPr>{local_frame}</p:spPr>{ET.tostring(_vertical_body("eaVert"), encoding="unicode")}'
+                        '</p:sp></p:spTree></p:cSld></p:sldLayout>'
+                    ))
+                    archive.writestr('ppt/slideMasters/slideMaster1.xml', (
+                        f'<p:sldMaster xmlns:p="{P}" xmlns:a="{A}"><p:cSld><p:spTree><p:sp>'
+                        '<p:nvSpPr><p:cNvPr id="3" name="Body"/><p:cNvSpPr/>'
+                        '<p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>'
+                        '<p:spPr><a:xfrm><a:off x="914400" y="914400"/>'
+                        '<a:ext cx="7620000" cy="3810000"/></a:xfrm></p:spPr>'
+                        '</p:sp></p:spTree></p:cSld></p:sldMaster>'
+                    ))
+                diagnostics = []
+                with OoxmlPackage(path) as package:
+                    assemble_part_solo(
+                        package, package.load_part('ppt/slideLayouts/slideLayout1.xml'), None,
+                        role='layout', parent_master=package.load_part('ppt/slideMasters/slideMaster1.xml'),
+                        diagnostics=diagnostics,
+                    )
+                self.assertEqual(
+                    [row.code for row in diagnostics], ['degenerate-text-frame'] if explicit_frame else [],
+                )
+
+
+class VerticalTextOverflowImportTests(unittest.TestCase):
+    def test_default_and_explicit_overflow_keep_every_vertical_glyph(self) -> None:
+        for mode in ('vert', 'eaVert', 'wordArtVert', 'wordArtVertRtl'):
+            for overflow in (None, 'overflow'):
+                for width, height in ((80, 30), (80, 0), (0, 0)):
+                    with self.subTest(mode=mode, overflow=overflow, width=width, height=height):
+                        result = convert_vertical_txbody(
+                            _vertical_body(mode, overflow), Xfrm(x=120, y=180, w=width, h=height), None,
+                        )
+                        self.assertEqual(_visible_text(_svg_root(result.svg)), '中文ABC测试')
+                        self.assertEqual(result.frame, (120, 180, width, height))
+
+    def test_explicit_clip_and_ellipsis_retain_existing_vertical_truncation(self) -> None:
+        for mode in ('vert', 'eaVert', 'wordArtVert', 'wordArtVertRtl'):
+            for overflow in ('clip', 'ellipsis'):
+                with self.subTest(mode=mode, overflow=overflow):
+                    result = convert_vertical_txbody(
+                        _vertical_body(mode, overflow), Xfrm(x=120, y=180, w=80, h=30), None,
+                    )
+                    self.assertEqual(_visible_text(_svg_root(result.svg)), '中')

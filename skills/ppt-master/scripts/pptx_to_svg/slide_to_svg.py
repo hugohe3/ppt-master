@@ -594,6 +594,25 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         node.inherited_body_properties,
     )
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
+    if (
+        is_vertical
+        and (node.xfrm.w <= 0 or node.xfrm.h <= 0)
+        and tx_body is not None
+        and any(element.text for element in tx_body.iter(f"{{{NS['a']}}}t"))
+        and (
+            node.placeholder is None
+            or _shape_scope(ctx) == "slide"
+            or (sp_pr is not None and sp_pr.find("a:xfrm", NS) is not None)
+        )
+    ):
+        # Standalone Layout/Master guides can await inherited geometry. Slide
+        # nodes already carry resolved inheritance, so their zero frame is real.
+        ctx.diagnose(
+            "degenerate-text-frame",
+            "Vertical text has a nonpositive source frame: "
+            + _object_metadata(node, ctx)["data-pptx-frame"],
+            "honor source overflow without inventing a frame; repair it in PowerPoint",
+        )
     block_formula = _block_formula_zone(tx_body)
     block_formula_failed = False
     if block_formula is not None and not is_vertical:
@@ -747,6 +766,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     if (
         export_tx_body is not None
         and geom is not None
+        and geom_xml
         and not text_result.contains_inline_formula
     ):
         inner_parts.append(
@@ -1206,9 +1226,13 @@ def _resolve_geometry(node: ShapeNode, sp_pr: ET.Element | None) -> GeomResult |
 
     if geom is None:
         return None
+    # An evaluated path can retain a collapsed axis without inventing a frame.
+    # Mirror/native validation still decides whether that source is exportable.
     permits_degenerate_axis = (
         node.kind == CONNECTOR
         or prst in CONNECTOR_PRESET_TYPES
+        or (node.xfrm.w >= 0 and node.xfrm.h >= 0
+            and (node.xfrm.w > 0 or node.xfrm.h > 0))
     )
     if (
         not permits_degenerate_axis
@@ -1225,8 +1249,17 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
     if geom is None:
         geom = _resolve_geometry(node, sp_pr)
     if geom is None:
+        if sp_pr is not None and any(
+            sp_pr.find(path, NS) is not None
+            for path in ("a:prstGeom", "a:custGeom")
+        ):
+            ctx.diagnose(
+                "geometry-omitted",
+                "Source geometry could not be recovered at frame "
+                + _object_metadata(node, ctx)["data-pptx-frame"],
+                "retain any text/image content; no replacement geometry is invented",
+            )
         return ""
-
     # Resolve style defaults early so markers can adopt the theme stroke color
     # when <a:ln> doesn't carry an explicit solidFill.
     try:
@@ -1329,6 +1362,30 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         # Spec default for shapes is no stroke unless ln says otherwise.
         # Skip emitting stroke="none" to keep markup tight.
         pass
+
+    if (
+        (node.xfrm.w <= 0 or node.xfrm.h <= 0)
+        and not (
+            (node.kind == CONNECTOR or geom.attrs.get("data-pptx-prst") in CONNECTOR_PRESET_TYPES)
+            and node.xfrm.w >= 0 and node.xfrm.h >= 0
+            and (node.xfrm.w > 0 or node.xfrm.h > 0)
+        )
+    ):
+        # Restoring evaluated zero-axis paths must not resurrect empty,
+        # explicitly unpainted text-box outlines as exportable source content.
+        if (
+            node.kind == SHAPE
+            and attrs.get("fill", "none") == "none"
+            and attrs.get("stroke", "none") == "none"
+            and not any(key in attrs for key in ("filter", "marker-start", "marker-end"))
+        ):
+            return ""
+        ctx.diagnose(
+            "geometry-degenerate-frame",
+            "Source geometry has a missing or degenerate frame: "
+            + _object_metadata(node, ctx)["data-pptx-frame"],
+            "retain evaluated geometry and the exact source frame",
+        )
 
     semantic_attrs = {
         **geom.attrs,
@@ -1711,6 +1768,15 @@ def _convert_connector(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool
 
 def _convert_group(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     """Render group contents flat (children already remapped to slide space)."""
+    if node.children and (
+        (node.xfrm.w == 0 and node.xfrm.ch_w is not None and node.xfrm.ch_w > 0)
+        or (node.xfrm.h == 0 and node.xfrm.ch_h is not None and node.xfrm.ch_h > 0)
+    ):
+        ctx.diagnose(
+            "group-collapsed-axis",
+            "The source group maps a positive child-coordinate extent to a zero frame axis",
+            "retain the source coordinate mapping; child geometry may collapse or be omitted",
+        )
     parent_fill = ctx.group_fills[-1] if ctx.group_fills else None
     group_properties = node.xml.find("p:grpSpPr", NS)
     try:

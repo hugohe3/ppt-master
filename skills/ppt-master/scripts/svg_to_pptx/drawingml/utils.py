@@ -1512,6 +1512,60 @@ def svg_hidden_reason(
     return None
 
 
+def is_stroked_zero_axis_shape(
+    element: ET.Element,
+    ctx: ConvertContext | None = None,
+) -> bool:
+    """Recognize a native shape whose single collapsed frame axis still has an outline."""
+    geometry_tags = {'rect', 'circle', 'ellipse', 'line', 'path', 'polygon', 'polyline'}
+    if (
+        element.tag.rsplit('}', 1)[-1] not in geometry_tags | {'g'}
+        or element.get('data-pptx-object') != 'shape'
+        or not (
+            element.get('data-pptx-prst')
+            or element.get('data-pptx-geometry-kind') == 'custom'
+        )
+    ):
+        return False
+    try:
+        frame = tuple(float(value) for value in re.split(
+            r'[\s,]+', (element.get('data-pptx-frame') or '').strip(),
+        ))
+    except ValueError:
+        return False
+    if (
+        len(frame) != 4 or not all(math.isfinite(value) for value in frame)
+        or not ((frame[2] == 0 and frame[3] > 0) or (frame[3] == 0 and frame[2] > 0))
+    ):
+        return False
+    parents = {id(child): parent for parent in element.iter() for child in parent}
+    for leaf in element.iter():
+        if leaf.tag.rsplit('}', 1)[-1] not in geometry_tags or svg_hidden_reason(leaf, parents):
+            continue
+        lineage = [leaf]
+        while id(lineage[-1]) in parents:
+            lineage.append(parents[id(lineage[-1])])
+        if any(node.tag.rsplit('}', 1)[-1] in {'defs', 'clipPath', 'mask', 'metadata'} for node in lineage):
+            continue
+        inherited = dict(ctx.inherited_styles) if ctx is not None else {}
+        opacity = ctx.opacity_multiplier if ctx is not None else 1.0
+        try:
+            for node in reversed(lineage):
+                inherited.update(_extract_inheritable_styles(node))
+                local = parse_inline_style(node.get('style'))
+                opacity *= parse_project_opacity(local.get('opacity', node.get('opacity', '1')))
+            kind, _value, alpha = parse_project_paint(inherited.get('stroke', 'none'), 'stroke')
+            width = parse_project_geometry_length(inherited.get('stroke-width', '1'), 'stroke-width')
+            opacity *= parse_project_opacity(inherited.get('stroke-opacity', '1')) * alpha
+        except ValueError:
+            continue
+        # A reference can resolve to fully transparent stops outside this
+        # subtree; only resolved color paint proves that this outline exists.
+        if kind == 'color' and width > 0 and opacity > 0:
+            return True
+    return False
+
+
 def iter_project_geometry_lengths(
     root: ET.Element,
 ) -> Iterator[tuple[ET.Element, str, str, str]]:

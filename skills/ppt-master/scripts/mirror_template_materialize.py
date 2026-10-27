@@ -69,7 +69,11 @@ from svg_authoring_view import (
     semantic_subtree_sha256,
 )
 from svg_finalize.flatten_tspan import flatten_text_with_tspans
-from svg_to_pptx.drawingml.utils import parse_transform_matrix, transform_point
+from svg_to_pptx.drawingml.utils import (
+    is_stroked_zero_axis_shape,
+    parse_transform_matrix,
+    transform_point,
+)
 from svg_to_pptx.pptx_package.template_structure import (
     SOURCE_THEMES_FILENAME,
     SOURCE_THEMES_SCHEMA,
@@ -1716,6 +1720,7 @@ def _root_group_bounds(
     if (
         element.get("data-pptx-object") not in {"connector", "group"}
         and element.get("data-pptx-prst") not in CONNECTOR_PRESET_TYPES
+        and not is_stroked_zero_axis_shape(element)
     ):
         return None
     bounds = _source_bounds(element)
@@ -2592,7 +2597,9 @@ def _compose_template(
                         atoms[0].set("id", item.get("id"))
                         item = atoms[0]
                 if _local_name(item.tag) == "g" and (
-                    _frame(item) is not None or _visible_leaf(item)
+                    _frame(item) is not None
+                    or _visible_leaf(item)
+                    or is_stroked_zero_axis_shape(item)
                 ):
                     bounds = _root_group_bounds(item, width, height)
                     if bounds is None:

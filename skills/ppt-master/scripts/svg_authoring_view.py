@@ -73,6 +73,7 @@ from svg_authoring_contract import (
 from svg_to_pptx.drawingml.context import IDENTITY_MATRIX
 from svg_to_pptx.drawingml.utils import (
     INHERITABLE_ATTRS,
+    is_stroked_zero_axis_shape,
     matrix_multiply,
     parse_inline_style,
     parse_opacity,
@@ -949,12 +950,15 @@ def _strip_import_attributes(
             continue
         if (
             geometry_owner is not None
-            and geometry_owner.get("data-pptx-object") == "connector"
+            and (
+                geometry_owner.get("data-pptx-object") == "connector"
+                or is_stroked_zero_axis_shape(geometry_owner)
+            )
             and element.get("data-pptx-part") == "geometry"
             and name in {"data-pptx-custgeom", "data-pptx-geometry-sha256"}
         ):
-            # Connectors need the source custom geometry when exported from
-            # the compact projection, which no longer rehydrates source refs.
+            # Collapsed stroked shapes and connectors need the source geometry
+            # because the compact projection no longer rehydrates source refs.
             continue
         stats.source_attributes[name] += 1
         del element.attrib[name]

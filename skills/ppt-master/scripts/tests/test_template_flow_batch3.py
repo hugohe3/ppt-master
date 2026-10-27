@@ -158,6 +158,53 @@ class TemplateFlowBatch3Tests(unittest.TestCase):
                     'fill="none"/></g>'
                 )
 
+    def test_a_mirror_bounds_stroked_zero_axis_ordinary_shapes(self) -> None:
+        for geometry in ('data-pptx-prst="rect"', 'data-pptx-geometry-kind="custom"'):
+            for frame, path, expected in (
+                ('100 200 400 0', 'M 100 200 L 500 200', '100 198 400 4'),
+                ('100 200 0 300', 'M 100 200 L 100 500', '98 200 4 300'),
+            ):
+                with self.subTest(geometry=geometry, frame=frame):
+                    result = self._compose_slide(
+                        f'<g id="rule" data-pptx-object="shape" {geometry} '
+                        f'data-pptx-frame="{frame}"><path d="{path}" '
+                        'stroke="#123456" stroke-width="4" fill="none"/></g>'
+                    )
+                    group = next(element for element in result.iter() if element.get('id') == 'rule')
+                    self.assertEqual(group.get('data-pptx-bounds'), expected)
+                    self.assertEqual(group.get('data-pptx-frame'), frame)
+                    self.assertEqual(group.find(f'{{{SVG_NS}}}path').get('d'), path)
+
+    def test_a_mirror_transforms_and_clips_stroked_shape_validation_bounds_only(self) -> None:
+        for transform, expected in (('', '0 0 400 2'), ('translate(10 20)', '10 18 400 4')):
+            with self.subTest(transform=transform):
+                result = self._compose_slide(
+                    '<g id="rule" data-pptx-object="shape" data-pptx-prst="rect" '
+                    f'data-pptx-frame="0 0 400 0" transform="{transform}" '
+                    'style="stroke:#123456;stroke-width:4"><path d="M 0 0 L 400 0" '
+                    'fill="none"/></g>'
+                )
+                group = next(element for element in result.iter() if element.get('id') == 'rule')
+                self.assertEqual(group.get('data-pptx-bounds'), expected)
+                self.assertEqual(group.get('data-pptx-frame'), '0 0 400 0')
+                self.assertEqual(group.get('transform'), transform)
+
+    def test_a_mirror_keeps_degenerate_ordinary_shape_refusal_boundaries(self) -> None:
+        for frame, paint, content in (
+            ('100 200 400 0', 'stroke="none"', '<path d="M 100 200 L 500 200"/>'),
+            ('100 200 400 0', 'stroke="#000000" stroke-width="0"', '<path d="M 100 200 L 500 200"/>'),
+            ('100 200 400 0', 'stroke="#000000" stroke-opacity="0"', '<path d="M 100 200 L 500 200"/>'),
+            ('100 200 0 0', 'stroke="#000000"', '<path d="M 100 200 L 500 200"/>'),
+            ('100 200 -1 100', 'stroke="#000000"', '<path d="M 100 200 L 500 200"/>'),
+            ('100 200 400 0', 'stroke="#000000"', '<text x="100" y="200">Text</text>'),
+        ):
+            with self.subTest(frame=frame, paint=paint, content=content):
+                element = ET.fromstring(
+                    f'<g xmlns="{SVG_NS}" data-pptx-object="shape" data-pptx-prst="rect" '
+                    f'data-pptx-frame="{frame}" {paint}>{content}</g>'
+                )
+                self.assertIsNone(mirror._root_group_bounds(element, 1280, 720))
+
     def test_a_mirror_bounds_retained_unpainted_positive_frame(self) -> None:
         result = self._compose_slide(
             '<g id="text-outline" data-pptx-object="shape" '
