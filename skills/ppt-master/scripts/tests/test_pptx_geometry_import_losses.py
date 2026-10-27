@@ -141,7 +141,8 @@ class GeometryImportLossTests(unittest.TestCase):
         for frame, hidden in ((_frame(300, 100), False), (_frame(0, 0), True)):
             with self.subTest(hidden=hidden):
                 _, report = self._import(_shape('<a:prstGeom prst="rect"/>', frame, hidden=hidden))
-                self.assertEqual(report['diagnostics'], [])
+                expected = ['author-hidden-omitted'] if hidden else []
+                self.assertEqual([item['code'] for item in report['diagnostics']], expected)
 
     def test_existing_zero_axis_connector_does_not_report_geometry_loss(self) -> None:
         svg, report = self._import(_shape(

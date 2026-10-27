@@ -50,6 +50,7 @@ from pptx_ooxml.diagram_read import (  # noqa: E402
     read_smartart_diagrams,
     smartart_to_markdown,
 )
+from pptx_ooxml.ooxml import _remove_author_hidden_shapes, _shape_identity  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -1323,8 +1324,24 @@ def convert_presentation_to_markdown(
         with zipfile.ZipFile(input_file) as package:
             for slide_index, slide in enumerate(presentation.slides, 1):
                 slide_part = str(slide.part.partname).lstrip("/")
+                hidden_shapes = _remove_author_hidden_shapes(slide._element)
+                hidden_ids = {
+                    node.get("id") for shape in hidden_shapes
+                    for node in shape.iter(f"{{{PRESENTATIONML_NS}}}cNvPr")
+                }
+                for shape in hidden_shapes:
+                    shape_id, shape_name = _shape_identity(shape, 0)
+                    warning = (
+                        f"Slide {slide_index}: excluded author-hidden shape "
+                        f"{shape_name!r} (id={shape_id}) and its children"
+                    )
+                    conversion_warnings.append(warning)
+                    print(f"[WARN] ppt_to_md: {warning}", file=sys.stderr)
                 try:
-                    diagrams = read_smartart_diagrams(package, slide_part, slide_index)
+                    diagrams = [
+                        item for item in read_smartart_diagrams(package, slide_part, slide_index)
+                        if str(item.get("shape_id")) not in hidden_ids
+                    ]
                 except (OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError) as exc:
                     diagrams_by_slide[slide_index] = []
                     diagram_scan_failures[slide_index] = str(exc)

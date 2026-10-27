@@ -531,7 +531,7 @@ def convert_pptx_to_svg(
             image_name_map = result.resource_inventory.image_name_map()
             image_name_map.update(options.asset_name_map)
             options = replace(options, asset_name_map=image_name_map)
-        result.speaker_notes = import_speaker_notes(pkg)
+        result.speaker_notes = import_speaker_notes(pkg, result.diagnostics)
         result.canvas_px = pkg.slide_size_px
 
         # Default theme summary is kept for compatibility; conversion itself

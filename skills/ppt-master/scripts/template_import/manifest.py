@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import posixpath
 import re
+import sys
 import zipfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -574,6 +575,13 @@ def build_manifest(
 
         for index, slide_path in enumerate(slide_parts, 1):
             slide_root = load_xml_from_zip(zf, slide_path)
+            if slide_root is not None and slide_root.get("show", "").strip().lower() in {"0", "false", "off"}:
+                print(
+                    f"Warning: source slide {index} ({slide_path}) is hidden from the slide show; "
+                    "template preview export does not preserve this slide-hidden state. "
+                    "The slide is retained; use Edit Native roundtrip to preserve its source visibility.",
+                    file=sys.stderr,
+                )
             slide_rels = parse_relationships(zf, slide_path)
 
             layout_path = None

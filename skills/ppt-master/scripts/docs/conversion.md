@@ -247,6 +247,7 @@ Behavior:
 
 Dependency:
 
+- excludes author-hidden shapes and groups (`cNvPr/@hidden`) with warnings; their text, pictures, tables, charts, and SmartArt descendants do not enter Markdown or the Beautify intake inventory
 ```bash
 pip install python-pptx
 ```

@@ -462,6 +462,11 @@ def _convert_node(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> 
     ctx.current_node = node
     try:
         if node.hidden and not ctx.keep_hidden:
+            ctx.diagnose(
+                "author-hidden-omitted",
+                "Source shape is marked hidden by its author",
+                "exclude the hidden shape and its children from the SVG view",
+            )
             return ""
         if node.kind == SHAPE:
             return _convert_shape(node, ctx, top_level=top_level)

@@ -22,6 +22,17 @@ Produces one import workspace (default `<pptx_stem>_template_import/` beside the
 | `svg-flat/slide_NN.svg` | Optional (`--inheritance-mode both`) self-contained verification view of each complete page |
 | `authoring-svg/` (+ `authoring-svg-flat/` with `both`) | Canonical compact editable SVG projected from parsed evidence, with model-readable `authoring_summary.json` and tool-only `authoring_manifest.json` |
 
+Shapes or groups marked hidden by the source author stay out of imported SVG
+views and emit `author-hidden-omitted` diagnostics, including their source part
+and shape identity. This does not remove objects from an Edit Native source
+package or alter unchanged-page passthrough.
+
+Source slides hidden from the slide show (`p:sld/@show="0"`) are retained, but
+template preview export does not preserve their slide-hidden state. Template
+import warns on stderr with the affected slide index and source part. Use Edit
+Native roundtrip when source slide-show visibility must survive; the warning
+does not claim that template previews preserve it.
+
 - `layered` (default) emits only the canonical layered view; `both` adds the flat verification tree; `flat` emits a projection-only self-contained `svg/` tree without master/layout/inheritance files. Imported-deck round-trip uses the separate `authoring-svg-flat/` contract of `pptx_to_svg.py --roundtrip`.
 - Placeholder metadata lives in the manifest; master/layout SVGs show lightweight dashed guides with labels only in `svg/`. Charts, SmartArt, diagrams, and OLE objects are typed placeholders in `svg/` and preview images with a badge in `svg-flat/`; tables are converted to real SVG. Missing media and external linked images fail the import; EMF/WMF convert to PNG previews when the local toolchain supports it, otherwise the import fails.
 - The import transaction publishes `authoring-svg/` already normalized and decoration-factored: large non-semantic decorative vector groups become one canonical asset under `<import_workspace>/icons/imported/` referenced as `<use data-icon="imported/..." data-pptx-asset-role="decoration"/>`; do not run a second readability or compaction pass. `--inheritance-mode both` reuses the layered inventory (`--reuse-inventory`) so only genuinely flat-only vectors create another asset under the `flat` prefix; `--clean-stale` removes obsolete `flat_*` duplicates. Every asset root, placeholder, and v2 inventory record declares the `decoration` role; any subtree with a semantic marker, text, table, chart, or relationship stays inline, and extraction and both consumers fail closed if that boundary is crossed. Eligible records may retain `data-pptx-source-ref` so re-inlining re-establishes their object mapping; referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced.

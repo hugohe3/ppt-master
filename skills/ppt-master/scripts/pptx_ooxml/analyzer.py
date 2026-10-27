@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import sys
 import zipfile
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,7 @@ from .ooxml import (
     _paragraph_texts,
     _parse_slide_refs,
     _read_xml,
+    _remove_author_hidden_shapes,
     _shape_identity,
     _slide_relationships,
     _table_containers,
@@ -253,6 +255,18 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
         slides: list[dict[str, Any]] = []
         for slide_ref in slide_refs:
             slide_root = _read_xml(zf, slide_ref.part_name)
+            hidden_shapes = _remove_author_hidden_shapes(slide_root)
+            hidden_ids = {
+                node.get("id") for shape in hidden_shapes
+                for node in shape.iter(f"{{{NS['p']}}}cNvPr")
+            }
+            for shape in hidden_shapes:
+                shape_id, shape_name = _shape_identity(shape, 0)
+                print(
+                    f"Warning: slide {slide_ref.index}: excluded author-hidden shape "
+                    f"{shape_name!r} (id={shape_id}) and its children from PPTX intake",
+                    file=sys.stderr,
+                )
             slots: list[dict[str, Any]] = []
             for order, container in enumerate(_text_containers(slide_root), start=1):
                 shape_id, shape_name = _shape_identity(container, order)
@@ -281,7 +295,10 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
 
             tables = _analyze_tables(slide_root, slide_ref.index)
             charts = _analyze_charts(zf, slide_root, slide_ref)
-            diagrams = read_smartart_diagrams(zf, slide_ref.part_name, slide_ref.index)
+            diagrams = [
+                item for item in read_smartart_diagrams(zf, slide_ref.part_name, slide_ref.index)
+                if str(item.get("shape_id")) not in hidden_ids
+            ]
             slide_text = "\n".join(
                 [slot["text"] for slot in slots if slot["text"]]
                 + [

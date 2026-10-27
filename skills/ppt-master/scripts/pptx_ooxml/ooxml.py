@@ -253,6 +253,24 @@ def _container_geometry(
     return {"x": _px(x), "y": _px(y), "width": _px(width), "height": _px(height)}
 
 
+def _remove_author_hidden_shapes(root: ET.Element) -> list[ET.Element]:
+    """Remove author-hidden shape subtrees from an in-memory extraction view."""
+    removed: list[ET.Element] = []
+    shape_tags = {f"{{{NS['p']}}}{name}" for name in ("sp", "pic", "cxnSp", "grpSp", "graphicFrame")}
+
+    def visit(parent: ET.Element) -> None:
+        for child in list(parent):
+            properties = child.find("./*/p:cNvPr", NS) if child.tag in shape_tags else None
+            if properties is not None and properties.get("hidden", "").strip().lower() in {"1", "true", "on"}:
+                parent.remove(child)
+                removed.append(child)
+            else:
+                visit(child)
+
+    visit(root)
+    return removed
+
+
 def _text_containers(slide_root: ET.Element) -> list[ET.Element]:
     # mc:Fallback repeats its Choice for other clients; it is not slide content.
     fallback_nodes = {

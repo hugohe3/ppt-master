@@ -224,6 +224,11 @@ notes and an absent file keeps them. Deleting inherited source notes only on a
 copy is not supported in v1. The same output-stem rule applies to narration
 audio.
 
+Imported notes Markdown excludes text in author-hidden notes shapes or groups
+and records a `hidden-notes-content` diagnostic. Unchanged round-trip notes
+still retain their original native XML, including its hidden state; editing a
+visible note does not promote the excluded text into the replacement notes.
+
 When a round-trip recorded-narration export omits `--animation-config`, it reads the workspace `animations.json` the importer wrote; that sidecar is part of the workspace contract, so deleting it fails export rather than restoring source motion.
 
 Narration audio is keyed by the output SVG stem. A copied output page uses its
