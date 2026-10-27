@@ -887,7 +887,7 @@ def find_main_content(soup: BeautifulSoup) -> Tag | None:
         for element in elements:
             if not any(element is existing for existing in candidates):
                 candidates.append(element)
-    for tag in soup(["script", "style", "nav", "noscript", "iframe"]):
+    for tag in soup(["script", "style", "nav", "noscript", "template", "iframe"]):
         tag.decompose()
     for tag in soup(["header", "footer", "aside"]):
         if not any(tag is body or body in tag.parents for body in candidates):

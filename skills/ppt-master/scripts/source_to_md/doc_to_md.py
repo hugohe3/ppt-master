@@ -1195,9 +1195,10 @@ def _convert_html(input_file: Path, out_file: Path) -> str:
             file=sys.stderr,
         )
 
-    # Strip non-content elements (head/style/script) so metadata doesn't leak into MD
+    # Strip non-content elements (head/style/script/template) so metadata and
+    # never-rendered markup don't leak into MD
     soup = BeautifulSoup(raw_html, "html.parser")
-    for tag in soup(["head", "style", "script", "noscript"]):
+    for tag in soup(["head", "style", "script", "noscript", "template"]):
         tag.decompose()
     html = str(soup)
     html = _process_html_images(html, input_file.parent, media_dir, rel_media_dir)

@@ -42,6 +42,22 @@ class HtmlCharsetTests(unittest.TestCase):
         self.assertIn("中文收入", markdown)
         self.assertNotIn("\ufffd", markdown)
 
+    def test_template_markup_never_reaches_markdown(self) -> None:
+        sys.path.insert(0, str(Path(doc_to_md.__file__).parent))
+        import web_to_md
+
+        html = ('<html><body><article><p>Visible body</p>'
+                '<template><p>TEMPLATE_ONLY</p></template></article></body></html>')
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "page.html"
+            source.write_text(html, encoding="utf-8")
+            with redirect_stdout(io.StringIO()):
+                markdown = doc_to_md.convert_to_markdown(str(source))
+        self.assertIn("Visible body", markdown)
+        self.assertNotIn("TEMPLATE_ONLY", markdown)
+        main = web_to_md.find_main_content(web_to_md.BeautifulSoup(html, "html.parser"))
+        self.assertIsNotNone(main)
+        self.assertNotIn("TEMPLATE_ONLY", main.get_text())
 
 class NotebookContentLossTests(unittest.TestCase):
     def test_attachments_do_not_overwrite_named_outputs_or_each_other(self) -> None:
