@@ -65,12 +65,17 @@ from pptx_shapes import (
     NATIVE_FALLBACK_SHA256_ATTR,
     svg_native_fallback_fingerprint,
 )
+from pptx_gradients import (
+    NATIVE_GRADIENT_ATTR,
+    NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+    NATIVE_GRADIENT_SHA256_ATTR,
+)
 from svg_compatibility import normalize_single_child_group_filters
 from svg_authoring_contract import (
     canonical_authoring_errors,
     normalize_compact_authoring_tree,
 )
-from svg_to_pptx.drawingml.context import IDENTITY_MATRIX
+from svg_to_pptx.drawingml.context import ConvertContext, IDENTITY_MATRIX
 from svg_to_pptx.drawingml.utils import (
     INHERITABLE_ATTRS,
     is_stroked_zero_axis_shape,
@@ -78,6 +83,8 @@ from svg_to_pptx.drawingml.utils import (
     parse_inline_style,
     parse_opacity,
     parse_transform_matrix,
+    project_definition_index,
+    project_gradient_errors,
 )
 
 configure_utf8_stdio()
@@ -944,15 +951,32 @@ def _strip_import_attributes(
     stats: ProjectionStats,
     *,
     geometry_owner: ET.Element | None = None,
+    ctx: ConvertContext | None = None,
 ) -> None:
+    gradient_attributes = {
+        NATIVE_GRADIENT_ATTR,
+        NATIVE_GRADIENT_SHA256_ATTR,
+        NATIVE_GRADIENT_PREVIEW_SHA256_ATTR,
+    }
+    preserve_gradient = False
+    if _local_name(element.tag) in {"linearGradient", "radialGradient"}:
+        preview = copy.deepcopy(element)
+        for name in gradient_attributes:
+            preview.attrib.pop(name, None)
+        # Source gradients can need a preview outside the authored interface
+        # (for example userSpaceOnUse for a collapsed outline). Keep the native
+        # payload needed to export those previews without weakening that interface.
+        preserve_gradient = bool(project_gradient_errors(preview))
     for name in list(element.attrib):
         if name not in AUTHORING_OMITTED_SOURCE_ATTRIBUTES:
+            continue
+        if preserve_gradient and name in gradient_attributes:
             continue
         if (
             geometry_owner is not None
             and (
                 geometry_owner.get("data-pptx-object") == "connector"
-                or is_stroked_zero_axis_shape(geometry_owner)
+                or is_stroked_zero_axis_shape(geometry_owner, ctx)
             )
             and element.get("data-pptx-part") == "geometry"
             and name in {"data-pptx-custgeom", "data-pptx-geometry-sha256"}
@@ -996,7 +1020,11 @@ def _compact_text_runs(root: ET.Element, stats: ProjectionStats) -> None:
         stats.single_tspans_collapsed += 1
 
 
-def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
+def _project_subtree(
+    parent: ET.Element,
+    stats: ProjectionStats,
+    ctx: ConvertContext,
+) -> None:
     for child in list(parent):
         part = child.get("data-pptx-part")
         tag = _local_name(child.tag)
@@ -1014,8 +1042,8 @@ def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
             _remove_child(parent, child)
             continue
 
-        _project_subtree(child, stats)
-        _strip_import_attributes(child, stats, geometry_owner=parent)
+        _project_subtree(child, stats, ctx)
+        _strip_import_attributes(child, stats, geometry_owner=parent, ctx=ctx)
 
         if part == "geometry-preview":
             child.attrib.pop("data-pptx-part", None)
@@ -1454,7 +1482,8 @@ def _render_projection(
     stats = ProjectionStats()
     _mark_semantic_objects(root, stats)
     _compact_semantic_shapes(root, stats)
-    _project_subtree(root, stats)
+    definitions, _duplicates = project_definition_index(root)
+    _project_subtree(root, stats, ConvertContext(defs=definitions))
     _compact_text_runs(root, stats)
     stats.compatibility_normalizations += len(
         normalize_single_child_group_filters(root)

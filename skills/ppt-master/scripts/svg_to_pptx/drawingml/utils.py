@@ -1554,15 +1554,37 @@ def is_stroked_zero_axis_shape(
                 inherited.update(_extract_inheritable_styles(node))
                 local = parse_inline_style(node.get('style'))
                 opacity *= parse_project_opacity(local.get('opacity', node.get('opacity', '1')))
-            kind, _value, alpha = parse_project_paint(inherited.get('stroke', 'none'), 'stroke')
+            kind, value, alpha = parse_project_paint(inherited.get('stroke', 'none'), 'stroke')
             width = parse_project_geometry_length(inherited.get('stroke-width', '1'), 'stroke-width')
             opacity *= parse_project_opacity(inherited.get('stroke-opacity', '1')) * alpha
         except ValueError:
             continue
-        # A reference can resolve to fully transparent stops outside this
-        # subtree; only resolved color paint proves that this outline exists.
         if kind == 'color' and width > 0 and opacity > 0:
             return True
+        if kind == 'reference' and ctx is not None and width > 0 and opacity > 0:
+            gradient = ctx.defs.get(value)
+            if gradient is None:
+                continue
+            try:
+                # Only imported DrawingML gradients qualify for this source
+                # frame exception; authored gradient contracts stay unchanged.
+                if preserved_native_gradient_xml(gradient) is None:
+                    continue
+                for stop in gradient:
+                    if stop.tag.rsplit('}', 1)[-1] != 'stop':
+                        continue
+                    style = parse_inline_style(stop.get('style'))
+                    stop_kind, _color, stop_alpha = parse_project_paint(
+                        style.get('stop-color', stop.get('stop-color', '#000000')),
+                        'stop-color',
+                    )
+                    stop_alpha *= parse_project_opacity(
+                        style.get('stop-opacity', stop.get('stop-opacity', '1')),
+                    )
+                    if stop_kind == 'color' and stop_alpha > 0:
+                        return True
+            except ValueError:
+                continue
     return False
 
 

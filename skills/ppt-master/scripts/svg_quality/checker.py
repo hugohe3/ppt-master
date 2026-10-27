@@ -173,6 +173,7 @@ except ImportError:
     _parse_pattern_colors = None
 
 try:
+    from svg_to_pptx.drawingml.context import ConvertContext as _ConvertContext
     from svg_to_pptx.drawingml.elements import (
         drawingml_text_frame_width_emu as _drawingml_text_frame_width_emu,
         empty_clip_path_reason as _empty_clip_path_reason,
@@ -182,6 +183,7 @@ try:
         validate_preset_geometry_metadata as _validate_preset_geometry_metadata,
     )
 except ImportError:
+    _ConvertContext = None
     _drawingml_text_frame_width_emu = None
     _empty_clip_path_reason = None
     _estimate_single_line_text_frame_width = None
@@ -5543,11 +5545,14 @@ class SVGQualityChecker:
             return
 
         issues = set()
+        geometry_context = _ConvertContext(defs={
+            elem.get('id'): elem for elem in root.iter() if elem.get('id')
+        })
         for elem in marked:
             tag = _local_name(elem)
             elem_id = elem.get('id')
             label = f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
-            for error in _validate_preset_geometry_metadata(elem):
+            for error in _validate_preset_geometry_metadata(elem, geometry_context):
                 issues.add(f'{label} has invalid PPTX shape metadata: {error}')
         if _validate_authored_preset_tree is None:
             if any(

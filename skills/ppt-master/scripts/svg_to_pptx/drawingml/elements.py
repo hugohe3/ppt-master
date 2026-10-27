@@ -975,11 +975,14 @@ def _parse_preset_geometry_metadata(
     return prst, guides, frame
 
 
-def validate_preset_geometry_metadata(elem: ET.Element) -> list[str]:
+def validate_preset_geometry_metadata(
+    elem: ET.Element,
+    ctx: ConvertContext | None = None,
+) -> list[str]:
     """Return native shape metadata errors for authoring-time validation."""
     errors: list[str] = []
     try:
-        _parse_preset_geometry_metadata(elem)
+        _parse_preset_geometry_metadata(elem, ctx)
     except ValueError as exc:
         errors.append(str(exc))
     if elem.get('data-pptx-custgeom') is not None:
@@ -1439,7 +1442,7 @@ def _build_arc_ring_path(
     width = max_x - min_x
     height = max_y - min_y
 
-    if width < 0.5 or height < 0.5:
+    if width <= 0 or height <= 0:
         return '', 0, 0, 0, 0
 
     w_emu = px_to_emu(width)
