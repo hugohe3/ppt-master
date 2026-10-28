@@ -5939,6 +5939,7 @@ def _build_sequence_targets(
     seq_targets: list[dict[str, Any]] = []
     resolved_group_modes: list[str | None] = []
     main_sequence_count = 0
+    previous_main_delay = 0.0
     for seq_idx, (
         _order,
         _original_idx,
@@ -5997,20 +5998,23 @@ def _build_sequence_targets(
                     'trigger "on-click" when trigger is explicit'
                 )
             resolved_trigger = 'on-click'
-        default_delay = (
-            stagger
-            if (
-                trigger_shape is None
-                and resolved_trigger == 'after-previous'
-                and main_sequence_count > 0
-            )
-            else 0
-        )
+        # Delays count from the beat start, so an omitted with-previous delay
+        # repeats the previous row's and the two rows still start together.
+        if trigger_shape is not None:
+            default_delay = 0
+        elif resolved_trigger == 'after-previous' and main_sequence_count > 0:
+            default_delay = stagger
+        elif resolved_trigger == 'with-previous':
+            default_delay = previous_main_delay
+        else:
+            default_delay = 0
         delay_seconds = validate_seconds(
             group_cfg.get('delay', default_delay),
             f'animations.json {effect_path}.delay',
             allow_zero=True,
         )
+        if trigger_shape is None:
+            previous_main_delay = delay_seconds
         delay_ms = animation_seconds_to_milliseconds(
             delay_seconds,
             f'animations.json {effect_path}.delay',

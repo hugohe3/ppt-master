@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import io
 import json
+import random
 import sys
 import tempfile
 import unittest
@@ -31,6 +32,7 @@ from pptx_animations import (  # noqa: E402
     validate_generated_animation_xml,
 )
 from pptx_to_svg.animation_import import read_animation_config  # noqa: E402
+from svg_to_pptx.pptx_package.builder import _build_sequence_targets  # noqa: E402
 
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 NS = {"p": PML_NS}
@@ -173,3 +175,45 @@ class AnimationBeatTimingTests(unittest.TestCase):
             _target(0.1, "with-previous", 50), _target(0.1),
         ], 0.52, cue_start="00:00:00,100")
         self.assertEqual([row["delay"] for row in groups["content"]["effects"]], [0.1, 0.2, 0.05, 0])
+
+    def _sidecar_targets(self, groups: dict) -> list[dict]:
+        anim_targets = [(index + 2, group_id) for index, group_id in enumerate(groups)]
+        targets, _ = _build_sequence_targets(
+            anim_targets, "slide", {"groups": groups}, None,
+            {"trigger": "after-previous"}, 0.5, 0.5, 0, random.Random(0),
+        )
+        return targets
+
+    def test_omitted_with_previous_delay_starts_with_staggered_leader(self) -> None:
+        targets = self._sidecar_targets({
+            "images": {"effect": "entrance_fade", "order": 1},
+            "bracket": {"effect": "entrance_wipe", "order": 2},
+            "legend": {"effect": "entrance_fade", "order": 2, "trigger": "with-previous"},
+            "note": {"effect": "entrance_fade", "order": 3, "trigger": "with-previous", "delay": 0.2},
+        })
+        self.assertEqual([target["delay_ms"] for target in targets], [0, 500, 500, 200])
+        self._assert_offsets(targets, [0, 1000, 1000, 700])
+
+    def test_narration_omitted_with_previous_delay_matches_exporter(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = {"defaults": {"animation": {"effect": "none", "stagger": 0.5},
+                                      "transition": {"effect": "none"}},
+                         "slides": {"slide": {"groups": {"content": {"effects": [
+                             {"effect": "entrance_fade", "duration": 0.5},
+                             {"effect": "entrance_wipe", "duration": 0.5},
+                             {"effect": "entrance_fade", "duration": 0.5, "trigger": "with-previous"},
+                         ]}}}}}
+            source = root / "animations.json"
+            source.write_text(json.dumps(canonical), encoding="utf-8")
+            (root / "slide.srt").write_text("1\n00:00:00,000 --> 00:00:00,200\nFirst\n",
+                                            encoding="utf-8")
+            (root / "slide.wav").write_bytes(b"")
+            output = root / "derived.json"
+            with patch("narration_sync.probe_audio_duration", return_value=3), \
+                    redirect_stderr(io.StringIO()):
+                rebuild_animations(root, canonical_path=source, plan_path=root / "missing-plan.json",
+                                   subtitle_dir=root, audio_dir=root, output_path=output,
+                                   narration_padding=0, narration_start_floor=0, force=False)
+            effects = json.loads(output.read_text(encoding="utf-8"))["slides"]["slide"]["groups"]["content"]["effects"]
+        self.assertEqual([row["delay"] for row in effects], [0, 0.5, 0.5])
