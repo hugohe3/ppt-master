@@ -1,6 +1,6 @@
 # Hong Kong fork
 
-This fork keeps upstream PPT Master intact and adds a Hong Kong working default: Traditional Chinese with English, key-message-first structure, and a professional navy-paper identity that is **not** Brand Hong Kong or any government mark.
+This fork exists **mainly to adopt Hong Kong tone and culture into PPT Master**. It keeps the upstream workflow intact and adds a Hong Kong working default: Traditional Chinese with English, key-message-first structure, listed-company announcement copy, and a professional navy-paper identity that is **not** Brand Hong Kong or any government mark.
 
 English is canonical here. Deck copy still follows the user's language and sources.
 
