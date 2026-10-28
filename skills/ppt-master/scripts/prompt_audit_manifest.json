@@ -1030,12 +1030,12 @@
       "max_tokens": 3250
     },
     "stage.shared.conversion-reference": {
-      "description": "Conditional source-conversion and import compatibility reference. Ceiling raised after BUDGET_LOAD_SET reported 7935 tokens.",
+      "description": "Conditional source-conversion and import compatibility reference. Ceiling raised after BUDGET_LOAD_SET reported 9144 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/scripts/docs/conversion.md"
       ],
-      "max_tokens": 8750
+      "max_tokens": 11000
     },
     "stage.shared.troubleshooting": {
       "description": "Conditional troubleshooting reference for generation failures.",
