@@ -17,6 +17,7 @@ Hong Kong professional decks in 2025–2026 tend to:
 - Use **business navy, charcoal, and white**. Mainland government / SOE red-gold chrome reads as the wrong register.
 - Set Chinese on a Traditional-safe face (`Microsoft JhengHei`, `PingFang HK`) and keep Latin on a separate object or a CJK-safe unified face.
 - Close with **owned action items** and a real Q&A window.
+- Write in the **register of a Hong Kong corporate announcement**, not generic AI English or Mainland policy-slogan Chinese. The public newsrooms of HSBC Hong Kong, Cathay Pacific, and the Hong Kong Jockey Club are the register reference: one actor, one named action, one number or date. This fork does not copy those organisations' house styles, marks, or slogans.
 
 Official Brand Hong Kong (flying dragon, ribbon spectrum, "Asia's world city") and the HKSAR regional flag / emblem are protected. This fork does not copy them.
 
@@ -57,3 +58,16 @@ Style workspace: skills/ppt-master/templates/styles/hk-client-pitch/
 Existing PPTX (notes, beautify, or surgical page edits) still follows the normal routes: Edit Native PPTX when the look must stay; Beautify when content is frozen and layout is rebuilt; Generate when the argument is new.
 
 When the audience is Mainland, say so and use Simplified / the relevant client brand instead of this default.
+
+## Voice
+
+Harbour Professional's Voice & Tone is the copy contract. A line should survive as a Hong Kong listed-company headline: actor + action + number or date.
+
+| Reject | Prefer |
+|---|---|
+| Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
+| Empower stakeholders to leverage synergies | The Board is asked to approve HK$12 million for the 90-day pilot |
+| `賦能數字化轉型，打造一站式生態` | `建議批准九十萬港元，於九十日內完成試點` |
+| `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+
+English is British (`organisation`, `programme`, `per cent` in IR running text). Chinese is 港式書面語 (`今天宣布`, `本集團`, `本港`, `客戶`, `港元`, `較去年同期`, `截至`, `董事會建議`) in Traditional characters. Drop stacked intensifiers (`leverage`, `empower`, `cutting-edge`, `our journey`) and Mainland slogan Chinese (`賦能`, `抓手`, `落地`, `閉環`, `打造生態`, `全方位`, `一站式`) unless the source quotes a named product or policy.

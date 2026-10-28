@@ -1,7 +1,7 @@
 ---
 style_id: hk-bilingual-board
 kind: style
-summary: Hong Kong bilingual board-and-IR method — key-message-first decision papers with Traditional Chinese and English hierarchy, a time box, and restrained navy-paper defaults.
+summary: Hong Kong bilingual board-and-IR method — key-message-first decision papers in listed-company announcement wording, with Traditional Chinese and English hierarchy, a time box, and restrained navy-paper defaults.
 keywords: [hong-kong, bilingual, board-paper, traditional-chinese, decision]
 ---
 
@@ -22,8 +22,8 @@ keywords: [hong-kong, bilingual, board-paper, traditional-chinese, decision]
 
 - **Preferred Mode**: pyramid
 - **Argument Flow**: Open with the governing decision or the period result, the overall answer, and the time the room will spend on it. Support the answer with one to three proof points, then the request, risks, and owned next steps. Maintain the trace `overall answer → key support → page message → evidence`. Do not open with a long background narrative; Hong Kong executive rooms treat preamble as delay.
-- **Page Message Discipline**: For every planned page, identify one governing question and answer it in an assertion title. When the page carries both Traditional Chinese and English, let one language own the title and body, and set the other as a support line at 0.75–0.9× that size — subtitle, label, or footnote — never a second equal column. Keep Chinese and English on separate lines or separate objects. Avoid topic-only titles such as "Update" or "背景".
-- **Claim Discipline**: Keep facts, assumptions, implications, and requests semantically distinct. Cite the basis, period, and currency of every figure. Pair every recommendation with the action, owner, and date. Never promote an unsupported claim to a conclusion, and never bury the ask on a thank-you page.
+- **Page Message Discipline**: For every planned page, identify one governing question and answer it in an assertion title a Hong Kong board or results announcement could publish: the decision or the period result, with the figure and period in the title when they are the message. Prefer `Recommend the Board approve…` / `建議批准…`, `Profit for the six months ended…` / `截至…止六個月…`, `Variance to plan is…` / `較預算…`. When the page carries both Traditional Chinese and English, let one language own the title and body, and set the other as a support line at 0.75–0.9× that size — subtitle, label, or footnote — never a second equal column. Keep Chinese and English on separate lines or separate objects. Avoid topic-only or brochure titles such as "Update", "Overview", "Key takeaways", "Our journey", `背景`, or `開啟新篇章`.
+- **Claim Discipline**: Keep facts, assumptions, implications, and requests semantically distinct. Cite the basis, period, and currency of every figure. Pair every recommendation with the action, owner, and date, written as a resolution the minutes could record (`Recommend the Board approve HK$… by …` / `建議董事會於…前批准…港元`). Never promote an unsupported claim to a conclusion, never bury the ask on a thank-you page, and never replace a dated ask with a slogan.
 
 ## III. Page Role Vocabulary
 
@@ -97,3 +97,4 @@ keywords: [hong-kong, bilingual, board-paper, traditional-chinese, decision]
 - Currency, period, and source remain legible on every exhibit.
 - The time box or the ask is findable without hunting.
 - Dense pages retain one clear scan path and do not hide overflow or structural ambiguity.
+- Titles and claims read as a Hong Kong corporate announcement (actor + action + number or date), not stacked English intensifiers or Mainland policy-slogan Chinese.

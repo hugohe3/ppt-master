@@ -98,6 +98,7 @@ This checkout is personalized for Hong Kong PowerPoint work. It does not change 
 | Board / IR / committee / operating readout | `skills/ppt-master/templates/styles/hk-bilingual-board/` |
 | Client proposal or live pitch | `skills/ppt-master/templates/styles/hk-client-pitch/` |
 | Deck language | `zh-HK` (Traditional Chinese; English as companion, not a 50/50 split) |
+| Copy register | Harbour Professional Voice — Hong Kong listed-company announcement tone (actor + action + number/date); not generic AI English or Mainland policy-slogan Chinese. See [`docs/hong-kong.md`](docs/hong-kong.md) Voice |
 | Narration | Cantonese `zh-HK-HiuGaaiNeural` / `zh-HK-WanLungNeural` when the spoken language is Cantonese |
 | Structured Masters (optional) | `skills/ppt-master/templates/layouts/report_core/` |
 

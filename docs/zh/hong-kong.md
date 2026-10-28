@@ -17,6 +17,7 @@
 - **商务蓝、深灰、白底**。内地政府 / 国企红金模板在港式场合会显得不对口径。
 - 中文用繁体安全字体（`Microsoft JhengHei`、`PingFang HK`），英文单独成框，或统一用 CJK 安全字体。
 - 结尾是**有负责人的行动项**和真正的 Q&A，而不是谢谢观看。
+- **口吻跟香港上市公司公告走**，而不是通用 AI 英文或内地政策口号中文。汇丰香港、国泰、香港赛马会的公开新闻稿是语域参照：一个主体、一项具名行动、一个数字或日期。本分支不复制这些机构的品牌规范、标志或口号。
 
 香港品牌飞龙、丝带色谱、「亚洲国际都会」以及区旗区徽均受保护。本分支不复制它们。
 
@@ -57,3 +58,16 @@ Style workspace: skills/ppt-master/templates/styles/hk-client-pitch/
 已有 PPTX（备注、美化或局部改页）仍走原有路由：必须保留原貌时用 Edit Native PPTX；内容冻结、版式重做时用 Beautify；论点是新的时用 Generate。
 
 受众在内地时请明确说出来，改用简体和相应客户品牌，而不要沿用本默认。
+
+## 口吻
+
+Harbour Professional 的 Voice & Tone 是正文合同。一句标题应能当作香港上市公司新闻稿标题发出：主体 + 行动 + 数字或日期。
+
+| 不要 | 要 |
+|---|---|
+| Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
+| Empower stakeholders to leverage synergies | The Board is asked to approve HK$12 million for the 90-day pilot |
+| `賦能數字化轉型，打造一站式生態` | `建議批准九十萬港元，於九十日內完成試點` |
+| `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+
+英文用英式拼写（`organisation`、`programme`，IR 正文里写 `per cent`）。中文用港式书面语（`今天宣布`、`本集團`、`本港`、`客戶`、`港元`、`較去年同期`、`截至`、`董事會建議`），繁体书写。去掉堆叠的英文加强词（`leverage`、`empower`、`cutting-edge`、`our journey`）和内地口号中文（`賦能`、`抓手`、`落地`、`閉環`、`打造生態`、`全方位`、`一站式`），除非来源本身在引用具名产品或政策。
