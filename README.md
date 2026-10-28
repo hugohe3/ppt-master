@@ -13,6 +13,8 @@
 
 English | [中文](./README_CN.md)
 
+> **Hong Kong fork.** This checkout adds a Traditional Chinese + English working default (`harbour-professional`, `hk-bilingual-board`, `hk-client-pitch`). See [Hong Kong fork](./docs/hong-kong.md). Upstream PPT Master behaviour is unchanged unless you select those workspaces.
+
 > 💼 **I'm open to new opportunities.** Investment background (CPA · CPV · Consulting Engineer), also building AI tools and open source. Happy to talk about any opportunity: [heyug3@gmail.com](mailto:heyug3@gmail.com) · [hehugo.com](https://www.hehugo.com/).
 
 > 🆕 **I built a construction project economic evaluation site: [cs.hehugo.com](https://cs.hehugo.com/)** (in Chinese) — the wind, solar and storage templates are now open to everyone; just register and use them (a comparable module in one commercial package sells for ¥100,000).

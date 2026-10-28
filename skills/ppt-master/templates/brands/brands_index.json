@@ -31,6 +31,10 @@
     "summary": "Google brand identity — multi-product corporate decks, developer events (Google I/O style), education and training in the Google ecosystem",
     "primary_color": "#4285F4"
   },
+  "harbour-professional": {
+    "summary": "Hong Kong professional identity — harbour navy on warm paper for bilingual Traditional Chinese and English board, IR, client, and civic decks",
+    "primary_color": "#123B5C"
+  },
   "huawei": {
     "summary": "Huawei-style enterprise identity — restrained red accent on near-black and gray for ICT solution, product, and partner decks",
     "primary_color": "#CF0A2C"

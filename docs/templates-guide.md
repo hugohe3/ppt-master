@@ -144,6 +144,15 @@ Brand workspace: skills/ppt-master/templates/brands/anthropic/
 Layout workspace: skills/ppt-master/templates/layouts/presentation_core/
 ```
 
+Hong Kong bilingual board paper (this fork):
+
+```text
+Make a board paper from projects/q3-report/sources/report.pdf.
+Primary language: zh-HK.
+Brand workspace: skills/ppt-master/templates/brands/harbour-professional/
+Style workspace: skills/ppt-master/templates/styles/hk-bilingual-board/
+```
+
 Use a project-scoped template created earlier:
 
 ```text

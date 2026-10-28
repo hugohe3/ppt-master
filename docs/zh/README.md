@@ -21,6 +21,7 @@
 | [音频旁白](./audio-narration.md) | 从演讲者备注到逐页旁白：服务商、声音复刻、时序、PPTX 嵌入 |
 | [转场与动画](./animations.md) | 页间转场与页内元素动画的默认行为和自定义方式 |
 | [模板使用指南](./templates-guide.md) | 品牌 / 风格 / 版式 / 成品模板的创建与套用 |
+| [香港分支说明](./hong-kong.md) | 繁体中文 + 英文默认、harbour-professional 品牌、双语董事会与提案风格 |
 
 ## 架构与原理
 

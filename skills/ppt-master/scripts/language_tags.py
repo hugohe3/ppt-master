@@ -74,6 +74,17 @@ _LANGUAGE_ALIASES = {
             "繁體中文",
             "繁中",
         ),
+        "zh-HK": (
+            "Hong Kong Chinese",
+            "Chinese (Hong Kong)",
+            "Cantonese",
+            "港式中文",
+            "香港中文",
+            "粵語",
+            "粤语",
+            "廣東話",
+            "广东话",
+        ),
         "ja-JP": (
             "Japanese",
             "日本語",
@@ -260,7 +271,7 @@ def normalize_language_tag(value: str) -> str:
     if language == "zh" and not (has_script or has_region):
         raise LanguageTagError(
             "Chinese must declare a script or region, for example zh-Hans, "
-            "zh-Hant, zh-CN, or zh-TW"
+            "zh-Hant, zh-CN, zh-TW, or zh-HK"
         )
     return "-".join(normalized)
 

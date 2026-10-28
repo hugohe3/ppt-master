@@ -124,6 +124,15 @@ Brand 工作区：skills/ppt-master/templates/brands/anthropic/
 Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 ```
 
+香港双语董事会文件（本分支）：
+
+```text
+用 projects/q3-report/sources/report.pdf 做董事会文件。
+主要语言：zh-HK。
+Brand 工作区：skills/ppt-master/templates/brands/harbour-professional/
+Style 工作区：skills/ppt-master/templates/styles/hk-bilingual-board/
+```
+
 使用之前创建的项目级模板：
 
 ```text

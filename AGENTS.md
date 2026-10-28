@@ -87,3 +87,18 @@ For Generate PPTX serial post-processing and export, follow [`generate-pptx.md`]
 - `docs/` — user-facing documentation (FAQ, installation, technical design, templates guide, audio narration).
 - `docs/rules/` — repo-wide style rules.
 - `projects/` — user project workspace.
+
+## Hong Kong fork defaults
+
+This checkout is personalized for Hong Kong PowerPoint work. It does not change routing, confirmation ownership, or the "match the user's language" rule. When the user or source is Hong Kong and they have not named another identity, **recommend** (do not silently lock) these exact workspace roots and `zh-HK`.
+
+| Need | Recommend |
+|---|---|
+| Identity with no client brand | `skills/ppt-master/templates/brands/harbour-professional/` |
+| Board / IR / committee / operating readout | `skills/ppt-master/templates/styles/hk-bilingual-board/` |
+| Client proposal or live pitch | `skills/ppt-master/templates/styles/hk-client-pitch/` |
+| Deck language | `zh-HK` (Traditional Chinese; English as companion, not a 50/50 split) |
+| Narration | Cantonese `zh-HK-HiuGaaiNeural` / `zh-HK-WanLungNeural` when the spoken language is Cantonese |
+| Structured Masters (optional) | `skills/ppt-master/templates/layouts/report_core/` |
+
+A supplied client brand, official manual, or existing PPTX identity wins. Mainland audience or Simplified sources keep Simplified / the relevant catalog brand. Bare names never select a workspace — pass the roots above. Background: [`docs/hong-kong.md`](docs/hong-kong.md).

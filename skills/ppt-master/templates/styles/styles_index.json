@@ -39,6 +39,26 @@
       "line-drawing"
     ]
   },
+  "hk-bilingual-board": {
+    "summary": "Hong Kong bilingual board-and-IR method — key-message-first decision papers with Traditional Chinese and English hierarchy, a time box, and restrained navy-paper defaults.",
+    "keywords": [
+      "hong-kong",
+      "bilingual",
+      "board-paper",
+      "traditional-chinese",
+      "decision"
+    ]
+  },
+  "hk-client-pitch": {
+    "summary": "Hong Kong bilingual client-pitch method — hook, problem, insight, solution, proof, and a concrete ask in a time-boxed live meeting.",
+    "keywords": [
+      "hong-kong",
+      "bilingual",
+      "client-pitch",
+      "traditional-chinese",
+      "proposal"
+    ]
+  },
   "incident-postmortem": {
     "summary": "Blameless incident review method that reconstructs a timeline, separates contributing factors from blame, and commits to verifiable actions.",
     "keywords": [
