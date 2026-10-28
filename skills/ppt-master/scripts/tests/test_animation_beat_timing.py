@@ -184,17 +184,59 @@ class AnimationBeatTimingTests(unittest.TestCase):
         )
         return targets
 
-    def test_omitted_with_previous_delay_starts_with_staggered_leader(self) -> None:
-        targets = self._sidecar_targets({
+    def _staggered_groups(self) -> dict:
+        return {
             "images": {"effect": "entrance_fade", "order": 1},
             "bracket": {"effect": "entrance_wipe", "order": 2},
             "legend": {"effect": "entrance_fade", "order": 2, "trigger": "with-previous"},
             "note": {"effect": "entrance_fade", "order": 3, "trigger": "with-previous", "delay": 0.2},
-        })
-        self.assertEqual([target["delay_ms"] for target in targets], [0, 500, 500, 200])
+        }
+
+    def test_builder_omitted_with_previous_delay_equals_explicit_zero(self) -> None:
+        groups = self._staggered_groups()
+        omitted = self._sidecar_targets(groups)
+        groups["legend"]["delay"] = 0
+        explicit_zero = self._sidecar_targets(groups)
+        self.assertEqual(omitted, explicit_zero)
+        self.assertEqual([target["delay_ms"] for target in omitted], [0, 500, 0, 200])
+        self._assert_offsets(omitted, [0, 1000, 500, 700])
+
+    def test_companion_repeating_leader_delay_starts_together(self) -> None:
+        groups = self._staggered_groups()
+        groups["legend"]["delay"] = 0.5
+        targets = self._sidecar_targets(groups)
         self._assert_offsets(targets, [0, 1000, 1000, 700])
 
-    def test_narration_omitted_with_previous_delay_matches_exporter(self) -> None:
+    def test_later_row_with_smaller_delay_starts_before_previous_row(self) -> None:
+        groups = self._staggered_groups()
+        groups["legend"]["delay"] = 0.2
+        groups["note"]["delay"] = 0.05
+        slide = self._assert_offsets(self._sidecar_targets(groups), [0, 1000, 700, 550])
+        rows = read_slide_animation_sequence(slide).rows
+        self.assertEqual([row.shape_id for row in rows], [2, 3, 4, 5])
+        self.assertLess(rows[-1].offset_ms, rows[-2].offset_ms)
+
+    def test_builder_delays_roundtrip_through_animation_import(self) -> None:
+        for companion_delay in (None, 0, 0.5, 0.7):
+            with self.subTest(companion_delay=companion_delay):
+                groups = self._staggered_groups()
+                if companion_delay is not None:
+                    groups["legend"]["delay"] = companion_delay
+                targets = self._sidecar_targets(groups)
+                expected = [0, 1000, 500 + round((companion_delay or 0) * 1000), 700]
+                slide = self._assert_offsets(targets, expected)
+                svg_groups = "".join(
+                    f'<g id="{group_id}" data-pptx-shape-scope="slide" '
+                    f'data-pptx-shape-id="{index + 2}"/>'
+                    for index, group_id in enumerate(groups)
+                )
+                imported = read_animation_config(
+                    slide, f'<svg xmlns="http://www.w3.org/2000/svg">{svg_groups}</svg>',
+                )
+                self.assertEqual(imported.groups["legend"]["delay"], companion_delay or 0)
+                self._assert_offsets(self._sidecar_targets(imported.groups), expected)
+
+    def test_narration_beat_delays_agree_with_exporter(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             canonical = {"defaults": {"animation": {"effect": "none", "stagger": 0.5},
@@ -203,6 +245,12 @@ class AnimationBeatTimingTests(unittest.TestCase):
                              {"effect": "entrance_fade", "duration": 0.5},
                              {"effect": "entrance_wipe", "duration": 0.5},
                              {"effect": "entrance_fade", "duration": 0.5, "trigger": "with-previous"},
+                             {"effect": "entrance_fade", "duration": 0.5,
+                              "trigger": "with-previous", "delay": 0},
+                             {"effect": "entrance_fade", "duration": 0.5,
+                              "trigger": "with-previous", "delay": 0.5},
+                             {"effect": "entrance_fade", "duration": 0.5,
+                              "trigger": "with-previous", "delay": 0.2},
                          ]}}}}}
             source = root / "animations.json"
             source.write_text(json.dumps(canonical), encoding="utf-8")
@@ -215,5 +263,10 @@ class AnimationBeatTimingTests(unittest.TestCase):
                 rebuild_animations(root, canonical_path=source, plan_path=root / "missing-plan.json",
                                    subtitle_dir=root, audio_dir=root, output_path=output,
                                    narration_padding=0, narration_start_floor=0, force=False)
-            effects = json.loads(output.read_text(encoding="utf-8"))["slides"]["slide"]["groups"]["content"]["effects"]
-        self.assertEqual([row["delay"] for row in effects], [0, 0.5, 0.5])
+            derived_groups = json.loads(output.read_text(encoding="utf-8"))["slides"]["slide"]["groups"]
+            self.assertEqual(json.loads(source.read_text(encoding="utf-8")), canonical)
+        effects = derived_groups["content"]["effects"]
+        self.assertEqual([row["delay"] for row in effects], [0, 0.5, 0, 0, 0.5, 0.2])
+        expected = [0, 1000, 500, 500, 1000, 700]
+        self._assert_offsets(self._sidecar_targets(canonical["slides"]["slide"]["groups"]), expected)
+        self._assert_offsets(self._sidecar_targets(derived_groups), expected)

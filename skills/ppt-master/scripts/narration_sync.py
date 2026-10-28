@@ -992,7 +992,6 @@ def _resolve_animation_groups(
     preliminaries.sort(key=lambda item: (item[0], item[1], item[2]))
 
     states: list[AnimationGroupState] = []
-    previous_delay_ms = 0
     for sequence_index, (
         order,
         source_index,
@@ -1021,12 +1020,8 @@ def _resolve_animation_groups(
             timing_options,
             label=f'canonical animation for "{effect_path}"',
         )
-        # Mirrors the exporter: an omitted with-previous delay repeats the
-        # previous row's beat-relative delay.
         if effect_trigger == "after-previous" and sequence_index > 0:
             default_delay = settings.stagger_ms / 1000
-        elif effect_trigger == "with-previous":
-            default_delay = previous_delay_ms / 1000
         else:
             default_delay = 0
         original_delay_ms = animation_seconds_to_milliseconds(
@@ -1034,7 +1029,6 @@ def _resolve_animation_groups(
             f'canonical animation delay for "{effect_path}"',
             allow_zero=True,
         )
-        previous_delay_ms = original_delay_ms
         states.append(
             AnimationGroupState(
                 group_id=group_id,

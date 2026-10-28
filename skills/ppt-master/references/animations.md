@@ -85,6 +85,8 @@ Sparse sidecar (unlisted slides inherit resolved defaults):
 | `--animation none` | Disables all per-element animation |
 | `--no-animations` | Also removes transitions |
 
+**Timing contract**: A `with-previous` row measures `delay` from its beat's start, before the leader's own delay. Repeat the leader's delay to start together; use `leader delay + Δ` to trail by Δ. `after-previous` waits for every earlier row in the click group to finish.
+
 The complete field grammar, inheritance, and validation are [`pptx-animations.md`](../scripts/docs/pptx-animations.md) §8; `pptx_animations.py --describe <effect>` prints each effect's exact options.
 
 ### 2.1 Deterministic Morph Object Pairing

@@ -290,12 +290,13 @@ animation-to-video contract.
 | `morph.pairs.<key>.from` / `.to` | Unique source/destination direct-root group ids receiving the shared PowerPoint name `!!<key>`; Morph by object only |
 | `defaults.animation` / `slides.<slide>.animation` | Deck-wide or slide-specific default object-animation behavior |
 | `animation.effect` | Default object effect: one canonical key, `auto`, `mixed`, `random`, or `none` |
-| `animation.duration` / `animation.stagger` / `animation.trigger` | Default schedule duration, delay between rows, and Start mode (`after-previous`, `with-previous`, `on-click`) |
+| `animation.duration` / `animation.trigger` | Default schedule duration and Start mode (`after-previous`, `with-previous`, `on-click`) |
+| `animation.stagger` | Default `delay` for an `after-previous` row with an earlier main-sequence row; finite non-negative seconds, default `0.5`. An explicit row `delay`, including `0`, replaces it. It does not affect the first main-sequence row, `with-previous`, `on-click`, or shape-triggered rows |
 | `groups.<id>.effects[]` | Non-empty ordered array for a multi-duty lifecycle; every row names `effect`; cannot coexist with legacy single-effect fields in the same group |
 | `groups.<id>.effect` | Backward-compatible single-row form; old short names are read-only compatibility inputs |
 | `effects[].trigger` / legacy `trigger` | Row-specific Start mode; omitted values inherit `animation.trigger` |
 | `order` | Page-wide order for ordinary rows; ties keep SVG group order, then `effects[]` index; an unlisted animated group inherits the order of the nearest listed group above it in SVG order (0 before the first); `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
-| `delay` | Row-specific seconds added to the resolved Start or shape trigger; as in PowerPoint, a beat's leading row and its `with-previous` rows all measure delay from the shared beat start, and `after-previous` starts once every earlier row in the click group has finished. An omitted `with-previous` delay repeats the previous main-sequence row's delay (including the default stagger), so the two rows still start together; an explicit value counts from the beat start, so a leader's delay does not shift it |
+| `delay` | Row-specific finite non-negative seconds after the beat start or shape trigger. Omission means `0` except where `animation.stagger` applies; omitted `with-previous` and explicit `0` are identical. Main-sequence beat and click-group timing are defined below |
 | `duration` | Per-row schedule duration; scalable native trees keep internal ratios, while `entrance_appear` and instantaneous presets keep their authored duration and use the value for `after-previous` spacing |
 | `effect_options` | Effect-specific parameters (`direction`, `amount`, `color`, `font_name`, `relative`, `size`) limited to what the selected effect supports (`pptx_animations.py --describe <effect>`; `direction` is the way the motion travels — PowerPoint names the origin edge, so `right` is its "From Left"); requires an explicit canonical `effect` in the same block or row; `font_name` is one target-installed face |
 | `trigger_shape` | Different top-level group id for native **On Click of**; row-only, not inherited; implies `on-click` and accepts an explicit row `trigger` only when it is also `on-click` |
@@ -305,5 +306,15 @@ animation-to-video contract.
 | `restart` | `always`, `when-not-active`, or `never` |
 | `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
 | `sound` | Object-animation cue: project-relative or absolute `.m4a` / `.mp3` / `.wav` on low-level inputs; bundled selections use the synced project-relative `.wav` path |
+
+Main-sequence timing starts at slide entry until an `on-click` row opens a new
+click group with its own time origin. Each `after-previous` row opens a new
+beat when every earlier row in that click group has finished, using their full
+playback spans, including repeats and auto-reverse. Consecutive `with-previous`
+rows share the current beat's start before its leader's delay; each row adds
+only its own `delay`. Thus equal delays start together, and a later row with a
+smaller delay can start earlier. A leading `with-previous` row uses slide entry
+as its beat start. Shape-triggered rows use their own shape click and do not
+participate in main-sequence timing.
 
 An unlisted SVG inherits the resolved deck-wide settings; a listed slide may contain only the `transition`, `animation`, `groups`, or `morph` fields it overrides. The chrome-name heuristic matches an id equal to, or holding a `-`/`_`-separated token from, `bg`, `background`, `header`, `footer`, `decor`, `decoration`, `decorations`, `chrome`, `nav`, `watermark`, `logo`, `pagenumber`, `pagenum`, `slidenumber`, `slidenum`, `rule`; `list-groups` names the excluded ids at the end of each slide line. A marker-free `*-header` / `*-footer` group whose text reaches the page's median font size is read as the title block and stays an ordinary target. For chrome defaults, explicit sidecar overrides, and structural exclusions, see [`animations.md`](../../references/animations.md) §5.

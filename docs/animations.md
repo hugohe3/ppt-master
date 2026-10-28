@@ -237,7 +237,7 @@ Common row fields are:
 | `effect` | Select one explicit effect; the legacy form may use `none` to keep that object static |
 | `trigger` | Override this row's Start mode; otherwise inherit the slide animation trigger |
 | `order` | Order ordinary rows across the slide without changing slide layers; trigger-shape rows remain in separate interactive sequences |
-| `delay` | Add a pause to this row's resolved Start behavior |
+| `delay` | Set this row's beat-relative or shape-trigger delay; see the [timing field reference](../skills/ppt-master/scripts/docs/pptx-animations.md#8-sidecar-field-reference) for defaults and `animation.stagger` |
 | `duration` | Override this row's scheduled animation duration |
 | `effect_options` | Set effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` |
 | `trigger_shape` | Trigger this row when another top-level group is clicked (PowerPoint **On Click of**) |
