@@ -13,7 +13,7 @@
 
 English | [中文](./README_CN.md)
 
-> **Hong Kong fork.** This checkout adds a Traditional Chinese + English working default (`harbour-professional`, `hk-bilingual-board`, `hk-client-pitch`). See [Hong Kong fork](./docs/hong-kong.md). Upstream PPT Master behaviour is unchanged unless you select those workspaces.
+> **Hong Kong fork.** This checkout adds a Traditional Chinese + English working default (`harbour-professional`, `hk-bilingual-board`, `hk-client-pitch`) and a Hong Kong listed-company copy register. See [Hong Kong fork](./docs/hong-kong.md). Upstream PPT Master behaviour is unchanged unless you select those workspaces.
 
 > 💼 **I'm open to new opportunities.** Investment background (CPA · CPV · Consulting Engineer), also building AI tools and open source. Happy to talk about any opportunity: [heyug3@gmail.com](mailto:heyug3@gmail.com) · [hehugo.com](https://www.hehugo.com/).
 

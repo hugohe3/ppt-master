@@ -40,7 +40,7 @@
     ]
   },
   "hk-bilingual-board": {
-    "summary": "Hong Kong bilingual board-and-IR method — key-message-first decision papers with Traditional Chinese and English hierarchy, a time box, and restrained navy-paper defaults.",
+    "summary": "Hong Kong bilingual board-and-IR method — key-message-first decision papers in listed-company announcement wording, with Traditional Chinese and English hierarchy, a time box, and restrained navy-paper defaults.",
     "keywords": [
       "hong-kong",
       "bilingual",
@@ -50,7 +50,7 @@
     ]
   },
   "hk-client-pitch": {
-    "summary": "Hong Kong bilingual client-pitch method — hook, problem, insight, solution, proof, and a concrete ask in a time-boxed live meeting.",
+    "summary": "Hong Kong bilingual client-pitch method — hook, problem, insight, solution, proof, and a concrete ask in client-letter wording for a time-boxed live meeting.",
     "keywords": [
       "hong-kong",
       "bilingual",

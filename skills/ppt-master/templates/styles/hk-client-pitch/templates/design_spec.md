@@ -1,7 +1,7 @@
 ---
 style_id: hk-client-pitch
 kind: style
-summary: Hong Kong bilingual client-pitch method — hook, problem, insight, solution, proof, and a concrete ask in a time-boxed live meeting.
+summary: Hong Kong bilingual client-pitch method — hook, problem, insight, solution, proof, and a concrete ask in client-letter wording for a time-boxed live meeting.
 keywords: [hong-kong, bilingual, client-pitch, traditional-chinese, proposal]
 ---
 
@@ -24,8 +24,8 @@ keywords: [hong-kong, bilingual, client-pitch, traditional-chinese, proposal]
 - **Mode References**: pyramid, showcase
 - **Mode Behavior**: Open like a showcase — one hook the room can see in the first thirty seconds — then resolve like a pyramid: the client's problem in the client's terms, the insight that changes the options, the recommended approach, the proof, and a single ask. Keep the live meeting inside a declared time box and hold the last minutes for questions. When the file will be forwarded after the meeting, every page must still survive without the presenter.
 - **Argument Flow**: Hook with a decision-relevant fact or the client's own tension, restate the problem, offer the insight, unfold the solution in three to five modules, prove it with comparable evidence, and close with the specific next action (NDA, pilot, mandate, board paper). Do not open with company history, team photos, or a long credentials parade.
-- **Page Message Discipline**: Give each page one promise, one module of the approach, or one piece of proof, titled as the client's outcome rather than a capability name. When Traditional Chinese and English both appear, one language owns the title and body; the other is a support line at 0.75–0.9×, never a mirrored second column. Keep the two scripts on separate lines or separate objects.
-- **Claim Discipline**: Keep understood requirement, proposed commitment, assumption, exclusion, and optional scope explicitly distinct. Never imply a capability, certification, reference, or relationship that cannot be produced on request. Present proof with its real scope. The closing page is an ask with owner and date, not thanks.
+- **Page Message Discipline**: Give each page one promise, one module of the approach, or one piece of proof, titled as the client's outcome or the next commercial step in the register of a Hong Kong client letter in **that language**: `Pilot in 90 days, then the mandate` in Hong Kong British business English, `九十日試點後再決定委託` in Hong Kong written Chinese. When both appear, one language owns the title and body; the other is a support line at 0.75–0.9×, never a mirrored crib. Keep the two scripts on separate lines or separate objects. Do not title with capability brands, `Why us`, `Our solution`, stacked adjectives, spoken Cantonese, Taiwan lexis, or `開啟新篇章`.
+- **Claim Discipline**: Keep understood requirement, proposed commitment, assumption, exclusion, and optional scope explicitly distinct. Never imply a capability, certification, reference, or relationship that cannot be produced on request. Present proof with its real scope. The closing page is an ask with owner and date, written as a client letter would close it (`Please confirm the 90-day pilot by 15 November 2026` / `請於 2026 年 11 月 15 日前確認九十日試點`), not thanks and not a slogan.
 
 ## III. Page Role Vocabulary
 
@@ -99,3 +99,5 @@ keywords: [hong-kong, bilingual, client-pitch, traditional-chinese, proposal]
 - Price appears together with its basis, assumptions, and validity.
 - The closing page is a concrete ask with owner and date, plus a real Q&A window.
 - Live pages remain speakable inside a 30–45 minute meeting with time held for questions.
+- English hook, recommendation, and ask would pass as a Hong Kong client letter: named action, number or date, British spelling, no stacked intensifiers.
+- Chinese hook, recommendation, and ask would pass as Hong Kong written Chinese: named action, number or date, no spoken Cantonese, Taiwan lexis, or Mainland policy-slogan Chinese.

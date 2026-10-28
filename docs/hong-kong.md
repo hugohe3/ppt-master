@@ -17,6 +17,7 @@ Hong Kong professional decks in 2025–2026 tend to:
 - Use **business navy, charcoal, and white**. Mainland government / SOE red-gold chrome reads as the wrong register.
 - Set Chinese on a Traditional-safe face (`Microsoft JhengHei`, `PingFang HK`) and keep Latin on a separate object or a CJK-safe unified face.
 - Close with **owned action items** and a real Q&A window.
+- Write **both** languages in the register of a Hong Kong corporate announcement — Hong Kong British business English and Hong Kong written Chinese — not US consulting English, spoken Cantonese, Taiwan lexis, or Mainland policy-slogan Chinese. The public newsrooms of HSBC Hong Kong, Cathay Pacific, and the Hong Kong Jockey Club are the register reference: one actor, one named action, one number or date. This fork does not copy those organisations' house styles, marks, or slogans.
 
 Official Brand Hong Kong (flying dragon, ribbon spectrum, "Asia's world city") and the HKSAR regional flag / emblem are protected. This fork does not copy them.
 
@@ -57,3 +58,26 @@ Style workspace: skills/ppt-master/templates/styles/hk-client-pitch/
 Existing PPTX (notes, beautify, or surgical page edits) still follows the normal routes: Edit Native PPTX when the look must stay; Beautify when content is frozen and layout is rebuilt; Generate when the argument is new.
 
 When the audience is Mainland, say so and use Simplified / the relevant client brand instead of this default.
+
+## Voice
+
+Harbour Professional's Voice & Tone is the copy contract for **both** languages. Each line should survive as a Hong Kong listed-company headline in that language: actor + action + number or date. Do not machine-translate one language into the other.
+
+**English** is Hong Kong British business English (`organisation`, `programme`, `the Group today announced`, `per cent` in IR running text) — not US spelling and not Silicon Valley filler.
+
+| Reject (US / AI) | Prefer (Hong Kong English) |
+|---|---|
+| We're excited to roll out the program | The Group today announced the programme for eligible customers |
+| Reach out to users to unlock value | Please contact eligible customers with effect from 28 October 2026 |
+| Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
+
+**Chinese** is Hong Kong written Chinese: Traditional characters, Standard Written Chinese with Hong Kong lexicon (`今天宣布`, `本集團`, `本港`, `客戶`, `港元`, `較去年同期`, `行政總裁`, `溢利`, `數碼化`, `軟件`). It is not spoken Cantonese on the slide, not Taiwan lexis (`軟體`, `網路`, `執行長`), and not Mainland slogan Chinese.
+
+| Reject (Mainland / Taiwan / spoken) | Prefer (Hong Kong written Chinese) |
+|---|---|
+| `賦能數字化轉型，打造一站式生態` | `建議批准九十萬港元，於九十日內完成試點` |
+| `我們很高興推出軟體給用戶` | `本集團今天公布有關軟件，供合資格客戶使用` |
+| `而家我哋好興奮宣布` | `本集團今天宣布` |
+| `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+
+Spoken Cantonese belongs in narration when the spoken language is Cantonese, not in slide body copy. Drop stacked English intensifiers (`leverage`, `empower`, `our journey`) and Mainland slogan Chinese (`賦能`, `抓手`, `落地`, `閉環`, `打造生態`) unless the source quotes a named product or policy.
