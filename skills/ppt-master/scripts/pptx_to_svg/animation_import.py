@@ -240,28 +240,26 @@ def _resolve_group_id(
 def _relative_delays(rows: tuple[AnimationRowSummary, ...]) -> tuple[int, ...]:
     """Invert the native writer's absolute main-sequence offsets."""
     delays: list[int] = []
-    previous_start_ms = 0
-    previous_duration_ms = 0
-    has_previous = False
+    beat_start_ms = 0
+    timeline_end_ms = 0
     for index, row in enumerate(rows, 1):
         if row.playback_duration_ms is None:
             raise AnimationImportError(
                 f"animation row {index} has no exact playback duration"
             )
-        if row.trigger_shape_id is not None or row.trigger == "on-click":
+        if row.trigger_shape_id is not None:
             base_ms = 0
-        elif row.trigger == "with-previous":
-            base_ms = previous_start_ms if has_previous else 0
-        elif row.trigger == "after-previous":
-            base_ms = (
-                previous_start_ms + previous_duration_ms
-                if has_previous
-                else 0
-            )
         else:
-            raise AnimationImportError(
-                f"animation row {index} has unsupported trigger {row.trigger!r}"
-            )
+            if row.trigger == "on-click":
+                beat_start_ms = 0
+                timeline_end_ms = 0
+            elif row.trigger == "after-previous":
+                beat_start_ms = timeline_end_ms
+            elif row.trigger != "with-previous":
+                raise AnimationImportError(
+                    f"animation row {index} has unsupported trigger {row.trigger!r}"
+                )
+            base_ms = beat_start_ms
         delay_ms = row.offset_ms - base_ms
         if delay_ms < 0:
             raise AnimationImportError(
@@ -269,9 +267,7 @@ def _relative_delays(rows: tuple[AnimationRowSummary, ...]) -> tuple[int, ...]:
             )
         delays.append(delay_ms)
         if row.trigger_shape_id is None:
-            previous_start_ms = row.offset_ms
-            previous_duration_ms = row.playback_duration_ms
-            has_previous = True
+            timeline_end_ms = max(timeline_end_ms, row.offset_ms + row.playback_duration_ms)
     return tuple(delays)
 
 

@@ -1761,31 +1761,23 @@ def _build_animation_row_xml(
 def _main_target_offsets(targets: Sequence[AnimationTarget]) -> list[int]:
     """Return each regular row's start offset within its click group."""
     offsets: list[int] = []
-    previous_start_ms = 0
-    previous_duration_ms = 0
-    has_previous = False
+    beat_start_ms = 0
+    timeline_end_ms = 0
     for target in targets:
         if target.trigger == 'on-click':
-            start_ms = target.delay_ms
-        elif target.trigger == 'with-previous':
-            start_ms = (
-                previous_start_ms if has_previous else 0
-            ) + target.delay_ms
-        else:
-            start_ms = (
-                previous_start_ms + previous_duration_ms
-                if has_previous
-                else 0
-            ) + target.delay_ms
+            beat_start_ms = 0
+            timeline_end_ms = 0
+        elif target.trigger == 'after-previous':
+            beat_start_ms = timeline_end_ms
+        # With-previous rows share the beat's trigger, before any row delay.
+        start_ms = beat_start_ms + target.delay_ms
         if start_ms > MAX_OOXML_MILLISECONDS:
             raise ValueError(
                 'animation sequence offset exceeds the OOXML millisecond '
                 f'limit at target {len(offsets) + 1}: {start_ms}'
             )
         offsets.append(start_ms)
-        previous_start_ms = start_ms
-        previous_duration_ms = target.playback_duration_ms
-        has_previous = True
+        timeline_end_ms = max(timeline_end_ms, start_ms + target.playback_duration_ms)
     return offsets
 
 
