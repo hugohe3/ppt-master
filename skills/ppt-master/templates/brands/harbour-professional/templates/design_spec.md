@@ -15,7 +15,7 @@ primary_color: "#123B5C"
 |---|---|
 | Brand Name | Harbour Professional |
 | Use Cases | Hong Kong board papers, investor and results readouts, client proposals, internal operating reviews, and civic or professional briefings that must read as local rather than Mainland SOE or generic Western consulting |
-| Tone | Formal, measured, announcement-led — Hong Kong listed-company and civic register, not a consultancy brochure or Mainland policy slogan |
+| Tone | Formal, measured, announcement-led in both languages — Hong Kong British business English and Hong Kong written Chinese; not US consulting copy, spoken Cantonese, Taiwan lexis, or Mainland policy slogans |
 | Sources | Authored for this Hong Kong fork. Visual identity from Hong Kong professional presentation practice (navy / charcoal / white field). Copy register observed from public Hong Kong corporate announcements (banks, carriers, civic institutions) as a register reference only — not a transcription of any issuer's house style, marks, or slogans. Not Brand Hong Kong, not the HKSAR regional emblem, and not an official government or listed-company identity |
 
 ## II. Color Scheme
@@ -58,26 +58,36 @@ No logo asset is bundled. Brand Hong Kong's flying dragon and the HKSAR regional
 
 > Presentation convention for this fork, not an official brand token and not any listed company's voice.
 
-**Register**: Write as a Hong Kong results announcement, board paper, or client letter would be published — institutional, numbered, and dated. The test is whether a listed-company newsroom in Hong Kong could print the line; the test is not a product brochure, a Silicon Valley launch post, or a Mainland policy paper. Do not imitate any issuer's slogans or marks.
+**Register**: Both languages must independently pass as Hong Kong professional writing. English is Hong Kong British business English. Chinese is Hong Kong written Chinese: Standard Written Chinese in Traditional characters with Hong Kong professional lexicon (港式書面語 as a name, not spoken Cantonese). The test is whether a listed-company newsroom in Hong Kong could print that language on its own; the test is not a US consulting brochure, a Taiwan consumer page, a Mainland policy paper, or a Cantonese chat. Do not imitate any issuer's slogans or marks.
 
-**Sentence shape**: One actor, one named action, one number or date or condition. A line with no proper noun, figure, date, or named owner is unfinished; rewrite it. Facts stay in the third person (`the Group today announced`, `本集團今天宣布`). The ask and owned next step may use we (`we recommend the Board approve`, `建議董事會批准`).
+**Sentence shape**: One actor, one named action, one number or date or condition, in whichever language owns the line. A line with no proper noun, figure, date, or named owner is unfinished; rewrite it. Facts stay in the third person (`the Group today announced` / `本集團今天宣布`). The ask and owned next step may use we (`we recommend the Board approve` / `建議董事會批准`).
 
-**English**: British spelling (`organisation`, `centre`, `programme`, `honour`, `analyse`). `customers` / `clients` / `passengers` / `members`, not `users`, unless the subject is an app interface. `Hong Kong`, `the Chinese Mainland`, and `Hong Kong SAR Government` in running prose. Dates as `28 October 2026` or `28/10/2026`. Currency as `HK$12 million` with Western thousand separators; `per cent` in IR running text, `%` on a KPI tile. Spell out a market abbreviation on first use (`Hong Kong Exchanges and Clearing`, then `HKEX`).
+**Pairing**: Write each language as an original Hong Kong announcement. Do not machine-translate the title into the support line. A companion line is shorter and quieter, never a 50/50 crib. Prefer `zh-HK` on the deck; English companion lines follow this English register, not US spelling.
 
-**Chinese**: 港式書面語 in Traditional characters. Prefer `今天宣布`, `本集團` / `本公司` / `本行`, `本港`, `客戶`, `港元`, `較去年同期`, `截至`, `董事會建議`, `有關`, `將於`, `惠及`. Address as `Ms Chan` / `陳女士`. Government-facing copy may use `閣下` in place of `您`. Keep English as a companion line, never a 50/50 parallel translation. Prefer `zh-HK` as the deck language tag. Do not use Simplified Chinese unless the named audience is Mainland.
+**English — Hong Kong British business English**: British spelling and Hong Kong institutional lexis. `organisation`, `centre`, `programme` (a scheme), `program` (software only), `honour`, `analyse`, `towards`, `while`. `customers` / `clients` / `passengers` / `members` / `staff`, not `users` unless the subject is an app interface. `Hong Kong`, `the Chinese Mainland`, `Hong Kong SAR Government` in running prose — not `HK`, `China` for the Mainland, or `the government` unnamed. Dates `28 October 2026` or `28/10/2026`. Currency `HK$12 million`; `per cent` in IR running text, `%` on a KPI tile. Spell out a market abbreviation on first use (`Hong Kong Exchanges and Clearing`, then `HKEX`). `the Group today announced` / `is pleased to announce` is the ceiling of warmth; never `we're excited`. Prefer `with effect from`, `year on year`, `eligible`, `subject to`. Do not use `whilst`, `amongst`, or `fortnight` unless the source does.
 
-**Forbidden — stacked intensifiers and policy slogan Chinese**:
-
-| Reject | Prefer |
+| Reject (US / AI English) | Prefer (Hong Kong English) |
 |---|---|
+| We're excited to roll out the program | The Group today announced the programme for eligible customers |
+| Reach out to users to unlock value | Please contact eligible customers with effect from 28 October 2026 |
+| Organize a center of excellence | Set up the Hong Kong centre |
+| Q3 was a journey for stakeholders | Profit for the three months ended 30 September 2026 |
 | Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
-| Empower stakeholders to leverage synergies | The Board is asked to approve HK$12 million for the 90-day pilot |
-| We're excited to dive into the landscape | The Group today released the six-month figures |
+
+Also drop unless the source quotes them: `leverage`, `empower`, `cutting-edge`, `robust ecosystem`, `game-changer`, `harness`, `going forward`, `key takeaways`, `our journey`, `reach out`, `folks`, `gotten`, `upcoming`, and US spellings (`organize`, `center`, `color`, `analyze`, `honor`).
+
+**Chinese — Hong Kong written Chinese**: Traditional characters only unless the named audience is Mainland. Institutional lexis: `今天宣布`, `本集團` / `本公司` / `本行`, `本港`, `客戶`, `員工`, `港元`, `較去年同期`, `截至`, `董事會建議`, `行政總裁`, `有關`, `將於`, `惠及`, `公布`, `溢利`, `質素`, `數碼` / `數碼化`, `軟件`, `網絡`, `資訊`, `電郵`, `流動應用程式`, `登入`, `戶口`. Address `Ms Chan` / `陳女士`. Government-facing copy may use `閣下` in place of `您`. Arabic numerals with `萬` / `億` are normal (`3,200萬港元`). Slide body is written Chinese, never spoken Cantonese particles. Spoken Cantonese belongs in narration when the spoken language is Cantonese, or in a quoted remark.
+
+| Reject (Mainland / Taiwan / spoken) | Prefer (Hong Kong written Chinese) |
+|---|---|
 | `賦能數字化轉型，打造一站式生態` | `建議批准九十萬港元，於九十日內完成試點` |
 | `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+| `我們很高興推出軟體給用戶` | `本集團今天公布有關軟件，供合資格客戶使用` |
+| `執行長宣布營收創新高` | `行政總裁公布截至六月三十日止六個月溢利` |
+| `而家我哋好興奮宣布` | `本集團今天宣布` |
 | `助力高質量發展` | `建議透過慈善信託基金捐助七千二百萬港元` |
 
-Also drop, unless the source itself uses them as a quoted product or policy name: `leverage`, `empower`, `cutting-edge`, `robust ecosystem`, `game-changer`, `harness`, `going forward`, `key takeaways`, `our journey`; and `賦能`, `抓手`, `落地`, `閉環`, `打造生態`, `全方位`, `一站式`, `痛點`, `賽道`, `破圈`, `開啟新時代`.
+Also drop unless the source quotes a named product or policy: `賦能`, `抓手`, `落地`, `閉環`, `打造生態`, `全方位`, `一站式`, `痛點`, `賽道`, `破圈`, `開啟新時代`, `數字化`, `信息`, `网络` / Simplified forms, Taiwan `軟體` / `網路` / `執行長` / `營收`, and Cantonese body particles `喺`, `咗`, `嘅`, `哋`, `唔`, `係咪`, `而家`.
 
 Keep facts, assumptions, and requests distinct, and close with owned action items rather than a decorative thank-you.
 
