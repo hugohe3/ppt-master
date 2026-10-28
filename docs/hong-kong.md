@@ -11,7 +11,7 @@ The bundled catalog is strong on global consulting brands and Mainland SOE decks
 Hong Kong professional decks in 2025–2026 tend to:
 
 - Run **two written languages and three spoken ones** (Traditional Chinese and English on the page; Cantonese, English, or Putonghua in the room).
-- Put the **key message first** (BLUF), then one to three supports — not a long preamble.
+- Plan the **key message first** (BLUF), then one to three supports — not a long preamble. That sequence is how the deck is built; it is never printed as a title or body sentence.
 - Declare a **time box**. A 30-minute meeting is asked what it will cover, not given 60 pages.
 - Keep **one language dominant**. The second language is a smaller subtitle, label, or caption — not a 50/50 left-right translation.
 - Use **business navy, charcoal, and white**. Mainland government / SOE red-gold chrome reads as the wrong register.
@@ -61,7 +61,7 @@ When the audience is Mainland, say so and use Simplified / the relevant client b
 
 ## Voice
 
-Harbour Professional's Voice & Tone is the copy contract for **both** languages. Each line should survive as a Hong Kong listed-company headline in that language: actor + action + number or date. Do not machine-translate one language into the other.
+Harbour Professional's Voice & Tone is the copy contract for **both** languages. Each line should survive as a Hong Kong listed-company headline in that language: actor + action + number or date. Do not machine-translate one language into the other. Style Argument Flow, BLUF, time boxes, and "Hong Kong rooms want the answer first" are planning notes. They are not slide copy. Name `the Board` / `the Committee` / `本港` / `委員會`; do not self-label the room `港式` on a slide.
 
 **English** is Hong Kong British business English (`organisation`, `programme`, `the Group today announced`, `per cent` in IR running text) — not US spelling and not Silicon Valley filler.
 
@@ -70,6 +70,7 @@ Harbour Professional's Voice & Tone is the copy contract for **both** languages.
 | We're excited to roll out the program | The Group today announced the programme for eligible customers |
 | Reach out to users to unlock value | Please contact eligible customers with effect from 28 October 2026 |
 | Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
+| Key message first / HK rooms want the answer first | Recommend the Committee adopt editable PPTX as the paper format with effect from 28 October 2026 |
 
 **Chinese** is Hong Kong written Chinese: Traditional characters, Standard Written Chinese with Hong Kong lexicon (`今天宣布`, `本集團`, `本港`, `客戶`, `港元`, `較去年同期`, `行政總裁`, `溢利`, `數碼化`, `軟件`). It is not spoken Cantonese on the slide, not Taiwan lexis (`軟體`, `網路`, `執行長`), and not Mainland slogan Chinese.
 
@@ -79,5 +80,6 @@ Harbour Professional's Voice & Tone is the copy contract for **both** languages.
 | `我們很高興推出軟體給用戶` | `本集團今天公布有關軟件，供合資格客戶使用` |
 | `而家我哋好興奮宣布` | `本集團今天宣布` |
 | `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+| `結論先行` / `先給答案，再用一至三個支撐` / `長鋪墊在港式會議室是延遲` | `建議委員會於下次會議前批准可編輯 PPTX 為文件格式` |
 
 Spoken Cantonese belongs in narration when the spoken language is Cantonese, not in slide body copy. Drop stacked English intensifiers (`leverage`, `empower`, `our journey`) and Mainland slogan Chinese (`賦能`, `抓手`, `落地`, `閉環`, `打造生態`) unless the source quotes a named product or policy.

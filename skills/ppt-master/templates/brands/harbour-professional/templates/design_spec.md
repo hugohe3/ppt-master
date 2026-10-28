@@ -62,6 +62,14 @@ No logo asset is bundled. Brand Hong Kong's flying dragon and the HKSAR regional
 
 **Sentence shape**: One actor, one named action, one number or date or condition, in whichever language owns the line. A line with no proper noun, figure, date, or named owner is unfinished; rewrite it. Facts stay in the third person (`the Group today announced` / `本集團今天宣布`). The ask and owned next step may use we (`we recommend the Board approve` / `建議董事會批准`).
 
+**Method is not copy**: Style Argument Flow, BLUF, time boxes, "one to three supports", and briefing-practice notes are planning craft. They never appear as titles, kickers, labels, or body. A line that explains how Hong Kong rooms like to be briefed is unfinished under Sentence shape — rewrite it as the source's actor, action, and figure. Name the actual body (`the Board`, `the Committee`, `本港`, `委員會`); never self-label the setting as `港式` or `HK rooms` on a slide.
+
+| Reject (method printed as copy) | Prefer (announcement copy) |
+|---|---|
+| Key message first / HK rooms want the answer first | Recommend the Committee adopt editable PPTX as the paper format with effect from 28 October 2026 |
+| `結論先行` / `先給答案，再用一至三個支撐` | `建議委員會於下次會議前批准可編輯 PPTX 為文件格式` |
+| Hong Kong executive rooms treat preamble as delay / `長鋪墊在港式會議室是延遲` | Screenshot slides cannot be revised to the Committee's instructions after the meeting / `螢幕截圖式簡報在會後無法按委員會要求修訂` |
+
 **Pairing**: Write each language as an original Hong Kong announcement. Do not machine-translate the title into the support line. A companion line is shorter and quieter, never a 50/50 crib. Prefer `zh-HK` on the deck; English companion lines follow this English register, not US spelling.
 
 **English — Hong Kong British business English**: British spelling and Hong Kong institutional lexis. `organisation`, `centre`, `programme` (a scheme), `program` (software only), `honour`, `analyse`, `towards`, `while`. `customers` / `clients` / `passengers` / `members` / `staff`, not `users` unless the subject is an app interface. `Hong Kong`, `the Chinese Mainland`, `Hong Kong SAR Government` in running prose — not `HK`, `China` for the Mainland, or `the government` unnamed. Dates `28 October 2026` or `28/10/2026`. Currency `HK$12 million`; `per cent` in IR running text, `%` on a KPI tile. Spell out a market abbreviation on first use (`Hong Kong Exchanges and Clearing`, then `HKEX`). `the Group today announced` / `is pleased to announce` is the ceiling of warmth; never `we're excited`. Prefer `with effect from`, `year on year`, `eligible`, `subject to`. Do not use `whilst`, `amongst`, or `fortnight` unless the source does.

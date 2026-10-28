@@ -11,7 +11,7 @@
 2025–2026 年香港专业 PPT 常见做法：
 
 - **两文三语**：书面繁体中文与英文；现场粤语、英语或普通话。
-- **结论先行**（BLUF）：先给关键信息，再用 1–3 个支撑，而不是长铺垫。
+- **规划上结论先行**（BLUF）：先给关键信息，再用 1–3 个支撑，而不是长铺垫。这是组页方法，不是可印上幻灯片的标题或正文。
 - **时间盒**：30 分钟的会先问能 cover 哪几件事，而不是塞 60 页。
 - **一种语言主导**：第二种语言做较小的副标题、标签或注释，而不是左右各半翻译。
 - **商务蓝、深灰、白底**。内地政府 / 国企红金模板在港式场合会显得不对口径。
@@ -61,7 +61,7 @@ Style workspace: skills/ppt-master/templates/styles/hk-client-pitch/
 
 ## 口吻
 
-Harbour Professional 的 Voice & Tone 是**中英两种语言**的正文合同。每一种语言都应能单独当作香港上市公司新闻稿标题发出：主体 + 行动 + 数字或日期。不要把一种语言机翻成另一种。
+Harbour Professional 的 Voice & Tone 是**中英两种语言**的正文合同。每一种语言都应能单独当作香港上市公司新闻稿标题发出：主体 + 行动 + 数字或日期。不要把一种语言机翻成另一种。Style 的 Argument Flow、BLUF、时间盒、「港式会议室要结论先行」是规划说明，不是幻灯片正文。具名主体写 `the Board` / `the Committee` / `本港` / `委員會`，不要在页上自称 `港式`。
 
 **英文**是港式英式商务英文（`organisation`、`programme`、`the Group today announced`，IR 正文里写 `per cent`），不是美式拼写，也不是硅谷腔。
 
@@ -70,6 +70,7 @@ Harbour Professional 的 Voice & Tone 是**中英两种语言**的正文合同�
 | We're excited to roll out the program | The Group today announced the programme for eligible customers |
 | Reach out to users to unlock value | Please contact eligible customers with effect from 28 October 2026 |
 | Unlock a seamless digital journey | Launch the service for eligible corporate clients in Hong Kong on 23 October 2026 |
+| Key message first / HK rooms want the answer first | Recommend the Committee adopt editable PPTX as the paper format with effect from 28 October 2026 |
 
 **中文**是港式书面语：繁体、规范书面中文加香港专业用词（`今天宣布`、`本集團`、`本港`、`客戶`、`港元`、`較去年同期`、`行政總裁`、`溢利`、`數碼化`、`軟件`）。幻灯片正文不是口语粤语，不是台湾用词（`軟體`、`網路`、`執行長`），也不是内地口号中文。
 
@@ -79,5 +80,6 @@ Harbour Professional 的 Voice & Tone 是**中英两种语言**的正文合同�
 | `我們很高興推出軟體給用戶` | `本集團今天公布有關軟件，供合資格客戶使用` |
 | `而家我哋好興奮宣布` | `本集團今天宣布` |
 | `開啟智能新篇章` | `本季旅客量較去年同期升百分之十二` |
+| `結論先行` / `先給答案，再用一至三個支撐` / `長鋪墊在港式會議室是延遲` | `建議委員會於下次會議前批准可編輯 PPTX 為文件格式` |
 
 口语粤语用在粤语旁白，不写进幻灯片正文。去掉堆叠的英文加强词（`leverage`、`empower`、`our journey`）和内地口号中文（`賦能`、`抓手`、`落地`、`閉環`、`打造生態`），除非来源本身在引用具名产品或政策。
