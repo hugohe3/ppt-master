@@ -13,7 +13,7 @@
 
 English | [中文](./README_CN.md)
 
-> **Hong Kong fork.** This checkout adds a Traditional Chinese + English working default (`harbour-professional`, `hk-bilingual-board`, `hk-client-pitch`) and a Hong Kong listed-company copy register. See [Hong Kong fork](./docs/hong-kong.md). Upstream PPT Master behaviour is unchanged unless you select those workspaces.
+> **Hong Kong fork.** This checkout exists mainly to bring Hong Kong tone and culture into PPT Master: Traditional Chinese with English, listed-company announcement copy, and local briefing practice — not US consulting English, not Mainland SOE chrome, and not Brand Hong Kong. Defaults live in `harbour-professional`, `hk-bilingual-board`, and `hk-client-pitch`. See [Hong Kong fork](#hong-kong-fork) and [docs/hong-kong.md](./docs/hong-kong.md). Upstream PPT Master behaviour is unchanged unless you select those workspaces.
 
 > 💼 **I'm open to new opportunities.** Investment background (CPA · CPV · Consulting Engineer), also building AI tools and open source. Happy to talk about any opportunity: [heyug3@gmail.com](mailto:heyug3@gmail.com) · [hehugo.com](https://www.hehugo.com/).
 
@@ -59,6 +59,7 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 <p align="center">
   <a href="#quick-start"><strong>Quick Start</strong></a> ·
+  <a href="#hong-kong-fork"><strong>Hong Kong fork</strong></a> ·
   <a href="https://hugohe3.github.io/ppt-master-examples/"><strong>Live Demo</strong></a> ·
   <a href="https://github.com/hugohe3/ppt-master-examples"><strong>Examples</strong></a> ·
   <a href="./docs/faq.md"><strong>FAQ</strong></a> ·
@@ -111,6 +112,23 @@ Why you'd choose it, and where it isn't the right fit → [Why PPT Master](./doc
 > `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or Claude) with a large context window (~1M tokens) + AI image generation (`gpt-image-2` or Google `gemini-nano-banana-2.1`)**; other models can run the pipeline, with a quality gap.
 >
 > And don't expect a finished, perfect deck in one shot. The tool's value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do; if results disappoint, upgrade the model first, then check your usage against [Getting Started](./docs/getting-started.md) and the [example projects](https://hugohe3.github.io/ppt-master-examples/).
+
+---
+
+## Hong Kong fork
+
+This fork exists **mainly to adopt Hong Kong tone and culture into this repo**. The upstream workflow, routing, and native PPTX pipeline stay as they are; what changes is the working default for Hong Kong rooms.
+
+That default is how local professional decks actually read: Traditional Chinese with English, the answer first, a time box, and copy that could pass as a listed-company announcement in **both** languages. It is not US consulting English, not spoken Cantonese on the slide, not Taiwan lexis, and not a Mainland government or SOE red-gold template. It is also **not** Brand Hong Kong or the HKSAR regional emblem — those marks are protected and are not copied here.
+
+| Piece | What it carries |
+|---|---|
+| Brand `harbour-professional` | Navy / warm paper identity, Microsoft JhengHei + Calibri, Hong Kong British English and Hong Kong written Chinese |
+| Style `hk-bilingual-board` | Board papers, IR / results, committee notes — one language leads, the second supports |
+| Style `hk-client-pitch` | Client proposals and live pitches with the same bilingual hierarchy |
+| Example | [`examples/ai_native_pptx_brief.pptx`](./examples/ai_native_pptx_brief.pptx) — four-page native smoke test in that register, with a photo |
+
+How to ask for a deck, the reject/prefer voice tables, and exact workspace roots → [Hong Kong fork](./docs/hong-kong.md). A client brand, official manual, or existing PPTX identity always wins over Harbour Professional.
 
 ---
 

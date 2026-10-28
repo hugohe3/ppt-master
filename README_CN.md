@@ -13,6 +13,8 @@
 
 [English](./README.md) | 中文
 
+> **香港分支。** 本仓库分叉的主要目的，是把香港的口吻与工作文化写进 PPT Master：繁体中文搭配英文、上市公司公告语域、本地会议室的简报习惯——不是美式咨询英文、不是内地国企红金模板、也不是香港品牌（Brand Hong Kong）。默认身份与方法：`harbour-professional`、`hk-bilingual-board`、`hk-client-pitch`。详见 [香港分支](#香港分支) 与 [香港分支说明](./docs/zh/hong-kong.md)。未选用这些工作区时，上游 PPT Master 行为不变。
+
 > 💼 **我正在寻找新的发展机会。** 投融资背景（CPA · CPV · 咨询工程师），也做 AI 工具与开源产品，各类机会都欢迎交流：[heyug3@gmail.com](mailto:heyug3@gmail.com)，更多见 [hehugo.com](https://www.hehugo.com/)。
 
 > 🆕 **我做了一个建设项目经济评价网站：[cs.hehugo.com](https://cs.hehugo.com/)**——风光储模板现已向所有用户开放，注册即可使用（某商业软件同类模块售价 10 万元）。
@@ -57,6 +59,7 @@
 
 <p align="center">
   <a href="#快速开始"><strong>快速开始</strong></a> ·
+  <a href="#香港分支"><strong>香港分支</strong></a> ·
   <a href="https://hugohe3.github.io/ppt-master-examples/"><strong>在线预览</strong></a> ·
   <a href="https://github.com/hugohe3/ppt-master-examples"><strong>示例下载</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
@@ -109,6 +112,23 @@
 > `harness + model = agent`——PPT Master 只负责工作流，产出上限由模型决定。推荐 **Kimi K3（或 Claude）大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2` 或 Google `gemini-nano-banana-2.1`）**；其他模型能跑通流程，但有质量差距。
 >
 > 也别指望一把就拿到完美成品。它的价值是帮你把大部分枯燥的活儿干掉，剩下的打磨交给你——做原生可编辑的 PPT，本就是为了让你接着改，而不是甩给你一张改不动的图。模型越便宜，要补的人工就越多；效果不理想，先升级模型，再对照[快速入门](./docs/zh/getting-started.md)和[示例工程](https://hugohe3.github.io/ppt-master-examples/)检查用法。
+
+---
+
+## 香港分支
+
+本分支**主要是为了把香港的口吻与文化纳入本仓库**。上游的工作流、路由和原生 PPTX 管线保持原样；改的是面向香港会议室的工作默认。
+
+这份默认贴近本地专业简报的读法：书面繁体中文配英文、结论先行、限时、中英都能当作上市公司公告发出。它不是美式咨询腔，不是幻灯片上的口语粤语，不是台湾用词，也不是内地政府 / 国企红金模板。它也**不是**香港品牌（Brand Hong Kong）或区旗区徽——这些标志受保护，本分支不复制。
+
+| 部分 | 承担什么 |
+|---|---|
+| 品牌 `harbour-professional` | 海军蓝 / 暖纸身份、Microsoft JhengHei + Calibri、港式英式商务英文与港式书面中文 |
+| 风格 `hk-bilingual-board` | 董事会文件、IR / 业绩、委员会纪要——一种语言主导，第二种语言辅佐 |
+| 风格 `hk-client-pitch` | 客户提案和现场汇报，同一套双语层级 |
+| 示例 | [`examples/ai_native_pptx_brief.pptx`](./examples/ai_native_pptx_brief.pptx) — 该语域下的四页原生试跑，含一张照片 |
+
+怎么提需求、口吻对照表、精确工作区路径 → [香港分支说明](./docs/zh/hong-kong.md)。客户品牌、官方手册或现有 PPTX 身份一律优先于 Harbour Professional。
 
 ---
 
