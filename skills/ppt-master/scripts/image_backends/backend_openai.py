@@ -8,7 +8,7 @@ Used by image_gen.py as a backend module.
 Configuration keys:
   OPENAI_API_KEY   (required) API key
   OPENAI_BASE_URL  (optional) Custom API endpoint (e.g. http://127.0.0.1:3000/v1)
-  OPENAI_MODEL     (optional) Model name (default: gpt-image-2)
+  OPENAI_MODEL     (optional) Model name (default: gpt-image-2.5-sunburst)
   OPENAI_SIZE_PRESET         (optional) auto, legacy, gpt-image, gpt-image-2, or dall-e-2
   OPENAI_RESPONSE_FORMAT     (optional) auto, b64_json, url, or omit
   OPENAI_QUALITY             (optional) auto, omit, low, medium, high, xhigh, max, standard, or hd
@@ -144,7 +144,7 @@ IMAGE_SIZE_TO_QUALITY = {
     "4K":    "high",
 }
 
-DEFAULT_MODEL = "gpt-image-2"
+DEFAULT_MODEL = "gpt-image-2.5-sunburst"
 
 GPT_IMAGE_2_MIN_PIXELS = 655_360
 GPT_IMAGE_2_MAX_PIXELS = 8_294_400
@@ -712,7 +712,7 @@ def generate(prompt: str,
         image_size: Image size, mapped to OpenAI quality
         output_dir: Output directory
         filename: Output filename (without extension)
-        model: Model name (default: gpt-image-2)
+        model: Model name (default: gpt-image-2.5-sunburst)
         max_retries: Maximum number of retries
         reference_image: Optional source image path. When set, the request
             goes to /v1/images/edits (image-to-image) instead of

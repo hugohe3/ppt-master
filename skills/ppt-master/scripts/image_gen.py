@@ -117,7 +117,7 @@ BACKEND_REGISTRY = {
         "module": "backend_openai",
         "tier": "core",
         "label": "OpenAI / OpenAI-compatible",
-        "default_model": "gpt-image-2",
+        "default_model": "gpt-image-2.5-sunburst",
         "default_image_size": "1K",
         "key_hint": "OPENAI_API_KEY",
         "aliases": ["openai-compatible", "openai_compatible"],

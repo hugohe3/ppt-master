@@ -78,7 +78,7 @@ Example `.env`:
 ```env
 IMAGE_BACKEND=openai
 OPENAI_API_KEY=sk-xxx
-OPENAI_MODEL=gpt-image-2
+OPENAI_MODEL=gpt-image-2.5-sunburst
 # Optional proxy
 # OPENAI_BASE_URL=http://127.0.0.1:3000/v1
 # OpenAI-compatible provider knobs:
@@ -101,14 +101,14 @@ Example process environment:
 ```bash
 export IMAGE_BACKEND=openai
 export OPENAI_API_KEY=sk-xxx
-export OPENAI_MODEL=gpt-image-2
+export OPENAI_MODEL=gpt-image-2.5-sunburst
 export OPENAI_OUTPUT_FORMAT=png
 ```
 
 Current process environment wins over `.env`.
 
 OpenAI backend notes:
-- `gpt-image-2` is the default OpenAI model.
+- `gpt-image-2.5-sunburst` is the default OpenAI model. `gpt-image-2.5-flare` shares its token rates; OpenAI positions Sunburst for editing precision and Flare for fast everyday generation ([models](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)).
 - Requests are sent with plain `requests.post()` to improve compatibility with
   OpenAI-compatible proxies that block the OpenAI SDK's `httpx` transport.
 - For `gpt-image-2`, `image_size=512px` means a low-quality draft preset, not a literal 512px edge. The model requires both edges to be multiples of 16px, a long:short ratio no greater than 3:1, and total pixels between 655,360 and 8,294,400.
