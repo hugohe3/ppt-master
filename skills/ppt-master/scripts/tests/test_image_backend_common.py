@@ -108,6 +108,18 @@ class AspectRatioTests(unittest.TestCase):
         self.assertAlmostEqual(height / width, 16, delta=0.1)
         self.assertTrue(3_686_400 <= width * height <= 16_777_216)
 
+    def test_fit_size_rounding_never_exceeds_the_ratio_limit(self) -> None:
+        width, height = backend_common.fit_size("1000:1", pixels=4096 * 4096, min_pixels=921_600,
+                                                max_pixels=4_624_220, max_ratio=16)
+        self.assertLessEqual(width / height, 16)
+        self.assertLessEqual(width * height, 4_624_220)
+
+    def test_extreme_integer_ratios_stay_finite(self) -> None:
+        huge, tiny = f"{10**309}:1", f"1:{10**324}"
+        self.assertEqual(backend_common.fit_size(huge, pixels=1024 * 1024, step=16, max_ratio=3), (1776, 592))
+        self.assertEqual(backend_common.nearest_aspect_ratio(tiny, ["1:1", "1:3"]), "1:3")
+        backend_common.note_aspect_ratio(tiny, "1:3")
+
 
 class OpenAISizeTests(unittest.TestCase):
     def test_listed_ratios_keep_their_table_sizes(self) -> None:
@@ -133,6 +145,10 @@ class OpenAISizeTests(unittest.TestCase):
 
         self.assertEqual(backend_openai._select_size("gpt-image-1.5", "4:1", "1K"), "1536x1024")
         self.assertEqual(backend_openai._select_size("compatible-model", "1:4", "1K"), "1024x1792")
+        # Unlisted ratios compare against real sizes, not nominal keys (5:4 -> 1536x1024).
+        self.assertEqual(backend_openai._select_size("gpt-image-1.5", "1.2:1", "1K"), "1024x1024")
+        self.assertEqual(backend_openai._select_size("compatible-model", "1.24:1", "1K"), "1536x1024")
+        self.assertEqual(backend_openai._select_size("gpt-image-1.5", "5:4", "1K"), "1536x1024")
 
 
 class ManifestAspectRatioTests(unittest.TestCase):

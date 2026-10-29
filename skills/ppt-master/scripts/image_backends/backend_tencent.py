@@ -40,10 +40,10 @@ from image_backends.backend_common import (  # noqa: E402
     http_error,
     is_permanent_error,
     is_rate_limit_error,
+    bounded_ratio,
     fit_size,
     normalize_image_size,
     note_aspect_ratio,
-    parse_aspect_ratio,
     require_api_key,
     resolve_output_path,
     retry_delay,
@@ -109,7 +109,7 @@ def _resolve_size(aspect_ratio: str, image_size: str, model: str = DEFAULT_MODEL
             f"Unsupported image size '{image_size}' for Tencent backend. "
             f"Supported logical sizes: {list(IMAGE_SIZE_PIXELS)}."
         )
-    ratio = parse_aspect_ratio(aspect_ratio)
+    ratio = bounded_ratio(aspect_ratio)
     if model == "seedream-image-v5.0-lite":
         pixels = max(pixels, 2048)
 

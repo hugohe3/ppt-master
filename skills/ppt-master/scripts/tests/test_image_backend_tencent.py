@@ -137,6 +137,16 @@ class TencentBackendTests(unittest.TestCase):
                     self.assertAlmostEqual(width * height / side ** 2, 1.0, delta=0.004)
                     self.assertAlmostEqual(width / height, expected, delta=0.025)
 
+    def test_extreme_ratios_stay_within_every_model_limit(self) -> None:
+        for model in backend_tencent.SUPPORTED_MODELS:
+            for ratio in ("1000:1", "1:1000", f"{10**309}:1"):
+                for logical_size in ("512px", "1K", "2K", "4K"):
+                    with self.subTest(model=model, ratio=ratio[:12], size=logical_size):
+                        size = backend_tencent._resolve_size(ratio, logical_size, model)
+                        width, height = map(int, size.split("x"))
+                        limits = backend_tencent.MODEL_SIZE_LIMITS[model]
+                        self.assertTrue(backend_tencent._within_limits(width, height, limits))
+
     def test_seedream_clamps_ratio_beyond_16_to_1(self) -> None:
         for model in ("seedream-image-v5.0-pro", "seedream-image-v5.0-lite"):
             with self.subTest(model=model):

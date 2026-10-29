@@ -256,6 +256,19 @@ def _validate_gpt_image_2_size(size: str) -> None:
         raise ValueError(f"Invalid gpt-image-2 size '{size}': {', '.join(errors)}")
 
 
+def _nearest_listed_size(aspect_ratio: str, table: dict[str, str]) -> str:
+    """Keep a listed ratio's size; otherwise pick the size whose real W:H is nearest.
+
+    Legacy keys are nominal (5:4 maps to 1536x1024), so unlisted ratios compare
+    against the sizes themselves, not the keys.
+    """
+    listed = match_aspect_ratio(aspect_ratio, table)
+    if listed:
+        return table[listed]
+    sizes = {size.replace("x", ":"): size for size in table.values()}
+    return sizes[nearest_aspect_ratio(aspect_ratio, sizes)]
+
+
 def _select_size(
     model: str,
     aspect_ratio: str,
@@ -288,12 +301,10 @@ def _select_size(
     if preset in {"gpt-image", "gpt-image-legacy"} or (
         preset == "auto" and _is_gpt_image_model(model)
     ):
-        table = GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE
-        return table[nearest_aspect_ratio(aspect_ratio, table)]
+        return _nearest_listed_size(aspect_ratio, GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE)
     if preset in {"dall-e-2", "dalle-2"} or (preset == "auto" and _is_dall_e_2(model)):
         return DALL_E_2_SIZE_BY_IMAGE_SIZE[image_size]
-    table = LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE
-    return table[nearest_aspect_ratio(aspect_ratio, table)]
+    return _nearest_listed_size(aspect_ratio, LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE)
 
 
 def _supports_response_format(model: str) -> bool:

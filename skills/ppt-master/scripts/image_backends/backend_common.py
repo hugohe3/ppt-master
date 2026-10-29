@@ -367,6 +367,17 @@ def parse_aspect_ratio(value) -> Fraction:
     return width / height
 
 
+def _log_ratio(ratio: Fraction) -> float:
+    """Natural log of a ratio that stays finite for any exact W:H, however extreme."""
+    return math.log(ratio.numerator) - math.log(ratio.denominator)
+
+
+def bounded_ratio(value) -> float:
+    """Return a W:H (string or Fraction) as a float clamped to 1e-6..1e6 for size math."""
+    ratio = parse_aspect_ratio(value) if isinstance(value, str) else Fraction(value)
+    return float(min(max(ratio, Fraction(1, 10**6)), Fraction(10**6)))
+
+
 def match_aspect_ratio(value, choices) -> str | None:
     """Return the choice numerically equal to `value` (`32:18` matches `16:9`), else None."""
     target = parse_aspect_ratio(value)
@@ -381,8 +392,8 @@ def nearest_aspect_ratio(value, choices) -> str:
     exact = match_aspect_ratio(value, choices)
     if exact is not None:
         return exact
-    target = math.log(parse_aspect_ratio(value))
-    return min(choices, key=lambda choice: abs(math.log(parse_aspect_ratio(choice)) - target))
+    target = _log_ratio(parse_aspect_ratio(value))
+    return min(choices, key=lambda choice: abs(_log_ratio(parse_aspect_ratio(choice)) - target))
 
 
 def fit_size(
@@ -404,7 +415,7 @@ def fit_size(
     edges are rounded to `step`. Raises ValueError only when the rules themselves
     admit no size.
     """
-    r = float(parse_aspect_ratio(ratio) if isinstance(ratio, str) else ratio)
+    r = bounded_ratio(ratio)
     limit = max_ratio or math.inf
     lo_edge = math.ceil(min_edge / step) * step
     hi_edge = math.floor(max_edge / step) * step if max_edge else None
@@ -435,10 +446,17 @@ def fit_size(
     while min_pixels and short * long_ < min_pixels and (not hi_edge or long_ < hi_edge):
         long_ += step
         short = snap(long_ / r if r >= 1 else long_ * r)
+    # Rounding can push a clamped ratio just past the limit; pull it back inside.
+    while long_ / short > limit:
+        widened = short + step
+        if (not max_pixels or widened * long_ <= max_pixels) and (not hi_edge or widened <= hi_edge):
+            short = widened
+        else:
+            long_ -= step
 
     width, height = (long_, short) if r >= 1 else (short, long_)
     area = width * height
-    if (max_pixels and area > max_pixels) or (min_pixels and area < min_pixels):
+    if (max_pixels and area > max_pixels) or (min_pixels and area < min_pixels) or long_ / short > limit:
         raise ValueError(
             f"No legal size for ratio {ratio} under the model's limits "
             f"(got {width}x{height}, pixels {min_pixels}-{max_pixels})."
@@ -448,9 +466,8 @@ def fit_size(
 
 def note_aspect_ratio(requested, actual) -> None:
     """Print the adaptation when the output ratio differs from the requested one by >1%."""
-    want = float(parse_aspect_ratio(requested))
-    got = float(parse_aspect_ratio(actual))
-    if abs(math.log(got / want)) > math.log(1.01):
+    drift = _log_ratio(parse_aspect_ratio(actual)) - _log_ratio(parse_aspect_ratio(requested))
+    if abs(drift) > math.log(1.01):
         print(f"  Ratio:        requested {requested} -> output {actual} "
               "(nearest the model allows; crop downstream)")
 
