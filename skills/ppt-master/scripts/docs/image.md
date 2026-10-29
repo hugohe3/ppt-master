@@ -90,7 +90,7 @@ OPENAI_MODEL=gpt-image-2.5-sunburst
 # OPENAI_OUTPUT_FORMAT=png
 # jpeg/webp only, 0-100
 # OPENAI_OUTPUT_COMPRESSION=80
-# GPT Image: auto / opaque / transparent (png/webp only; gpt-image-2 support is in preview)
+# GPT Image: auto / opaque / transparent (png/webp only; gpt-image-2 is preview-only and may return 400)
 # OPENAI_BACKGROUND=auto
 # auto / low
 # OPENAI_MODERATION=auto
@@ -112,10 +112,10 @@ OpenAI backend notes:
 - Requests are sent with plain `requests.post()` to improve compatibility with
   OpenAI-compatible proxies that block the OpenAI SDK's `httpx` transport.
 - For `gpt-image-2`, `image_size=512px` means a low-quality draft preset, not a literal 512px edge. The model requires both edges to be multiples of 16px, a long:short ratio no greater than 3:1, and total pixels between 655,360 and 8,294,400. The 2.5 models share these rules and sizes; unlisted ratios are fitted to them, so `4:1` at 1K becomes `1776x592` (3:1).
-- `OPENAI_BACKGROUND=transparent` is supported by `gpt-image-2` (in preview), `gpt-image-2.5-sunburst`, and `gpt-image-2.5-flare`, including their published snapshots; use PNG (the default) or WebP, not JPEG.
+- `OPENAI_BACKGROUND=transparent` is supported by `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their published snapshots. For `gpt-image-2` it is in preview: a key without preview access gets HTTP 400 `Transparent background is not supported for this model.`, which fails the item without retries. Use PNG (the default) or WebP, not JPEG.
 - `OPENAI_QUALITY=xhigh` and `max` are accepted only for `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their published snapshots; older GPT Image models retain `auto/omit/low/medium/high`. See the [Images API parameters](https://developers.openai.com/api/reference/resources/images/methods/generate).
 - For reference edits, `OPENAI_INPUT_FIDELITY` accepts `high/low` on `gpt-image-1` and `gpt-image-1.5`, but only `low` on `gpt-image-1-mini`. Leave it unset for `gpt-image-2` and the two 2.5 models (including snapshots); this backend keeps the existing omission requirement for 2.5 because its support is not explicitly documented in the [edit API parameters](https://developers.openai.com/api/reference/resources/images/methods/edit).
-- OpenAI schedules `gpt-image-1` shutdown for 2026-10-23 and `gpt-image-1-mini` / `gpt-image-1.5` for 2026-12-01; see [deprecations](https://developers.openai.com/api/docs/deprecations).
+- OpenAI shut down `gpt-image-1` on 2026-10-23 and DALL·E 2/3 on 2026-05-12, and removes `gpt-image-1-mini`, `gpt-image-1.5` (including `gpt-image-1.5-2025-12-16`) and `chatgpt-image-latest` on 2026-12-01, naming the two 2.5 models as replacements. The backend keeps their size and option handling for OpenAI-compatible providers that still serve them; see [deprecations](https://developers.openai.com/api/docs/deprecations).
 - If `OPENAI_OUTPUT_FORMAT=jpeg` or `webp`, generated files use `.jpg` or `.webp` extensions instead of `.png`.
 - OpenAI-compatible providers that reject OpenAI-specific fields can use `OPENAI_RESPONSE_FORMAT=omit`, `OPENAI_QUALITY=omit`, and `OPENAI_SIZE_PRESET=<preset>`. Valid response formats are `auto`, `b64_json`, `url`, and `omit`; valid size presets are `auto`, `legacy`, `gpt-image`, `gpt-image-2`, and `dall-e-2`.
 
