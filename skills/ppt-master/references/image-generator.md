@@ -310,7 +310,7 @@ Write `project/images/image_prompts.json`:
 | `items[].type` | no | One of the 11 internal-composition types for a local structural infographic when a template genuinely fits; omitted for §4.1 E prose, `hero_page`, sheets, and single-subject/portrait |
 | `items[].page_role` | yes | `local` (default) or `hero_page` |
 | `items[].text_policy` | yes | `none` or `embedded`, judged per image (§5.3) |
-| `items[].aspect_ratio` | yes | Passed to `image_gen.py --aspect_ratio`; every backend accepts a subset of the CLI union (e.g. gemini has no `3:1`), and `--manifest` fails the item before any request when the resolved backend rejects its ratio |
+| `items[].aspect_ratio` | yes | The target shape as any positive `W:H` (e.g. `16:9`, `4:1`, `1.85:1`), derived from the placement, never narrowed to a backend. The backend outputs the nearest size its model allows and the manifest keeps this value; Executor fits the actual image through the crop policy, and a sheet is sliced from its actual size |
 | `items[].prompt` | yes | The assembled paragraph |
 | `items[].image_size` | no | `512px` / `1K` / `2K` / `4K` |
 | `items[].model` | no | Per-item backend model override |

@@ -22,7 +22,7 @@ DOCX 转换会把内嵌图片素材抽取到配套素材目录，并写入图片
 
 ## Q: 把原图裁成指定比例，与按指定比例生成新图有什么区别？
 
-两者改变的对象不同。`crop=adaptive` 允许但不强制裁剪。Executor 可用 `meet` 完整显示原图，或用保护焦点内容的 `slice` 填满所选容器；两者都复用来源像素。AI 任务的 `aspect_ratio` 是新生成画布的要求。参考图编辑则通过独立的单图路径变换一张给定图片，不是 manifest 批处理。详见[图片资源清单规则](../../skills/ppt-master/references/strategist-image.md)、[Executor 裁剪政策](../../skills/ppt-master/references/executor-image.md)、[SVG 图片放置合同](../../skills/ppt-master/references/svg-image-embedding.md)与[图片 manifest schema](../../skills/ppt-master/references/image-generator.md)。
+两者改变的对象不同。`crop=adaptive` 允许但不强制裁剪。Executor 可用 `meet` 完整显示原图，或用保护焦点内容的 `slice` 填满所选容器；两者都复用来源像素。AI 任务的 `aspect_ratio` 是新生成画布的要求，可写任意 `W:H`；后端输出该模型允许的最接近尺寸，放置时再裁到所需形状。参考图编辑则通过独立的单图路径变换一张给定图片，不是 manifest 批处理。详见[图片资源清单规则](../../skills/ppt-master/references/strategist-image.md)、[Executor 裁剪政策](../../skills/ppt-master/references/executor-image.md)、[SVG 图片放置合同](../../skills/ppt-master/references/svg-image-embedding.md)与[图片 manifest schema](../../skills/ppt-master/references/image-generator.md)。
 
 ## Q: 只有一个主题或想法、没有任何资料，也能生成吗？
 
