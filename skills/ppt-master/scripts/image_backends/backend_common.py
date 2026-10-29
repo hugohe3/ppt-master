@@ -21,9 +21,12 @@ if __name__ == "__main__":
 
 import base64
 import io
+import math
 import os
+import random
 import re
 import time
+from email.utils import parsedate_to_datetime
 
 import requests
 
@@ -56,6 +59,10 @@ _GLOBAL_PERMANENT_ERROR_MARKERS = (
     "insufficient credits",
     "insufficient balance",
     "insufficient_quota",
+    "credit_balance_exhausted",
+    "organization_spend_limit_exceeded",
+    "project_spend_limit_exceeded",
+    "organization_usage_limit_exceeded",
     "exceeded your current quota",
     "payment required",
     "billing is not enabled",
@@ -109,7 +116,9 @@ def resolve_output_path(prompt: str, output_dir: str = None,
                         filename: str = None, ext: str = ".png") -> str:
     """Compute the final output file path based on parameters."""
     if filename:
-        file_name = os.path.splitext(filename)[0]
+        # Drop only a real image extension; dots inside a stem ("v2.5") stay.
+        stem, suffix = os.path.splitext(filename)
+        file_name = stem if suffix.lower() in EXT_TO_PIL_FORMAT else filename
     else:
         safe = "".join(c for c in prompt if c.isalnum() or c in (" ", "_")).rstrip()
         safe = safe.replace(" ", "_").lower()[:30]
@@ -431,10 +440,18 @@ def is_rate_limit_error(exc: Exception) -> bool:
     )
 
 
-def retry_delay(attempt: int, rate_limited: bool) -> int:
-    """Return the retry delay for a given attempt."""
+def retry_delay(attempt: int, rate_limited: bool, exc: Exception = None) -> int:
+    """Return the retry delay for a given attempt.
+
+    A server-provided Retry-After (kept on `exc` by `http_error`) wins; otherwise
+    rate limits back off exponentially with jitter.
+    """
+    retry_after = getattr(exc, "retry_after", None)
+    if retry_after is not None:
+        return retry_after
     if rate_limited:
-        return RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
+        delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
+        return delay + random.randint(0, delay // 4)
     return 5
 
 
@@ -461,12 +478,38 @@ def require_api_key(*candidates: str, message: str) -> str:
     raise ValueError(message)
 
 
+def _parse_retry_after(headers) -> int | None:
+    """Read Retry-After (seconds or HTTP date) or retry-after-ms as whole seconds."""
+    if not headers:
+        return None
+    millis = headers.get("retry-after-ms")
+    if isinstance(millis, str) and millis:
+        try:
+            return max(0, math.ceil(float(millis) / 1000))
+        except ValueError:
+            pass
+    value = headers.get("retry-after")
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        return max(0, math.ceil(float(value)))
+    except ValueError:
+        pass
+    try:
+        retry_at = parsedate_to_datetime(value)
+    except (TypeError, ValueError):
+        return None
+    return max(0, math.ceil(retry_at.timestamp() - time.time()))
+
+
 def http_error(response: requests.Response, label: str) -> RuntimeError:
     """Convert an HTTP response into a readable RuntimeError."""
     body = response.text.strip()
     if len(body) > 500:
         body = body[:500] + "..."
-    return RuntimeError(f"{label} failed ({response.status_code}): {body}")
+    error = RuntimeError(f"{label} failed ({response.status_code}): {body}")
+    error.retry_after = _parse_retry_after(getattr(response, "headers", None))
+    return error
 
 
 def poll_json(

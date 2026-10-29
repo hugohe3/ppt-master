@@ -17,7 +17,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 import image_gen  # noqa: E402
-from image_backends import backend_tencent  # noqa: E402
+from image_backends import backend_common, backend_tencent  # noqa: E402
 
 
 class TencentBackendTests(unittest.TestCase):
@@ -242,7 +242,8 @@ class TencentBackendTests(unittest.TestCase):
     def test_rate_limit_uses_shared_exponential_backoff(self) -> None:
         limited = Mock(status_code=429, text='{"error": {"code": "ConcurrencyLimit"}}')
         self.post.side_effect = [limited, limited, self.response]
-        backend_tencent.generate("test")
+        with patch.object(backend_common.random, "randint", return_value=0):
+            backend_tencent.generate("test")
         self.assertEqual(self.post.call_count, 3)
         self.assertEqual([call.args[0] for call in self.sleep.call_args_list], [10, 20])
 
