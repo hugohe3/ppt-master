@@ -12,7 +12,7 @@
 
 Python 是唯一的硬性要求。
 
-1. 前往 **[python.org/downloads](https://www.python.org/downloads/)**，下载最新的 **Python 3.10+** 安装包。
+1. 前往 **[python.org/downloads](https://www.python.org/downloads/)**，下载 **Python 3.10–3.14** 的安装包。页面上的最新版可能比部分依赖提供的预编译包更新，这时 `pip install` 会转去本地编译并失败（见[常见问题](#pip-install-编译源码包失败)）。
 
 2. **⚠️ 关键步骤：安装时务必勾选 "Add python.exe to PATH"** — 这是 Windows 上最常见的安装失误，不勾的话后面每一步都会出问题。
 
@@ -24,7 +24,7 @@ Python 是唯一的硬性要求。
 
    应该看到 `Python 3.12.x` 之类的输出。如果提示「未找到」或弹出 Microsoft Store，见下方[常见问题](#python-未找到或弹出-microsoft-store)。
 
-> **💡 提示**：Anaconda / Miniconda 安装的 Python 也可以用，只要 `python --version` 显示 3.10+ 即可。
+> **💡 提示**：Anaconda / Miniconda 安装的 Python 也可以用，只要 `python --version` 显示 3.10–3.14 即可。
 
 ---
 
@@ -150,6 +150,12 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 # 代理
 pip install -r requirements.txt --proxy http://your-proxy:port
 ```
+
+### `pip install` 编译源码包失败
+
+典型报错：`No matching distribution found for Cython>=3.0`、`Microsoft Visual C++ 14.0 or greater is required`、`Failed building wheel for PyYAML`。
+
+当前 Python 比至少一个依赖提供的预编译包更新，pip 只能转去本地编译。卸载这个 Python（设置 → 应用），按[步骤 1](#步骤-1--安装-python必须)安装 Python 3.14，确认 `python --version` 显示 3.14 后重新执行步骤 3。
 
 ### `ModuleNotFoundError`
 

@@ -27,7 +27,7 @@
 | **工作目录** | 你在 Agent 中打开的、可持久保存且可写的目录 | 完整仓库 clone 或仓库 ZIP 通常使用仓库根目录；skill-only 安装则自行选择，不必是 skill 安装目录 |
 | **活动项目** | 一次生成任务的来源、SVG、报告、备份与导出物所在目录 | Agent 会在 `<工作目录>/projects/<生成的项目名>/` 下初始化，并报告精确路径 |
 
-所有安装方式都需要 Python 3.10+，以及一个已经安装和鉴权、能够读写工作目录并执行 shell 命令的 Agent host。完整仓库 clone 或仓库 ZIP 从仓库根目录安装依赖：
+所有安装方式都需要 Python 3.10–3.14，以及一个已经安装和鉴权、能够读写工作目录并执行 shell 命令的 Agent host。完整仓库 clone 或仓库 ZIP 从仓库根目录安装依赖：
 
 ```bash
 python3 -m pip install -r requirements.txt

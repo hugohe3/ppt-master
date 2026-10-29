@@ -86,7 +86,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 通过 Skill marketplace 安装后，还需要什么环境，应该在哪个目录运行？
 
-所有安装方式都需要 Python 3.10+，以及一个已安装、已鉴权、能够读写文件并执行 shell 命令的 Agent host。使用 `npx skills add hugohe3/ppt-master` 还要求本机有可用的 `npx` 命令，通常由 Node.js/npm 提供；仓库没有声明 Node/npm 的最低版本。Host 自带的 `/plugin install` 不走这条 `npx` 路径。
+所有安装方式都需要 Python 3.10–3.14，以及一个已安装、已鉴权、能够读写文件并执行 shell 命令的 Agent host。使用 `npx skills add hugohe3/ppt-master` 还要求本机有可用的 `npx` 命令，通常由 Node.js/npm 提供；仓库没有声明 Node/npm 的最低版本。Host 自带的 `/plugin install` 不走这条 `npx` 路径。
 
 Skill 安装目录与工作目录承担不同角色。Python 依赖从包含已安装 skill 的 `SKILL.md` 和 `requirements.txt` 的目录安装；Agent 则应从你自行选择的、可持久保存且可写的工作目录启动。Agent 会按需在这个工作目录下创建 `projects/`，不需要从 host 管理的 skill 缓存目录运行。详见[快速入门：配置安装目录与工作目录](./getting-started.md#配置安装目录与工作目录)和 skill 的[执行入口](../../skills/ppt-master/SKILL.md)。
 

@@ -87,7 +87,7 @@ For users in mainland China who cannot reach GitHub reliably, the complete repos
 
 ## Q: I installed from a skill marketplace. What prerequisites and working directory do I need?
 
-All installation paths require Python 3.10+ and an installed, authenticated agent host that can read and write files and run shell commands. The `npx skills add hugohe3/ppt-master` path additionally requires a working `npx` command, normally supplied with Node.js/npm; the repository does not declare a Node/npm minimum version. A host's own `/plugin install` command does not use that `npx` path.
+All installation paths require Python 3.10–3.14 and an installed, authenticated agent host that can read and write files and run shell commands. The `npx skills add hugohe3/ppt-master` path additionally requires a working `npx` command, normally supplied with Node.js/npm; the repository does not declare a Node/npm minimum version. A host's own `/plugin install` command does not use that `npx` path.
 
 The installed skill directory and your working folder are different roles. Install Python dependencies from the directory that contains the installed skill's `SKILL.md` and `requirements.txt`, but start the agent in a separate persistent, writable working folder of your choice. The agent creates that folder's `projects/` directory as needed; you do not need to run it from the host-managed skill cache. See [Getting Started: Set up the installation and working folders](./getting-started.md#set-up-the-installation-and-working-folders) and the skill's [execution entry point](../skills/ppt-master/SKILL.md).
 

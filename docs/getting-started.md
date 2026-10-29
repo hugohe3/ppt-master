@@ -27,7 +27,7 @@ Before starting the agent, keep these three directories separate:
 | **Working folder** | A persistent, writable folder that you open in the agent | For a full-repository clone or repository ZIP, normally the repository root; for skill-only installation, choose your own folder—it does not have to be the installed skill directory |
 | **Active project** | One generation run's sources, authored SVG, reports, backups, and exports | The agent initializes it under `<working-folder>/projects/<generated-project-name>/` and reports the exact path |
 
-Every installation path needs Python 3.10+ and an installed, authenticated agent host that can read and write the working folder and run shell commands. For a full-repository clone or repository ZIP, install dependencies from the repository root:
+Every installation path needs Python 3.10–3.14 and an installed, authenticated agent host that can read and write the working folder and run shell commands. For a full-repository clone or repository ZIP, install dependencies from the repository root:
 
 ```bash
 python3 -m pip install -r requirements.txt

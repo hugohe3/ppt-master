@@ -165,7 +165,7 @@ Knowing how to use Python and AI agents will matter more and more, and this proj
 
 ### 1. Prerequisites
 
-**All you need to install is [Python](https://www.python.org/downloads/) 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — after you download the project in Step 3.
+**All you need to install is [Python](https://www.python.org/downloads/) 3.10–3.14.** Everything else comes with one line — `pip install -r requirements.txt` — after you download the project in Step 3.
 
 <details>
 <summary><strong>Windows</strong> — see the dedicated <a href="./docs/windows-installation.md">step-by-step guide</a> ⚠️</summary>

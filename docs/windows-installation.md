@@ -12,7 +12,7 @@ This guide walks you through installing PPT Master on Windows step by step. Foll
 
 Python is the only hard requirement.
 
-1. Go to **[python.org/downloads](https://www.python.org/downloads/)** and download the latest **Python 3.10+** installer.
+1. Go to **[python.org/downloads](https://www.python.org/downloads/)** and download a **Python 3.10–3.14** installer. The newest release listed there can be newer than the prebuilt packages some dependencies ship, and `pip install` then fails trying to compile them (see [Troubleshooting](#pip-install-fails-building-a-package-from-source)).
 
 2. **⚠️ CRITICAL: Check "Add python.exe to PATH"** during installation — this is the single most common mistake on Windows. Skipping this will break every step that follows.
 
@@ -24,7 +24,7 @@ Python is the only hard requirement.
 
    You should see `Python 3.12.x` or similar. If you see "Python was not found" or it opens the Microsoft Store, see [Troubleshooting](#python-was-not-found-or-opens-microsoft-store) below.
 
-> **💡 Tip**: Python installed via Anaconda or Miniconda works too — just make sure `python --version` shows 3.10+.
+> **💡 Tip**: Python installed via Anaconda or Miniconda works too — just make sure `python --version` shows 3.10–3.14.
 
 ---
 
@@ -150,6 +150,12 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 # Proxy
 pip install -r requirements.txt --proxy http://your-proxy:port
 ```
+
+### `pip install` fails building a package from source
+
+Typical messages: `No matching distribution found for Cython>=3.0`, `Microsoft Visual C++ 14.0 or greater is required`, `Failed building wheel for PyYAML`.
+
+Your Python is newer than the prebuilt packages of at least one dependency, so pip falls back to compiling it from source. Uninstall that Python (Settings → Apps), install Python 3.14 as in [Step 1](#step-1--install-python-required), confirm `python --version` shows 3.14, then rerun Step 3.
 
 ### `ModuleNotFoundError`
 

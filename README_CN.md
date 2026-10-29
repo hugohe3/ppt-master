@@ -165,7 +165,7 @@
 
 ### 1. 前置条件
 
-**只需安装 [Python](https://www.python.org/downloads/) 3.10+。** 其余依赖在第 3 步下载好项目后，用一行 `pip install -r requirements.txt` 装齐。
+**只需安装 [Python](https://www.python.org/downloads/) 3.10–3.14。** 其余依赖在第 3 步下载好项目后，用一行 `pip install -r requirements.txt` 装齐。
 
 <details>
 <summary><strong>Windows</strong> — 请看专门的<a href="./docs/zh/windows-installation.md">手把手安装指南</a> ⚠️</summary>
