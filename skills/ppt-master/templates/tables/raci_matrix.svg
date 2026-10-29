@@ -1,0 +1,139 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Responsibility assignment matrix across deliverables and stakeholders. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">RACI Matrix</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Roles and responsibilities assigned across project lifecycle deliverables</text>
+    </g>
+
+    <g id="raci-matrix" data-pptx-bounds="80 145 1120 446">
+        <!-- Header, row-label band and emphasized role column. -->
+        <rect x="80" y="145" width="1120" height="56" fill="#E2E8F0"/>
+        <rect x="80" y="201" width="400" height="390" fill="#F8FAFC"/>
+        <rect x="660" y="145" width="180" height="446" fill="#EFF6FF"/>
+
+        <!-- Grid borders and divider lines. -->
+        <rect x="80" y="145" width="1120" height="446" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="480" y1="145" x2="480" y2="591"/>
+            <line x1="660" y1="145" x2="660" y2="591"/>
+            <line x1="840" y1="145" x2="840" y2="591"/>
+            <line x1="1020" y1="145" x2="1020" y2="591"/>
+            <line x1="80" y1="201" x2="1200" y2="201"/>
+            <line x1="80" y1="266" x2="1200" y2="266"/>
+            <line x1="80" y1="331" x2="1200" y2="331"/>
+            <line x1="80" y1="396" x2="1200" y2="396"/>
+            <line x1="80" y1="461" x2="1200" y2="461"/>
+            <line x1="80" y1="526" x2="1200" y2="526"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="13" font-weight="700" fill="#334155">
+            <text x="100" y="180">PROJECT DELIVERABLE</text>
+            <text x="570" y="180" text-anchor="middle">SPONSOR</text>
+            <text x="750" y="180" text-anchor="middle" fill="#1D4ED8">PROJECT LEAD</text>
+            <text x="930" y="180" text-anchor="middle">TECH LEAD</text>
+            <text x="1110" y="180" text-anchor="middle">STAKEHOLDER</text>
+        </g>
+
+        <!-- Deliverable row labels. -->
+        <g font-size="15" font-weight="700" fill="#334155">
+            <text x="100" y="240">Project Charter &amp; Scope</text>
+            <text x="100" y="305">Architecture &amp; System Design</text>
+            <text x="100" y="370">Sprint Execution &amp; Code</text>
+            <text x="100" y="435">Quality Assurance &amp; Testing</text>
+            <text x="100" y="500">Production Deployment</text>
+            <text x="100" y="565">Post-Launch Evaluation</text>
+        </g>
+
+        <!-- RACI Badges and Text. -->
+        <!-- Row 1: Charter -->
+        <circle cx="570" cy="235" r="14" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="570" y="240" font-size="13" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+        <circle cx="750" cy="235" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="750" y="240" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="930" cy="235" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="930" y="240" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+        <circle cx="1110" cy="235" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="1110" y="240" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+
+        <!-- Row 2: Architecture -->
+        <circle cx="570" cy="300" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="570" y="305" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+        <circle cx="750" cy="300" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="750" y="305" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+        <circle cx="930" cy="300" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="930" y="305" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="1110" cy="300" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="1110" y="305" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+
+        <!-- Row 3: Sprint Execution -->
+        <circle cx="570" cy="365" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="570" y="370" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+        <circle cx="750" cy="365" r="14" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="750" y="370" font-size="13" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+        <circle cx="930" cy="365" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="930" y="370" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="1110" cy="365" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="1110" y="370" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+
+        <!-- Row 4: QA & Testing -->
+        <circle cx="570" cy="430" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="570" y="435" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+        <circle cx="750" cy="430" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="750" y="435" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="930" cy="430" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="930" y="435" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+        <circle cx="1110" cy="430" r="14" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="1110" y="435" font-size="13" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+
+        <!-- Row 5: Deployment -->
+        <circle cx="570" cy="495" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="570" y="500" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+        <circle cx="750" cy="495" r="14" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="750" y="500" font-size="13" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+        <circle cx="930" cy="495" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="930" y="500" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="1110" cy="495" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.5"/>
+        <text x="1110" y="500" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+
+        <!-- Row 6: Evaluation -->
+        <circle cx="570" cy="560" r="14" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="570" y="565" font-size="13" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+        <circle cx="750" cy="560" r="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="750" y="565" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+        <circle cx="930" cy="560" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="930" y="565" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+        <circle cx="1110" cy="560" r="14" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+        <text x="1110" y="565" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+    </g>
+
+    <!-- Legend bar. -->
+    <g id="legend" data-pptx-bounds="80 615 1120 40">
+        <rect x="80" y="615" width="1120" height="40" rx="4" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <g font-size="12" fill="#475569">
+            <circle cx="120" cy="635" r="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="1"/>
+            <text x="120" y="639" font-size="10" font-weight="700" fill="#1D4ED8" text-anchor="middle">R</text>
+            <text x="140" y="639" font-weight="700" fill="#1E293B">Responsible</text>
+            <text x="215" y="639">(Does the work)</text>
+
+            <circle cx="360" cy="635" r="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="1"/>
+            <text x="360" y="639" font-size="10" font-weight="700" fill="#B91C1C" text-anchor="middle">A</text>
+            <text x="380" y="639" font-weight="700" fill="#1E293B">Accountable</text>
+            <text x="455" y="639">(Approves outcome)</text>
+
+            <circle cx="620" cy="635" r="10" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+            <text x="620" y="639" font-size="10" font-weight="700" fill="#B45309" text-anchor="middle">C</text>
+            <text x="640" y="639" font-weight="700" fill="#1E293B">Consulted</text>
+            <text x="700" y="639">(Two-way input)</text>
+
+            <circle cx="860" cy="635" r="10" fill="#F1F5F9" stroke="#64748B" stroke-width="1"/>
+            <text x="860" y="639" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">I</text>
+            <text x="880" y="639" font-weight="700" fill="#1E293B">Informed</text>
+            <text x="935" y="639">(Kept updated)</text>
+        </g>
+    </g>
+</svg>

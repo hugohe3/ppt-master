@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 6,
+    "total": 7,
     "defaultViewBox": "0 0 1280 720",
     "formats": [
       "ppt169"
@@ -8,7 +8,7 @@
     "filePattern": "{key}.svg",
     "libraryPositioning": "Core row-and-column grids whose body values are addressed by stable row and column headers.",
     "summaryGrammar": "Each table summary is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'.",
-    "updated": "2026-08-08"
+    "updated": "2026-10-30"
   },
   "aliases": {
     "basic_table": "record_table",
@@ -16,7 +16,9 @@
     "consulting_table": "metric_table",
     "feature_matrix_table": "feature_matrix",
     "financial_statement_table": "hierarchical_table",
-    "harvey_balls_table": "rating_matrix"
+    "harvey_balls_table": "rating_matrix",
+    "raci_table": "raci_matrix",
+    "responsibility_matrix": "raci_matrix"
   },
   "tables": {
     "comparison_matrix": {
@@ -30,6 +32,9 @@
     },
     "metric_table": {
       "summary": "Pick for operating metrics by entity with current values, changes, statuses, or target progress inside cells. Skip if marks leave the grid and encode values (use a chart)."
+    },
+    "raci_matrix": {
+      "summary": "Pick for deliverables × roles with Responsible, Accountable, Consulted, or Informed assignments. Skip for general capabilities (use feature_matrix) or numerical ratings (use rating_matrix)."
     },
     "rating_matrix": {
       "summary": "Pick for criteria × alternatives using one repeated ordinal scale. Skip for feature states (use feature_matrix) or exact facts (use comparison_matrix)."
