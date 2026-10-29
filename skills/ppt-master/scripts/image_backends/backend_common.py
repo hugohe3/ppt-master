@@ -40,6 +40,9 @@ except ImportError:
 
 
 MAX_RETRIES = 3
+# Longest provider-requested wait honored in-process; longer Retry-After values
+# end the run instead of blocking it for hours.
+MAX_RETRY_WAIT = 300
 RETRY_BASE_DELAY = 10
 RETRY_BACKOFF = 2
 
@@ -587,12 +590,12 @@ def retry_after_seconds(exc: Exception | None) -> int | None:
 def retry_delay(attempt: int, rate_limited: bool, exc: Exception = None) -> int:
     """Return the retry delay for a given attempt.
 
-    A server-provided Retry-After (kept on `exc` by `http_error`) wins; otherwise
-    rate limits back off exponentially with jitter.
+    A server-provided Retry-After (kept on `exc` by `http_error`) wins, capped at
+    MAX_RETRY_WAIT; otherwise rate limits back off exponentially with jitter.
     """
     retry_after = retry_after_seconds(exc)
     if retry_after is not None:
-        return retry_after
+        return min(retry_after, MAX_RETRY_WAIT)
     if rate_limited:
         delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
         return delay + random.randint(0, delay // 4)
@@ -630,14 +633,14 @@ def _parse_retry_after(headers) -> int | None:
     if isinstance(millis, str) and millis:
         try:
             return max(0, math.ceil(float(millis) / 1000))
-        except ValueError:
+        except (ValueError, OverflowError):
             pass
     value = headers.get("retry-after")
     if not isinstance(value, str) or not value:
         return None
     try:
         return max(0, math.ceil(float(value)))
-    except ValueError:
+    except (ValueError, OverflowError):
         pass
     try:
         retry_at = parsedate_to_datetime(value)

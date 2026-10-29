@@ -181,7 +181,7 @@ def generate(prompt: str,
             if attempt >= max_retries:
                 break
             limited = is_rate_limit_error(exc)
-            delay = retry_delay(attempt, rate_limited=limited)
+            delay = retry_delay(attempt, rate_limited=limited, exc=last_error)
             label = "Rate limit hit" if limited else f"Error: {exc}"
             print(f"\n  [WARN] {label}. Retrying in {delay}s...")
             time.sleep(delay)

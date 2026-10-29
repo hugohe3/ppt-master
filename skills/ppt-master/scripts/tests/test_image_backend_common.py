@@ -77,6 +77,35 @@ class RetryDelayTests(unittest.TestCase):
             )
         self.assertEqual(exc.retry_after, 30)
 
+    def test_unrepresentable_retry_after_is_ignored(self) -> None:
+        for value in ("inf", "1e309", "nan", "soon"):
+            with self.subTest(value=value):
+                exc = backend_common.http_error(_response(429, "slow down", {"Retry-After": value}), "x")
+                self.assertIsNone(exc.retry_after)
+
+    def test_retry_after_is_capped_and_found_through_the_cause_chain(self) -> None:
+        cause = backend_common.http_error(_response(429, "slow down", {"Retry-After": "86400"}), "x")
+        try:
+            raise RuntimeError("Failed after 4 attempts") from cause
+        except RuntimeError as wrapped:
+            self.assertEqual(backend_common.retry_after_seconds(wrapped), 86400)
+            self.assertEqual(backend_common.retry_delay(0, rate_limited=True, exc=wrapped),
+                             backend_common.MAX_RETRY_WAIT)
+
+    def test_non_openai_backend_waits_for_retry_after(self) -> None:
+        from image_backends import backend_qwen
+
+        limited = _response(429, '{"code": "Throttling.RateQuota"}', {"Retry-After": "42"})
+        limited.json = lambda: {"code": "Throttling.RateQuota"}
+        limited.ok = False
+        with mock.patch.dict(os.environ, {"QWEN_API_KEY": "test"}), \
+                mock.patch.object(backend_qwen.requests, "post", return_value=limited), \
+                mock.patch.object(backend_qwen.time, "sleep") as sleep, \
+                mock.patch("sys.stdout"):
+            with self.assertRaises(RuntimeError):
+                backend_qwen.generate("p", max_retries=1)
+        sleep.assert_called_once_with(42)
+
     def test_rate_limit_backoff_has_bounded_jitter(self) -> None:
         exc = backend_common.http_error(_response(429, "slow down"), "x")
         self.assertIsNone(exc.retry_after)

@@ -921,6 +921,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     output_dir = str(manifest_output_dir)
 
     from image_backends.backend_common import (
+        MAX_RETRY_WAIT,
         is_global_permanent_error,
         is_permanent_error,
         is_rate_limit_error,
@@ -1081,6 +1082,13 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
             print(
                 "\n  Backend authentication or billing requires repair. "
                 "Stopping new batches; untouched items remain retryable.\n"
+            )
+            break
+        if rate_limited and server_wait > MAX_RETRY_WAIT:
+            stopped_for_rate_limit = True
+            print(
+                f"\n  Provider asked to wait {server_wait}s (over {MAX_RETRY_WAIT}s). "
+                "Stopping now; rerun the manifest later, unfinished items remain retryable.\n"
             )
             break
         if stopped_for_rate_limit:

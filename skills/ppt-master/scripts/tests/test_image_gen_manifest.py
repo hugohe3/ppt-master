@@ -92,3 +92,41 @@ class ManifestRetryAfterTests(unittest.TestCase):
                 )
             self.assertIn(mock.call(37), sleep.call_args_list)
             self.assertEqual([item["status"] for item in manifest["items"]], ["Generated", "Generated"])
+
+    def test_retry_after_beyond_the_cap_stops_the_run_instead_of_sleeping(self) -> None:
+        from unittest import mock
+
+        import requests
+        from PIL import Image
+
+        def generate(**kwargs: object) -> str:
+            name = str(kwargs["filename"])
+            if name == "a.png":
+                headers = requests.structures.CaseInsensitiveDict({"Retry-After": str(10**20)})
+                cause = backend_common.http_error(
+                    SimpleNamespace(status_code=429, text="rate limit", headers=headers),
+                    "OpenAI image generation",
+                )
+                raise RuntimeError(f"Failed after 4 attempts. Last error: {cause}") from cause
+            path = Path(str(kwargs["output_dir"])) / name
+            Image.new("RGB", (8, 8)).save(path, format="PNG")
+            return str(path)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "image_prompts.json"
+            items = [
+                {"filename": name, "prompt": "p", "aspect_ratio": "1:1", "status": "Pending",
+                 "page_role": "local", "text_policy": "none"}
+                for name in ("a.png", "b.png", "c.png")
+            ]
+            manifest_path.write_text(json.dumps({"items": items}), encoding="utf-8")
+            manifest = image_gen.load_manifest(str(manifest_path))
+            with mock.patch.object(image_gen.time, "sleep") as sleep, \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                image_gen._run_manifest(
+                    manifest, str(manifest_path), SimpleNamespace(generate=generate),
+                    initial_concurrency=2, image_size="1K", output_dir=tmp, model=None,
+                )
+            self.assertFalse(any(call.args[0] > backend_common.MAX_RETRY_WAIT for call in sleep.call_args_list))
+            statuses = {item["filename"]: item["status"] for item in manifest["items"]}
+            self.assertEqual(statuses, {"a.png": "Pending", "b.png": "Generated", "c.png": "Pending"})
