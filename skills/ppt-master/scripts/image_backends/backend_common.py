@@ -572,13 +572,25 @@ def is_rate_limit_error(exc: Exception) -> bool:
     )
 
 
+def retry_after_seconds(exc: Exception | None) -> int | None:
+    """Return the server-requested wait on `exc` or any error it was raised from."""
+    seen = set()
+    while exc is not None and id(exc) not in seen:
+        seen.add(id(exc))
+        retry_after = getattr(exc, "retry_after", None)
+        if retry_after is not None:
+            return retry_after
+        exc = exc.__cause__ or exc.__context__
+    return None
+
+
 def retry_delay(attempt: int, rate_limited: bool, exc: Exception = None) -> int:
     """Return the retry delay for a given attempt.
 
     A server-provided Retry-After (kept on `exc` by `http_error`) wins; otherwise
     rate limits back off exponentially with jitter.
     """
-    retry_after = getattr(exc, "retry_after", None)
+    retry_after = retry_after_seconds(exc)
     if retry_after is not None:
         return retry_after
     if rate_limited:

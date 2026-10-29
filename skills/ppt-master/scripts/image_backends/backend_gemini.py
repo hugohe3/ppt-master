@@ -346,4 +346,4 @@ def generate(prompt: str,
             else:
                 break
 
-    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")
+    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}") from last_error

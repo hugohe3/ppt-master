@@ -924,6 +924,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         is_global_permanent_error,
         is_permanent_error,
         is_rate_limit_error,
+        retry_after_seconds,
         validate_image_file,
     )
 
@@ -1005,6 +1006,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         )
 
         rate_limited = False
+        server_wait = 0
         with concurrent.futures.ThreadPoolExecutor(max_workers=batch_size) as ex:
             futures = [ex.submit(_one, i) for i in batch_idx]
             for fut in concurrent.futures.as_completed(futures):
@@ -1035,6 +1037,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         )
                     elif is_rate_limit_error(exc):
                         rate_limited = True
+                        server_wait = max(server_wait, retry_after_seconds(exc) or 0)
                         attempts = rate_limit_attempts.get(idx, 0) + 1
                         rate_limit_attempts[idx] = attempts
                         if (
@@ -1088,12 +1091,14 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
             break
         if rate_limited and current > 1 and queue:
             new_current = max(1, current // 2)
+            # Wait at least as long as the provider asked (Retry-After), never under 10s.
+            pause = max(10, server_wait)
             print(
                 f"\n  ⚠ Rate-limit hit — concurrency {current} → {new_current}, "
-                "pausing 10s before next batch\n"
+                f"pausing {pause}s before next batch\n"
             )
             current = new_current
-            time.sleep(10)
+            time.sleep(pause)
         elif queue:
             time.sleep(2)
 

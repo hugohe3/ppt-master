@@ -179,4 +179,4 @@ def generate(prompt: str,
             print(f"\n  [WARN] {label}. Retrying in {delay}s...")
             time.sleep(delay)
 
-    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")
+    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}") from last_error

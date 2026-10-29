@@ -50,3 +50,45 @@ class ManifestOutputNameTests(unittest.TestCase):
                 self.assertEqual(first.getpixel((0, 0)), (255, 0, 0))
                 self.assertEqual(second.getpixel((0, 0)), (0, 0, 255))
 
+
+
+class ManifestRetryAfterTests(unittest.TestCase):
+    def test_rate_limited_batch_waits_for_server_retry_after(self) -> None:
+        from unittest import mock
+
+        import requests
+        from PIL import Image
+
+        calls: dict[str, int] = {}
+
+        def generate(**kwargs: object) -> str:
+            name = str(kwargs["filename"])
+            calls[name] = calls.get(name, 0) + 1
+            if name == "a.png" and calls[name] == 1:
+                headers = requests.structures.CaseInsensitiveDict({"Retry-After": "37"})
+                cause = backend_common.http_error(
+                    SimpleNamespace(status_code=429, text="rate limit", headers=headers),
+                    "OpenAI image generation",
+                )
+                raise RuntimeError(f"Failed after 4 attempts. Last error: {cause}") from cause
+            path = Path(str(kwargs["output_dir"])) / name
+            Image.new("RGB", (8, 8)).save(path, format="PNG")
+            return str(path)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "image_prompts.json"
+            items = [
+                {"filename": name, "prompt": "p", "aspect_ratio": "1:1", "status": "Pending",
+                 "page_role": "local", "text_policy": "none"}
+                for name in ("a.png", "b.png")
+            ]
+            manifest_path.write_text(json.dumps({"items": items}), encoding="utf-8")
+            manifest = image_gen.load_manifest(str(manifest_path))
+            with mock.patch.object(image_gen.time, "sleep") as sleep, \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                image_gen._run_manifest(
+                    manifest, str(manifest_path), SimpleNamespace(generate=generate),
+                    initial_concurrency=2, image_size="1K", output_dir=tmp, model=None,
+                )
+            self.assertIn(mock.call(37), sleep.call_args_list)
+            self.assertEqual([item["status"] for item in manifest["items"]], ["Generated", "Generated"])
