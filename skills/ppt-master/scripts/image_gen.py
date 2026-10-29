@@ -92,15 +92,6 @@ DEPRECATED_IMAGE_KEYS = {
     "IMAGE_BASE_URL",
 }
 
-# All aspect ratios accepted by the unified CLI
-# (each backend validates its own subset internally)
-ALL_ASPECT_RATIOS = [
-    "1:1", "1:2", "1:3", "1:4", "1:8",
-    "2:1", "2:3", "3:1", "3:2", "3:4", "4:1", "4:3",
-    "4:5", "5:4", "8:1", "9:16", "9:21", "10:16",
-    "16:9", "16:10", "21:9",
-]
-
 ALL_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 BACKEND_REGISTRY = {
@@ -384,19 +375,15 @@ def _print_backend_list() -> None:
     _print_backend_resolution()
 
 
-def _check_backend_aspect_ratio(backend_module, aspect_ratio: str) -> None:
-    """Fail before the request when the resolved backend rejects this ratio.
+def _aspect_ratio_arg(value: str) -> str:
+    """argparse type: any positive W:H, kept as written for the backend to fit."""
+    from image_backends.backend_common import parse_aspect_ratio
 
-    ``ALL_ASPECT_RATIOS`` is the union across backends; each backend module
-    may narrow it with ``VALID_ASPECT_RATIOS``.
-    """
-    valid = getattr(backend_module, "VALID_ASPECT_RATIOS", None)
-    if valid and aspect_ratio not in valid:
-        name = getattr(backend_module, "__name__", "backend").rsplit(".", 1)[-1]
-        raise ValueError(
-            f"aspect_ratio '{aspect_ratio}' is not supported by {name}. "
-            f"Valid for this backend: {list(valid)}"
-        )
+    try:
+        parse_aspect_ratio(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+    return value
 
 
 def _resolve_backend() -> tuple[object, str]:
@@ -595,7 +582,7 @@ def load_manifest(path: str) -> dict:
     Optional: `image_size`, `model`, `alt_text`, `purpose`, `type`,
     `page_role`, `text_policy`, `slice_grid`, `slice_names`, `last_error`.
     """
-    from image_backends.backend_common import normalize_image_size
+    from image_backends.backend_common import normalize_image_size, parse_aspect_ratio
 
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -672,11 +659,10 @@ def load_manifest(path: str) -> dict:
                 f"{prefix} status '{item['status']}' is invalid. "
                 f"Valid: {sorted(VALID_STATUSES)}"
             )
-        if item["aspect_ratio"] not in ALL_ASPECT_RATIOS:
-            raise ValueError(
-                f"{prefix} aspect_ratio '{item['aspect_ratio']}' is invalid. "
-                f"Valid: {ALL_ASPECT_RATIOS}"
-            )
+        try:
+            parse_aspect_ratio(item["aspect_ratio"])
+        except ValueError as exc:
+            raise ValueError(f"{prefix} {exc}") from exc
         if "image_size" in item:
             image_size = item["image_size"]
             if not isinstance(image_size, str) or not image_size.strip():
@@ -992,7 +978,6 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     def _one(idx: int):
         item = items[idx]
         try:
-            _check_backend_aspect_ratio(backend_module, item["aspect_ratio"])
             saved_path = backend_module.generate(
                 prompt=item["prompt"],
                 aspect_ratio=item["aspect_ratio"],
@@ -1255,8 +1240,11 @@ def main() -> None:
         )
     )
     parser.add_argument(
-        "--aspect_ratio", default="1:1", choices=ALL_ASPECT_RATIOS,
-        help=f"Aspect ratio. Default: 1:1."
+        "--aspect_ratio", default="1:1", type=_aspect_ratio_arg,
+        help=(
+            "Requested aspect ratio, any positive W:H (e.g. 16:9, 4:1, 1.85:1). "
+            "Each backend outputs the nearest size its model allows. Default: 1:1."
+        )
     )
     parser.add_argument(
         "--image_size", default=None,

@@ -26,7 +26,9 @@ import os
 import random
 import re
 import time
+from decimal import Decimal, InvalidOperation
 from email.utils import parsedate_to_datetime
+from fractions import Fraction
 
 import requests
 
@@ -338,6 +340,119 @@ def report_resolution(path: str) -> None:
             print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
         except Exception:
             pass
+
+
+TIER_PIXELS = {
+    "512px": 512 * 512,
+    "1K": 1024 * 1024,
+    "2K": 2048 * 2048,
+    "4K": 4096 * 4096,
+}
+
+
+def parse_aspect_ratio(value) -> Fraction:
+    """Parse any positive `W:H` (integers or decimals, e.g. `7:2`, `1.85:1`) exactly."""
+    text = str(value).strip()
+    parts = text.split(":")
+    if len(parts) != 2:
+        raise ValueError(f"Invalid aspect ratio '{value}'. Expected W:H, e.g. 16:9 or 1.85:1.")
+    try:
+        width, height = (Fraction(Decimal(part.strip())) for part in parts)
+    except (InvalidOperation, ValueError, OverflowError) as exc:
+        raise ValueError(
+            f"Invalid aspect ratio '{value}'. Expected W:H with positive numbers."
+        ) from exc
+    if width <= 0 or height <= 0:
+        raise ValueError(f"Invalid aspect ratio '{value}'. Both sides must be positive.")
+    return width / height
+
+
+def match_aspect_ratio(value, choices) -> str | None:
+    """Return the choice numerically equal to `value` (`32:18` matches `16:9`), else None."""
+    target = parse_aspect_ratio(value)
+    for choice in choices:
+        if parse_aspect_ratio(choice) == target:
+            return choice
+    return None
+
+
+def nearest_aspect_ratio(value, choices) -> str:
+    """Return the choice whose ratio is closest to `value` on a log scale."""
+    exact = match_aspect_ratio(value, choices)
+    if exact is not None:
+        return exact
+    target = math.log(parse_aspect_ratio(value))
+    return min(choices, key=lambda choice: abs(math.log(parse_aspect_ratio(choice)) - target))
+
+
+def fit_size(
+    ratio,
+    *,
+    pixels: int,
+    step: int = 1,
+    min_edge: int = 1,
+    max_edge: int | None = None,
+    min_pixels: int | None = None,
+    max_pixels: int | None = None,
+    max_ratio: float | None = None,
+) -> tuple[int, int]:
+    """
+    Compute a legal `(width, height)` for any ratio under a model's size rules.
+
+    The ratio is clamped to what `max_ratio` and the edge limits allow (orientation
+    kept), the pixel budget is clamped into `[min_pixels, max_pixels]`, and both
+    edges are rounded to `step`. Raises ValueError only when the rules themselves
+    admit no size.
+    """
+    r = float(parse_aspect_ratio(ratio) if isinstance(ratio, str) else ratio)
+    limit = max_ratio or math.inf
+    lo_edge = math.ceil(min_edge / step) * step
+    hi_edge = math.floor(max_edge / step) * step if max_edge else None
+    if hi_edge:
+        limit = min(limit, hi_edge / lo_edge)
+    r = min(max(r, 1 / limit), limit)
+
+    budget = pixels
+    if min_pixels:
+        budget = max(budget, min_pixels)
+    if max_pixels:
+        budget = min(budget, max_pixels)
+    width, height = math.sqrt(budget * r), math.sqrt(budget / r)
+    short, long_ = min(width, height), max(width, height)
+    if short < lo_edge:
+        long_, short = long_ * lo_edge / short, lo_edge
+    if hi_edge and long_ > hi_edge:
+        short, long_ = short * hi_edge / long_, hi_edge
+
+    def snap(edge: float) -> int:
+        snapped = max(lo_edge, round(edge / step) * step)
+        return min(snapped, hi_edge) if hi_edge else snapped
+
+    short, long_ = snap(short), snap(long_)
+    while max_pixels and short * long_ > max_pixels and short > lo_edge:
+        long_ -= step
+        short = snap(long_ / r if r >= 1 else long_ * r)
+    while min_pixels and short * long_ < min_pixels and (not hi_edge or long_ < hi_edge):
+        long_ += step
+        short = snap(long_ / r if r >= 1 else long_ * r)
+
+    width, height = (long_, short) if r >= 1 else (short, long_)
+    area = width * height
+    if (max_pixels and area > max_pixels) or (min_pixels and area < min_pixels):
+        raise ValueError(
+            f"No legal size for ratio {ratio} under the model's limits "
+            f"(got {width}x{height}, pixels {min_pixels}-{max_pixels})."
+        )
+    return width, height
+
+
+def note_aspect_ratio(requested, actual) -> None:
+    """Print the adaptation when the output ratio differs from the requested one by >1%."""
+    want = float(parse_aspect_ratio(requested))
+    got = float(parse_aspect_ratio(actual))
+    if abs(math.log(got / want)) > math.log(1.01):
+        print(f"  Ratio:        requested {requested} -> output {actual} "
+              "(nearest the model allows; crop downstream)")
 
 
 def normalize_image_size(image_size: str) -> str:

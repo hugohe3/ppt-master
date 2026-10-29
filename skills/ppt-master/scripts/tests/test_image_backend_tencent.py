@@ -103,15 +103,14 @@ class TencentBackendTests(unittest.TestCase):
             with self.subTest(ratio=ratio, size=logical_size):
                 self.assertEqual(backend_tencent._resolve_size(ratio, logical_size), resolution)
 
-    def test_hy_rejects_impossible_sizes_before_request(self) -> None:
-        for ratio, logical_size in (
-            ("1:1", "2K"), ("1:1", "4K"), ("16:9", "512px"),
-            ("1:8", "1K"), ("8:1", "1K"),
+    def test_hy_refits_out_of_range_sizes(self) -> None:
+        for ratio, logical_size, resolution in (
+            ("1:1", "2K", "1024x1024"), ("1:1", "4K", "1024x1024"), ("16:9", "512px", "912x512"),
+            ("1:8", "1K", "512x2048"), ("8:1", "1K", "2048x512"), ("1.85:1", "1K", "1392x752"),
         ):
             with self.subTest(ratio=ratio, size=logical_size):
-                with self.assertRaisesRegex(ValueError, "512-2048.*multiples of 16.*1024x1024"):
-                    backend_tencent.generate("test", aspect_ratio=ratio, image_size=logical_size)
-        self.post.assert_not_called()
+                backend_tencent.generate("test", aspect_ratio=ratio, image_size=logical_size)
+                self.assertEqual(self.post.call_args.kwargs["json"]["size"], resolution)
 
     def test_seedream_lite_upgrades_small_sizes_once(self) -> None:
         for logical_size in ("1K", "512px"):
@@ -130,25 +129,32 @@ class TencentBackendTests(unittest.TestCase):
             ("seedream-image-v5.0-lite", "2K", 2048),
             ("seedream-image-v5.0-lite", "4K", 4096),
         ):
-            for ratio in image_gen.ALL_ASPECT_RATIOS:
+            for ratio in ("1:1", "1:4", "1:8", "3:2", "4:1", "8:1", "9:16", "16:9", "21:9", "16:10", "1.85:1"):
                 with self.subTest(model=model, size=logical_size, ratio=ratio):
                     size = backend_tencent._resolve_size(ratio, logical_size, model)
                     width, height = map(int, size.split("x"))
-                    ratio_width, ratio_height = map(int, ratio.split(":"))
+                    expected = float(backend_common.parse_aspect_ratio(ratio))
                     self.assertAlmostEqual(width * height / side ** 2, 1.0, delta=0.004)
-                    self.assertAlmostEqual(width / height, ratio_width / ratio_height, delta=0.025)
+                    self.assertAlmostEqual(width / height, expected, delta=0.025)
 
-    def test_seedream_pro_rejects_512px_and_4k(self) -> None:
-        for logical_size in ("512px", "4K"):
+    def test_seedream_clamps_ratio_beyond_16_to_1(self) -> None:
+        for model in ("seedream-image-v5.0-pro", "seedream-image-v5.0-lite"):
+            with self.subTest(model=model):
+                width, height = map(int, backend_tencent._resolve_size("1:20", "2K", model).split("x"))
+                limits = backend_tencent.MODEL_SIZE_LIMITS[model]
+                self.assertAlmostEqual(height / width, 16, delta=0.1)
+                self.assertTrue(limits["min_pixels"] <= width * height <= limits["max_pixels"])
+
+    def test_seedream_pro_refits_512px_and_4k_into_its_area(self) -> None:
+        for logical_size, resolution in (("512px", "960x960"), ("4K", "2150x2150")):
             with self.subTest(size=logical_size):
-                with self.assertRaisesRegex(ValueError, "Use 1K or 2K"):
-                    backend_tencent.generate("test", model="seedream-image-v5.0-pro", image_size=logical_size)
-        self.post.assert_not_called()
+                backend_tencent.generate("test", model="seedream-image-v5.0-pro", image_size=logical_size)
+                self.assertEqual(self.post.call_args.kwargs["json"]["size"], resolution)
 
     def test_invalid_ratio_and_size_fail_before_request(self) -> None:
         for ratio in ("invalid", "0:1", "1:0", "-1:2", "1:2:3"):
             with self.subTest(ratio=ratio):
-                with self.assertRaisesRegex(ValueError, "Unsupported aspect ratio"):
+                with self.assertRaisesRegex(ValueError, "Invalid aspect ratio"):
                     backend_tencent.generate("test", aspect_ratio=ratio)
         with self.assertRaisesRegex(ValueError, "Unsupported image size"):
             backend_tencent.generate("test", image_size="3K")

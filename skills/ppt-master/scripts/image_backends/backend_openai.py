@@ -54,10 +54,15 @@ import requests
 from image_backends.backend_common import (
     MAX_RETRIES,
     download_image,
+    fit_size,
     http_error,
     is_permanent_error,
     is_rate_limit_error,
+    match_aspect_ratio,
+    nearest_aspect_ratio,
     normalize_image_size,
+    note_aspect_ratio,
+    parse_aspect_ratio,
     resolve_output_path,
     retry_delay,
     save_image_bytes,
@@ -69,7 +74,8 @@ from image_backends.backend_common import (
 # ╚══════════════════════════════════════════════════════════════════╝
 
 # Aspect ratio -> DALL-E 3 / legacy compatible size mapping.
-# Unknown OpenAI-compatible models use this table to preserve old behavior.
+# Unknown OpenAI-compatible models use this table to preserve old behavior;
+# other ratios take the nearest entry.
 LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE = {
     "1:1":  "1024x1024",
     "16:9": "1792x1024",
@@ -100,6 +106,8 @@ GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE = {
 
 # GPT Image 2 supports flexible sizes when both edges are multiples of 16,
 # the edge ratio is <= 3:1, and the total pixels are within model limits.
+# Listed ratios use these sizes; any other ratio is fitted to the rules at
+# the tier's 1:1 pixel budget (beyond 3:1 it is clamped to 3:1).
 GPT_IMAGE_2_SIZES = {
     "512px": {
         "1:1": "1024x1024", "16:9": "1280x720", "9:16": "720x1280",
@@ -133,8 +141,6 @@ DALL_E_2_SIZE_BY_IMAGE_SIZE = {
     "2K": "1024x1024",
     "4K": "1024x1024",
 }
-
-VALID_ASPECT_RATIOS = list(LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE.keys())
 
 # image_size -> quality mapping
 IMAGE_SIZE_TO_QUALITY = {
@@ -261,16 +267,33 @@ def _select_size(
     if preset in {"gpt-image-2"} or (
         preset == "auto" and (_is_gpt_image_2(model) or _is_gpt_image_2_5(model))
     ):
-        size = GPT_IMAGE_2_SIZES[image_size][aspect_ratio]
+        sizes = GPT_IMAGE_2_SIZES[image_size]
+        listed = match_aspect_ratio(aspect_ratio, sizes)
+        if listed:
+            size = sizes[listed]
+        else:
+            square_w, square_h = _parse_size(sizes["1:1"])
+            width, height = fit_size(
+                aspect_ratio,
+                pixels=square_w * square_h,
+                step=16,
+                max_edge=GPT_IMAGE_2_MAX_EDGE,
+                min_pixels=GPT_IMAGE_2_MIN_PIXELS,
+                max_pixels=GPT_IMAGE_2_MAX_PIXELS,
+                max_ratio=GPT_IMAGE_2_MAX_RATIO,
+            )
+            size = f"{width}x{height}"
         _validate_gpt_image_2_size(size)
         return size
     if preset in {"gpt-image", "gpt-image-legacy"} or (
         preset == "auto" and _is_gpt_image_model(model)
     ):
-        return GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE[aspect_ratio]
+        table = GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE
+        return table[nearest_aspect_ratio(aspect_ratio, table)]
     if preset in {"dall-e-2", "dalle-2"} or (preset == "auto" and _is_dall_e_2(model)):
         return DALL_E_2_SIZE_BY_IMAGE_SIZE[image_size]
-    return LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE[aspect_ratio]
+    table = LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE
+    return table[nearest_aspect_ratio(aspect_ratio, table)]
 
 
 def _supports_response_format(model: str) -> bool:
@@ -527,6 +550,7 @@ def _generate_image(api_key: str, prompt: str,
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
+    note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     if size_preset and size_preset != "auto":
         print(f"  Size Preset:  {size_preset}")
     if quality is not None:
@@ -628,6 +652,7 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     print(f"  Reference:    {reference_image}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
+    note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     if size_preset and size_preset != "auto":
         print(f"  Size Preset:  {size_preset}")
     if quality is not None:
@@ -726,12 +751,7 @@ def generate(prompt: str,
 
     image_size = normalize_image_size(image_size)
 
-    if aspect_ratio not in LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE:
-        supported = list(LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE.keys())
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for OpenAI backend. "
-            f"Supported: {supported}"
-        )
+    parse_aspect_ratio(aspect_ratio)
 
     _validate_request_options(
         model,

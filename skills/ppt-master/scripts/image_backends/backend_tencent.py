@@ -40,7 +40,10 @@ from image_backends.backend_common import (  # noqa: E402
     http_error,
     is_permanent_error,
     is_rate_limit_error,
+    fit_size,
     normalize_image_size,
+    note_aspect_ratio,
+    parse_aspect_ratio,
     require_api_key,
     resolve_output_path,
     retry_delay,
@@ -57,6 +60,12 @@ MODEL_ENDPOINTS = {
 }
 SUPPORTED_MODELS = set(MODEL_ENDPOINTS)
 IMAGE_SIZE_PIXELS = {"512px": 512, "1K": 1024, "2K": 2048, "4K": 4096}
+# Official output limits; a size outside them is refitted, never rejected.
+MODEL_SIZE_LIMITS = {
+    DEFAULT_MODEL: {"min_edge": 512, "max_edge": 2048, "max_pixels": 1024 * 1024},
+    "seedream-image-v5.0-pro": {"min_pixels": 921_600, "max_pixels": 4_624_220, "max_ratio": 16},
+    "seedream-image-v5.0-lite": {"min_pixels": 3_686_400, "max_pixels": 16_777_216, "max_ratio": 16},
+}
 
 
 def _validate_model(model: str) -> str:
@@ -80,6 +89,17 @@ def _resolve_url(base_url: str, model: str = DEFAULT_MODEL) -> str:
     return base + MODEL_ENDPOINTS[model]
 
 
+def _within_limits(width: int, height: int, limits: dict) -> bool:
+    """Return whether a size satisfies one model's output limits."""
+    long_edge, short_edge = max(width, height), min(width, height)
+    return (
+        short_edge >= limits.get("min_edge", 1)
+        and long_edge <= limits.get("max_edge", long_edge)
+        and limits.get("min_pixels", 0) <= width * height <= limits.get("max_pixels", width * height)
+        and long_edge / short_edge <= limits.get("max_ratio", math.inf)
+    )
+
+
 def _resolve_size(aspect_ratio: str, image_size: str, model: str = DEFAULT_MODEL) -> str:
     """Resolve a pixel size from the requested area and aspect ratio."""
     normalized = normalize_image_size(image_size)
@@ -89,38 +109,17 @@ def _resolve_size(aspect_ratio: str, image_size: str, model: str = DEFAULT_MODEL
             f"Unsupported image size '{image_size}' for Tencent backend. "
             f"Supported logical sizes: {list(IMAGE_SIZE_PIXELS)}."
         )
-    try:
-        ratio_width, ratio_height = (int(value) for value in aspect_ratio.split(":"))
-        if ratio_width <= 0 or ratio_height <= 0:
-            raise ValueError
-    except ValueError as exc:
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for Tencent backend. "
-            "Use positive width:height integers, such as 16:9."
-        ) from exc
-
+    ratio = parse_aspect_ratio(aspect_ratio)
     if model == "seedream-image-v5.0-lite":
         pixels = max(pixels, 2048)
-    elif model == "seedream-image-v5.0-pro" and normalized not in {"1K", "2K"}:
-        raise ValueError(
-            f"Unsupported image size '{image_size}' for Seedream pro. "
-            "Use 1K or 2K; 4K requires seedream-image-v5.0-lite."
-        )
 
-    ratio = ratio_width / ratio_height
     step = 16 if model == DEFAULT_MODEL else 1
     width = math.floor(pixels * math.sqrt(ratio) / step) * step
     height = math.floor(pixels / math.sqrt(ratio) / step) * step
-    if model == DEFAULT_MODEL and (
-        pixels > 1024
-        or not (512 <= width <= 2048 and 512 <= height <= 2048)
-        or width * height > 1024 * 1024
-    ):
-        raise ValueError(
-            f"Unsupported image size '{image_size}' / aspect ratio '{aspect_ratio}' for Hy-Image-3.0. "
-            "Width and height must each be 512-2048 pixels in multiples of 16, "
-            "with area <= 1024x1024. Use 1K with a ratio from 1:4 to 4:1, or 512px at 1:1."
-        )
+    limits = MODEL_SIZE_LIMITS[model]
+    if not _within_limits(width, height, limits):
+        # Tiers or ratios beyond the model's limits move to the nearest legal size.
+        width, height = fit_size(ratio, pixels=pixels * pixels, step=step, **limits)
     return f"{width}x{height}"
 
 
@@ -141,6 +140,7 @@ def _generate_image(api_key: str, prompt: str,
     """Generate one image with the Tencent backend."""
     model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size, model)
+    note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     url = _resolve_url(base_url, model)
     headers = {
         "Authorization": f"Bearer {api_key}",

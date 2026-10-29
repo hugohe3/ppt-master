@@ -24,6 +24,7 @@ if __name__ == "__main__":
     print("Use via: python3 skills/ppt-master/scripts/image_gen.py \"prompt\" --backend zhipu")
     raise SystemExit(0 if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]) else 1)
 
+import math
 import os
 import time
 
@@ -35,7 +36,11 @@ from image_backends.backend_common import (
     http_error,
     is_permanent_error,
     is_rate_limit_error,
+    TIER_PIXELS,
+    fit_size,
+    match_aspect_ratio,
     normalize_image_size,
+    note_aspect_ratio,
     require_api_key,
     resolve_output_path,
     retry_delay,
@@ -96,20 +101,26 @@ def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
     sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
-    if sizes is None:
+    if sizes is None and normalized not in TIER_PIXELS:
         supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
         raise ValueError(
             f"Unsupported image size '{image_size}' for Zhipu backend. "
             f"GLM-Image supports these logical sizes: {supported_sizes}."
         )
-    size = sizes.get(aspect_ratio)
-    if not size:
-        supported = sorted(sizes)
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for Zhipu backend. "
-            f"Supported: {supported}"
-        )
-    return size
+    listed = match_aspect_ratio(aspect_ratio, sizes or {})
+    if listed:
+        return sizes[listed]
+    # Any other ratio or tier is fitted to the model's size rules.
+    budget = math.prod(map(int, sizes["1:1"].split("x"))) if sizes else TIER_PIXELS[normalized]
+    width, height = fit_size(
+        aspect_ratio,
+        pixels=budget,
+        step=32,
+        min_edge=512,
+        max_edge=2048,
+        max_pixels=2**22,
+    )
+    return f"{width}x{height}"
 
 
 def _generate_image(api_key: str, prompt: str,
@@ -119,6 +130,7 @@ def _generate_image(api_key: str, prompt: str,
     """Generate one image with the Zhipu backend."""
     model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size)
+    note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     url = _resolve_url(base_url)
     headers = {
         "Authorization": f"Bearer {api_key}",

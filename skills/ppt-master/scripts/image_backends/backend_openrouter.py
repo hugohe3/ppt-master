@@ -36,7 +36,9 @@ from image_backends.backend_common import (
     http_error,
     is_permanent_error,
     is_rate_limit_error,
+    nearest_aspect_ratio,
     normalize_image_size,
+    note_aspect_ratio,
     resolve_output_path,
     retry_delay,
     save_image_bytes,
@@ -189,8 +191,9 @@ def generate(prompt: str,
 
     image_size = normalize_image_size(image_size)
 
-    if aspect_ratio not in VALID_ASPECT_RATIOS:
-        raise ValueError(f"Invalid aspect ratio '{aspect_ratio}'. Valid: {VALID_ASPECT_RATIOS}")
+    requested_ratio = aspect_ratio
+    aspect_ratio = nearest_aspect_ratio(aspect_ratio, VALID_ASPECT_RATIOS)
+    note_aspect_ratio(requested_ratio, aspect_ratio)
 
     if image_size not in VALID_IMAGE_SIZES:
         raise ValueError(f"Invalid image size '{image_size}'. Valid: {VALID_IMAGE_SIZES}")

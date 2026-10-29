@@ -83,3 +83,77 @@ class RetryDelayTests(unittest.TestCase):
         delays = {backend_common.retry_delay(1, rate_limited=True, exc=exc) for _ in range(200)}
         self.assertTrue(all(20 <= delay <= 25 for delay in delays))
         self.assertGreater(len(delays), 1)
+
+
+class AspectRatioTests(unittest.TestCase):
+    def test_any_positive_ratio_parses_exactly(self) -> None:
+        self.assertEqual(backend_common.parse_aspect_ratio("1.85:1"), backend_common.parse_aspect_ratio("37:20"))
+        self.assertEqual(backend_common.parse_aspect_ratio(" 32 : 18 "), backend_common.parse_aspect_ratio("16:9"))
+        for value in ("abc", "16:9:1", "0:1", "1:0", "-1:2", "inf:1", "nan:1", ""):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "Invalid aspect ratio"):
+                backend_common.parse_aspect_ratio(value)
+
+    def test_nearest_ratio_prefers_exact_then_log_distance(self) -> None:
+        choices = ["1:1", "16:9", "9:16", "21:9"]
+        self.assertEqual(backend_common.nearest_aspect_ratio("32:18", choices), "16:9")
+        self.assertEqual(backend_common.nearest_aspect_ratio("4:1", choices), "21:9")
+        self.assertEqual(backend_common.nearest_aspect_ratio("1:4", choices), "9:16")
+
+    def test_fit_size_clamps_ratio_and_keeps_orientation(self) -> None:
+        rules = {"step": 8, "min_edge": 512, "max_edge": 2048}
+        self.assertEqual(backend_common.fit_size("10:1", pixels=1024 * 1024, **rules), (2048, 512))
+        self.assertEqual(backend_common.fit_size("1:10", pixels=4096 * 4096, **rules), (512, 2048))
+        width, height = backend_common.fit_size("1:20", pixels=2048 * 2048, min_pixels=3_686_400,
+                                                max_pixels=16_777_216, max_ratio=16)
+        self.assertAlmostEqual(height / width, 16, delta=0.1)
+        self.assertTrue(3_686_400 <= width * height <= 16_777_216)
+
+
+class OpenAISizeTests(unittest.TestCase):
+    def test_listed_ratios_keep_their_table_sizes(self) -> None:
+        from image_backends import backend_openai
+
+        for tier, sizes in backend_openai.GPT_IMAGE_2_SIZES.items():
+            for ratio, size in sizes.items():
+                with self.subTest(tier=tier, ratio=ratio):
+                    self.assertEqual(backend_openai._select_size("gpt-image-2.5-sunburst", ratio, tier), size)
+
+    def test_any_ratio_fits_gpt_image_2_rules(self) -> None:
+        from image_backends import backend_openai
+
+        for ratio in ("4:1", "1:4", "8:1", "3:1", "2:1", "1:2", "16:10", "10:16", "9:21", "1.85:1", "7:2"):
+            for tier in ("512px", "1K", "2K", "4K"):
+                with self.subTest(ratio=ratio, tier=tier):
+                    size = backend_openai._select_size("gpt-image-2", ratio, tier)
+                    backend_openai._validate_gpt_image_2_size(size)
+        self.assertEqual(backend_openai._select_size("gpt-image-2.5-flare", "4:1", "1K"), "1776x592")
+
+    def test_legacy_and_unknown_models_use_their_nearest_entry(self) -> None:
+        from image_backends import backend_openai
+
+        self.assertEqual(backend_openai._select_size("gpt-image-1.5", "4:1", "1K"), "1536x1024")
+        self.assertEqual(backend_openai._select_size("compatible-model", "1:4", "1K"), "1024x1792")
+
+
+class ManifestAspectRatioTests(unittest.TestCase):
+    def _load(self, ratio: str) -> dict:
+        import json
+        import tempfile
+
+        import image_gen
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "image_prompts.json"
+            item = {"filename": "a.png", "prompt": "p", "aspect_ratio": ratio, "status": "Pending",
+                    "page_role": "local", "text_policy": "none"}
+            path.write_text(json.dumps({"items": [item]}), encoding="utf-8")
+            return image_gen.load_manifest(str(path))
+
+    def test_manifest_keeps_any_requested_ratio(self) -> None:
+        for ratio in ("4:1", "1.85:1", "7:2"):
+            with self.subTest(ratio=ratio):
+                self.assertEqual(self._load(ratio)["items"][0]["aspect_ratio"], ratio)
+
+    def test_manifest_rejects_malformed_ratio(self) -> None:
+        with self.assertRaisesRegex(ValueError, "Invalid aspect ratio"):
+            self._load("0:1")
