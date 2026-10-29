@@ -1423,7 +1423,10 @@ def main() -> None:
             sys.exit(130)
         md_path = render_manifest_md_to_file(args.manifest, manifest)
         print(f"Rendered Markdown sidecar: {md_path}")
-        sys.exit(1 if failed else 0)
+        # A run stopped early (billing, rate limit) leaves retryable items without
+        # failing any; it must still exit non-zero.
+        unfinished = any(item["status"] in RETRYABLE_STATUSES for item in manifest["items"])
+        sys.exit(1 if failed or unfinished else 0)
 
     # Single-image mode. Backfill the historical default prompt only here, so
     # plain generation is byte-for-byte unchanged while edit mode still requires

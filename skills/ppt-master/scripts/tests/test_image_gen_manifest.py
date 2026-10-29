@@ -123,10 +123,24 @@ class ManifestRetryAfterTests(unittest.TestCase):
             manifest = image_gen.load_manifest(str(manifest_path))
             with mock.patch.object(image_gen.time, "sleep") as sleep, \
                     contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-                image_gen._run_manifest(
+                result = image_gen._run_manifest(
                     manifest, str(manifest_path), SimpleNamespace(generate=generate),
                     initial_concurrency=2, image_size="1K", output_dir=tmp, model=None,
                 )
-            self.assertFalse(any(call.args[0] > backend_common.MAX_RETRY_WAIT for call in sleep.call_args_list))
-            statuses = {item["filename"]: item["status"] for item in manifest["items"]}
+            sleep.assert_not_called()
+            self.assertEqual(result, (1, 0, 0))
+            saved = json.loads(manifest_path.read_text(encoding="utf-8"))
+            statuses = {item["filename"]: item["status"] for item in saved["items"]}
             self.assertEqual(statuses, {"a.png": "Pending", "b.png": "Generated", "c.png": "Pending"})
+
+            argv = ["image_gen.py", "--manifest", str(manifest_path), "--backend", "openai"]
+            with mock.patch.object(sys, "argv", argv), \
+                    mock.patch.object(image_gen, "_load_image_env_file"), \
+                    mock.patch.object(image_gen, "_validate_runtime_config"), \
+                    mock.patch.object(image_gen, "_resolve_backend",
+                                      return_value=(SimpleNamespace(generate=generate), "openai")), \
+                    mock.patch.object(image_gen.time, "sleep"), \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as stopped:
+                    image_gen.main()
+            self.assertEqual(stopped.exception.code, 1)

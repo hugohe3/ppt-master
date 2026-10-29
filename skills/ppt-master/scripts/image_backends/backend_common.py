@@ -40,8 +40,8 @@ except ImportError:
 
 
 MAX_RETRIES = 3
-# Longest provider-requested wait honored in-process; longer Retry-After values
-# end the run instead of blocking it for hours.
+# Longest provider-requested wait honored in-process; a longer Retry-After ends
+# the backend's retries and the manifest run instead of blocking for hours.
 MAX_RETRY_WAIT = 300
 RETRY_BASE_DELAY = 10
 RETRY_BACKOFF = 2
@@ -590,12 +590,16 @@ def retry_after_seconds(exc: Exception | None) -> int | None:
 def retry_delay(attempt: int, rate_limited: bool, exc: Exception = None) -> int:
     """Return the retry delay for a given attempt.
 
-    A server-provided Retry-After (kept on `exc` by `http_error`) wins, capped at
-    MAX_RETRY_WAIT; otherwise rate limits back off exponentially with jitter.
+    A server-provided Retry-After (kept on `exc` by `http_error`) wins; otherwise
+    rate limits back off exponentially with jitter. A Retry-After beyond
+    MAX_RETRY_WAIT re-raises `exc`: retrying early only burns requests, so the
+    caller (the manifest runner) decides to stop instead.
     """
     retry_after = retry_after_seconds(exc)
     if retry_after is not None:
-        return min(retry_after, MAX_RETRY_WAIT)
+        if retry_after > MAX_RETRY_WAIT:
+            raise exc
+        return retry_after
     if rate_limited:
         delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
         return delay + random.randint(0, delay // 4)

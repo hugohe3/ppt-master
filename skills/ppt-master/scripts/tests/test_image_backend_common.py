@@ -89,8 +89,25 @@ class RetryDelayTests(unittest.TestCase):
             raise RuntimeError("Failed after 4 attempts") from cause
         except RuntimeError as wrapped:
             self.assertEqual(backend_common.retry_after_seconds(wrapped), 86400)
-            self.assertEqual(backend_common.retry_delay(0, rate_limited=True, exc=wrapped),
-                             backend_common.MAX_RETRY_WAIT)
+            with self.assertRaises(RuntimeError):
+                backend_common.retry_delay(0, rate_limited=True, exc=wrapped)
+        at_cap = backend_common.http_error(_response(429, "slow down", {"Retry-After": "300"}), "x")
+        self.assertEqual(backend_common.retry_delay(0, rate_limited=True, exc=at_cap), 300)
+
+    def test_backend_stops_retrying_when_the_wait_exceeds_the_cap(self) -> None:
+        from image_backends import backend_openai
+
+        limited = _response(429, '{"error": {"code": "rate_limit_exceeded"}}', {"Retry-After": "86400"})
+        limited.ok = False
+        with mock.patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), \
+                mock.patch.object(backend_openai.requests, "post", return_value=limited) as post, \
+                mock.patch.object(backend_openai.time, "sleep") as sleep, \
+                mock.patch("sys.stdout"):
+            with self.assertRaises(RuntimeError) as raised:
+                backend_openai.generate("p")
+        self.assertEqual(post.call_count, 1)
+        sleep.assert_not_called()
+        self.assertEqual(backend_common.retry_after_seconds(raised.exception), 86400)
 
     def test_non_openai_backend_waits_for_retry_after(self) -> None:
         from image_backends import backend_qwen
