@@ -106,7 +106,7 @@ Why you'd choose it, and where it isn't the right fit → [Why PPT Master](./doc
 
 > [!IMPORTANT]
 > ### This is a tool, not a wishing well
-> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or Claude) with a large context window (~1M tokens) + AI image generation (`gpt-image-2` or Google `gemini-nano-banana-2.1`)**; other models can run the pipeline, with a quality gap.
+> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or Claude) with a large context window (~1M tokens) + AI image generation (`gpt-image-2.5-sunburst` or Google `gemini-nano-banana-2.1`)**; other models can run the pipeline, with a quality gap.
 >
 > And don't expect a finished, perfect deck in one shot. The tool's value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do; if results disappoint, upgrade the model first, then check your usage against [Getting Started](./docs/getting-started.md) and the [example projects](https://hugohe3.github.io/ppt-master-examples/).
 
@@ -217,7 +217,7 @@ Never used one of these? Don't worry — in this project they play exactly one r
 | **IDE plugin / extension** | [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [GitHub Copilot](https://github.com/features/copilot), [Cline](https://cline.bot/), etc. | Installed inside hosts like VS Code or JetBrains |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
-> **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2`** (OpenAI) or **`gemini-nano-banana-2.1`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
+> **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2.5-sunburst`** (OpenAI) or **`gemini-nano-banana-2.1`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
 
 **🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)** and **[RunAPI](https://runapi.host/register?aff=WMLJ)** offer pay-as-you-go access to Claude, GPT, Gemini and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
 
@@ -318,7 +318,7 @@ Whatever you state explicitly is followed; whatever you leave unspecified the ag
 
 Two paths for non-user images, mixable per image in the same deck:
 
-**A) AI generation** — use the agent host's native image tool when available, or `image_gen.py` with `IMAGE_BACKEND` plus the provider's `*_API_KEY`. Host-native generation needs no separate provider image API key; ask the agent to use its own image tool. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the configured-provider path. `gpt-image-2` is currently the best default.
+**A) AI generation** — use the agent host's native image tool when available, or `image_gen.py` with `IMAGE_BACKEND` plus the provider's `*_API_KEY`. Host-native generation needs no separate provider image API key; ask the agent to use its own image tool. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the configured-provider path. `gpt-image-2.5-sunburst` is the current OpenAI default.
 
 **B) Web image search** — `image_search.py`. **Zero-config works**; configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for consistently higher-quality results:
 
