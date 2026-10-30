@@ -53,6 +53,7 @@ from narration_sync import (  # noqa: E402
 from pptx_animations import read_slide_animation_sequence  # noqa: E402
 from pptx_opc_validation import (  # noqa: E402
     canonical_opc_part_path,
+    canonical_package_member_path,
     resolve_internal_opc_target,
 )
 from pptx_transitions import (  # noqa: E402
@@ -568,7 +569,7 @@ def _shape_group_ids(trace_slide: dict[str, Any]) -> dict[int, str]:
 def _package_part_map(package: zipfile.ZipFile) -> dict[str, str]:
     mapping: dict[str, str] = {}
     for member in package.namelist():
-        key = canonical_opc_part_path(member)
+        key = canonical_package_member_path(member)
         if key is None:
             continue
         prior = mapping.get(key)

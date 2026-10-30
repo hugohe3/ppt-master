@@ -6,7 +6,7 @@ from __future__ import annotations
 import posixpath
 import re
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 from xml.etree import ElementTree as ET
 
 from hyperlink_contract import (
@@ -262,13 +262,25 @@ def verify_hyperlink_relationships(extract_dir: Path) -> list[str]:
     return problems
 
 
+def canonical_package_member_path(path: str) -> str | None:
+    """Return canonical OPC key for a raw filesystem or ZIP member path."""
+    direct = canonical_opc_part_path(path)
+    if direct is not None:
+        return direct
+    quoted = "/".join(
+        quote(segment, safe="~-._!$&()*+,;=:@")
+        for segment in path.split("/")
+    )
+    return canonical_opc_part_path(quoted)
+
+
 def verify_internal_relationships(extract_dir: Path) -> list[str]:
     """Return invalid or dangling internal relationships in an OPC package."""
     package_parts: set[str] = set()
     for path in extract_dir.rglob("*"):
         if not path.is_file():
             continue
-        key = canonical_opc_part_path(
+        key = canonical_package_member_path(
             path.relative_to(extract_dir).as_posix()
         )
         if key is not None:
