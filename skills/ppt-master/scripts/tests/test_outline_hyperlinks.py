@@ -28,7 +28,3 @@ class OutlineHyperlinksTests(unittest.TestCase):
                 encoding='utf-8',
             )
             self.assertEqual(validate_outline_hyperlinks(project), [])
-
-
-if __name__ == '__main__':
-    unittest.main()
