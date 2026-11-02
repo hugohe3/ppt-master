@@ -110,7 +110,7 @@ Why you'd choose it, and where it isn't the right fit → [Why PPT Master](./doc
 >
 > And don't expect a finished, perfect deck in one shot. The tool's value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. **A cheap model won't match the recommended setup — that gap is the model's, not a PPT Master bug.** The cheaper the model, the more there is to do; if results disappoint, upgrade the model first, then check your usage against [Getting Started](./docs/getting-started.md) and the [example projects](https://hugohe3.github.io/ppt-master-examples/).
 >
-> High token use is this solution's trade-off, not a defect: PPT Master is free, and it spends more tokens to deliver page-by-page design and native editability. Wanting excellent results without putting anything in is wishing, and that isn't achievable today; if this trade-off doesn't suit you, tools built on other approaches, or making the slides by hand, are perfectly good choices.
+> High token use is this solution's trade-off, not a defect: the tool itself is free and open source, but model token costs are yours to cover, and this solution spends more tokens to deliver page-by-page design and native editability. Wanting excellent results without putting anything in is wishing, and that isn't achievable today; if this trade-off doesn't suit you, tools built on other approaches, or making the slides by hand, are perfectly good choices.
 
 ---
 
