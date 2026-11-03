@@ -40,6 +40,20 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 [RunAPI](https://runapi.host/register?aff=WMLJ) 通过一个 API Key 提供 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型。通过专属链接注册并联系管理员，即可领取 **¥7 免费额度**。
 
+### ModelGo
+
+<a href="https://modelgo.ai/?utm_source=ppt-master&amp;utm_medium=sponsorship&amp;utm_content=readme02&amp;campaign_id=ppt-master-github&amp;ad_group_id=readme02"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/modelgo.svg" alt="ModelGo" width="150"></a>
+
+感谢 ModelGo 赞助了本项目！
+
+ModelGo 是一个稳定、高效的企业级 AI API 聚合平台，一个 API Key 即可调用 Claude、OpenAI、Gemini、DeepSeek 等主流 AI 模型，帮助开发者和企业以更低成本快速构建 AI 应用。
+
+ModelGo 为本项目用户提供专属福利：注册即送 $0.5 试用额度，完成首次 API 调用再送 $2，邀请新用户额外获得 $1 奖励！ 平台还提供阶梯式消费返佣机制，用得越多，返得越多，畅享 AI 模型调用。
+
+此外，ModelGo 支持 SLA 服务保障、可视化监控面板等企业级功能，保障 API 调用稳定可靠，满足生产环境部署需求。
+
+立即访问 [ModelGo 官网](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme02&campaign_id=ppt-master-github&ad_group_id=readme02) 注册体验，开启高效 AI 开发！
+
 ## 基础设施支持
 
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40"></a>
