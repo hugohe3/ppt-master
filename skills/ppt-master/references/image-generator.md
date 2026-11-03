@@ -192,7 +192,7 @@ Use when a person, product, creature, effect, or scene element must cross native
 2. Prepare the subject/foreground as an exact source-derived layer or a reference reconstruction, never from a generated base or layer.
 3. Prefer one shared plate when objects do not overlap and share an isolation treatment, with padded bboxes (shadows and effects included) pairwise disjoint.
 4. A registered plate keeps original positions with one nested-SVG crop per recorded bbox ([`svg-effects.md`](./svg-effects.md) §6.5); a rearranged regular-cell plate is sliced under §4.3 and each asset placed at its recorded bbox.
-5. Prefer direct RGBA, otherwise one exact flat key over the whole layer and one `1x1` `--alpha` slice without `--trim` so coordinates hold — never one keyed image per object.
+5. Prefer direct RGBA, otherwise one exact flat key over the whole layer and one `1x1` `--alpha` slice without `--trim` so coordinates hold — never one keyed image per object. Choose the key as for sheets (§4.3) — a pure `#00FF00`, `#0000FF`, or `#FF0000` whose hue is absent from the objects; when every pure hue appears in them (purple, pink, or multicolor art), use `#FF00FF`, which the slicer cannot despill but whose spill reads as the objects' own hue. Cut a single-color graphic on the plate (white logo, wordmark) from the raw plate with `python3 scripts/image_layers.py mono-matte` instead of keying it.
 6. Save under `<project>/images/`, registered full-canvas members `no-crop`.
 
 Overlapping or differently ordered objects take separate layers. A shared output is valid only when every final object still becomes an independent picture.
