@@ -172,7 +172,7 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 
 ## 使用复刻音色
 
-用 ElevenLabs / MiniMax / Qwen / CosyVoice 复刻你自己的声音(或在授权前提下复刻演讲者的声音),让整份 deck 用 *你的声音* 念出来。在 provider 控制台复刻一次,把得到的 `voice_id` 传进来,PPT Master 就会用这个音色逐页朗读备注并嵌回 PPTX。
+用 ElevenLabs / MiniMax / Qwen / CosyVoice / OpenAI(录音复刻,需符合资格的账号)复刻你自己的声音(或在授权前提下复刻演讲者的声音),让整份 deck 用 *你的声音* 念出来。在 provider 控制台复刻一次,把得到的 `voice_id` 传进来,PPT Master 就会用这个音色逐页朗读备注并嵌回 PPTX。
 
 完整说明 → [使用复刻音色](./audio-narration.md#使用复刻音色)
 

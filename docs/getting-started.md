@@ -175,7 +175,7 @@ Full guide → [Audio Narration & Video Export](./audio-narration.md)
 
 ## Use a cloned voice
 
-Bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice and have the whole deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — PPT Master reads every slide's notes in that voice and embeds the result back into the PPTX.
+Bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice / OpenAI (recording-based voices, eligible accounts) and have the whole deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — PPT Master reads every slide's notes in that voice and embeds the result back into the PPTX.
 
 Full guide → [Use a cloned voice](./audio-narration.md#use-a-cloned-voice)
 
