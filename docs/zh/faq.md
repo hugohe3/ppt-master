@@ -130,9 +130,9 @@ python3 -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Q: 能把 AI 生成的 PPT 效果图或截图还原成可编辑 PowerPoint 吗？
 
-可以。提供一张或多张图片，并要求把其中的页面还原为可编辑 PPTX，PPT Master 就会把请求路由到**图片还原为 PPTX**（[`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md)）profile。它需要能看图的 Agent host；需要生成的图层使用 host 自带的参考图编辑能力，或 PPT Master 的 `image_gen.py --reference-image`（OpenAI 或 Gemini 后端）。图片还原为 PPTX 始终直接启用 Quick，不需要另行说明“快速模式”。它会先把所有输入规范化为一份有序页面画面清单，所以最终页数由实际页面画面决定，而不是由文件数决定。
+可以。提供一张或多张图片，并要求把其中的页面还原为可编辑 PPTX，PPT Master 就会把请求路由到**图片还原为 PPTX**（[`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md)）profile。它需要能看图的 Agent host；需要生成的图层使用 host 自带的参考图编辑能力，或 PPT Master 的 `image_gen.py --reference-image`（OpenAI 或 Gemini 后端）。有哪个用哪个；两者都有时，OpenAI 负责去字，Gemini 负责抠出图层。图片还原为 PPTX 始终直接启用 Quick，不需要另行说明“快速模式”。它会先把所有输入规范化为一份有序页面画面清单，所以最终页数由实际页面画面决定，而不是由文件数决定。
 
-默认（快速档）把所有可见文字还原为原生可编辑文本（安装了可选的 `rapidocr` 时用 OCR 读取），底下是一张去掉文字、其余像素保持原样的背景图，照片、图表和图标都留在其中。需要编辑或移动图形时，可以要求完整档：Logo、图标、徽标和装饰图形在原图足够清晰时直接使用；像素过低时可通过参考图路径重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。图表、表格和数据图形禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成的底图（plate），再通过网格切片或 SVG 包围盒裁切拆成 PowerPoint 中的独立图片对象。AI 可以补全拆层后露出的隐藏场景像素，但不能改掉可见构图。把整页截图铺底、只叠少量可编辑元素，不算还原成功。
+所有可见文字都还原为原生可编辑文本（安装了可选的 `rapidocr` 时用 OCR 读取），底下是一张去掉文字的背景图；照片、人物等需要单独移动的对象拆成独立的图片图层，并逐一检查是否与原图对齐。Logo、图标、徽标和装饰图形在原图足够清晰时直接使用；像素过低时可通过参考图路径重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。图表、表格和数据图形禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成的底图（plate），再通过网格切片或 SVG 包围盒裁切拆成 PowerPoint 中的独立图片对象。AI 可以补全拆层后露出的隐藏场景像素，但不能改掉可见构图。把整页截图铺底、只叠少量可编辑元素，不算还原成功。
 
 ## Q: 生成的 PPT 可以编辑吗？
 
