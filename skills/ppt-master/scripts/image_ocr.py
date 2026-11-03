@@ -4,12 +4,14 @@ PPT Master - Image OCR Tool
 
 OCR helper for the Image to PPTX profile. `scan` reads normalized page images
 and writes one reviewable JSON per page with text blocks in canvas pixels
-(wording, line boxes, estimated font size, sampled ink color). `text-layer`
-writes the quick-restore page SVG: the text-free base image as a background
-plus one native text group per reviewed block.
+(wording, line boxes, estimated font size, sampled ink color). `merge-base`
+keeps source pixels outside the OCR text boxes of a text-removed image.
+`text-layer` writes the quick-restore page SVG: the text-free base image as a
+background plus one native text group per reviewed block.
 
 Usage:
     python3 scripts/image_ocr.py scan <project_path> <page_image> [<page_image> ...] [--canvas WxH]
+    python3 scripts/image_ocr.py merge-base <project_path> --page <stem> --inpainted <png> --out <png>
     python3 scripts/image_ocr.py text-layer <project_path> --page <stem> --base <png> --out <svg>
 
 Examples:
@@ -36,7 +38,7 @@ from pathlib import Path
 from typing import Optional
 from xml.sax.saxutils import escape, quoteattr
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -232,6 +234,39 @@ def family_stack(value: str, generic: str = "sans-serif") -> str:
     return ", ".join(families)
 
 
+def cmd_merge_base(args: argparse.Namespace) -> int:
+    """Keep source pixels everywhere except the padded boxes of unskipped OCR lines."""
+    project = Path(args.project_path).resolve()
+    ocr_path = project / OCR_DIR / f"{args.page}.json"
+    inpainted_path = project / args.inpainted
+    for required in (ocr_path, inpainted_path):
+        if not required.is_file():
+            print(f"Missing {required.relative_to(project)}", file=sys.stderr)
+            return 1
+    data = json.loads(ocr_path.read_text(encoding="utf-8"))
+    source = Image.open(project / data["page_image"]).convert("RGB")
+    inpainted = Image.open(inpainted_path).convert("RGB").resize(source.size, Image.LANCZOS)
+    scale = source.size[0] / data["canvas"][0]
+    pad = args.pad * scale
+    mask = Image.new("L", source.size, 0)
+    draw = ImageDraw.Draw(mask)
+    boxes = 0
+    for block in data["blocks"]:
+        if block.get("skip"):
+            continue
+        for line in block["lines"]:
+            draw.rectangle((line["x"] * scale - pad, line["y"] * scale - pad,
+                            (line["x"] + line["w"]) * scale + pad, (line["y"] + line["h"]) * scale + pad), fill=255)
+            boxes += 1
+    mask = mask.filter(ImageFilter.GaussianBlur(2 * scale))
+    merged = Image.composite(inpainted, source, mask)
+    out = project / args.out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    merged.save(out)
+    print(f"{out.relative_to(project)}: {boxes} text box(es) from the inpainted image, source pixels elsewhere")
+    return 0
+
+
 def num(value: float) -> str:
     """Compact decimal: one place at most, no trailing zero."""
     return f"{round(value, 1):g}"
@@ -337,6 +372,14 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument("--canvas", type=parse_canvas, default=(1280, 720),
                       help="Canvas size in px the coordinates map to (default 1280x720).")
     scan.set_defaults(func=cmd_scan)
+
+    merge = sub.add_parser("merge-base", help="Composite an inpainted image into the source inside text boxes only.")
+    merge.add_argument("project_path")
+    merge.add_argument("--page", required=True, help="Page image stem used by scan.")
+    merge.add_argument("--inpainted", required=True, help="Text-removed image, relative to the project.")
+    merge.add_argument("--out", required=True, help="Merged base PNG, relative to the project.")
+    merge.add_argument("--pad", type=float, default=6.0, help="Canvas px added around each OCR line box (default 6).")
+    merge.set_defaults(func=cmd_merge_base)
 
     layer = sub.add_parser("text-layer", help="Write a quick-restore page SVG from a base image and reviewed OCR.")
     layer.add_argument("project_path")

@@ -224,6 +224,8 @@ the install command and exits `2` when they are missing.
 ```bash
 pip install rapidocr onnxruntime
 python3 scripts/image_ocr.py scan <project_path> images/source-pages/01.png [...] --canvas 1280x720
+python3 scripts/image_ocr.py merge-base <project_path> --page 01 --inpainted images/01_inpainted.png \
+  --out images/01_base.png [--pad 6]
 python3 scripts/image_ocr.py text-layer <project_path> --page 01 --base images/01_base.png \
   --out svg_output/01_cover.svg --font "Microsoft YaHei, Arial" [--title-font "SimSun, Cambria"] \
   [--lang zh-CN] [--page-role cover]
@@ -246,6 +248,15 @@ separate blocks.
 | `font_size` | Median of line width ÷ advance units (CJK 1.0 em, other glyphs 0.56 em) over lines of at least four units, else line height ÷ 1.15 |
 | `color` | Mean ink color of the first line (pixels farther than 60% of the maximum distance from the line box's border median) |
 | `skip` | Absent by default; set `true` for text that belongs to an image (photo signage, product print, logo lettering) |
+
+`merge-base` composites a text-removed image (from `image_gen.py
+--reference-image` or a host's native editor) into the source page: inside
+each unskipped OCR line box, grown by `--pad` canvas px and feathered by 2 px,
+it takes the inpainted pixels; everywhere else it keeps the source pixels, so
+photos, graphics, and rules outside the text boxes stay byte-identical to the
+page image. Run it after review, because `skip` blocks keep their source
+pixels. A rule or shape the inpainting extended into a text box stays in the
+merged base; the removal prompt prevents that, not the merge.
 
 **Review contract**: correct a misread by editing that line's `lines[].text`
 (OCR drops spaces around `+`, `·`, and Latin words and confuses `I` / `l`);
