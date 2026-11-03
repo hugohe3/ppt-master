@@ -64,7 +64,7 @@
     "skills/ppt-master/workflows/stages/visual-review.md": 1750,
     "skills/ppt-master/workflows/stages/generate-audio.md": 4000,
     "skills/ppt-master/workflows/profiles/beautify-pptx.md": 5000,
-    "skills/ppt-master/workflows/profiles/image-to-pptx.md": 3250,
+    "skills/ppt-master/workflows/profiles/image-to-pptx.md": 4250,
     "skills/ppt-master/workflows/edit-native-pptx.md": 4500,
     "skills/ppt-master/workflows/create-template.md": 10000,
     "skills/ppt-master/references/template-designer.md": 7000,
@@ -300,7 +300,7 @@
       "max_tokens": 140000
     },
     "route.generate.quick-generate.image-to-pptx": {
-      "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates. Ceiling raised after BUDGET_LOAD_SET reported 156580 tokens.",
+      "description": "Quick-only Image to PPTX with quick/full restore depth, OCR text evidence, registered reference-image layers, and shared plates. Ceiling raised after BUDGET_LOAD_SET reported 156580 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate.in-hand-image",
@@ -919,12 +919,12 @@
       "max_tokens": 7750
     },
     "profile.generate.image-to-pptx": {
-      "description": "Codex-supported, Quick-only profile for reconstructing raster page frames as layered editable PPTX.",
+      "description": "Quick-only profile for reconstructing raster page frames as editable PPTX at quick or full restore depth. Ceiling raised to 4250 when the restore-depth table, OCR text evidence, and the quick-depth page procedure were added (4046 tokens).",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/profiles/image-to-pptx.md"
       ],
-      "max_tokens": 4000
+      "max_tokens": 4250
     },
     "stage.generate.video-design": {
       "description": "Conditional recorded/self-running delivery design and prepared final-script handling shared by Default and Quick.",
