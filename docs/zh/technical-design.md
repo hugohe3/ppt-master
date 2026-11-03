@@ -6,7 +6,7 @@
 
 ## 设计哲学 —— AI 驱动工作流，人掌握最终判断
 
-PPT Master 交付的是一份**高质量、可继续编辑的 PowerPoint 草稿**，而不是封闭的最终成品。工作流先推理信息与论证，再设计页面，并按照明确的路线合同创作或保留 PowerPoint 原生对象。用户负责确认方向，并在 PowerPoint 中掌握最后一公里的判断。普通 Generate 的后续工作应当是对真实 deck 的精修，而不是从整页图片或浅层可编辑外壳重新搭建。**图片还原为 PPTX** [`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md) profile 是一条窄例外：它当前要求 Codex，始终直接启用 Quick，先把一张或多张输入图片规范化为有序页面画面清单，原生还原普通文字，必要时在严格视觉锁下重建低清身份或装饰图形，再把场景图片重建成注册图层。它仍不允许把整页截图皮肤冒充为可编辑还原。
+PPT Master 交付的是一份**高质量、可继续编辑的 PowerPoint 草稿**，而不是封闭的最终成品。工作流先推理信息与论证，再设计页面，并按照明确的路线合同创作或保留 PowerPoint 原生对象。用户负责确认方向，并在 PowerPoint 中掌握最后一公里的判断。普通 Generate 的后续工作应当是对真实 deck 的精修，而不是从整页图片或浅层可编辑外壳重新搭建。**图片还原为 PPTX** [`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md) profile 是一条窄例外：它需要能看图的 host，始终直接启用 Quick，先把一张或多张输入图片规范化为有序页面画面清单，默认（快速档）在去字底图上原生还原普通文字，完整档还会在严格视觉锁下重建低清身份或装饰图形，再把场景图片重建成注册图层。它仍不允许把整页截图皮肤冒充为可编辑还原。
 
 工作流提供演示文稿专用的推理、状态、合同与质量门；确定性工具负责转换、校验、打包和可重复文件操作。**最终质量上限仍由所选模型决定**，用户的审美与判断则负责评审和收尾。
 
@@ -40,7 +40,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 ## Generate PPTX 路线架构
 
-下图描述 Generate PPTX 的默认生命周期。`beautify-pptx` fidelity profile 默认使用该生命周期；同一请求明确要求快速模式时，则改用 `quick-generate`。图片还原为 PPTX 是 Generate 内另一个 fidelity profile：它当前要求 Codex 并始终直接启用 `quick-generate`，因此不进入 Default 运行时，也不需要用户另行说明“快速模式”。其他 Agent host 尚未适配该 profile，不对其行为作支持或承诺。图片还原为 PPTX 把每个规范化页面画面映射为一张幻灯片，以可见像素为表面真值，并原生还原普通文字。低清 Logo、图标、徽标或其他身份图形可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。Chart、table 和 data graphic 禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。整页截图 skin 始终禁止。Quick 会绕过独立规划 / 确认与预览终稿化；来源理解和资源准备仍按需运行，长 roster 上的 early gate 与一次无锁最终质量门始终保留。每次只加载一份运行时流程。Create Template 有独立的工作区生命周期；Edit Native PPTX 则把既有 deck 导入保留来源的 round-trip 工作区。本文后续路线表会覆盖全部三条顶层路线。
+下图描述 Generate PPTX 的默认生命周期。`beautify-pptx` fidelity profile 默认使用该生命周期；同一请求明确要求快速模式时，则改用 `quick-generate`。图片还原为 PPTX 是 Generate 内另一个 fidelity profile：它需要能看图的 host，需要生成的图层使用 host 的参考图编辑能力或 `image_gen.py --reference-image`（OpenAI、Gemini），并始终直接启用 `quick-generate`，因此不进入 Default 运行时，也不需要用户另行说明“快速模式”。图片还原为 PPTX 把每个规范化页面画面映射为一张幻灯片，以可见像素为表面真值，并原生还原普通文字（有 OCR 时以复核后的 OCR 结果为准）。快速档（默认）把其余像素全部保留在合成的去字底图里；完整档中，低清 Logo、图标、徽标或其他身份图形可根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。Chart、table 和 data graphic 禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。整页截图 skin 始终禁止。Quick 会绕过独立规划 / 确认与预览终稿化；来源理解和资源准备仍按需运行，长 roster 上的 early gate 与一次无锁最终质量门始终保留。每次只加载一份运行时流程。Create Template 有独立的工作区生命周期；Edit Native PPTX 则把既有 deck 导入保留来源的 round-trip 工作区。本文后续路线表会覆盖全部三条顶层路线。
 
 ```
 用户输入 (PDF/DOCX/XLSX/PPTX/URL/Markdown/主题文本)
@@ -158,7 +158,7 @@ narration 标记。
 |---|---|---|
 | 只有主题，或现有材料缺少实现用户目标所需的事实 | Generate PPTX Step 1 内运行 `topic-research` | 只有主题时立即研究；有材料时先转换 / 阅读，只补已识别的事实缺口 |
 | 有源文件或对话文本，deck 结构可以重想 | Generate PPTX | Strategist 可以拆分、合并、删除、重排和重设计 |
-| 一张或多张图片中包含的页面画面需要变成分层可编辑幻灯片 | Generate PPTX + 图片还原为 PPTX（`image-to-pptx`）profile | 当前要求 Codex 且始终直接启用 Quick；先规范化全部页面画面，每个画面映射一张幻灯片；普通文字原生还原；低清 Logo / 图标 / 装饰只能在锁定身份、轮廓、比例、颜色和字标的前提下参考重建；chart / table / data graphic 禁止生成式重建，必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`；场景至少拆成干净背景层与人物 / 前景层；多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再用 grid slice 或 SVG bbox crop 拆分；禁止相似替代和整页截图 skin |
+| 一张或多张图片中包含的页面画面需要变成分层可编辑幻灯片 | Generate PPTX + 图片还原为 PPTX（`image-to-pptx`）profile | 需要能看图的 host，生成图层需要参考图路径，始终直接启用 Quick；先规范化全部页面画面，每个画面映射一张幻灯片；普通文字原生还原（装有 OCR 时以复核后的 OCR 为准）；快速档（默认）把其余像素保留在合成的去字底图里，完整档继续：低清 Logo / 图标 / 装饰只能在锁定身份、轮廓、比例、颜色和字标的前提下参考重建；chart / table / data graphic 禁止生成式重建，必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`；场景至少拆成干净背景层与人物 / 前景层；多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再用 grid slice 或 SVG bbox crop 拆分；禁止相似替代和整页截图 skin |
 | 显式要求快速生成 | Generate PPTX + `quick-generate` profile | 按需转换 / 阅读来源、研究事实缺口并准备所需资源；用户明确提出的要求照做，其余内容、页结构、视觉与资源由当前 Agent 在上下文中决定，跳过 Strategist / 确认 / spec / lock / finalize，手写 SVG、通过一次无锁 final gate 后导出最终 PPTX |
 | PPTX 作为源材料，用户允许重构故事和页结构 | Generate PPTX，经 `ppt_to_md` + `pptx_intake` | PPTX 身份和几何是事实与候选，不是复刻约束 |
 | 原生 PPTX 模板 + 新材料 / 新主题 | Edit Native PPTX（`edit-native-pptx`） | 导入 round-trip 工作区；用 `page_plan.json` 选页、重排、重复或省略，只编辑计划中的页面 |
@@ -429,7 +429,7 @@ Strategist 先创建恰好三套完整、可行、贴合项目的方案，再把
 尤其是，启用旁白可以在 Design Spec 中启用 Speaker Notes 的最终有效结果，
 但绝不会改写原始的备注选择。
 
-**图片分析以重算元数据为先，只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。默认流程中，Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。`quick-generate` 则由当前 Agent 根据当前上下文决策准备实际选中的资源，并采用同样的有界分析；不写 Design Spec 投影或通用资源清单。图片还原为 PPTX 的规范页面画面是窄例外：每个画面会完整检查一次，以建立源证据并区分普通文字、身份 / 装饰图形、chart / table / data graphic、场景图片与遮挡关系。之后只重开当前页 / 当前区域，并由当前 Codex Agent 通过现有参考图路径准备注册的干净背景层与人物 / 前景层。低清 Logo、图标和装饰只能在锁定身份、轮廓、比例、颜色和字标的前提下参考重建。Chart、table 和 data graphic 禁止生成式重建，必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。用户图、抽取图、网络图、AI 图和切片图仍统一汇入同一张可度量事实表。
+**图片分析以重算元数据为先，只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。默认流程中，Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。`quick-generate` 则由当前 Agent 根据当前上下文决策准备实际选中的资源，并采用同样的有界分析；不写 Design Spec 投影或通用资源清单。图片还原为 PPTX 的规范页面画面是窄例外：每个画面会完整检查一次，以建立源证据并区分普通文字、身份 / 装饰图形、chart / table / data graphic、场景图片与遮挡关系。之后只重开当前页 / 当前区域，并由当前 Agent 通过 host 的参考图编辑能力或 `image_gen.py --reference-image` 准备合成的去字底图（快速档）或注册的干净背景层与人物 / 前景层（完整档）。低清 Logo、图标和装饰只能在锁定身份、轮廓、比例、颜色和字标的前提下参考重建。Chart、table 和 data graphic 禁止生成式重建，必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。用户图、抽取图、网络图、AI 图和切片图仍统一汇入同一张可度量事实表。
 
 **原生公式是页面创作对象，不是图片资源。** 独立块级公式在
 `data-pptx-replace-with="formula"` group 中保存源 LaTeX，并导出
@@ -468,7 +468,7 @@ relationship；带页计划时只在输出目标唯一时重映射内部跳转�
 
 ## 执行纪律
 
-Generate 路由会在加载流程前选定一份运行时权威：[`workflows/generate-pptx.md`](../../skills/ppt-master/workflows/generate-pptx.md) 拥有默认 Step 1–7，[`quick-generate.md`](../../skills/ppt-master/workflows/profiles/quick-generate.md) 拥有自足的 Quick 生命周期；[`image-to-pptx.md`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md) 与 [`beautify-pptx.md`](../../skills/ppt-master/workflows/profiles/beautify-pptx.md) 是互斥的 fidelity profile。图片还原为 PPTX 当前要求 Codex，无需独立 Quick 信号就会直接启用 Quick；其他 Agent host 尚未适配，暂不支持。Beautify 则继续根据显式 Quick 意图在 Default 与 Quick 中选择。[`SKILL.md`](../../skills/ppt-master/SKILL.md) 只拥有全局执行纪律，以及交接到 `routing.md` 的强制入口。这些规则整体看起来很官僚，但存在的理由是：LLM 默认行为是“让我在这一 turn 里把整个问题搞定”，而这恰好是串行流水线最不该有的形状——串行流水线要求每一步的输出都是有界、过 checkpoint、被下一步消费的。它们共同关闭了实际反复出现的失败模式：乱序执行、AI 代为做用户设计决策、跨阶段打包、前置条件未满足、投机预先准备、子代理上下文丢失、分批漂移、长 deck 色彩字体漂移、脚本批量生成 SVG 漂移，以及路由歧义。
+Generate 路由会在加载流程前选定一份运行时权威：[`workflows/generate-pptx.md`](../../skills/ppt-master/workflows/generate-pptx.md) 拥有默认 Step 1–7，[`quick-generate.md`](../../skills/ppt-master/workflows/profiles/quick-generate.md) 拥有自足的 Quick 生命周期；[`image-to-pptx.md`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md) 与 [`beautify-pptx.md`](../../skills/ppt-master/workflows/profiles/beautify-pptx.md) 是互斥的 fidelity profile。图片还原为 PPTX 需要能看图的 host，无需独立 Quick 信号就会直接启用 Quick。Beautify 则继续根据显式 Quick 意图在 Default 与 Quick 中选择。[`SKILL.md`](../../skills/ppt-master/SKILL.md) 只拥有全局执行纪律，以及交接到 `routing.md` 的强制入口。这些规则整体看起来很官僚，但存在的理由是：LLM 默认行为是“让我在这一 turn 里把整个问题搞定”，而这恰好是串行流水线最不该有的形状——串行流水线要求每一步的输出都是有界、过 checkpoint、被下一步消费的。它们共同关闭了实际反复出现的失败模式：乱序执行、AI 代为做用户设计决策、跨阶段打包、前置条件未满足、投机预先准备、子代理上下文丢失、分批漂移、长 deck 色彩字体漂移、脚本批量生成 SVG 漂移，以及路由歧义。
 
 全路由通用的停止 / 继续规则以 [`failure-recovery.md`](../../skills/ppt-master/workflows/governance/failure-recovery.md) 为准；其中具体故障矩阵与续跑入口目前覆盖 Generate PPTX。本节不复制这些规则。
 
@@ -791,7 +791,7 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 
 | 分类 | 文档 | 归属路线 |
 |---|---|---|
-| 生成 profile | `image-to-pptx`、`beautify-pptx`、`quick-generate` | 图片还原为 PPTX 当前要求 Codex、始终直接启用 Quick，规范化页面画面、原生还原普通文字，必要时在严格视觉锁下重建低清身份 / 装饰图形，但 chart / table / data graphic 只能使用可核对数值的原生对象、精确源资产或 `manual_required`，并把场景至少拆成干净背景层与人物 / 前景层；Beautify 保留措辞 / 页数 / 页序并重做布局，只在明确快速时选择 Quick；Quick 负责直接 SVG→PPTX 生命周期 |
+| 生成 profile | `image-to-pptx`、`beautify-pptx`、`quick-generate` | 图片还原为 PPTX 需要能看图的 host、始终直接启用 Quick，规范化页面画面、默认在去字底图上原生还原普通文字，完整档必要时在严格视觉锁下重建低清身份 / 装饰图形，但 chart / table / data graphic 只能使用可核对数值的原生对象、精确源资产或 `manual_required`，并把场景至少拆成干净背景层与人物 / 前景层；Beautify 保留措辞 / 页数 / 页序并重做布局，只在明确快速时选择 Quick；Quick 负责直接 SVG→PPTX 生命周期 |
 | 模板子工作流 | `create-brand`、`create-style`、`create-layout`、`create-deck` | Create Template 在“仅身份 / 无 roster 的方向与方法 / 品牌中立且应用中立的结构 / 应用语境与身份结构一体化”中只分派一个 |
 | 模板输入阶段 | `apply-template-workspace` | Default Stage 1 确认至少一个工作区后、Stage 2 前运行；自由设计跳过安装，Quick 可直接提供精确 root |
 | 生成阶段 | `topic-research`、`resume-execute`、`refine-spec`、`verify-charts`、`visual-review`、`live-preview`、`customize-animations` | Generate PPTX 中各自定义的 intake、planning、editing、quality 或 post-processing 节点 |
