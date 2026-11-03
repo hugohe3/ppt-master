@@ -51,7 +51,7 @@
   </tr>
   <tr>
     <td width="180"><a href="https://modelgo.ai/?utm_source=ppt-master&amp;utm_medium=sponsorship&amp;utm_content=readme01&amp;campaign_id=ppt-master-github&amp;ad_group_id=readme01"><img src="docs/assets/sponsors/modelgo.svg" alt="ModelGo" width="150"></a></td>
-    <td>感谢 ModelGo 赞助了本项目！<br><br>ModelGo 是一个稳定、高效的企业级 AI API 聚合平台，一个 API Key 即可调用 Claude、OpenAI、Gemini、DeepSeek 等主流 AI 模型，帮助开发者和企业以更低成本快速构建 AI 应用。<br><br>ModelGo 为本项目用户提供专属福利：注册即送 $0.5 试用额度，完成首次 API 调用再送 $2，邀请新用户额外获得 $1 奖励！ 平台还提供阶梯式消费返佣机制，用得越多，返得越多，畅享 AI 模型调用。<br><br>此外，ModelGo 支持 SLA 服务保障、可视化监控面板等企业级功能，保障 API 调用稳定可靠，满足生产环境部署需求。<br><br>立即访问 <a href="https://modelgo.ai/?utm_source=ppt-master&amp;utm_medium=sponsorship&amp;utm_content=readme01&amp;campaign_id=ppt-master-github&amp;ad_group_id=readme01">ModelGo 官网</a> 注册体验，开启高效 AI 开发！</td>
+    <td>感谢 ModelGo 赞助了本项目！ModelGo 是一个稳定、高效的企业级 AI API 聚合平台，一个 API Key 即可调用 Claude、OpenAI、Gemini、DeepSeek 等主流 AI 模型，帮助开发者和企业以更低成本快速构建 AI 应用。ModelGo 为本项目用户提供专属福利：注册即送 $0.5 试用额度，完成首次 API 调用再送 $2，邀请新用户额外获得 $1 奖励！ 平台还提供阶梯式消费返佣机制，用得越多，返得越多，畅享 AI 模型调用。此外，ModelGo 支持 SLA 服务保障、可视化监控面板等企业级功能，保障 API 调用稳定可靠，满足生产环境部署需求。立即访问 <a href="https://modelgo.ai/?utm_source=ppt-master&amp;utm_medium=sponsorship&amp;utm_content=readme01&amp;campaign_id=ppt-master-github&amp;ad_group_id=readme01">ModelGo 官网</a> 注册体验，开启高效 AI 开发！</td>
   </tr>
 </table>
 
