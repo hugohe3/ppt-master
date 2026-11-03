@@ -244,7 +244,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
 
-For OpenAI, select a built-in `--voice-id` from the offline list; no key is needed to list it:
+For OpenAI, select a built-in `--voice-id` from the offline list (no key is needed to list it), or pass a recording-based custom voice ID (`voice_...`):
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --provider openai --list-voices
@@ -254,7 +254,7 @@ Audio embedded into PPTX must use a PowerPoint-reliable format: `m4a` (AAC), `mp
 
 ## Use a cloned voice
 
-Four supported cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master consumes those providers' cloned `voice_id` values. Edge does not support cloning; this OpenAI backend accepts built-in voices only.
+Five supported cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice**, **OpenAI** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master consumes those providers' cloned `voice_id` values. Edge does not support cloning. OpenAI voices designed from a text prompt work only in GPT-Live, so this backend cannot use them.
 
 **The split of responsibilities**: voice cloning itself happens in the provider's console or API — you upload a sample (typically 10 s – a few minutes of clean audio) and the provider returns a `voice_id`. PPT Master is on the *consumption* side: it takes that `voice_id` and reads every slide's notes in that voice. PPT Master never uploads your sample anywhere.
 
@@ -264,6 +264,7 @@ Four supported cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **Cosy
 | MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com) → Voice Clone | ~10 s – 5 min |
 | Qwen TTS | [DashScope console](https://dashscope.console.aliyun.com) → Speech Synthesis → Voice Replica | ~10 s – 5 min |
 | CosyVoice | [DashScope console](https://dashscope.console.aliyun.com) → Speech Synthesis → Voice Replica | ~10 s – 5 min |
+| OpenAI | [Custom voices API](https://developers.openai.com/api/docs/guides/custom-voices) — recording-based voices are limited to eligible customers and require a recorded consent phrase | ≥5 s of speech, ≤60 s |
 
 **How to use it after cloning** — in chat, just say so. The AI will skip the voice-recommendation step and use your `voice_id` directly:
 
@@ -280,13 +281,13 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --minimax-model speech-2.8-hd
 ```
 
-Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` as needed; `--voice-id` accepts the cloned voice the same way it accepts a system voice.
+Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` / `openai` as needed; `--voice-id` accepts the cloned voice the same way it accepts a system voice.
 
 **Notes**:
 
 - **Authorization** — only clone voices you own or have explicit permission to use. Each provider's terms forbid impersonation.
 - **Language coverage** — check the selected model's supported languages and listen to a sample covering the deck's language mix before a full run.
-- **Subtitle capability** — cloned ElevenLabs and supported CosyVoice voices can produce provider-timed SRT; cloned Qwen voices remain audio-only under the current API.
+- **Subtitle capability** — cloned ElevenLabs and supported CosyVoice voices can produce provider-timed SRT; cloned Qwen and OpenAI voices remain audio-only.
 - **Provider retention** — reuse the `voice_id` while that voice remains available in your provider account. Retention, deletion, and expiration policies are provider-specific.
 
 ## Dependency

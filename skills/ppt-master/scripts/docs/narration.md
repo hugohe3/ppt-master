@@ -38,7 +38,7 @@ The OpenAI backend uses Realtime WebSocket output and saves PCM16 mono 24 kHz WA
 | `--openai-model` | Defaults to `OPENAI_TTS_MODEL`, then `gpt-realtime-2.1-mini` |
 | `--openai-api-key-env` | Names the key environment variable; defaults to `OPENAI_API_KEY` |
 | `OPENAI_TTS_BASE_URL` | A **complete `wss://` endpoint**, including its path, without URL credentials or fragments; defaults to `wss://api.openai.com/v1/realtime`. URL parsing preserves other query parameters and replaces any existing `model` parameter with the selected model. It never derives from image settings `OPENAI_BASE_URL` or `OPENAI_MODEL`. A relay must explicitly support Realtime WebSocket |
-| `--voice-id` | Required CLI selection from `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, `cedar`; never stored in `.env`. `--provider openai --list-voices` prints this static built-in list without a key or network request |
+| `--voice-id` | Required CLI selection from `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, `cedar`, or a recording-based custom voice ID (`voice_...`, sent as `{"id": ...}` and accepted when `session.updated` echoes it as that object or the bare ID); never stored in `.env`. Prompt-designed voices are GPT-Live-only and the Realtime server rejects them, as it rejects unknown IDs, with an `error` event before any audio. `--provider openai --list-voices` prints the static built-in list without a key or network request |
 | `--openai-speed` | Default `1`; accepted range `0.25–1.5` |
 | `--openai-instructions` | Optional delivery/tone hint; it cannot authorize adding, removing, answering, or rewriting the note text |
 

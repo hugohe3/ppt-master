@@ -236,7 +236,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list
 
 MiniMax、Qwen 与 CosyVoice 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台 / API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
 
-OpenAI 使用内置音色名称作为 `--voice-id`。以下命令离线列出清单，无需密钥：
+OpenAI 使用内置音色名称或录音复刻的自定义音色 ID（`voice_...`）作为 `--voice-id`。以下命令离线列出内置清单，无需密钥：
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --provider openai --list-voices
@@ -246,7 +246,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider openai --list-voi
 
 ## 使用复刻音色
 
-已支持的四个云端服务商 —— **ElevenLabs**、**MiniMax**、**Qwen**、**CosyVoice** —— 都支持用一段较短的音频样本复刻一个新音色，再用这个音色合成新语音。PPT Master 可使用这四家服务商的复刻 `voice_id`。Edge 不支持复刻；本次 OpenAI 后端仅接受内置音色。
+已支持的五个云端服务商 —— **ElevenLabs**、**MiniMax**、**Qwen**、**CosyVoice**、**OpenAI** —— 都支持用一段较短的音频样本复刻一个新音色，再用这个音色合成新语音。PPT Master 可使用这五家服务商的复刻 `voice_id`。Edge 不支持复刻。OpenAI 用文字描述设计的音色只能在 GPT-Live 中使用，本后端无法使用。
 
 **职责切分**：声音复刻本身在服务商的控制台或 API 完成——你上传一段样本（一般 10 秒到几分钟的干净录音），平台给你返回一个 `voice_id`。PPT Master 在*消费*侧：拿到 `voice_id` 后用这个音色逐页朗读备注。PPT Master 不会把你的样本上传到任何地方。
 
@@ -256,6 +256,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider openai --list-voi
 | MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com) → 语音克隆 | 10 秒 – 5 分钟 |
 | Qwen TTS | [DashScope 控制台](https://dashscope.console.aliyun.com) → 语音合成 → 声音复刻 | 10 秒 – 5 分钟 |
 | CosyVoice | [DashScope 控制台](https://dashscope.console.aliyun.com) → 语音合成 → 音色复刻 | 10 秒 – 5 分钟 |
+| OpenAI | [Custom voices API](https://developers.openai.com/api/docs/guides/custom-voices)——录音复刻仅限符合资格的客户，并需录制授权语 | 至少 5 秒语音，不超过 60 秒 |
 
 **复刻完之后怎么用** —— 在聊天里告诉 AI 即可，AI 会跳过音色推荐环节直接用你的 `voice_id`：
 
@@ -272,13 +273,13 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --minimax-model speech-2.8-hd
 ```
 
-把 `--provider minimax` 换成 `elevenlabs` / `qwen` / `cosyvoice` 就能切到对应平台；`--voice-id` 接收复刻音色和接收系统音色的方式完全一样。
+把 `--provider minimax` 换成 `elevenlabs` / `qwen` / `cosyvoice` / `openai` 就能切到对应平台；`--voice-id` 接收复刻音色和接收系统音色的方式完全一样。
 
 **注意**：
 
 - **授权** —— 只复刻你自己拥有的、或拿到了明确授权的声音。每个服务商的服务条款都禁止冒用他人声音。
 - **语言覆盖** —— 检查所选模型支持的语言，整份生成前先试听覆盖 deck 语言组合的样本。
-- **字幕能力** —— ElevenLabs 复刻音色和受支持的 CosyVoice 复刻音色可以生成服务商原生计时 SRT；Qwen 复刻音色在当前 API 下仍只生成音频。
+- **字幕能力** —— ElevenLabs 复刻音色和受支持的 CosyVoice 复刻音色可以生成服务商原生计时 SRT；Qwen 与 OpenAI 复刻音色仍只生成音频。
 - **服务商保留策略** —— 只要该音色仍存在于你的服务商账户中，就可以继续复用对应 `voice_id`；保留、删除与过期规则以各平台政策为准。
 
 ## 依赖

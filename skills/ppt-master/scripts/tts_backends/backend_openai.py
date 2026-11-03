@@ -35,6 +35,9 @@ from tts_backends.backend_common import publish_audio_bytes, read_api_key
 DEFAULT_ENDPOINT = "wss://api.openai.com/v1/realtime"
 DEFAULT_MODEL = "gpt-realtime-2.1-mini"
 VOICES = ("alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar")
+# Recording-based custom voices are passed as {"id": "voice_..."}; prompt-designed
+# voices are GPT-Live-only and are rejected by the Realtime server.
+CUSTOM_VOICE_PREFIX = "voice_"
 HANDSHAKE_TIMEOUT = 30
 RECEIVE_IDLE_TIMEOUT = 60
 PAGE_TIMEOUT = 600
@@ -61,11 +64,23 @@ def read_openai_api_key(env_name: str = "OPENAI_API_KEY") -> str:
     return read_api_key(env_name, label="OpenAI Realtime")
 
 
+def is_supported_voice(voice_id: str) -> bool:
+    return voice_id in VOICES or (
+        voice_id.startswith(CUSTOM_VOICE_PREFIX) and len(voice_id) > len(CUSTOM_VOICE_PREFIX)
+    )
+
+
+def voice_setting(voice_id: str) -> str | dict:
+    return voice_id if voice_id in VOICES else {"id": voice_id}
+
+
 def print_voices() -> None:
     """List built-in Realtime voices without credentials or network access."""
     print("OpenAI Realtime built-in voices (--voice-id):")
     for voice in VOICES:
         print(f"  {voice}")
+    print("A recording-based custom voice ID (voice_...) is also accepted;")
+    print("prompt-designed voices work only in GPT-Live, not Realtime.")
     print("Audio only; no provider-timed SRT subtitles.")
 
 
@@ -162,6 +177,8 @@ def _verify_config(effective: object, requested: dict, path: str = "session") ->
     for key, value in requested.items():
         if key not in effective:
             raise RuntimeError(f"OpenAI session.updated missing {path}.{key}; page not generated.")
+        if key == "voice" and isinstance(value, dict) and effective[key] == value.get("id"):
+            continue  # A custom voice may be echoed as its bare ID.
         if isinstance(value, dict):
             _verify_config(effective[key], value, f"{path}.{key}")
         elif effective[key] != value:
@@ -325,8 +342,11 @@ async def generate(
     base_url: str | None = None,
 ) -> None:
     """Generate one page without retries and atomically publish only validated audio."""
-    if voice_id not in VOICES:
-        raise RuntimeError("Choose an OpenAI built-in --voice-id from --provider openai --list-voices.")
+    if not is_supported_voice(voice_id):
+        raise RuntimeError(
+            "Choose an OpenAI built-in --voice-id from --provider openai --list-voices "
+            "or a recording-based custom voice ID (voice_...)."
+        )
     if not 0.25 <= speed <= 1.5:
         raise RuntimeError("--openai-speed must be between 0.25 and 1.5.")
     if not text.strip():
@@ -346,7 +366,7 @@ async def generate(
         "tools": [],
         "audio": {
             "input": {"turn_detection": None},
-            "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": voice_id, "speed": speed},
+            "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": voice_setting(voice_id), "speed": speed},
         },
     }
     try:

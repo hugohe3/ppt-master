@@ -661,8 +661,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"--voice-id is required for --provider {args.provider}")
         raise AssertionError("unreachable")
 
-    if args.provider == "openai" and voice_id not in backend_openai.VOICES:
-        parser.error("--voice-id must be an OpenAI built-in voice; run --provider openai --list-voices")
+    if args.provider == "openai" and not backend_openai.is_supported_voice(voice_id):
+        parser.error(
+            "--voice-id must be an OpenAI built-in voice (--provider openai --list-voices) "
+            "or a recording-based custom voice ID (voice_...)"
+        )
         raise AssertionError("unreachable")
 
     if args.subtitle_max_chars < 1:

@@ -418,11 +418,33 @@ class OpenAINarrationTests(unittest.TestCase):
 
     def test_invalid_speed_and_voice_are_rejected_before_network(self) -> None:
         for arguments in (("--openai-speed", "0.24"), ("--openai-speed", "1.51"),
-                          ("--openai-speed", "nan"), ("--voice-id", "not-a-voice")):
+                          ("--openai-speed", "nan"), ("--voice-id", "not-a-voice"),
+                          ("--voice-id", "voice_")):
             with self.subTest(arguments=arguments), patch("aiohttp.ClientSession") as session:
                 code, _ = self._invoke(str(self.project), "--provider", "openai", "--voice-id", "marin", *arguments)
                 self.assertEqual(code, 2)
                 session.assert_not_called()
+
+    def test_custom_voice_is_sent_as_id_object_and_accepts_either_echo(self) -> None:
+        def bare_id(session: dict) -> None:
+            session["audio"]["output"]["voice"] = "voice_abc123"
+
+        for config_change in (None, bare_id):
+            with self.subTest(echo="bare" if config_change else "object"):
+                code, output, websocket, _, _ = self._generate(
+                    "Read this.", config_change=config_change, arguments=("--voice-id", "voice_abc123"),
+                )
+                self.assertEqual(code, 0, output)
+                update = next(item for item in websocket.sent if item["type"] == "session.update")
+                self.assertEqual(update["session"]["audio"]["output"]["voice"], {"id": "voice_abc123"})
+
+    def test_custom_voice_echoed_as_other_id_does_not_generate(self) -> None:
+        def other_id(session: dict) -> None:
+            session["audio"]["output"]["voice"] = {"id": "voice_other"}
+
+        self._assert_failure_preserves_outputs(self._generate(
+            "Read this.", config_change=other_id, arguments=("--voice-id", "voice_abc123"),
+        ))
 
     def test_endpoint_model_and_key_are_isolated_from_image_configuration(self) -> None:
         with patch.dict(os.environ, {
