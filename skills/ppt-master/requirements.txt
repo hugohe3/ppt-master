@@ -105,6 +105,16 @@ google-genai>=1.0.0
 # OpenAI 兼容后端复用上方网页工具所需的 requests。
 
 # ─────────────────────────────────────────────────────────────
+# Image OCR / 图片文字识别 (skills/ppt-master/scripts/image_ocr.py) — optional, not installed
+# ─────────────────────────────────────────────────────────────
+# Image to PPTX reads page text and positions with OCR when these are present;
+# about 170 MB with OpenCV, so they stay commented out. Install on demand:
+# Image to PPTX 有 OCR 时用它读取页面文字与位置；连同 OpenCV 约 170 MB，故默认不装。按需安装：
+#   pip install rapidocr onnxruntime
+# rapidocr>=3.0
+# onnxruntime>=1.17
+
+# ─────────────────────────────────────────────────────────────
 # SVG Editor / SVG 编辑器 (skills/ppt-master/scripts/svg_editor/server.py)
 # ─────────────────────────────────────────────────────────────
 # Localhost web editor for annotating SVG elements with edit instructions.

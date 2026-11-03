@@ -214,6 +214,53 @@ new record inherits that legal provenance and records `derived_from` plus the
 ordered `treatments`. Run `analyze_images.py` after all planned derivatives are
 ready so the inventory reflects the files that SVG authoring will consume.
 
+## `image_ocr.py`
+
+OCR helper for the [Image to PPTX](../../workflows/profiles/image-to-pptx.md)
+profile. `rapidocr` and `onnxruntime` are optional (about 170 MB with their
+OpenCV dependency) and are not installed by `requirements.txt`; `scan` prints
+the install command and exits `2` when they are missing.
+
+```bash
+pip install rapidocr onnxruntime
+python3 scripts/image_ocr.py scan <project_path> images/source-pages/01.png [...] --canvas 1280x720
+python3 scripts/image_ocr.py text-layer <project_path> --page 01 --base images/01_base.png \
+  --out svg_output/01_cover.svg --font "Microsoft YaHei, Arial" [--title-font "SimSun, Cambria"] \
+  [--lang zh-CN] [--page-role cover]
+```
+
+`scan` writes `analysis/ocr/<page-stem>.json` per page image and prints one
+line per block (`?` marks a block whose lowest line confidence is below 0.9).
+Coordinates are canvas pixels: `--canvas` must be the deck canvas, and the
+scale is `canvas width / page pixel width`. Lines are merged into one block
+when they share a left edge (within 0.6 line heights), a height (within 25%),
+an ink color (RGB distance below 64), and a vertical gap of at most 0.9 line
+heights; labels, notes, and body copy with different ink therefore stay
+separate blocks.
+
+| Block field | Meaning |
+|---|---|
+| `id` | Stable `tNN` id in reading order; becomes the SVG group id |
+| `lines[]` | One entry per OCR line: `text`, `score`, `x`, `y`, `w`, `h` (canvas px). `text-layer` places exactly these line strings |
+| `text` | The joined lines, for reading only; editing it changes nothing |
+| `font_size` | Median of line width ÷ advance units (CJK 1.0 em, other glyphs 0.56 em) over lines of at least four units, else line height ÷ 1.15 |
+| `color` | Mean ink color of the first line (pixels farther than 60% of the maximum distance from the line box's border median) |
+| `skip` | Absent by default; set `true` for text that belongs to an image (photo signage, product print, logo lettering) |
+
+**Review contract**: correct a misread by editing that line's `lines[].text`
+(OCR drops spaces around `+`, `·`, and Latin words and confuses `I` / `l`);
+mark image-owned text `skip: true`; keep the line count so line positions
+stay registered. `text-layer` then writes one SVG: a full-canvas
+`data-pptx-role="background"` image of the text-free base, and one root group
+per unskipped block with one `<text>` whose later lines are positioned
+`<tspan>` rows. Baselines are `line top + line height / 2 + 0.36 × font size`;
+the largest block (and only the first within 85% of it) takes `--title-font`
+and the group id `title`. Each group's `data-pptx-bounds` spans the estimated
+glyph extent plus a 4 px margin; overlapping zones are split at the midpoint
+of their overlap. The generated page runs through the Quick final checker
+like any page; weight, emphasis runs, and alignment other than left-aligned
+are not inferred and are added by hand when the source shows them.
+
 ## `analyze_images.py`
 
 Analyze objective image-file facts in a project directory before writing the
