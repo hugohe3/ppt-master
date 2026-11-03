@@ -4,13 +4,13 @@ description: Quick-only Generate profile for reconstructing one or more source i
 
 # Image to PPTX Profile
 
-> Quick-only Generate profile, not a top-level route. Normalize supplied images into the represented page roster, then rebuild each page at the chosen restore depth: quick keeps every non-text pixel in a text-removed base and restores all visible text natively; full also splits graphics and image content into native shapes, identity-faithful source graphics, and independently placeable image layers. The visible result is the reference truth, but the output is not a screenshot skin. No redesign, no Strategist, no confirmation.
+> Quick-only Generate profile, not a top-level route. Normalize supplied images into the represented page roster, then rebuild each page as native text over a text-removed base, plus native shapes, identity-faithful source graphics, and independently placeable image layers wherever the page holds objects that must stay independent. The visible result is the reference truth, but the output is not a screenshot skin. No redesign, no Strategist, no confirmation.
 
 **Trigger**: the user supplies raster visuals (approved mockups, rendered slides, contact sheets, flattened pages) and explicitly asks to restore the represented pages as a PPTX. Photos, illustrations, or moodboards used as resources for a new story do not activate it.
 
-**Support boundary — vision host plus a reference-image path**: the main agent must view images, because every page, layer, and recomposition is inspected. A layer built only from source pixels, native text, and native shapes needs no generator. Every generated layer — a text-removed image, an isolated subject, a reconstructed graphic — uses one reference-image path: the host's native reference-image editing, or `python3 ${SKILL_DIR}/scripts/image_gen.py --reference-image` on a backend that accepts a reference image (OpenAI and Gemini). With neither, a generated layer is `Needs-Manual` and blocks export. **Default — backend per operation** (an explicit user backend wins; a single configured backend serves both): text removal `-b openai`, registered layers and plates `-b gemini`. Whichever backend made an output, the §6.1 residue check and the §6 layer inspection decide whether it is usable.
+**Support boundary — vision host plus a reference-image path**: the main agent must view images, because every page, layer, and recomposition is inspected. A layer built only from source pixels, native text, and native shapes needs no generator. Every generated layer — a text-removed image, an isolated subject, a reconstructed graphic — uses one reference-image path: the host's native reference-image editing, or `python3 ${SKILL_DIR}/scripts/image_gen.py --reference-image` on a backend that accepts a reference image (OpenAI and Gemini). With neither, a generated layer is `Needs-Manual` and blocks export. **Default — use the paths that exist** (an explicit user choice wins): with more than one, text removal and full-canvas bases use `-b openai` and isolated subjects and plates use `-b gemini`; with one, it does every operation. §6.1's residue and registration checks decide whether an output is usable, whichever path made it.
 
-**Hard rule — Quick only**: always load [`quick-generate.md`](./quick-generate.md), never `generate-pptx.md`, without the user saying "Quick"; skip Strategist, Confirm UI, template selection, Design Spec, lock, and the Default gate cadence. The main agent decides the reconstruction, prepares all resources, authors SVG (quick depth starts from the `image_ocr.py text-layer` page), runs Quick's checker gates, and exports.
+**Hard rule — Quick only**: always load [`quick-generate.md`](./quick-generate.md), never `generate-pptx.md`, without the user saying "Quick"; skip Strategist, Confirm UI, template selection, Design Spec, lock, and the Default gate cadence. The main agent decides the reconstruction, prepares all resources, authors SVG (each page starts from the `image_ocr.py text-layer` page, finished by hand), runs Quick's checker gates, and exports.
 
 **Hard rule — source surface, not template application**: stay in Quick free design; never install or apply a Brand/Style/Layout/Deck workspace — it would compete with the canonical page geometry. A reusable-system request routes to Create Template.
 
@@ -27,15 +27,6 @@ description: Quick-only Generate profile for reconstructing one or more source i
 | A semantic source PPTX exists and only its layout should improve | [`beautify-pptx.md`](./beautify-pptx.md) |
 
 **Hard rule — mutually exclusive fidelity profiles**: Image to PPTX and Beautify never compose — Beautify preserves semantic PPTX content while redesigning layout; this profile preserves a rendered surface while rebuilding object and image-layer boundaries.
-
-**Restore depth** — decide once per deck before §3, without asking; a page-level request may override it:
-
-| Depth | When | Page result |
-|---|---|---|
-| Quick (default) | Every request that does not ask for editable or movable graphics | §6.1: one merged text-removed base keeps every non-text pixel — photos, illustrations, charts, rules, icons — and every visible string is native text; §3–§4 do not apply |
-| Full | The user asks to edit, move, recolor, or animate graphics, shapes, charts, or image parts | §3–§6: content families, the minimum useful layer stack, and native shapes |
-
-A quick page that later needs an editable object is rebuilt at full depth for that page only.
 
 **Hard rule — flat final deck**: output stays `pptx_structure.mode: flat`. Pixels do not prove Master/Layout identity, placeholders, theme ancestry, hidden objects, notes, animations, chart data sources, or authoring history; never infer them.
 
@@ -63,7 +54,7 @@ Archive originals under `sources/`; keep normalized pages under `images/source-p
 
 ## 3. Reconstruct by Content Family
 
-Full depth only. Classify visible regions by what they are, not by how easy they are to crop.
+Classify visible regions by what they are, not by how easy they are to crop.
 
 | Content family | Default realization | Non-negotiable boundary |
 |---|---|---|
@@ -82,7 +73,7 @@ Full depth only. Classify visible regions by what they are, not by how easy they
 
 ## 4. Build the Minimum Useful Layer Stack
 
-Full depth only. Decide per page the smallest stack that makes the intended objects independent; never split merely to maximize layer count. Typical bottom-to-top order: `base` (clean full-canvas background with every planned removable subject, foreground object, and editable text removed, hidden pixels reconstructed where necessary) → `midground-*` → `subject-*` (independently movable cutouts) → `foreground-*` (effects, foliage, particles, framing that cross the subject or native objects) → `source-graphic-*` (exact or reconstructed marks plus exact/native data graphics at their z-order) → `native-text-*` and exact native shapes.
+Decide per page the smallest stack that makes the intended objects independent; never split merely to maximize layer count. Typical bottom-to-top order: `base` (clean full-canvas background with every planned removable subject, foreground object, and editable text removed, hidden pixels reconstructed where necessary) → `midground-*` → `subject-*` (independently movable cutouts) → `foreground-*` (effects, foliage, particles, framing that cross the subject or native objects) → `source-graphic-*` (exact or reconstructed marks plus exact/native data graphics at their z-order) → `native-text-*` and exact native shapes. **Hard rule — occluders stay above**: an object that covers a layer in the page is realized above that layer — native shape, native text, or its own layer — never only in the base, because a generated layer may complete what that object hid.
 
 **Registered-group rule**: every base/midground/subject/foreground layer in a group stays registered to the same canonical page or scene bbox; source-derived members keep recorded geometry, every generated member starts from that canonical source with canvas, position, scale, pose, lighting, and style preserved; never trim registered full-canvas layers. When scene layers need reference editing, use [`image-generator.md`](../../references/image-generator.md) §4.4's registered reconstruction group: one clean base with all separately realized subjects, graphics, and text removed and only the exposed background reconstructed; at least one independent subject/foreground output from the same canonical source whenever the page holds scene content that must be independently editable (base plus that output are the minimum two layers); every additional layer derived independently from the canonical source, never from the base or another generated layer; original pose, scale, and coordinates on RGBA transparency; further layers only for genuine independent movement, overlap, or animation.
 
@@ -96,7 +87,7 @@ The reference-image CLI does not inherit source dimensions: pass an explicit mat
 
 Before deciding layers, write `<project_path>/analysis/reconstruction_inventory.json` recording only what is visibly present: original file and normalized page path; page order, source-frame bbox, SHA-256, pixel dimensions; visible regions with stable ids, bboxes, observed family (`text` / `graphic` / `image` / `unknown`), verbatim text where applicable, and confidence; observed sufficiency, boundary completeness, occlusion/contamination, and identity/data verifiability; overlap/z-order observations and unresolved evidence. No final layer choices, prompts, output filenames, or SVG bindings — those stay in active context plus required operational image evidence; context loss restarts the run. Low-confidence text, an uncertain boundary, or an unidentified branded/data graphic is unresolved evidence and blocks delivery.
 
-**Text evidence through OCR** (both depths): when `rapidocr` is installed, run `python3 ${SKILL_DIR}/scripts/image_ocr.py scan <project_path> <page images...> --canvas <W>x<H>` once over the roster, then review every printed block against its page: correct a misread in that line's `lines[].text`, keep the line count, and set `skip: true` on text that belongs to an image (photo signage, product print, logo lettering). The reviewed `analysis/ocr/<page>.json` is the page's text-region evidence; the inventory points to it instead of repeating the text. Without OCR, author the same JSON by inspection. Field meanings and block grouping: [`image.md`](../../scripts/docs/image.md) § `image_ocr.py`.
+**Text evidence through OCR**: when `rapidocr` is installed, run `python3 ${SKILL_DIR}/scripts/image_ocr.py scan <project_path> <page images...> --canvas <W>x<H>` once over the roster, then review every printed block against its page: correct a misread in that line's `lines[].text`, keep the line count, and set `skip: true` on text that belongs to an image (photo signage, product print, logo lettering). The reviewed `analysis/ocr/<page>.json` is the page's text-region evidence; the inventory points to it instead of repeating the text. Without OCR, author the same JSON by inspection. Field meanings and block grouping: [`image.md`](../../scripts/docs/image.md) § `image_ocr.py`.
 
 **Coordinate mapping**: source-frame bboxes use original-file pixels; region bboxes use normalized-page pixels. Map page-derived geometry and text metrics into canvas units with the same uniform scale and placement offset as the registered layers; for matching aspect ratios, `s = canvas width / page width` and the offset is zero. Apply the scale once to source-derived lengths, including font size, stroke width, and radii.
 
@@ -108,18 +99,19 @@ When any `image_layer` or low-resolution `source_graphic` needs reference editin
 
 ---
 
-### 6.1 Quick-depth page
+### 6.1 Page assembly
 
-1. **Text-removed image**: one reference-image call per page from the canonical page, prompt core: *Remove every piece of slide text: {each unskipped block's wording}. Fill each removed area from its surroundings so backgrounds, grids, and gradients continue. Keep every other pixel unchanged: photos, illustrations, icons, charts, rules, frames, and the text that belongs to images ({each skipped block}). Do not extend, move, or redraw any line, shape, or image into the removed areas. Return the same canvas.* Run `python3 ${SKILL_DIR}/scripts/image_gen.py -b openai --reference-image <page image> --aspect_ratio <page W:H> -o <project_path>/images -f <page>_inpainted "<prompt>"` (or the host's native editor).
-2. **Merge**: `python3 ${SKILL_DIR}/scripts/image_ocr.py merge-base <project_path> --page <stem> --inpainted images/<page>_inpainted.png --out images/<page>_base.png` keeps source pixels outside the padded text boxes and, with OCR installed, re-reads the base: exit `3` lists text left inside the boxes — retry step 1 naming those strings, at most twice, then mark the page `Needs-Manual`. Inspect the merged base once: a rule or shape pulled into a text box retries step 1 with that region named.
-3. **Text layer**: `python3 ${SKILL_DIR}/scripts/image_ocr.py text-layer <project_path> --page <stem> --base images/<page>_base.png --out svg_output/<NN>_<name>.svg --font "<body stack>" [--title-font "<title stack>"] [--lang <BCP-47>] [--page-role <role>]`. Choose stacks under Quick's typography rule from the observed type character (serif or sans, weight); the tool places each reviewed line at its OCR position, size, and sampled ink.
-4. **Finish by hand**: add the weight, emphasis runs, alignment, and per-run color the source shows; the tool infers none of them. Then the page joins Quick's checker and export like any other.
+1. **Base**: one reference-image call per page from the canonical page, prompt core: *Remove every piece of slide text: {each unskipped block's wording}{, and these objects: {each object realized as its own layer}}. Fill each removed area from its surroundings so backgrounds, grids, and gradients continue. Keep every other pixel unchanged: photos, illustrations, icons, charts, rules, frames, and the text that belongs to images ({each skipped block}). Do not extend, move, or redraw any line, shape, or image into the removed areas. Return the same canvas.* Run `python3 ${SKILL_DIR}/scripts/image_gen.py -b <backend> --reference-image <page image> --aspect_ratio <page W:H> -o <project_path>/images -f <page>_inpainted "<prompt>"` (or the host's native editor).
+2. **Layers**, only for objects §4 makes independent: generate each plate, then `python3 ${SKILL_DIR}/scripts/image_layers.py check <project_path> --page-image <page image> --layer <layer>`. Exit `3` regenerates the plate once naming the registration; a second failure takes `image_layers.py diff-matte <project_path> --page-image <page image> --base images/<page>_inpainted.png --out <layer> --ocr analysis/ocr/<stem>.json`, inspected once. A matte that loses parts of the object drops that layer: rerun step 1 without the object so it stays in the base.
+3. **Merge**: `python3 ${SKILL_DIR}/scripts/image_ocr.py merge-base <project_path> --page <stem> --inpainted images/<page>_inpainted.png --out images/<page>_base.png [--layer <each accepted layer>]` keeps source pixels outside the padded text boxes and layer areas and, with OCR installed, re-reads the base: exit `3` lists text left inside the boxes — retry step 1 naming those strings, at most twice, then mark the page `Needs-Manual`. Inspect the base once: a rule or shape pulled into a text box retries step 1 with that region named.
+4. **Text layer**: `python3 ${SKILL_DIR}/scripts/image_ocr.py text-layer <project_path> --page <stem> --base images/<page>_base.png --out svg_output/<NN>_<name>.svg --font "<body stack>" [--title-font "<title stack>"] [--lang <BCP-47>] [--page-role <role>]`. Choose stacks under Quick's typography rule from the observed type character (serif or sans, weight); the tool places each reviewed line at its OCR position, size, and sampled ink.
+5. **Finish by hand**: add the layers, logo crops, and native shapes at their z-order, then the weight, emphasis runs, alignment, and per-run color the source shows; the tool infers none of them.
 
 ## 7. SVG Authoring and Release Gate
 
-Follow Quick after normalization and preparation: quick-depth pages start from §6.1; full-depth pages are hand-authored serially from the base, registered layers, source graphics, native shapes, and native text, giving independently movable layers stable direct-root group ids for later animation.
+Follow Quick after normalization and preparation: every page starts from §6.1's text-layer page and is finished by hand from the base, registered layers, source graphics, native shapes, and native text, giving independently movable layers stable direct-root group ids for later animation.
 
-**Forbidden — screenshot skin**: never place the source page with its text still baked in as a backing picture, under token editable text or alone; the unmodified source page is comparison evidence. A quick-depth base is the merged text-removed image, with every visible string native above it.
+**Forbidden — screenshot skin**: never place the source page with its text still baked in as a backing picture, under token editable text or alone; the unmodified source page is comparison evidence. The base is the text-removed image, with every visible string native above it.
 
 | Final check | Required evidence |
 |---|---|
@@ -127,11 +119,11 @@ Follow Quick after normalization and preparation: quick-depth pages start from �
 | Native text | Every legible string/number present verbatim and editable |
 | Source graphics | Identity and geometry preserved at adequate resolution; no substitute or unverified redesign |
 | Data graphics | Every value and relationship native-and-verified or from an exact source asset; none generatively recreated |
-| Layer registration | Generated layers share canvas/placement with no jumps, seams, halos, or crop drift |
+| Layer registration | Every generated layer passed `image_layers.py check` or is a difference matte; no jumps, seams, halos, or crop drift |
 | Visible fidelity | Subject identity, pose, crop, lighting, color relationships, and z-order preserved |
 | Honest reconstruction | AI-recovered hidden pixels identified as reconstruction |
-| Independent objects | Full depth: every layer requested for editing or animation is a distinct picture object (shared plates allowed for disjoint members) |
-| Quick base | Quick depth: the base is the `merge-base` output with no text remnant, every unskipped OCR block is native text, and every skipped block stays image text |
+| Independent objects | Every layer requested for editing or animation is a distinct picture object (shared plates allowed for disjoint members) |
+| Base | The `merge-base` output with no text remnant; every unskipped OCR block is native text and every skipped block stays image text |
 | Reference exclusion | Unmodified canonical page images are not referenced or packaged as slide media |
 | Package quality | Quick's lockless final checker and PPTX postflight pass |
 
@@ -141,9 +133,9 @@ If a layer drifts, retry from the canonical reference with a narrower edit; neve
 ## ✅ Image to PPTX Complete
 - [x] Source files normalized into the complete ordered roster
 - [x] Visible text native and verbatim; source graphics identity-faithful and sharp
-- [x] Restore depth reported per page; quick bases merged from the text-removed image with every visible string native
-- [x] Full-depth background / foreground / subject layers independent and registered; shared plates split into independent objects
+- [x] Bases merged from the text-removed image with every visible string native
+- [x] Background / foreground / subject layers independent and registered (checked or difference-matted); shared plates split into independent objects; occluders above the layers they cover
 - [x] Recombined pages match the references; canonical source images absent from slide media
 - [x] Quick's SVG quality gate and PPTX postflight pass
-- [ ] **Next**: Report the PPTX, the restore depth per page, and the native, exact-source, and AI-reconstructed objects
+- [ ] **Next**: Report the PPTX, the backend used, objects left in the base, and the native, exact-source, and AI-reconstructed objects
 ```

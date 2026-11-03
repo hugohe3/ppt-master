@@ -300,7 +300,7 @@
       "max_tokens": 140000
     },
     "route.generate.quick-generate.image-to-pptx": {
-      "description": "Quick-only Image to PPTX with quick/full restore depth, OCR text evidence, registered reference-image layers, and shared plates. Ceiling raised after BUDGET_LOAD_SET reported 156580 tokens.",
+      "description": "Quick-only Image to PPTX with OCR text evidence, text-removed bases, registration-checked reference-image layers, and shared plates. Ceiling raised after BUDGET_LOAD_SET reported 156580 tokens.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate.in-hand-image",
@@ -919,7 +919,7 @@
       "max_tokens": 7750
     },
     "profile.generate.image-to-pptx": {
-      "description": "Quick-only profile for reconstructing raster page frames as editable PPTX at quick or full restore depth. Ceiling raised to 4250 when the restore-depth table, OCR text evidence, and the quick-depth page procedure were added (4046 tokens).",
+      "description": "Quick-only profile for reconstructing raster page frames as editable PPTX. Ceiling raised to 4250 when OCR text evidence and the page procedure were added (4046 tokens); one assembly path with layer checks since (4243 tokens).",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/profiles/image-to-pptx.md"

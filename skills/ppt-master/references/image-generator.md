@@ -184,7 +184,7 @@ Use when a person, product, creature, effect, or scene element must cross native
 
 **Mandatory — preserve registration**: derive every full-canvas member independently from the same canonical source, keeping canvas dimensions, pose, scale, position, lighting, and style; never trim or crop a registered output; record the shared source and group in the owning rows.
 
-**Image to PPTX**: follow its restore depth and, at full depth, its §3 per-region decision — a complete, separable, resolution-sufficient region may stay source-derived, otherwise use the profile's reference-image path (host-native editing or `image_gen.py --reference-image`). Inspect every member and the recomposition.
+**Image to PPTX**: follow its §3 per-region decision — a complete, separable, resolution-sufficient region may stay source-derived, otherwise use the profile's reference-image path (host-native editing or `image_gen.py --reference-image`). Inspect every member and the recomposition.
 
 **Procedure**:
 
