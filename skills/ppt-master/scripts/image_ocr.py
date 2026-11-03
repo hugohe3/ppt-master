@@ -76,23 +76,41 @@ class Block:
 # ---------------------------------------------------------------------------
 
 def text_units(text: str) -> float:
-    """Approximate advance width in em: CJK/full-width 1.0, other glyphs 0.56."""
+    """Approximate advance width in em: CJK/full-width 1.0, capitals 0.68, other glyphs 0.36-0.56."""
     total = 0.0
     for char in text:
         if char.isspace():
             total += 0.3
         elif unicodedata.east_asian_width(char) in {"W", "F"}:
             total += 1.0
+        elif char.isupper():
+            total += 0.68
+        elif char.isalnum():
+            total += 0.54
         else:
-            total += 0.56
+            total += 0.36
     return total
 
 
-def estimate_font_size(lines: list[Line]) -> float:
-    by_width = [line.w / text_units(line.text) for line in lines if text_units(line.text) >= 4]
+MONO_HINTS = ("mono", "consolas", "courier", "menlo")
+
+
+def is_monospace(stack: str) -> bool:
+    first = stack.split(",")[0].strip().lower()
+    return any(hint in first for hint in MONO_HINTS)
+
+
+def mono_units(text: str) -> float:
+    """Advance width in em for a monospace face: CJK/full-width 1.0, everything else 0.55."""
+    return sum(1.0 if unicodedata.east_asian_width(c) in {"W", "F"} else 0.55 for c in text)
+
+
+def estimate_font_size(lines: list[Line], units=None) -> float:
+    units = units or text_units
+    by_width = [line.w / units(line.text) for line in lines if units(line.text) >= 4]
     if by_width:
-        return float(round(statistics.median(by_width)))
-    return float(round(statistics.median(line.h / 1.15 for line in lines)))
+        return float(int(statistics.median(by_width) * 0.97))
+    return float(round(statistics.median(line.h / 1.4 for line in lines)))
 
 
 def sample_ink(image: Image.Image, scale: float, line: Line) -> str:
@@ -272,6 +290,17 @@ def num(value: float) -> str:
     return f"{round(value, 1):g}"
 
 
+def widen_zones(boxes: list[list[float]], canvas_w: float) -> None:
+    """Extend each zone's right edge to its nearest right-hand neighbor, or near the canvas edge."""
+    for box in boxes:
+        limit = canvas_w - 8
+        for other in boxes:
+            if other is box or other[0] <= box[0] or other[1] >= box[3] or box[1] >= other[3]:
+                continue
+            limit = min(limit, other[0] - 2)
+        box[2] = max(box[2], limit)
+
+
 def separate_zones(boxes: list[list[float]]) -> None:
     """Split overlapping [left, top, right, bottom] zones at the midpoint of their overlap."""
     for _ in range(3):
@@ -279,13 +308,16 @@ def separate_zones(boxes: list[list[float]]) -> None:
             for b in boxes[i + 1:]:
                 if a[0] >= b[2] or b[0] >= a[2] or a[1] >= b[3] or b[1] >= a[3]:
                     continue
-                upper, lower = (a, b) if a[1] <= b[1] else (b, a)
-                if upper[3] > lower[1] and upper[1] < lower[1]:
-                    middle = (upper[3] + lower[1]) / 2
+                overlap_w = min(a[2], b[2]) - max(a[0], b[0])
+                overlap_h = min(a[3], b[3]) - max(a[1], b[1])
+                stacked = (a[1] < b[1] and a[3] < b[3]) or (b[1] < a[1] and b[3] < a[3])
+                if stacked and overlap_h <= overlap_w:
+                    upper, lower = (a, b) if a[1] <= b[1] else (b, a)
+                    middle = (min(upper[3], lower[3]) + max(upper[1], lower[1])) / 2
                     upper[3], lower[1] = middle, middle
                 else:
                     first, second = (a, b) if a[0] <= b[0] else (b, a)
-                    middle = (first[2] + second[0]) / 2
+                    middle = (min(first[2], second[2]) + max(first[0], second[0])) / 2
                     first[2], second[0] = middle, middle
 
 
@@ -324,9 +356,13 @@ def cmd_text_layer(args: argparse.Namespace) -> int:
         title_done = title_done or is_title
         lines = block["lines"]
         texts = [line["text"] for line in lines]
+        if is_monospace(title if is_title else body):
+            size = estimate_font_size([Line(text=l["text"], score=1, x=l["x"], y=l["y"], w=l["w"], h=l["h"])
+                                       for l in lines], mono_units)
         x = round(min(line["x"] for line in lines), 1)
         baselines = [round(line["y"] + line["h"] / 2 + 0.36 * size, 1) for line in lines]
-        width = max(max(line["w"] for line in lines), max(text_units(t) for t in texts) * size * 1.1)
+        units = mono_units if is_monospace(title if is_title else body) else text_units
+        width = max(max(line["w"] for line in lines), max(units(t) for t in texts) * size * 1.1)
         left = max(x - 4, 0)
         placed.append({
             "id": "title" if is_title else block["id"],
@@ -335,6 +371,7 @@ def cmd_text_layer(args: argparse.Namespace) -> int:
             "box": [left, max(baselines[0] - 0.85 * size - 4, 0),
                     min(left + width + 8, canvas_w), min(baselines[-1] + 0.35 * size + 4, canvas_h)],
         })
+    widen_zones([item["box"] for item in placed], canvas_w)
     separate_zones([item["box"] for item in placed])
     for item in placed:
         x, baselines, texts = item["x"], item["baselines"], item["texts"]

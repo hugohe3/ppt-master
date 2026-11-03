@@ -245,7 +245,7 @@ separate blocks.
 | `id` | Stable `tNN` id in reading order; becomes the SVG group id |
 | `lines[]` | One entry per OCR line: `text`, `score`, `x`, `y`, `w`, `h` (canvas px). `text-layer` places exactly these line strings |
 | `text` | The joined lines, for reading only; editing it changes nothing |
-| `font_size` | Median of line width ÷ advance units (CJK 1.0 em, other glyphs 0.56 em) over lines of at least four units, else line height ÷ 1.15 |
+| `font_size` | 0.97 × median of line width ÷ advance units (CJK 1.0 em, capitals 0.68, other letters and digits 0.54, punctuation 0.36) over lines of at least four units, else line height ÷ 1.4 |
 | `color` | Mean ink color of the first line (pixels farther than 60% of the maximum distance from the line box's border median) |
 | `skip` | Absent by default; set `true` for text that belongs to an image (photo signage, product print, logo lettering) |
 
@@ -258,7 +258,7 @@ page image. Run it after review, because `skip` blocks keep their source
 pixels. A rule or shape the inpainting extended into a text box stays in the
 merged base; the removal prompt prevents that, not the merge.
 
-**Review contract**: correct a misread by editing that line's `lines[].text`
+**Review contract**: `scan` rewrites the JSON, so run it before review and never after. Correct a misread by editing that line's `lines[].text`
 (OCR drops spaces around `+`, `·`, and Latin words and confuses `I` / `l`);
 mark image-owned text `skip: true`; keep the line count so line positions
 stay registered. `text-layer` then writes one SVG: a full-canvas
@@ -266,9 +266,10 @@ stay registered. `text-layer` then writes one SVG: a full-canvas
 per unskipped block with one `<text>` whose later lines are positioned
 `<tspan>` rows. Baselines are `line top + line height / 2 + 0.36 × font size`;
 the largest block (and only the first within 85% of it) takes `--title-font`
-and the group id `title`. Each group's `data-pptx-bounds` spans the estimated
-glyph extent plus a 4 px margin; overlapping zones are split at the midpoint
-of their overlap. The generated page runs through the Quick final checker
+and the group id `title`. When the stack's first family is monospace (Consolas, Courier, Menlo, `*Mono*`), `text-layer` recomputes each block's size with 0.55 em per non-CJK glyph instead of using `font_size`. Each group's `data-pptx-bounds` spans the estimated
+glyph extent plus a 4 px margin, widened rightward to the nearest zone on its
+right or to 8 px inside the canvas; remaining overlaps are split at the
+midpoint, top/bottom only for genuinely stacked zones and left/right otherwise. The generated page runs through the Quick final checker
 like any page; weight, emphasis runs, and alignment other than left-aligned
 are not inferred and are added by hand when the source shows them.
 
