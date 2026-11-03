@@ -254,14 +254,20 @@ separate blocks.
 each unskipped OCR line box, grown by `--pad` canvas px and feathered by 2 px,
 it takes the inpainted pixels; everywhere else it keeps the source pixels, so
 photos, graphics, and rules outside the text boxes stay byte-identical to the
-page image. Run it after review, because `skip` blocks keep their source
-pixels. A rule or shape the inpainting extended into a text box stays in the
-merged base; the removal prompt prevents that, not the merge.
+page image. Each `--layer <png>` (repeatable; RGBA or a flat magenta/green
+key) adds that layer's opaque area, grown by `--pad`, to the inpainted region,
+so objects removed from the base for their own layer do not come back from the
+source. When the page image is narrower than the canvas, nothing is merged: the
+generated image is written whole at its own resolution, because upscaled
+source pixels would be blurrier. Run it after review, because `skip` blocks
+keep their source pixels. A rule or shape the inpainting extended into a text
+box stays in the merged base; the removal prompt prevents that, not the merge.
 
-With OCR installed, `merge-base` then re-reads the merged base: every OCR line
-(score at least 0.6) whose center falls inside a removal box is printed under
-`Residue:` and the command exits `3`; the merged file is still written. Without
-OCR it prints that the check was skipped and exits `0`.
+With OCR installed, `merge-base` then re-reads the written base: every OCR line
+(score at least 0.6, containing a letter, digit, or CJK character) whose center
+falls inside a removal box is printed under `Residue:` and the command exits
+`3`; the file is still written. Without OCR it prints that the check was
+skipped and exits `0`.
 
 **Review contract**: `scan` rewrites the JSON, so run it before review and never after. Correct a misread by editing that line's `lines[].text`
 (OCR drops spaces around `+`, `·`, and Latin words and confuses `I` / `l`);
@@ -277,6 +283,34 @@ right or to 8 px inside the canvas; remaining overlaps are split at the
 midpoint, top/bottom only for genuinely stacked zones and left/right otherwise. The generated page runs through the Quick final checker
 like any page; weight, emphasis runs, and alignment other than left-aligned
 are not inferred and are added by hand when the source shows them.
+
+## `image_layers.py`
+
+Layer helpers for the [Image to PPTX](../../workflows/profiles/image-to-pptx.md)
+profile; Pillow and numpy only.
+
+```bash
+python3 scripts/image_layers.py check <project_path> --page-image images/source-pages/01.png \
+  --layer images/01_plate.png [--ratio 0.8]
+python3 scripts/image_layers.py diff-matte <project_path> --page-image images/source-pages/01.png \
+  --base images/01_base.png --out images/01_subject.png [--ocr analysis/ocr/01.json] [--threshold 60]
+```
+
+`check` compares the layer's opaque pixels with the page at the same position,
+on a 640-px-wide copy, and at every shift of 5 and 10 px in x and y. It prints
+the origin difference, the best shifted difference, and the best offset in page
+pixels, then exits `0` (`Registered`) when the origin difference is at most
+`--ratio` times the best shifted one, otherwise `3`. Opacity comes from real
+alpha, else from a flat `#FF00FF` or `#00FF00` key. A layer that is placed
+correctly but completes parts the page shows hidden behind another object still
+passes; z-order is decided by the page assembly, not by this check.
+
+`diff-matte` writes an RGBA layer from the page's own pixels: a pixel is kept
+when its RGB distance to the resized base exceeds `--threshold`, outside the
+reviewed OCR text boxes when `--ocr` is given; the mask is closed by 3 px and
+feathered by 0.8 px. It needs no generator and is registered by construction,
+but it is limited to the page's resolution, and it loses parts whose color
+matches the background behind them.
 
 ## `analyze_images.py`
 

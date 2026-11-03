@@ -254,36 +254,51 @@ def family_stack(value: str, generic: str = "sans-serif") -> str:
 
 
 def cmd_merge_base(args: argparse.Namespace) -> int:
-    """Keep source pixels everywhere except the padded boxes of unskipped OCR lines."""
+    """Keep source pixels except inside text boxes and removed-layer areas; low-res pages keep the generated image."""
     project = Path(args.project_path).resolve()
     ocr_path = project / OCR_DIR / f"{args.page}.json"
     inpainted_path = project / args.inpainted
-    for required in (ocr_path, inpainted_path):
+    for required in [ocr_path, inpainted_path] + [project / layer for layer in args.layer]:
         if not required.is_file():
             print(f"Missing {required.relative_to(project)}", file=sys.stderr)
             return 1
     data = json.loads(ocr_path.read_text(encoding="utf-8"))
     source = Image.open(project / data["page_image"]).convert("RGB")
-    inpainted = Image.open(inpainted_path).convert("RGB").resize(source.size, Image.LANCZOS)
-    scale = source.size[0] / data["canvas"][0]
+    canvas_w = data["canvas"][0]
+    low_res = source.size[0] < canvas_w
+    target = Image.open(inpainted_path).convert("RGB") if low_res else source
+    size = target.size
+    scale = size[0] / canvas_w
     pad = args.pad * scale
-    mask = Image.new("L", source.size, 0)
-    draw = ImageDraw.Draw(mask)
     boxes = []
     for block in data["blocks"]:
         if block.get("skip"):
             continue
         for line in block["lines"]:
-            box = (line["x"] * scale - pad, line["y"] * scale - pad,
-                   (line["x"] + line["w"]) * scale + pad, (line["y"] + line["h"]) * scale + pad)
-            draw.rectangle(box, fill=255)
-            boxes.append(box)
-    mask = mask.filter(ImageFilter.GaussianBlur(2 * scale))
-    merged = Image.composite(inpainted, source, mask)
+            boxes.append((line["x"] * scale - pad, line["y"] * scale - pad,
+                          (line["x"] + line["w"]) * scale + pad, (line["y"] + line["h"]) * scale + pad))
     out = project / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
-    merged.save(out)
-    print(f"{out.relative_to(project)}: {len(boxes)} text box(es) from the inpainted image, source pixels elsewhere")
+    if low_res:
+        target.save(out)
+        print(f"{out.relative_to(project)}: page image is {source.size[0]} px wide for a {canvas_w} px canvas, "
+              f"so the generated image is kept whole at {size[0]}x{size[1]} instead of merging upscaled source pixels")
+    else:
+        from image_layers import layer_alpha
+
+        inpainted = Image.open(inpainted_path).convert("RGB").resize(size, Image.LANCZOS)
+        mask = Image.new("L", size, 0)
+        draw = ImageDraw.Draw(mask)
+        for box in boxes:
+            draw.rectangle(box, fill=255)
+        for layer in args.layer:
+            alpha = layer_alpha(Image.open(project / layer).resize(size, Image.LANCZOS))
+            grown = Image.fromarray((alpha * 255).astype("uint8")).filter(ImageFilter.MaxFilter(2 * int(pad) + 1))
+            mask.paste(255, mask=grown)
+        mask = mask.filter(ImageFilter.GaussianBlur(2 * scale))
+        Image.composite(inpainted, source, mask).save(out)
+        print(f"{out.relative_to(project)}: {len(boxes)} text box(es) and {len(args.layer)} removed layer(s) "
+              "from the inpainted image, source pixels elsewhere")
     residue = find_residue(out, boxes)
     if residue is None:
         print("Residue check skipped: OCR is not installed; inspect the base for leftover text.", file=sys.stderr)
@@ -308,7 +323,7 @@ def find_residue(image_path: Path, boxes: list[tuple[float, float, float, float]
         return []
     found = []
     for box, text, score in zip(result.boxes, result.txts, result.scores):
-        if float(score) < RESIDUE_MIN_SCORE:
+        if float(score) < RESIDUE_MIN_SCORE or not any(char.isalnum() for char in str(text)):
             continue
         cx = sum(float(point[0]) for point in box) / len(box)
         cy = sum(float(point[1]) for point in box) / len(box)
@@ -448,6 +463,8 @@ def build_parser() -> argparse.ArgumentParser:
     merge.add_argument("--inpainted", required=True, help="Text-removed image, relative to the project.")
     merge.add_argument("--out", required=True, help="Merged base PNG, relative to the project.")
     merge.add_argument("--pad", type=float, default=6.0, help="Canvas px added around each OCR line box (default 6).")
+    merge.add_argument("--layer", action="append", default=[],
+                       help="Extracted layer whose area also takes inpainted pixels (repeatable; RGBA or flat key).")
     merge.set_defaults(func=cmd_merge_base)
 
     layer = sub.add_parser("text-layer", help="Write a quick-restore page SVG from a base image and reviewed OCR.")
