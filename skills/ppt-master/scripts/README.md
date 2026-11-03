@@ -9,7 +9,7 @@ This directory contains user-facing scripts for conversion, project setup, SVG p
 - `scripts/source_to_md.py`: unified source-document → Markdown dispatcher
 - `scripts/source_to_md/`: source-document → Markdown routing/batch helpers and backend converters (`_dispatcher.py`, `_batch.py`, `pdf_to_md.py`, `doc_to_md.py`, `excel_to_md.py`, `ppt_to_md.py`, `web_to_md.py`)
 - `scripts/image_backends/`: internal provider implementations used by `image_gen.py`
-- `scripts/tts_backends/`: internal TTS provider implementations used by `notes_to_audio.py`
+- `scripts/tts_backends/`: Edge, ElevenLabs, MiniMax, Qwen, CosyVoice, and OpenAI implementations used by `notes_to_audio.py`; provider configuration and audio/subtitle capabilities are in [docs/narration.md](./docs/narration.md)
 - `scripts/template_import/`: internal PPTX reference-preparation helpers used by `pptx_template_import.py`
 - `scripts/pptx_ooxml/`: shared OOXML intake, cloning, and package primitives
 - `scripts/svg_finalize/`: internal post-processing helpers used by `finalize_svg.py`

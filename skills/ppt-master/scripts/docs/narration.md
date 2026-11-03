@@ -5,28 +5,63 @@ Tool behavior behind the [`generate-audio`](../../workflows/stages/generate-audi
 ## Prerequisites
 
 - `edge-tts` for the default backend (`python3 -m pip install edge-tts`); `ffprobe` for recorded-narration export (slide timings come from actual audio duration); `ffmpeg` plus `numpy` for post-export video calibration and the sound mix.
-- Cloud keys: ElevenLabs `ELEVENLABS_API_KEY`; MiniMax `MINIMAX_API_KEY` (China endpoint by default; `MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2` for overseas); Qwen `QWEN_API_KEY` or `DASHSCOPE_API_KEY`; CosyVoice `COSYVOICE_API_KEY` or `DASHSCOPE_API_KEY`. Keys come from the process environment or the first `.env` found in: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`.
+- Cloud keys: ElevenLabs `ELEVENLABS_API_KEY`; MiniMax `MINIMAX_API_KEY` (China endpoint by default; `MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2` for overseas); Qwen `QWEN_API_KEY` or `DASHSCOPE_API_KEY`; CosyVoice `COSYVOICE_API_KEY` or `DASHSCOPE_API_KEY`; OpenAI `OPENAI_API_KEY` (override with `--openai-api-key-env`). Keys come from the process environment or the first `.env` found in: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`.
 - Automatic video export requires Windows PowerPoint 2016+. macOS PowerPoint has no `CreateVideo` automation contract and its manual movie export drops animation effects; UI scripting is not a substitute.
 
 ## `notes_to_audio.py`
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>              # edge
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice> --list-voices
+python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice|openai> --list-voices
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice <ShortName> --rate=<rate> [--pitch=<pitch>] [--volume=<volume>] [--concurrency <N>]
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider elevenlabs --voice-id <id> --elevenlabs-model eleven_multilingual_v2
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider minimax --voice-id <id> --minimax-model speech-2.8-hd
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider qwen --voice-id <voice> --qwen-model qwen3-tts-flash --qwen-language-type Chinese
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider cosyvoice --voice-id <voice> --cosyvoice-model cosyvoice-v3-flash [--cosyvoice-audio-only]
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider openai --voice-id marin --openai-model gpt-realtime-2.1-mini --openai-speed 1
 ```
 
 - **Roster preflight**: the notes roster comes from `svg_output/*.svg` on Generate projects or from `page_plan.json` / the identity roster on round-trip workspaces (copies inherit source notes). Every expected note must exist, be readable, and contain spoken text before any TTS request; exit code `2` returns the caller to notes generation. Narration text is read verbatim; only `# ...` heading lines are skipped.
-- **Outputs**: one `audio/<stem>.<ext>` per note plus `audio/<stem>.srt` on provider-timed paths (edge, ElevenLabs, MiniMax, timestamp-capable CosyVoice); Qwen and explicit `--cosyvoice-audio-only` write audio only. The flat `audio/` directory is the single active set — no provider subdirectories unless the user asks to keep variants. Stale `audio/manifest.json` and `audio/total.srt` are removed before generation; a successful audio-only run also removes same-stem stale SRT; the manifest (provider/model, formats, voice settings, SHA-256 voice fingerprint — no per-slide inventory, hashes, or keys) is published atomically only after the complete roster succeeds.
+- **Outputs**: one `audio/<stem>.<ext>` per note plus `audio/<stem>.srt` on provider-timed paths (edge, ElevenLabs, MiniMax, timestamp-capable CosyVoice); Qwen, OpenAI, and explicit `--cosyvoice-audio-only` write audio only. The flat `audio/` directory is the single active set — no provider subdirectories unless the user asks to keep variants. Stale `audio/manifest.json` and `audio/total.srt` are removed before generation. Each successful page publication removes stale same-stem audio extensions and, for audio-only providers, SRT; a failed page keeps its prior audio. The manifest (provider/model, formats, voice settings, SHA-256 voice fingerprint — no per-slide inventory, hashes, or keys) is published atomically only after the complete roster succeeds. Earlier successful pages are not rolled back if a later page fails.
 - **Formats**: PowerPoint-reliable audio is `m4a` (AAC), `mp3`, or `wav`; edge defaults to `mp3`; provider `pcm` / `opus` / `flac` output must be transcoded before embedding.
 - **Edge SRT**: MP3 and page SRT come from the same `edge-tts` stream using `WordBoundary` timing. Sentence-ending punctuation always closes a cue; text over the 20-visible-character default (`--subtitle-max-chars`) splits at commas, semicolons, or colons, then at the nearest word boundary. Adjacent overlap up to 100 ms moves the later cue start to the previous end; larger overlap fails. Each SRT uses a page-local timeline starting at `00:00:00,000` including leading silence. Default concurrency is three slide pairs (`--concurrency 1` for serial troubleshooting); cloud providers stay serial.
 - **Provider timing**: MiniMax reads word timing from its synchronous subtitle file (a normalized number such as `42` comes back as one row per spoken syllable sharing one original-text span; the adapter merges rows by that span, never by text alone); ElevenLabs uses `/with-timestamps` with original-text character alignment; CosyVoice enables HTTP streaming plus `word_timestamp_enabled` and uses the final audio URL and word timing — unsupported model/voice pairs fail without replacing the prior pair unless `--cosyvoice-audio-only` was explicit (model and voice families must match; cloned voices need a supported v3.5/v3/v2 model or a timestamp-supported system voice); Qwen exposes no timing and never gets estimated SRT. Provider-timed paths share punctuation-first, `--subtitle-max-chars`-bounded regrouping, exact-text validation, and rollback-safe pair publication.
 
 Signed Edge values accept both equals and space forms: `--rate=-5%` / `--rate -5%`, `--pitch=-2Hz` / `--pitch -2Hz`, and `--volume=-10%` / `--volume -10%`. The examples use equals for clarity; omitted pitch and volume remain `+0Hz` and `+0%`. These three options are ignored by cloud providers.
+
+### OpenAI Realtime narration
+
+The OpenAI backend uses Realtime WebSocket output and saves PCM16 mono 24 kHz WAV. It does not use `/v1/audio/speech`: OpenAI has deprecated `tts-1`, `tts-1-hd`, and `gpt-4o-mini-tts` with shutdown on January 6, 2027, and the replacement `gpt-realtime-2.1-mini` requires the Realtime workflow ([migration guide](https://developers.openai.com/api/docs/guides/text-to-speech), [deprecation notice](https://developers.openai.com/api/docs/deprecations)).
+
+| Setting | Contract |
+|---|---|
+| `--openai-model` | Defaults to `OPENAI_TTS_MODEL`, then `gpt-realtime-2.1-mini` |
+| `--openai-api-key-env` | Names the key environment variable; defaults to `OPENAI_API_KEY` |
+| `OPENAI_TTS_BASE_URL` | A **complete `wss://` endpoint**, including its path, without URL credentials or fragments; defaults to `wss://api.openai.com/v1/realtime`. URL parsing preserves other query parameters and replaces any existing `model` parameter with the selected model. It never derives from image settings `OPENAI_BASE_URL` or `OPENAI_MODEL`. A relay must explicitly support Realtime WebSocket |
+| `--voice-id` | Required CLI selection from `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, `cedar`; never stored in `.env`. `--provider openai --list-voices` prints this static built-in list without a key or network request |
+| `--openai-speed` | Default `1`; accepted range `0.25–1.5` |
+| `--openai-instructions` | Optional delivery/tone hint; it cannot authorize adding, removing, answering, or rewriting the note text |
+
+The `.env` loader accepts the `OPENAI_` prefix; the backend reads only its selected key variable and the `OPENAI_TTS_*` settings. If `OPENAI_API_KEY` already holds an image relay key, keep the TTS key separate:
+
+```dotenv
+OPENAI_API_KEY=your-image-relay-key
+OPENAI_TTS_API_KEY=your-openai-api-key
+OPENAI_TTS_MODEL=gpt-realtime-2.1-mini
+OPENAI_TTS_BASE_URL=wss://api.openai.com/v1/realtime
+```
+
+```bash
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider openai --voice-id marin \
+  --openai-api-key-env OPENAI_TTS_API_KEY
+```
+
+**Session and failure handling**: each page has one connection, processed serially, authenticated with `Authorization: Bearer <selected key>`. The client receives `session.created`, sends `session.update`, confirms the effective `session.updated` configuration, then sends `response.create` with `conversation: "none"` and the spoken note as a user `input_text` message. Audio and final transcript are associated with that response and its output item/content. Every stage handles `error`; HTTP handshake failures, server errors, and available rate-limit information are reported. There are no automatic retries. Limits are 30 seconds for the handshake (connection through configuration confirmation), 60 seconds without a received event, 600 seconds for the page, and up to 5 additional seconds for WebSocket close; the WebSocket and `ClientSession` are closed on every exit. The event contracts are documented in the official [client](https://developers.openai.com/api/reference/resources/realtime/client-events) and [server](https://developers.openai.com/api/reference/resources/realtime/server-events) references.
+
+**Validation and publication**: success requires `response.done.status == "completed"`, complete audio/transcript streams, valid Base64, non-empty PCM with whole 16-bit frames, and a matching final output-audio transcript. Comparison is deterministic against `spoken_text()` (the note with heading lines removed): collapse runs of whitespace and line breaks and map full-width forms of ASCII punctuation to their ASCII equivalents, retaining digits, signs, decimal points, English word boundaries, and case. Independent audio parts retain a separating word boundary. There is no NFKC/case folding, punctuation stripping, number rewriting, or similarity threshold: `1.5` differs from `15`, `-3` from `3`, `a part` from `apart`, and `US` from `us`. A mismatch fails the page with a short diff and does not retry. Validated PCM becomes WAV in memory through `BytesIO` and `wave`, then `backend_common.publish_audio_bytes` publishes it atomically. OpenAI produces no SRT or estimated SRT, and its manifest has no `subtitles` field.
+
+**Validation scope**: this checks the provider's final transcript and stream completeness; it is not an independent check of every audible pronunciation. Mocked WebSocket tests verify client behavior only. A real smoke must compare transcripts and listen to the WAV, including Chinese, decimals, negatives, percentages, acronyms, imperative notes, and the start/end of a long note. Long notes may fail on provider limits or incomplete output; the backend does not split or continue them automatically.
 
 ## `narration_sync.py`
 

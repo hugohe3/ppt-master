@@ -80,7 +80,7 @@ pip install -r requirements.txt
 
 Important optional packages:
 - `python-pptx` for PPTX export
-- `edge-tts` for `notes_to_audio.py` recorded narration audio
+- `edge-tts` for the default `notes_to_audio.py` backend; its transitive `aiohttp` dependency also serves OpenAI Realtime narration (see [`narration.md`](./narration.md#openai-realtime-narration))
 - `Pillow` for image utilities
 - `numpy` for watermark removal
 - `PyMuPDF` for PDF conversion (AGPL-3.0; only needed for PDF sources, see conversion.md)

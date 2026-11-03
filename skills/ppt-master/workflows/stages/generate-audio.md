@@ -4,7 +4,7 @@ description: Shared post-processing stage for narration audio, PPTX embedding, P
 
 # Generate Audio Stage
 
-> Shared narration stage, run after the owning route's notes step. Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice produce per-slide audio/SRT pairs; Qwen is audio-only because its API exposes no timing. The caller owns final PPTX integration. Context-independent: it reads `notes/*.md` and the selected voice catalog, chooses no route, and patches no slide design. Tool behavior, prerequisites, keys, and every flag are documented in [`narration.md`](../../scripts/docs/narration.md).
+> Shared narration stage, run after the owning route's notes step. Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice produce per-slide audio/SRT pairs; Qwen and OpenAI are audio-only. The caller owns final PPTX integration. Context-independent: it reads `notes/*.md` and the selected voice catalog, chooses no route, and patches no slide design. Tool behavior, prerequisites, keys, and every flag are documented in [`narration.md`](../../scripts/docs/narration.md).
 
 **Trigger**: Generate PPTX — the effective `Narration Audio` outcome in `design_spec.md` §I is `enabled` (a later explicit request first updates that outcome and provenance); Quick — the request or active-context decision selects narration; Edit Native PPTX — the confirmed plan enables narration.
 
@@ -32,10 +32,10 @@ Default to **edge** unless the user asks for a cloud provider, higher-quality cl
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice> --list-voices
+python3 skills/ppt-master/scripts/notes_to_audio.py --provider <elevenlabs|minimax|qwen|cosyvoice|openai> --list-voices
 ```
 
-From the flat list, pick **3–6 candidates**: cover both genders when the locale has them; for edge prefer the curated `COMMON_VOICES` set; for ElevenLabs prefer voices already in the user's account and never override a user-supplied `voice_id`; for MiniMax / Qwen / CosyVoice `--list-voices` prints no catalog — use a supplied cloned `voice_id` directly (never attempt cloning here) or a system voice id from the provider's documentation; for CosyVoice subtitles use a timestamp-capable model/voice pair, and `--cosyvoice-audio-only` only when the user accepts no page-local SRT. Match the deck's tone — a Chinese consultant / financial deck leans a steady male (`zh-CN-YunjianNeural`) or clear female (`zh-CN-XiaoxiaoNeural`) voice; teaching / product decks a bright female or young male (`zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`); launch / broadcast decks `zh-CN-YunyangNeural`; English consultant decks `en-US-GuyNeural` or `en-US-JennyNeural`; Japanese / Korean from `ja-JP-*` / `ko-KR-*` with gender + tone noted. Describe each candidate in one line in the user's chat language (gender · tone · best-fit scenario), with the exact name/ID to pass to `--voice-id` for cloud providers.
+From the flat list, pick **3–6 candidates**: cover both genders when the locale has them; for edge prefer the curated `COMMON_VOICES` set; for ElevenLabs prefer voices already in the user's account and never override a user-supplied `voice_id`; for OpenAI select from its static built-in list; for MiniMax / Qwen / CosyVoice `--list-voices` prints no catalog — use a supplied cloned `voice_id` directly (never attempt cloning here) or a system voice id from the provider's documentation; for CosyVoice subtitles use a timestamp-capable model/voice pair, and `--cosyvoice-audio-only` only when the user accepts no page-local SRT. Match the deck's tone — a Chinese consultant / financial deck leans a steady male (`zh-CN-YunjianNeural`) or clear female (`zh-CN-XiaoxiaoNeural`) voice; teaching / product decks a bright female or young male (`zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`); launch / broadcast decks `zh-CN-YunyangNeural`; English consultant decks `en-US-GuyNeural` or `en-US-JennyNeural`; Japanese / Korean from `ja-JP-*` / `ko-KR-*` with gender + tone noted. Describe each candidate in one line in the user's chat language (gender · tone · best-fit scenario), with the exact name/ID to pass to `--voice-id` for cloud providers.
 
 ---
 
@@ -49,7 +49,7 @@ From the flat list, pick **3–6 candidates**: cover both genders when the local
 
 > 检测到 notes 主语言为 **<语言>**（locale: `<locale>`）。基于 deck 调性（<风格>），我推荐以下配置：
 >
-> **生成模式**：⭐ 推荐 `<edge|elevenlabs|minimax|qwen|cosyvoice>`（理由：<一句话>）。
+> **生成模式**：⭐ 推荐 `<edge|elevenlabs|minimax|qwen|cosyvoice|openai>`（理由：<一句话>）。
 >
 > **音色**：
 > - **[1] <ShortName>** — <性别·调性·适用场景> ⭐ **推荐**
@@ -65,7 +65,7 @@ From the flat list, pick **3–6 candidates**: cover both genders when the local
 >
 > 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"或"用 MiniMax 的 voice_id xxx"）。
 
-**Recommended-value rules**: mode — `edge` by default, the user's named provider/voice otherwise; never recommend Qwen when page-local SRT, subtitle animation, or video subtitles are needed, and if the user insists state that only audio is delivered. Voice — the Step 2 candidate that best fits the tone. Rate — edge `+0%`; `-5%` for dense notes (>4 long sentences per page), `+5%` for short tight notes, anything beyond needs a stated reason; cloud providers keep defaults unless asked. Embed — yes unless the user has a customized PPTX they do not want overwritten. Video — native encoding when `--check` succeeds; slideshow capture only on explicit choice; when automation is unavailable, deliver the narrated PPTX and never switch to screen recording or a third-party renderer.
+**Recommended-value rules**: mode — `edge` by default, the user's named provider/voice otherwise; never recommend audio-only providers/modes (Qwen, OpenAI, CosyVoice audio-only) when page-local SRT, subtitle animation, or video subtitles are needed. If the user insists, state that only audio is delivered. Voice — the Step 2 candidate that best fits the tone. Rate — edge `+0%`; `-5%` for dense notes (>4 long sentences per page), `+5%` for short tight notes, anything beyond needs a stated reason; cloud providers keep defaults unless asked. Embed — yes unless the user has a customized PPTX they do not want overwritten. Video — native encoding when `--check` succeeds; slideshow capture only on explicit choice; when automation is unavailable, deliver the narrated PPTX and never switch to screen recording or a third-party renderer.
 
 ---
 
@@ -76,7 +76,7 @@ From the flat list, pick **3–6 candidates**: cover both genders when the local
 ```bash
 # 1. Generate audio (one provider form; flags in narration.md)
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice <ShortName> --rate=<rate>
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider <elevenlabs|minimax|qwen|cosyvoice> --voice-id <id> [provider model flag]
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --provider <elevenlabs|minimax|qwen|cosyvoice|openai> --voice-id <id> [provider model flag]
 
 # 2A. Only when narration-cue sync is selected and page SRT + animations.json exist
 python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> --narration-start-floor 0.8 --narration-padding 0.5 --force
@@ -109,7 +109,7 @@ python3 skills/ppt-master/scripts/video_subtitles.py <project_path> --video <fin
 | Canonical `animations.json` exists and motion is narration-independent | `--animation-config animations.json`; claim no object sync |
 | Both absent | No sidecar; inherit the base report's deck motion |
 
-Pacing defaults are `narration_start_floor=0.8` s and `narration_padding=0.5` s without a confirmation question unless the user supplies values. For Qwen or explicit CosyVoice audio-only mode, embed/export normally but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and final-video subtitle alignment; pass canonical narration-independent motion explicitly when present; a native-export sound mix may still run from page audio. Never present missing subtitle artifacts or object sync as generated.
+Pacing defaults are `narration_start_floor=0.8` s and `narration_padding=0.5` s without a confirmation question unless the user supplies values. For Qwen, OpenAI, or explicit CosyVoice audio-only mode, embed/export normally but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and final-video subtitle alignment; pass canonical narration-independent motion explicitly when present; a native-export sound mix may still run from page audio. Never present missing subtitle artifacts or object sync as generated.
 
 **Explicit slideshow capture**: desktop Windows PowerPoint plays the final narrated PPTX full-screen from the beginning with automatic timing; capture only the deck frame and one application/system-audio source with mic, UI, pointer, and notifications absent; trim short head/tail handles; human-check streams, narration, every cue once, complete motion, and no dropped frames. The capture has no machine cue receipt and never enters `video_sound_mix.py`. If the host cannot capture, report only the capture-ready PPTX handoff; align page SRT against an accepted capture and append one compact `workflow_log.py` note. If native video export fails, keep the narrated PPTX as the successful upstream artifact and report the video failure separately. Subtitles stay external SRT and are never burned in.
 
@@ -122,4 +122,4 @@ Pacing defaults are `narration_start_floor=0.8` s and `narration_padding=0.5` s 
 
 ## Step 5: Completion report
 
-One summary block: audio file count and location (`<project_path>/audio/*`); page-local SRT count and location, or "no page-local SRT" for Qwen / CosyVoice audio-only; provider/model plus the `audio/manifest.json` path; for narrated object animation, whether SVG semantics were reused or which pages were reread, plus mapping coverage and fallback count; for Generate, the derived narration animation coverage/path, the canonical config path for narration-independent motion, or the inherited/all-motion-off state; the raw PowerPoint MP4 path/status when native export was selected, and with sound mixing the final mixed MP4, SFX stem, cue count, and `video_sound_mix.py` receipt (otherwise the raw MP4 is final); for slideshow capture, the capture-ready PPTX handoff or accepted MP4 plus system-audio and human picture/narration/all-cue status, never a mix receipt; the PPTX-timeline `audio/total.srt` path when merged; the aligned delivery SRT path and its source video when alignment ran; provider, voice, and rate/settings used; the caller-owned integration result (narrated export path, enhanced native PPTX path, or "audio only"); and, when Generate embedding was skipped, the one-line hint `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+One summary block: audio file count and location (`<project_path>/audio/*`); page-local SRT count and location, or "no page-local SRT" for Qwen / OpenAI / CosyVoice audio-only; provider/model plus the `audio/manifest.json` path; for narrated object animation, whether SVG semantics were reused or which pages were reread, plus mapping coverage and fallback count; for Generate, the derived narration animation coverage/path, the canonical config path for narration-independent motion, or the inherited/all-motion-off state; the raw PowerPoint MP4 path/status when native export was selected, and with sound mixing the final mixed MP4, SFX stem, cue count, and `video_sound_mix.py` receipt (otherwise the raw MP4 is final); for slideshow capture, the capture-ready PPTX handoff or accepted MP4 plus system-audio and human picture/narration/all-cue status, never a mix receipt; the PPTX-timeline `audio/total.srt` path when merged; the aligned delivery SRT path and its source video when alignment ran; provider, voice, and rate/settings used; the caller-owned integration result (narrated export path, enhanced native PPTX path, or "audio only"); and, when Generate embedding was skipped, the one-line hint `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
