@@ -294,6 +294,8 @@ python3 scripts/image_layers.py check <project_path> --page-image images/source-
   --layer images/01_plate.png [--ratio 0.8]
 python3 scripts/image_layers.py diff-matte <project_path> --page-image images/source-pages/01.png \
   --base images/01_base.png --out images/01_subject.png [--ocr analysis/ocr/01.json] [--threshold 60]
+python3 scripts/image_layers.py mono-matte <project_path> --plate images/01_plate_key.png --key "#FF00FF" \
+  --box 44.7 25.1 72.1 70.2 --out images/01_logo.png [--fill "#FFFFFF"] [--canvas-width 1280]
 ```
 
 `check` compares the layer's opaque pixels with the page at the same position,
@@ -311,6 +313,14 @@ reviewed OCR text boxes when `--ocr` is given; the mask is closed by 3 px and
 feathered by 0.8 px. It needs no generator and is registered by construction,
 but it is limited to the page's resolution, and it loses parts whose color
 matches the background behind them.
+
+`mono-matte` cuts one single-color graphic (a white logo or wordmark) from a
+raw flat-key plate, before keying: inside `--box` (canvas px, scaled to the
+plate), alpha is the minimum of the channels the key lacks (below 128 in the
+key: G for `#FF00FF`, R and B for `#00FF00`), normalized so the 99th percentile
+is opaque, and every pixel takes `--fill`. Key color cannot bleed into the
+edges, and interior gaps the generator painted with the key become
+transparent. It prints the placement box; a key that lacks no channel exits `1`.
 
 ## `analyze_images.py`
 

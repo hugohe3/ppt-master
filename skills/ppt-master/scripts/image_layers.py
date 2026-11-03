@@ -7,11 +7,14 @@ layer (RGBA, or a flat #FF00FF / #00FF00 key) is registered to its source page:
 its opaque pixels must match the page at their own position better than at any
 nearby shift. `diff-matte` derives a registered layer without a generator by
 keeping the page's own pixels wherever the page differs from a base image that
-had those objects removed.
+had those objects removed. `mono-matte` cuts a single-color graphic (a white logo
+or wordmark) from a flat-key plate by reading its alpha from the channels the key
+lacks, so no key color bleeds into its edges.
 
 Usage:
     python3 scripts/image_layers.py check <project_path> --page-image <png> --layer <png>
     python3 scripts/image_layers.py diff-matte <project_path> --page-image <png> --base <png> --out <png>
+    python3 scripts/image_layers.py mono-matte <project_path> --plate <png> --key <HEX> --box X Y W H --out <png>
 
 Examples:
     python3 scripts/image_layers.py check projects/demo --page-image images/source-pages/01.png \\
@@ -125,6 +128,36 @@ def cmd_diff_matte(args: argparse.Namespace) -> int:
     return 0
 
 
+def parse_hex(value: str) -> tuple[int, int, int]:
+    text = value.lstrip("#")
+    if len(text) != 6:
+        raise argparse.ArgumentTypeError("use a six-digit hex color such as #FF00FF")
+    return tuple(int(text[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def cmd_mono_matte(args: argparse.Namespace) -> int:
+    project = Path(args.project_path).resolve()
+    plate = Image.open(project / args.plate).convert("RGB")
+    absent = [index for index, value in enumerate(args.key) if value < 128]
+    if not absent:
+        print("Key #%02X%02X%02X lacks no channel; use a key with at least one channel below 128." % args.key, file=sys.stderr)
+        return 1
+    scale = plate.size[0] / args.canvas_width
+    x, y, w, h = args.box
+    box = (round(x * scale), round(y * scale), round((x + w) * scale), round((y + h) * scale))
+    crop = np.asarray(plate.crop(box)).astype(float)
+    signal = crop[..., absent].min(axis=2)
+    level = np.percentile(signal, 99) or 255.0
+    alpha = np.clip(signal / level * 255, 0, 255).astype("uint8")
+    rgba = np.dstack([np.full(alpha.shape, channel, "uint8") for channel in args.fill] + [alpha])
+    out = project / args.out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    Image.fromarray(rgba, "RGBA").save(out)
+    print(f"{out.relative_to(project)}: {alpha.shape[1]}x{alpha.shape[0]} px, place at canvas x={x:g} y={y:g} "
+          f"width={w:g} height={h:g}; alpha from channel(s) {', '.join('RGB'[i] for i in absent)}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Check layer registration and derive registered layers for Image to PPTX.",
@@ -149,6 +182,16 @@ def build_parser() -> argparse.ArgumentParser:
     matte.add_argument("--threshold", type=float, default=60.0,
                        help="RGB distance above which a pixel belongs to the layer (default 60).")
     matte.set_defaults(func=cmd_diff_matte)
+    mono = sub.add_parser("mono-matte", help="Cut a single-color graphic from a flat-key plate by its key-free channels.")
+    mono.add_argument("project_path")
+    mono.add_argument("--plate", required=True, help="Raw flat-key plate (before keying), relative to the project.")
+    mono.add_argument("--key", required=True, type=parse_hex, help="The plate's key color, e.g. #FF00FF.")
+    mono.add_argument("--box", required=True, type=float, nargs=4, metavar=("X", "Y", "W", "H"),
+                      help="Graphic box in canvas px.")
+    mono.add_argument("--fill", type=parse_hex, default=(255, 255, 255), help="Graphic color (default #FFFFFF).")
+    mono.add_argument("--canvas-width", type=float, default=1280, help="Canvas width in px (default 1280).")
+    mono.add_argument("--out", required=True, help="Output RGBA crop, relative to the project.")
+    mono.set_defaults(func=cmd_mono_matte)
     return parser
 
 
