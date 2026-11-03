@@ -48,6 +48,7 @@ from console_encoding import configure_utf8_stdio  # noqa: E402
 
 OCR_DIR = "analysis/ocr"
 LOW_CONFIDENCE = 0.9
+RESIDUE_MIN_SCORE = 0.6
 INSTALL_HINT = "image_ocr.py scan needs rapidocr: pip install rapidocr onnxruntime"
 
 
@@ -268,21 +269,52 @@ def cmd_merge_base(args: argparse.Namespace) -> int:
     pad = args.pad * scale
     mask = Image.new("L", source.size, 0)
     draw = ImageDraw.Draw(mask)
-    boxes = 0
+    boxes = []
     for block in data["blocks"]:
         if block.get("skip"):
             continue
         for line in block["lines"]:
-            draw.rectangle((line["x"] * scale - pad, line["y"] * scale - pad,
-                            (line["x"] + line["w"]) * scale + pad, (line["y"] + line["h"]) * scale + pad), fill=255)
-            boxes += 1
+            box = (line["x"] * scale - pad, line["y"] * scale - pad,
+                   (line["x"] + line["w"]) * scale + pad, (line["y"] + line["h"]) * scale + pad)
+            draw.rectangle(box, fill=255)
+            boxes.append(box)
     mask = mask.filter(ImageFilter.GaussianBlur(2 * scale))
     merged = Image.composite(inpainted, source, mask)
     out = project / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
     merged.save(out)
-    print(f"{out.relative_to(project)}: {boxes} text box(es) from the inpainted image, source pixels elsewhere")
+    print(f"{out.relative_to(project)}: {len(boxes)} text box(es) from the inpainted image, source pixels elsewhere")
+    residue = find_residue(out, boxes)
+    if residue is None:
+        print("Residue check skipped: OCR is not installed; inspect the base for leftover text.", file=sys.stderr)
+        return 0
+    if residue:
+        print(f"Residue: {len(residue)} text line(s) left inside the removal boxes:")
+        for text in residue:
+            print(f"  {text}")
+        return 3
+    print("Residue: none")
     return 0
+
+
+def find_residue(image_path: Path, boxes: list[tuple[float, float, float, float]]) -> Optional[list[str]]:
+    """OCR the merged base; return text whose center lies in a removal box, or None without OCR."""
+    try:
+        from rapidocr import RapidOCR
+    except ImportError:
+        return None
+    result = RapidOCR()(str(image_path))
+    if result.boxes is None:
+        return []
+    found = []
+    for box, text, score in zip(result.boxes, result.txts, result.scores):
+        if float(score) < RESIDUE_MIN_SCORE:
+            continue
+        cx = sum(float(point[0]) for point in box) / len(box)
+        cy = sum(float(point[1]) for point in box) / len(box)
+        if any(left <= cx <= right and top <= cy <= bottom for left, top, right, bottom in boxes):
+            found.append(str(text))
+    return found
 
 
 def num(value: float) -> str:

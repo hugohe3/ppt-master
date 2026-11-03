@@ -258,6 +258,11 @@ page image. Run it after review, because `skip` blocks keep their source
 pixels. A rule or shape the inpainting extended into a text box stays in the
 merged base; the removal prompt prevents that, not the merge.
 
+With OCR installed, `merge-base` then re-reads the merged base: every OCR line
+(score at least 0.6) whose center falls inside a removal box is printed under
+`Residue:` and the command exits `3`; the merged file is still written. Without
+OCR it prints that the check was skipped and exits `0`.
+
 **Review contract**: `scan` rewrites the JSON, so run it before review and never after. Correct a misread by editing that line's `lines[].text`
 (OCR drops spaces around `+`, `·`, and Latin words and confuses `I` / `l`);
 mark image-owned text `skip: true`; keep the line count so line positions
