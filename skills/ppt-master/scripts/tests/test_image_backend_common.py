@@ -197,6 +197,31 @@ class OpenAISizeTests(unittest.TestCase):
         self.assertEqual(backend_openai._select_size("gpt-image-1.5", "5:4", "1K"), "1536x1024")
 
 
+class OpenAIModelFamilyTests(unittest.TestCase):
+    def test_gpt_image_2_6_shares_the_2_5_handling(self) -> None:
+        from image_backends import backend_openai
+
+        sixteen_nine = backend_openai.GPT_IMAGE_2_SIZES["1K"]["16:9"]
+        for model in ("gpt-image-2.6-sunburst", "gpt-image-2.6-flare", "gpt-image-2.5-sunburst-2026-09-08"):
+            with self.subTest(model=model):
+                self.assertEqual(backend_openai._select_size(model, "16:9", "1K"), sixteen_nine)
+                with mock.patch.dict(os.environ, {"OPENAI_QUALITY": "xhigh"}):
+                    self.assertEqual(backend_openai._read_quality("1K", model), "xhigh")
+                with mock.patch.dict(os.environ, {"OPENAI_INPUT_FIDELITY": "high"}):
+                    with self.assertRaisesRegex(ValueError, "does not accept OPENAI_INPUT_FIDELITY"):
+                        backend_openai._read_input_fidelity(model)
+
+    def test_earlier_models_keep_their_limits(self) -> None:
+        from image_backends import backend_openai
+
+        for model in ("gpt-image-2", "gpt-image-1.5"):
+            with self.subTest(model=model):
+                self.assertFalse(backend_openai._is_gpt_image_2_5_or_later(model))
+                with mock.patch.dict(os.environ, {"OPENAI_QUALITY": "max"}):
+                    with self.assertRaisesRegex(ValueError, "Only GPT Image 2.5 and later"):
+                        backend_openai._read_quality("1K", model)
+
+
 class ManifestAspectRatioTests(unittest.TestCase):
     def _load(self, ratio: str) -> dict:
         import json

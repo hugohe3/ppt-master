@@ -46,6 +46,7 @@ if __name__ == "__main__":
 import base64
 import mimetypes
 import os
+import re
 import time
 import threading
 from collections.abc import Mapping
@@ -218,8 +219,13 @@ def _is_gpt_image_2(model: str) -> bool:
     return normalized.startswith("gpt-image-2") and not normalized.startswith("gpt-image-2.")
 
 
-def _is_gpt_image_2_5(model: str) -> bool:
-    return _normalized_model(model).startswith("gpt-image-2.5-")
+_GPT_IMAGE_2_MINOR_RE = re.compile(r"gpt-image-2\.(\d+)-")
+
+
+def _is_gpt_image_2_5_or_later(model: str) -> bool:
+    """GPT Image 2.5, 2.6, and later 2.x releases share sizes, quality tiers, and edit options."""
+    match = _GPT_IMAGE_2_MINOR_RE.match(_normalized_model(model))
+    return bool(match) and int(match.group(1)) >= 5
 
 
 def _is_dall_e_2(model: str) -> bool:
@@ -278,7 +284,7 @@ def _select_size(
     """Select a model-compatible size while preserving legacy fallbacks."""
     preset = size_preset or "auto"
     if preset in {"gpt-image-2"} or (
-        preset == "auto" and (_is_gpt_image_2(model) or _is_gpt_image_2_5(model))
+        preset == "auto" and (_is_gpt_image_2(model) or _is_gpt_image_2_5_or_later(model))
     ):
         sizes = GPT_IMAGE_2_SIZES[image_size]
         listed = match_aspect_ratio(aspect_ratio, sizes)
@@ -376,7 +382,7 @@ def _read_input_fidelity(model: str) -> str | None:
     )
     if input_fidelity is None:
         return None
-    if _is_gpt_image_2(model) or _is_gpt_image_2_5(model):
+    if _is_gpt_image_2(model) or _is_gpt_image_2_5_or_later(model):
         raise ValueError(
             f"{model} does not accept OPENAI_INPUT_FIDELITY in this backend. Remove this setting."
         )
@@ -421,10 +427,10 @@ def _read_quality(image_size: str, model: str) -> str | None:
     quality = _read_env_choice("OPENAI_QUALITY", OPENAI_QUALITY_VALUES)
     if quality == "omit":
         return None
-    if quality in {"xhigh", "max"} and not _is_gpt_image_2_5(model):
+    if quality in {"xhigh", "max"} and not _is_gpt_image_2_5_or_later(model):
         raise ValueError(
             f"{model} does not support OPENAI_QUALITY={quality}. "
-            "Only gpt-image-2.5-sunburst and gpt-image-2.5-flare (including snapshots) "
+            "Only GPT Image 2.5 and later models (gpt-image-2.5-*, gpt-image-2.6-*, including snapshots) "
             "support xhigh and max."
         )
     if quality and quality != "auto":
