@@ -488,6 +488,7 @@ def _build_replacement_g(
     use_elem: ET.Element,
     icons_dir: Path,
     embed_icons_mod,
+    used_ids: set[str],
 ) -> ET.Element:
     """Resolve a single ``<use data-icon="...">`` into an expanded ``<g>``.
 
@@ -520,16 +521,15 @@ def _build_replacement_g(
             f'Project-local icon has no renderable geometry: {attrs["icon"]}'
         )
 
-    g_xml = embed_icons_mod.generate_icon_group(attrs, elements, style, base_size)
-
     # Wrap with a namespaced root so the parsed subtree carries the SVG
     # namespace through to every primitive (path/circle/...).
-    wrapped = f'<svg xmlns="{SVG_NS}">{g_xml}</svg>'
     try:
+        g_xml = embed_icons_mod.generate_icon_group(attrs, elements, style, base_size, used_ids=used_ids)
+        wrapped = f'<svg xmlns="{SVG_NS}">{g_xml}</svg>'
         parsed_root = ET.fromstring(wrapped)
-    except ET.ParseError as exc:
+    except (ET.ParseError, ValueError) as exc:
         raise UseExpansionError(
-            f'Expanded icon is invalid SVG: {attrs["icon"]}'
+            f'Expanded icon is invalid SVG: {attrs["icon"]}; repair the project-local icon XML and retry'
         ) from exc
 
     for child in parsed_root:
@@ -572,11 +572,12 @@ def expand_use_data_icons(
         )
 
     expanded = 0
+    used_ids = {elem_id for elem in root.iter() if (elem_id := elem.get('id'))}
     for use_elem in targets:
         parent = parent_of.get(use_elem)
         if parent is None:
             continue
-        replacement = _build_replacement_g(use_elem, icons_dir, embed_icons_mod)
+        replacement = _build_replacement_g(use_elem, icons_dir, embed_icons_mod, used_ids)
         idx = list(parent).index(use_elem)
         parent.remove(use_elem)
         parent.insert(idx, replacement)

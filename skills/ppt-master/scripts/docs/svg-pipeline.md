@@ -1418,6 +1418,10 @@ this only for manual checks outside `finalize_svg.py`.
 The replacement group retains the placeholder's id, class, style, opacity,
 visibility, clipping/filter context, and `data-pptx-*` / `data-edit-*`
 attributes. Hidden icon placeholders therefore remain hidden after embedding.
+Internal icon IDs receive a deterministic prefix for each instance, avoiding
+existing page IDs; local `url(#id)` and `href` references are rewritten together.
+This isolation also applies to editor previews and native in-memory expansion.
+An invalid icon XML error requires repairing that project-local icon before retrying.
 
 ## SVG Compatibility Contract
 
