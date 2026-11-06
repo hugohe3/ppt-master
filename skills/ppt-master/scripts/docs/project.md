@@ -66,6 +66,10 @@ Notes:
   profiles, `_files/` assets, and PPTX analysis follow the archived stem.
   Pre-existing Markdown and explicitly supplied same-stem Markdown still
   suppress automatic conversion; PPTX intake still keeps each deck separate.
+- When an imported Markdown companion directory is renamed, only local
+  Markdown link/image destinations into that directory are rewritten, including
+  percent-encoded paths and reference definitions. Prose, code, link labels,
+  titles, and external URLs keep their original text.
 - A projects-local supplied source directory left strictly empty after import
   (or empty from the start) is removed; every directory outside `projects/`
   remains untouched. `--copy` never removes directories.

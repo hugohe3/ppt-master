@@ -21,7 +21,6 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
-import codecs
 import json
 import os
 import subprocess
@@ -45,6 +44,7 @@ from _conversion_profile import (  # noqa: E402
     write_conversion_profile,
 )
 from _batch import expand_directory_inputs, reject_source_overwrite, unique_output_path  # noqa: E402
+from _text_encoding import decode_text_source  # noqa: E402
 from _dispatcher import (  # noqa: E402
     build_conversion_command,
     default_markdown_path,
@@ -156,26 +156,10 @@ def write_passthrough(
         print(f"[ERROR] Cannot read {source}: {exc}", file=sys.stderr)
         return 1
 
-    encodings = ("utf-8", "gb18030")
-    if raw.startswith(codecs.BOM_UTF8):
-        encodings = ("utf-8-sig",)
-    elif raw.startswith((codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
-        encodings = ("utf-16",)
-    for encoding in encodings:
-        try:
-            text = raw.decode(encoding)
-            break
-        except UnicodeDecodeError:
-            continue
-    else:
-        print(
-            f"[ERROR] Cannot decode {source} as {' or '.join(encodings)}. "
-            "Save the source as UTF-8 text and retry.",
-            file=sys.stderr,
-        )
-        return 1
-    if any(ord(char) < 32 and char not in "\t\n\r\f" for char in text):
-        print(f"[ERROR] Binary control characters in {source}; provide a text file.", file=sys.stderr)
+    try:
+        text, encoding = decode_text_source(raw, source)
+    except ValueError as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
         return 1
     if encoding != "utf-8" and output.resolve() == source.resolve():
         print(

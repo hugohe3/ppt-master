@@ -90,6 +90,8 @@ from _dispatcher import (  # noqa: E402
     PRESENTATION_SUFFIXES,
     build_conversion_command,
 )
+from _markdown_links import rewrite_local_asset_links  # noqa: E402
+from _text_encoding import decode_text_source  # noqa: E402
 
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
@@ -553,22 +555,11 @@ class ProjectManager:
         return file_path
 
     def _normalize_text_source(self, source_path: Path, sources_dir: Path) -> Path:
-        from bs4 import UnicodeDammit
-
         target = self._ensure_unique_path(sources_dir / f"{source_path.stem}.md")
-        # UTF-8 first; a GB18030 / Shift-JIS note used to become U+FFFD silently.
-        raw = source_path.read_bytes()
-        dammit = UnicodeDammit(raw, user_encodings=["utf-8"])
-        content = dammit.unicode_markup
-        if content is None:
-            content = raw.decode("utf-8", errors="replace")
-        if (
-            dammit.unicode_markup is None
-            or dammit.contains_replacement_characters
-            or dammit.original_encoding not in ("utf-8", "ascii")
-        ):
+        content, encoding = decode_text_source(source_path.read_bytes(), source_path)
+        if encoding != "utf-8":
             print(
-                f"note: {source_path.name} decoded as {dammit.original_encoding or 'utf-8 (lossy)'}; "
+                f"note: {source_path.name} decoded as {encoding}; "
                 "check the converted text",
                 file=sys.stderr,
             )
@@ -638,7 +629,7 @@ class ProjectManager:
             return
 
         content = markdown_path.read_text(encoding="utf-8", errors="replace")
-        updated = content.replace(f"{original_asset_dirname}/", f"{imported_asset_dirname}/")
+        updated = rewrite_local_asset_links(content, original_asset_dirname, imported_asset_dirname)
         if updated != content:
             markdown_path.write_text(updated, encoding="utf-8")
 

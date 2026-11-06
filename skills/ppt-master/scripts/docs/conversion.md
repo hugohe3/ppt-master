@@ -72,6 +72,17 @@ python3 scripts/source_to_md.py https://example.com/article -o article.md
 Useful options:
 - `-t pdf|doc|excel|pptx|web|markdown|text` forces a route when extension
   detection is not enough.
+- Local text conversion and project import share strict UTF-8 / GB18030
+  decoding, with UTF-8 and UTF-16 BOM detection. Undecodable bytes or binary
+  control characters fail instead of producing replacement text; save the
+  source as UTF-8 text and retry.
+- Office literal text is escaped before Markdown structures are composed:
+  XLSX strings and DOCX/PPTX table text retain literal markup, HTML tags, and
+  entities without creating links or image dependencies. DOCX body text shares
+  the same selective backslash escaping: `<` before an ASCII letter, `/`, `!`,
+  or `?`, and `&` starting a named or numeric entity are protected; other `&`,
+  `<`, and `>` remain readable as written. No HTML entities are introduced.
+  Native hyperlinks, footnotes, and equations retain their generated Markdown syntax.
 - `--json` prints a compact machine-readable result after success when the
   output path is known. With multiple inputs, each successful conversion prints
   its own JSON line after that source finishes.
@@ -108,16 +119,24 @@ multi-file inputs, and non-recursive directory inputs.
 
 Recommended first choice for native PDFs.
 
+Embedded image soft masks are combined into PNG alpha, resizing grayscale
+masks to the base image dimensions when necessary. If Pillow is unavailable
+or the image/mask cannot be decoded, `[WARN]` explains how to retry and the
+opaque base image is retained; the rest of the document still converts.
+
 Detected table cells use the page text's character order and spaces, preserving
 decimal punctuation and real line breaks without depending on PyMuPDF's table
 text regrouping. Ruled, partially ruled, and caption/continuation text tables
 share this extraction; merged-cell gaps stay empty rather than repeating values.
+On 90°/270° pages, table detection and character assignment use a temporary
+native page in display coordinates; final table bounds map back to the original
+text coordinates. The source page geometry stays intact. The 0°/180° path is unchanged.
 
 Header/footer filtering classifies text in the page's rotated display coordinates.
 Only text wholly inside the top or bottom 15% band is eligible; repeated noise
 stays specific to its band, and boundary-crossing text remains intact.
-The original display frame is retained for this filtering even if table detection
-resets the page's crop origin; table coordinates and reading order are unchanged.
+The original display frame is retained for this filtering even if the table
+detector changes the page's crop origin.
 
 ```bash
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
@@ -165,6 +184,13 @@ Native path (no external binary required):
   is omitted with a warning; interactive `hidden` / `display:none` text is kept.
 - `.ipynb` — via `nbconvert`; code-cell output images and Markdown attachments
   use `<output-stem>_files/` with relative Markdown references
+
+Local HTML images resolve against the first `<base href>` (or the source file
+URL). HTML and EPUB image lookup uses the decoded URI path; relocated references
+retain query strings and fragments. HTML/EPUB link targets encode parentheses
+for CommonMark, and DOCX cleanup preserves parenthesis escapes in links and
+literal numbered paragraphs such as `5)` and `9)`. Notebook attachment names
+with shared prefixes are replaced in a single pass, longest name first.
 
 Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
@@ -282,6 +308,9 @@ Behavior:
 - reads the `mc:Fallback` of other shape-tree `mc:AlternateContent` it cannot interpret (3D models, ink, zoom), so their preview pictures and text are kept; ChartEx stays reported as unsupported
 - converts PowerPoint tables to Markdown tables; cell-internal line breaks become `<br>` so they cannot break the pipe-table row structure
 - transcribes category charts as category × series tables and scatter/bubble charts as typed X/Y[/size] point tables
+- retains parent-to-leaf paths for multilevel categories; date-axis categories
+  retain their serial values with the date system and cached/axis format noted
+  explicitly. Embedded DOCX charts use this same transcription.
 - preserves every readable chart dimension or series and emits `[Chart data warning: <reason>]` for missing caches/count mismatches; `[Chart data unavailable: <reason>]` is reserved for charts with no readable points (and unsupported ChartEx), so XY data is never flattened into a misleading category table
 - transcribes SmartArt semantic nodes as hierarchical Markdown; unreadable diagram data emits an explicit placeholder and conversion warning
 - exports embedded pictures to a sibling `_files/` directory
