@@ -156,7 +156,9 @@ def _omml_to_latex(elem: ET.Element) -> str:
             out += "^" + _brace(_omml_to_latex(sup))
         return out + _brace(_omml_part(elem, "e"))
     if local == "func":
-        return "\\" + _omml_part(elem, "fName").strip() + _brace(_omml_part(elem, "e"))
+        argument = _brace(_omml_part(elem, "e"))
+        separator = " " if len(argument) == 1 and argument.isascii() and argument.isalpha() else ""
+        return "\\" + _omml_part(elem, "fName").strip() + separator + argument
     if local == "limLow":
         return _brace(_omml_part(elem, "e")) + "_" + _brace(_omml_part(elem, "lim"))
     if local == "limUpp":

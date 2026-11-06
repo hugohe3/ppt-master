@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import math
 import os
@@ -541,7 +542,9 @@ def should_keep_image(
     # Deduplicate tiny repeats, but preserve visibly placed logos / charts on
     # distinct pages. Academic PDFs often reuse a small logo on title pages.
     if seen_hashes is not None:
-        img_hash = hashlib.md5(image_data).hexdigest()
+        image_hash = hashlib.md5(image_data)
+        image_hash.update(block.get("mask") or b"")
+        img_hash = image_hash.hexdigest()
         if img_hash in seen_hashes and not visibly_placed:
             return False
         seen_hashes.add(img_hash)
@@ -566,6 +569,34 @@ def should_keep_image(
         return False
 
     return True
+
+
+def _image_bytes_with_alpha(block: dict[str, object]) -> tuple[bytes, str]:
+    """Combine a PDF soft mask with its base image, or retain the opaque base."""
+    image_data, ext = block["image"], block["ext"]
+    mask_data = block.get("mask")
+    if not mask_data:
+        return image_data, ext
+    try:
+        from PIL import Image
+    except ImportError:
+        print("[WARN] PDF image SMask was not applied; keeping the opaque base image. "
+              "Install Pillow and rerun conversion to preserve transparency.", file=sys.stderr)
+        return image_data, ext
+    try:
+        with Image.open(io.BytesIO(image_data)) as base, Image.open(io.BytesIO(mask_data)) as mask:
+            rgba = base.convert("RGBA")
+            alpha = mask.convert("L")
+            if alpha.size != rgba.size:
+                alpha = alpha.resize(rgba.size, getattr(Image, "Resampling", Image).NEAREST)
+            rgba.putalpha(alpha)
+            output = io.BytesIO()
+            rgba.save(output, "PNG")
+            return output.getvalue(), "png"
+    except (OSError, ValueError, Image.DecompressionBombError) as exc:
+        print(f"[WARN] PDF image SMask was not applied ({exc}); keeping the opaque base image. "
+              "Re-export the PDF with a valid grayscale mask and rerun conversion.", file=sys.stderr)
+        return image_data, ext
 
 
 def _clip_rect_to_page(rect: fitz.Rect, page_rect: fitz.Rect) -> fitz.Rect:
@@ -1279,6 +1310,22 @@ def find_page_tables(
     include_top_continuation: bool = False,
 ) -> tuple[list[dict[str, object]], bool]:
     """Find line-detected tables plus caption-guided text tables on one page."""
+    if page.rotation in (90, 270):
+        if not page.get_contents():
+            return [], False
+        # Keep cells and ordinary text in the same visual coordinate frame.
+        # Detect on a native, unrotated copy so find_tables cannot change the
+        # source CropBox; map only the final bboxes back for prose exclusion.
+        with fitz.open() as source, fitz.open() as normalized:
+            source.insert_pdf(page.parent, from_page=page.number, to_page=page.number)
+            source[0].set_rotation(0)
+            visual_page = normalized.new_page(width=page.rect.width, height=page.rect.height)
+            visual_page.show_pdf_page(visual_page.rect, source, 0, rotate=-page.rotation)
+            candidates, continues = find_page_tables(visual_page, include_top_continuation)
+            for candidate in candidates:
+                candidate["bbox"] = candidate["bbox"] * page.derotation_matrix
+            return candidates, continues
+
     candidates: list[dict[str, object]] = []
     lines = _extract_text_lines(page)
     try:
@@ -1774,8 +1821,7 @@ def extract_pdf_to_markdown(
                     prev_was_code = False
                 if img_dir:
                     block = el["content"]
-                    ext = block["ext"]
-                    image_data = block["image"]
+                    image_data, ext = _image_bytes_with_alpha(block)
                     safe_filename = filename.replace(" ", "_")
                     image_name = f"{safe_filename}_p{page_num}_{img_count}.{ext}"
                     image_path = img_dir / image_name
