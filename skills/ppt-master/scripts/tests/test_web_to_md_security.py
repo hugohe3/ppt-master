@@ -16,6 +16,7 @@ import ssl
 import sys
 import tempfile
 import unittest
+from collections import namedtuple
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from pathlib import Path
 from types import SimpleNamespace
@@ -363,7 +364,7 @@ class TransportBindingTests(unittest.TestCase):
                     patch.dict(web_to_md.os.environ, HTTP_PROXY='http://127.0.0.1:9',
                                HTTPS_PROXY='http://127.0.0.1:9', ALL_PROXY='http://127.0.0.1:9'), \
                     patch('urllib3.connection._ssl_wrap_socket_and_match_hostname',
-                          return_value=SimpleNamespace(socket=sock, is_verified=True)) as tls:
+                          return_value=namedtuple('WrappedSocket', 'socket is_verified')(sock, True)) as tls:
                 response = web_to_md._http_get(f'{scheme}://public.example/')
                 self.assertEqual(response.content, b'public')
                 sock.connect.assert_called_once_with(('8.8.8.8', 443 if scheme == 'https' else 80))
