@@ -54,7 +54,7 @@ KEYS = ((255, 0, 255), (0, 255, 0))
 def layer_alpha(image: Image.Image) -> np.ndarray:
     """Return a boolean opacity mask from real alpha, else from a flat magenta or green key."""
     rgba = np.asarray(image.convert("RGBA")).astype(int)
-    if (rgba[..., 3] < 20).mean() > 0.05:
+    if (rgba[..., 3] < 20).any():
         return rgba[..., 3] > 200
     for key in KEYS:
         keyed = np.all(np.abs(rgba[..., :3] - np.array(key)) < 60, axis=2)

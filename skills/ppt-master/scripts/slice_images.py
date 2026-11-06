@@ -1100,6 +1100,23 @@ def slice_sheet(
     for notice in notices:
         _log(f"[WARN] {notice}")
 
+    source_path = sheet_path.resolve()
+    for _, _, _, out_path in prepared:
+        if out_path.is_symlink():
+            raise ValueError(
+                f"output is a symlink: {out_path}; "
+                "remove the output symlink or choose unused --names before rerunning; "
+                "no output files were written"
+            )
+        if out_path.resolve() == source_path or (
+            out_path.exists() and out_path.samefile(sheet_path)
+        ):
+            raise ValueError(
+                f"output would overwrite the source sheet: {out_path}; "
+                "choose unused --names, a different --prefix, or a different --output directory; "
+                "no output files were written"
+            )
+
     for r, c, cell, out_path in prepared:
         cell.save(out_path)
         written.append(out_path)

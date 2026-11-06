@@ -160,6 +160,18 @@ Validates the file behind every `Generated` row before skipping it, iterates ret
 
 **Compatibility**: legacy `type` values read as `background` → `hero_page` + no type, `hero` → `hero_page` + Primitive A, `portrait` → `local` + Primitive B, `typography` → `hero_page` + `embedded` + Primitive C; a missing `page_role` is `local`, a missing `text_policy` is `none` (one aggregate warning per manifest); an existing manifest lacking `deck_rendering` or an item lacking `type` replays its assembled `prompt` verbatim without reconstruction; a legacy `deck_style_anchor` or `deck_palette` never overrides `deck_rendering` / `color_scheme`; legacy `page_role: full_page` reads as `hero_page`.
 
+## `slice_images.py`
+
+Slice a contact sheet with `--grid RxC`, optionally naming the outputs with
+`--names` or `--prefix` and choosing their directory with `--output`.
+All outputs are checked before any slice is written. An output that resolves to
+the source sheet or shares its file identity (including a hard link) is rejected;
+choose different names, a prefix, or an output directory. Output symlinks,
+including dangling links, are also rejected to preserve both the link and its
+referent: remove the output symlink or choose a regular output path before
+rerunning. Existing ordinary slices are overwritten, so regenerating a sheet
+and rerunning the same names refreshes the files used by the image manifest.
+
 ## `image_treat.py`
 
 Create a non-destructive PNG derivative from one bitmap already prepared under
@@ -304,7 +316,11 @@ on a 640-px-wide copy, and at every shift of 5 and 10 px in x and y. It prints
 the origin difference, the best shifted difference, and the best offset in page
 pixels, then exits `0` (`Registered`) when the origin difference is at most
 `--ratio` times the best shifted one, otherwise `3`. Opacity comes from real
-alpha, else from a flat `#FF00FF` or `#00FF00` key. A layer that is placed
+alpha whenever any pixel has alpha below 20, regardless of its share of the
+image; pixels with alpha above 200 enter the opacity mask shared with
+`merge-base`. When no pixel has alpha below 20, flat `#FF00FF` or `#00FF00`
+key detection remains active, including near-opaque RGBA inputs such as an
+image whose alpha is uniformly 250. A layer that is placed
 correctly but completes parts the page shows hidden behind another object still
 passes; z-order is decided by the page assembly, not by this check.
 
