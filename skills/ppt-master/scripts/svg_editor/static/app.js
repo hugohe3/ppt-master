@@ -1553,14 +1553,14 @@
     // ================================================================
     function initKeyboardShortcuts() {
         document.addEventListener("keydown", function (e) {
+            // Keep native editing, selection, and navigation inside form controls.
+            var ae = document.activeElement;
+            if (ae && (ae.isContentEditable || ae.tagName === "INPUT" ||
+                       ae.tagName === "TEXTAREA" || ae.tagName === "SELECT")) return;
+
             // Ctrl+Z / Cmd+Z: drop the last staged edit. Let inputs/selects handle
             // their own native undo when focused.
             if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z")) {
-                var ae = document.activeElement;
-                if (ae && (ae === annotationText || ae.tagName === "INPUT" ||
-                           ae.tagName === "TEXTAREA" || ae.tagName === "SELECT")) {
-                    return;
-                }
                 e.preventDefault();
                 runUndo();
                 return;
@@ -1568,9 +1568,6 @@
 
             // Ctrl+A / Cmd+A: select all elements
             if ((e.ctrlKey || e.metaKey) && e.key === "a") {
-                // Don't intercept if focus is in textarea
-                if (document.activeElement === annotationText) return;
-
                 e.preventDefault();
                 var svg = svgContent.querySelector("svg");
                 if (!svg) return;
@@ -1587,13 +1584,11 @@
 
             // Escape: close the overlap picker first if open, else clear selection.
             if (e.key === "Escape") {
-                if (document.activeElement === annotationText) return;
                 if (overlapPickerEl) { closeOverlapPicker(); return; }
                 clearSelection();
             }
 
             // Slide navigation: ArrowLeft/Right + Home/End (skip while typing)
-            if (document.activeElement === annotationText) return;
             if (e.ctrlKey || e.metaKey || e.altKey) return;
 
             // Arrow keys nudge the selection (1px, Shift = 10px) instead of
@@ -1912,10 +1907,12 @@
                 }
                 // Strip dangerous URI protocols from href/xlink:href
                 var value = attr.value.replace(/[\t\r\n]/g, "").replace(/^[\x00-\x20]+/, "");
+                var rasterDataImage = (tag === "image" || tag === "feimage") &&
+                    /^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/]+={0,2}$/i.test(value);
                 if (local === "href" &&
                     (/^\s*javascript\s*:/i.test(value) ||
                      /^\s*vbscript\s*:/i.test(value) ||
-                     /^\s*data\s*:/i.test(value))) {
+                     (/^\s*data\s*:/i.test(value) && !rasterDataImage))) {
                     el.removeAttributeNode(attr);
                 }
             });
