@@ -98,6 +98,11 @@ multi-file inputs, and non-recursive directory inputs.
 
 Recommended first choice for native PDFs.
 
+Detected table cells use the page text's character order and spaces, preserving
+decimal punctuation and real line breaks without depending on PyMuPDF's table
+text regrouping. Ruled, partially ruled, and caption/continuation text tables
+share this extraction; merged-cell gaps stay empty rather than repeating values.
+
 ```bash
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md

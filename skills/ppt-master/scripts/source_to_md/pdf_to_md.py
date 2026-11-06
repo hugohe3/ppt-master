@@ -936,10 +936,48 @@ def _rows_to_markdown(rows: list[list[str]]) -> str:
     return "\n".join(lines)
 
 
-def _table_to_markdown(tab: object) -> str:
+def _extract_table_rows(page: fitz.Page, tab: object) -> list[list[object]]:
+    """Read cells in visual line order, preserving page-text character order."""
+    # Table.extract() may regroup ink-bbox punctuation onto another line and
+    # drop zero-height spaces. Use ordinary page-text bboxes, not table chars.
+    page_lines = [
+        line
+        for block in page.get_text("rawdict", flags=fitz.TEXTFLAGS_TEXT)["blocks"]
+        if block["type"] == 0
+        for line in block["lines"]
+    ]
+    page_lines.sort(key=lambda line: (line["bbox"][1], line["bbox"][0]))
+    lines = [
+        [
+            (char["c"], (char["bbox"][0] + char["bbox"][2]) / 2,
+             (char["bbox"][1] + char["bbox"][3]) / 2)
+            for span in line["spans"] for char in span["chars"]
+        ]
+        for line in page_lines
+    ]
+    rows = []
+    for row in tab.rows:
+        cells = []
+        for cell in row.cells:
+            if cell is None:
+                cells.append(None)
+                continue
+            x0, y0, x1, y1 = cell
+            # Midpoints assign each glyph to one cell even when its font box
+            # crosses a narrow text-strategy row or the adjacent empty band.
+            parts = [
+                "".join(text for text, x, y in line if x0 <= x < x1 and y0 <= y < y1)
+                for line in lines
+            ]
+            cells.append("\n".join(part for part in parts if part.strip()))
+        rows.append(cells)
+    return rows
+
+
+def _table_to_markdown(page: fitz.Page, tab: object) -> str:
     """Convert a PyMuPDF table object to cleaned Markdown."""
     try:
-        rows = tab.extract() or []
+        rows = _extract_table_rows(page, tab)
     except Exception:
         return ""
     return _rows_to_markdown(_clean_table_rows(rows))
@@ -998,11 +1036,12 @@ def _append_table_markdown_candidate(
 
 def _add_table_candidate(
     candidates: list[dict[str, object]],
+    page: fitz.Page,
     tab: object,
     method: str,
 ) -> None:
     """Append a table candidate if it has useful Markdown and is not duplicate."""
-    markdown = _table_to_markdown(tab)
+    markdown = _table_to_markdown(page, tab)
     if not _is_valid_table_markdown(markdown):
         return
 
@@ -1067,7 +1106,7 @@ def _extend_ruled_table(
     left or right are clustered into extra columns and prepended/appended.
     """
     try:
-        raw_rows = tab.extract() or []
+        raw_rows = _extract_table_rows(page, tab)
         row_rects = [fitz.Rect(row.bbox) for row in tab.rows]
     except Exception:
         return None
@@ -1243,7 +1282,7 @@ def find_page_tables(
         for tab in page.find_tables():
             extended = _extend_ruled_table(page, tab, lines)
             if extended is None:
-                _add_table_candidate(candidates, tab, "lines")
+                _add_table_candidate(candidates, page, tab, "lines")
                 continue
             bbox, markdown = extended
             _append_table_markdown_candidate(candidates, bbox, markdown, "lines+text")
@@ -1257,7 +1296,7 @@ def find_page_tables(
         bottom_y = _table_region_bottom(page, lines, start_y)
         clip = fitz.Rect(0, start_y, page.rect.width, bottom_y)
         for tab in _find_tables_in_clip(page, clip):
-            _add_table_candidate(candidates, tab, "caption-text")
+            _add_table_candidate(candidates, page, tab, "caption-text")
         word_table = _words_to_markdown_table(page, clip)
         if word_table:
             bbox, markdown = word_table
@@ -1274,7 +1313,7 @@ def find_page_tables(
         bottom_y = _table_region_bottom(page, lines, start_y)
         clip = fitz.Rect(0, start_y, page.rect.width, bottom_y)
         for tab in _find_tables_in_clip(page, clip):
-            _add_table_candidate(candidates, tab, "continuation-text")
+            _add_table_candidate(candidates, page, tab, "continuation-text")
         word_table = _words_to_markdown_table(page, clip)
         if word_table:
             bbox, markdown = word_table
