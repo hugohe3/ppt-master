@@ -1548,6 +1548,7 @@ def main(argv: list[str] | None = None) -> int:
         "-f", "--file", help="File containing URLs (one per line)")
     parser.add_argument("-o", "--output", help="Output file (single URL only)")
     parser.add_argument("-d", "--dir", help="Output directory")
+    parser.add_argument("--reserved-output", action="append", default=[], help=argparse.SUPPRESS)
     parser.add_argument(
         "--emit-result",
         help="On success, write the saved output path as JSON to this file "
@@ -1570,6 +1571,8 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     args = parser.parse_args(argv)
+    _AUTO_NAMED_OUTPUTS.clear()
+    _AUTO_NAMED_OUTPUTS.update(Path(path).resolve() for path in args.reserved_output)
     CONFIG["insecure"] = args.insecure
     CONFIG["allow_private_hosts"] = args.allow_private_hosts
     if args.insecure:

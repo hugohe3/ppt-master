@@ -44,7 +44,7 @@ from _conversion_profile import (  # noqa: E402
     profile_path_for,
     write_conversion_profile,
 )
-from _batch import expand_directory_inputs, unique_output_path  # noqa: E402
+from _batch import expand_directory_inputs, reject_source_overwrite, unique_output_path  # noqa: E402
 from _dispatcher import (  # noqa: E402
     build_conversion_command,
     default_markdown_path,
@@ -286,6 +286,7 @@ def dispatch_single(
     args: argparse.Namespace,
     unknown_args: list[str],
     web_output_dir: str | None = None,
+    used_outputs: set[Path] | None = None,
 ) -> int:
     """Dispatch one source to the matching existing converter."""
     if conversion_type == "auto":
@@ -307,6 +308,8 @@ def dispatch_single(
             # page's images into `<stem>_files/`.
             extra_args.append("--no-images")
         if output is None:
+            for reserved in sorted(used_outputs or ()):
+                extra_args.extend(["--reserved-output", str(reserved)])
             emit_file = tempfile.NamedTemporaryFile(
                 prefix="ppt-master-web-result-",
                 suffix=".json",
@@ -339,6 +342,8 @@ def dispatch_single(
             output_path = _read_emit_result(emit_result)
             emit_result.unlink(missing_ok=True)
         if output_path and output_path.is_file():
+            if used_outputs is not None:
+                used_outputs.add(output_path.resolve())
             profile = ensure_profile(input_arg, output_path, route.script_name, "web")
             if not args.json:
                 print_output(output_path)
@@ -509,16 +514,20 @@ def dispatch_many(
 
     input_paths = {Path(item).resolve() for item in inputs if not is_url(item)}
     used_outputs = set(input_paths)
-    output_args = [
-        _dispatch_output_arg(
-            input_arg,
-            conversion_type,
-            args.output,
-            batch_mode,
-            used_outputs,
-        )
-        for input_arg, conversion_type in zip(inputs, conversion_types)
-    ]
+    try:
+        output_args = [
+            _dispatch_output_arg(
+                input_arg,
+                conversion_type,
+                args.output,
+                batch_mode,
+                used_outputs,
+            )
+            for input_arg, conversion_type in zip(inputs, conversion_types)
+        ]
+    except (OSError, ValueError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
     if args.output and not batch_mode and output_args:
         output = Path(output_args[0])
         own_passthrough = (
@@ -530,6 +539,19 @@ def dispatch_many(
                 file=sys.stderr,
             )
             return 1
+
+    try:
+        for input_arg, conversion_type, output_arg in zip(inputs, conversion_types, output_args):
+            if conversion_type == "web" and output_arg is None:
+                continue
+            output = resolve_output(output_arg, input_arg)
+            if conversion_type in {"markdown", "text"} and output.resolve() == Path(input_arg).resolve():
+                # In-place passthrough does not write; its encoding guard remains authoritative.
+                continue
+            reject_source_overwrite(output, list(input_paths))
+    except (OSError, ValueError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
 
     if args.output and batch_mode:
         Path(args.output).mkdir(parents=True, exist_ok=True)
@@ -550,6 +572,7 @@ def dispatch_many(
             args,
             unknown_args,
             web_output_dir=web_output_dir,
+            used_outputs=used_outputs,
         )
         if rc == 0:
             success_count += 1

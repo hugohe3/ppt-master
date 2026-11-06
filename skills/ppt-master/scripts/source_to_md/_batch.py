@@ -66,14 +66,27 @@ def _output_key(path: Path) -> Path:
     return path.resolve(strict=False)
 
 
+def reject_source_overwrite(output: Path, sources: list[Path]) -> None:
+    """Reject a write through a path or filesystem alias of any input."""
+    for source in sources:
+        if output.resolve() == source.resolve() or (
+            output.exists() and source.exists() and output.samefile(source)
+        ):
+            raise ValueError(
+                f"Output would overwrite input: {output} aliases {source}. "
+                "Choose a different -o path or remove the output alias first."
+            )
+
+
 def unique_output_path(output_dir: Path, stem: str, used_outputs: set[Path]) -> Path:
-    """Return an in-run unique Markdown path without consulting the filesystem."""
+    """Allocate an in-run unique Markdown path, rejecting remaining hardlink aliases."""
     base = stem or "output"
     candidate = output_dir / f"{base}.md"
     suffix = 2
     while _output_key(candidate) in used_outputs:
         candidate = output_dir / f"{base}_{suffix}.md"
         suffix += 1
+    reject_source_overwrite(candidate, list(used_outputs))
     used_outputs.add(_output_key(candidate))
     return candidate
 
@@ -124,9 +137,15 @@ def run_path_batch(
     failed: list[str] = []
     skipped: list[str] = list(expansion_errors)
     used_outputs = {source.resolve() for source in sources}
+    try:
+        outputs = [_output_for(source, output_arg, batch_mode, used_outputs) for source in sources]
+        for output in outputs:
+            reject_source_overwrite(output, sources)
+    except (OSError, ValueError) as exc:
+        _print_status(f"[ERROR] {exc}")
+        return 1
 
-    for source in sources:
-        output = _output_for(source, output_arg, batch_mode, used_outputs)
+    for source, output in zip(sources, outputs):
         if batch_mode:
             _print_status(f"\n==> {source}")
         try:
