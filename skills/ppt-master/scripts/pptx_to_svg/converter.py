@@ -1727,6 +1727,7 @@ def _write_roundtrip_manifest(
         "source": {
             "file": SOURCE_PPTX_PATH.as_posix(),
             "sha256": _sha256_file(source_path),
+            "originalPath": str(result.source_pptx_path.resolve()),
         },
         "structure": NATIVE_STRUCTURE_PATH.as_posix(),
         "conversionReport": CONVERSION_REPORT_PATH.as_posix(),

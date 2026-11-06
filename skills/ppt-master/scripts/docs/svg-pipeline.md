@@ -254,6 +254,19 @@ while order, notes, or motion may change; `rebuilt` means visible authoring or
 one of its referenced resources changed.
 Without `-o`, round-trip export names the deck `<workspace-directory-name>_<timestamp>[<flavor-suffix>].pptx` under `exports/`.
 
+Round-trip export rejects an output that would replace `sources/source.pptx`
+or the original source recorded in `analysis/roundtrip_manifest.json`
+(`source.originalPath`, an absolute path saved by new imports), before writing
+export artifacts. Choose a different output path, such as `exports/revised.pptx`.
+Parent-directory aliases are resolved for this check. A distinct leaf symlink
+or hardlink is still allowed: publishing atomically replaces only that alias
+entry, preserving the source. If atomic replacement fails, export stops without
+copying through the alias; choose a writable local output location. Older
+workspaces without `originalPath` protect the workspace source only; re-import
+the original deck to record its external path. Absolute paths from a different
+operating system do not block a moved workspace and are not compared locally.
+Ordinary Generate export is unaffected.
+
 Before export, run `python3 scripts/svg_quality_checker.py <workspace> --roundtrip --json`
 as the round-trip text-capacity gate. It resolves the output roster from
 `authoring-svg-flat/` and optional `page_plan.json`, then applies the shared

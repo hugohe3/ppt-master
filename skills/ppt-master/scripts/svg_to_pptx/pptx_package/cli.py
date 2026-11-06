@@ -68,6 +68,7 @@ from pptx_workspace import (  # noqa: E402
     native_structure_path,
     slide_animation_config_sha256,
     source_pptx_path,
+    validate_roundtrip_output_path,
     workspace_resource_specs,
 )
 from slide_roster import discover_slide_svgs  # noqa: E402
@@ -2686,6 +2687,36 @@ Recorded narration:
         except Exception:
             project_name = project_path.name
 
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    backup_dir: Path | None = None
+    if args.output:
+        native_path = Path(args.output)
+    else:
+        exports_dir = project_path / "exports"
+        # --native-charts-and-tables yields a materially different file (PowerPoint
+        # Chart/Table objects instead of SVG-derived DrawingML shapes), so mark it
+        # in the default-flow name to distinguish the two editable object models.
+        # Narration flags likewise mark _narrated (audio embedded per slide +
+        # auto-advance timings). Flag-driven (not content-sniffed) so the name
+        # is predictable; an explicit -o keeps the caller's exact name untouched.
+        native_tag = "_native_charts_tables" if args.native_objects else ""
+        narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
+        kiosk_tag = "_kiosk" if args.kiosk else ""
+        native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}{kiosk_tag}.pptx"
+        # Preserve svg_output/ only when it is the actual source. A custom -s
+        # directory remains the caller-owned source and is not copied under a
+        # misleading svg_output backup name.
+        if not diagnostic_source:
+            backup_dir = project_path / "backup" / timestamp
+
+    if args.roundtrip:
+        try:
+            validate_roundtrip_output_path(project_path, native_path, roundtrip_manifest)
+        except (OSError, RuntimeError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+
     canvas_format = args.format
     expected_viewbox = (
         None
@@ -3286,30 +3317,6 @@ Recorded narration:
                 print(f"  {filename}: {marker_id} ({status})", file=sys.stderr)
             if len(fallbacks) > 20:
                 print(f"  ... and {len(fallbacks) - 20} more", file=sys.stderr)
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    backup_dir: Path | None = None
-    if args.output:
-        native_path = Path(args.output)
-    else:
-        exports_dir = project_path / "exports"
-        exports_dir.mkdir(parents=True, exist_ok=True)
-        # --native-charts-and-tables yields a materially different file (PowerPoint
-        # Chart/Table objects instead of SVG-derived DrawingML shapes), so mark it
-        # in the default-flow name to distinguish the two editable object models.
-        # Narration flags likewise mark _narrated (audio embedded per slide +
-        # auto-advance timings). Flag-driven (not content-sniffed) so the name
-        # is predictable; an explicit -o keeps the caller's exact name untouched.
-        native_tag = "_native_charts_tables" if args.native_objects else ""
-        narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
-        kiosk_tag = "_kiosk" if args.kiosk else ""
-        native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}{kiosk_tag}.pptx"
-        # Preserve svg_output/ only when it is the actual source. A custom -s
-        # directory remains the caller-owned source and is not copied under a
-        # misleading svg_output backup name.
-        if not diagnostic_source:
-            backup_dir = project_path / "backup" / timestamp
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
 

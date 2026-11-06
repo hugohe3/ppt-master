@@ -8682,7 +8682,16 @@ def create_pptx_with_native_svg(
             raise RuntimeError(
                 f'PPTX animation package validation failed: {exc}'
             ) from exc
-        shutil.move(str(temp_output_path), str(output_path))
+        if pptx_structure == 'preserve':
+            try:
+                os.replace(temp_output_path, output_path)
+            except OSError as exc:
+                raise TemplateStructureError(
+                    f"Cannot atomically publish round-trip output {output_path}: {exc}. "
+                    "Choose a different output path on a writable local filesystem."
+                ) from exc
+        else:
+            shutil.move(str(temp_output_path), str(output_path))
         permission_warnings = _relax_output_permissions(output_path)
 
         if conversion_trace_path and conversion_trace is not None:

@@ -26,7 +26,7 @@ import re
 import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from xml.etree import ElementTree as ET
 
 
@@ -924,6 +924,50 @@ def load_roundtrip_manifest(workspace: Path) -> dict[str, object] | None:
     if not isinstance(raw, dict):
         raise RuntimeError(f"Round-trip manifest must be a JSON object: {path}")
     return raw
+
+
+def validate_roundtrip_output_path(
+    workspace: Path,
+    output: Path,
+    manifest: dict[str, object],
+) -> None:
+    """Protect source directory entries while permitting atomic leaf-alias replacement."""
+    sources = [source_pptx_path(workspace)]
+    source = manifest.get("source")
+    original = source.get("originalPath") if isinstance(source, dict) else None
+    if original is not None:
+        if not isinstance(original, str) or not (
+            PurePosixPath(original).is_absolute() or PureWindowsPath(original).is_absolute()
+        ):
+            raise RuntimeError(
+                "Round-trip source.originalPath must be an absolute path. "
+                "Re-import the original PPTX into a new workspace."
+            )
+        # A copied workspace may originate on another operating system.
+        if Path(original).is_absolute():
+            sources.append(Path(original))
+    # Publishing replaces the leaf entry, not its symlink/hardlink referent.
+    # Resolve parents so a directory alias cannot hide a source collision.
+    target = output.parent.resolve() / output.name
+    for source_path in sources:
+        for protected in (source_path.parent.resolve() / source_path.name, source_path.resolve()):
+            same_entry = target == protected
+            if not same_entry:
+                try:
+                    if target.samefile(protected) and target.parent.samefile(protected.parent):
+                        names = {entry.name for entry in target.parent.iterdir()}
+                        # Two distinct existing names are safe leaf aliases; an
+                        # alternate case/spelling of one entry must be rejected.
+                        same_entry = target.name == protected.name or not {
+                            target.name, protected.name,
+                        }.issubset(names)
+                except FileNotFoundError:
+                    same_entry = False
+            if same_entry:
+                raise RuntimeError(
+                    f"Round-trip output would overwrite source PPTX: {source_path}. "
+                    "Choose a different output path, for example workspace/exports/revised.pptx."
+                )
 
 
 def slide_animation_config_sha256(
