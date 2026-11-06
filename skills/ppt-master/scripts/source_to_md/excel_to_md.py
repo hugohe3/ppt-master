@@ -28,6 +28,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
+from _markdown_text import escape_markdown_text  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -62,7 +63,7 @@ def _is_empty(value: Any) -> bool:
 
 
 def _markdown_escape(value: str) -> str:
-    value = value.replace("\\", "\\\\")
+    value = escape_markdown_text(value, block_prefix=True)
     value = value.replace("|", "\\|")
     value = value.replace("\r\n", "\n").replace("\r", "\n")
     return re.sub(r"\s*\n\s*", "<br>", value).strip()

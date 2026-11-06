@@ -45,6 +45,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
+from _markdown_text import escape_markdown_text  # noqa: E402
 from _omml_latex import _local_name, _omml_to_latex  # noqa: E402
 from pptx_ooxml.diagram_read import (  # noqa: E402
     read_smartart_diagrams,
@@ -367,12 +368,12 @@ def _paragraph_to_markdown(
         if not current_text:
             return
         if current_url is None:
-            parts.append(current_text)
+            parts.append(escape_markdown_text(current_text))
             return
         lead = current_text[: len(current_text) - len(current_text.lstrip())]
         trail = current_text[len(current_text.rstrip()):]
         core = current_text.strip()
-        display = _escape_md_link_text(core) if core else current_url
+        display = escape_markdown_text(core or current_url)
         parts.append(f"{lead}[{display}]({current_url}){trail}")
 
     has_run_hyperlink = False
@@ -384,7 +385,10 @@ def _paragraph_to_markdown(
             continue
         if child.tag == OFFICE_MATH_TAG:
             # python-pptx's runs also skip Office Math; keep it as LaTeX.
-            current_text += _office_math_markdown(child)
+            flush()
+            current_text = ""
+            current_url = None
+            parts.append(_office_math_markdown(child))
             continue
         if tag not in {"r", "fld"}:
             continue
@@ -416,7 +420,7 @@ def _apply_shape_click_action(text: str, shape: object) -> str:
     target = _shape_click_target(shape)
     if target is None:
         return text
-    return f"[{_escape_md_link_text(text)}]({target})"
+    return f"[{text}]({target})"
 
 
 def _shape_click_target(shape: object) -> str | None:
@@ -886,6 +890,30 @@ def _xy_chart_to_markdown(
     return "\n".join(lines)
 
 
+def _chart_date_category_note(chart: object, series: list[object]) -> str:
+    """Describe numeric date categories without changing their cached values."""
+    chart_space = getattr(chart, "_chartSpace", None)
+    if chart_space is None:
+        return ""
+    date_axes = chart_space.findall(".//" + qn("c:dateAx"))
+    if not date_axes:
+        return ""
+    date1904 = chart_space.find(qn("c:date1904"))
+    system = "1904" if date1904 is not None and date1904.get("val", "1") in {"1", "true"} else "1900"
+    formats = []
+    for item in series:
+        element = _chart_series_element(item)
+        category = element.find(qn("c:cat")) if element is not None else None
+        if category is not None:
+            formats.extend(node.text for node in category.findall(".//" + qn("c:formatCode")) if node.text)
+    for axis in date_axes:
+        number_format = axis.find(qn("c:numFmt"))
+        if number_format is not None and number_format.get("formatCode"):
+            formats.append(number_format.get("formatCode"))
+    format_text = escape_markdown_text(" / ".join(dict.fromkeys(formats)) or "unspecified")
+    return f"> [Chart categories: Excel date serials; date system: {system}; format: {format_text}]"
+
+
 def _category_chart_to_markdown(chart: object, series: list[object], header: str) -> str:
     """Render a conventional category chart through python-pptx's public API."""
     categories: list[str] = []
@@ -898,9 +926,17 @@ def _category_chart_to_markdown(chart: object, series: list[object], header: str
     try:
         plots = list(chart.plots)
         if plots:
+            plot_categories = plots[0].categories
+            if getattr(plot_categories, "depth", 1) > 1:
+                labels = [("",)] * len(plot_categories)
+                for leaf, path in zip(plot_categories.levels[0], plot_categories.flattened_labels):
+                    if 0 <= leaf.idx < len(labels):
+                        labels[leaf.idx] = path
+            else:
+                labels = ((category,) for category in plot_categories)
             categories = [
-                escape_table_cell(str(category)) if category is not None else ""
-                for category in plots[0].categories
+                escape_table_cell(" / ".join(str(label) if label is not None else "" for label in path))
+                for path in labels
             ]
     except (ValueError, TypeError, IndexError, AttributeError, KeyError):
         if has_category_xml:
@@ -940,6 +976,9 @@ def _category_chart_to_markdown(chart: object, series: list[object], header: str
         series_name for series_name, _ in series_data
     ]
     lines = [header]
+    date_note = _chart_date_category_note(chart, series)
+    if date_note:
+        lines.append(date_note)
     lines.extend(_chart_warning_lines(warnings))
     lines.extend([
         "",
