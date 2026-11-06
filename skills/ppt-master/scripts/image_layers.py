@@ -4,8 +4,9 @@ PPT Master - Image Layer Tool
 
 Layer helpers for the Image to PPTX profile. `check` tests whether an extracted
 layer (RGBA, or a flat #FF00FF / #00FF00 key) is registered to its source page:
-its opaque pixels must match the page at their own position better than at any
-nearby shift. `diff-matte` derives a registered layer without a generator by
+its visible opaque pixels must match the page at their own position better than
+at any nearby shift; an explicit occlusion mask excludes upper objects.
+`diff-matte` derives a registered layer without a generator by
 keeping the page's own pixels wherever the page differs from a base image that
 had those objects removed. `mono-matte` cuts a single-color graphic (a white logo
 or wordmark) from a flat-key plate by reading its alpha from the channels the key
@@ -63,6 +64,28 @@ def layer_alpha(image: Image.Image) -> np.ndarray:
     return np.ones(rgba.shape[:2], bool)
 
 
+def _resampled_occlusion_mask(image: Image.Image, size: tuple[int, int]) -> np.ndarray:
+    mask = np.asarray(image.convert("L")) != 0
+    if image.size == size:
+        return mask
+    # A BICUBIC output pixel can contain any source pixel in its two-pixel
+    # kernel support, widened by the scale when downsampling. Do not lose thin
+    # occluders or their resampling fringe by sampling the mask with NEAREST.
+    bounds = []
+    for source_length, target_length in zip(image.size, size):
+        scale = source_length / target_length
+        centers = (np.arange(target_length) + 0.5) * scale
+        support = 2 * max(scale, 1.0)
+        start = np.clip((centers - support + 0.5).astype(int), 0, source_length)
+        end = np.clip((centers + support + 0.5).astype(int), 0, source_length)
+        bounds.append((start, end))
+    integral = np.pad(mask, ((1, 0), (1, 0))).cumsum(axis=0, dtype=np.int64)
+    np.cumsum(integral, axis=1, out=integral)
+    x0, x1 = bounds[0]
+    y0, y1 = (indices[:, None] for indices in bounds[1])
+    return integral[y1, x1] - integral[y0, x1] - integral[y1, x0] + integral[y0, x0] > 0
+
+
 def cmd_check(args: argparse.Namespace) -> int:
     project = Path(args.project_path).resolve()
     page = Image.open(project / args.page_image).convert("RGB")
@@ -75,20 +98,40 @@ def cmd_check(args: argparse.Namespace) -> int:
     if not alpha.any():
         print("Layer has no opaque pixels.", file=sys.stderr)
         return 1
+    occluded = np.zeros(alpha.shape, bool)
+    if args.occlusion_mask:
+        with Image.open(project / args.occlusion_mask) as mask_image:
+            if mask_image.size != page.size:
+                print("Occlusion mask must match the page dimensions; recreate it on the canonical page canvas.",
+                      file=sys.stderr)
+                return 1
+            occluded = _resampled_occlusion_mask(mask_image, resized.size)
+        alpha &= ~occluded
+        if not alpha.any():
+            print("Layer has no visible opaque pixels; mark only actual upper objects in --occlusion-mask.",
+                  file=sys.stderr)
+            return 1
     diffs = {}
     for dx in SHIFTS:
         for dy in SHIFTS:
-            mask = np.roll(np.roll(alpha, dx, 1), dy, 0)
+            mask = np.roll(np.roll(alpha, dx, 1), dy, 0) & ~occluded
             moved = np.roll(np.roll(rgb, dx, 1), dy, 0)
-            diffs[(dx, dy)] = float(np.abs(moved[mask] - src[mask]).mean())
+            diffs[(dx, dy)] = float(np.abs(moved[mask] - src[mask]).mean()) if mask.any() else float("inf")
     origin = diffs[(0, 0)]
     nearest = min(value for shift, value in diffs.items() if shift != (0, 0))
+    if not np.isfinite(nearest):
+        print("No visible pixels remain for shifted comparisons; review --occlusion-mask against the page.",
+              file=sys.stderr)
+        return 1
     best = min(diffs, key=diffs.get)
     registered = origin <= args.ratio * nearest
     scale = page.size[0] / CHECK_WIDTH
     print(f"{args.layer}: diff at origin {origin:.1f}, best shifted {nearest:.1f}, "
           f"best offset ({best[0] * scale:+.0f}, {best[1] * scale:+.0f}) page px")
     print("Registered" if registered else "NOT registered")
+    if not registered:
+        print("Check the layer's position and appearance; for parts hidden by upper objects, "
+              "supply a page-sized --occlusion-mask marking those objects.", file=sys.stderr)
     return 0 if registered else 3
 
 
@@ -146,7 +189,8 @@ def cmd_mono_matte(args: argparse.Namespace) -> int:
     x, y, w, h = args.box
     box = (round(x * scale), round(y * scale), round((x + w) * scale), round((y + h) * scale))
     crop = np.asarray(plate.crop(box)).astype(float)
-    signal = crop[..., absent].min(axis=2)
+    key_levels = np.asarray(args.key)[absent]
+    signal = np.maximum(crop[..., absent] - key_levels, 0).min(axis=2)
     level = np.percentile(signal, 99) or 255.0
     alpha = np.clip(signal / level * 255, 0, 255).astype("uint8")
     rgba = np.dstack([np.full(alpha.shape, channel, "uint8") for channel in args.fill] + [alpha])
@@ -169,6 +213,8 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("project_path")
     check.add_argument("--page-image", required=True, help="Canonical page image, relative to the project.")
     check.add_argument("--layer", required=True, help="Extracted layer (RGBA or flat magenta/green key).")
+    check.add_argument("--occlusion-mask",
+                       help="Page-sized grayscale mask: nonzero pixels mark upper objects hiding the layer.")
     check.add_argument("--ratio", type=float, default=0.8,
                        help="Origin difference must be at most this fraction of the best shifted one (default 0.8).")
     check.set_defaults(func=cmd_check)
