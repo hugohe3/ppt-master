@@ -300,8 +300,11 @@ def remove_page_footer(text: str) -> str:
     return text.rstrip()
 
 
-def _header_footer_band(bbox: fitz.Rect, page_rect: fitz.Rect) -> str | None:
-    """Classify fully contained edge text; keep text crossing a band boundary."""
+def _header_footer_band(
+    bbox: fitz.Rect, page_rect: fitz.Rect, display_matrix: fitz.Matrix,
+) -> str | None:
+    """Classify fully contained display-edge text; keep boundary-crossing text."""
+    bbox = bbox * display_matrix
     band_height = page_rect.height * HEADER_FOOTER_BAND_RATIO
     if page_rect.y0 <= bbox.y0 and bbox.y1 <= page_rect.y0 + band_height:
         return "header"
@@ -346,7 +349,7 @@ def detect_headers_footers(
             if not text:
                 continue
 
-            band = _header_footer_band(b_rect, page.rect)
+            band = _header_footer_band(b_rect, page.rect, page.rotation_matrix)
             if band == "header":
                 headers.append(text)
             elif band == "footer":
@@ -1521,10 +1524,17 @@ def extract_pdf_to_markdown(
             # Add page break marker to help LLM understand context segmentation
             markdown_content += f"\n\n<!-- Page {page_num} -->\n\n"
 
+        display_rect = page.rect
+        rotation_matrix = page.rotation_matrix
+        crop_position = page.cropbox_position
         table_candidates, previous_table_continues = find_page_tables(
             page,
             include_top_continuation=previous_table_continues,
         )
+        # Table detection may reset a rotated page's CropBox. Only edge-band
+        # filtering maps subsequent text back to the original displayed page.
+        crop_offset = page.cropbox_position - crop_position
+        display_matrix = fitz.Matrix(1, 0, 0, 1, crop_offset.x, crop_offset.y) * rotation_matrix
         tab_rects = [
             candidate["bbox"]
             for candidate in table_candidates
@@ -1572,7 +1582,7 @@ def extract_pdf_to_markdown(
             if block["type"] == 0:
                 # Check if this is noise text to be filtered (whole block match)
                 block_text_full = "".join([span["text"] for line in block["lines"] for span in line["spans"]]).strip()
-                block_band = _header_footer_band(block_rect, page.rect)
+                block_band = _header_footer_band(block_rect, display_rect, display_matrix)
                 if block_text_full in noise_by_band[block_band]:
                     continue
 
@@ -1621,7 +1631,7 @@ def extract_pdf_to_markdown(
                         continue
 
                     # Secondary check: line-level noise match (sometimes blocks are split)
-                    band = _header_footer_band(fitz.Rect(line["bbox"]), page.rect)
+                    band = _header_footer_band(fitz.Rect(line["bbox"]), display_rect, display_matrix)
                     if line_text in noise_by_band[band]:
                         continue
 
