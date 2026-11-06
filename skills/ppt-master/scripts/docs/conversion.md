@@ -516,7 +516,10 @@ deterministic readable fallback marked
 replacement claim or falls back to a diagnostic object in tolerant mode;
 common solid/no-fill/line/marker forms and scheme colors are normalized for the
 SVG fallback and core payload colors, while native opt-in may still normalize
-unmodeled alpha, line, marker, or no-fill details. Common General, decimal,
+unmodeled alpha, line, marker, or no-fill details. Line-chart null values keep
+their gaps: an isolated value has no connecting segment, while its configured
+marker and data label remain visible and its numeric value stays in the payload.
+Common General, decimal,
 grouped, percent, and simple currency-prefix data-label formats render
 deterministically; an unknown Excel format program keeps the active payload but
 does not claim a normalized fallback. Active types outside the current renderer

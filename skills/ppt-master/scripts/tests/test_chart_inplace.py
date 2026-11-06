@@ -152,10 +152,10 @@ class ChartInplaceTests(unittest.TestCase):
         self.assertEqual(results[0]["errors"], [])
         return results[0]["warnings"]
 
-    def _export(self) -> dict[str, bytes]:
+    def _export(self, output_name: str = "result.pptx") -> dict[str, bytes]:
         self._save()
         log = io.StringIO()
-        target = self.root / "result.pptx"
+        target = self.root / output_name
         with redirect_stdout(log), redirect_stderr(log):
             status = export_main([str(self.workspace), "--roundtrip", "--native-charts-and-tables", "-o", str(target)])
         self.assertEqual(status, 0, log.getvalue())
@@ -340,7 +340,7 @@ class ChartInplaceTests(unittest.TestCase):
         self.metadata = self.marker.find('svg:metadata[@type="application/json"]', NS)
         self.payload = json.loads(self.metadata.text)
         self.payload["categories"][0] = "Changed"
-        parts = self._export()
+        parts = self._export("result_2.pptx")
         name, _ = self._live_chart(parts)
         cells = self._cells(self._workbook(parts, name))
         self.assertEqual(cells["B1"], "Revenue")

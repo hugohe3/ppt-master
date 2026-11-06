@@ -662,6 +662,7 @@ def _roundtrip_slide_patches(
             or raw.get("defs_changed") is True
         )
         patches[index] = RoundtripSlidePatch(
+            warnings=raw.setdefault("warnings", []),
             source_ref_ids=_ref_set("source_ref_ids"),
             edited_ref_ids=_ref_set("edited_ref_ids"),
             deleted_ref_ids=_ref_set("deleted_ref_ids"),

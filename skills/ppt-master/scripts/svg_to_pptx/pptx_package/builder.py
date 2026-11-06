@@ -12,6 +12,7 @@ import re
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 import uuid
 import zipfile
@@ -253,6 +254,8 @@ class RoundtripSlidePatch:
     animation_changed: bool
     notes_changed: bool
     advance_changed: bool = False
+    # Shared with this page's authoring-report document.
+    warnings: list[dict[str, Any]] | None = None
 
 
 @dataclass(frozen=True)
@@ -1159,7 +1162,7 @@ def _restore_roundtrip_nested_source_shapes(
     source_shapes: dict[str, ET.Element],
     restore_ids: set[str],
     traced_ids: dict[str, list[str]],
-) -> None:
+) -> list[ET.Element]:
     """Replace converter-safe nested placeholders with exact source shapes."""
     locations: dict[str, tuple[ET.Element, ET.Element]] = {}
 
@@ -1182,6 +1185,7 @@ def _restore_roundtrip_nested_source_shapes(
         if node.tag == f"{{{PML_NS}}}grpSp":
             index_children(node)
 
+    restored_nodes: list[ET.Element] = []
     for source_id in sorted(restore_ids, key=_roundtrip_shape_sort_key):
         candidate_ids = {source_id}
         candidate_ids.update(traced_ids.get(f"shape-{source_id}", []))
@@ -1206,6 +1210,8 @@ def _restore_roundtrip_nested_source_shapes(
         position = list(parent).index(placeholder)
         parent.remove(placeholder)
         parent.insert(position, clone)
+        restored_nodes.append(clone)
+    return restored_nodes
 
 
 def _roundtrip_shape_sort_key(value: str) -> tuple[int, int | str]:
@@ -1671,7 +1677,7 @@ def _renumber_roundtrip_generated_shapes(
         return {}
     for element in generated_shapes:
         for connector_tag in ("stCxn", "endCxn"):
-            for connector in element.iter(f"{{{PML_NS}}}{connector_tag}"):
+            for connector in element.iter(f"{{{DML_NS}}}{connector_tag}"):
                 old_id = connector.get("id")
                 if old_id in id_map:
                     connector.set("id", id_map[old_id])
@@ -1906,12 +1912,23 @@ def _apply_roundtrip_slide_overlay(
         generated_root,
         required_generated_relationship_ids,
     )
-    _restore_roundtrip_nested_source_shapes(
+    restored_nested_nodes = _restore_roundtrip_nested_source_shapes(
         generated_nodes,
         all_source_shapes,
         nested_restore_ids,
         traced_ids,
     )
+    # Keep source attachments in their original id space while generated shapes
+    # and their attachments are renumbered. Restored nested connectors are source
+    # objects too, even though their outer group was rebuilt.
+    source_connections = [
+        (connector, properties, connection, connection.get("id"))
+        for element in [*retained_source_nodes, *restored_nested_nodes]
+        for connector in element.iter(f"{{{PML_NS}}}cxnSp")
+        for properties in connector.iter(f"{{{PML_NS}}}cNvCxnSpPr")
+        for connection in properties
+        if connection.tag in {f"{{{DML_NS}}}stCxn", f"{{{DML_NS}}}endCxn"}
+    ]
     if patch.transition_changed or patch.animation_changed:
         _replace_roundtrip_motion(
             source_root,
@@ -1949,6 +1966,53 @@ def _apply_roundtrip_slide_overlay(
         for element in source_tree
         for value in _shape_ids_in_element(element)
     }
+    final_shapes = {
+        _direct_shape_id(element): element
+        for element in source_tree.iter()
+        if element.tag in _TOP_LEVEL_SHAPE_TAGS
+    }
+    for connector, properties, connection, source_target in source_connections:
+        target = source_target
+        if source_target in edited_ids:
+            candidates = {
+                renumbered_shape_id_map.get(candidate, candidate)
+                for candidate in traced_ids.get(f"shape-{source_target}", [])
+            } & visible_shape_ids
+            if len(candidates) > 1:
+                connector_id = _direct_shape_id(connector)
+                endpoint = connection.tag.rsplit("}", 1)[-1]
+                message = (
+                    f"{generated_slide_path.name}: connector {connector_id} {endpoint} "
+                    f"endpoint {source_target} maps to multiple edited objects; "
+                    "removed this attachment and preserved connector geometry. "
+                    "Reconnect this end to the intended object in PowerPoint, or keep "
+                    "one endpoint object in the authoring SVG before exporting again."
+                )
+                if patch.warnings is not None:
+                    patch.warnings.append({
+                        "code": "roundtrip-connector-attachment-detached",
+                        "connector_id": connector_id,
+                        "endpoint": endpoint,
+                        "source_target_id": source_target,
+                        "candidate_ids": sorted(candidates, key=_roundtrip_shape_sort_key),
+                        "message": message,
+                    })
+                print(f"[ROUNDTRIP][WARNING] {message}", file=sys.stderr)
+                target = None
+            elif candidates:
+                target = next(iter(candidates))
+                generated_endpoint = final_shapes[target]
+                source_endpoint = all_source_shapes.get(source_target)
+                if source_endpoint is not None and generated_endpoint.tag != source_endpoint.tag:
+                    # A top-level picture may acquire an animation wrapper. Its
+                    # connection sites still belong to the picture inside it.
+                    leaves = list(generated_endpoint.iter(source_endpoint.tag))
+                    if len(leaves) == 1:
+                        target = _direct_shape_id(leaves[0])
+        if source_target in deleted_ids or target not in visible_shape_ids:
+            properties.remove(connection)
+        elif target != connection.get("id"):
+            connection.set("id", target)
     if not patch.animation_changed:
         missing_timing_targets = _timing_shape_ids(source_root) - visible_shape_ids
         if missing_timing_targets:

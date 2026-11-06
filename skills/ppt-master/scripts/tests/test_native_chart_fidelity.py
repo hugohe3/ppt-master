@@ -116,7 +116,7 @@ class ChartImportTests(unittest.TestCase):
         self.assertIsNotNone(rendered)
         root = ET.fromstring(f'<svg xmlns="{SVG_NS}">{rendered}</svg>')
         lines = root.findall(f'.//{{{SVG_NS}}}polyline')
-        self.assertEqual([len(line.get("points").split()) for line in lines], [2, 1])
+        self.assertEqual([len(line.get("points").split()) for line in lines], [2])
         self.assertEqual(len(root.findall(f'.//{{{SVG_NS}}}circle')), 3)
         for chart_type in ("area", "bar", "column"):
             with self.subTest(type=chart_type):

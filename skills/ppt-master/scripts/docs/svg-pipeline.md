@@ -106,6 +106,27 @@ relative to the frame origin. Relative text positions, text-local transforms,
 and styles remain part of the fingerprint; moving only one line or editing
 text/style never restores stale text over the edit.
 
+Imported text runs retain resolved normal weight/style, no decoration, and full
+opacity as explicit overrides. Editing one run therefore does not make later
+runs inherit the first run's formatting; rebuilt DrawingML writes explicit off
+values for inline overrides while omitted inline properties continue to inherit.
+
+On rebuilt pages, restored source connectors follow surviving Slide-local
+endpoint IDs, including replaced pictures and nested source objects. Deleting
+an endpoint removes only its `stCxn`/`endCxn` attachment and preserves connector
+geometry; reusing the deleted numeric ID does not reconnect it. Generated
+connections follow their own remapped IDs. If an edited endpoint maps to
+multiple objects, export removes that attachment, preserves connector geometry,
+and continues. A warning in stderr and the output page's round-trip report
+`warnings` names the connector, attachment end, and original endpoint ID.
+Reconnect that end to the intended object in PowerPoint, or keep one endpoint
+object in the authoring SVG before the next export.
+
+For imported groups carrying a pure rotation, temporary placeholders for
+unchanged native objects retain that rotation on the group until source XML
+restoration. Replacing a picture href keeps the unedited siblings' native
+geometry and style, including through nested rotation groups.
+
 Width/height or non-translation transform changes continue to rebuild from
 SVG. Whenever a source `txBody` is not restored and its `a14:m` count exceeds
 the remaining formula marker count, including after text or style edits, the
@@ -131,6 +152,12 @@ original hierarchy level and `graphicFrame` type. Markers without a source id
 keep generated chart grouping, id allocation, and naming unchanged. Rebuilt
 chart relationships point to the newly generated chart/workbook parts;
 restored packages keep their source parts.
+Data-only edits in older imported workspaces may encounter a normalized chart
+preview containing invisible one-point line segments. Materialization omits
+those segments with a `native-chart-empty-line-segment` warning while preserving
+values, gaps, markers, labels, and the native source package. Reimporting the
+source deck refreshes that stored preview; malformed or edited geometry still
+passes through the ordinary geometry checks.
 New chart part families reserve unused names across the complete export
 (including source/template parts, workbooks, relationships, and ChartEx
 styles/colors); conflicting writes or content types fail with the part path

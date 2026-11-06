@@ -1031,14 +1031,18 @@ def _validate_payload_xml_strings(value: Any) -> None:
 
 
 def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
+    metadata = [
+        child for child in elem
+        if _local_tag(child) == "metadata" and native_metadata_payload_matches(child, kind)
+    ]
+    if len(metadata) > 1:
+        raise RuntimeError(
+            f"Native PPTX {kind} marker contains {len(metadata)} JSON payload children; "
+            'merge their data and keep exactly one <metadata type="application/json"> child'
+        )
     raw = elem.get("data-pptx-json") or elem.get("data-pptx-data")
-    if raw is None:
-        for child in elem:
-            if _local_tag(child) != "metadata":
-                continue
-            if native_metadata_payload_matches(child, kind):
-                raw = "".join(child.itertext()).strip()
-                break
+    if raw is None and metadata:
+        raw = "".join(metadata[0].itertext()).strip()
 
     if not raw:
         raise RuntimeError(

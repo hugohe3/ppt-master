@@ -62,6 +62,7 @@ from svg_authoring_view import (
     semantic_subtree_sha256,
 )
 from svg_compatibility import normalize_single_child_group_filters
+from svg_to_pptx.drawingml.paths import parse_svg_points
 from svg_to_pptx.drawingml.utils import INHERITABLE_ATTRS, parse_transform_matrix
 from svg_to_pptx.native_objects.chart_patch import chart_edit_is_data_only, patch_chart_package
 from svg_to_pptx.native_objects.marker_common import _load_payload
@@ -1678,6 +1679,7 @@ def _native_restore_placeholder(
         {
             "id": f"shape-{shape_key}",
             "data-pptx-object": "group",
+            "data-pptx-roundtrip-object": "native-restore-placeholder",
         },
     )
     if shape_key.isdigit():
@@ -1726,8 +1728,12 @@ def prepare_imported_chart_edit(
            or element.get("data-pptx-native-authority") != "json"
            for element in (current, baseline)):
         return None, None
-    edited = _load_payload(current, "chart")
-    original = _load_payload(baseline, "chart")
+    try:
+        edited = _load_payload(current, "chart")
+        original = _load_payload(baseline, "chart")
+    except RuntimeError as exc:
+        marker_id = current.get("id") or current.get(SOURCE_REF_ATTRIBUTE) or "<unnamed>"
+        raise AuthoringRoundtripError(f"Invalid chart {marker_id}: {exc}") from exc
     unchanged = edited == original
     if not unchanged and not chart_edit_is_data_only(original, edited):
         return None, "series/point topology or non-data JSON fields changed"
@@ -2031,6 +2037,31 @@ def _materialize_document(
                     payload["source_package"] = package
                     metadata.text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
                     clone.set("data-pptx-roundtrip-object", "source-chart-package")
+                    # Older normalized previews emitted invisible one-point
+                    # polylines at gaps. The closed native package retains
+                    # their data; markers and labels remain in the preview.
+                    removed = 0
+                    if clone.get("data-pptx-fallback-kind") == "normalized":
+                        for parent in clone.iter():
+                            for child in list(parent):
+                                if child.tag != f"{{{SVG_NS}}}polyline":
+                                    continue
+                                try:
+                                    points = parse_svg_points(child.get("points", ""), min_points=1)
+                                except ValueError:
+                                    continue  # The geometry validator still owns malformed points.
+                                if len(points) == 1:
+                                    parent.remove(child)
+                                    removed += 1
+                    if removed:
+                        message = (f"Omitted {removed} invisible isolated line preview segment(s); "
+                                   "chart values, gaps, markers and labels are preserved. "
+                                   "Reimport the source deck to refresh the stored preview.")
+                        warnings.append({
+                            "code": "native-chart-empty-line-segment", "source_ref": source_ref,
+                            "message": message,
+                        })
+                        print(f"[ROUNDTRIP][WARNING] {source_ref}: {message}", file=sys.stderr)
                 if reason:
                     message = chart_rebuild_warning(project_path, document.source_slide, source_ref, reason)
                     object_id = element.get("id") or source_ref

@@ -1763,31 +1763,23 @@ def _text_base_attrs(run: TextRun | None, x: float, y: float,
 
 
 def _run_tspan_attrs(run: TextRun) -> str:
-    """Per-run overrides on a <tspan>. Only emit attributes that differ from
-    the run that drove the parent <text> (we keep things simple: emit only
-    overrides that can plausibly change run-to-run, never re-emit common
-    defaults). For v1 we always emit fill, font family, and font size so each
-    imported run keeps its resolved typeface even when adjacent runs differ.
-    """
+    """Emit resolved run styles, including resets of the parent text style."""
     parts = [
         f'fill="{run.fill}"',
         f'font-family="{run.font_family}"',
         f'font-size="{fmt_num(run.font_size_px)}"',
+        f'fill-opacity="{format_ooxml_alpha(run.fill_opacity)}"',
+        f'font-weight="{"bold" if run.bold else "normal"}"',
+        f'font-style="{"italic" if run.italic else "normal"}"',
     ]
-    if run.fill_opacity < 1.0:
-        parts.append(
-            f'fill-opacity="{format_ooxml_alpha(run.fill_opacity)}"'
-        )
-    if run.bold:
-        parts.append('font-weight="bold"')
-    if run.italic:
-        parts.append('font-style="italic"')
     if run.underline and run.strikethrough:
         parts.append('text-decoration="underline line-through"')
     elif run.underline:
         parts.append('text-decoration="underline"')
     elif run.strikethrough:
         parts.append('text-decoration="line-through"')
+    else:
+        parts.append('text-decoration="none"')
     if run.letter_spacing_px:
         parts.append(f'letter-spacing="{fmt_num(run.letter_spacing_px)}"')
     return " " + " ".join(parts)

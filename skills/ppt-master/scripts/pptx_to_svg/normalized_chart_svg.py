@@ -652,7 +652,9 @@ def _render_lines_or_areas(
                     f'stroke-width="{_fmt(max(0.7, style.stroke_width))}" '
                     'stroke-linejoin="round"/>'
                 )
-            elif line_color is not None:
+            elif line_color is not None and len(points) >= 2:
+                # An isolated value has no line segment across a gap. Its
+                # marker and data label are rendered independently below.
                 parts.append(
                     f'<polyline points="{_points(points)}" fill="none" stroke="{line_color}" '
                     f'stroke-opacity="{_fmt(style.stroke_opacity)}" '

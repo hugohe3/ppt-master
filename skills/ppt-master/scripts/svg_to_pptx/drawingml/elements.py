@@ -2673,6 +2673,13 @@ def _override_run_attrs(
     def tspan_attr(name: str) -> str | None:
         return inline_style.get(name) or tspan.get(name)
 
+    explicit_properties = set(run_attrs.get('_explicit_text_properties', ()))
+    explicit_properties.update(
+        name for name in ('font-weight', 'font-style', 'text-decoration', 'fill-opacity', 'opacity')
+        if tspan_attr(name) is not None
+    )
+    run_attrs['_explicit_text_properties'] = explicit_properties
+
     object_opacity = float(run_attrs.get('_object_opacity', 1.0))
     fill_opacity = float(run_attrs.get('_fill_opacity', 1.0))
     stroke_opacity = float(run_attrs.get('_stroke_opacity', 1.0))
@@ -2688,7 +2695,9 @@ def _override_run_attrs(
     effective_fill_opacity = object_opacity * fill_opacity
     effective_stroke_opacity = object_opacity * stroke_opacity
     run_attrs['opacity'] = (
-        effective_fill_opacity if effective_fill_opacity < 1.0 else None
+        effective_fill_opacity
+        if effective_fill_opacity < 1.0 or explicit_properties & {'fill-opacity', 'opacity'}
+        else None
     )
     run_attrs['stroke_opacity'] = (
         effective_stroke_opacity if effective_stroke_opacity < 1.0 else None
@@ -2912,7 +2921,8 @@ def _build_text_fill_xml(
 
     parsed_color, color_alpha = parse_svg_color(fill_raw)
     fill = parsed_color or fill
-    opacity = combine_opacity(opacity, color_alpha)
+    combined_opacity = combine_opacity(opacity, color_alpha)
+    opacity = 1.0 if combined_opacity is None and opacity is not None else combined_opacity
     alpha_xml = ''
     if opacity is not None:
         alpha_xml = f'<a:alphaMod val="{quantize_ooxml_alpha(opacity)}"/>'
@@ -2975,6 +2985,7 @@ def _build_run_properties_xml(
     opacity = run.get('opacity')
 
     text_dec = run.get('text_decoration', '')
+    explicit_properties = run.get('_explicit_text_properties', ())
 
     # Exported font size = fs_px * FONT_PX_TO_HUNDREDTHS_PT hundredths-of-pt,
     # rounded to **one decimal place of pt** (the nearest 10 hundredths). No 0.5pt
@@ -2983,11 +2994,18 @@ def _build_run_properties_xml(
     sz = font_px_to_hpt(fs_px)
     b_attr = ' b="1"' if parse_project_font_weight(fw).value else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
+    if not b_attr and 'font-weight' in explicit_properties:
+        b_attr = ' b="0"'
+    if not i_attr and 'font-style' in explicit_properties:
+        i_attr = ' i="0"'
     underline, strike = parse_project_text_decoration(
         text_dec or 'none'
     ).value
     u_attr = ' u="sng"' if underline else ''
     strike_attr = ' strike="sngStrike"' if strike else ''
+    if 'text-decoration' in explicit_properties:
+        u_attr = u_attr or ' u="none"'
+        strike_attr = strike_attr or ' strike="noStrike"'
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
     baseline_attr = f' baseline="{baseline_shift}"' if baseline_shift else ''
 
