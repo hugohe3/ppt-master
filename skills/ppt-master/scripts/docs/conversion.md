@@ -32,6 +32,16 @@ share that directory. Collisions with inputs or other planned outputs gain
 profiles follow the chosen Markdown stem. Separate runs retain the existing
 overwrite behavior for unrelated outputs.
 
+The unified entry also shares planned and completed output names with each web
+conversion in the batch. Repeated page titles gain `_2`, `_3`, etc. before any
+Markdown or companion media is written, matching a direct web-backend batch.
+
+Before conversion, the unified entry and local batch helpers reject a selected
+Markdown target that is the same file as any input, including symbolic and hard
+links. Choose a different `-o` path or remove the output alias first. Existing
+batch renaming still avoids symbolic aliases during path allocation; an own-file
+Markdown/text passthrough remains allowed because it does not rewrite the input.
+
 When present, the conversion profile is metadata only: converter, source path,
 Markdown structure counts, asset directory, image manifest path, and image
 count. Downstream PPT workflows still use Markdown and the image manifest as
@@ -103,6 +113,12 @@ decimal punctuation and real line breaks without depending on PyMuPDF's table
 text regrouping. Ruled, partially ruled, and caption/continuation text tables
 share this extraction; merged-cell gaps stay empty rather than repeating values.
 
+Header/footer filtering classifies text in the page's rotated display coordinates.
+Only text wholly inside the top or bottom 15% band is eligible; repeated noise
+stays specific to its band, and boundary-crossing text remains intact.
+The original display frame is retained for this filtering even if table detection
+resets the page's crop origin; table coordinates and reading order are unchanged.
+
 ```bash
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
@@ -152,6 +168,14 @@ Native path (no external binary required):
 
 Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
+- Relative includes and resources resolve from the source file's directory,
+  independent of the Markdown output directory. Successful Pandoc diagnostics
+  remain visible on stderr and in the conversion profile; the unified `--json`
+  result also includes `warnings` when the profile records any.
+- Pandoc extracts embedded and referenced images into `<output-stem>_files/`
+  beside the Markdown output and writes relative image references. Nested media
+  paths remain distinct in the image manifest; missing resources retain Pandoc's
+  diagnostic so they can be restored beside the source and converted again.
 - `.odt` uses a temporary copy to expose table header rows, flatten text-box
   paragraphs while retaining inline links, and resolve conditional text from
   its stored `text:is-hidden` state. Diagnostics report these normalizations

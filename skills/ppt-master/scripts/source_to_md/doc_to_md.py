@@ -34,7 +34,7 @@ import tempfile
 import uuid
 import zipfile
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import quote, unquote, urlparse
 from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -67,8 +67,6 @@ PANDOC_FORMATS = {
     ".typ":   ("typst",  "Typst"),
 }
 
-# Formats pandoc should extract embedded media from
-PANDOC_MEDIA_FORMATS = {".odt"}
 OFFICE_VECTOR_EXTENSIONS = {".emf", ".wmf"}
 IMAGE_ASSET_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
@@ -191,8 +189,9 @@ def _write_generic_image_manifest(
     if not media_dir.exists():
         return
 
-    ref_pattern = re.compile(rf"{re.escape(rel_media_dir)}/([^)\s]+)")
-    refs = [Path(match.group(1)).name for match in ref_pattern.finditer(markdown)]
+    prefixes = "|".join(re.escape(prefix) for prefix in {rel_media_dir, quote(rel_media_dir)})
+    ref_pattern = re.compile(rf"(?:{prefixes})/([^)\s>]+)")
+    refs = [unquote(match.group(1)) for match in ref_pattern.finditer(markdown)]
     occurrence_map: dict[str, list[dict[str, object]]] = {}
     for index, filename in enumerate(refs, 1):
         occurrence_map.setdefault(filename, []).append({
@@ -201,17 +200,18 @@ def _write_generic_image_manifest(
         })
 
     manifest: list[dict[str, object]] = []
-    for file_path in sorted(path for path in media_dir.iterdir() if path.is_file()):
+    for file_path in sorted(path for path in media_dir.rglob("*") if path.is_file()):
         ext = _normalize_ext(file_path.suffix)
         if ext not in IMAGE_ASSET_SUFFIXES:
             continue
         width, height = _image_size(file_path)
         ratio = width / height if width and height else None
         asset_kind = "office_vector" if _is_office_vector(ext) else "bitmap"
-        occurrences = occurrence_map.get(file_path.name, [])
+        filename = file_path.relative_to(media_dir).as_posix()
+        occurrences = occurrence_map.get(filename, [])
         entry: dict[str, object] = {
             "index": len(manifest) + 1,
-            "filename": file_path.name,
+            "filename": filename,
             "original_filename": file_path.name,
             "asset_kind": asset_kind,
             "svg_renderable": asset_kind != "office_vector",
@@ -1602,7 +1602,9 @@ def _prepare_rtf_for_pandoc(input_file: Path) -> Path:
         return Path(temporary.name)
 
 
-def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
+def _convert_with_pandoc(
+    input_file: Path, out_file: Path, suffix: str, warnings: list[str],
+) -> str:
     if not _check_pandoc():
         print(f"[ERROR] Format '{suffix}' requires pandoc. Install it:")
         print("   macOS:   brew install pandoc")
@@ -1627,43 +1629,57 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
         "-o", str(out_file.resolve()),
         "--wrap", "none",
         "--strip-comments",
+        "--extract-media", str(media_dir.resolve()),
     ]
-    if suffix in PANDOC_MEDIA_FORMATS:
-        cmd.extend(["--extract-media", rel_media_dir])
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True,
                                 encoding="utf-8", errors="replace",
-                                cwd=str(out_file.parent))
+                                cwd=str(input_file.resolve().parent))
     finally:
         if prepared != input_file:
             prepared.unlink()
     if result.returncode != 0:
         print(f"[ERROR] Pandoc conversion failed:\n{result.stderr}")
         return ""
+    if result.stderr.strip():
+        diagnostic = result.stderr.strip()
+        print(diagnostic, file=sys.stderr)
+        warnings.append(diagnostic)
     if not out_file.exists():
         print("[ERROR] Conversion completed but no output file was generated")
         return ""
 
     markdown = out_file.read_text(encoding="utf-8")
 
+    # Pandoc may URL-encode an absolute media path containing spaces.
+    absolute_media = media_dir.resolve().as_posix()
+    for absolute in (quote(absolute_media, safe="/:"), absolute_media, str(media_dir.resolve())):
+        markdown = markdown.replace(absolute, quote(rel_media_dir))
+
     # Flatten nested media/ subdir that pandoc creates
     nested_media = media_dir / "media"
     if nested_media.exists():
         for f in nested_media.iterdir():
-            if f.is_file():
-                shutil.move(str(f), str(media_dir / f.name))
+            destination = media_dir / f.name
+            if f.is_file() and not destination.exists() and not destination.is_symlink():
+                old_refs = "|".join(
+                    re.escape(f"{quote(rel_media_dir)}/media/{name}")
+                    for name in {f.name, quote(f.name)}
+                )
+                new_ref = f"{quote(rel_media_dir)}/{quote(f.name)}"
+                rewritten, count = re.subn(
+                    rf"(?P<prefix>\]\(<?|src=[\"'])(?:{old_refs})(?=[\s)>\"'])",
+                    lambda match: match.group("prefix") + new_ref,
+                    markdown,
+                )
+                if count:
+                    shutil.move(str(f), str(destination))
+                    markdown = rewritten
         try:
             nested_media.rmdir()
         except OSError:
             pass
-        markdown = markdown.replace(f"{rel_media_dir}/media/", f"{rel_media_dir}/")
-
-    # Normalize absolute paths to relative
-    for abs_str in (str(media_dir.resolve()).replace("\\", "/"),
-                    str(media_dir.resolve())):
-        if abs_str in markdown:
-            markdown = markdown.replace(abs_str, rel_media_dir)
 
     markdown = _html_img_to_md(markdown)
     out_file.write_text(markdown, encoding="utf-8")
@@ -1702,7 +1718,7 @@ def _typst_text_to_markdown(source: str) -> str:
 def _convert_typst(input_file: Path, out_file: Path, warnings: list[str]) -> str:
     """Convert through pandoc, falling back to the non-evaluating text pass."""
     if _check_pandoc():
-        markdown = _convert_with_pandoc(input_file, out_file, ".typ")
+        markdown = _convert_with_pandoc(input_file, out_file, ".typ", warnings)
         if markdown:
             return markdown
         reason = "pandoc could not evaluate the Typst source (imports, packages, or custom functions)"
@@ -1780,7 +1796,7 @@ def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
     if suffix == ".typ":
         markdown = _convert_typst(input_file, out_file, warnings)
     else:
-        markdown = _convert_with_pandoc(input_file, out_file, suffix)
+        markdown = _convert_with_pandoc(input_file, out_file, suffix, warnings)
     if markdown:
         profile_path = write_conversion_profile_best_effort(
             input_path=str(input_file),

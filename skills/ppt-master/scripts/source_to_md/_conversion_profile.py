@@ -233,7 +233,7 @@ def build_result_payload(
     assets = Path(asset_dir) if asset_dir else default_asset_dir(markdown)
     image_manifest = assets / IMAGE_MANIFEST_NAME
     profile = Path(profile_path) if profile_path else profile_path_for(markdown)
-    return {
+    result = {
         "input": (
             input_path
             if input_path.startswith(("http://", "https://"))
@@ -246,3 +246,7 @@ def build_result_payload(
         "converter": converter,
         "conversion_type": conversion_type,
     }
+    profile_data = _read_json(profile)
+    if isinstance(profile_data, dict) and profile_data.get("warnings"):
+        result["warnings"] = profile_data["warnings"]
+    return result
