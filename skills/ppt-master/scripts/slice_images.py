@@ -56,6 +56,8 @@ from PIL import (
     ImageOps,
 )
 
+from image_normalization import normalize_grayscale_depth
+
 _GRID_RE = re.compile(r"^\s*(\d+)\s*[xX×]\s*(\d+)\s*$")
 _BG_BUCKET_SIZE = 16
 _BG_SAMPLE_BORDER = 2
@@ -984,7 +986,13 @@ def slice_sheet(
                 raise ValueError(f"--alpha requires .png output names, got {name!r}")
 
     with Image.open(sheet_path) as source:
-        sheet = ImageOps.exif_transpose(source).convert("RGBA")
+        with ImageOps.exif_transpose(source) as oriented:
+            normalized = normalize_grayscale_depth(oriented, source_format=source.format)
+            try:
+                sheet = normalized.convert("RGBA")
+            finally:
+                if normalized is not oriented:
+                    normalized.close()
     sw, sh = sheet.size
     uneven_sheet = (trim or alpha) and _sheet_keys_by_dominance(sheet, bg)
     output_dir.mkdir(parents=True, exist_ok=True)

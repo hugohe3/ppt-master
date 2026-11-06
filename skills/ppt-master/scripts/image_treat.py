@@ -48,6 +48,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from image_normalization import normalize_grayscale_depth  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -349,6 +350,10 @@ def _apply_treatments(
             oriented = ImageOps.exif_transpose(source)
             try:
                 oriented.load()
+                normalized = normalize_grayscale_depth(oriented, source_format=source.format)
+                if normalized is not oriented:
+                    oriented.close()
+                    oriented = normalized
                 width, height = oriented.size
                 _validate_blur_radius(args.blur, width, height)
                 has_alpha = _has_alpha(oriented)
