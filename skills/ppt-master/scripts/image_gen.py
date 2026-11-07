@@ -933,6 +933,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
 
     from image_backends.backend_common import (
         MAX_RETRY_WAIT,
+        defer_rate_limits,
         is_global_permanent_error,
         is_permanent_error,
         is_rate_limit_error,
@@ -1013,118 +1014,122 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
             save_manifest(manifest_path, manifest)
         return idx, saved_path, None
 
-    while queue:
-        batch_size = min(current, len(queue))
-        batch_idx = queue[:batch_size]
-        queue = queue[batch_size:]
+    defer_rate_limits(True)
+    try:
+        while queue:
+            batch_size = min(current, len(queue))
+            batch_idx = queue[:batch_size]
+            queue = queue[batch_size:]
 
-        print(
-            f"--- Batch of {batch_size} (concurrency={current}, "
-            f"remaining_after={len(queue)}) ---"
-        )
+            print(
+                f"--- Batch of {batch_size} (concurrency={current}, "
+                f"remaining_after={len(queue)}) ---"
+            )
 
-        rate_limited = False
-        server_wait = 0
-        with concurrent.futures.ThreadPoolExecutor(max_workers=batch_size) as ex:
-            futures = [ex.submit(_one, i) for i in batch_idx]
-            for fut in concurrent.futures.as_completed(futures):
-                idx, saved_path, exc = fut.result()
-                item = items[idx]
-                with state_lock:
-                    if exc is None:
-                        ok_count += 1
-                        note = _completion_note(saved_path, item["aspect_ratio"])
-                        print(f"  [OK]   {item['filename']}{note}")
-                    elif isinstance(exc, ValueError) or is_permanent_error(exc):
-                        global_error = is_global_permanent_error(exc)
-                        item["status"] = STATUS_FAILED
-                        error_scope = "Global" if global_error else "Permanent"
-                        repair_target = (
-                            "backend access" if global_error else "model or request"
-                        )
-                        item["last_error"] = (
-                            f"{error_scope} backend error: {exc}"
-                        )[:500]
-                        fail_count += 1
-                        if global_error:
-                            stopped_for_global_error = True
-                        print(
-                            f"  [FAIL] {item['filename']}: {exc} "
-                            f"(status=Failed; repair {repair_target} before retry)"
-                        )
-                    elif is_rate_limit_error(exc):
-                        rate_limited = True
-                        server_wait = max(server_wait, retry_after_seconds(exc) or 0)
-                        attempts = rate_limit_attempts.get(idx, 0) + 1
-                        rate_limit_attempts[idx] = attempts
-                        if (
-                            current == 1
-                            or attempts >= MAX_MANIFEST_RATE_LIMIT_ATTEMPTS
-                        ):
-                            boundary = (
-                                "serial concurrency reached"
-                                if current == 1
-                                else "rate-limit attempt budget exhausted"
-                            )
+            rate_limited = False
+            server_wait = 0
+            with concurrent.futures.ThreadPoolExecutor(max_workers=batch_size) as ex:
+                futures = [ex.submit(_one, i) for i in batch_idx]
+                for fut in concurrent.futures.as_completed(futures):
+                    idx, saved_path, exc = fut.result()
+                    item = items[idx]
+                    with state_lock:
+                        if exc is None:
+                            ok_count += 1
+                            note = _completion_note(saved_path, item["aspect_ratio"])
+                            print(f"  [OK]   {item['filename']}{note}")
+                        elif isinstance(exc, ValueError) or is_permanent_error(exc):
+                            global_error = is_global_permanent_error(exc)
                             item["status"] = STATUS_FAILED
+                            error_scope = "Global" if global_error else "Permanent"
+                            repair_target = (
+                                "backend access" if global_error else "model or request"
+                            )
                             item["last_error"] = (
-                                f"Rate limit persisted ({boundary}; "
-                                f"attempt {attempts}): {exc}"
+                                f"{error_scope} backend error: {exc}"
                             )[:500]
                             fail_count += 1
-                            stopped_for_rate_limit = True
+                            if global_error:
+                                stopped_for_global_error = True
                             print(
                                 f"  [FAIL] {item['filename']}: {exc} "
-                                f"({boundary}; status=Failed)"
+                                f"(status=Failed; repair {repair_target} before retry)"
                             )
+                        elif is_rate_limit_error(exc):
+                            rate_limited = True
+                            server_wait = max(server_wait, retry_after_seconds(exc) or 0)
+                            attempts = rate_limit_attempts.get(idx, 0) + 1
+                            rate_limit_attempts[idx] = attempts
+                            if (
+                                current == 1
+                                or attempts >= MAX_MANIFEST_RATE_LIMIT_ATTEMPTS
+                            ):
+                                boundary = (
+                                    "serial concurrency reached"
+                                    if current == 1
+                                    else "rate-limit attempt budget exhausted"
+                                )
+                                item["status"] = STATUS_FAILED
+                                item["last_error"] = (
+                                    f"Rate limit persisted ({boundary}; "
+                                    f"attempt {attempts}): {exc}"
+                                )[:500]
+                                fail_count += 1
+                                stopped_for_rate_limit = True
+                                print(
+                                    f"  [FAIL] {item['filename']}: {exc} "
+                                    f"({boundary}; status=Failed)"
+                                )
+                            else:
+                                queue.append(idx)
+                                print(
+                                    f"  [RATE] {item['filename']} — requeued "
+                                    f"(attempt {attempts}/"
+                                    f"{MAX_MANIFEST_RATE_LIMIT_ATTEMPTS})"
+                                )
                         else:
-                            queue.append(idx)
+                            item["status"] = STATUS_FAILED
+                            item["last_error"] = str(exc)[:500]
+                            fail_count += 1
                             print(
-                                f"  [RATE] {item['filename']} — requeued "
-                                f"(attempt {attempts}/"
-                                f"{MAX_MANIFEST_RATE_LIMIT_ATTEMPTS})"
+                                f"  [FAIL] {item['filename']}: {exc} "
+                                "(status=Failed; retry or mark Needs-Manual before Executor)"
                             )
-                    else:
-                        item["status"] = STATUS_FAILED
-                        item["last_error"] = str(exc)[:500]
-                        fail_count += 1
-                        print(
-                            f"  [FAIL] {item['filename']}: {exc} "
-                            "(status=Failed; retry or mark Needs-Manual before Executor)"
-                        )
-                    save_manifest(manifest_path, manifest)
+                        save_manifest(manifest_path, manifest)
 
-        if stopped_for_global_error:
-            print(
-                "\n  Backend authentication or billing requires repair. "
-                "Stopping new batches; untouched items remain retryable.\n"
-            )
-            break
-        if rate_limited and server_wait > MAX_RETRY_WAIT:
-            stopped_for_rate_limit = True
-            print(
-                f"\n  Provider asked to wait {server_wait}s (over {MAX_RETRY_WAIT}s). "
-                "Stopping now; rerun the manifest later, unfinished items remain retryable.\n"
-            )
-            break
-        if stopped_for_rate_limit:
-            print(
-                "\n  Persistent rate limit reached the run boundary. "
-                "Stopping without switching providers; untouched items remain retryable.\n"
-            )
-            break
-        if rate_limited and current > 1 and queue:
-            new_current = max(1, current // 2)
-            # Wait at least as long as the provider asked (Retry-After), never under 10s.
-            pause = max(10, server_wait)
-            print(
-                f"\n  ⚠ Rate-limit hit — concurrency {current} → {new_current}, "
-                f"pausing {pause}s before next batch\n"
-            )
-            current = new_current
-            time.sleep(pause)
-        elif queue:
-            time.sleep(2)
+            if stopped_for_global_error:
+                print(
+                    "\n  Backend authentication or billing requires repair. "
+                    "Stopping new batches; untouched items remain retryable.\n"
+                )
+                break
+            if rate_limited and server_wait > MAX_RETRY_WAIT:
+                stopped_for_rate_limit = True
+                print(
+                    f"\n  Provider asked to wait {server_wait}s (over {MAX_RETRY_WAIT}s). "
+                    "Stopping now; rerun the manifest later, unfinished items remain retryable.\n"
+                )
+                break
+            if stopped_for_rate_limit:
+                print(
+                    "\n  Persistent rate limit reached the run boundary. "
+                    "Stopping without switching providers; untouched items remain retryable.\n"
+                )
+                break
+            if rate_limited and current > 1 and queue:
+                new_current = max(1, current // 2)
+                # Wait at least as long as the provider asked (Retry-After), never under 10s.
+                pause = max(10, server_wait)
+                print(
+                    f"\n  ⚠ Rate-limit hit — concurrency {current} → {new_current}, "
+                    f"pausing {pause}s before next batch\n"
+                )
+                current = new_current
+                time.sleep(pause)
+            elif queue:
+                time.sleep(2)
+    finally:
+        defer_rate_limits(False)
 
     stopped_early = stopped_for_global_error or stopped_for_rate_limit
     run_state = "Stopped" if stopped_early else "Done"

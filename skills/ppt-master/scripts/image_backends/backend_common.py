@@ -587,14 +587,31 @@ def retry_after_seconds(exc: Exception | None) -> int | None:
     return None
 
 
+_rate_limits_deferred = False
+
+
+def defer_rate_limits(enabled: bool) -> None:
+    """Make every backend hand rate limits straight back to its caller.
+
+    The manifest runner owns rate-limit recovery (halve concurrency, honour
+    Retry-After, bounded requeue); a backend retrying the same 429 underneath
+    it only multiplies requests and delays that reaction.
+    """
+    global _rate_limits_deferred
+    _rate_limits_deferred = enabled
+
+
 def retry_delay(attempt: int, rate_limited: bool, exc: Exception = None) -> int:
     """Return the retry delay for a given attempt.
 
     A server-provided Retry-After (kept on `exc` by `http_error`) wins; otherwise
     rate limits back off exponentially with jitter. A Retry-After beyond
     MAX_RETRY_WAIT re-raises `exc`: retrying early only burns requests, so the
-    caller (the manifest runner) decides to stop instead.
+    caller (the manifest runner) decides to stop instead. Under
+    `defer_rate_limits(True)` every rate limit re-raises `exc` the same way.
     """
+    if rate_limited and _rate_limits_deferred and exc is not None:
+        raise exc
     retry_after = retry_after_seconds(exc)
     if retry_after is not None:
         if retry_after > MAX_RETRY_WAIT:
