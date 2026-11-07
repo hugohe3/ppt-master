@@ -314,7 +314,7 @@ Write `project/images/image_prompts.json`:
 | `items[].text_policy` | yes | `none` or `embedded`, judged per image (§5.3) |
 | `items[].aspect_ratio` | yes | The target shape as any positive `W:H` (e.g. `16:9`, `4:1`, `1.85:1`), derived from the placement, never narrowed to a backend. The backend outputs the nearest size its model allows and the manifest keeps this value; Executor fits the actual image through the crop policy, and a sheet is sliced from its actual size |
 | `items[].prompt` | yes | The assembled paragraph |
-| `items[].image_size` | no | `512px` / `1K` / `2K` / `4K` |
+| `items[].image_size` | no | `512px` / `1K` / `2K` / `4K` — a pixel tier (long edge about 1024 / 2048 / 4096 px), not an exact size: the smallest tier whose long edge covers 1.5–2× the planned display long edge, so a full-bleed 1280 px hero takes `2K`; the backend sets the exact pixels |
 | `items[].model` | no | Per-item backend model override |
 | `items[].alt_text` | no | Short caption |
 | `items[].slice_grid`, `items[].slice_names` | for a placeable-element sheet | Exact `RxC` and the comma-separated basenames (`rows*cols` unique outputs) for `slice_images.py`; slice basenames are unique across the manifest, so re-cutting part of a sheet rewrites the parent's `slice_names` (and grid) rather than adding a second item with the same names |
