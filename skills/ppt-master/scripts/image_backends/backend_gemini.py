@@ -219,29 +219,30 @@ def _generate_image(api_key: str, prompt: str,
     chunk_count = 0
     total_bytes = 0
 
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=config,
-    ):
-        elapsed = time.time() - start_time
+    try:
+        for chunk in client.models.generate_content_stream(
+            model=model,
+            contents=contents,
+            config=config,
+        ):
+            elapsed = time.time() - start_time
 
-        if chunk.parts is None:
-            continue
+            if chunk.parts is None:
+                continue
 
-        for part in chunk.parts:
-            if part.text is not None:
-                print(f"\n  Model says: {part.text}", end="", flush=True)
-            elif part.inline_data is not None:
-                chunk_count += 1
-                data_size = len(part.inline_data.data) if part.inline_data.data else 0
-                total_bytes += data_size
-                size_str = f"{data_size / 1024:.0f}KB" if data_size < 1048576 else f"{data_size / 1048576:.1f}MB"
-                print(f"\n  [OK] Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
-                last_image_data = part
-
-    heartbeat_stop.set()
-    hb_thread.join(timeout=1)
+            for part in chunk.parts:
+                if part.text is not None:
+                    print(f"\n  Model says: {part.text}", end="", flush=True)
+                elif part.inline_data is not None:
+                    chunk_count += 1
+                    data_size = len(part.inline_data.data) if part.inline_data.data else 0
+                    total_bytes += data_size
+                    size_str = f"{data_size / 1024:.0f}KB" if data_size < 1048576 else f"{data_size / 1048576:.1f}MB"
+                    print(f"\n  [OK] Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
+                    last_image_data = part
+    finally:
+        heartbeat_stop.set()
+        hb_thread.join(timeout=1)
 
     elapsed = time.time() - start_time
     print(f"\n  [DONE] Stream complete ({elapsed:.1f}s, {chunk_count} chunk(s), {total_bytes / 1024:.0f}KB total)")
