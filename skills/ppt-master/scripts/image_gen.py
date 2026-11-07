@@ -884,6 +884,17 @@ def _materialize_manifest_image(saved_path: str, target_path: Path) -> str:
     return str(target_path)
 
 
+def _completion_note(saved_path: str, aspect_ratio: str) -> str:
+    """Name the delivered pixels so a backend's nearest-size fallback stays attributable."""
+    try:
+        from PIL import Image
+        with Image.open(saved_path) as image:
+            width, height = image.size
+    except (ImportError, OSError):
+        return ""
+    return f"  {width}x{height} (requested {aspect_ratio})"
+
+
 def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                   initial_concurrency: int,
                   image_size: str,
@@ -1022,7 +1033,8 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                 with state_lock:
                     if exc is None:
                         ok_count += 1
-                        print(f"  [OK]   {item['filename']}")
+                        note = _completion_note(saved_path, item["aspect_ratio"])
+                        print(f"  [OK]   {item['filename']}{note}")
                     elif isinstance(exc, ValueError) or is_permanent_error(exc):
                         global_error = is_global_permanent_error(exc)
                         item["status"] = STATUS_FAILED
