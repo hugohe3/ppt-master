@@ -119,11 +119,18 @@ class _RetryableBackendError(RuntimeError):
 
 def resolve_output_path(prompt: str, output_dir: str = None,
                         filename: str = None, ext: str = ".png") -> str:
-    """Compute the final output file path based on parameters."""
+    """Compute the final output file path based on parameters.
+
+    A real image extension on `filename` wins over the backend's `ext`, so the
+    bytes are written once in the caller's format; dots inside a stem ("v2.5")
+    stay part of the name.
+    """
     if filename:
-        # Drop only a real image extension; dots inside a stem ("v2.5") stay.
         stem, suffix = os.path.splitext(filename)
-        file_name = stem if suffix.lower() in EXT_TO_PIL_FORMAT else filename
+        if suffix.lower() in EXT_TO_PIL_FORMAT:
+            file_name, ext = stem, suffix
+        else:
+            file_name = filename
     else:
         safe = "".join(c for c in prompt if c.isalnum() or c in (" ", "_")).rstrip()
         safe = safe.replace(" ", "_").lower()[:30]
@@ -302,7 +309,8 @@ def save_image_bytes(image_bytes: bytes, path: str, content_type: str = None) ->
                     if image is not source:
                         image.close()
                     image = converted
-            image.save(path, format=target_format)
+            save_options = {"quality": 90, "optimize": True} if target_format == "JPEG" else {}
+            image.save(path, format=target_format, **save_options)
         finally:
             if image is not source:
                 image.close()

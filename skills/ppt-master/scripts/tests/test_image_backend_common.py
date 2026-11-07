@@ -33,9 +33,9 @@ class OutputPathTests(unittest.TestCase):
         path = backend_common.resolve_output_path("p", "/out", "gpt-image-2.5-sunburst_hero")
         self.assertEqual(path, os.path.join("/out", "gpt-image-2.5-sunburst_hero.png"))
 
-    def test_image_extension_is_replaced(self) -> None:
-        path = backend_common.resolve_output_path("p", "/out", "hero.v2.PNG", ".webp")
-        self.assertEqual(path, os.path.join("/out", "hero.v2.webp"))
+    def test_caller_image_extension_wins_over_backend_default(self) -> None:
+        path = backend_common.resolve_output_path("p", "/out", "hero.v2.jpg", ".png")
+        self.assertEqual(path, os.path.join("/out", "hero.v2.jpg"))
 
 
 class BillingErrorTests(unittest.TestCase):

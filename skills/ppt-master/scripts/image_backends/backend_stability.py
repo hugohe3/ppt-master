@@ -37,10 +37,10 @@ from image_backends.backend_common import (
     nearest_aspect_ratio,
     normalize_image_size,
     note_aspect_ratio,
-    report_resolution,
     require_api_key,
     resolve_output_path,
     retry_delay,
+    save_image_bytes,
 )
 
 
@@ -130,11 +130,11 @@ def _generate_image(api_key: str, prompt: str,
         raise http_error(response, "Stability generation")
 
     path = resolve_output_path(prompt, output_dir, filename, ".png")
-    with open(path, "wb") as f:
-        f.write(response.content)
-    print(f"  File saved to: {path}")
-    report_resolution(path)
-    return path
+    return save_image_bytes(
+        response.content,
+        path,
+        content_type=response.headers.get("Content-Type"),
+    )
 
 
 def generate(prompt: str,
