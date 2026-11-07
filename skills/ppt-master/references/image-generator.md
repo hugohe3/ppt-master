@@ -354,7 +354,7 @@ Prerequisite: §3 complete and `images/image_prompts.json` validates. The manife
 python3 scripts/image_gen.py --manifest project/images/image_prompts.json --output project/images
 ```
 
-Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded concurrency, and writes each status atomically. Interrupting is safe (completed items stay `Generated`), and `--render-md` refreshes the Markdown sidecar after an interruption. Backend selection, `.env` lookup order, provider keys, and the OpenAI-compatible knobs: [`image.md`](../scripts/docs/image.md). The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls. Backends return their own native resolutions: backfill the actual pixels into `Dimensions`, and when a file is far larger than its planned on-slide size, downscale it as a prepared derivative ([`image-base.md`](./image-base.md) §1); never upscale.
+Validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded concurrency, and writes each status atomically. Interrupting is safe (completed items stay `Generated`), and `--render-md` refreshes the Markdown sidecar after an interruption. Backend selection, `.env` lookup order, provider keys, and the OpenAI-compatible knobs: [`image.md`](../scripts/docs/image.md). The single-image form `image_gen.py "prompt" --filename …` remains for ad-hoc re-rolls. Backends return their own native resolutions: backfill the actual pixels into `Dimensions`; never upscale. Extra source pixels are not a reason for a prepared derivative — export sizes delivered media (`svg_to_pptx.py --image-sizing`).
 
 ### Path B — host-native image tool
 
