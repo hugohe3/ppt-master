@@ -8,7 +8,9 @@ import io
 import json
 import sys
 import tempfile
+import time
 import unittest
+from unittest import mock
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -49,6 +51,41 @@ class ManifestOutputNameTests(unittest.TestCase):
                     Image.open(Path(tmp) / "hero.v2.png") as second:
                 self.assertEqual(first.getpixel((0, 0)), (255, 0, 0))
                 self.assertEqual(second.getpixel((0, 0)), (0, 0, 255))
+
+
+class ManifestInterruptTests(unittest.TestCase):
+    def test_in_flight_success_is_persisted_when_the_main_thread_is_interrupted(self) -> None:
+        from PIL import Image
+
+        def generate(**kwargs: object) -> str:
+            time.sleep(0.2)
+            path = backend_common.resolve_output_path(
+                str(kwargs["prompt"]), str(kwargs["output_dir"]), str(kwargs["filename"])
+            )
+            Image.new("RGB", (8, 8), "red").save(path, format="PNG")
+            return path
+
+        def interrupted(*args: object, **kwargs: object):
+            raise KeyboardInterrupt
+
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "image_prompts.json"
+            items = [
+                {"filename": name, "prompt": "red", "aspect_ratio": "1:1", "status": "Pending",
+                 "page_role": "local", "text_policy": "none"}
+                for name in ("a.png", "b.png")
+            ]
+            manifest_path.write_text(json.dumps({"items": items}), encoding="utf-8")
+            manifest = image_gen.load_manifest(str(manifest_path))
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()), \
+                    mock.patch("concurrent.futures.as_completed", interrupted), \
+                    self.assertRaises(KeyboardInterrupt):
+                image_gen._run_manifest(
+                    manifest, str(manifest_path), SimpleNamespace(generate=generate),
+                    initial_concurrency=2, image_size="1K", output_dir=tmp, model=None,
+                )
+            saved = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual([item["status"] for item in saved["items"]], ["Generated", "Generated"])
 
 
 

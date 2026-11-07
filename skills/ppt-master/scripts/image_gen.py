@@ -992,9 +992,15 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                 saved_path,
                 Path(output_dir) / item["filename"],
             )
-            return idx, saved_path, None
         except Exception as exc:  # noqa: BLE001 — backend raises arbitrary types
             return idx, None, exc
+        # Persist success in the worker: an interrupt in the main thread still
+        # waits for in-flight requests, and their paid results must not be lost.
+        with state_lock:
+            item["status"] = STATUS_GENERATED
+            item.pop("last_error", None)
+            save_manifest(manifest_path, manifest)
+        return idx, saved_path, None
 
     while queue:
         batch_size = min(current, len(queue))
@@ -1015,8 +1021,6 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                 item = items[idx]
                 with state_lock:
                     if exc is None:
-                        item["status"] = STATUS_GENERATED
-                        item.pop("last_error", None)
                         ok_count += 1
                         print(f"  [OK]   {item['filename']}")
                     elif isinstance(exc, ValueError) or is_permanent_error(exc):
