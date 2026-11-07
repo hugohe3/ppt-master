@@ -29,6 +29,27 @@ SCRIPT = SCRIPTS_DIR / "slice_images.py"
 
 
 class SliceImagesDiagnosticsTests(unittest.TestCase):
+    def test_native_transparency_is_kept_instead_of_keyed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sheet_path = root / "sheet.png"
+            # A transparent ground whose hidden RGB is black, not the stated key.
+            image = Image.new("RGBA", (200, 100), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rectangle((30, 20, 69, 79), fill=(200, 80, 40, 255))
+            draw.rectangle((140, 30, 169, 69), fill=(15, 110, 100, 128))
+            image.save(sheet_path)
+
+            written = slice_sheet(
+                sheet_path, 1, 2, root / "out", names=["a", "b"],
+                trim=True, alpha=True, strict_alpha=True, bg=(0, 0, 255),
+            )
+            with Image.open(written[0]) as first, Image.open(written[1]) as second:
+                self.assertEqual(first.size, (40, 60))
+                self.assertEqual(first.getpixel((0, 0)), (200, 80, 40, 255))
+                self.assertEqual(second.size, (30, 40))
+                self.assertEqual(second.getpixel((0, 0))[3], 128)
+
     def test_pure_key_despill_keeps_opaque_key_hue_foreground_and_recovers_shadow(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

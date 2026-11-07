@@ -64,6 +64,9 @@ _BG_SAMPLE_BORDER = 2
 _BG_SAMPLE_MAX_SIDE = 256
 _DEFAULT_FEATHER = 4
 _BOUNDARY_OPAQUE_ALPHA = 32
+# Same rule as image_layers.layer_alpha: any pixel this transparent means the
+# image already carries real alpha, so its ground is not a key colour.
+_NATIVE_ALPHA_FLOOR = 20
 _SHEET_DIAGNOSTIC_BORDER_RATIO = 0.01
 _SHEET_DIAGNOSTIC_BUCKET_SIZE = 4
 # Isolated pixels this close to the key are compression or ringing artifacts a
@@ -628,6 +631,22 @@ def _content_masks(
     return trim_mask, alpha_mask, None, diff
 
 
+def _touched_edges(
+    bbox: tuple[int, int, int, int], cell_size: tuple[int, int]
+) -> list[str]:
+    cell_width, cell_height = cell_size
+    edges = []
+    if bbox[0] <= 0:
+        edges.append("left")
+    if bbox[1] <= 0:
+        edges.append("top")
+    if bbox[2] >= cell_width:
+        edges.append("right")
+    if bbox[3] >= cell_height:
+        edges.append("bottom")
+    return edges
+
+
 def _keying_findings(
     label: str,
     cell_size: tuple[int, int],
@@ -681,16 +700,7 @@ def _keying_findings(
             )
 
     if trim:
-        cell_width, cell_height = cell_size
-        touched_edges = []
-        if bbox[0] <= 0:
-            touched_edges.append("left")
-        if bbox[1] <= 0:
-            touched_edges.append("top")
-        if bbox[2] >= cell_width:
-            touched_edges.append("right")
-        if bbox[3] >= cell_height:
-            touched_edges.append("bottom")
+        touched_edges = _touched_edges(bbox, cell_size)
         if touched_edges:
             drift = _edge_drift(trim_mask, diff, touched_edges)
             if drift is not None:
@@ -994,7 +1004,13 @@ def slice_sheet(
                 if normalized is not oriented:
                     normalized.close()
     sw, sh = sheet.size
-    uneven_sheet = (trim or alpha) and _sheet_keys_by_dominance(sheet, bg)
+    native_alpha = (trim or alpha) and (
+        sheet.getchannel("A").getextrema()[0] < _NATIVE_ALPHA_FLOOR
+    )
+    uneven_sheet = (
+        (trim or alpha) and not native_alpha
+        and _sheet_keys_by_dominance(sheet, bg)
+    )
     output_dir.mkdir(parents=True, exist_ok=True)
 
     stem = sheet_path.stem
@@ -1003,6 +1019,11 @@ def slice_sheet(
     written: list[Path] = []
     findings: list[str] = []
     notices: list[str] = []
+    if native_alpha:
+        notices.append(
+            "the sheet carries its own transparency; --trim/--alpha use it"
+            + (" and ignore --bg" if bg is not None else "")
+        )
 
     idx = 0
     for r in range(rows):
@@ -1020,7 +1041,21 @@ def slice_sheet(
             alpha_mask: Optional[Image.Image] = None
             keyed_rgb: Optional[Image.Image] = None
             bbox = None
-            if trim or alpha:
+            if native_alpha:
+                alpha_mask = cell.getchannel("A")
+                trim_mask = alpha_mask.point(
+                    lambda value: 255 if value >= _NATIVE_ALPHA_FLOOR else 0
+                )
+                bbox = trim_mask.getbbox()
+                if bbox is None:
+                    raise ValueError(f"cell ({r},{c}) is fully transparent; no element was sliced")
+                touched_edges = _touched_edges(bbox, cell.size) if trim else []
+                if touched_edges:
+                    findings.append(
+                        f"cell ({r},{c}): content reaches the "
+                        f"{'/'.join(touched_edges)} cell edge(s) (native transparency)"
+                    )
+            elif trim or alpha:
                 cell_bg = bg if bg is not None else _sample_bg(cell, tolerance)
                 cell_notices: list[str] = []
                 trim_mask, alpha_mask, keyed_rgb, diff = _content_masks(

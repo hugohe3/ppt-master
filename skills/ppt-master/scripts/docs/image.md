@@ -175,6 +175,10 @@ Before slicing, 16-bit grayscale is reduced to 8-bit by retaining each sample's
 high byte (`0..65535` → `0..255`), before RGB/RGBA conversion. This uses the
 encoded bit depth, never the image's observed brightness range. A PNG grayscale
 transparent sample is matched at full depth before reducing the color values.
+A sheet that already carries transparency (any pixel with alpha below 20, as
+an RGBA host or `OPENAI_BACKGROUND=transparent` output) is cut on its own alpha:
+`--trim` and `--alpha` use it, `--bg` is ignored, and `--strict-alpha` checks
+only for content reaching a cell edge.
 
 ## `image_treat.py`
 
