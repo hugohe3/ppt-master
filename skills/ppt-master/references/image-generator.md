@@ -203,9 +203,11 @@ Outside Image to PPTX, Path A uses single-image edit mode and Path B the host to
 
 ```bash
 python3 scripts/image_gen.py "Remove the planned foreground subjects and reconstruct the hidden background; preserve the exact canvas" \
-  --reference-image <project>/images/<source>.png -o <project>/images -f <group>_base
+  --reference-image <project>/images/<source>.png --aspect_ratio <source W:H> --image_size <tier> \
+  -o <project>/images -f <group>_base
 python3 scripts/image_gen.py "Isolate the planned non-overlapping foreground objects at their exact original positions on one flat #00FF00 plate" \
-  --reference-image <project>/images/<source>.png -o <project>/images -f <group>_plate_key
+  --reference-image <project>/images/<source>.png --aspect_ratio <source W:H> --image_size <tier> \
+  -o <project>/images -f <group>_plate_key
 python3 scripts/slice_images.py <project>/images/<group>_plate_key.png --grid 1x1 \
   --names <group>_plate --alpha --bg "#00FF00"
 ```
