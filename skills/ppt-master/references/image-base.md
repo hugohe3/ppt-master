@@ -14,6 +14,8 @@ Status enum: [`svg-image-embedding.md`](svg-image-embedding.md). Per non-skipped
 |---|---|---|---|---|---|---|---|
 | `<planned file>` | `<planned size>` | `<planned role>` | `<owner-resolved recommendation>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
 
+Name an opaque `ai` image `.jpg`; a row that needs alpha or a key — an illustration sheet and its slices, a keyed plate, a transparent layer — stays `.png`.
+
 Classify `Reference: Derived from <canonical bare filename>; treatment=<operation>; …` before `Acquire Via`: the parent must be a distinct non-derived `user`, `web`, `ai`, or `slice` row (no placeholder parents, chains, cycles, or self-reference). Then for each Pending row:
 
 | Row kind / Acquire Via | Load | Run | Success status |

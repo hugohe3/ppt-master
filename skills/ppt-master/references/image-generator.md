@@ -280,7 +280,7 @@ Write `project/images/image_prompts.json`:
   },
   "items": [
     {
-      "filename": "cover_bg.png",
+      "filename": "cover_bg.jpg",
       "purpose": "Cover background (Slide 01)",
       "page_role": "hero_page",
       "text_policy": "none",
@@ -291,7 +291,7 @@ Write `project/images/image_prompts.json`:
       "status": "Pending"
     },
     {
-      "filename": "framework_p05.png",
+      "filename": "framework_p05.jpg",
       "purpose": "Methodology framework (Slide 05)",
       "type": "framework",
       "page_role": "local",
@@ -420,7 +420,7 @@ Do not ask and do not enter Offline Manual. Retain the filename, attempted path,
 | Subject vague | Abstract Reference | Concrete nouns (verbs + objects) |
 | Human depiction off-style | §5.2 cues diluted | Restate the rendering's facial detail, anatomy, texture, realism |
 
-**Variant workflow**: set the item's `status` back to `Pending`, update its `prompt` in place, rerun the same resolved path (Path A reprocesses only that item; Path B regenerates it; Manual re-renders the sidecar). For several stylistic tries append items with distinct filenames (`cover_bg_v2.png`).
+**Variant workflow**: set the item's `status` back to `Pending`, update its `prompt` in place, rerun the same resolved path (Path A reprocesses only that item; Path B regenerates it; Manual re-renders the sidecar). For several stylistic tries append items with distinct filenames (`cover_bg_v2.jpg`).
 
 ---
 
