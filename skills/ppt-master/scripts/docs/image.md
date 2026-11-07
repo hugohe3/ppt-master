@@ -216,7 +216,10 @@ python3 scripts/image_treat.py projects/demo title_art.png \
 Supported operations are brightness, contrast, desaturation/grayscale,
 duotone, Gaussian blur, and `--fit WxH` (downscale to fit inside a pixel
 box, aspect ratio and alpha preserved; never upscales). They compose in a
-fixed order: brightness → contrast → tone treatment → blur → fit. Desaturation, grayscale, and duotone are
+fixed order: brightness → contrast → tone treatment → blur → fit. For a cropped
+(cover) placement, pass the size the uncropped image takes when it covers the
+slot: a 1776x592 source cropped into a 920x228 slot takes `--fit 920x307`;
+`--fit 920x228` would leave 684x228 and force an upscale. Desaturation, grayscale, and duotone are
 mutually exclusive. At least one option must produce a real change; animated
 sources are rejected rather than reduced to one frame, while a camera
 multi-picture JPEG (MPO) contributes its primary frame.
