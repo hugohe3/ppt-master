@@ -347,8 +347,8 @@ def report_resolution(path: str) -> None:
     """Try to report image resolution using PIL."""
     if HAS_PIL:
         try:
-            img = PILImage.open(path)
-            print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
+            with PILImage.open(path) as img:
+                print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
         except Exception:
             pass
 

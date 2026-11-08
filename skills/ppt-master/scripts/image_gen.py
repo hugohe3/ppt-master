@@ -386,6 +386,17 @@ def _aspect_ratio_arg(value: str) -> str:
     return value
 
 
+def _positive_int_arg(value: str) -> int:
+    """Parse a positive integer for argparse."""
+    try:
+        parsed = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("Expected a positive integer.") from exc
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("Expected a positive integer.")
+    return parsed
+
+
 def _resolve_backend() -> tuple[object, str]:
     """
     Determine which backend to use from explicit configuration.
@@ -1338,6 +1349,17 @@ def main() -> None:
             "valid with --manifest / --render-md / --list-backends."
         ),
     )
+    parser.add_argument(
+        "--gif-frames", type=int, choices=range(2, 17), default=None, metavar="N",
+        help=(
+            "Generate an animated GIF with 2-16 frames (OpenAI GPT Image 2.6+ only). "
+            "Single-image mode, including --reference-image edits."
+        ),
+    )
+    parser.add_argument(
+        "--gif-frame-ms", type=_positive_int_arg, default=None, metavar="MS",
+        help="GIF frame duration in milliseconds (positive integer; requires --gif-frames; default: 200).",
+    )
 
     args = parser.parse_args()
 
@@ -1349,6 +1371,22 @@ def main() -> None:
             )
         except ValueError as exc:
             parser.error(str(exc))
+
+    if args.gif_frames is not None or args.gif_frame_ms is not None:
+        conflicting = [
+            name for name, val in (
+                ("--manifest", args.manifest),
+                ("--render-md", args.render_md),
+                ("--list-backends", args.list_backends),
+            ) if val
+        ]
+        if conflicting:
+            parser.error(
+                "--gif-frames / --gif-frame-ms are single-image mode only and cannot be "
+                f"combined with {', '.join(conflicting)}."
+            )
+        if args.gif_frames is None:
+            parser.error("--gif-frame-ms requires --gif-frames.")
 
     if args.reference_image is not None:
         # Reference editing is a single-image-only enhancement; keep it out of
@@ -1471,6 +1509,17 @@ def main() -> None:
             )
             sys.exit(1)
         gen_kwargs["reference_image"] = args.reference_image
+
+    if args.gif_frames is not None:
+        if not getattr(backend, "SUPPORTS_GIF", False):
+            print(
+                f"Error: backend '{backend_name}' does not support GIF output "
+                "(--gif-frames). Use --backend openai with --model gpt-image-2.6-sunburst."
+            )
+            sys.exit(1)
+        gen_kwargs["gif_frames"] = args.gif_frames
+        if args.gif_frame_ms is not None:
+            gen_kwargs["gif_frame_ms"] = args.gif_frame_ms
 
     try:
         backend.generate(**gen_kwargs)

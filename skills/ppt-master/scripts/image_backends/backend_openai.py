@@ -12,7 +12,7 @@ Configuration keys:
   OPENAI_SIZE_PRESET         (optional) auto, legacy, gpt-image, gpt-image-2, or dall-e-2
   OPENAI_RESPONSE_FORMAT     (optional) auto, b64_json, url, or omit
   OPENAI_QUALITY             (optional) auto, omit, low, medium, high, xhigh, max, standard, or hd
-  OPENAI_OUTPUT_FORMAT       (optional) png, jpeg, or webp for GPT image models
+  OPENAI_OUTPUT_FORMAT       (optional) png, jpeg, or webp; gif with --gif-frames
   OPENAI_OUTPUT_COMPRESSION  (optional) 0-100, only for jpeg/webp GPT image output
   OPENAI_BACKGROUND          (optional) auto, opaque, or transparent for GPT image models
   OPENAI_MODERATION          (optional) auto or low for GPT image models
@@ -22,6 +22,19 @@ Image editing (image-to-image):
   When image_gen.py passes reference_image=<path> (single-image CLI only,
   via --reference-image), this backend calls /v1/images/edits with the source
   image + the prompt as an edit instruction, instead of /v1/images/generations.
+
+GIF output (single-image CLI only):
+  --gif-frames N (2-16) enables GIF generation or reference-image editing on
+  gpt-image-2.6-* and later 2.x minors. --gif-frame-ms MS sets a positive frame
+  duration (default 200 ms). Candidate sheets (columns x rows, measured
+  2026-11-08): N=2-8: 2x4 or 4x2; N=9: 3x3; N=10-12: 3x4, 4x3, or 4x4;
+  N=13-16: 4x4. Fit the requested ratio per grid and choose the largest frame
+  by area: width <= floor(3840/columns), height <= floor(3840/rows), pixels
+  <= 8,294,400/(columns*rows), multiples of 16, and an edge ratio <= 3:1.
+  N=2-8 is always billed as an 8-cell sheet; fewer frames at the same size
+  do not cost less. image_size still selects quality. Output is saved
+  unchanged as .gif; OPENAI_OUTPUT_FORMAT must be unset or gif, and
+  OPENAI_OUTPUT_COMPRESSION must be unset. See scripts/docs/image.md.
 
 Dependencies:
   pip install requests Pillow
@@ -163,6 +176,7 @@ GPT_IMAGE_OUTPUT_EXTENSIONS = {
     "png": ".png",
     "jpeg": ".jpg",
     "webp": ".webp",
+    "gif": ".gif",
 }
 OPENAI_SIZE_PRESETS = {
     "auto",
@@ -193,6 +207,7 @@ DEFAULT_BASE_URL = "https://api.openai.com/v1"
 # Signals to image_gen.py that this backend can accept a reference_image
 # (image-to-image edit via /v1/images/edits). Other backends omit this marker.
 SUPPORTS_REFERENCE_IMAGE = True
+SUPPORTS_GIF = True
 
 
 def _field(value, name: str):
@@ -280,8 +295,38 @@ def _select_size(
     aspect_ratio: str,
     image_size: str,
     size_preset: str | None = None,
+    gif_frames: int | None = None,
 ) -> str:
     """Select a model-compatible size while preserving legacy fallbacks."""
+    if gif_frames is not None:
+        if gif_frames <= 8:
+            grids = ((2, 4), (4, 2))
+        elif gif_frames == 9:
+            grids = ((3, 3),)
+        elif gif_frames <= 12:
+            grids = ((3, 4), (4, 3), (4, 4))
+        else:
+            grids = ((4, 4),)
+        ratio = float(min(max(parse_aspect_ratio(aspect_ratio), 1 / GPT_IMAGE_2_MAX_RATIO),
+                          GPT_IMAGE_2_MAX_RATIO))
+        sizes = []
+        for columns, rows in grids:
+            max_width = GPT_IMAGE_2_MAX_EDGE // columns
+            max_height = GPT_IMAGE_2_MAX_EDGE // rows
+            # Translate the per-axis caps into fit_size's single long-edge cap.
+            max_edge = (min(max_width, max_height * ratio) if ratio >= 1
+                        else min(max_height, max_width / ratio))
+            pixels = GPT_IMAGE_2_MAX_PIXELS // (columns * rows)
+            sizes.append(fit_size(
+                aspect_ratio,
+                pixels=pixels,
+                step=16,
+                max_edge=int(max_edge),
+                max_pixels=pixels,
+                max_ratio=GPT_IMAGE_2_MAX_RATIO,
+            ))
+        width, height = max(sizes, key=lambda size: size[0] * size[1])
+        return f"{width}x{height}"
     preset = size_preset or "auto"
     if preset in {"gpt-image-2"} or (
         preset == "auto" and (_is_gpt_image_2(model) or _is_gpt_image_2_5_or_later(model))
@@ -342,13 +387,27 @@ def _read_env_int(name: str, minimum: int, maximum: int) -> int | None:
     return parsed
 
 
-def _gpt_image_options(model: str) -> tuple[dict, str]:
+def _gpt_image_options(model: str, gif_frames: int | None = None,
+                       gif_frame_ms: int | None = None) -> tuple[dict, str]:
     """Read optional GPT Image request parameters from environment."""
-    output_format = _read_env_choice("OPENAI_OUTPUT_FORMAT", GPT_IMAGE_OUTPUT_FORMATS)
+    if gif_frames is not None:
+        configured_format = os.environ.get("OPENAI_OUTPUT_FORMAT")
+        if configured_format is not None and configured_format.strip().lower() != "gif":
+            raise ValueError("GIF output requires OPENAI_OUTPUT_FORMAT to be unset or gif.")
+        if "OPENAI_OUTPUT_COMPRESSION" in os.environ:
+            raise ValueError("GIF output does not support OPENAI_OUTPUT_COMPRESSION. Remove this setting.")
+    formats = {"gif"} if gif_frames is not None else GPT_IMAGE_OUTPUT_FORMATS
+    output_format = _read_env_choice("OPENAI_OUTPUT_FORMAT", formats)
+    if gif_frames is not None:
+        output_format = "gif"
     output_ext = GPT_IMAGE_OUTPUT_EXTENSIONS[output_format] if output_format else ".png"
     options = {}
     if output_format:
         options["output_format"] = output_format
+    if gif_frames is not None:
+        options["frame_count"] = gif_frames
+        if gif_frame_ms is not None:
+            options["frame_duration_ms"] = gif_frame_ms
 
     output_compression = _read_env_int("OPENAI_OUTPUT_COMPRESSION", 0, 100)
     if output_compression is not None:
@@ -467,14 +526,30 @@ def _validate_request_options(
     image_size: str,
     *,
     editing: bool,
+    gif_frames: int | None = None,
+    gif_frame_ms: int | None = None,
 ) -> None:
     """Validate local model options before entering the retry loop."""
+    if gif_frame_ms is not None:
+        if gif_frames is None:
+            raise ValueError("gif_frame_ms requires gif_frames (--gif-frames).")
+        if type(gif_frame_ms) is not int or gif_frame_ms <= 0:
+            raise ValueError("gif_frame_ms must be a positive integer.")
+    if gif_frames is not None:
+        if type(gif_frames) is not int or not 2 <= gif_frames <= 16:
+            raise ValueError("gif_frames must be an integer from 2 to 16.")
+        match = _GPT_IMAGE_2_MINOR_RE.match(_normalized_model(model))
+        if not match or int(match.group(1)) < 6:
+            raise ValueError(
+                f"{model} does not support GIF output. Use gpt-image-2.6-* "
+                "or a later 2.x minor via --model or OPENAI_MODEL."
+            )
     size_preset = _read_size_preset()
-    _select_size(model, aspect_ratio, image_size, size_preset)
+    _select_size(model, aspect_ratio, image_size, size_preset, gif_frames)
     if not (editing and _is_dall_e_2(model)):
         _read_quality(image_size, model)
     if _is_gpt_image_model(model):
-        _gpt_image_options(model)
+        _gpt_image_options(model, gif_frames, gif_frame_ms)
     if editing:
         _read_input_fidelity(model)
     _apply_response_format({}, model)
@@ -532,7 +607,8 @@ def _post_image_edit(api_key: str, base_url: str | None,
 def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
-                    model: str = DEFAULT_MODEL, base_url: str = None) -> str:
+                    model: str = DEFAULT_MODEL, base_url: str = None,
+                    gif_frames: int | None = None, gif_frame_ms: int | None = None) -> str:
     """
     Image generation via OpenAI-compatible API.
 
@@ -546,7 +622,7 @@ def _generate_image(api_key: str, prompt: str,
     """
     # Map parameters
     size_preset = _read_size_preset()
-    size = _select_size(model, aspect_ratio, image_size, size_preset)
+    size = _select_size(model, aspect_ratio, image_size, size_preset, gif_frames)
     quality = _read_quality(image_size, model)
     output_ext = ".png"
     request = {
@@ -558,7 +634,7 @@ def _generate_image(api_key: str, prompt: str,
     if quality is not None:
         request["quality"] = quality
     if _is_gpt_image_model(model):
-        gpt_options, output_ext = _gpt_image_options(model)
+        gpt_options, output_ext = _gpt_image_options(model, gif_frames, gif_frame_ms)
         request.update(gpt_options)
     _apply_response_format(request, model)
 
@@ -566,7 +642,11 @@ def _generate_image(api_key: str, prompt: str,
     print(f"[OpenAI - {mode_label}]")
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
-    print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
+    size_label = "Frame size:" if gif_frames is not None else "Size:"
+    print(f"  {size_label:<14}{size} (from aspect_ratio={aspect_ratio})")
+    if gif_frames is not None:
+        print(f"  Frames:       {gif_frames}")
+        print(f"  Frame ms:     {gif_frame_ms if gif_frame_ms is not None else 200}")
     note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     if size_preset and size_preset != "auto":
         print(f"  Size Preset:  {size_preset}")
@@ -616,6 +696,9 @@ def _generate_image(api_key: str, prompt: str,
     data = _field(resp, "data") if resp is not None else None
     if data:
         path = resolve_output_path(prompt, output_dir, filename, output_ext)
+        if gif_frames is not None:
+            # A caller's static suffix must not transcode and flatten the GIF.
+            path = str(Path(path).with_suffix(".gif"))
         first_image = data[0]
         b64_json = _field(first_image, "b64_json")
         image_url = _field(first_image, "url")
@@ -631,7 +714,8 @@ def _generate_image(api_key: str, prompt: str,
 def _edit_image(api_key: str, prompt: str, reference_image: str,
                 aspect_ratio: str = "1:1", image_size: str = "1K",
                 output_dir: str = None, filename: str = None,
-                model: str = DEFAULT_MODEL, base_url: str = None) -> str:
+                model: str = DEFAULT_MODEL, base_url: str = None,
+                gif_frames: int | None = None, gif_frame_ms: int | None = None) -> str:
     """
     Image-to-image edit via the OpenAI-compatible /v1/images/edits endpoint.
 
@@ -643,7 +727,7 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
         Path of the saved image file
     """
     size_preset = _read_size_preset()
-    size = _select_size(model, aspect_ratio, image_size, size_preset)
+    size = _select_size(model, aspect_ratio, image_size, size_preset, gif_frames)
     quality = None if _is_dall_e_2(model) else _read_quality(image_size, model)
     output_ext = ".png"
     request = {
@@ -655,7 +739,7 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     if quality is not None:
         request["quality"] = quality
     if _is_gpt_image_model(model):
-        gpt_options, output_ext = _gpt_image_options(model)
+        gpt_options, output_ext = _gpt_image_options(model, gif_frames, gif_frame_ms)
         request.update(gpt_options)
     input_fidelity = _read_input_fidelity(model)
     if input_fidelity is not None:
@@ -668,7 +752,11 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     print(f"  Model:        {model}")
     print(f"  Reference:    {reference_image}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
-    print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
+    size_label = "Frame size:" if gif_frames is not None else "Size:"
+    print(f"  {size_label:<14}{size} (from aspect_ratio={aspect_ratio})")
+    if gif_frames is not None:
+        print(f"  Frames:       {gif_frames}")
+        print(f"  Frame ms:     {gif_frame_ms if gif_frame_ms is not None else 200}")
     note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     if size_preset and size_preset != "auto":
         print(f"  Size Preset:  {size_preset}")
@@ -719,6 +807,8 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     data = _field(resp, "data") if resp is not None else None
     if data:
         path = resolve_output_path(prompt, output_dir, filename, output_ext)
+        if gif_frames is not None:
+            path = str(Path(path).with_suffix(".gif"))
         first_image = data[0]
         b64_json = _field(first_image, "b64_json")
         image_url = _field(first_image, "url")
@@ -739,7 +829,8 @@ def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES,
-             reference_image: str = None) -> str:
+             reference_image: str = None,
+             gif_frames: int | None = None, gif_frame_ms: int | None = None) -> str:
     """
     OpenAI-compatible image generation (or image-to-image edit) with retry.
 
@@ -759,6 +850,8 @@ def generate(prompt: str,
         reference_image: Optional source image path. When set, the request
             goes to /v1/images/edits (image-to-image) instead of
             /v1/images/generations.
+        gif_frames: Optional GIF frame count (2-16); requires GPT Image 2.6+.
+        gif_frame_ms: Optional positive frame duration in ms (API default 200).
 
     Returns:
         Path of the saved image file
@@ -775,6 +868,8 @@ def generate(prompt: str,
         aspect_ratio,
         image_size,
         editing=reference_image is not None,
+        gif_frames=gif_frames,
+        gif_frame_ms=gif_frame_ms,
     )
 
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -790,10 +885,10 @@ def generate(prompt: str,
             if reference_image is not None:
                 return _edit_image(api_key, prompt, reference_image,
                                    aspect_ratio, image_size, output_dir,
-                                   filename, model, base_url)
+                                   filename, model, base_url, gif_frames, gif_frame_ms)
             return _generate_image(api_key, prompt,
                                    aspect_ratio, image_size, output_dir,
-                                   filename, model, base_url)
+                                   filename, model, base_url, gif_frames, gif_frame_ms)
         except Exception as e:
             last_error = e
             if is_permanent_error(e):
