@@ -3,9 +3,9 @@
 Volcengine Seedream image generation backend.
 
 Configuration keys:
-  LAS_API_KEY / VOLCENGINE_API_KEY / ARK_API_KEY   (required)
-  VOLCENGINE_BASE_URL                (optional)
-  VOLCENGINE_MODEL                   (optional; Seedream 4.5 only)
+  ARK_API_KEY / VOLCENGINE_API_KEY / LAS_API_KEY   (required; the key must match the endpoint)
+  VOLCENGINE_BASE_URL                (optional; Ark by default, LAS when only LAS_API_KEY is set)
+  VOLCENGINE_MODEL                   (optional; Seedream 5.0 pro / flash, or 4.5)
 """
 
 import sys
@@ -27,6 +27,7 @@ if __name__ == "__main__":
 import math
 import os
 import time
+from urllib.parse import urlparse
 
 import requests
 
@@ -47,10 +48,21 @@ from image_backends.backend_common import (
 )
 
 
-DEFAULT_ENDPOINT = "https://operator.las.cn-beijing.volces.com/api/v1/images/generations"
-DEFAULT_MODEL = "doubao-seedream-4-5-251128"
+ARK_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/images/generations"
+LAS_ENDPOINT = "https://operator.las.cn-beijing.volces.com/api/v1/images/generations"
+DEFAULT_ENDPOINT = ARK_ENDPOINT
+DEFAULT_MODEL = "doubao-seedream-5-0-pro-260628"
+# LAS does not list Seedream 5.0 pro / flash; its users keep the 4.5 default.
+LAS_DEFAULT_MODEL = "doubao-seedream-4-5-251128"
 DEFAULT_IMAGE_SIZE = "2K"
-SUPPORTED_MODELS = {DEFAULT_MODEL}
+# Official total-pixel limits; a listed size outside them is refitted, never rejected.
+SEEDREAM_5_PRO_LIMITS = {"min_pixels": 921_600, "max_pixels": 4_624_220, "max_ratio": 16}
+MODEL_SIZE_LIMITS = {
+    DEFAULT_MODEL: SEEDREAM_5_PRO_LIMITS,
+    "doubao-seedream-5-0-flash-260915": SEEDREAM_5_PRO_LIMITS,
+    LAS_DEFAULT_MODEL: {"min_pixels": 3_686_400, "max_pixels": 16_777_216, "max_ratio": 16},
+}
+SUPPORTED_MODELS = set(MODEL_SIZE_LIMITS)
 
 ASPECT_RATIO_SIZE_MAP = {
     "2K": {
@@ -77,7 +89,7 @@ ASPECT_RATIO_SIZE_MAP = {
 
 
 def _validate_model(model: str) -> str:
-    """Limit the backend to the Seedream 4.5 contract implemented below."""
+    """Limit the backend to the Seedream contracts implemented below."""
     resolved = model.strip()
     if resolved not in SUPPORTED_MODELS:
         raise ValueError(
@@ -96,29 +108,55 @@ def _resolve_url(base_url: str) -> str:
     return base + "/api/v1/images/generations"
 
 
-def _resolve_size(aspect_ratio: str, image_size: str) -> str:
-    """Resolve the target resolution for a ratio and logical size preset."""
+def _is_las(url: str) -> bool:
+    """Return whether a base URL or endpoint points at the LAS gateway."""
+    return ".las." in (urlparse(url).hostname or "")
+
+
+def _resolve_base_url() -> str:
+    """Pick the endpoint: explicit URL, LAS for a LAS-only key, otherwise Ark."""
+    explicit = os.environ.get("VOLCENGINE_BASE_URL")
+    if explicit:
+        return explicit
+    las_only = os.environ.get("LAS_API_KEY") and not (
+        os.environ.get("ARK_API_KEY") or os.environ.get("VOLCENGINE_API_KEY")
+    )
+    return LAS_ENDPOINT if las_only else ARK_ENDPOINT
+
+
+def _size_pixels(size: str) -> int:
+    """Return the total pixels of a `WxH` size string."""
+    return math.prod(map(int, size.split("x")))
+
+
+def _tier_pixels(image_size: str) -> int:
+    """Return the 1:1 pixel budget of a logical size preset."""
     normalized = normalize_image_size(image_size)
     sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
-    if sizes is None and normalized not in TIER_PIXELS:
-        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+    if sizes:
+        return _size_pixels(sizes["1:1"])
+    if normalized not in TIER_PIXELS:
         raise ValueError(
             f"Unsupported image size '{image_size}' for Volcengine backend. "
-            f"Seedream 4.5 supports these sizes: {supported_sizes}."
+            f"Supported logical sizes: {', '.join(TIER_PIXELS)}."
         )
-    listed = match_aspect_ratio(aspect_ratio, sizes or {})
-    if listed:
-        return sizes[listed]
-    # Any other ratio or tier is fitted to the model's size rules.
-    budget = math.prod(map(int, sizes["1:1"].split("x"))) if sizes else TIER_PIXELS[normalized]
-    width, height = fit_size(
-        aspect_ratio,
-        pixels=budget,
-        step=32,
-        min_pixels=3_686_400,
-        max_pixels=16_777_216,
-        max_ratio=16,
-    )
+    return TIER_PIXELS[normalized]
+
+
+def _resolve_size(aspect_ratio: str, image_size: str, model: str = DEFAULT_MODEL) -> str:
+    """Resolve the target resolution for a ratio, logical size preset, and model."""
+    budget = _tier_pixels(image_size)
+    limits = MODEL_SIZE_LIMITS[model]
+    tables = [ASPECT_RATIO_SIZE_MAP.get(normalize_image_size(image_size)) or {}]
+    if budget > limits["max_pixels"]:
+        # A tier above the model's ceiling reuses the largest listed tier that fits.
+        tables += sorted(ASPECT_RATIO_SIZE_MAP.values(), key=lambda t: -_size_pixels(t["1:1"]))
+    for sizes in tables:
+        listed = match_aspect_ratio(aspect_ratio, sizes)
+        if listed and limits["min_pixels"] <= _size_pixels(sizes[listed]) <= limits["max_pixels"]:
+            return sizes[listed]
+    # Any other ratio, tier, or out-of-limit listed size is fitted to the model's rules.
+    width, height = fit_size(aspect_ratio, pixels=budget, step=32, **limits)
     return f"{width}x{height}"
 
 
@@ -128,7 +166,7 @@ def _generate_image(api_key: str, prompt: str,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the Volcengine backend."""
     model = _validate_model(model)
-    size = _resolve_size(aspect_ratio, image_size)
+    size = _resolve_size(aspect_ratio, image_size, model)
     note_aspect_ratio(aspect_ratio, size.replace("x", ":"))
     url = _resolve_url(base_url)
     headers = {
@@ -147,6 +185,10 @@ def _generate_image(api_key: str, prompt: str,
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
+    limits = MODEL_SIZE_LIMITS[model]
+    budget = _tier_pixels(image_size)
+    if not limits["min_pixels"] <= budget <= limits["max_pixels"]:
+        print(f"  [INFO] {model} does not support {image_size}; using the nearest legal size.")
     print(f"  Resolution:   {size}")
     print()
     print("  [..] Generating...", end="", flush=True)
@@ -173,20 +215,26 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Volcengine backend."""
-    resolved_model = model or os.environ.get("VOLCENGINE_MODEL") or DEFAULT_MODEL
-    _validate_model(resolved_model)
+    base_url = _resolve_base_url()
+    las = _is_las(base_url)
+    resolved_model = (
+        model or os.environ.get("VOLCENGINE_MODEL") or (LAS_DEFAULT_MODEL if las else DEFAULT_MODEL)
+    )
+    resolved_model = _validate_model(resolved_model)
     normalized_size = normalize_image_size(image_size)
-    _resolve_size(aspect_ratio, normalized_size)
+    _resolve_size(aspect_ratio, normalized_size, resolved_model)
+    # Ark and LAS keys are not interchangeable; prefer the key for the chosen endpoint.
+    key_order = (
+        ("LAS_API_KEY", "VOLCENGINE_API_KEY", "ARK_API_KEY") if las
+        else ("ARK_API_KEY", "VOLCENGINE_API_KEY", "LAS_API_KEY")
+    )
     api_key = require_api_key(
-        "LAS_API_KEY",
-        "VOLCENGINE_API_KEY",
-        "ARK_API_KEY",
+        *key_order,
         message=(
-            "No API key found. Set LAS_API_KEY, VOLCENGINE_API_KEY, or "
-            "ARK_API_KEY in the current environment or a .env file."
+            "No API key found. Set ARK_API_KEY (Ark) or LAS_API_KEY (LAS) "
+            "in the current environment or a .env file."
         ),
     )
-    base_url = os.environ.get("VOLCENGINE_BASE_URL") or DEFAULT_ENDPOINT
 
     last_error = None
     for attempt in range(max_retries + 1):

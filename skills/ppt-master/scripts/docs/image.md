@@ -155,6 +155,15 @@ MINIMAX_API_KEY=your-api-key
 # MINIMAX_MODEL=image-01
 ```
 
+Volcengine serves Seedream through two gateways whose keys are not interchangeable:
+
+| Gateway | Key | `VOLCENGINE_BASE_URL` | Default model |
+|---|---|---|---|
+| Ark (default) | `ARK_API_KEY` | `https://ark.cn-beijing.volces.com/api/v3` | `doubao-seedream-5-0-pro-260628` |
+| LAS | `LAS_API_KEY` | `https://operator.las.cn-beijing.volces.com/api/v1` | `doubao-seedream-4-5-251128` |
+
+Without `VOLCENGINE_BASE_URL`, the backend uses LAS only when `LAS_API_KEY` is the sole key set, and Ark otherwise; it sends the key that matches the chosen gateway first, with `VOLCENGINE_API_KEY` as the shared fallback. `VOLCENGINE_MODEL` accepts Seedream 5.0 pro, 5.0 flash (`doubao-seedream-5-0-flash-260915`), and 4.5. Seedream 5.0 pro / flash allow 921,600–4,624,220 total pixels, so a `4K` request outputs the largest legal size near 2K. Ark is retiring Seedream 4.5 ([deprecation notice](https://docs.volcengine.com/docs/ark/model-deprecation-notice)).
+
 ### Animated GIF output (OpenAI only)
 
 `--gif-frames N` requests 2–16 frames from `gpt-image-2.6-*` (Sunburst / Flare,

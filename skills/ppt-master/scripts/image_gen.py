@@ -144,9 +144,9 @@ BACKEND_REGISTRY = {
         "module": "backend_volcengine",
         "tier": "core",
         "label": "Volcengine Seedream",
-        "default_model": "doubao-seedream-4-5-251128",
+        "default_model": "doubao-seedream-5-0-pro-260628",
         "default_image_size": "2K",
-        "key_hint": "LAS_API_KEY / VOLCENGINE_API_KEY / ARK_API_KEY",
+        "key_hint": "ARK_API_KEY / VOLCENGINE_API_KEY / LAS_API_KEY",
         "aliases": ["ark", "doubao", "seedream"],
     },
     "tencent": {
