@@ -76,7 +76,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 可以。完整仓库确实很大（Git 历史，加上内置的示例 deck 及其素材），而且这个体积是写进历史里的——在不破坏已有大量 fork 的前提下没法瘦身。如果你只想要 skill、不需要完整仓库，用下面的轻量方式：
 
 - **Marketplace CLI**：`npx skills add hugohe3/ppt-master`，或 Claude Code 里的 `/plugin install`，都只拉取 skill 文件（见 [README 的「3. 配置项目」一节](../../README_CN.md#3-配置项目)）。
-- **手动下载**：到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载 `ppt-master-skill-*.zip`——只含 skill 文件（约 56 MB），无需 clone 完整仓库。
+- **手动下载**：到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载 `ppt-master-skill-*.zip`——只含 skill 文件（约 23 MB），无需 clone 完整仓库。
 
 两种 skill-only 方式装好后，找到同时包含 `SKILL.md` 与 `requirements.txt` 的 skill 安装目录，再运行 `python3 -m pip install -r "<installed-skill-dir>/requirements.txt"`，后处理脚本才能工作。
 
