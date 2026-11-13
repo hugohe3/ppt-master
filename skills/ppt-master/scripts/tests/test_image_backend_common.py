@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 import unittest
 from email.utils import formatdate
 from pathlib import Path
@@ -30,12 +31,16 @@ def _response(status: int, body: str, headers: dict | None = None) -> SimpleName
 
 class OutputPathTests(unittest.TestCase):
     def test_cli_filename_keeps_dotted_stem(self) -> None:
-        path = backend_common.resolve_output_path("p", "/out", "gpt-image-2.5-sunburst_hero")
-        self.assertEqual(path, os.path.join("/out", "gpt-image-2.5-sunburst_hero.png"))
+        with tempfile.TemporaryDirectory() as tmp:
+            out_dir = os.path.join(tmp, "out")
+            path = backend_common.resolve_output_path("p", out_dir, "gpt-image-2.5-sunburst_hero")
+            self.assertEqual(path, os.path.join(out_dir, "gpt-image-2.5-sunburst_hero.png"))
 
     def test_caller_image_extension_wins_over_backend_default(self) -> None:
-        path = backend_common.resolve_output_path("p", "/out", "hero.v2.jpg", ".png")
-        self.assertEqual(path, os.path.join("/out", "hero.v2.jpg"))
+        with tempfile.TemporaryDirectory() as tmp:
+            out_dir = os.path.join(tmp, "out")
+            path = backend_common.resolve_output_path("p", out_dir, "hero.v2.jpg", ".png")
+            self.assertEqual(path, os.path.join(out_dir, "hero.v2.jpg"))
 
 
 class BillingErrorTests(unittest.TestCase):
@@ -225,7 +230,6 @@ class OpenAIModelFamilyTests(unittest.TestCase):
 class ManifestAspectRatioTests(unittest.TestCase):
     def _load(self, ratio: str) -> dict:
         import json
-        import tempfile
 
         import image_gen
 
