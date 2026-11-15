@@ -57,7 +57,7 @@
 
 </details>
 
-> **可编辑早已是及格线——真正拉开差距的是原生深度。** PPT Master 交给你的是一份真正的 PowerPoint：母版、原生形状、数据驱动的图表与表格，而不是一堆扁平文本框，也不是套模板填空的结果。它还不止把幻灯片排得好看——先替你把逻辑理顺，再谈视觉；而这份原生深度在**持续向 PowerPoint 本身靠拢**，逐版本补齐更多原生能力。形态上，它是一套在有 Agent 能力的 AI 工具里运行的工作流：把你的主题或材料交给 AI，就在你本机生成，数据不出本地，不锁定任何平台和模型。工作原理与能力边界 → [产品定位](#产品定位)。
+> **可编辑早已是及格线——真正拉开差距的是原生深度。** PPT Master 交付的是一份真正的 PowerPoint：母版、原生形状、数据驱动的图表与表格，既不是扁平文本框堆砌，也不是套模板填空。它先替你理顺表达逻辑、再做逐页视觉设计，并且这份原生深度仍在**持续向 PowerPoint 本身靠拢**，逐版本补齐更多原生能力。形态上，它是运行在任意 Agent 工具里的本地工作流：把主题或材料交给 AI，就在本机直接导出 `.pptx`，数据不出本地，不锁定平台与模型。工作原理与能力边界 → [产品定位](#产品定位)。
 
 <p align="center">
   <a href="#快速开始"><strong>快速开始</strong></a> ·
@@ -92,27 +92,27 @@
 
 ## 产品定位
 
-**可编辑如今只是及格线——真正要紧的是你能拿到多少 PowerPoint。** PPT Master 交付的是 PowerPoint 的原生对象模型本身，而且有深度：带调节手柄的原生形状与连接符、按需的数据驱动图表与表格、完整的文本 / 图片 / 填充 / 效果，点开任意元素都作为原生 PowerPoint 对象继续编辑；走模板 / 结构化路线时，它还能为你产出带真正母版与版式（`p:sldMaster` / `p:sldLayout` 继承）的 deck。
+**所谓原生深度，是指你能拿到多少真正的 PowerPoint 对象模型。** 带调节手柄的原生形状与连接符、按需开启的数据驱动图表与表格、完整的文本 / 图片 / 填充 / 效果体系——点开任意元素，都能作为原生 PowerPoint 对象继续编辑；走模板或结构化路线时，还能直接产出带真正母版与版式继承（`p:sldMaster` / `p:sldLayout`）的演示文稿。
 
-而且这份深度是**一个前进方向，不是一张固定清单。** PPT Master 的北极星是持续向 PowerPoint 本身靠拢：不断开发、集成更多 PowerPoint 原生能力，一个版本接一个版本，缩小「AI 能替你生成的」和「你在 PowerPoint 里手工能做出的」之间的差距。[PowerPoint ↔ SVG 映射指南](./docs/zh/powerpoint-svg-mapping.md) 逐条、诚实地记录了这份能力今天覆盖到哪——SmartArt 是刻意的排除，不是缺口。
+这份深度也是**一个持续演进的方向，而非静态清单。** PPT Master 的北极星是不断向 PowerPoint 本身靠拢，逐版本集成更多原生能力，持续缩小「AI 生成」与「手工精做」之间的差距。[PowerPoint ↔ SVG 映射指南](./docs/zh/powerpoint-svg-mapping.md) 逐条、诚实地记录了当前的覆盖范围——其中 SmartArt 是刻意的取舍，而非缺口。
 
-形态上，它是一套在有 Agent 能力的 AI 工具里运行的工作流（一个 "skill"）：你在对话框里说"用这份 PDF 做一份 PPT"，它就按流程在你本机生成、导出原生可编辑的 `.pptx`。你不写任何代码，只做三件事——装 Python、装一个 AI 工具、把材料放进来。
+使用方式上，它作为一套工作流运行在具备 Agent 能力的 AI 工具中：只需在对话框里说一句"用这份 PDF 做一份 PPT"，它就会在本机完成分析、设计与导出，生成原生可编辑的 `.pptx`。全程无需写代码，你只做三件事——装 Python、装一个 AI 工具、把材料放进来。
 
-从源材料生成新 deck 是主管线，但不是唯一路线：PPT Master 还能从你的参考资料中提炼可复用的品牌 / 风格 / 版式 / 成品模板，把新内容填进你已有的 `.pptx` 并保留其设计，或为成品 deck 追加原生转场、动画和旁白——每条路线都有明确的保留契约。每项能力怎么用 → [快速入门](./docs/zh/getting-started.md)。
+从源材料生成新演示文稿是主管线，但不是唯一路线：PPT Master 还能从你的参考资料中提炼可复用的品牌 / 风格 / 版式 / 成品模板，把新内容填进已有的 `.pptx` 并保留原设计，或为成品文稿追加原生转场、动画和旁白——每条路线都有明确的保留契约。每项能力怎么用 → [快速入门](./docs/zh/getting-started.md)。
 
 在这份原生深度之上，这个形态还带来三个承诺：
 
 - **成本透明可控** — 工具免费开源，唯一成本是你自己的 AI 模型用量，不在此之外增加任何订阅费用
 - **数据不出本地** — 除与 AI 模型的对话及你主动启用的搜索、生图、语音服务外，全流程在你的电脑上完成
-- **不锁定平台** — 任何具备 agent 能力的 AI IDE 均可驱动；Claude、GPT、Gemini、Kimi 等模型均可使用
+- **不锁定平台** — 任何具备 Agent 能力的 AI 工具均可驱动；Kimi、Gemini、GPT、Claude 等模型均可使用
 
 为什么选它、以及它不适合的场景 → [为什么选 PPT Master](./docs/zh/why-ppt-master.md)；这些承诺背后的长期能力边界 → [项目定位与能力边界](./docs/zh/project-positioning.md)。
 
 > [!IMPORTANT]
 > ### 这是一个工具，不是一个许愿池
-> `harness + model = agent`——PPT Master 只负责工作流，产出上限由模型决定。推荐 **Kimi K3（或 Claude）大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2.5-sunburst` 或 Google `gemini-nano-banana-2.1`）**；其他模型能跑通流程，但有质量差距。
+> `harness + model = agent`——PPT Master 只负责工作流，产出上限由模型决定。推荐 **Kimi K3.1（或 Gemini）大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2.6-sunburst` 或 Google `gemini-nano-banana-2.1`）**；其他模型能跑通流程，但有质量差距。
 >
-> 也别指望一把就拿到完美成品。它的价值是帮你把大部分枯燥的活儿干掉，剩下的打磨交给你——做原生可编辑的 PPT，本就是为了让你接着改，而不是甩给你一张改不动的图。**廉价模型做不出推荐配置的效果，这是模型的差距，不是 PPT Master 的 bug。**模型越便宜，要补的人工就越多；效果不理想，先升级模型，再对照[快速入门](./docs/zh/getting-started.md)和[示例工程](https://hugohe3.github.io/ppt-master-examples/)检查用法。
+> 也别指望一把就拿到完美成品。它的价值是帮你把大部分枯燥的活儿干掉，剩下的打磨交给你——做原生可编辑的 PPT，本就是为了让你接着改，而不是甩给你一张改不动的图。**廉价模型做不出推荐配置的效果，这是模型的差距，不是 PPT Master 的 bug。** 模型越便宜，要补的人工就越多；效果不理想，先升级模型，再对照[快速入门](./docs/zh/getting-started.md)和[示例工程](https://hugohe3.github.io/ppt-master-examples/)检查用法。
 >
 > token 消耗高是这个方案的取舍，不是缺陷：工具本身免费开源，但模型的 token 费用由你自己承担；这个方案用更多的 token 换逐页设计的效果和原生可编辑性。想要不付出投入，却拿到极好的效果，这就是许愿，目前实现不了；如果这个取舍不适合你，其他技术路线的工具或手动制作都是合适的选择。
 
@@ -219,13 +219,13 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 | 类型 | 代表工具 | 说明 |
 |---|---|---|
-| **IDE 内置 agent** | • VS Code 架构（含 [VS Code](https://code.visualstudio.com/) 本体及分支与衍生）：[Cursor](https://cursor.sh/)、Trae、Codebuddy IDE、[Windsurf](https://codeium.com/windsurf) 等<br>• 其他架构：[Zed](https://zed.dev/) 等 | 编辑器原生集成 agent |
+| **IDE 内置 agent** | • VS Code 架构（含 [VS Code](https://code.visualstudio.com/) 本体及分支与衍生）：[Cursor](https://cursor.sh/)、[Antigravity](https://antigravity.google/)、Trae、Codebuddy IDE、[Windsurf](https://codeium.com/windsurf) 等<br>• 其他架构：[Zed](https://zed.dev/) 等 | 编辑器原生集成 agent |
 | **IDE 插件 / 扩展** | [Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[GitHub Copilot](https://github.com/features/copilot)、[Cline](https://cline.bot/)、通义灵码 等 | 装在 VS Code / JetBrains 等宿主里使用 |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
 
-> **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图 —— **`gpt-image-2.5-sunburst`**（OpenAI）或 **`gemini-nano-banana-2.1`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
+> **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3.1](https://www.kimi.com/code/?aff=ppt-master)**（或 Gemini）驱动流程，搭配 AI 生图 —— **`gpt-image-2.6-sunburst`**（OpenAI）或 **`gemini-nano-banana-2.1`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
 
-**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**、**[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)**、**[RunAPI](https://runapi.host/register?aff=WMLJ)** 与 **[ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme01&campaign_id=ppt-master-github&ad_group_id=readme01)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
+**🔑 想用 Gemini / GPT / Claude 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**、**[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)**、**[RunAPI](https://runapi.host/register?aff=WMLJ)** 与 **[ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme01&campaign_id=ppt-master-github&ad_group_id=readme01)** 均支持按量调用 Gemini、GPT、Claude 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
 
 **🔀 手上有多个渠道？** 拿到多家的 API Key 后，[cc-switch](https://github.com/farion1231/cc-switch)（跨平台桌面应用）可以一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商，免去手动改配置。
 

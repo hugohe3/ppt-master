@@ -57,7 +57,7 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 </details>
 
-> **Editable is already table stakes — what sets PPT Master apart is native depth.** It hands you a real PowerPoint: slide masters, native shapes, data-backed charts and tables — not flat text boxes, and not a filled-in template. It also does more than lay slides out nicely — it reasons the argument into shape first, then designs; and that native depth keeps **converging with PowerPoint itself**, adding more of its native capabilities release after release. In form, it's a workflow that runs inside any agent-capable AI tool: hand the AI your topic or material, and it generates on your machine — your data stays local, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
+> **Editable is already table stakes — what sets PPT Master apart is native depth.** It delivers a real PowerPoint: slide masters, native shapes, and data-backed charts and tables — neither flat text boxes nor a filled-in template. It structures your argument first and designs page by page second, while **continuously converging with PowerPoint itself** as new native capabilities land each release. In form, it's a local workflow that runs inside any agent-capable AI tool: hand the AI your topic or source files and get a `.pptx` generated on your machine — local data, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
 
 <p align="center">
   <a href="#quick-start"><strong>Quick Start</strong></a> ·
@@ -92,25 +92,25 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 ## Product Positioning
 
-**Editable is now table stakes — the real question is how much of PowerPoint you actually get.** PPT Master delivers PowerPoint's native object model itself, and in depth: native shapes and connectors with working adjustment handles, data-backed charts and tables on demand, and the full text / picture / fill / effect model — click any element and keep editing it as a native PowerPoint object; and through the template / structured route, it can hand you a deck with real slide masters and layouts (`p:sldMaster` / `p:sldLayout` inheritance).
+**Native depth means how much of PowerPoint's real object model you actually get.** Native shapes and connectors with live adjustment handles, data-backed charts and tables on demand, and the full text, picture, fill, and effect system — click any element and edit it as a first-class PowerPoint object. Through the template or structured route, it also produces decks with real slide masters and layouts (`p:sldMaster` / `p:sldLayout` inheritance).
 
-And that depth is a **direction of travel, not a fixed checklist.** PPT Master's north star is to keep converging with PowerPoint itself: an ongoing effort to build and integrate more of PowerPoint's native capabilities, release after release, closing the gap between what an AI can generate for you and what you could build by hand in PowerPoint. The [PowerPoint ↔ SVG Mapping Guide](./docs/powerpoint-svg-mapping.md) is the honest, feature-by-feature record of how far that reaches today — and SmartArt is a deliberate omission, not a gap.
+That depth is **a direction of travel, not a static checklist.** PPT Master's north star is steady convergence with PowerPoint itself — integrating more native capabilities release after release to narrow the gap between what AI generates and what you would build by hand. The [PowerPoint ↔ SVG Mapping Guide](./docs/powerpoint-svg-mapping.md) documents exact coverage feature by feature — SmartArt is a deliberate omission, not a gap.
 
-In form, it's a workflow (a "skill") that runs inside any agent-capable AI tool: tell it in chat — "make a deck from this PDF" — and it runs the workflow on your machine and exports a natively editable `.pptx`. No coding on your side; you do exactly three things — install Python, install an AI tool, drop in your material.
+In practice, it runs as a workflow ("skill") inside any agent-capable AI tool: ask in chat — "make a deck from this PDF" — and it handles analysis, design, and export locally into a natively editable `.pptx`. No coding required; you do three things — install Python, open an AI tool, drop in your material.
 
-Generating a new deck from source documents is the main pipeline, but not the only route. PPT Master can also distill reusable brand / style / layout / deck templates from your references, fill an existing `.pptx` with new content while preserving its design, and add native transitions, animations, and narration to a finished deck — each route with an explicit contract for what gets preserved. How to use each capability → [Getting Started](./docs/getting-started.md).
+Generating a new deck from source documents is the main pipeline, but not the only route: PPT Master can also distill reusable brand, style, layout, or deck templates from your references, fill an existing `.pptx` with new content while preserving its design, or add native transitions, animations, and narration to a finished deck — each route with an explicit preservation contract. How to use each capability → [Getting Started](./docs/getting-started.md).
 
 On top of that native depth, this form comes with three promises:
 
 - **Transparent, predictable cost** — free and open source; the only cost is your AI model usage, with no PPT subscription on top
 - **Data stays local** — apart from AI model calls and the search, image, and speech services you choose to enable, the entire pipeline runs on your machine
-- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work
+- **No platform lock-in** — any agent-capable AI tool can drive it; Kimi, Gemini, GPT, Claude, and other models all work
 
 Why you'd choose it, and where it isn't the right fit → [Why PPT Master](./docs/why-ppt-master.md); the long-term capability boundaries behind these promises → [Project Positioning](./docs/project-positioning.md).
 
 > [!IMPORTANT]
 > ### This is a tool, not a wishing well
-> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or Claude) with a large context window (~1M tokens) + AI image generation (`gpt-image-2.5-sunburst` or Google `gemini-nano-banana-2.1`)**; other models can run the pipeline, with a quality gap.
+> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3.1 (or Gemini) with a large context window (~1M tokens) + AI image generation (`gpt-image-2.6-sunburst` or Google `gemini-nano-banana-2.1`)**; other models can run the pipeline, with a quality gap.
 >
 > And don't expect a finished, perfect deck in one shot. The tool's value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. **A cheap model won't match the recommended setup — that gap is the model's, not a PPT Master bug.** The cheaper the model, the more there is to do; if results disappoint, upgrade the model first, then check your usage against [Getting Started](./docs/getting-started.md) and the [example projects](https://hugohe3.github.io/ppt-master-examples/).
 >
@@ -219,13 +219,13 @@ Never used one of these? Don't worry — in this project they play exactly one r
 
 | Type | Examples | Notes |
 |---|---|---|
-| **IDE-native agent** | • VS Code architecture ([VS Code](https://code.visualstudio.com/) itself, plus forks & derivatives): [Cursor](https://cursor.sh/), Trae, Codebuddy IDE, [Windsurf](https://codeium.com/windsurf), etc.<br>• Other architectures: [Zed](https://zed.dev/), etc. | Editor with a built-in agent |
+| **IDE-native agent** | • VS Code architecture ([VS Code](https://code.visualstudio.com/) itself, plus forks & derivatives): [Cursor](https://cursor.sh/), [Antigravity](https://antigravity.google/), Trae, Codebuddy IDE, [Windsurf](https://codeium.com/windsurf), etc.<br>• Other architectures: [Zed](https://zed.dev/), etc. | Editor with a built-in agent |
 | **IDE plugin / extension** | [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [GitHub Copilot](https://github.com/features/copilot), [Cline](https://cline.bot/), etc. | Installed inside hosts like VS Code or JetBrains |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
-> **Model recommendation**: for the best results, use **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)** (or Claude) to drive the pipeline, paired with AI image generation — **`gpt-image-2.5-sunburst`** (OpenAI) or **`gemini-nano-banana-2.1`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
+> **Model recommendation**: for the best results, use **[Kimi K3.1](https://www.kimi.com/code/?aff=ppt-master)** (or Gemini) to drive the pipeline, paired with AI image generation — **`gpt-image-2.6-sunburst`** (OpenAI) or **`gemini-nano-banana-2.1`** (Google). Kimi Code, the project sponsor, is a great pick for pay-as-you-go access.
 
-**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)**, **[RunAPI](https://runapi.host/register?aff=WMLJ)** and **[ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme01&campaign_id=ppt-master-github&ad_group_id=readme01)** offer pay-as-you-go access to Claude, GPT, Gemini and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
+**🔑 Want to use Gemini / GPT / Claude but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**, **[APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER)**, **[RunAPI](https://runapi.host/register?aff=WMLJ)** and **[ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme01&campaign_id=ppt-master-github&ad_group_id=readme01)** offer pay-as-you-go access to Gemini, GPT, Claude and more — no subscription required, with exclusive discounts for our users (details at the top of this page).
 
 **🔀 Juggling several providers?** Once you hold keys from more than one of them, [cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app — lets you one-click switch API providers for Claude Code, Codex, Gemini CLI and more, no manual config editing.
 
