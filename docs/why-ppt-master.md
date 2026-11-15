@@ -70,7 +70,7 @@ No third-party server stores your source documents or output. This matters for f
 
 Your workflow shouldn't be held hostage by any single company. Today you depend on their platform; tomorrow they raise prices, change the rules, or shut down — and everything you've built on top of it is gone. That's not what open source should look like.
 
-PPT Master is a framework, not a plugin for a specific IDE. **On editors:** Claude Code, Codex, Cursor, and whatever comes next all work. **On models:** Claude produces the best results, but GPT, Gemini, and others can all drive PPT Master — the difference is in layout precision, and as models improve, these gaps will narrow.
+PPT Master is a framework, not a plugin for a specific IDE. **On editors:** Claude Code, Codex, Antigravity, Cursor, and whatever comes next all work. **On models:** Kimi K3.1 and Gemini are currently recommended, while GPT, Claude, and others can all drive PPT Master — differences show up mainly in layout precision, and as models improve, these gaps will narrow.
 
 The choice is yours — and it doesn't stop at editors and models. Native chart objects or cross-app-stable shapes, one canvas format or another, a template or free design: the trade-offs that matter stay in your hands, decided per deck. Handing you those choices instead of locking a path is the whole point of open source.
 

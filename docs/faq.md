@@ -277,11 +277,9 @@ For common commands, Start-mode guidance, and object-level customization, see [A
 
 ## Q: Which AI model works best?
 
-**Claude** (Opus / Sonnet) is the recommended and most tested model. SVG layout requires precise absolute-coordinate calculations (font size x character count x container width), and Claude handles this significantly better than alternatives.
+**[Kimi K3.1](https://www.kimi.com/code/?aff=ppt-master)** and **Gemini** (with a ~1M-token context window) are the recommended models for driving the workflow. SVG layout requires exact absolute-coordinate calculations (font size × character count × container width) while holding prior pages in context so the whole deck stays visually consistent.
 
-**GPT series** older versions tended to produce more layout issues — text overflowing containers, misaligned elements, coordinate miscalculations. Newer versions (e.g. GPT-5.5) have improved noticeably and are usable in practice; if issues appear, tell the AI which page to fix.
-
-Other models (Gemini, GLM, MiniMax, etc.) vary in quality. In general, models with stronger frontend/visual capabilities produce better results.
+Other frontier models — including **GPT** and **Claude** — can also drive the pipeline. Earlier or smaller models are more likely to produce overflowing text, misaligned elements, or coordinate drift; if issues appear on a slide, tell the AI which page to fix or switch to a stronger model.
 
 ## Q: Someone said PPT Master is "just a toy" — is that fair?
 
@@ -289,12 +287,12 @@ No. PPT Master is a presentation workflow, not a model or a complete agent. It s
 
 **The full-power combination:**
 
-- **Claude with a large context window** (ideally ~1M tokens): a large context window lets the Executor see every previously generated page in the same session, maintaining visual consistency across the entire deck without splitting runs. Smaller windows force split-mode execution, which introduces visible style drift between phases.
-- **AI image generation with `gpt-image-2.5-sunburst`** (or similar): placeholder-grade stock images are the single biggest reason decks look generic. Replacing them with on-brand AI-generated illustrations changes the perceived quality immediately.
+- **Kimi K3.1 (or Gemini) with a large context window** (ideally ~1M tokens): a large context window lets the Executor see every previously generated page in the same session, maintaining visual consistency across the entire deck without splitting runs. Smaller windows force split-mode execution, which introduces visible style drift between phases.
+- **AI image generation with `gpt-image-2.6-sunburst` or `gemini-nano-banana-2.1`**: placeholder-grade stock images are the single biggest reason decks look generic. Replacing them with on-brand AI-generated illustrations changes the perceived quality immediately.
 
-If the results you've seen look mediocre, check your setup before concluding anything about the tool: What model? What context size? Was image generation enabled? PPT Master + Claude Opus at 1M context + `gpt-image-2.5-sunburst` images is a genuinely different experience from PPT Master + a small open-source model with no image API configured.
+If the results you've seen look mediocre, check your setup before concluding anything about the tool: What model? What context size? Was image generation enabled? PPT Master + Kimi K3.1 (or Gemini) at 1M context + `gpt-image-2.6-sunburst` / `gemini-nano-banana-2.1` images is a genuinely different experience from PPT Master + a small open-source model with no image API configured.
 
-> **No Claude access?** Project sponsors [PackyCode](https://www.packyapi.ai/register?aff=ppt-master), [APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER), [RunAPI](https://runapi.host/register?aff=WMLJ) and [ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme03&campaign_id=ppt-master-github&ad_group_id=readme03) provide pay-as-you-go access to Claude and other models — no subscription required. See the [README](../README.md) for each sponsor's exclusive perks.
+> **Need model access?** For Kimi K3.1, project sponsor [Kimi Code](https://www.kimi.com/code/?aff=ppt-master) offers direct pay-as-you-go access; for multi-provider pay-as-you-go access across Gemini, GPT, Claude, and other mainstream models without a subscription, check sponsors [PackyCode](https://www.packyapi.ai/register?aff=ppt-master), [APIKEY.FAN](https://apikey.fan/register?aff=PPT-MASTER), [RunAPI](https://runapi.host/register?aff=WMLJ) and [ModelGo](https://modelgo.ai/?utm_source=ppt-master&utm_medium=sponsorship&utm_content=readme03&campaign_id=ppt-master-github&ad_group_id=readme03). See the [README](../README.md) for each sponsor's exclusive perks.
 
 One last thing: this is a free, solo-maintained open-source project. If it fits your needs, use it — I'm glad it helps; if it doesn't, pick another tool. Sincere feedback and suggestions are always welcome, because that's how the project gets a little better over time.
 
