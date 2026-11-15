@@ -78,7 +78,7 @@ Example `.env`:
 ```env
 IMAGE_BACKEND=openai
 OPENAI_API_KEY=sk-xxx
-OPENAI_MODEL=gpt-image-2.5-sunburst
+OPENAI_MODEL=gpt-image-2.6-sunburst
 # Optional proxy
 # OPENAI_BASE_URL=http://127.0.0.1:3000/v1
 # OpenAI-compatible provider knobs:
@@ -101,15 +101,15 @@ Example process environment:
 ```bash
 export IMAGE_BACKEND=openai
 export OPENAI_API_KEY=sk-xxx
-export OPENAI_MODEL=gpt-image-2.5-sunburst
+export OPENAI_MODEL=gpt-image-2.6-sunburst
 export OPENAI_OUTPUT_FORMAT=png
 ```
 
 Current process environment wins over `.env`.
 
 OpenAI backend notes:
-- `gpt-image-2.5-sunburst` is the default OpenAI model. `gpt-image-2.5-flare` shares its token rates; OpenAI positions Sunburst for editing precision and Flare for fast everyday generation ([models](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)).
-- `gpt-image-2.6-sunburst` and `gpt-image-2.6-flare` take the same handling as the 2.5 models below (sizes, `xhigh`/`max`, transparency, no `OPENAI_INPUT_FIDELITY`) and the same token rates, but have no Batch endpoint. Measured on 2026-11-05 at `1536x864`: `quality=medium` (the `1K` default) returned 924 output tokens versus 280 for 2.5; `high` returned 1078 for both ([models](https://developers.openai.com/api/docs/models/gpt-image-2.6-sunburst)).
+- `gpt-image-2.6-sunburst` is the default OpenAI model. `gpt-image-2.6-flare` shares its token rates; OpenAI positions Sunburst for editing precision and Flare for fast everyday generation ([models](https://developers.openai.com/api/docs/models/gpt-image-2.6-sunburst)). The 2.6 models have no Batch endpoint.
+- `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare` take the same handling below (sizes, `xhigh`/`max`, transparency, no `OPENAI_INPUT_FIDELITY`) and the same token rates at `high`, plus Batch support. Measured on 2026-11-05 at `1536x864`: `quality=medium` (the `1K` default) returned 924 output tokens on 2.6 versus 280 on 2.5; `high` returned 1078 for both ([models](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)).
 - Requests are sent with plain `requests.post()` to improve compatibility with
   OpenAI-compatible proxies that block the OpenAI SDK's `httpx` transport.
 - With `OPENAI_QUALITY` unset or `auto`, `image_size` also sets quality: `512px` low, `1K` medium, `2K` and `4K` high; set `OPENAI_QUALITY` to decouple them.
@@ -171,12 +171,12 @@ including snapshots) or a later 2.x minor. `--gif-frame-ms MS` requires
 `--gif-frames` and accepts a positive integer; omission leaves the API default
 of 200 ms. Both flags are single-image only and reject `--manifest`,
 `--render-md`, and `--list-backends`. Other backends reject GIF requests locally.
-The default OpenAI model is 2.5, so select a supported model explicitly or via
-`OPENAI_MODEL`.
+The default OpenAI model (`gpt-image-2.6-sunburst`) supports GIF output directly;
+use `OPENAI_MODEL` or `--model` to select Flare or a snapshot.
 
 ```bash
 python3 scripts/image_gen.py "A looping ripple" --backend openai \
-  --model gpt-image-2.6-sunburst --gif-frames 9 --gif-frame-ms 200 --aspect_ratio 16:9
+  --gif-frames 9 --gif-frame-ms 200 --aspect_ratio 16:9
 python3 scripts/image_gen.py "Animate the clouds" --backend openai \
   --model gpt-image-2.6-flare --reference-image scene.png --gif-frames 8
 ```

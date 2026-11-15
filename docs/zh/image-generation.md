@@ -6,7 +6,7 @@
 
 PPT Master 通过 [`image_gen.py`](../../skills/ppt-master/scripts/image_gen.py) 生成页面配图；配置、参数和各后端选项见 [`scripts/docs/image.md`](../../skills/ppt-master/scripts/docs/image.md)。本页记录两家推荐服务商在官方 API 上的实际表现，方便你在已知成本和已知失败模式的前提下选择尺寸、质量档和提示词。
 
-- **OpenAI**：`gpt-image-2.5-sunburst`（后端默认）以及 `gpt-image-2.6-sunburst` / `gpt-image-2.6-flare`。实测于 2026-11-05 与 2026-11-08。
+- **OpenAI**：`gpt-image-2.6-sunburst`（后端默认）/ `gpt-image-2.6-flare` 以及 `gpt-image-2.5-sunburst`。实测于 2026-11-05 与 2026-11-08。
 - **Gemini**：`gemini-nano-banana-2.1`（后端默认，`thinking_level=MINIMAL`），并以 `gemini-3-pro-image` 作对照。实测于 2026-11-08。
 
 下面每个数字都是当日的单次实测（费用按 `usage` 字段 × 服务商公布单价估算）。服务商会更换模型和价格，引用前请先核对其定价页。

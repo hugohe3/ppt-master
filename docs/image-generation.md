@@ -6,7 +6,7 @@
 
 PPT Master generates in-deck images through [`image_gen.py`](../skills/ppt-master/scripts/image_gen.py); configuration, flags, and backend options are documented in [`scripts/docs/image.md`](../skills/ppt-master/scripts/docs/image.md). This page records how the two recommended providers actually behaved when called on their official APIs, so you can pick sizes, quality levels, and prompts with known costs and failure modes.
 
-- **OpenAI**: `gpt-image-2.5-sunburst` (the backend default) and `gpt-image-2.6-sunburst` / `gpt-image-2.6-flare`. Measured 2026-11-05 and 2026-11-08.
+- **OpenAI**: `gpt-image-2.6-sunburst` (the backend default) / `gpt-image-2.6-flare`, and `gpt-image-2.5-sunburst`. Measured 2026-11-05 and 2026-11-08.
 - **Gemini**: `gemini-nano-banana-2.1` (the backend default, `thinking_level=MINIMAL`), with `gemini-3-pro-image` as a comparison. Measured 2026-11-08.
 
 Every number below is a single measurement at that date (costs are estimated from the `usage` block × the provider's published price). Providers change models and prices; recheck their pricing pages before relying on a figure.
