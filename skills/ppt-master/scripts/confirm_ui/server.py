@@ -60,6 +60,7 @@ from language_tags import (  # noqa: E402
     language_base,
     normalize_language_tag,
 )
+from register_template import is_safe_template_id  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     clear_lock as _clear_lock,
@@ -195,14 +196,6 @@ def _json_sha256(data: object) -> str:
         separators=(',', ':'),
     )
     return hashlib.sha256(canonical.encode('utf-8')).hexdigest()
-
-
-def _safe_template_id(template_id: object) -> bool:
-    """Return whether an index key is one safe directory-segment id."""
-    return (
-        isinstance(template_id, str)
-        and re.fullmatch(r'\w[\w.-]*', template_id) is not None
-    )
 
 
 _TEMPLATE_SPEC_NAME_RE = re.compile(
@@ -380,72 +373,88 @@ def _read_template_options_input(
 
 def _build_template_library() -> tuple[dict, dict[str, dict], dict[str, dict], dict]:
     """Build indexed library groups without scanning template directories."""
+    from register_template import get_library_paths
+
     library = {}
     candidates = {}
     registered_roots = {}
     index_contracts = {}
-    for kind, (directory_name, index_name) in _TEMPLATE_LIBRARY_CONFIG.items():
-        kind_dir = (_TEMPLATES_DIR / directory_name).resolve()
-        index_path = kind_dir / index_name
-        index_data = _read_json_object(index_path)
-        index_contracts[kind] = index_data
+    for kind in _TEMPLATE_LIBRARY_CONFIG:
+        indexes = {}
+        for scope in ('builtin', 'local'):
+            kind_dir, index_path = get_library_paths(kind, scope, templates_dir=_TEMPLATES_DIR)
+            index_data = (
+                {} if scope == 'local' and not index_path.exists()
+                else _read_json_object(index_path)
+            )
+            indexes[scope] = (kind_dir.resolve(), index_path, index_data)
+            if scope == 'builtin':
+                index_contracts[kind] = index_data
+            elif index_data:
+                index_contracts[f'local:{kind}'] = index_data
+        collisions = indexes['builtin'][2].keys() & indexes['local'][2].keys()
         group = []
-        for template_id, metadata in index_data.items():
-            if not _safe_template_id(template_id):
-                raise ValueError(
-                    f'{index_path} contains unsafe template id: {template_id!r}'
-                )
-            if not isinstance(metadata, dict):
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} must be an object'
-                )
-            workspace_root = (kind_dir / template_id).resolve()
-            if workspace_root.parent != kind_dir:
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} does not resolve to a '
-                    f'direct child of {kind_dir}'
-                )
-            if not workspace_root.is_dir():
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} workspace does not exist: '
-                    f'{workspace_root}'
-                )
-            spec_path = workspace_root / 'templates' / 'design_spec.md'
-            if not spec_path.is_file():
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} is missing {spec_path}'
-                )
-            declared_kind = _template_kind_from_spec(spec_path)
-            if declared_kind != kind:
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} declares kind '
-                    f'{declared_kind!r}, expected {kind!r}'
-                )
-            summary = metadata.get('summary', '')
-            if not isinstance(summary, str):
-                raise ValueError(
-                    f'{index_path} entry {template_id!r} summary must be a string'
-                )
-            key = f'library:{kind}:{template_id}'
-            if key in candidates:
-                raise ValueError(f'duplicate template candidate key: {key}')
-            candidate = {
-                'key': key,
-                'source': 'library',
-                'kind': kind,
-                'id': template_id,
-                'label': template_id,
-                'summary': summary,
-                'workspace_root': str(workspace_root),
-            }
-            canonical_root = candidate['workspace_root']
-            if canonical_root in registered_roots:
-                raise ValueError(
-                    f'duplicate registered workspace root: {canonical_root}'
-                )
-            group.append(candidate)
-            candidates[key] = candidate
-            registered_roots[canonical_root] = candidate
+        for scope, (kind_dir, index_path, index_data) in indexes.items():
+            for template_id, metadata in index_data.items():
+                if not is_safe_template_id(template_id):
+                    raise ValueError(
+                        f'{index_path} contains unsafe template id: {template_id!r}'
+                    )
+                if not isinstance(metadata, dict):
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} must be an object'
+                    )
+                workspace_root = (kind_dir / template_id).resolve()
+                if workspace_root.parent != kind_dir:
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} does not resolve to a '
+                        f'direct child of {kind_dir}'
+                    )
+                if not workspace_root.is_dir():
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} workspace does not exist: '
+                        f'{workspace_root}'
+                    )
+                spec_path = workspace_root / 'templates' / 'design_spec.md'
+                if not spec_path.is_file():
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} is missing {spec_path}'
+                    )
+                declared_kind = _template_kind_from_spec(spec_path)
+                if declared_kind != kind:
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} declares kind '
+                        f'{declared_kind!r}, expected {kind!r}'
+                    )
+                summary = metadata.get('summary', '')
+                if not isinstance(summary, str):
+                    raise ValueError(
+                        f'{index_path} entry {template_id!r} summary must be a string'
+                    )
+                prefix = 'library' if scope == 'builtin' else 'library:local'
+                key = f'{prefix}:{kind}:{template_id}'
+                if key in candidates:
+                    raise ValueError(f'duplicate template candidate key: {key}')
+                label = template_id
+                if template_id in collisions:
+                    label = f'{template_id} ({"built-in" if scope == "builtin" else "local"})'
+                candidate = {
+                    'key': key,
+                    'source': 'library',
+                    'kind': kind,
+                    'id': template_id,
+                    'label': label,
+                    'summary': summary,
+                    'workspace_root': str(workspace_root),
+                }
+                canonical_root = candidate['workspace_root']
+                if canonical_root in registered_roots:
+                    raise ValueError(
+                        f'duplicate registered workspace root: {canonical_root}'
+                    )
+                group.append(candidate)
+                candidates[key] = candidate
+                registered_roots[canonical_root] = candidate
         library[kind] = group
     return library, candidates, registered_roots, index_contracts
 
@@ -620,7 +629,7 @@ def _validate_template_selection(data: dict) -> None:
         expected_keys = {'source', 'kind', 'workspace_root'}
         if source == 'library':
             expected_keys.add('id')
-            if not _safe_template_id(selection.get('id')):
+            if not is_safe_template_id(selection.get('id')):
                 raise ValueError(
                     f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid id'
                 )

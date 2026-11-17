@@ -84,6 +84,8 @@ class TemplateFlowBatch4Tests(unittest.TestCase):
                 (self.root / 'project-layout', 'layout', 'design_spec.layout.TODO.md'),
                 (library / 'example', 'deck', 'design_spec.md'),
                 (library.parent / 'layouts/example', 'layout', 'design_spec.md'),
+                (library.parent / 'local/decks/example', 'deck', 'design_spec.md'),
+                (library.parent / 'local/layouts/example', 'layout', 'design_spec.md'),
                 (library / 'escaped/project', 'deck', 'design_spec.deck.TODO.md'),
             ):
                 with self.subTest(destination=destination):

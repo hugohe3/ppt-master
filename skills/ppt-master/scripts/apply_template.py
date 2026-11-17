@@ -43,6 +43,8 @@ from register_template import (  # noqa: E402
     SpecParseError,
     _read_spec,
     _validate_spec_shape,
+    get_library_paths,
+    get_library_scope,
     validate_qualified_spec_identity,
 )
 
@@ -93,7 +95,11 @@ class RootRecord:
         if self.source == "library":
             kind = self.specs[0].kind
             kind_dir = KIND_CONFIG[kind]["dir"].name
-            return f"skills/ppt-master/templates/{kind_dir}/{self.specs[0].template_id}/"
+            scope = get_library_scope(self.root, kind)
+            prefix = "skills/ppt-master/templates"
+            if scope == "local":
+                prefix += "/local"
+            return f"{prefix}/{kind_dir}/{self.specs[0].template_id}/"
         return f"{self.root}/"
 
 
@@ -175,16 +181,18 @@ def _source_label(root: Path, specs: list[SpecRecord]) -> str:
     if len(specs) != 1:
         return "explicit"
     spec = specs[0]
-    config = KIND_CONFIG[spec.kind]
-    library_root = (config["dir"] / spec.template_id).resolve()
+    scope = get_library_scope(root, spec.kind)
+    if scope is None:
+        return "explicit"
+    directory, index_path = get_library_paths(spec.kind, scope)
+    library_root = (directory / spec.template_id).resolve()
     if root.resolve() != library_root:
         return "explicit"
-    index_path = config["index"]
     try:
         index = json.loads(index_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return "explicit"
-    return "library" if spec.template_id in index else "explicit"
+    return "library" if isinstance(index, dict) and spec.template_id in index else "explicit"
 
 
 def _load_root(supplied: str, project: Path) -> RootRecord:

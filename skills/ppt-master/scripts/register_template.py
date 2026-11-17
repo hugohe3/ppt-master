@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Register a brand / style / layout / deck template in the global index.
+"""Register a brand / style / layout / deck template in a library index.
 
-Four kinds, four workspace roots, four index files. The shared model lives
+Four kinds, each with built-in and optional local indexes. The shared model lives
 in ``templates/README.md``; each kind's schema lives in its directory README:
+
+Registration defaults to the ignored ``templates/local/`` library. Pass
+``--builtin`` to maintain the distributed roots and indexes listed below.
 
 | --kind  | Workspace roots         | Index file                    |
 |---------|-------------------------|-------------------------------|
@@ -97,6 +100,47 @@ KIND_CONFIG = {
         "needs_svg_roster": True,
     },
 }
+
+
+def is_safe_template_id(template_id: object) -> bool:
+    """Return whether an index key is one safe directory-segment id."""
+    return (
+        isinstance(template_id, str)
+        and re.fullmatch(r"\w[\w.-]*", template_id) is not None
+        and template_id not in {".", ".."}
+        and not template_id.endswith(".")
+    )
+
+
+def get_library_paths(
+    kind: str,
+    scope: str = "builtin",
+    *,
+    templates_dir: Path | None = None,
+) -> tuple[Path, Path]:
+    """Resolve a kind's workspace directory and index in one library layer."""
+    if scope not in {"builtin", "local"}:
+        raise ValueError(f"Unknown template library scope: {scope!r}")
+    config = KIND_CONFIG[kind]
+    builtin_dir = config["dir"]
+    if templates_dir is None and scope == "builtin":
+        return builtin_dir, config["index"]
+    base = Path(templates_dir) if templates_dir is not None else builtin_dir.parent
+    if scope == "local":
+        base = base / "local"
+    directory = base / builtin_dir.name
+    return directory, directory / config["index"].name
+
+
+def get_library_scope(root: Path, kind: str) -> str | None:
+    """Identify a workspace directly inside either library layer by its path."""
+    parent = root.resolve().parent
+    for scope in ("builtin", "local"):
+        directory, _index = get_library_paths(kind, scope)
+        if parent == directory.resolve():
+            return scope
+    return None
+
 
 _BRAND_REQUIRED_SECTIONS = (
     ("I", "Brand Overview"),
@@ -1327,11 +1371,7 @@ def validate_style_workspace(template_root: str | Path) -> dict:
     scaffolding out of the Style contract.
     """
     root = Path(template_root)
-    expected_id = (
-        root.name
-        if root.resolve().parent == KIND_CONFIG["style"]["dir"].resolve()
-        else None
-    )
+    expected_id = root.name if get_library_scope(root, "style") is not None else None
     return _extract_entry("style", expected_id, root)
 
 
@@ -1344,6 +1384,8 @@ def _load_index(path: Path) -> "OrderedDict[str, dict]":
         return OrderedDict()
     raw_text = path.read_text(encoding="utf-8").strip() or "{}"
     raw = json.loads(raw_text)
+    if not isinstance(raw, dict):
+        raise SpecParseError(f"template index must be a JSON object: {path}")
     return OrderedDict(sorted(raw.items()))
 
 
@@ -1357,8 +1399,8 @@ def _write_index(path: Path, data: "OrderedDict[str, dict]", *, dry_run: bool) -
     path.write_text(payload, encoding="utf-8")
 
 
-def _enumerate_ids(kind: str) -> list[str]:
-    base = KIND_CONFIG[kind]["dir"]
+def _enumerate_ids(kind: str, scope: str = "builtin") -> list[str]:
+    base, _index = get_library_paths(kind, scope)
     if not base.exists():
         return []
     return sorted(
@@ -1368,7 +1410,14 @@ def _enumerate_ids(kind: str) -> list[str]:
     )
 
 
-def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dict) -> None:
+def _print_completion_card(
+    kind: str,
+    template_id: str,
+    entry: dict,
+    extras: dict,
+    *,
+    scope: str = "builtin",
+) -> None:
     pretty_kind = {
         "layout": "Layout",
         "deck": "Deck",
@@ -1385,7 +1434,8 @@ def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dic
     print(f"## {pretty_kind} Registration Complete")
     print()
     print(f"**{pretty_kind} ID**: {template_id}")
-    print(f"**Path**: `templates/{dir_name}/{template_id}/`")
+    prefix = "templates/local" if scope == "local" else "templates"
+    print(f"**Path**: `{prefix}/{dir_name}/{template_id}/`")
     if kind in ("brand", "deck"):
         primary = entry.get("primary_color") or "—"
         print(f"**Primary Color**: {primary}")
@@ -1420,7 +1470,7 @@ def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dic
 # Main
 # ---------------------------------------------------------------------------
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     require_skill_integrity()
     parser = argparse.ArgumentParser(
         description=(
@@ -1430,7 +1480,7 @@ def main() -> int:
     )
     parser.add_argument(
         "template_id", nargs="?",
-        help="Template directory id (under templates/<kind_dir>/). Omit with --rebuild-all.",
+        help="Template directory id (under templates/local/<kind_dir>/ by default). Omit with --rebuild-all.",
     )
     parser.add_argument(
         "--kind", choices=list(KIND_CONFIG.keys()), default="deck",
@@ -1440,30 +1490,64 @@ def main() -> int:
                         help="Rebuild every index entry within the chosen kind.")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show what would be written without modifying any files.")
-    args = parser.parse_args()
+    parser.add_argument("--builtin", action="store_true",
+                        help="Maintain the distributed library instead of templates/local/.")
+    args = parser.parse_args(argv)
 
     if not args.template_id and not args.rebuild_all:
         parser.error("provide a template_id or use --rebuild-all")
 
-    cfg = KIND_CONFIG[args.kind]
-    base = cfg["dir"]
+    if args.template_id is not None and not is_safe_template_id(args.template_id):
+        parser.error(
+            "template_id must start with a Unicode letter, digit, or underscore, "
+            "contain only those characters, dots, or hyphens, and not end with a dot"
+        )
+
+    scope = "builtin" if args.builtin else "local"
+    base, index_path = get_library_paths(args.kind, scope)
+    other_scope = "local" if args.builtin else "builtin"
+    other_base, other_index_path = get_library_paths(args.kind, other_scope)
 
     if args.rebuild_all:
-        ids = _enumerate_ids(args.kind)
-        if not ids:
-            print(f"[OK] No {args.kind} directories found; index left empty.")
-            _write_index(cfg["index"], OrderedDict(), dry_run=args.dry_run)
-            return 0
+        ids = _enumerate_ids(args.kind, scope)
     else:
         ids = [args.template_id]
         spec_dir = base / args.template_id
         if not spec_dir.is_dir():
             print(f"Error: {args.kind} directory not found: {spec_dir}", file=sys.stderr)
+            if scope == "local" and (other_base / args.template_id).is_dir():
+                print(
+                    "For an official template, pass --builtin. For a personal template, "
+                    f"place it in skills/ppt-master/templates/local/{base.name}/{args.template_id}/.",
+                    file=sys.stderr,
+                )
             return 1
+
+    try:
+        other_index = _load_index(other_index_path)
+        index = OrderedDict() if args.rebuild_all else _load_index(index_path)
+    except (OSError, ValueError, SpecParseError) as exc:
+        print(f"Error: cannot read template index: {exc}", file=sys.stderr)
+        return 1
+    collisions = sorted(set(ids) & other_index.keys())
+    if collisions:
+        guidance = (
+            "Choose non-conflicting IDs, or pass --builtin to maintain official templates."
+            if scope == "local" else
+            "Choose non-conflicting IDs or rename the conflicting local templates first."
+        )
+        print(
+            f"Error: {args.kind} IDs already exist in the {other_scope} library: "
+            f"{', '.join(collisions)}. {guidance}",
+            file=sys.stderr,
+        )
+        return 1
 
     extracted: dict[str, dict] = {}
     for tid in ids:
         try:
+            if not is_safe_template_id(tid):
+                raise SpecParseError("unsafe template id; rename the workspace before registering")
             extracted[tid] = _extract_entry(args.kind, tid, base / tid)
         except SpecParseError as exc:
             print(f"Error: {tid}: {exc}", file=sys.stderr)
@@ -1472,17 +1556,16 @@ def main() -> int:
     if args.rebuild_all:
         index = OrderedDict((tid, extracted[tid]["entry"]) for tid in sorted(extracted))
     else:
-        index = _load_index(cfg["index"])
         for tid, payload in extracted.items():
             index[tid] = payload["entry"]
         index = OrderedDict(sorted(index.items()))
 
-    _write_index(cfg["index"], index, dry_run=args.dry_run)
+    _write_index(index_path, index, dry_run=args.dry_run)
 
     if not args.dry_run and not args.rebuild_all:
         tid = args.template_id
         _print_completion_card(
-            args.kind, tid, extracted[tid]["entry"], extracted[tid]["extras"]
+            args.kind, tid, extracted[tid]["entry"], extracted[tid]["extras"], scope=scope,
         )
         return 0
 

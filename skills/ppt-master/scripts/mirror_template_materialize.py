@@ -95,6 +95,7 @@ from pptx_workspace import (
     conversion_report_path,
     native_structure_path,
 )
+from register_template import KIND_CONFIG, get_library_paths
 
 configure_utf8_stdio()
 
@@ -3425,8 +3426,10 @@ def materialize_mirror_template(
     library_root = Path(__file__).resolve().parent.parent / "templates"
     resolved_workspace = template_workspace.resolve()
     library_scope = any(
-        (library_root / directory).resolve() in resolved_workspace.parents
-        for directory in ("brands", "styles", "layouts", "decks")
+        get_library_paths(library_kind, scope, templates_dir=library_root)[0].resolve()
+        in resolved_workspace.parents
+        for library_kind in KIND_CONFIG
+        for scope in ("builtin", "local")
     )
     spec_name = "design_spec.md" if library_scope else f"design_spec.{kind}.TODO.md"
     files.append(MaterializedFile(
