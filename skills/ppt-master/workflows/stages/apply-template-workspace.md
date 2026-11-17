@@ -19,10 +19,10 @@ Spec naming and kind declaration follow [`templates/README.md`](../../templates/
 
 | Source label | Resolution rule |
 |---|---|
-| `library` | The normalized root exactly equals `templates/<kind_dir>/<id>/` derived from an entry in that kind's `*_index.json` |
+| `library` | The normalized root matches a registered entry at `templates/<kind_dir>/<id>/` or `templates/local/<kind_dir>/<id>/` |
 | `explicit` | The user or Create Template supplied an exact root not registered at that canonical index-derived root |
 
-Library roots come from the four indexes ([`routing.md`](../routing.md) §7); the label changes discovery provenance only, never validation, precedence, or installation.
+Discovery follows [`routing.md`](../routing.md) §7; labels affect provenance only, never validation, precedence, or installation.
 
 **Selection cardinality**: at most one root per kind; all four kinds may coexist. A multi-kind explicit root contributes all its specs atomically and combines only with non-overlapping kinds; reject duplicate kinds before validation.
 

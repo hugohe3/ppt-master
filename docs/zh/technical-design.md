@@ -363,7 +363,7 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 
 **为什么保留自由设计选项。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），最终选择仍由用户完成。
 
-**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。Library 工作区解析 `templates/design_spec.md`，project root 解析全部 `templates/design_spec.<kind>.<id>.md`；服务端解析每个 explicit root 的真实 kind 集合，来源标签本身不参与优先级。自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。根目录平铺的包不属于模板工作区；目录形态从不授权结构迁移。带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
+**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四份内置 `templates/{brands,styles,layouts,decks}/*_index.json` 与已存在的本地 `templates/local/{brands,styles,layouts,decks}/*_index.json` 列出已注册 Brand/Style/Layout/Deck。两层按 kind 合并，不扫描目录，也不覆盖同 ID 条目；冲突 ID 保留各自 root 与内置/本地标签。聊天发现读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。两层 library 工作区都解析裸 `templates/design_spec.md`，project root 解析全部 `templates/design_spec.<kind>.<id>.md`；服务端解析每个 explicit root 的真实 kind 集合，来源标签本身不参与优先级。自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。根目录平铺的包不属于模板工作区；目录形态从不授权结构迁移。带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
 
 当前 Brand/Style/Layout/Deck 都采用同一工作区路由合同；Brand 与 Style 不含 SVG roster，空的可选目录直接省略：
 
@@ -379,8 +379,10 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 Style 只贡献自己的 Design Spec，不携带素材或审阅 payload；项目中既有的
 脚手架及其他 kind 文件都不属于 Style 输入。
 
-`<template_workspace>` 可以是 `skills/ppt-master/templates/<kind>/<id>/`，也
-可以是 `projects/<name>/` 等其他精确 root。Step 3 只把它记录为候选输入，
+`<template_workspace>` 可以是官方内置库的 `skills/ppt-master/templates/<kind>/<id>/`、
+个人库的 `skills/ppt-master/templates/local/<kind>/<id>/`，或 `projects/<name>/` 等其他精确 root。
+Create Template 默认写入由 Git 忽略的个人库及本地索引；只有显式使用 `--builtin`
+注册时才维护 Git 跟踪的官方索引。Step 3 只把 root 记录为候选输入，
 且只读取判断其 kind 与画布所需的 frontmatter；Stage 1 选中后，apply 阶段才逐个校验 root，把每份选中 `spec`
 作为独立的项目本地贡献安装到当前项目的 `templates/`，并把对应的真实素材
 安装到 `images/`、`icons/`，且不复制 `exports/`、不合并 `spec` 正文。Stage 1 之后开始模板感知规划时，

@@ -9,7 +9,7 @@
 | Application planning | Strategist decides literal, structural, or style-only use and any strict/adaptive value |
 | PPTX structure | The workspace is `structured`; the plan decides whether pages compile its structure or use it as visual reference |
 
-[`layouts_index.json`](./layouts_index.json) (`layout_id → { summary, canvas_format, page_count, page_types }`) is the discovery source of truth; this README defines the kind and enumerates no layouts.
+The tracked built-in [`layouts_index.json`](./layouts_index.json) maps `layout_id → { summary, canvas_format, page_count, page_types }`; this README defines the kind and enumerates no layouts.
 
 ## Selection and identity boundary
 
@@ -50,4 +50,6 @@ Every SVG is a complete Slide preview under the contract of [`pptx-structure-int
 
 ## Workspace and creation
 
-`templates/` (spec + prototypes), optional `images/` (`../images/<name>`), optional `icons/imported/`, and `exports/<layout_id>_template_preview.pptx` as review evidence. Library scope writes `skills/ppt-master/templates/layouts/<layout_id>/` and updates the index; project scope uses an initialized `projects/<name>/` root without registration. Enter [`create-template.md`](../../workflows/create-template.md) (dispatching to [`create-layout.md`](../../workflows/create-template/create-layout.md)), validate with `svg_quality_checker.py --template-mode`, run `template_preview_pptx.py` on request and always for multiple Masters, and in library scope register with `register_template.py <id> --kind layout`. General SVG/PPT rules stay in [`shared-standards-core.md`](../../references/shared-standards-core.md) and [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md); see [`styles/`](../styles/) to combine method and direction with this structure.
+`templates/` (spec + prototypes), optional `images/` (`../images/<name>`), optional `icons/imported/`, and `exports/<layout_id>_template_preview.pptx` as review evidence. Official workspaces live in `skills/ppt-master/templates/layouts/<layout_id>/`. Library creation defaults to Git-ignored `skills/ppt-master/templates/local/layouts/<layout_id>/` and its local `layouts_index.json`; project scope uses an initialized `projects/<name>/` root without registration.
+
+Enter [`create-template.md`](../../workflows/create-template.md) (dispatching to [`create-layout.md`](../../workflows/create-template/create-layout.md)), validate with `svg_quality_checker.py --template-mode`, run `template_preview_pptx.py` on request and always for multiple Masters, and in library scope register with `register_template.py <id> --kind layout`. Official maintenance alone adds `--builtin` ([`template-tools.md`](../../scripts/docs/template-tools.md#register_templatepy)). General SVG/PPT rules stay in [`shared-standards-core.md`](../../references/shared-standards-core.md) and [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md); see [`styles/`](../styles/) to combine method and direction with this structure.

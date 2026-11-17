@@ -29,4 +29,6 @@ Frontmatter: `style_id`, `kind: style`, `summary`, `keywords` (three to five) on
 
 ## Workspace and Creation
 
-A Style workspace is one file — `<template_workspace>/templates/design_spec.md` — with no page or asset payload; never create empty `images/`, `icons/`, or `exports/`. Enter [`create-template.md`](../../workflows/create-template.md), which dispatches to [`create-style.md`](../../workflows/create-template/create-style.md); validate with `svg_quality_checker.py --template-mode`; in library scope register with `register_template.py <id> --kind style`. [`styles_index.json`](./styles_index.json) maps `style_id → { summary, keywords }` and is the only discovery source; reading a name in prose never activates a workspace.
+A Style workspace is one file — `<template_workspace>/templates/design_spec.md` — with no page or asset payload; never create empty `images/`, `icons/`, or `exports/`. Enter [`create-template.md`](../../workflows/create-template.md), which dispatches to [`create-style.md`](../../workflows/create-template/create-style.md); validate with `svg_quality_checker.py --template-mode`.
+
+Official `templates/styles/<id>/` workspaces use tracked [`styles_index.json`](./styles_index.json), mapping `style_id → { summary, keywords }`. Library creation defaults to Git-ignored `templates/local/styles/<id>/`; `register_template.py <id> --kind style` writes the local `styles_index.json`. Reserve `--builtin` for official maintenance; see [`template-tools.md`](../../scripts/docs/template-tools.md#register_templatepy).

@@ -8,7 +8,7 @@ Generate reusable structured page templates inside the workspace selected by Cre
 
 ## Usage
 
-- **Workspace root**: `library` → `skills/ppt-master/templates/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/`; template source is `<template_workspace>/templates/` in both; the Design Spec is the parent-resolved `<design_spec_path>` (library `templates/design_spec.md`, project `templates/design_spec.<kind>.<id>.md`).
+- **Workspace root**: `library` → `skills/ppt-master/templates/local/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/`; template source is `<template_workspace>/templates/` in both; the Design Spec is the parent-resolved `<design_spec_path>` (library `templates/design_spec.md`, project `templates/design_spec.<kind>.<id>.md`).
 - **Input**: the finalized brief (scope, target project, template ID, display name, kind, structural use cases or Deck application context, tone, theme mode, canvas, optional reference assets, accepted norms) plus, for a PPTX reference, the import workspace described in [`template-tools.md`](../scripts/docs/template-tools.md).
 
 **Hard rule — scope is execution metadata**: route files by `output_scope` / `target_project` but never write them into frontmatter. Deck/layout output always declares `native_structure_mode: structured`; never invent another structure mode.
@@ -274,7 +274,7 @@ No optional directory is created merely to exist; no asset placement branches by
 
 **Template Preview**: on request or for multiple Masters, run `template_preview_pptx.py <template_workspace>` after validation ([`template-tools.md`](../scripts/docs/template-tools.md#template_preview_pptxpy)); include the path in the completion summary and omit `exports/` only for an unrequested one-Master package. For import-based templates, note which extracted assets were reused, which references influenced the authored roster, what mirror could not preserve, and any page-type mapping that needed judgment.
 
-**Using an existing library workspace** (downstream reuse, not this role's authoring): copy or stage `templates/` plus `images/` / `icons/` (never `exports/`), adjust colors to the project spec, then customize; query the matching kind index (`brands_index.json`, `styles_index.json`, `layouts_index.json`, `decks_index.json`).
+**Using an existing library workspace**: discover built-in and local roots through [`routing.md`](../workflows/routing.md) §7, then install through [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md). Downstream reuse is separate from this role's authoring.
 
 ---
 

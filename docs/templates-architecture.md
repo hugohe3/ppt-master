@@ -12,7 +12,7 @@
 
 ## 1. The four kinds
 
-| Kind | Library workspace root | What it writes | What it does NOT write | Originating workflow |
+| Kind | Built-in workspace root | What it writes | What it does NOT write | Originating workflow |
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-template/create-brand.md` |
 | **Style** | `templates/styles/<id>/` | Portable direction/method: communication method, page-role vocabulary, evidence/data expression, visual defaults, image/icon direction, advisory review focus | No identity truth, application contract, canvas, page structure, or SVG roster | `workflows/create-template/create-style.md` |
@@ -81,15 +81,17 @@ and fonts are proposal seeds, not Theme identity truth.
 
 | Scope | Workspace root | Core workspace | Discovery |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Required `templates/`; optional `images/`, `icons/`, and on-demand `exports/` | Register in the matching global index |
+| `library` (default) | `skills/ppt-master/templates/local/<kind>/<id>/` | Required `templates/`; optional `images/`, `icons/`, and on-demand `exports/` | Register in the matching local `*_index.json` |
 | `project` | `projects/<name>/` | The same routing contract | No global index update |
+
+Personal library workspaces and indexes are Git-ignored. Official built-ins retain `skills/ppt-master/templates/<kind>/<id>/` and their tracked indexes; `register_template.py --builtin` is reserved for maintaining that layer. Both library layers use the bare `templates/design_spec.md`; project roots use `templates/design_spec.<kind>.<id>.md`.
 
 Both roots have the same core shape:
 
 ```text
 <template_workspace>/
 ├── templates/
-│   ├── design_spec.md
+│   ├── design_spec.md           # library; project: design_spec.<kind>.<id>.md
 │   └── *.svg
 ├── images/                     # optional; SVG href uses ../images/<name>
 ├── icons/
@@ -315,11 +317,13 @@ kind owns this segment”.
 
 ---
 
-## 3. The four index files
+## 3. Four kinds, two index layers
 
-Each of these four indexes maps one-to-one with its physical directory, and its fields are trimmed to what Strategist needs to select a reusable workspace. Visualization uses a separate boundary: planning reads the objective [`chart-vocabulary.md`](../skills/ppt-master/templates/charts/chart-vocabulary.md) and [`table-vocabulary.md`](../skills/ppt-master/templates/tables/table-vocabulary.md), while [`charts_index.json`](../skills/ppt-master/templates/charts/charts_index.json) and [`tables_index.json`](../skills/ppt-master/templates/tables/tables_index.json) remain machine registries. Qualitative Structure has no index because Executor generates it from page relationships.
+Each kind has a tracked built-in index under `templates/{brands,styles,layouts,decks}/` and an optional personal index under `templates/local/{brands,styles,layouts,decks}/`, with the same `*_index.json` name and schema. Each index maps to workspace roots directly under its own directory. Discovery merges both layers by kind without scanning directories; same-ID entries retain distinct roots and display a built-in/local label rather than overriding each other. Registration rejects cross-layer ID collisions.
 
-These indexes cover library scope only. A project-root workspace is intentionally absent from all four indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
+Index fields contain only what Strategist needs to select a reusable workspace. Visualization uses a separate boundary: planning reads the objective [`chart-vocabulary.md`](../skills/ppt-master/templates/charts/chart-vocabulary.md) and [`table-vocabulary.md`](../skills/ppt-master/templates/tables/table-vocabulary.md), while [`charts_index.json`](../skills/ppt-master/templates/charts/charts_index.json) and [`tables_index.json`](../skills/ppt-master/templates/tables/tables_index.json) remain machine registries. Qualitative Structure has no index because Executor generates it from page relationships.
+
+These indexes cover library scope only. A project-root workspace is intentionally absent from both layers and remains usable through its explicit `projects/<name>/` path. Moving one contribution between project and library preserves its schema and asset routing, but changes qualified/bare spec placement and index registration.
 
 ### `templates/brands/brands_index.json`
 
@@ -540,14 +544,14 @@ SVG structure contract directly.
 
 | Layer | Container | Design Spec |
 |---|---|---|
-| Skill library | `templates/<kind_dir>/<template_id>/` already names the kind and id | `templates/design_spec.md` |
+| Skill library | `templates/<kind_dir>/<template_id>/` (built-in) or `templates/local/<kind_dir>/<template_id>/` (personal) names the kind and id | `templates/design_spec.md` |
 | Project | one flat `templates/` shared across kinds | `templates/design_spec.<kind>.<id>.md` |
 
 The container disambiguates, and the filename carries only what the container cannot. A project root therefore holds at most one spec per kind while all four kinds may coexist, and each filename kind/id must match frontmatter `kind` and the matching `<kind>_id`; the bare and qualified shapes never mix in one directory. One `templates/` carries one active SVG roster: Layout when present, otherwise Deck. Deck's other segments remain installed when its structural roster is shadowed. Because the schema itself does not change with the layer, a project spec needs no field added to enter the library and none removed to leave it, and an installed spec is indistinguishable from one authored in place.
 
 Selection follows the same principle: the unit is the workspace **root**, not the kind. A root contributes every kind it exposes, so pointing at a project that holds a Brand plus a Style applies both. Browsing the library by kind is only a way to find a root — `library` and `explicit` record how a root was discovered, never what it owns.
 
-In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. Project-to-project reuse preserves the complete root. Moving one contribution into or out of the single-kind library preserves its spec schema and assets but changes the spec filename placement and index registration.
+In library scope, the frontmatter `kind` selects `brands/`, `styles/`, `layouts/`, or `decks/` under `templates/local/` by default; official built-ins use the same kind directories under `templates/`. Project scope keeps the same kind semantics at the project workspace root. Project-to-project reuse preserves the complete root. Moving one contribution into or out of the single-kind library preserves its spec schema and assets but changes the spec filename placement and index registration.
 
 ---
 

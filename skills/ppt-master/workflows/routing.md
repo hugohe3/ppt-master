@@ -111,6 +111,6 @@ A main-generated project with notes and an exported deck narrates through the sh
 | Bare template/brand name or style label without an explicit template-use request | Never resolve to a local path or preselect; treat as a style brief. An explicit request to use templates initializes template mode but leaves the candidate to the user |
 | "What templates exist?" in chat | List indexed workspace paths; Stage 1 still requires an explicit free-design/template choice |
 
-Discovery reads only [`brands_index.json`](../templates/brands/brands_index.json), [`styles_index.json`](../templates/styles/styles_index.json), [`layouts_index.json`](../templates/layouts/layouts_index.json), and [`decks_index.json`](../templates/decks/decks_index.json); never scan kind directories to construct or supplement the catalog.
+Discovery reads only the four official `templates/{brands,styles,layouts,decks}/*_index.json` files and any existing `templates/local/{brands,styles,layouts,decks}/*_index.json` files. Never scan template directories to construct or supplement the catalog.
 
 **Hard rule — index-derived roots only**: never resolve a bare name to a local template directory on the user's behalf; a library choice comes from an index-derived root, and an unregistered workspace requires an explicit root (including one handed off by Create Template in the current conversation). Stage-1 ordering and delayed template reading are owned by [`generate-pptx`](./generate-pptx.md) Steps 3–4.

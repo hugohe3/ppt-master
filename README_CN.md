@@ -264,7 +264,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 **下载 ZIP 安装：**
 
-ZIP 目录没有 Git 历史，不能自动 `git pull`。更新时请重新下载最新版 ZIP，解压到新目录，然后把旧目录里的 `.env` 和 `projects/` 复制过去，再执行：
+ZIP 目录没有 Git 历史，不能自动 `git pull`。更新时请重新下载最新版 ZIP，解压到新目录，然后把旧目录里的 `.env`、`projects/` 和 `skills/ppt-master/templates/local/`（如存在）复制到新目录中的相同位置，再执行：
 
 ```bash
 pip install -r requirements.txt

@@ -429,6 +429,12 @@ python3 scripts/update_repo.py
 python3 scripts/update_repo.py --skip-pip
 ```
 
+Personal templates live in the Git-ignored `templates/local/` library. Before
+updating, the script migrates eligible unstaged additions from built-in indexes
+when the official entries are unchanged and the personal workspaces are untracked;
+ambiguous or conflicting changes remain for manual review. ZIP reinstalls must
+copy `.env`, `projects/`, and `skills/ppt-master/templates/local/` (if present).
+
 ## Recommendations
 
 - Keep one user-facing entry point per workflow at the top level of `scripts/`

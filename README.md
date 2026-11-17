@@ -258,7 +258,7 @@ The script pulls the latest version and syncs Python dependencies when `requirem
 
 **Download ZIP installs:**
 
-ZIP folders do not include Git history, so they cannot run `git pull`. To update, download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run:
+ZIP folders do not include Git history, so they cannot run `git pull`. To update, download the latest ZIP, unzip it into a new folder, copy your old `.env`, `projects/`, and `skills/ppt-master/templates/local/` (if present) into the same locations in the new folder, then run:
 
 ```bash
 pip install -r requirements.txt

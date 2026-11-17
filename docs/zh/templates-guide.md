@@ -67,7 +67,7 @@ Stage-1 页面先让用户选择自由设计或使用模板；只有选择使用
 一个本次运行指定地址单选框。每个下拉框都有“无”；完整选择可以分别选用
 四种 kind，但每个 kind 最多一份。Layout 存在时由
 Layout 提供结构，否则由 Deck 提供。指定地址最多选一个，并原子携带
-该 root 暴露的全部 kind。已注册列表只来自四类索引，工作流不会扫描模板
+该 root 暴露的全部 kind。已注册列表只来自四种内置索引与已存在的本地索引，工作流不会扫描模板
 目录。需要默认展开模板模式并预选某个 Brand/Style/Layout/Deck 工作区时，
 直接在对话里写出精确 root（位置不重要，只要明确即可）：
 
@@ -75,7 +75,7 @@ Layout 提供结构，否则由 Deck 提供。指定地址最多选一个，并�
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其中真实的限定名 spec。`explicit` 只是来源，不是第五种类型，也不提高优先级。Stage 1 会原子校验每个已选 root；确认后，每个不同 root 的 spec 和真实包自有 `images/`、`icons/` 只映射一次，并只安装有效结构 roster（有 Layout 时用 Layout，否则用 Deck），始终不复制 `exports/`。Deck/Layout root 会在应用优先级前各自校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给下一次 Stage-1 选择器。
+对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其中真实的限定名 spec。`explicit` 只是来源，不是第五种类型，也不提高优先级。Stage 1 会原子校验每个已选 root；确认后，每个不同 root 的 spec 和真实包自有 `images/`、`icons/` 只映射一次，并只安装有效结构 roster（有 Layout 时用 Layout，否则用 Deck），始终不复制 `exports/`。Deck/Layout root 会在应用优先级前各自校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置工作区、`skills/ppt-master/templates/local/<kind>/<id>/` 下的个人库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给下一次 Stage-1 选择器。
 
 模板选择与 Stage 1 共用页面和提交动作，但仍作为独立 sidecar 决策保存。
 沟通目标（受众、意图、结果、核心信息、交付场景与成品后续生命）只来自当前请求、
@@ -105,7 +105,7 @@ Layout 提供结构，否则由 Deck 提供。指定地址最多选一个，并�
 
 这是有意的——AI 永远**不做模糊 / 解释性判断**，不会替你把普通文字解析成模板。Default Generate 固定提供 Stage-1 模式切换入口，只有在索引控件中选定的精确 root 才会激活工作区。
 
-想在聊天中查看内置库，问一句“有哪些模板可以用？”即可。聊天列表与 Stage-1 选择器读取同一组四类索引。单纯列出不代表选择；需要返回其中一条精确路径，或在页面完成选择。
+想在聊天中查看模板库，问一句“有哪些模板可以用？”即可。聊天列表与 Stage-1 选择器读取同一组内置与本地索引。单纯列出不代表选择；需要返回其中一条精确路径，或在页面完成选择。
 
 ### 可直接复制的用法
 
@@ -137,15 +137,16 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 
 ### 现有模板一览
 
-模板按四种 kind 分目录，并分别由发现索引维护：
+内置模板按四种 kind 分目录，并分别由 Git 跟踪的发现索引维护：
 
 - [`brands_index.json`](../../skills/ppt-master/templates/brands/brands_index.json) — 仅身份工作区：color / typography / logo / voice / icon style，不含 SVG 页面 roster
 - [`styles_index.json`](../../skills/ppt-master/templates/styles/styles_index.json) — 仅方向/方法工作区：沟通方法、证据/数据表达、视觉默认值与审阅关注点，不含 SVG 页面 roster
 - [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json) — 仅结构工作区：canvas / 页面语法 / page types / SVG roster，身份系统下游再选
 - [`decks_index.json`](../../skills/ppt-master/templates/decks/decks_index.json) — 可重复演示应用，包含一体化身份、结构与原型事实描述
 
-这四个索引是 Default Stage 1 模板控件与聊天发现共用的完整已注册模板来源；
-目录永远不会被扫描。直接问“有哪些模板可以用？”即可得到带精确工作区路径的
+这四个索引与已存在的 `templates/local/{brands,styles,layouts,decks}/*_index.json`
+共同构成 Default Stage 1 模板控件与聊天发现的完整已注册模板来源；目录永远不会被扫描。
+本地索引沿用相同结构，并与个人工作区一起由 Git 忽略。直接问“有哪些模板可以用？”即可得到带精确工作区路径的
 可读清单；四类 README 负责定义合同。完整数据模型、安装与片段所有权
 规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
@@ -271,7 +272,7 @@ Design Spec 对每个输出 Slide 原型按正常 roster 说明。若来源还�
 
 | 范围 | 工作区根目录 | 预览 | 发现行为 |
 |---|---|---|---|
-| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand/Create Style：不适用；Create Layout/Create Deck：单 Master 可选、多 Master 必须 | 校验后注册到对应 `brands_index.json`、`styles_index.json`、`layouts_index.json` 或 `decks_index.json` |
+| `library`（默认） | `skills/ppt-master/templates/local/<kind>/<id>/` | Create Brand/Create Style：不适用；Create Layout/Create Deck：单 Master 可选、多 Master 必须 | 校验后注册到对应本地 `*_index.json` |
 | `project` | `projects/<name>/` | 沿用同一套 kind-specific 审阅规则 | 跳过全局索引注册 |
 
 全局注册会让模板出现在 Default Stage-1 模板控件中，也可在聊天中发现，因为两者都读取同一个索引。项目范围或精确交接则提供工作区 root，例如 `用这个模板：projects/<name>/`；这会默认展开模板模式，只提供一个 root 时页面会预选，多 root 保持未选候选，未注册 root 仍标记为 `explicit`。项目 root 可被其他项目直接复用，并原子贡献其中全部限定名 spec。要把其中一项移入单 kind 全局库，则保持 spec 内容不变，把它放到该库工作区的裸 `templates/design_spec.md` 路径后再注册。
@@ -298,7 +299,7 @@ Master/Layout 行为以 Microsoft PowerPoint 为验收目标。Keynote、WPS 与
 
 ### 派生后的模板工作区长什么样
 
-全局库与项目范围使用相同的 spec schema 和素材路由；库工作区用裸 spec，项目共享根则用限定名 spec。把下面的 `<template_workspace>` 替换为 `skills/ppt-master/templates/<kind>/<id>/` 或 `projects/<name>/` 即可：
+全局库与项目范围使用相同的 spec schema 和素材路由；库工作区用裸 spec，项目共享根则用限定名 spec。新建个人模板时，把下面的 `<template_workspace>` 替换为 `skills/ppt-master/templates/local/<kind>/<id>/` 或 `projects/<name>/`；内置工作区仍位于 `skills/ppt-master/templates/<kind>/<id>/`：
 
 Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资产），
 不会生成下面的 SVG 或 `exports/` 行。
@@ -329,7 +330,7 @@ Brand 与 Style 只写 `templates/design_spec.md`（Brand 可带真实身份资�
 
 ### 全局注册与项目放置
 
-- **全局库范围（`library`，默认）**把工作区写入 `skills/ppt-master/templates/<kind>/<id>/`，并完成全局注册。
+- **全局库范围（`library`，默认）**把工作区写入由 Git 忽略的 `skills/ppt-master/templates/local/<kind>/<id>/`，并注册到对应本地索引。内置工作区及 Git 跟踪的索引仍位于 `skills/ppt-master/templates/<kind>/`；维护者仅在维护官方库时使用 `register_template.py --builtin`。
 - **项目范围（`project`）**把限定名 spec 写入 `projects/<name>/templates/design_spec.<kind>.<id>.md` 并跳过注册，因此同一个项目根可以分多次积累四种 kind 各一份，并把整套 bundle 交给任何指向该 root 的项目。Layout 与 Deck 同时存在时，Layout 拥有有效 roster。
 
 项目范围不是私有或缩减格式。提供精确工作区根目录会把它加入 Step 3

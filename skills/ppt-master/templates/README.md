@@ -4,7 +4,7 @@
 
 Brand, Style, Layout, and Deck are independent kinds, not stages of one inheritance hierarchy — each owns a different segment.
 
-| Kind | Owns | Does not own | Discovery index |
+| Kind | Owns | Does not own | Built-in index |
 |---|---|---|---|
 | [`brands/`](./brands/) | Identity: color, typography, logo, voice, icon style | Page structure or SVG roster | [`brands_index.json`](./brands/brands_index.json) |
 | [`styles/`](./styles/) | Direction/method: communication method, visual language, composition rhythm, information-expression defaults | Official identity, current-project application, structure, or roster | [`styles_index.json`](./styles/styles_index.json) |
@@ -13,7 +13,9 @@ Brand, Style, Layout, and Deck are independent kinds, not stages of one inherita
 
 PowerPoint package objects are compilation targets, not kinds: Theme values and identity assets project from resolved identity rules (Brand, Deck, or the current project); Layout rules project into Master/Layout/Placeholder topology, semantic text roles, and spatial behavior; Deck combines both with descriptive application context and actual prototypes; Style guides method and expression without creating a package object or overriding resolved identity. Downstream planning decides which prototypes and content to use and records the exporter values, so one compiled Master may hold both structural geometry and brand visuals under separately owned rules.
 
-New workspaces enter [`Create Template`](../workflows/create-template.md), which dispatches exactly one child ([`Create Brand`](../workflows/create-template/create-brand.md), [`Create Style`](../workflows/create-template/create-style.md), [`Create Layout`](../workflows/create-template/create-layout.md), [`Create Deck`](../workflows/create-template/create-deck.md)). Selection, mode defaults, preselection, `library` / `explicit` labels, cardinality, and installation are owned by [`routing.md`](../workflows/routing.md) §7 and [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md).
+New workspaces enter [`Create Template`](../workflows/create-template.md), which dispatches exactly one child ([`Create Brand`](../workflows/create-template/create-brand.md), [`Create Style`](../workflows/create-template/create-style.md), [`Create Layout`](../workflows/create-template/create-layout.md), [`Create Deck`](../workflows/create-template/create-deck.md)). Selection and installation follow [`routing.md`](../workflows/routing.md) §7 and [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md).
+
+Official workspaces live in `templates/<kind_dir>/<id>/` with tracked indexes above. Create Template defaults to Git-ignored `templates/local/<kind_dir>/<id>/` and its local `<kind_dir>_index.json`. Only built-in maintenance uses `--builtin`; see [`template-tools.md`](../scripts/docs/template-tools.md#register_templatepy).
 
 ## Orthogonal contracts
 

@@ -420,11 +420,15 @@ system never chooses a template from topic similarity.
 **Exact selection, not semantic matching.** A bare name like
 `presentation_core`, a brand mention, or a style phrase such as "McKinsey
 style" is never fuzzy-matched to a directory. The default page lists registered
-Brand/Style/Layout/Deck entries only from their four `*_index.json` files;
-chat discovery reads the same indexes and returns exact roots. Explicit paths
+Brand/Style/Layout/Deck entries only from the four built-in indexes at
+`templates/{brands,styles,layouts,decks}/*_index.json` and any local indexes at
+`templates/local/{brands,styles,layouts,decks}/*_index.json`. Both layers merge
+by kind without directory scanning or same-ID replacement; colliding IDs retain
+distinct roots and built-in/local labels. Chat discovery uses the same indexes
+and returns exact roots. Explicit paths
 remain valid, and an exact path matching a registered canonical root may be
 displayed as `library`; an unregistered root remains `explicit`. Current
-library workspaces resolve `templates/design_spec.md`, while project roots
+library workspaces in either layer resolve bare `templates/design_spec.md`, while project roots
 resolve every `templates/design_spec.<kind>.<id>.md`; the server parses every
 explicit root's real kinds, while the source label remains provenance only.
 Flat-root packages are not template workspaces. A free-form style brief remains
@@ -448,8 +452,12 @@ Style contributes only its Design Spec; it does not carry asset or review
 payloads. Existing project scaffolding and sibling kind files are not Style
 input.
 
-`<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or
-another exact workspace root such as `projects/<name>/`. Step 3 records it as
+`<template_workspace>` is `skills/ppt-master/templates/<kind>/<id>/` for official
+built-ins, `skills/ppt-master/templates/local/<kind>/<id>/` for personal library
+workspaces, or another exact root such as `projects/<name>/`. Create Template
+defaults to the Git-ignored personal library and its local index; official
+tracked indexes are maintained only through explicit `--builtin` registration.
+Step 3 records the root as
 candidate input, reading only the frontmatter its kind and canvas need. Once
 Stage 1 selects it, the apply stage validates and installs it into the current
 project's `templates/`, `images/`, and `icons/`; it never copies `exports/`.

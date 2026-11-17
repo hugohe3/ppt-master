@@ -6,11 +6,11 @@ description: Create Template entry workflow and shared contract for the Create B
 
 > **Fixed entry name**: template creation always enters **Create Template**, which selects exactly one child — [`create-brand.md`](./create-template/create-brand.md), [`create-style.md`](./create-template/create-style.md), [`create-layout.md`](./create-template/create-layout.md), or [`create-deck.md`](./create-template/create-deck.md) — and owns their shared execution contract. Create Layout/Create Deck invoke the [Template_Designer](../references/template-designer.md) role. Tool behavior (import workspace, template-mode checker, review deck, registrar) is documented in [`template-tools.md`](../scripts/docs/template-tools.md).
 
-Create one reusable template workspace under the global library (default) or `projects/` from one or more reference channels or a direct brief, then dispatch to one child.
+Create one reusable template workspace under the local library (default) or `projects/` from one or more reference channels or a direct brief, then dispatch to one child.
 
 | Scope | `<template_workspace>` | `<design_spec_path>` | Registration |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind_dir>/<template_id>/` | `templates/design_spec.md` | `register_template.py` against the kind index |
+| `library` (default) | `skills/ppt-master/templates/local/<kind_dir>/<template_id>/` | `templates/design_spec.md` | `register_template.py` writes `templates/local/<kind_dir>/<kind_dir>_index.json` |
 | `project` | `<target_project>/` (initialized by `project_manager.py init`) | `templates/design_spec.<kind>.<id>.md` (kind/id equal frontmatter `kind` / `<kind>_id`) | None; the root stays an ordinary explicit workspace whose `templates/` may accumulate one Brand, Style, Layout, and Deck over separate runs — Layout owns the active roster when both coexist, Deck keeps identity and application context |
 
 **Hard rule — one workspace routing contract**: scope changes the parent path, spec filename, and registration — never the spec schema or asset routes. Do not maintain a library-only flat package or project-only thin-bundle branch.
@@ -30,10 +30,10 @@ Never create an optional directory or placeholder solely to keep an empty path; 
 
 | Child | Select when | Library output | Exclusive responsibility |
 |---|---|---|---|
-| Create Brand | Reuse identity only: colors, typography, logo, voice, icon style | `templates/brands/<brand_id>/` | Identity-only spec; no SVG roster |
-| Create Style | Reuse a communication method and visual direction without identity truth or prototypes | `templates/styles/<style_id>/` | Method, page-role vocabulary, evidence expression, visual defaults, image/icon direction, advisory review focus; no roster |
-| Create Layout | Reuse a brand-neutral structural skeleton without a recurring application | `templates/layouts/<layout_id>/` | Canvas, page grammar, semantic text roles, Master/Layout/slot contract, SVG roster; no identity or application contract |
-| Create Deck | Reuse a branded structural system or a recurring application | `templates/decks/<deck_id>/` | Descriptive application context, integrated identity/structure, SVG roster |
+| Create Brand | Reuse identity only: colors, typography, logo, voice, icon style | `templates/local/brands/<brand_id>/` | Identity-only spec; no SVG roster |
+| Create Style | Reuse a communication method and visual direction without identity truth or prototypes | `templates/local/styles/<style_id>/` | Method, page-role vocabulary, evidence expression, visual defaults, image/icon direction, advisory review focus; no roster |
+| Create Layout | Reuse a brand-neutral structural skeleton without a recurring application | `templates/local/layouts/<layout_id>/` | Canvas, page grammar, semantic text roles, Master/Layout/slot contract, SVG roster; no identity or application contract |
+| Create Deck | Reuse a branded structural system or a recurring application | `templates/local/decks/<deck_id>/` | Descriptive application context, integrated identity/structure, SVG roster |
 
 A complete source PPTX does not determine the kind — classify only the stable rules worth reusing. A request for one organisation's "layout and style" for a recurring deck is Deck; a brand-neutral skeleton alone is Layout; a communication method without identity or roster is Style; identity alone is Brand. Ask one discriminator only when the requested artifact is genuinely ambiguous. Once selected, never reopen kind selection inside the child's gate, execute two children for one workspace, or blend schemas. Shared kind and workspace model: [`templates/README.md`](../templates/README.md); application: [`apply-template-workspace`](./stages/apply-template-workspace.md).
 
@@ -211,7 +211,7 @@ Before emitting the marker, all of these hold:
 
 > Precondition: `[TEMPLATE_BRIEF_CONFIRMED]` emitted in Step 3.
 
-**Workspace resolution**: resolve `<template_workspace>` from scope (`skills/ppt-master/templates/<kind_dir>/<template_id>` or `<target_project>`), `mkdir -p "$template_workspace/templates"`, and create optional roots only when writing a real asset. Normally `<authoring_workspace>` equals `<template_workspace>`. When the project already has the other structural kind, author in an isolated project-shaped root through validation and preview, then install its spec at `<installed_design_spec_path>` and assets atomically (Layout replaces the Deck roster; Deck beside Layout installs no structural payload), deleting staging only after the final root passes.
+**Workspace resolution**: resolve `<template_workspace>` from scope (`skills/ppt-master/templates/local/<kind_dir>/<template_id>` or `<target_project>`), `mkdir -p "$template_workspace/templates"`, and create optional roots only when writing a real asset. Normally `<authoring_workspace>` equals `<template_workspace>`. When the project already has the other structural kind, author in an isolated project-shaped root through validation and preview, then install its spec at `<installed_design_spec_path>` and assets atomically (Layout replaces the Deck roster; Deck beside Layout installs no structural payload), deleting staging only after the final root passes.
 
 **Preflight (atomic, parent-level, before any final write)**: any failure aborts before writing anything; never overwrite an unrelated name conflict.
 
@@ -336,10 +336,10 @@ A multi-Master failure blocks registration and completion; an unrequested one-Ma
 
 | Scope | Action |
 |---|---|
-| `library` | After Step 5.1 (and Step 6 when requested or required), run `python3 skills/ppt-master/scripts/register_template.py <template_id> --kind brand|style|deck|layout`; it derives the entry from the spec frontmatter (preferred) or prose plus the actual `templates/*.svg` roster and updates that kind's `*_index.json` — the complete discovery source for Default Stage-1 controls and chat listing (neither scans directories) |
+| `library` | After Step 5.1 (and Step 6 when requested or required), run `python3 skills/ppt-master/scripts/register_template.py <template_id> --kind brand|style|deck|layout` to update `templates/local/<kind_dir>/<kind_dir>_index.json`; leave built-in workspaces and Git-tracked indexes unchanged |
 | `project` | Skip the registrar, edit no index or README, and report `Not registered (project workspace)` |
 
-An exact unregistered root supplied by the user or handed off by this route appears as an `explicit` candidate preselected only when it is the sole root; a root matching a registered canonical root may display as `library`; bare names are never resolved. Frontmatter examples per kind live in the child workflows; `--rebuild-all` rebuilds a kind's index after editing many specs.
+Selection follows [`routing.md`](./routing.md) §7. Frontmatter examples live in the child workflows. Official built-in maintenance requires an explicit maintainer request and `--builtin`; registrar behavior and bulk rebuilding are in [`template-tools.md`](../scripts/docs/template-tools.md#register_templatepy).
 
 ---
 

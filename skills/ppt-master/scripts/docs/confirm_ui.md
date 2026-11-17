@@ -103,11 +103,10 @@ separate artifact from the Strategist contract. Its files live under
   `design_spec.md`.
 - The array supplies exact-root candidates. The user may select multiple roots
   when their kind sets do not overlap; each root is selected atomically.
-- Do not write library entries into this block. The server reads only
-  `templates/brands/brands_index.json`,
-  `templates/styles/styles_index.json`,
-  `templates/layouts/layouts_index.json`, and
-  `templates/decks/decks_index.json`, derives each direct-child workspace root,
+- Do not write library entries into this block. The server reads the four
+  `templates/{brands,styles,layouts,decks}/*_index.json` files and any existing
+  `templates/local/{brands,styles,layouts,decks}/*_index.json`, merges each kind's
+  built-in and local candidates, derives each direct-child workspace root,
   and validates that it exists with `templates/design_spec.md`. It never scans
   kind directories.
 
@@ -133,7 +132,11 @@ Stage-1 `GET /api/recommendations` embeds this browser catalog as top-level
 ```
 
 A library candidate has `key`, `source: "library"`, `kind`, `id`, `label`,
-`summary`, and canonical absolute `workspace_root`. An unregistered explicit
+`summary`, and canonical absolute `workspace_root`. Built-in keys use
+`library:<kind>:<id>`; local keys use `library:local:<kind>:<id>`. If both layers
+contain the same ID, both remain selectable with `built-in` / `local` labels.
+IDs share `register_template.py`'s Unicode-aware validation, including Chinese
+names; invalid index entries stop catalog loading. An unregistered explicit
 candidate has `key`, `source: "explicit"`, parsed `kind`, `label`, and
 canonical absolute `workspace_root`. If a supplied root exactly equals a registered canonical
 root, the server reuses the library candidate/key instead of duplicating it as
@@ -217,7 +220,8 @@ precedence. The browser cannot submit arbitrary paths
 because the server resolves posted keys against the catalog it just built.
 `root_snapshots` freezes each selected root's source label, kinds, spec identities,
 and SHA-256 hashes for all files under `templates/`, `images/`, and `icons/`.
-`options_sha256` binds the receipt to the entire Stage-1 recommendation, four index files, and
+`options_sha256` binds the receipt to the entire Stage-1 recommendation, built-in
+indexes, non-empty local indexes, and
 resolved candidates. `selection_sha256` binds the mode, canonical sorted
 selections, and snapshots to that option hash. Every receipt read checks source
 bytes and rebuilds the catalog using the frozen selected-root kinds, while

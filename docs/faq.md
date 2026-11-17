@@ -59,7 +59,7 @@ It depends on how you installed PPT Master:
 | Install method | Update method |
 |---|---|
 | Git clone | Run `python3 skills/ppt-master/scripts/update_repo.py` inside the `ppt-master` folder |
-| Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run `pip install -r requirements.txt` |
+| Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env`, `projects/`, and `skills/ppt-master/templates/local/` (if present) into the same locations, then run `pip install -r requirements.txt` |
 | Skill marketplace | Reinstall or update through the matching marketplace / skills tool |
 
 For long-term use, Git clone is recommended. ZIP is fine for a quick trial, but it has no Git history and cannot run `git pull`.
@@ -486,7 +486,9 @@ You don't need to supply every detail upfront — the AI agent will ask follow-u
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your references, writing the kind-specific specification, building structured layout definitions only for Layout/Deck, and validating the workspace. Brand/Style never create a preview PPTX; Layout/Deck generate `exports/<id>_template_preview.pptx` on request and require it for multiple Masters. Both scopes require `templates/`; Brand/Layout/Deck may use package-owned `images/` and `icons/`, while Style contributes only its Design Spec. Library scope writes a bare `templates/design_spec.md` under `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `templates/design_spec.<kind>.<id>.md` under `projects/<name>/` and skips registration, allowing one contribution of every kind to coexist. Layout owns the active SVG roster when Layout and Deck are both present. Empty optional directories are omitted. Give that workspace root to Step 3; a project root contributes all of its specs atomically, and installation never copies `exports/`. Older flat or semantic-legacy packages are reference inputs only and must be rebuilt through `create-template` before Generate can select them.
+The AI agent will handle the rest — analyzing your references, writing the kind-specific specification, building structured layout definitions only for Layout/Deck, and validating the workspace. Brand/Style never create a preview PPTX; Layout/Deck generate `exports/<id>_template_preview.pptx` on request and require it for multiple Masters. Both scopes require `templates/`; Brand/Layout/Deck may use package-owned `images/` and `icons/`, while Style contributes only its Design Spec. Library scope writes a bare `templates/design_spec.md` under `skills/ppt-master/templates/local/<kind>/<id>/` and registers it in the local index; project scope writes `templates/design_spec.<kind>.<id>.md` under `projects/<name>/` and skips registration, allowing one contribution of every kind to coexist. Layout owns the active SVG roster when Layout and Deck are both present. Empty optional directories are omitted. Give that workspace root to Step 3; a project root contributes all of its specs atomically, and installation never copies `exports/`. Older flat or semantic-legacy packages are reference inputs only and must be rebuilt through `create-template` before Generate can select them.
+
+The personal `templates/local/` library is Git-ignored, so its templates and indexes do not conflict with repository updates. `update_repo.py` also migrates personal templates registered in built-in indexes by older versions into `local/`; conflicting or modified official entries are left unchanged.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

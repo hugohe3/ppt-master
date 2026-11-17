@@ -9,7 +9,7 @@
 | Application planning | Strategist decides which prototypes to select, repeat, skip, or reorganize and derives the exporter behavior |
 | PPTX structure | The workspace is `structured`; the plan decides whether pages compile its structure or use it as visual reference |
 
-[`decks_index.json`](./decks_index.json) (`deck_id → { summary, canvas_format, page_count, primary_color }`) is the discovery source of truth; this README enumerates no decks. Index summaries lead with the presentation family and outcome — visual tone alone never selects a Deck; open its Template Overview to judge fit.
+The tracked built-in [`decks_index.json`](./decks_index.json) maps `deck_id → { summary, canvas_format, page_count, primary_color }`; this README enumerates no decks. Index summaries lead with the presentation family and outcome — visual tone alone never selects a Deck; open its Template Overview to judge fit.
 
 ## Selection and installation
 
@@ -54,4 +54,6 @@ Every SVG is a complete Slide preview under the contract of [`pptx-structure-int
 
 ## Workspace and creation
 
-`templates/` (spec + prototypes), optional `images/` (`../images/<name>`), optional `icons/imported/`, and `exports/<deck_id>_template_preview.pptx` as review evidence. Library scope writes `skills/ppt-master/templates/decks/<deck_id>/` and updates the index; project scope uses an initialized `projects/<name>/` root without registration. Enter [`create-template.md`](../../workflows/create-template.md) (dispatching to [`create-deck.md`](../../workflows/create-template/create-deck.md)), validate with `svg_quality_checker.py --template-mode`, run `template_preview_pptx.py` on request and always for multiple Masters, and in library scope register with `register_template.py <id> --kind deck`. See [`styles/`](../styles/), [`layouts/`](../layouts/), and [`brands/`](../brands/) for the other kinds.
+`templates/` (spec + prototypes), optional `images/` (`../images/<name>`), optional `icons/imported/`, and `exports/<deck_id>_template_preview.pptx` as review evidence. Official workspaces live in `skills/ppt-master/templates/decks/<deck_id>/`. Library creation defaults to Git-ignored `skills/ppt-master/templates/local/decks/<deck_id>/` and its local `decks_index.json`; project scope uses an initialized `projects/<name>/` root without registration.
+
+Enter [`create-template.md`](../../workflows/create-template.md) (dispatching to [`create-deck.md`](../../workflows/create-template/create-deck.md)), validate with `svg_quality_checker.py --template-mode`, run `template_preview_pptx.py` on request and always for multiple Masters, and in library scope register with `register_template.py <id> --kind deck`. Maintain official entries with `--builtin` only ([`template-tools.md`](../../scripts/docs/template-tools.md#register_templatepy)). See [`styles/`](../styles/), [`layouts/`](../layouts/), and [`brands/`](../brands/) for the other kinds.

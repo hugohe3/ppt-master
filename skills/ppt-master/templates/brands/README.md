@@ -11,7 +11,7 @@ Selection and installation follow [`routing.md`](../../workflows/routing.md) §7
 Enter [`create-template.md`](../../workflows/create-template.md), which dispatches `kind: brand` to [`create-brand.md`](../../workflows/create-template/create-brand.md), from a brand asset (logo / site / branded PPTX / PDF), a verbal spec, or an explicitly requested empty skeleton.
 
 ```text
-templates/brands/<brand_id>/
+templates/local/brands/<brand_id>/
 ├── templates/design_spec.md   # required — identity spec with YAML frontmatter `kind: brand`
 ├── images/                    # optional — logo.<ext>, alternate lockups, visual assets
 ├── icons/                     # optional — branded icon overrides
@@ -22,4 +22,4 @@ Logo filenames are descriptive; `design_spec.md` §IV lists the exact `../images
 
 ## Discovery index
 
-[brands_index.json](./brands_index.json) maps `brand_id → { summary, primary_color }`; refresh with `register_template.py <brand_id> --kind brand`, which rejects incomplete frontmatter, mismatched IDs, page SVGs, missing identity sections, invalid colors/provenance, and broken asset references. Stage-1 controls and chat discovery read this index only; a bare ID never resolves implicitly.
+Official `templates/brands/<brand_id>/` workspaces use tracked [`brands_index.json`](./brands_index.json), mapping `brand_id → { summary, primary_color }`. Create Template defaults to Git-ignored `templates/local/brands/<brand_id>/`; `register_template.py <brand_id> --kind brand` updates its local `brands_index.json`. Use `--builtin` only for official maintenance ([`template-tools.md`](../../scripts/docs/template-tools.md#register_templatepy)).

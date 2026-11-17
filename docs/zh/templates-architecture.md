@@ -12,7 +12,7 @@
 
 ## 一、四分类
 
-| 分类 | 全局库工作区根目录 | 写什么 | 不写什么 | 出处工作流 |
+| 分类 | 内置工作区根目录 | 写什么 | 不写什么 | 出处工作流 |
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | 仅身份段：color / typography / logo / voice / icon style | 不写 canvas、page structure、SVG roster | `workflows/create-template/create-brand.md` |
 | **Style** | `templates/styles/<id>/` | 可移植方向/方法段：沟通方法、页面角色词汇、证据/数据表达、视觉默认值、图片/图标方向、审阅关注点 | 不写身份真值、应用契约、canvas、页面结构或 SVG roster | `workflows/create-template/create-style.md` |
@@ -72,15 +72,17 @@ native_structure_mode: structured
 
 | 范围 | 工作区根目录 | 核心结构 | 发现行为 |
 |---|---|---|---|
-| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | 必需 `templates/`；可选 `images/`、`icons/` 与按需 `exports/` | 写入对应全局索引 |
+| `library`（默认） | `skills/ppt-master/templates/local/<kind>/<id>/` | 必需 `templates/`；可选 `images/`、`icons/` 与按需 `exports/` | 写入对应本地 `*_index.json` |
 | `project` | `projects/<name>/` | 完全相同的路由合同 | 不更新全局索引 |
+
+个人库工作区和索引由 Git 忽略。官方内置库仍位于 `skills/ppt-master/templates/<kind>/<id>/`，索引仍由 Git 跟踪；`register_template.py --builtin` 仅用于维护这一层。两层 library 都使用裸 `templates/design_spec.md`，项目 root 则使用 `templates/design_spec.<kind>.<id>.md`。
 
 两种根目录都保持相同的核心形态：
 
 ```text
 <template_workspace>/
 ├── templates/
-│   ├── design_spec.md
+│   ├── design_spec.md           # library；project：design_spec.<kind>.<id>.md
 │   └── *.svg
 ├── images/                     # 可选；SVG 统一引用 ../images/<name>
 ├── icons/
@@ -267,11 +269,13 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ---
 
-## 三、四套 index 文件
+## 三、四种类型与双层索引
 
-这四份 index 都与各自物理目录一一对应，字段只保留 Strategist 选择可复用 workspace 所需的信息。Visualization 采用另一条边界：规划读取客观的 [`chart-vocabulary.md`](../../skills/ppt-master/templates/charts/chart-vocabulary.md) 与 [`table-vocabulary.md`](../../skills/ppt-master/templates/tables/table-vocabulary.md)，[`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 和 [`tables_index.json`](../../skills/ppt-master/templates/tables/tables_index.json) 只保留为机器 registry。定性 Structure 没有 index，因为 Executor 会根据当前页关系现场生成。
+每种类型在 `templates/{brands,styles,layouts,decks}/` 下都有 Git 跟踪的内置索引，并可在 `templates/local/{brands,styles,layouts,decks}/` 下拥有个人索引；两层的 `*_index.json` 文件名和结构相同。每份索引对应其所在目录下的直属工作区 root。发现时按 kind 合并两层，不扫描目录；同 ID 条目保留各自 root 并显示内置/本地标签，不互相覆盖。注册时拒绝跨层 ID 冲突。
 
-四套索引只覆盖全局库范围。项目根工作区有意不进入任何索引，仍可通过显式 `projects/<name>/` 路径使用。因为两种范围采用相同工作区形态，完整核心工作区可在两者之间移动或复制，不需要重写素材路径；只有全局库注册不同。
+索引字段只保留 Strategist 选择可复用 workspace 所需的信息。Visualization 采用另一条边界：规划读取客观的 [`chart-vocabulary.md`](../../skills/ppt-master/templates/charts/chart-vocabulary.md) 与 [`table-vocabulary.md`](../../skills/ppt-master/templates/tables/table-vocabulary.md)，[`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 和 [`tables_index.json`](../../skills/ppt-master/templates/tables/tables_index.json) 只保留为机器 registry。定性 Structure 没有 index，因为 Executor 会根据当前页关系现场生成。
+
+这些索引只覆盖全局库范围。项目根工作区有意不进入任何一层索引，仍可通过显式 `projects/<name>/` 路径使用。单项在 project 与 library 之间移动时，保留结构定义与素材路由，但改变限定名/裸 spec 落点和索引注册。
 
 ### `templates/brands/brands_index.json`
 
@@ -454,14 +458,14 @@ Default 确认一段自然语言 `template_application`；Quick 形成同样的�
 
 | 层 | 容器 | Design Spec |
 |---|---|---|
-| skill 库 | `templates/<kind_dir>/<template_id>/` 已经说明了 kind 和 id | `templates/design_spec.md` |
+| skill 库 | `templates/<kind_dir>/<template_id>/`（内置）或 `templates/local/<kind_dir>/<template_id>/`（个人）说明 kind 和 id | `templates/design_spec.md` |
 | 项目 | 一个平铺、多 kind 共用的 `templates/` | `templates/design_spec.<kind>.<id>.md` |
 
 消歧责任归容器，容器给不了的才写进文件名。因此一个项目根同一 kind 至多一份 spec，四种 kind 可以共存，且文件名里的 kind/id 必须分别与前置元数据中的 `kind` 及对应 `<kind>_id` 一致；裸 spec 与限定名 spec 不得在同一目录混用。一个 `templates/` 只保留一份有效 SVG roster：有 Layout 时用 Layout，否则用 Deck；Deck 的其他片段不会因结构被覆盖而丢失。由于结构定义不随层面变化，项目里的 spec 进库不需要补字段、出库也不需要删字段，安装进来的与就地创作的在形态上不可区分。
 
 选择遵循同一条原则：单位是工作区 **root**，不是 kind。一个 root 会贡献它暴露的全部 kind，所以指向一个同时装了 Brand 和 Style 的项目，两者都会生效。按 kind 浏览全局库只是找到 root 的一种方式——`library` 与 `explicit` 记录的是 root 如何被发现，而不是它拥有什么。
 
-在全局库范围，前置元数据中的 `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/styles/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。项目到项目复用保持完整 root；单项进出全局库时保留 spec 的结构定义与素材，但会改变 spec 文件名落点及索引注册。
+在全局库范围，前置元数据中的 `kind` 默认选择 `templates/local/` 下的 `brands/`、`styles/`、`layouts/` 或 `decks/`；官方内置库在 `templates/` 下使用相同类型目录。项目范围在项目工作区根目录保留同一 kind 语义。项目到项目复用保持完整 root；单项进出全局库时保留 spec 的结构定义与素材，但会改变 spec 文件名落点及索引注册。
 
 ---
 
