@@ -1,4 +1,8 @@
-# <a href="docs/assets/brand/ppt-master-logo.png"><img src="docs/assets/brand/ppt-master-logo-readme.webp" alt="PPT Master" width="180" align="middle"></a> — AI generates native PowerPoint from any document
+<p align="center">
+  <a href="docs/assets/brand/ppt-master-logo.png"><img src="docs/assets/brand/ppt-master-logo-readme.webp" alt="PPT Master" width="360"></a>
+</p>
+
+# PPT Master — AI generates native PowerPoint from any document
 
 [![Version](https://img.shields.io/github/v/release/hugohe3/ppt-master?label=version&color=blue)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
