@@ -57,6 +57,10 @@
 
 </details>
 
+<p align="center">
+  <a href="docs/assets/brand/ppt-master-logo.png"><img src="docs/assets/brand/ppt-master-logo-readme.webp" alt="PPT Master" width="360"></a>
+</p>
+
 > **可编辑早已是及格线——真正拉开差距的是原生深度。** PPT Master 交付的是一份真正的 PowerPoint：母版、原生形状、数据驱动的图表与表格，既不是扁平文本框堆砌，也不是套模板填空。它先替你理顺表达逻辑、再做逐页视觉设计，并且这份原生深度仍在**持续向 PowerPoint 本身靠拢**，逐版本补齐更多原生能力。形态上，它是运行在任意 Agent 工具里的本地工作流：把主题或材料交给 AI，就在本机直接导出 `.pptx`，数据不出本地，不锁定平台与模型。工作原理与能力边界 → [产品定位](#产品定位)。
 
 <p align="center">

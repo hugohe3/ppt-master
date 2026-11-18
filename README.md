@@ -57,6 +57,10 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 </details>
 
+<p align="center">
+  <a href="docs/assets/brand/ppt-master-logo.png"><img src="docs/assets/brand/ppt-master-logo-readme.webp" alt="PPT Master" width="360"></a>
+</p>
+
 > **Editable is already table stakes — what sets PPT Master apart is native depth.** It delivers a real PowerPoint: slide masters, native shapes, and data-backed charts and tables — neither flat text boxes nor a filled-in template. It structures your argument first and designs page by page second, while **continuously converging with PowerPoint itself** as new native capabilities land each release. In form, it's a local workflow that runs inside any agent-capable AI tool: hand the AI your topic or source files and get a `.pptx` generated on your machine — local data, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
 
 <p align="center">
