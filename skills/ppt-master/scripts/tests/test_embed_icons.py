@@ -2,6 +2,7 @@
 """Regression tests for icon attribute validation and SVG markup escaping."""
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -19,6 +20,7 @@ from svg_finalize.embed_icons import (  # noqa: E402
     process_svg_file,
     resolve_icon_color,
 )
+from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes  # noqa: E402
 
 
 class IconAttributeSecurityTests(unittest.TestCase):
@@ -145,3 +147,74 @@ class PreserveColorMarkerTests(unittest.TestCase):
                 patch.object(Path, "read_text", return_value=icon):
             _, style, _ = extract_paths_from_icon(Path("arrow.svg"))
         self.assertEqual(style, "stroke")
+
+
+class OutlineIconFilledDetailTests(unittest.TestCase):
+    ICONS_DIR = SCRIPTS_DIR.parent / 'templates' / 'icons'
+
+    def _group(self, name: str) -> ET.Element:
+        elements, style, base_size = extract_paths_from_icon(self.ICONS_DIR / f'{name}.svg')
+        self.assertEqual(style, 'stroke')
+        return ET.fromstring(generate_icon_group(
+            {'x': 0, 'y': 0, 'width': 48, 'height': 48, 'fill': '#1A73E8', 'icon': name},
+            elements, style, base_size,
+        ))
+
+    def test_filled_half_disc_stays_filled_without_a_line(self) -> None:
+        half_disc, ring = self._group('tabler-outline/percentage-50')
+        self.assertEqual((half_disc.get('fill'), half_disc.get('stroke')), ('#1A73E8', 'none'))
+        self.assertEqual((ring.get('fill'), ring.get('stroke')), (None, None))
+
+    def test_detail_and_outline_share_the_effective_color_in_drawingml(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            project = Path(temporary)
+            icon_dir = project / 'icons' / 'tabler-outline'
+            icon_dir.mkdir(parents=True)
+            icon = (self.ICONS_DIR / 'tabler-outline' / 'percentage-50.svg').read_text(encoding='utf-8')
+            (icon_dir / 'percentage-50.svg').write_text(
+                icon.replace('fill="currentColor"', "fill = 'CurRentColor'")
+                .replace('stroke="none"', "stroke = 'none'")
+                .replace('stroke="currentColor"', 'stroke = "CURRENTcolor"'),
+                encoding='utf-8',
+            )
+            slide = project / 'svg_output' / '01.svg'
+            slide.parent.mkdir()
+            for paint in (
+                'fill="#1A73E8"',
+                'fill="none" style="stroke:#1A73E8"',
+                'fill="none" stroke="#FF0000" style="stroke:#1A73E8"',
+                'fill="#FF0000" style="stroke:#1A73E8"',
+                'fill="#FF0000" style="fill:#1A73E8"',
+            ):
+                with self.subTest(paint=paint):
+                    slide.write_text(
+                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+                        f'<use data-icon="tabler-outline/percentage-50" {paint}/></svg>',
+                        encoding='utf-8',
+                    )
+                    xml, *_ = convert_svg_to_slide_shapes(slide, resource_root=project)
+                    detail, ring = ET.fromstring(xml).findall('.//{*}sp/{*}spPr')
+                    self.assertEqual(detail.find('{*}solidFill/{*}srgbClr').get('val'), '1A73E8')
+                    self.assertIsNotNone(detail.find('{*}ln/{*}noFill'))
+                    self.assertIsNotNone(ring.find('{*}noFill'))
+                    self.assertEqual(ring.find('{*}ln/{*}solidFill/{*}srgbClr').get('val'), '1A73E8')
+
+    def test_inline_none_suppresses_the_outline_stroke(self) -> None:
+        elements, style, base_size = extract_paths_from_icon(self.ICONS_DIR / 'tabler-outline/percentage-50.svg')
+        attrs = parse_use_element(
+            '<use data-icon="tabler-outline/percentage-50" fill="none" stroke="#FF0000" style="stroke:none"/>'
+        )
+        group = ET.fromstring(generate_icon_group(attrs, elements, style, base_size))
+        self.assertEqual(group.get('stroke'), 'none')
+        self.assertEqual(group[0].get('fill'), 'none')
+        self.assertIsNone(group[1].get('stroke'))
+
+    def test_filled_dot_keeps_the_inherited_line(self) -> None:
+        dot = self._group('tabler-outline/accessible')[-1]
+        self.assertEqual((dot.get('fill'), dot.get('stroke')), ('#1A73E8', None))
+
+    def test_plain_outline_icon_is_unchanged(self) -> None:
+        group = self._group('tabler-outline/home')
+        self.assertEqual((group.get('fill'), group.get('stroke')), ('none', '#1A73E8'))
+        for path in group:
+            self.assertEqual((path.get('fill'), path.get('stroke')), (None, None))
