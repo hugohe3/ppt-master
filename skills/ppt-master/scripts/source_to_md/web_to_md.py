@@ -35,7 +35,6 @@ TLS fingerprint handling:
 from __future__ import annotations
 
 import argparse
-import codecs
 import datetime
 import io
 import ipaddress
@@ -58,6 +57,9 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import unique_output_path  # noqa: E402
+from _text_encoding import (  # noqa: E402
+    bom_encoding, content_type_charset, declared_html_charset, decode_charset, normalized_charset,
+)
 from _dispatcher import (  # noqa: E402
     DOC_SUFFIXES,
     EXCEL_SUFFIXES,
@@ -340,39 +342,6 @@ def _http_get(url: str, *, headers: dict | None = None, timeout: int | None = No
     return response
 
 
-def _normalize_charset(charset: str | None) -> str:
-    """Return a Python codec name when the declared charset is usable."""
-    if not charset:
-        return ""
-    charset = charset.strip().strip('"').strip("'").lower()
-    if not charset:
-        return ""
-    try:
-        return codecs.lookup(charset).name
-    except LookupError:
-        return ""
-
-
-def _charset_from_headers(headers: dict) -> str:
-    content_type = headers.get("Content-Type") or headers.get("content-type") or ""
-    match = re.search(r"charset\s*=\s*([^;\s]+)", content_type, re.I)
-    return _normalize_charset(match.group(1)) if match else ""
-
-
-def _charset_from_html(raw: bytes) -> str:
-    """Extract a charset declaration from the first chunk of HTML bytes."""
-    head = raw[:8192]
-    patterns = [
-        rb"<meta[^>]+charset=[\"']?\s*([a-zA-Z0-9_\-]+)",
-        rb"<meta[^>]+content=[\"'][^\"']*charset=\s*([a-zA-Z0-9_\-]+)",
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, head, re.I)
-        if match:
-            return _normalize_charset(match.group(1).decode("ascii", "ignore"))
-    return ""
-
-
 BODY_SHORTFALL_MIN_CHARS = 200
 BODY_SHORTFALL_RATIO = 0.25
 
@@ -418,18 +387,22 @@ def _decode_quality_score(text: str) -> int:
 def _decode_response_text(response) -> str:
     """Decode HTTP response bytes without letting guessed encodings override declarations."""
     raw = response.content
-    declared = [
-        _charset_from_headers(response.headers),
-        _charset_from_html(raw),
-    ]
-    if raw.startswith(codecs.BOM_UTF8):
-        declared.insert(0, "utf-8-sig")
-
-    seen = set()
-    declared = [enc for enc in declared if enc and not (enc in seen or seen.add(enc))]
-    for enc in declared:
+    content_type = response.headers.get("Content-Type") or response.headers.get("content-type") or ""
+    media_type = content_type.partition(";")[0].strip().lower()
+    is_html = media_type in ("text/html", "application/xhtml+xml")
+    if not media_type:
+        is_html = not is_plain_text_document(getattr(response, "url", ""), raw[:4096].decode("latin-1"))
+    labels = [bom_encoding(raw), content_type_charset(content_type)]
+    if is_html:
+        labels.append(declared_html_charset(raw))
+    declared = []
+    for label in labels:
+        enc = normalized_charset(label, html=is_html)
+        if not enc or enc in declared:
+            continue
+        declared.append(enc)
         try:
-            return raw.decode(enc)
+            return decode_charset(raw, enc)
         except UnicodeDecodeError:
             continue
 
@@ -441,14 +414,14 @@ def _decode_response_text(response) -> str:
         "gb18030",
         "big5",
     ]:
-        enc = _normalize_charset(enc)
+        enc = normalized_charset(enc, html=is_html)
         if enc and enc not in candidates:
             candidates.append(enc)
 
     decoded = []
     for enc in candidates:
         try:
-            text = raw.decode(enc)
+            text = decode_charset(raw, enc)
         except UnicodeDecodeError:
             continue
         decoded.append((_decode_quality_score(text), enc, text))
@@ -463,7 +436,7 @@ def _decode_response_text(response) -> str:
     lossy = []
     for enc in declared + [enc for enc in candidates if enc not in declared]:
         try:
-            text = raw.decode(enc, errors="replace")
+            text = decode_charset(raw, enc, errors="replace")
         except LookupError:
             continue
         lossy.append((_decode_quality_score(text), enc, text))
