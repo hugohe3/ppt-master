@@ -44,7 +44,9 @@ from pptx_transitions import (
     NATIVE_TRANSITIONS,
     apply_slide_motion_xml,
     create_transition_xml,
+    merged_mce_bindings,
     normalize_transition_effect_request,
+    parse_xml_with_mce_bindings,
     read_slide_transition_xml,
     serialize_source_xml,
     set_directory_use_timings,
@@ -1327,9 +1329,6 @@ def _replace_roundtrip_motion(
         for carrier in transition_carriers(source_root):
             source_root.remove(carrier)
         if generated_carriers:
-            clone = ET.fromstring(
-                ET.tostring(generated_carriers[0], encoding="utf-8")
-            )
             children = list(source_root)
             insert_at = next(
                 (
@@ -1342,7 +1341,7 @@ def _replace_roundtrip_motion(
                 ),
                 len(children),
             )
-            source_root.insert(insert_at, clone)
+            source_root.insert(insert_at, generated_carriers[0])
     elif transition_changed:
         _replace_roundtrip_transition_advance(source_root, generated_root)
 
@@ -1354,7 +1353,6 @@ def _replace_roundtrip_motion(
             source_root.remove(existing_timing)
         if generated_timing is None:
             return
-        clone = ET.fromstring(ET.tostring(generated_timing, encoding="utf-8"))
         children = list(source_root)
         insert_at = next(
             (
@@ -1364,7 +1362,7 @@ def _replace_roundtrip_motion(
             ),
             len(children),
         )
-        source_root.insert(insert_at, clone)
+        source_root.insert(insert_at, generated_timing)
 
 
 def _replace_roundtrip_transition_advance(
@@ -1697,13 +1695,11 @@ def _apply_roundtrip_slide_overlay(
     """Overlay authored Slide objects onto the exact source slide package part."""
     try:
         source_root = ET.fromstring(source_slide)
-        generated_tree = ET.parse(generated_slide_path)
+        generated_root, generated_bindings = parse_xml_with_mce_bindings(generated_slide_path)
     except ET.ParseError as exc:
         raise TemplateStructureError(
             "Round-trip source or generated slide is not valid XML"
         ) from exc
-    generated_root = generated_tree.getroot()
-
     source_tree = source_root.find(
         f".//{{{PML_NS}}}cSld/{{{PML_NS}}}spTree"
     )
@@ -2021,7 +2017,11 @@ def _apply_roundtrip_slide_overlay(
                 "animations.json explicitly: "
                 + ", ".join(sorted(missing_timing_targets, key=int))
             )
-    serialized_slide = serialize_source_xml(source_root, source_slide)
+    serialized_slide = serialize_source_xml(
+        source_root,
+        source_slide,
+        additional_bindings=merged_mce_bindings(source_root, generated_bindings),
+    )
     if not patch.transition_changed:
         serialized_slide = _preserve_roundtrip_transition_markup(
             serialized_slide,

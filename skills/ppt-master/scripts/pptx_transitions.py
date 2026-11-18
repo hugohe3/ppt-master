@@ -2133,21 +2133,27 @@ def _serialize_lxml_like(root: Any, source: str) -> str:
     return f"{declaration}\n{body}" if declaration else body
 
 
-def namespace_bindings(xml_data: str | bytes) -> dict[str, str]:
-    """Return source prefix bindings without changing the document."""
+def namespace_bindings(
+    xml_data: str | bytes, *, required: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Read prefix declarations and reject any that conflict with a required binding."""
     data = xml_data.encode("utf-8") if isinstance(xml_data, str) else xml_data
     bindings: dict[str, str] = {}
     for _event, (prefix, uri) in ET.iterparse(
         io.BytesIO(data),
         events=("start-ns",),
     ):
+        if required and prefix in required and required[prefix] != uri:
+            raise ValueError(f"Conflicting MCE namespace binding for {prefix!r}")
         bindings[prefix or ""] = uri
     return bindings
 
 
-def register_source_namespaces(xml_data: str | bytes) -> dict[str, str]:
+def register_source_namespaces(
+    xml_data: str | bytes, *, required: Mapping[str, str] | None = None,
+) -> dict[str, str]:
     """Register source prefixes before stdlib ElementTree re-serialization."""
-    bindings = namespace_bindings(xml_data)
+    bindings = namespace_bindings(xml_data, required=required)
     for prefix, uri in bindings.items():
         if prefix == "xml":
             continue
@@ -2165,12 +2171,50 @@ def parse_source_xml(xml_data: str | bytes) -> ET.Element:
     return ET.fromstring(data)
 
 
-def _required_mce_prefixes(root: Any) -> set[str]:
-    prefixes = set(str(root.get(_qn(MC_NS, "Ignorable")) or "").split())
-    for element in root.iter():
-        if element.tag == _qn(MC_NS, "Choice"):
-            prefixes.update(str(element.get("Requires") or "").split())
-    return {prefix for prefix in prefixes if prefix}
+def _mce_prefixes(element: Any) -> list[str]:
+    prefixes = (element.get(_qn(MC_NS, "Ignorable")) or "").split()
+    if element.tag == _qn(MC_NS, "Choice"):
+        prefixes.extend((element.get("Requires") or "").split())
+    return prefixes
+
+
+def parse_xml_with_mce_bindings(
+    path: Path,
+) -> tuple[ET.Element, dict[ET.Element, dict[str, str | None]]]:
+    """Parse generated XML and retain each MCE reference's in-scope binding."""
+    scopes: list[dict[str, str]] = [{}]
+    declarations: dict[str, str] = {}
+    bindings = {}
+    parser = ET.iterparse(path, events=("start-ns", "start", "end"))
+    for event, item in parser:
+        if event == "start-ns":
+            prefix, uri = item
+            declarations[prefix] = uri
+        elif event == "start":
+            scope = scopes[-1]
+            if declarations:
+                scope = {**scope, **declarations}
+                declarations.clear()
+            scopes.append(scope)
+            if prefixes := _mce_prefixes(item):
+                bindings[item] = {prefix: scope.get(prefix) for prefix in prefixes}
+        else:
+            scopes.pop()
+    return parser.root, bindings
+
+
+def merged_mce_bindings(
+    root: ET.Element, generated: dict[ET.Element, dict[str, str | None]],
+) -> dict[str, str]:
+    """Resolve only generated MCE references that survived the overlay."""
+    bindings: dict[str, str] = {}
+    for node in root.iter():
+        for prefix, uri in generated.get(node, {}).items():
+            if uri is None:
+                raise ValueError(f"MCE prefix {prefix!r} has no namespace binding in generated XML")
+            if bindings.setdefault(prefix, uri) != uri:
+                raise ValueError(f"Conflicting MCE namespace binding for {prefix!r} in generated XML")
+    return bindings
 
 
 def _inject_root_namespace_declarations(
@@ -2198,7 +2242,8 @@ def _inject_root_namespace_declarations(
             continue
         declarations.append(f" xmlns:{prefix}={quoteattr(uri)}")
     if declarations:
-        text = text[:root_end] + "".join(declarations) + text[root_end:]
+        insert_at = root_end - 1 if text[root_end - 1] == "/" else root_end
+        text = text[:insert_at] + "".join(declarations) + text[insert_at:]
     return text.encode("utf-8")
 
 
@@ -2213,10 +2258,10 @@ def validate_mce_prefixes(xml_data: str | bytes) -> list[str]:
         return [f"invalid XML: {exc}"]
 
     errors: list[str] = []
-    ignorable = str(root.get(_qn(MC_NS, "Ignorable")) or "").split()
-    for prefix in ignorable:
-        if prefix not in root.nsmap:
-            errors.append(f"mc:Ignorable prefix is not bound: {prefix}")
+    for element in root.iter():
+        for prefix in (element.get(_qn(MC_NS, "Ignorable")) or "").split():
+            if prefix not in element.nsmap:
+                errors.append(f"mc:Ignorable prefix is not bound: {prefix}")
     for choice in root.iter(_qn(MC_NS, "Choice")):
         for prefix in str(choice.get("Requires") or "").split():
             if prefix not in choice.nsmap:
@@ -2224,8 +2269,13 @@ def validate_mce_prefixes(xml_data: str | bytes) -> list[str]:
     return errors
 
 
-def serialize_source_xml(root: ET.Element, source_xml: str | bytes) -> bytes:
-    """Serialize stdlib XML while retaining MCE prefix bindings."""
+def serialize_source_xml(
+    root: ET.Element,
+    source_xml: str | bytes,
+    *,
+    additional_bindings: Mapping[str, str] | None = None,
+) -> bytes:
+    """Retain MCE bindings from the source and explicitly merged XML fragments."""
     expected_transition = (
         read_slide_transition(root)
         if root.tag == _qn(PML_NS, "sld")
@@ -2236,15 +2286,33 @@ def serialize_source_xml(root: ET.Element, source_xml: str | bytes) -> bytes:
         if isinstance(source_xml, str)
         else source_xml
     )
-    bindings = register_source_namespaces(source)
-    prefixes = _required_mce_prefixes(root)
+    prefixes = {prefix for element in root.iter() for prefix in _mce_prefixes(element)}
+    required = {
+        prefix: uri for prefix, uri in (additional_bindings or {}).items() if prefix in prefixes
+    }
+    bindings = register_source_namespaces(source, required=required)
     for prefix in prefixes:
-        namespace = TRANSITION_NAMESPACES.get(prefix)
+        namespace = required.get(prefix)
         if namespace is None:
-            continue
+            if prefix in bindings or prefix not in TRANSITION_NAMESPACES:
+                continue
+            namespace = TRANSITION_NAMESPACES[prefix]
         bindings[prefix] = namespace
-        ET.register_namespace(prefix, namespace)
+        if not re.fullmatch(r"ns\d+", prefix):
+            ET.register_namespace(prefix, namespace)
     serialized = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    reserved = {prefix for prefix in prefixes if re.fullmatch(r"ns\d+", prefix)}
+    if reserved:
+        emitted = namespace_bindings(serialized)
+        collisions = {p: emitted[p] for p in reserved if p in emitted and emitted[p] != bindings.get(p)}
+        for prefix, uri in collisions.items():
+            # ElementTree assigned this spelling to a QName. Leave it free for the MCE token.
+            alias = prefix + "_"
+            while alias in emitted or alias in bindings:
+                alias += "_"
+            ET.register_namespace(alias, uri)
+        if collisions:
+            serialized = ET.tostring(root, encoding="utf-8", xml_declaration=True)
     serialized = _inject_root_namespace_declarations(
         serialized,
         bindings=bindings,
