@@ -21,7 +21,6 @@ All paths produce the same output convention:
 
 import argparse
 import base64
-import codecs
 import hashlib
 import json
 import mimetypes
@@ -54,6 +53,7 @@ from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 from _markdown_text import escape_html_syntax, escape_markdown_text  # noqa: E402
 from _omml_latex import _m_pr_val, _omml_to_latex  # noqa: E402
+from _text_encoding import bom_encoding, declared_html_charset, decode_charset, normalized_charset  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -1237,22 +1237,22 @@ def _convert_html(input_file: Path, out_file: Path) -> str:
     # BOM, then the page's own charset declaration, then UTF-8; a forced UTF-8
     # read with errors="replace" turned GBK pages into U+FFFD without a word.
     raw_bytes = input_file.read_bytes()
-    dammit = UnicodeDammit(raw_bytes, user_encodings=["utf-8"], is_html=True)
-    raw_html = dammit.unicode_markup or ""
-    has_bom = raw_bytes.startswith((codecs.BOM_UTF8, codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE))
-    if (
-        dammit.contains_replacement_characters
-        or (
-            not has_bom
-            and not dammit.declared_html_encoding
+    has_bom = bool(bom_encoding(raw_bytes))
+    charset = "" if has_bom else normalized_charset(declared_html_charset(raw_bytes), html=True)
+    if charset == "windows-1252":
+        raw_html = decode_charset(raw_bytes, charset)
+    else:
+        dammit = UnicodeDammit(raw_bytes, user_encodings=["utf-8"], is_html=True)
+        raw_html = dammit.unicode_markup or ""
+        if dammit.contains_replacement_characters or (
+            not has_bom and not dammit.declared_html_encoding
             and dammit.original_encoding not in ("utf-8", "ascii")
-        )
-    ):
-        print(
-            f"[WARN] {input_file.name}: no charset declaration and not UTF-8; "
-            f"decoded as {dammit.original_encoding} — check the converted text",
-            file=sys.stderr,
-        )
+        ):
+            print(
+                f"[WARN] {input_file.name}: no charset declaration and not UTF-8; "
+                f"decoded as {dammit.original_encoding} — check the converted text",
+                file=sys.stderr,
+            )
 
     # Strip non-content elements (head/style/script/template) so metadata and
     # never-rendered markup don't leak into MD
