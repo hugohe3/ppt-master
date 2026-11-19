@@ -57,7 +57,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from resource_paths import icon_dir_for_svg  # noqa: E402
-from svg_to_pptx.drawingml.utils import parse_project_geometry_length  # noqa: E402
+from svg_to_pptx.drawingml.utils import parse_inline_style, parse_project_geometry_length  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -89,6 +89,7 @@ _ICON_TRANSFORM_RE = re.compile(
     re.ASCII,
 )
 _ICON_STROKE_WIDTH_RE = re.compile(rf'{_NUMBER_PATTERN}(?:px|em|%)?')
+_SVG_ATTR_RE = re.compile(r'''\s+([\w.:-]+)\s*=\s*(["'])(.*?)\2''', re.DOTALL)
 _LOCAL_URL_RE = re.compile(r'''url\(\s*(['"]?)#([^\s)'"\\]+)\1\s*\)''', re.IGNORECASE)
 DEFAULT_ICON_BASE_SIZE = 24
 BaseGeometry = float | tuple[float, float, float, float]
@@ -164,8 +165,8 @@ def _detect_icon_style(content: str) -> str:
     """Detect whether an icon is fill-based or stroke-based."""
     # stroke="currentColor" with fill="none" → stroke style (either quote)
     if (
-        re.search(r'stroke\s*=\s*["\']currentColor["\']', content)
-        and re.search(r'fill\s*=\s*["\']none["\']', content)
+        re.search(r'''\sstroke\s*=\s*(["'])\s*currentcolor\s*\1''', content, re.IGNORECASE)
+        and re.search(r'''\sfill\s*=\s*(["'])\s*none\s*\1''', content, re.IGNORECASE)
     ):
         return 'stroke'
     return 'fill'
@@ -180,26 +181,32 @@ def _extract_svg_body(content: str) -> list[str]:
     return [body] if body else []
 
 
-def _extract_shape_elements(content: str, color: str) -> list[str]:
-    """
-    Extract all drawable shape elements from an icon SVG, replacing
-    fill/stroke color references (currentColor or #xxxxxx) with the target color.
-
-    Supports: <path>, <circle>, <rect>, <line>, <polyline>, <polygon>, <ellipse>
-    """
+def _extract_shape_elements(content: str, style: str) -> list[str]:
+    """Extract icon geometry with the paint overrides needed by its style."""
     shape_tags = ('path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse')
     pattern = r'<(' + '|'.join(shape_tags) + r')(\s[^>]*)?(?:/>|></\1>)'
     matches = re.findall(pattern, content, re.DOTALL)
 
+    # An outline icon's root is fill="none" stroke="currentColor"; an element that
+    # overrides it (fill="currentColor", optionally stroke="none") is a filled
+    # detail and keeps that paint. generate_icon_group resolves currentColor.
+    def inherit_paint(match: re.Match[str]) -> str:
+        name, _, value = match.groups()
+        if name == 'stroke-width':
+            return ''
+        if name in ('fill', 'stroke'):
+            value = value.strip().lower()
+            if value in ('currentcolor', 'none'):
+                if style == 'stroke' and (name, value) in (('fill', 'currentcolor'), ('stroke', 'none')):
+                    return match[0]
+                return ''
+            if re.fullmatch(r'#[0-9a-f]{3,6}', value):
+                return ''
+        return match[0]
+
     elements = []
     for tag, attrs in matches:
-        # Remove standalone fill/stroke color attrs so outer <g> controls color.
-        # Also strip stroke-width so the outer <g> can override it (otherwise the
-        # icon's source stroke-width="2" would shadow any caller-specified value).
-        attrs_clean = re.sub(r'\s*fill="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs)
-        attrs_clean = re.sub(r'\s*stroke="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs_clean)
-        attrs_clean = re.sub(r'\s*stroke-width="[^"]*"', '', attrs_clean)
-        elements.append(f'<{tag}{attrs_clean}/>')
+        elements.append(f'<{tag}{_SVG_ATTR_RE.sub(inherit_paint, attrs)}/>')
 
     return elements
 
@@ -336,7 +343,7 @@ def extract_paths_from_icon(
 
     style = _detect_icon_style(content)
     base_size = _get_viewbox_size(content) or 16
-    elements = _extract_shape_elements(content, target_color)
+    elements = _extract_shape_elements(content, style)
     return elements, style, base_size
 
 
@@ -416,23 +423,26 @@ def resolve_icon_color(attrs: dict[str, str | float], style: str) -> str:
     if style == 'preserve':
         return 'preserve'
 
-    fill = str(attrs.get('fill', '')).strip()
-    stroke = str(attrs.get('stroke', '')).strip()
+    inline = parse_inline_style(str(attrs.get('style', '')))
+    fill = inline.get('fill') or str(attrs.get('fill', '')).strip()
+    stroke = inline.get('stroke') or str(attrs.get('stroke', '')).strip()
     if fill:
         _validate_icon_attr(fill, 'fill', _ICON_COLOR_RE)
     if stroke:
         _validate_icon_attr(stroke, 'stroke', _ICON_COLOR_RE)
 
     if style == 'stroke':
-        if fill and fill != 'none':
-            return fill
-        if stroke and stroke != 'none':
+        if 'stroke' in inline and stroke.lower() != 'none':
             return stroke
-        return '#000000'
+        if fill and fill.lower() != 'none':
+            return fill
+        if stroke and stroke.lower() != 'none':
+            return stroke
+        return inline.get('stroke', '#000000')
 
     if fill:
         return fill
-    if stroke and stroke != 'none':
+    if stroke and stroke.lower() != 'none':
         return stroke
     return '#000000'
 
@@ -523,6 +533,15 @@ def generate_icon_group(
     if attrs.get('id'):
         used_ids.add(str(attrs['id']))
     elements_str = '\n    '.join(_namespace_icon_elements(elements, used_ids))
+    if style == 'stroke' and attrs.get('style'):
+        # A fill supplied as the icon color must not flood the outline's interior.
+        inline = parse_inline_style(str(attrs['style']))
+        if 'fill' in inline:
+            del inline['fill']
+            attrs = attrs.copy()
+            del attrs['style']
+            if inline:
+                attrs['style'] = ';'.join(f'{key}:{value}' for key, value in inline.items())
     context_attrs = ''.join(
         f' {key}="{_xml_attr(value)}"'
         for key, value in attrs.items()
@@ -547,6 +566,13 @@ def generate_icon_group(
         # pre-change visual output.
         stroke_width = attrs.get('stroke-width', '2')
         color_attrs = f'fill="none" stroke="{_xml_attr(color)}" stroke-width="{_xml_attr(stroke_width)}"'
+
+        def resolve_detail_fill(match: re.Match[str]) -> str:
+            if match[1] == 'fill' and match[3].strip().lower() == 'currentcolor':
+                return f' fill="{_xml_attr(color)}"'
+            return match[0]
+
+        elements_str = _SVG_ATTR_RE.sub(resolve_detail_fill, elements_str)
     else:
         color_attrs = f'fill="{_xml_attr(color)}"'
 
