@@ -14,6 +14,9 @@ from ..drawingml.utils import (
 )
 
 
+_ATX_HEADING_RE = re.compile(r'^ {0,3}#{1,6}(?:[ \t]+|$)')
+
+
 def markdown_to_plain_text(md_content: str) -> str:
     """Convert Markdown notes to plain text for PPTX notes.
 
@@ -30,12 +33,12 @@ def markdown_to_plain_text(md_content: str) -> str:
 
     lines: list[str] = []
     for line in md_content.split('\n'):
-        if line.startswith('#'):
-            text = re.sub(r'^#+\s*', '', line).strip()
-            text = strip_inline_bold(text)
+        heading = _ATX_HEADING_RE.match(line)
+        if heading:
+            text = strip_inline_bold(line[heading.end():].strip())
             if text:
                 lines.append(text)
-                lines.append('')
+            lines.append('')
         elif line.strip().startswith('- '):
             item_text = line.strip()[2:]
             item_text = strip_inline_bold(item_text)

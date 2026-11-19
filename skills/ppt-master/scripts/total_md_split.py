@@ -33,7 +33,8 @@ from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
-HEADING_RE = re.compile(r'^(#{1,6})\s*(.+?)\s*$')
+# A Markdown heading needs a space after the hashes; "#1 revenue grew" is narration.
+HEADING_RE = re.compile(r'^ {0,3}(#{1,6})[ \t]+(.+?)\s*$')
 HR_RE = re.compile(r'^\s*[-*]{3,}\s*$')
 
 
@@ -168,6 +169,12 @@ def parse_total_md(
     current_lines: list[str] = []
     unmatched_headings: list[str] = []
 
+    def finish_section() -> None:
+        if current_key is not None:
+            text = '\n'.join(current_lines).rstrip()
+            previous = notes.get(current_key, '')
+            notes[current_key] = '\n\n'.join(part for part in (previous, text) if part)
+
     lines = content.splitlines()
     for line in lines:
         m = HEADING_RE.match(line)
@@ -175,12 +182,7 @@ def parse_total_md(
             raw_title = m.group(2).strip()
             matched = match_title(raw_title, exact, norm_map, num_map, svg_stems)
             if matched:
-                if current_key is not None:
-                    text = '\n'.join(current_lines).strip()
-                    if current_key in notes and text:
-                        notes[current_key] = (notes[current_key].rstrip() + "\n\n" + text).strip()
-                    elif current_key not in notes:
-                        notes[current_key] = text
+                finish_section()
                 current_key = matched
                 current_lines = []
                 continue
@@ -188,15 +190,11 @@ def parse_total_md(
 
         if HR_RE.match(line):
             continue
-        if current_key is not None:
+        # Skip leading blank lines but keep indentation on the first content line.
+        if current_key is not None and (current_lines or line.strip()):
             current_lines.append(line)
 
-    if current_key is not None:
-        text = '\n'.join(current_lines).strip()
-        if current_key in notes and text:
-            notes[current_key] = (notes[current_key].rstrip() + "\n\n" + text).strip()
-        elif current_key not in notes:
-            notes[current_key] = text
+    finish_section()
 
     if verbose and unmatched_headings:
         print("\n[Notice] Found unmatched headings (ignored):")

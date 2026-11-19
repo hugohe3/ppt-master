@@ -108,7 +108,8 @@ def find_notes_files(
             continue
 
         try:
-            content = notes_file.read_text(encoding='utf-8').strip()
+            # Leading indentation distinguishes an ATX heading from literal text.
+            content = notes_file.read_text(encoding='utf-8').rstrip()
         except (OSError, UnicodeError) as exc:
             raise NotesFileReadError(
                 f"Cannot read matched notes file {notes_file}: {exc}"
