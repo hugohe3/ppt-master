@@ -292,6 +292,12 @@ requested generated sound must not leave a dangling relationship.
 **MCE prefix rule**: Requires and Ignorable values contain textual prefix
 names. Serialization must retain bindings for those exact names. Renaming an
 effect prefix without updating these attributes corrupts compatibility.
+During round-trip export, `serialize_source_xml` receives only the prefix
+bindings referenced by `mc:Choice/@Requires` or `mc:Ignorable` on generated
+elements merged into the source slide. Each URI comes from the scope of that
+reference. This preserves `a14` for newly added Office Math. Export fails if
+merged references require different URIs for the same prefix, or if a required
+binding conflicts with the source slide.
 
 **Package timing rule**: when a route writes advTm, set
 ppt/presProps.xml p:presentationPr/p:showPr useTimings=1. Do not write showPr
