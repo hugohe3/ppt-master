@@ -37,6 +37,12 @@ requests are not copied into that workflow log.
   requests that pass the Host/Origin guard do. An idle open tab does not prevent
   timeout. Closing a tab leaves the service running. **Exit review**, `--shutdown`,
   timeout, or process termination stops it.
+- **Foreground mode (managed hosts / Windows Job sandboxes)**: omitting `--daemon`
+  runs the server in the foreground with the same lock, JSON announcement, `--port`,
+  `--no-browser`, `--timeout`, `--hold`, and `--shutdown` behavior. On Windows hosts
+  that forbid Job breakaway and tear down per-command Jobs on exit, `--daemon` logs
+  a breakaway warning and cannot outlive the launcher; start the foreground command
+  as a host-managed background task and verify `GET /api/health` from a separate call.
 - **Draft lifetime**: per-block drafts live only in server memory. A tab reload
   can retrieve them; stopping or restarting the server loses unapplied drafts.
   The browser requests leave-page confirmation while it has pending work.

@@ -1582,7 +1582,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         if args.live:
             cmd.append('--live')
         try:
-            with log_path.open('a', encoding='utf-8') as log:
+            log = log_path.open('a', encoding='utf-8')
+        except OSError as exc:
+            logger.error('cannot write live preview log: %s (%s)', log_path, exc)
+            return 1
+        with log:
+            try:
                 proc = _popen_detached(
                     cmd,
                     stdout=log,
@@ -1590,9 +1595,9 @@ def main(argv: Optional[list[str]] = None) -> int:
                     stdin=subprocess.DEVNULL,
                     logger=logger,
                 )
-        except OSError as exc:
-            logger.error('cannot write live preview log: %s (%s)', log_path, exc)
-            return 1
+            except OSError as exc:
+                logger.error('failed to start live preview process: %s', exc)
+                return 1
         url = _server_url(port)
         server_pid = _wait_for_ready(port, proc, project_path)
         if not server_pid:

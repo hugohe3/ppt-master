@@ -2886,7 +2886,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                     idle_timeout=args.timeout,
                     open_browser=False,
                 )
-            except RuntimeError as exc:
+            except (OSError, RuntimeError) as exc:
                 logger.error('%s', exc)
                 return 1
             if actual_port != recovery_port and not args.no_browser:
@@ -2932,7 +2932,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 idle_timeout=args.timeout,
                 open_browser=not args.no_browser,
             )
-        except RuntimeError as exc:
+        except (OSError, RuntimeError) as exc:
             logger.error('%s', exc)
             return 1
         if args.wait:

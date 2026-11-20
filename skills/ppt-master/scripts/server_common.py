@@ -34,6 +34,7 @@ from workflow_transcript import DISABLE_TRANSCRIPT_ENV
 
 MIN_PORT = 1
 MAX_PORT = 65535
+_WIN_ERROR_ACCESS_DENIED = 5
 
 
 # Windows PowerShell as mounted inside WSL; probed when ``[interop]
@@ -157,8 +158,10 @@ def popen_detached(
 
     Windows hosts such as terminal sandboxes may place child processes in the
     caller's Job Object. ``CREATE_BREAKAWAY_FROM_JOB`` lets the local UI server
-    survive after the launcher command returns; when that flag is forbidden, the
-    function falls back to the previous detached-process flags.
+    survive after the launcher command returns. When that flag fails with
+    ``ERROR_ACCESS_DENIED``, the function retries without breakaway so hosts
+    whose long-lived Jobs forbid breakaway keep working, and warns that
+    per-command Job teardown will still terminate the child.
 
     Detached service output remains in its component log, so the child receives
     the shared workflow-transcript opt-out environment flag.
@@ -180,13 +183,19 @@ def popen_detached(
             **kwargs,
         )
     except OSError as exc:
+        if getattr(exc, 'winerror', None) != _WIN_ERROR_ACCESS_DENIED:
+            raise
+        proc = subprocess.Popen(args, creationflags=base_flags, **kwargs)
         if logger is not None:
             logger.warning(
-                'Windows process breakaway failed; falling back to detached '
-                'process-group launch (%s)',
+                'Windows Job Object denied process breakaway (%s); the server '
+                'was launched inside the caller\'s Job and will stop when this '
+                'command exits if the host tears down per-command Jobs. If the '
+                'server disappears after launch, omit --daemon and run it as a '
+                'host-managed background task, then verify GET /api/health.',
                 exc,
             )
-        return subprocess.Popen(args, creationflags=base_flags, **kwargs)
+        return proc
 
 
 def process_alive(pid: object) -> bool:
