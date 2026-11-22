@@ -28,6 +28,7 @@ import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Mapping, MutableMapping
+from xml.dom import Node, minidom
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
@@ -2172,10 +2173,156 @@ def parse_source_xml(xml_data: str | bytes) -> ET.Element:
 
 
 def _mce_prefixes(element: Any) -> list[str]:
-    prefixes = (element.get(_qn(MC_NS, "Ignorable")) or "").split()
+    """Return namespace prefixes referenced by MCE attributes on an element."""
+    prefixes = []
+    for attribute_name in ("Ignorable", "MustUnderstand"):
+        prefixes.extend(
+            (element.get(_qn(MC_NS, attribute_name)) or "").split()
+        )
     if element.tag == _qn(MC_NS, "Choice"):
         prefixes.extend((element.get("Requires") or "").split())
+    for attribute_name in (
+        "ProcessContent",
+        "PreserveElements",
+        "PreserveAttributes",
+    ):
+        for qname in (element.get(_qn(MC_NS, attribute_name)) or "").split():
+            if ":" in qname:
+                prefixes.append(qname.split(":", 1)[0])
+            elif attribute_name != "PreserveAttributes":
+                prefixes.append("")
     return prefixes
+
+
+def _mce_prefix_references(element: Any) -> list[tuple[str, str]]:
+    """Return (prefix, reference kind) pairs for MCE attributes on an element."""
+    references: list[tuple[str, str]] = []
+    for attribute_name in ("Ignorable", "MustUnderstand"):
+        for prefix in (element.get(_qn(MC_NS, attribute_name)) or "").split():
+            references.append((prefix, "prefix"))
+    if element.tag == _qn(MC_NS, "Choice"):
+        for prefix in (element.get("Requires") or "").split():
+            references.append((prefix, "prefix"))
+    for attribute_name in (
+        "ProcessContent",
+        "PreserveElements",
+        "PreserveAttributes",
+    ):
+        kind = (
+            "attribute-qname"
+            if attribute_name == "PreserveAttributes"
+            else "element-qname"
+        )
+        for qname in (element.get(_qn(MC_NS, attribute_name)) or "").split():
+            if ":" in qname:
+                references.append((qname.split(":", 1)[0], kind))
+            elif kind == "element-qname":
+                references.append(("", kind))
+    return references
+
+
+def _source_mce_bindings(
+    xml_data: str | bytes,
+) -> tuple[ET.Element, dict[ET.Element, list[tuple[str, str, str | None]]]]:
+    """Resolve MCE references in source XML against their lexical scopes."""
+    data = xml_data.encode("utf-8") if isinstance(xml_data, str) else xml_data
+    scopes: list[dict[str, str]] = [{}]
+    declarations: dict[str, str] = {}
+    result: dict[ET.Element, list[tuple[str, str, str | None]]] = {}
+    parser = ET.iterparse(
+        io.BytesIO(data),
+        events=("start-ns", "start", "end"),
+    )
+    for event, item in parser:
+        if event == "start-ns":
+            prefix, uri = item
+            declarations[prefix] = uri
+        elif event == "start":
+            scope = scopes[-1]
+            if declarations:
+                scope = {**scope, **declarations}
+                declarations.clear()
+            scopes.append(scope)
+            result[item] = [
+                (prefix, kind, scope.get(prefix))
+                for prefix, kind in _mce_prefix_references(item)
+            ]
+        else:
+            scopes.pop()
+    return parser.root, result
+
+
+def _mce_element_keys(
+    root: ET.Element,
+) -> dict[ET.Element, tuple[tuple[str, tuple[tuple[str, str], ...]], ...]]:
+    """Build position-independent XML keys for elements with MCE references."""
+    keys: dict[ET.Element, tuple[tuple[str, tuple[tuple[str, str], ...]], ...]] = {}
+    shape_tags = {
+        _qn(PML_NS, name)
+        for name in ("sp", "pic", "graphicFrame", "cxnSp", "grpSp")
+    }
+
+    def visit(
+        element: ET.Element,
+        parent_key: tuple[tuple[str, tuple[tuple[str, str], ...]], ...],
+    ) -> None:
+        identity = [
+            (name, value)
+            for name in ("id", "name", "{http://www.w3.org/XML/1998/namespace}id")
+            if (value := element.get(name)) is not None
+        ]
+        if element.tag in shape_tags:
+            identity.extend(
+                (f"cNvPr:{candidate.get('id')}", candidate.get("id"))
+                for candidate in element.iter(_qn(PML_NS, "cNvPr"))
+                if candidate.get("id")
+            )
+        key = parent_key + ((element.tag, tuple(sorted(identity))),)
+        if _mce_prefix_references(element):
+            keys[element] = key
+        for child in element:
+            if isinstance(child.tag, str):
+                visit(child, key)
+
+    visit(root, ())
+    return keys
+
+
+def _mce_key_bindings(
+    root: ET.Element,
+    element_bindings: dict[ET.Element, list[tuple[str, str, str | None]]],
+) -> tuple[
+    dict[tuple[tuple[str, tuple[tuple[str, str], ...]], ...], dict[str, str | None]],
+    set[tuple[tuple[str, tuple[tuple[str, str], ...]], ...]],
+]:
+    """Index source bindings by identity, marking duplicate keys ambiguous."""
+    result: dict[
+        tuple[tuple[str, tuple[tuple[str, str], ...]], ...],
+        dict[str, str | None],
+    ] = {}
+    seen: dict[
+        tuple[tuple[str, tuple[tuple[str, str], ...]], ...],
+        dict[str, str | None],
+    ] = {}
+    ambiguous: set[tuple[tuple[str, tuple[tuple[str, str], ...]], ...]] = set()
+    element_keys = _mce_element_keys(root)
+    for element, references in element_bindings.items():
+        if not references:
+            continue
+        key = element_keys[element]
+        current = {
+            prefix: uri
+            for prefix, _kind, uri in references
+        }
+        previous = seen.setdefault(key, current)
+        if previous != current:
+            ambiguous.add(key)
+        target = result.setdefault(key, {})
+        for prefix, _kind, uri in references:
+            target[prefix] = uri
+    for key in ambiguous:
+        result[key] = {prefix: None for prefix in result[key]}
+    return result, ambiguous
 
 
 def parse_xml_with_mce_bindings(
@@ -2220,52 +2367,304 @@ def merged_mce_bindings(
 def _inject_root_namespace_declarations(
     xml_data: bytes,
     *,
-    bindings: dict[str, str],
     prefixes: set[str],
+    source_xml: str | bytes,
+    additional_bindings: Mapping[str, str] | None = None,
 ) -> bytes:
-    text = xml_data.decode("utf-8")
-    declaration_end = text.find("?>")
-    root_start = text.find("<", declaration_end + 2 if declaration_end >= 0 else 0)
-    root_end = text.find(">", root_start)
-    if root_start < 0 or root_end < 0:
-        raise ValueError("unable to locate serialized XML root element")
+    source = (
+        source_xml.encode("utf-8")
+        if isinstance(source_xml, str)
+        else source_xml
+    )
+    source_root, source_elements = _source_mce_bindings(source)
+    source_keys = _mce_element_keys(source_root)
+    source_bindings, ambiguous_source_keys = _mce_key_bindings(
+        source_root,
+        source_elements,
+    )
+    output_root = ET.fromstring(xml_data)
+    output_keys = _mce_element_keys(output_root)
+    output_elements = list(output_root.iter())
+    document = minidom.parseString(xml_data)
+    dom_elements = [
+        node
+        for node in document.getElementsByTagName("*")
+    ]
+    if len(dom_elements) != len(output_elements):
+        raise ValueError("unable to align parsed XML elements for MCE preservation")
 
-    opening = text[root_start:root_end]
-    declarations: list[str] = []
-    for prefix in sorted(prefixes):
-        uri = bindings.get(prefix)
-        if not uri:
-            raise ValueError(
-                f"MCE prefix {prefix!r} has no namespace binding in source XML"
+    required = dict(additional_bindings or {})
+    root_key = source_keys.get(source_root)
+    root_references = source_bindings.get(root_key, {}) if root_key else {}
+    root_node = document.documentElement
+
+    def namespace_scope(node: Node) -> dict[str, str]:
+        ancestors = []
+        current = node
+        while current is not None and current.nodeType == Node.ELEMENT_NODE:
+            ancestors.append(current)
+            current = current.parentNode
+        scope: dict[str, str] = {}
+        for ancestor in reversed(ancestors):
+            if not ancestor.attributes:
+                continue
+            for index in range(ancestor.attributes.length):
+                attribute = ancestor.attributes.item(index)
+                if attribute.name == "xmlns":
+                    scope[""] = attribute.value
+                elif attribute.name.startswith("xmlns:"):
+                    scope[attribute.name.split(":", 1)[1]] = attribute.value
+        return scope
+
+    def has_descendant_namespace_declaration(node: Node, prefix: str) -> bool:
+        attribute_name = "xmlns" if prefix == "" else f"xmlns:{prefix}"
+        current = node
+        while current is not None and current is not root_node:
+            if (
+                current.nodeType == Node.ELEMENT_NODE
+                and current.hasAttribute(attribute_name)
+            ):
+                return True
+            current = current.parentNode
+        return False
+
+    def subtree_uses_conflicting_prefix(
+        node: Node,
+        element: ET.Element,
+        prefix: str,
+        inherited: dict[str, str],
+    ) -> bool:
+        scope = dict(inherited)
+        if node.attributes:
+            for index in range(node.attributes.length):
+                attribute = node.attributes.item(index)
+                if attribute.name == "xmlns":
+                    scope[""] = attribute.value
+                elif attribute.name.startswith("xmlns:"):
+                    scope[attribute.name.split(":", 1)[1]] = attribute.value
+        node_prefix = node.nodeName.split(":", 1)[0] if ":" in node.nodeName else ""
+        if node_prefix == prefix:
+            element_uri = (
+                element.tag[1:].split("}", 1)[0]
+                if element.tag.startswith("{")
+                else ""
             )
-        if re.search(rf"\bxmlns:{re.escape(prefix)}\s*=", opening):
+            if element_uri != scope.get(prefix):
+                return True
+        if node.attributes:
+            for index in range(node.attributes.length):
+                attribute = node.attributes.item(index)
+                if ":" not in attribute.name:
+                    continue
+                attribute_prefix, local_name = attribute.name.split(":", 1)
+                if attribute_prefix != prefix or attribute_prefix == "xmlns":
+                    continue
+                matching_attributes = [
+                    name
+                    for name in element.attrib
+                    if name.rsplit("}", 1)[-1] == local_name
+                ]
+                if not matching_attributes:
+                    return True
+                for name in matching_attributes:
+                    attribute_uri = (
+                        name[1:].split("}", 1)[0]
+                        if name.startswith("{")
+                        else ""
+                    )
+                    if attribute_uri != scope.get(prefix):
+                        return True
+        element_children = [
+            child
+            for child in node.childNodes
+            if child.nodeType == Node.ELEMENT_NODE
+        ]
+        for child_node, child_element in zip(element_children, element):
+            if subtree_uses_conflicting_prefix(
+                child_node,
+                child_element,
+                prefix,
+                scope,
+            ):
+                return True
+        return False
+
+    def add_declaration(
+        node: Node,
+        element: ET.Element,
+        prefix: str,
+        uri: str,
+        *,
+        root_declaration: bool = False,
+    ) -> None:
+        attribute_name = "xmlns" if prefix == "" else f"xmlns:{prefix}"
+        scope = namespace_scope(node)
+        current = scope.get(prefix)
+        if current == uri:
+            return
+        if root_declaration and current is not None:
+            raise ValueError(
+                f"Conflicting MCE namespace binding for {prefix!r}"
+            )
+        if node.hasAttribute(attribute_name):
+            raise ValueError(
+                f"Conflicting MCE namespace binding for {prefix!r}"
+            )
+        scope[prefix] = uri
+        if subtree_uses_conflicting_prefix(node, element, prefix, scope):
+            raise ValueError(
+                f"Cannot preserve MCE prefix {prefix!r} without changing "
+                "serialized element namespace meanings"
+            )
+        node.setAttribute(attribute_name, uri)
+
+    changed = False
+    for prefix in sorted(prefixes):
+        if prefix == "xml":
             continue
-        declarations.append(f" xmlns:{prefix}={quoteattr(uri)}")
-    if declarations:
-        insert_at = root_end - 1 if text[root_end - 1] == "/" else root_end
-        text = text[:insert_at] + "".join(declarations) + text[insert_at:]
-    return text.encode("utf-8")
+        uri = required.get(prefix)
+        if uri is None:
+            uri = root_references.get(prefix)
+        if uri is None:
+            continue
+        had_declaration = root_node.hasAttribute(
+            "xmlns" if prefix == "" else f"xmlns:{prefix}"
+        )
+        add_declaration(
+            root_node,
+            output_root,
+            prefix,
+            uri,
+            root_declaration=True,
+        )
+        if not had_declaration and root_node.hasAttribute(
+            "xmlns" if prefix == "" else f"xmlns:{prefix}"
+        ):
+            changed = True
+
+    for element, node in zip(output_elements, dom_elements):
+        references = _mce_prefix_references(element)
+        if not references:
+            continue
+        element_bindings = source_bindings.get(output_keys.get(element), {})
+        seen: set[str] = set()
+        for prefix, _kind in references:
+            if prefix in seen or prefix == "xml":
+                continue
+            seen.add(prefix)
+            uri = required.get(prefix)
+            if uri is None:
+                output_key = output_keys.get(element)
+                has_local_binding = has_descendant_namespace_declaration(
+                    node,
+                    prefix,
+                )
+                if (
+                    output_key in ambiguous_source_keys
+                    and not has_local_binding
+                ):
+                    raise ValueError(
+                        f"ambiguous source-to-output correspondence for MCE "
+                        f"namespace prefix {prefix!r}"
+                    )
+                source_uri = element_bindings.get(prefix)
+                if source_uri is not None:
+                    uri = (
+                        namespace_scope(node).get(prefix)
+                        if has_local_binding
+                        else source_uri
+                    )
+                else:
+                    uri = namespace_scope(node).get(prefix)
+            if uri is None:
+                if prefix == "":
+                    continue
+                raise ValueError(
+                    f"MCE prefix {prefix!r} has no namespace binding in source "
+                    "or generated XML"
+                )
+            had_declaration = node.hasAttribute(
+                "xmlns" if prefix == "" else f"xmlns:{prefix}"
+            )
+            add_declaration(node, element, prefix, uri)
+            if not had_declaration and node.hasAttribute(
+                "xmlns" if prefix == "" else f"xmlns:{prefix}"
+            ):
+                changed = True
+
+    if not changed:
+        return xml_data
+    serialized = document.toxml(encoding="utf-8")
+    declaration = re.match(rb"\s*(<\?xml\b[^?]*\?>)", xml_data)
+    generated_declaration_end = serialized.find(b"?>")
+    if generated_declaration_end >= 0:
+        body = serialized[generated_declaration_end + 2:]
+    else:
+        body = serialized
+    if declaration:
+        return declaration.group(1) + body
+    return body.lstrip()
 
 
 def validate_mce_prefixes(xml_data: str | bytes) -> list[str]:
-    """Return unresolved MCE Requires/Ignorable prefix errors."""
-    if LET is None:
-        return []
+    """Return unresolved MCE prefix and QName errors."""
     data = xml_data.encode("utf-8") if isinstance(xml_data, str) else xml_data
-    try:
-        root = LET.fromstring(data)
-    except LET.XMLSyntaxError as exc:
-        return [f"invalid XML: {exc}"]
-
     errors: list[str] = []
-    for element in root.iter():
-        for prefix in (element.get(_qn(MC_NS, "Ignorable")) or "").split():
-            if prefix not in element.nsmap:
-                errors.append(f"mc:Ignorable prefix is not bound: {prefix}")
-    for choice in root.iter(_qn(MC_NS, "Choice")):
-        for prefix in str(choice.get("Requires") or "").split():
-            if prefix not in choice.nsmap:
-                errors.append(f"mc:Choice Requires prefix is not bound: {prefix}")
+    if LET is not None:
+        try:
+            root = LET.fromstring(data)
+        except LET.XMLSyntaxError as exc:
+            return [f"invalid XML: {exc}"]
+        for element in root.iter():
+            for prefix, kind in _mce_prefix_references(element):
+                if prefix == "xml" or prefix == "":
+                    continue
+                if prefix in element.nsmap:
+                    continue
+                if kind in ("element-qname", "attribute-qname"):
+                    errors.append(
+                        f"MCE QName prefix is not bound: {prefix}"
+                    )
+                else:
+                    errors.append(
+                        f"MCE namespace prefix is not bound: {prefix}"
+                    )
+        return errors
+
+    scopes: list[dict[str, str]] = [{}]
+    declarations: dict[str, str] = {}
+    try:
+        parser = ET.iterparse(
+            io.BytesIO(data),
+            events=("start-ns", "start", "end"),
+        )
+        for event, item in parser:
+            if event == "start-ns":
+                prefix, uri = item
+                declarations[prefix] = uri
+            elif event == "start":
+                scope = scopes[-1]
+                if declarations:
+                    scope = {**scope, **declarations}
+                    declarations.clear()
+                scopes.append(scope)
+                for prefix, kind in _mce_prefix_references(item):
+                    if prefix == "xml" or prefix == "":
+                        continue
+                    if prefix in scope:
+                        continue
+                    if kind in ("element-qname", "attribute-qname"):
+                        errors.append(
+                            f"MCE QName prefix is not bound: {prefix}"
+                        )
+                    else:
+                        errors.append(
+                            f"MCE namespace prefix is not bound: {prefix}"
+                        )
+            else:
+                scopes.pop()
+    except ET.ParseError as exc:
+        return [f"invalid XML: {exc}"]
     return errors
 
 
@@ -2300,7 +2699,20 @@ def serialize_source_xml(
         bindings[prefix] = namespace
         if not re.fullmatch(r"ns\d+", prefix):
             ET.register_namespace(prefix, namespace)
-    serialized = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    has_lxml_root = LET is not None and hasattr(root, "getroottree")
+    if has_lxml_root:
+        serialized = LET.tostring(
+            root,
+            encoding="utf-8",
+            xml_declaration=True,
+            pretty_print=False,
+        )
+    else:
+        serialized = ET.tostring(
+            root,
+            encoding="utf-8",
+            xml_declaration=True,
+        )
     reserved = {prefix for prefix in prefixes if re.fullmatch(r"ns\d+", prefix)}
     if reserved:
         emitted = namespace_bindings(serialized)
@@ -2312,11 +2724,24 @@ def serialize_source_xml(
                 alias += "_"
             ET.register_namespace(alias, uri)
         if collisions:
-            serialized = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+            if has_lxml_root:
+                serialized = LET.tostring(
+                    root,
+                    encoding="utf-8",
+                    xml_declaration=True,
+                    pretty_print=False,
+                )
+            else:
+                serialized = ET.tostring(
+                    root,
+                    encoding="utf-8",
+                    xml_declaration=True,
+                )
     serialized = _inject_root_namespace_declarations(
         serialized,
-        bindings=bindings,
         prefixes=prefixes,
+        source_xml=source,
+        additional_bindings=required,
     )
     errors = validate_mce_prefixes(serialized)
     if expected_transition is not None:
