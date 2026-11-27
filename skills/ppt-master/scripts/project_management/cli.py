@@ -24,6 +24,7 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
+import errno
 import filecmp
 import json
 import os
@@ -33,6 +34,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -106,6 +109,71 @@ DEFERRED_CANVAS_MESSAGE = (
     "Canvas is determined during authoring and recorded in spec_lock.md "
     "(Default) or the first SVG (Quick)."
 )
+
+
+_IMPORT_LOCK_FILENAME = ".import-sources.lock"
+_IS_WINDOWS = os.name == "nt"
+_WINDOWS_LOCK_WINERRORS = frozenset({32, 33})  # ERROR_SHARING_VIOLATION, ERROR_LOCK_VIOLATION
+_WINDOWS_LOCK_ERRNOS = frozenset({errno.EACCES, errno.EDEADLK})
+
+
+def _is_windows_lock_contention(exc: OSError) -> bool:
+    """Return whether a Windows msvcrt.locking error represents lock contention."""
+    return (
+        getattr(exc, "winerror", None) in _WINDOWS_LOCK_WINERRORS
+        or exc.errno in _WINDOWS_LOCK_ERRNOS
+    )
+
+
+@contextmanager
+def _project_import_lock(project_dir: Path):
+    """Serialize import-sources runs that target the same local project.
+
+    Unique-name selection under sources/ and the read-merge-write of
+    images/image_manifest.json are check-then-act steps, so two runs that
+    overlap can pick the same destination or drop each other's manifest
+    entries. Later runs wait for the earlier one instead of failing.
+    """
+    if _IS_WINDOWS:
+        import msvcrt
+
+        with (project_dir / _IMPORT_LOCK_FILENAME).open("a+b") as handle:
+            while True:
+                handle.seek(0)
+                try:
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as exc:
+                    if not _is_windows_lock_contention(exc):
+                        raise
+                    time.sleep(0.1)
+            try:
+                yield
+            finally:
+                try:
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                except OSError:
+                    pass
+        return
+
+    import fcntl
+
+    # Lock the directory itself so every path spelling or symlink to the
+    # project shares one lock and no lock file is left behind.
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+    descriptor = os.open(project_dir, flags)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+            except OSError:
+                pass
+    finally:
+        os.close(descriptor)
 
 
 def _is_project_tree(source_path: Path) -> bool:
@@ -861,6 +929,23 @@ class ProjectManager:
         if not source_items:
             raise ValueError("At least one source path or URL is required")
 
+        with _project_import_lock(project_dir):
+            return self._import_sources_unlocked(
+                project_dir,
+                source_items,
+                move=move,
+                copy=copy,
+                propagate_images=propagate_images,
+            )
+
+    def _import_sources_unlocked(
+        self,
+        project_dir: Path,
+        source_items: list[str],
+        move: bool = False,
+        copy: bool = False,
+        propagate_images: bool = True,
+    ) -> dict[str, list[str]]:
         sources_dir = self._source_dir(project_dir)
         existing_markdown = {path.resolve() for path in sources_dir.glob("*.md")}
         reserved_markdown: set[Path] = set()
@@ -886,7 +971,9 @@ class ProjectManager:
             if item_path.is_dir():
                 supplied_dirs.append(item_path)
                 directory_files = sorted(
-                    path for path in item_path.iterdir() if path.is_file()
+                    path
+                    for path in item_path.iterdir()
+                    if path.is_file() and path.name != _IMPORT_LOCK_FILENAME
                 )
                 if directory_files:
                     expanded_items.extend(str(path) for path in directory_files)
